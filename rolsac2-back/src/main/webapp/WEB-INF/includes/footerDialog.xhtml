@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<!--
+Peu de pàgina
+-->
+<ui:composition>
+    <footer id="footer">
+        <div class="row mr-auto ml-3 mr-3 peuResponsive">
+            <!-- Esquerra -->
+            <div class="col-4 pt-2 elementPeuResponsive">
+                <strong class="text-uppercase font-weight-bold h6">
+                    <ui:insert name="contentFooterDialogLeft" />
+                </strong>
+            </div>
+            <!-- Centro -->
+            <div class="col-8 text-right pt-2 text-decoration-none bg-transparent text-uppercase p-2 opcionsPeu elementPeuResponsive">
+                <ui:insert name="contentFooterDialogRight" />
+            </div>
+        </div>
+    </footer>
+</ui:composition>
+</html>

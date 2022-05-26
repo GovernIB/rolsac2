@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <display-name>rolsac2 Back</display-name>
+
+    <welcome-file-list>
+        <welcome-file>index.xhtml</welcome-file>
+    </welcome-file-list>
+
+    <!-- Servlet de JSF -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
+    <!-- Per la llista completa de paràmetres de JSF veure 11.1.3 de l'especificació JSF -->
+    <!-- State saving method: 'client' o 'server' (=default). Veure 2.5.2  de l'especifiació JSF -->
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+    <!-- Canvia el mode en que es generen certs errors per ajudar al desenvolupament -->
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>${webXml.faces.projectStage}</param-value>
+    </context-param>
+    <!-- Fa que els comentaris dins els xhtml no es processin. -->
+    <context-param>
+        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!-- Buffer de 64K per evitar que la resposta s'hagi començat a escriure si es produeix un error
+       a la fase de RENDER_RESPONSE -->
+    <context-param>
+        <param-name>javax.faces.FACELETS_BUFFER_SIZE</param-name>
+        <param-value>65536</param-value>
+    </context-param>
+    <!-- Per defecte és GMT. Com que solem estam a CEST convé indicar que agafi del sistema -->
+    <context-param>
+        <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!-- Interpretar els input text buids com a null -->
+    <context-param>
+        <param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    
+    <!--
+        Opcions de configuració de Primefaces
+        Veure: https://primefaces.github.io/primefaces/7_0/#/gettingstarted/configuration
+    -->
+    <context-param>
+        <param-name>primefaces.TRANSFORM_METADATA</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!-- El tema ha de coincidir amb la dependència inclosa dins el WAR. Per no emprar-ne cap posar el valor none -->
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>bootstrap</param-value>
+        <!--<param-value>none</param-value>-->
+    </context-param>
+
+    <!-- Pàgina estàndard d'error, en cas que l'usauri no tengui el rol requerit -->
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error/403.xhtml</location>
+    </error-page>
+    <!-- Pàgina estàndard d'error en cas que es cridi un recurs que no existeix -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error/404.xhtml</location>
+    </error-page>
+    <!--
+        Primefaces pot capturar les excepcions i integrar-se amb els error-page
+        Veure: https://primefaces.github.io/primefaces/7_0/#/core/errorhandling?id=error-pages
+        Pàgina general per qualsevol excepció:
+    -->
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error/exception.xhtml</location>
+    </error-page>
+    <error-page>
+        <exception-type>es.caib.rolsac2.service.exception.ServiceException</exception-type>
+        <location>/error/serviceException.xhtml</location>
+    </error-page>
+    <error-page>
+        <exception-type>javax.ejb.EJBAccessException</exception-type>
+        <location>/error/accessException.xhtml</location>
+    </error-page>
+
+    <security-constraint>
+        <display-name>No permetre accés directe als recursos</display-name>
+        <web-resource-collection>
+            <web-resource-name>Accés directe a recursos</web-resource-name>
+            <url-pattern>/resources/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint />
+    </security-constraint>
+    
+    <security-constraint>
+        <display-name>Permetre accés als recursos a través de JSF</display-name>
+        <web-resource-collection>
+            <web-resource-name>Recursos públics</web-resource-name>
+            <url-pattern>/javax.faces.resource/*</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+    
+    <security-constraint>
+        <display-name>Accés restringit a administradors</display-name>
+        <web-resource-collection>
+            <web-resource-name>tot</web-resource-name>
+            <description>Paginas superadminstradores</description>
+            <url-pattern>/superadministrador/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>RS2_SUP</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <display-name>Acceso restringido a usuarios y administradores</display-name>
+        <web-resource-collection>
+            <web-resource-name>tot</web-resource-name>
+            <description>Todos los recursos</description>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>RS2_SUP</role-name>
+            <role-name>RS2_ADE</role-name>
+            <role-name>RS2_ADC</role-name>
+            <role-name>RS2_GES</role-name>
+            <role-name>RS2_INF</role-name>
+        </auth-constraint>
+    </security-constraint>
+    
+    <session-config>
+        <cookie-config>
+            <http-only>true</http-only>
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+
+    <login-config>
+        <auth-method>${webXml.loginConfig.authMethod}</auth-method>
+        <realm-name>${webXml.loginConfig.realmName}</realm-name>
+    </login-config>
+
+    <security-role>
+        <description>SuperAdministrador</description>
+        <role-name>RS2_SUP</role-name>
+    </security-role>
+    <security-role>
+        <description>AdministradorEntidad</description>
+        <role-name>RS2_ADE</role-name>
+    </security-role>
+    <security-role>
+        <description>AdministradorContenido</description>
+        <role-name>RS2_ADC</role-name>
+    </security-role>
+    <security-role>
+        <description>GestorContenidos</description>
+        <role-name>RS2_GES</role-name>
+    </security-role>
+    <security-role>
+        <description>Informador</description>
+        <role-name>RS2_INF</role-name>
+    </security-role>
+</web-app>

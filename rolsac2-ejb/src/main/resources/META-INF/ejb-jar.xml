@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+        http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd"
+         version="3.2">
+
+    <!--
+    Aquest descriptor es podria llevar simplement anotant la classe ServiceException amb
+    @ApplicationException(rollback=true), però atès que aquesta classe està definida a la capa
+    de serveis així evitam que tengui dependències sobre classes de l'API dels EJBs
+    -->
+    <assembly-descriptor>
+        <security-role>
+            <description>SuperAdministrador</description>
+            <role-name>RS2_SUP</role-name>
+        </security-role>
+        <security-role>
+            <description>AdministradorEntidad</description>
+            <role-name>RS2_ADE</role-name>
+        </security-role>
+        <security-role>
+            <description>AdministradorContenido</description>
+            <role-name>RS2_ADC</role-name>
+        </security-role>
+        <security-role>
+            <description>GestorContenidos</description>
+            <role-name>RS2_GES</role-name>
+        </security-role>
+        <security-role>
+            <description>Informador</description>
+            <role-name>RS2_INF</role-name>
+        </security-role>
+        <application-exception>
+            <exception-class>es.caib.rolsac2.service.exception.ServiceException</exception-class>
+            <rollback>true</rollback>
+        </application-exception>
+    </assembly-descriptor>
+
+</ejb-jar>

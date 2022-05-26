@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+             version="2.2">
+    <persistence-unit name="rolsac2PU" transaction-type="JTA">
+        <jta-data-source>java:jboss/datasources/rolsac2DS</jta-data-source>
+
+        <!-- Llista de classes persistents -->
+        <class>es.caib.rolsac2.persistence.model.UnitatOrganica</class>
+        <class>es.caib.rolsac2.persistence.model.Procediment</class>
+
+        <!-- Activar cache només per aquelles entitats on volguem expressament -->
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <!-- Sempre activar la validació de les propietats -->
+        <validation-mode>CALLBACK</validation-mode>
+
+        <properties>
+            <!-- Per les propietats estandard veure punt 8.2.1.9 de l'especificació JPA -->
+
+            <!--
+            Per un bug a Hibernate, el JBoss EAP 7.2 que no tenen el patch 9 no detecten correctament
+            les versions d'Oracle superiors a la 12. Per això cal definir explicitament el dialect.
+            -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
+
+            <!-- Afecta molt al rendiment. A entorn de producció, sempre a false -->
+            <property name="hibernate.show_sql" value="${persistenceXml.hibernate.showSql}"/>
+        </properties>
+    </persistence-unit>
+</persistence>
