@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://www.ironjacamar.org/doc/schema"
+             xsi:schemaLocation="http://www.ironjacamar.org/doc/schema
+             http://www.ironjacamar.org/doc/schema/datasources_1_2.xsd">
+
+    <datasource jndi-name="java:jboss/datasources/rolsac2DS" pool-name="rolsac2DS">
+        <connection-url>jdbc:postgresql://localhost:5432/rolsac2</connection-url>
+        <driver>postgresql</driver>
+        <security>
+            <user-name>rolsac2</user-name>
+            <password>rolsac2</password>
+        </security>
+    </datasource>
+
+</datasources>

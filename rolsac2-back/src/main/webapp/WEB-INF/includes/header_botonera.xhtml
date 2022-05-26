@@ -1,0 +1,84 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<ui:composition>
+    <!-- Logo i nom aplicació -->
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mobil">
+            <li class="nav-item dropdown colorVerd">
+                <a class="nav-link dropdown mobil" title="Unidades" href="#" id="unidades"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
+                                          aria-hidden="true"></span>
+                    <span class="mb-0 float-right botoCurt">#{sessionBean.unidad.nombre.getTraduccion(sessionBean.getLang())}</span>
+                    <span class="oi oi-globe" title="#{labels['idioma_link']}" aria-hidden="true"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="unidades">
+                    <p:repeat value="#{sessionBean.unidades}" var="unidad">
+                        <p:commandLink styleClass="dropdown-item mobil" hreflang="#{unidad}"
+                                       action="#{sessionBean.reload()}"
+                                       value="#{unidad.nombre.getTraduccion(sessionBean.getLang())}">
+                            <p:ajax listener="#{sessionBean.actualizarUnidadAdministrativa(unidad)}" />
+                        </p:commandLink>
+                    </p:repeat>
+                </div>
+            </li>
+            <li class="nav-item dropdown colorVerd">
+                <a class="nav-link dropdown mobil" title="Unidades" href="#" id="perfiles"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
+                                          aria-hidden="true"></span>
+                    <span class="mb-0 float-right botoCurt">#{labels['TypePerfiles.' += sessionBean.perfil.toString()]}</span>
+                    <span class="oi oi-people" title="#{labels['idioma_link']}" aria-hidden="true"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="perfiles">
+                    <p:repeat value="#{sessionBean.perfiles}" var="perfil">
+                        <p:commandLink styleClass="dropdown-item mobil" hreflang="#{perfil}"
+                                       action="#{sessionBean.reload()}"
+                                       value="#{labels['TypePerfiles.' += perfil.toString()]}"
+                        >
+                            <p:ajax listener="#{sessionBean.setPerfil(perfil)}" />
+                        </p:commandLink>
+                    </p:repeat>
+                </div>
+            </li>
+            <li class="nav-item dropdown colorVerd">
+                <a class="nav-link dropdown mobil" title="#{labels['idioma_link']}" href="#" id="idiomas"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
+                                          aria-hidden="true"></span>
+                    <span class="mb-0 float-right botoCurt">Configuración</span>
+                    <span class="oi oi-cog" title="#{labels['idioma_link']}" aria-hidden="true"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="idiomas">
+                    <p:link styleClass="dropdown-item mobil" outcome="/configuracio"
+                            title="#{labels.configuracio_link}">
+                                        <span class="oi oi-cog" title="#{labels.configuracio_link}"
+                                              aria-hidden="true"></span>
+                        <span class="mb-0 float-right botoCurt">Config.</span>
+                    </p:link>
+                    <p:repeat value="#{applicationLocales.available}" var="locale">
+                        <p:commandLink styleClass="dropdown-item mobil" hreflang="#{locale.toLanguageTag()}"
+                                       action="#{sessionBean.reload()}"
+                                       value="#{labels['idioma_link_' += locale.toLanguageTag()]}">
+                            <p:ajax listener="#{sessionBean.setCurrent(locale)}" />
+                        </p:commandLink>
+                    </p:repeat>
+                    <p:commandLink action="#{logout.logout}"
+                                   ajax="false" immediate="true" styleClass="dropdown-item mobil"
+                                   title="#{labels.sortir_link}">
+                                    <span class="oi oi-power-standby" title="#{labels.sortir_link}"
+                                          aria-hidden="true"></span>
+                        <span class="mb-0 float-right botoCurt">#{labels.sortir_link}</span>
+                    </p:commandLink>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+    <!-- FI Logo i nom aplicació -->
+</ui:composition>
+</html>

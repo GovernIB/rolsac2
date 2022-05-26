@@ -1,0 +1,82 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:t="http://back.rolsac2.caib.es/tags">
+<!--
+Pàgina amb el llistat de procediments d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />
+            <f:viewAction action="#{unitatModel.load}" />
+            <f:viewAction action="#{listProcediment.load}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="pageTitle">
+        <h:outputFormat value="#{labels.listProcediment_title}">
+            <f:param value="#{unitatModel.value.nom}"/>
+            <f:param value="#{unitatModel.value.codiDir3}"/>
+        </h:outputFormat>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        <p:menuitem value="#{labels.listUnitatOrganica_link}" outcome="/listUnitatOrganica"/>
+        <p:menuitem value="#{labels.listProcediment_link}" outcome="/listProcediment" includeViewParams="true"/>
+    </ui:define>
+
+    <ui:define name="content">        
+        <p>
+            <c:if test="#{security.admin}">
+                <p:button value="#{labels.newProcediment_link}" outcome="/admin/newProcediment" includeViewParams="true" />
+            </c:if>
+            <p:button value="#{labels.button_tornar}" outcome="/listUnitatOrganica"/>
+        </p>
+        <h:form>
+            <p:dataTable id="dataTable" value="#{listProcediment.lazyModel}" var="procediment" 
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="procedimentsTable"
+                         rows="10" rowsPerPageTemplate="10,20,50,100"
+                         paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                         paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         emptyMessage="#{labels.dict.noHayDatos}">
+                <f:facet name="{RowsPerPageLabel}">
+                    #{labels.dataTable_rowsPerPage}
+                </f:facet>
+                <p:column>
+                    <f:facet name="header">#{labels.procediment_id}</f:facet>
+                    <h:outputText value="#{procediment.id}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{labels.procediment_codiSia}</f:facet>
+                    <h:outputText value="#{procediment.codiSia}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{labels.procediment_nom}</f:facet>
+                    <h:outputText value="#{procediment.nom}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header"></f:facet>
+                    <p:menuButton value="#{labels.button_opcions}">
+                        <c:if test="#{security.admin}">
+	                        <p:menuitem value="#{labels.button_editar}" outcome="/admin/editProcediment">
+	                            <f:param name="procedimentId" value="#{procediment.id}"/>
+	                            <f:param name="unitatId" value="#{unitatModel.value.id}"/>
+	                        </p:menuitem>                        
+                            <p:menuitem value="#{labels.button_eliminar}" action="#{listProcediment.delete(procediment.id)}"
+                                        update="messages @form">
+                                <p:confirm message="#{labels.confirm_eliminar}"/>
+                            </p:menuitem>
+                        </c:if>
+                    </p:menuButton>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

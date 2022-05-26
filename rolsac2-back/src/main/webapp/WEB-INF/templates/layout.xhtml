@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      lang="#{sessionBean.current.toLanguageTag()}">
+<!--
+Plantilla.
+-->
+<f:view locale="#{sessionBean.current}">
+    <p:importConstants type="es.caib.rolsac2.service.model.types.TypePerfiles" var="TypePerfiles" />
+    <!-- Espai perquè les pàgines que emprin el template defineixin els seus viewParam i viewAction -->
+    <ui:insert name="metadata" />
+    <h:head>
+        <!-- Necessari perquè PrimeFaces posi aquest tags al principi del HEAD -->
+        <f:facet name="first">
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <title><ui:insert name="pageTitle"/></title>
+             <link rel="shortcut icon" href="#{resource['img/GOIB_fav.png']}"/>
+         </f:facet>
+        <h:outputScript name="js/bootstrap.min.js" />
+        <!-- Traduccions personalitzades de PrimeFaces en català i castellà -->
+        <script src="#{resource['js/primefaceslocale_' += sessionBean.current.toLanguageTag() += '.js']}"
+                type="text/javascript"></script>
+    </h:head>
+    <h:body>
+        <!-- 
+        Les declaram aquí enlloc de a HEAD per assegurar que es carreguen després dels de Primefaces 
+        Veure: https://stackoverflow.com/a/8774997/11751648
+        -->
+        <h:outputStylesheet name="css/bootstrap.min.css" />
+        <h:outputStylesheet name="css/open-iconic-bootstrap.css" />
+        <h:outputStylesheet name="css/stylesNou.css" />
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+
+        <h:form prependId="false">
+            <header>
+               <!-- Header -->
+                <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark bg-header">
+                    <button class="navbar-toggler botoMobil" type="button" data-toggle="collapse"
+                            data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <ui:include src="/WEB-INF/includes/header_logo_nombre.xhtml" />
+
+                    <ui:include src="/WEB-INF/includes/header_botonera.xhtml" />
+
+                </nav>
+                <!-- FI Header -->
+            </header>
+        </h:form>
+
+        <p:growl id="messages"
+                 globalOnly="false"
+                 showDetail="true"
+                 life="5000"
+                 escape="false"/>
+
+        <h:form>
+            <p:confirmDialog global="true">
+                <p:commandButton value="#{labels.button_si}" type="button" styleClass="ui-confirmdialog-yes"
+                                 icon="ui-icon-check"/>
+                <p:commandButton value="#{labels.button_no}" type="button" styleClass="ui-confirmdialog-no"
+                                 icon="ui-icon-close"/>
+            </p:confirmDialog>
+
+            <!-- Breadcrumb -->
+            <p:toolbar id="toolbar">
+
+                <f:facet name="left">
+                    <nav aria-label="breadcrumb" class="miga" style="width:70%">
+                        <p:breadCrumb id="migaPan" styleClass="breadcrumb" homeDisplay="text" style="background-image: none !important;background: transparent;  border: none;">
+                            <p:menuitem value="#{labels.inici_link}" outcome="/index"/>
+                            <ui:insert name="breadcrumb"/>
+                        </p:breadCrumb>
+                    </nav>
+                </f:facet>
+                <f:facet name="right">
+
+                    <div style="width: 200px; height: 40px">
+                        <ul class="colorGris navbar-nav mobilClaro">
+                            <li class="nav-item dropdown "  style="z-index:2 !important;" >
+                                <a class="dropdown mobilClaro" title="Unidades" href="#" id="unidades"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
+                                              aria-hidden="true"></span>
+                                    <span class="mb-0 float-right botoCurt">Opciones</span>
+                                    <span class="oi oi-menu visibleLG" title="#{labels['idioma_link']}" aria-hidden="true"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="unidades">
+                                    <c:choose>
+                                        <c:when test="#{sessionBean.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR}">
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/superadministrador/viewEntidades.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right ">Adm. entidades</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/superadministrador/viewPropiedadesGlobales.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right ">Prop. globales</span>
+                                            </p:link>
+                                        </c:when>
+                                        <c:when test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD }">
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/entidades/viewConfiguracionEntidad.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right ">Config. entidad</span>
+                                            </p:link>
+                                            <!-- Las tablas maeastras de color amarillo -->
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/tipo/viewTipoAfeccion.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right ">Tipo afección</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/tipo/viewTipoNormativa.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right ">Tipo normativa</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/tipo/viewTipoSexo.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right ">Tipo Sexo</span>
+                                            </p:link>
+                                            <!-- SIA , SOLR e indexacion, ver rolsac1 -->
+                                            <!--
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="entidades/viewMantenimientoProcesos.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right botoCurt">Manten. procesos</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="entidades/viewRolesPermisos.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right botoCurt">Gestión permisos</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="entidades/viewPlugins.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right botoCurt">Plugins</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/monitorizacion/viewAvisos.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right botoCurt">Avisos y alertas</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/monitorizacion/viewEstadisticas.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right botoCurt">Estadísticas</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/monitorizacion/viewAcontecimientos.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right botoCurt">Acontecimientos</span>
+                                            </p:link> -->
+                                        </c:when>
+                                        <c:when test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS}">
+
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/viewPersonal.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right botoCurt">Personal</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/viewFichas.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right botoCurt">Fichas</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/viewNormativas.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right botoCurt">Normativas</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/viewProcedimientos.xhtml"
+                                                    title="#{labels.configuracio_link}">
+                                                <span class="mb-0 float-right botoCurt">Procedimientos</span>
+                                            </p:link>
+                                        </c:when>
+                                    </c:choose>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </f:facet>
+            </p:toolbar>
+            <!-- FI Breadcrumb -->
+        </h:form>
+
+        <!-- Content -->
+        <div class="p-3 aplicacio contenido">
+            <div class="bg-white rounded box-shadow">
+                <!-- Contingut -->
+                <div class="card mb-12 border-0">
+                    <span class="h5 card-title border-bottom verde">
+                        <ui:insert name="pageTitle">Título por defecto</ui:insert>
+                    </span>
+                    <ui:insert name="content"/>
+                </div>
+                <!-- FI Contingut -->
+            </div>
+        </div>
+        <!-- FI Content -->
+
+        <ui:include src="/WEB-INF/includes/footer.xhtml"/>
+    </h:body>
+</f:view>
+</html>

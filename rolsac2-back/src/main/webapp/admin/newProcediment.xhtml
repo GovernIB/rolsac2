@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:t="http://back.rolsac2.caib.es/tags">
+<!--
+Pàgina per crear procediments
+-->
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />
+            <f:viewAction action="#{unitatModel.load}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="pageTitle">
+        <h:outputFormat value="#{labels.newProcediment_title}">
+            <f:param value="#{unitatModel.value.nom}"/>
+            <f:param value="#{unitatModel.value.codiDir3}"/>
+        </h:outputFormat>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        <p:menuitem value="#{labels.listUnitatOrganica_link}" outcome="/listUnitatOrganica"/>
+        <p:menuitem value="#{labels.listProcediment_link}" outcome="/listProcediment" includeViewParams="true"/>
+        <p:menuitem value="#{labels.newProcediment_link}" outcome="/admin/newProcediment" includeViewParams="true"/>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form id="form">
+
+            <ui:include src="/WEB-INF/includes/fieldsProcediment.xhtml">
+                <ui:param name="edit" value="false" />
+            </ui:include>
+            
+            <ui:decorate template="/WEB-INF/decorations/buttons.xhtml">
+                <ui:define name="buttons">
+                    <p:commandButton id="saveButton" action="#{newProcediment.save}"
+                                     value="#{labels.button_guardar}"
+                                     process="@form" update="@form"/>
+                    <p:button value="#{labels.button_tornar}" outcome="/listProcediment" includeViewParams="true" 
+                              styleClass="float-right" />
+                </ui:define>
+            </ui:decorate>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,115 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:t="http://back.rolsac2.caib.es/tags">
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+             <f:viewAction action="#{viewPersonal.load}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="pageTitle">
+        <h:outputFormat value="#{labels['viewPersonal.titulo']}" />
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
+                <!--<p:ajax event="change" listener="#{viewPersonal.update}" execute="@this" update="dataTable" ></p:ajax>-->
+            </p:menuitem>
+        </c:forEach>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+            <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda"  style="display:none" ajax="false" action="#{viewPersonal.buscar}" update="dataTable" />
+
+            <p:toolbar id="toolbar">
+                <f:facet name=""></f:facet>
+                <f:facet name="left">
+                    <h:outputFormat value="#{labels['dict.filtro']}:" /> <p:inputText value="#{viewPersonal.filtro.texto}"></p:inputText>
+                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" actionListener="#{viewPersonal.buscar()}" update="messages dataTable" />
+                   <!--<p:commandButton value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus" iconPos="top" />-->
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton value="#{labels['dict.nuevo']}"  icon="pi pi-file-o" iconPos="top"  actionListener="#{viewPersonal.nuevoPersonal()}" process="@this">
+                        <p:ajax event="dialogReturn" listener="#{viewPersonal.returnDialogo}" update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"  actionListener="#{viewPersonal.editarPersonal}" process="@form" update="messages">
+                        <p:ajax event="dialogReturn" listener="#{viewPersonal.returnDialogo}" update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"  action="#{viewPersonal.borrarPersonal}" process="@form" update="messages dataTable">
+                        <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"  action="#{viewPersonal.ayuda}" process="@this" update="messages" />
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable id="dataTable" value="#{viewPersonal.lazyModel}" var="personal"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="personalTable"
+                         rows="#{viewPersonal.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                         first="#{viewPersonal.filtro.paginaFirst}"
+                         paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                         paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         emptyMessage="#{labels['dict.noHayDatos']}"
+                         selectionMode="single" selection="#{viewPersonal.datoSeleccionado}" rowKey="#{personal.id}"
+                         reflow="true"
+                         sortBy="#{viewPersonal.filtro.orderBy}"
+                         sortOrder="#{viewPersonal.filtro.order}"
+                         style="min-height: 300px;"
+                >
+                <!--<p:ajax event="rowDblselect" listener="#{viewPersonal.consultarPersonal}"
+                        update="dataTable" /> -->
+                <p:ajax
+                        event="rowDblselect"
+                        oncomplete="triggerDblClick();"
+                        global="false" />
+                <f:facet name="{RowsPerPageLabel}">
+                    #{labels.dataTable_rowsPerPage}
+                </f:facet>
+                <p:column sortBy="#{personal.id}">
+                    <f:facet name="header">#{labels['dict.id']}</f:facet>
+                    <h:outputText value="#{personal.id}"/>
+                </p:column>
+                <p:column sortBy="#{personal.nombre}">
+                    <f:facet name="header">#{labels['dict.nombre']}</f:facet>
+                    <h:outputText value="#{personal.nombre}"/>
+                </p:column>
+                <p:column sortBy="#{personal.identificador}">
+                    <f:facet name="header">#{labels['dict.identificador']}</f:facet>
+                    <h:outputText value="#{personal.identificador}"/>
+                </p:column>
+                <p:column sortBy="#{personal.email}">
+                    <f:facet name="header">#{labels['dict.correo']}</f:facet>
+                    <h:outputText value="#{personal.email}"/>
+                </p:column>
+            </p:dataTable>
+
+            <h:outputScript >
+                function triggerDblClick() {
+                    myDoubleClickCommand();
+                    /*$('#form\\:btnConsultaHidden').click();*/
+                }
+            </h:outputScript>
+
+            <p:remoteCommand name="myDoubleClickCommand"
+                             widgetVar="myDoubleClickCommand"
+                             action="#{viewPersonal.consultarPersonal()}"
+                             autoRun="false"
+                             partialSubmit="true"
+                             process="@this" />
+            <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden" actionListener="#{viewPersonal.consultarPersonal}" process="@this" update="messages" style="display: none">
+                <p:ajax event="dialogReturn" listener="#{viewPersonal.returnDialogo}" update="messages dataTable"/>
+            </p:commandButton>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
