@@ -9,9 +9,9 @@ package es.caib.rolsac2.persistence.converter;
  */
 public interface Converter<E, D> {
 
-    D toDTO(E entity);
+    D createDTO(E entity);
 
-    E toEntity(D dto);
+    E createEntity(D dto);
 
-    void updateFromDTO(E entity, D dto);
+    void mergeEntity(E entity, D dto);
 }

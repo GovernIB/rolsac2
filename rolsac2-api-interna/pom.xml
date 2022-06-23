@@ -120,9 +120,7 @@
                         <configuration>
                             <application>es.caib.rolsac2.api.interna.JAXRSConfiguration</application>
                             <endpointClasses>
-                                <endpointClass>es.caib.rolsac2.api.interna.services.UnitatOrganicaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.interna.services.ProcedimentResource</endpointClass>
-                                
+                                <endpointClass>es.caib.rolsac2.api.interna.services.PersonalResource</endpointClass>
                             </endpointClasses>
                             <output>${project.build.directory}/openapi/openapi.json</output>
                             <info>

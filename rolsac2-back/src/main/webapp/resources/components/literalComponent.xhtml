@@ -1,0 +1,33 @@
+<ui:component
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:cc="http://java.sun.com/jsf/composite"
+>
+    <cc:interface componentType="literalComponent">
+        <cc:attribute name="value" type="es.caib.rolsac2.service.model.Literal" shortDescription="El literal." />
+        <cc:attribute name="ocultarTexto" type="boolean" shortDescription="Indica si hay que ocultar el texto o no. Valores posibles: true, false o null" />
+    </cc:interface>
+    <cc:implementation>
+        <span id="#{cc.clientId}" style="white-space:nowrap">
+            <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w85"  disabled="#{cc.isModoConsulta()}">
+                <p:ajax event="keyup" listener="#{cc.actualizarLiteral}" />
+            </p:inputText>
+           <!-- <p:inputText id="texto2" value="#{cc.value}" style="display:none" />-->
+            <p:inputText id="textoES" binding="#{cc.textoES}" style="display:none"  />
+            <p:inputText id="textoCA" binding="#{cc.textoCA}" style="display:none"  />
+            <p:inputText id="textoID" binding="#{cc.textoID}" style="display:none"  />
+            <p:inputText id="textoIdioma" binding="#{cc.textoIdioma}" style="display:none"  />
+            <p:commandButton action="#{cc.abrirVentana()}"
+                             icon="pi pi-tag"
+                             value=" "
+                             styleClass="w10 h25px"
+                             process="@this"
+            >
+                     <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"  update="texto"/>
+            </p:commandButton>
+        </span>
+    </cc:implementation>
+</ui:component>

@@ -1,0 +1,85 @@
+<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns="http://www.w3.org/1999/xhtml"
+>
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTipoBoletin.modoAcceso}"/>
+      <f:viewParam id="ID" name="ID" value="#{dialogTipoBoletin.id}"/>
+      <f:viewAction action="#{dialogTipoBoletin.load}"/>
+    </f:metadata>
+  </ui:define>
+
+
+  <ui:define name="pageTitleDialog">
+    <h:outputFormat value="Tipo Boletin"/>
+    <h:outputFormat value="- #{dialogTipoBoletin.data.identificador} " renderer="{!dialogTipoBoletin.isAlta()}"/>
+  </ui:define>
+
+
+  <ui:define name="contentDialog">
+    <p:growl id="messagesDialog"
+             globalOnly="false"
+             showDetail="true"
+             life="5000"
+             escape="false"/>
+
+
+    <p:panel>
+      <div class="row">
+
+        <div class="ui-g-12 ui-md-3 ui-lg-2">
+          <h:outputText value="#{labels['dialogTipoBoletin.identificador']}:" for="txtIdentificador"/>
+        </div>
+        <div class="ui-g-12 ui-md-9 ui-lg-4">
+          <p:inputText id="txtIdentificador" value="#{dialogTipoBoletin.data.identificador}" styleClass="w95"
+                       required="true" disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"/>
+        </div>
+
+        <div class="ui-g-12 ui-md-3 ui-lg-2">
+          <h:outputText value="#{labels['dialogTipoBoletin.nombre']}:" for="txtNombre"/>
+        </div>
+        <div class="ui-g-12 ui-md-9 ui-lg-4">
+          <p:inputText id="txtNombre" value="#{dialogTipoBoletin.data.nombre}" styleClass="w95" required="true"
+                       disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"/>
+        </div>
+
+        <div class="ui-g-12 ui-md-3 ui-lg-2">
+          <h:outputText value="#{labels['dialogTipoBoletin.url']}:" for="txtUrl"/>
+        </div>
+        <div class="ui-g-12 ui-md-9 ui-lg-4">
+          <p:inputText id="txtUrl" value="#{dialogTipoBoletin.data.url}" styleClass="w95" required="true"
+                       disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"/>
+        </div>
+
+      </div>
+
+
+    </p:panel>
+  </ui:define>
+
+
+
+  <ui:define name="contentFooterDialogRight">
+    <p:commandButton action="#{dialogTipoBoletin.ayuda}"
+                     icon="pi pi-info-circle" iconPos="top"
+                     value="#{labels['dict.ayuda']}"
+                     process="@this"/>
+    <p:commandButton action="#{dialogTipoBoletin.guardar}"
+                     value="#{labels['dict.guardar']}" update="messagesDialog"
+                     rendered="#{!dialogTipoBoletin.isModoConsulta()}"
+                     process="@all"/>
+    <p:commandButton action="#{dialogTipoBoletin.cerrar}"
+                     value="#{labels['dict.cerrar']}" update="messagesDialog"
+                     process="@all"/>
+
+  </ui:define>
+
+</ui:composition>
+</html>

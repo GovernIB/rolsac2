@@ -8,7 +8,7 @@
     <!-- Logo i nom aplicació -->
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mobil">
-            <li class="nav-item dropdown colorVerd">
+            <li class="nav-item dropdown colorRojo">
                 <a class="nav-link dropdown mobil" title="Unidades" href="#" id="unidades"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
@@ -26,7 +26,7 @@
                     </p:repeat>
                 </div>
             </li>
-            <li class="nav-item dropdown colorVerd">
+            <li class="nav-item dropdown colorRojo">
                 <a class="nav-link dropdown mobil" title="Unidades" href="#" id="perfiles"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
@@ -37,7 +37,7 @@
                 <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="perfiles">
                     <p:repeat value="#{sessionBean.perfiles}" var="perfil">
                         <p:commandLink styleClass="dropdown-item mobil" hreflang="#{perfil}"
-                                       action="#{sessionBean.reload()}"
+                                       action="#{sessionBean.reloadPerfil()}"
                                        value="#{labels['TypePerfiles.' += perfil.toString()]}"
                         >
                             <p:ajax listener="#{sessionBean.setPerfil(perfil)}" />
@@ -45,34 +45,34 @@
                     </p:repeat>
                 </div>
             </li>
-            <li class="nav-item dropdown colorVerd">
+            <li class="nav-item dropdown colorRojo">
                 <a class="nav-link dropdown mobil" title="#{labels['idioma_link']}" href="#" id="idiomas"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
                                           aria-hidden="true"></span>
-                    <span class="mb-0 float-right botoCurt">Configuración</span>
+                    <span class="mb-0 float-right botoCurt">#{labels['dict.configuracion']}</span>
                     <span class="oi oi-cog" title="#{labels['idioma_link']}" aria-hidden="true"></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="idiomas">
                     <p:link styleClass="dropdown-item mobil" outcome="/configuracio"
-                            title="#{labels.configuracio_link}">
-                                        <span class="oi oi-cog" title="#{labels.configuracio_link}"
-                                              aria-hidden="true"></span>
-                        <span class="mb-0 float-right botoCurt">Config.</span>
+                            title="{labels['dict.configuracion']}">
+                        <span class="mb-0 float-right botoCurt">#{labels['dict.configuracion']}</span>
                     </p:link>
                     <p:repeat value="#{applicationLocales.available}" var="locale">
                         <p:commandLink styleClass="dropdown-item mobil" hreflang="#{locale.toLanguageTag()}"
                                        action="#{sessionBean.reload()}"
-                                       value="#{labels['idioma_link_' += locale.toLanguageTag()]}">
-                            <p:ajax listener="#{sessionBean.setCurrent(locale)}" />
+                                       title="#{labels['dict.' += locale.toLanguageTag()]}"
+                                       rendered="#{sessionBean.lang != locale.toLanguageTag()}"
+                                       update="@form" execute="@form" render="@form"
+                                       >
+                            <span class="mb-0 float-right botoCurt">#{labels['dict.' += locale.toLanguageTag()]}</span>
+                            <p:ajax listener="#{sessionBean.setCurrent(locale)}" update="@form" execute="@form" render="@form"  />
                         </p:commandLink>
                     </p:repeat>
                     <p:commandLink action="#{logout.logout}"
                                    ajax="false" immediate="true" styleClass="dropdown-item mobil"
-                                   title="#{labels.sortir_link}">
-                                    <span class="oi oi-power-standby" title="#{labels.sortir_link}"
-                                          aria-hidden="true"></span>
-                        <span class="mb-0 float-right botoCurt">#{labels.sortir_link}</span>
+                                   title="#{labels['dict.salir']}">
+                        <span class="mb-0 float-right botoCurt">#{labels['dict.salir']}</span>
                     </p:commandLink>
                 </div>
             </li>

@@ -10,7 +10,7 @@ import java.util.Objects;
  * @author Indra
  */
 @Entity
-@SequenceGenerator(name = "personal-sequence", sequenceName = "RS2_PERSONAL_SEQ", allocationSize = 1)
+@SequenceGenerator(name = "personal-sequence", sequenceName = "RS2_PERSON_SEQ", allocationSize = 1)
 @Table(name = "RS2_PERSON",
         indexes = {
                 @Index(name = "RS2_PERSON_PK_I", columnList = "PERS_CODIGO")

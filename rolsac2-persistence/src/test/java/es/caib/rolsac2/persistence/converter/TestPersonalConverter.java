@@ -15,7 +15,7 @@ public class TestPersonalConverter {
         entity.setCargo("cargo");
         entity.setIdentificador("Identi");
 
-        PersonalDTO dto = converter.toDTO(entity);
+        PersonalDTO dto = converter.createDTO(entity);
 
         Assert.assertEquals(1L, (long) dto.getId());
         Assert.assertEquals("cargo", dto.getCargo());
@@ -29,9 +29,9 @@ public class TestPersonalConverter {
         dto.setId(1L);
         dto.setIdentificador("identif");
         dto.setCargo("cargo");
-        dto.setUnidadAdministrativa(2L);
+        dto.setIdUnidadAdministrativa(2L);
 
-        JPersonal entity = converter.toEntity(dto);
+        JPersonal entity = converter.createEntity(dto);
 
         Assert.assertEquals(1L, (long) entity.getId());
         Assert.assertEquals("cargo", entity.getCargo());

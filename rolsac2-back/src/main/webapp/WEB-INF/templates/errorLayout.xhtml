@@ -35,7 +35,7 @@ Plantilla per pàgines d'error.
         <header>
             <!-- Header -->
             <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark bg-aplicacio">
-                <ui:include src="/WEB-INF/includes/logo_nom.xhtml" />
+                <ui:include src="/WEB-INF/includes/header_logo_nombre.xhtml" />
             </nav>
             <!-- FI Header -->
         </header>
@@ -44,7 +44,7 @@ Plantilla per pàgines d'error.
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb" class="miga">
                 <p:breadCrumb styleClass="breadcrumb" homeDisplay="text">
-                    <p:menuitem value="#{labels.inici_link}" outcome="/index"/>
+                    <p:menuitem value="#{labels['dict.inicio']}" outcome="/index"/>
                 </p:breadCrumb>
             </nav>
             <!-- FI Breadcrumb -->

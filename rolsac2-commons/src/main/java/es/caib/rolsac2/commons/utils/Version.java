@@ -41,7 +41,7 @@ public class Version {
                 .format(BUILD_TIME_PATTERN);
         scmRevision = bundle.getString("scm.revision");
         jdkVersion = bundle.getString("jdk.version");
-        projectName = bundle.getString("project.name");
+        projectName = "ROLSAC2";// bundle.getString("project.name");
     }
 
     /**

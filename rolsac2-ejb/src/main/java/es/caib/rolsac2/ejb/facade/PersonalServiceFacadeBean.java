@@ -21,7 +21,6 @@ import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.*;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,8 +62,8 @@ public class PersonalServiceFacadeBean implements PersonalServiceFacade {
             throw new DatoDuplicadoException(dto.getId());
         }
 
-        JPersonal jpersonal = converter.toEntity(dto);
-        jpersonal.setUnidadAdministrativa(dto.getUnidadAdministrativa());
+        JPersonal jpersonal = converter.createEntity(dto);
+        jpersonal.setUnidadAdministrativa(dto.getIdUnidadAdministrativa());
         personalRepository.create(jpersonal);
         return jpersonal.getId();
     }
@@ -74,7 +73,7 @@ public class PersonalServiceFacadeBean implements PersonalServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(PersonalDTO dto) throws RecursoNoEncontradoException {
         JPersonal jpersonal = personalRepository.getReference(dto.getId());
-        converter.updateFromDTO(jpersonal, dto);
+        converter.mergeEntity(jpersonal, dto);
     }
 
     @Override
@@ -91,7 +90,7 @@ public class PersonalServiceFacadeBean implements PersonalServiceFacade {
     public PersonalDTO findById(Long id) {
 
         JPersonal jpersonal = personalRepository.getReference(id);
-        PersonalDTO personalDTO = converter.toDTO(jpersonal);
+        PersonalDTO personalDTO = converter.createDTO(jpersonal);
         return personalDTO;
     }
 
@@ -99,15 +98,13 @@ public class PersonalServiceFacadeBean implements PersonalServiceFacade {
     //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<PersonalGridDTO> findByFiltro(PersonalFiltro filtro) {
-        try {
-            List<PersonalGridDTO> items = personalRepository.findPagedByFiltro(filtro);
-            long total = personalRepository.countByFiltro(filtro);
-            return new Pagina<>(items, total);
-        } catch (Exception e) {
-            LOG.error("Error", e);
-            List<PersonalGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
-        }
+        List<PersonalGridDTO> items = personalRepository.findPagedByFiltro(filtro);
+        long total = personalRepository.countByFiltro(filtro);
+        return new Pagina<>(items, total);
+    }
+
+    @Override
+    public int countByFiltro(PersonalFiltro filtro) {
+        return (int) personalRepository.countByFiltro(filtro);
     }
 }

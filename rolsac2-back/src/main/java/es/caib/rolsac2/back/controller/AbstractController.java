@@ -19,6 +19,8 @@ public abstract class AbstractController {
     @Inject
     protected SessionBean sessionBean;
 
+    private String idioma;
+
     //@Inject
     //protected SecurityBean securityBean;
 
@@ -26,6 +28,12 @@ public abstract class AbstractController {
      * Modo de acceso
      **/
     private String modoAcceso;
+
+    public void setOpcion(String literalOpcion) {
+        ResourceBundle bundle = context.getApplication().getResourceBundle(context, "labels");
+        String texto = bundle.getString(literalOpcion);
+        sessionBean.setOpcion(texto);
+    }
 
     /**
      * Método para comprobar si tiene permisos para acceder a la ventana.
@@ -106,7 +114,7 @@ public abstract class AbstractController {
 
     public String getLiteral(String literal) {
         ResourceBundle labelsBundle = getBundle("labels");
-        return labelsBundle.getString("msg.actualitzaciocorrecta");
+        return labelsBundle.getString(literal);
     }
 
     protected void addGlobalMessage(String message) {
@@ -119,5 +127,17 @@ public abstract class AbstractController {
 
     public void ayuda() {
         UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "La sección de ayuda no está implementada");// UtilJSF.getLiteral("info.borrado.ok"));
+    }
+
+    protected void setearIdioma() {
+        idioma = sessionBean.getLang();
+    }
+
+    public String getIdioma() {
+        return idioma;
+    }
+
+    public void setIdioma(String idioma) {
+        this.idioma = idioma;
     }
 }

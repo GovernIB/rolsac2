@@ -33,6 +33,16 @@ public class Literal {
         super();
     }
 
+    public static Literal createInstance() {
+        Literal literal = new Literal();
+        List<Traduccion> trads = new ArrayList<>();
+        for (String idioma : Constantes.IDIOMAS) {
+            trads.add(new Traduccion(idioma, ""));
+        }
+        literal.setTraducciones(trads);
+        return literal;
+    }
+
     /**
      * Para obtener una traducción
      *

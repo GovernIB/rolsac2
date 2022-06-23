@@ -1,5 +1,6 @@
 package es.caib.rolsac2.back.utils;
 
+import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -67,7 +68,7 @@ public class UtilJSF {
         // Metemos en sessionbean un parámetro de seguridad para evitar que se
         // pueda cambiar el modo de acceso
         final String secOpenDialog = modoAcceso.toString() + "-" + idParam + "-" + System.currentTimeMillis();
-        //getSessionBean().getMochilaDatos().put(SEC_OPEN_DIALOG, secOpenDialog);
+        getSessionBean().getMochilaDatos().put(SEC_OPEN_DIALOG, secOpenDialog);
 
         // Abre dialogo
         PrimeFaces.current().dialog().openDynamic(dialog, options, paramsDialog);
@@ -181,6 +182,23 @@ public class UtilJSF {
 
     public static void closeDialog(DialogResult result) {
         PrimeFaces.current().dialog().closeDynamic(result);
+    }
+
+    public static SessionBean getSessionBean() {
+        return (SessionBean) FacesContext.getCurrentInstance().getApplication().evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{sessionBean}", SessionBean.class);
+
+    }
+
+    public static void anyadirMochila(String literal, Object value) {
+        getSessionBean().anyadirMochila(literal, value);
+    }
+
+    public static void vaciarMochila() {
+        getSessionBean().vaciarMochila();
+    }
+
+    public static Object getValorMochilaByKey(String literal) {
+        return getSessionBean().getValorMochilaByKey(literal);
     }
 
 }

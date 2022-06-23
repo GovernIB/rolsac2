@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.converter;
 import es.caib.rolsac2.persistence.model.JPersonal;
 import es.caib.rolsac2.service.model.PersonalDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 /**
@@ -17,13 +18,16 @@ public interface PersonalConverter extends Converter<JPersonal, PersonalDTO> {
     // passam de Entity a DTO ens interessa agafar la clau forana de l'unitatOrganica.
     //@Mapping(target = "idUnitat", source = "unitatOrganica.id")
     @Override
-    PersonalDTO toDTO(JPersonal entity);
+    @Mapping(target = "unidadAdministrativa", ignore = true)
+    PersonalDTO createDTO(JPersonal entity);
 
     //@Mapping(target = "unidadOrganica", ignore = true)
     @Override
-    JPersonal toEntity(PersonalDTO dto);
+    @Mapping(target = "unidadAdministrativa", ignore = true)
+    JPersonal createEntity(PersonalDTO dto);
 
     //@Mapping(target = "unidadOrganica", ignore = true)
     @Override
-    void updateFromDTO(@MappingTarget JPersonal entity, PersonalDTO dto);
+    @Mapping(target = "unidadAdministrativa", ignore = true)
+    void mergeEntity(@MappingTarget JPersonal entity, PersonalDTO dto);
 }

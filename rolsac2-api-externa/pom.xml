@@ -114,7 +114,7 @@
                         <configuration>
                             <application>es.caib.rolsac2.api.externa.JAXRSConfiguration</application>
                             <endpointClasses>
-                                <endpointClass>es.caib.rolsac2.api.externa.services.UnitatsResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.services.PersonalResource</endpointClass>
                             </endpointClasses>
                             <output>${project.build.directory}/openapi/openapi.json</output>
                             <info>

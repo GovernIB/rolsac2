@@ -28,6 +28,12 @@
             <base-name>back.LabelsBack</base-name>
             <var>labels</var>
         </resource-bundle>
+
+        <!-- Estas tres lineas son para poder abrir el open dialog -->
+        <action-listener>org.primefaces.application.DialogActionListener</action-listener>
+        <navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
+        <view-handler>org.primefaces.application.DialogViewHandler</view-handler>
+
     </application>
 
     <!--

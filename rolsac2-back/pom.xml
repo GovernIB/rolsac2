@@ -54,7 +54,8 @@
         </dependency>
         <dependency>
             <groupId>org.primefaces.themes</groupId>
-            <artifactId>bootstrap</artifactId>
+            <!--<artifactId>bootstrap</artifactId>-->
+            <artifactId>all-themes</artifactId>
         </dependency>
     </dependencies>
 

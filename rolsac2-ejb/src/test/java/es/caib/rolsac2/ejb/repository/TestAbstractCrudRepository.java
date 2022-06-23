@@ -1,5 +1,7 @@
 package es.caib.rolsac2.ejb.repository;
 
+import es.caib.rolsac2.persistence.repository.AbstractCrudRepository;
+import es.caib.rolsac2.persistence.repository.CrudRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,9 +22,10 @@ public class TestAbstractCrudRepository {
 
     @Before
     public void setup() {
-        AbstractCrudRepository<Object, Long> repositoryBean = new AbstractCrudRepository<>(Object.class) {};
+        AbstractCrudRepository<Object, Long> repositoryBean = new AbstractCrudRepository<>(Object.class) {
+        };
 
-        repositoryBean.entityManager = entityManager;
+        repositoryBean.setEntityManager(entityManager);
         repository = repositoryBean;
     }
 

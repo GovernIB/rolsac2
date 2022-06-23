@@ -1,0 +1,79 @@
+<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns="http://www.w3.org/1999/xhtml"
+>
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTipoSexo.modoAcceso}"/>
+      <f:viewParam id="ID" name="ID" value="#{dialogTipoSexo.id}"/>
+      <f:viewAction action="#{dialogTipoSexo.load}"/>
+    </f:metadata>
+  </ui:define>
+
+  <ui:define name="pageTitleDialog">
+    <h:outputFormat value="Detalle - #{labels['viewTipoSexo.titulo']} "/>
+  </ui:define>
+
+
+  <ui:define name="contentDialog">
+    <p:panel>
+      <p:growl id="messagesDialog"
+               globalOnly="false"
+               showDetail="true"
+               life="5000"
+               escape="false"/>
+
+      <div class="row">
+        <div class="ui-g-12 ui-md-3 ui-lg-2">
+          <h:outputText value="#{labels['dialogTipoSexo.identificador']}:" for="txtIdentificador"/>
+        </div>
+        <div class="ui-g-12 ui-md-9 ui-lg-4">
+          <p:inputText id="txtIdentificador" value="#{dialogTipoSexo.data.identificador}"
+                       styleClass="w95"
+                       required="true" disabled="#{dialogTipoSexo.isModoConsulta()}" maxlength="50"/>
+        </div>
+        <div class="ui-g-12 ui-md-3 ui-lg-2">
+          <h:outputText value="#{labels['dialogTipoSexo.descripcion']}:" for="inputDescripcion"/>
+        </div>
+
+        <div class="ui-g-12 ui-md-9 ui-lg-4">
+          <my:literalComponent id="inputDescripcion" value="#{dialogTipoSexo.data.descripcion}"
+                               idioma="#{dialogTipoSexo.idioma}"/>
+        </div>
+      </div>
+    </p:panel>
+  </ui:define>
+
+
+  <ui:define name="contentFooterDialogLeft">
+    <span class="pi pi-tag" style="margin-top:5px" />
+    <h:outputText value="Literal:" style="margin-right:4px;margin-top:5px;"  />
+    <p:selectOneMenu id="opcionIdioma" value="#{dialogTipoSexo.idioma}">
+      <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+      <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+      <p:ajax update="@form" process="@this"/>
+    </p:selectOneMenu>
+  </ui:define>
+  <ui:define name="contentFooterDialogRight">
+    <p:commandButton action="#{dialogTipoSexo.ayuda}"
+                     icon="pi pi-info-circle" iconPos="top"
+                     value="#{labels['dict.ayuda']}"
+                     process="@this"/>
+    <p:commandButton action="#{dialogTipoSexo.guardar}"
+                     value="#{labels['dict.guardar']}" update="messagesDialog"
+                     process="@all"/>
+    <p:commandButton action="#{dialogTipoSexo.cerrar}"
+                     value="#{labels['dict.cerrar']}" update="messagesDialog"
+                     process="@all"/>
+
+  </ui:define>
+
+</ui:composition>
+</html>

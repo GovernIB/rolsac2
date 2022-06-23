@@ -54,4 +54,8 @@ public abstract class AbstractCrudRepository<E, PK> implements CrudRepository<E,
     public E getReference(PK id) {
         return entityManager.getReference(entityClass, id);
     }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }

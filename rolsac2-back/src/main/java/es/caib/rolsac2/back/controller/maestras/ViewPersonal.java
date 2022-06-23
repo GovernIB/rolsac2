@@ -2,7 +2,6 @@ package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
-import es.caib.rolsac2.back.model.UnitatModel;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.PersonalServiceFacade;
 import es.caib.rolsac2.service.facade.TestServiceFacade;
@@ -27,13 +26,6 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.*;
 
-/**
- * Controlador per obtenir la vista dels procediments d'una unitat orgànica. El definim a l'scope de view perquè
- * a nivell de request es reconstruiria per cada petició AJAX, com ara amb els errors de validació.
- * Amb view es manté mentre no es canvii de vista.
- *
- * @author areus
- */
 @Named
 @ViewScoped
 public class ViewPersonal extends AbstractController implements Serializable {
@@ -42,8 +34,6 @@ public class ViewPersonal extends AbstractController implements Serializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(ViewPersonal.class);
 
-    @Inject
-    private UnitatModel unitat;
 
     /**
      * Model de dades emprat pel compoment dataTable de primefaces.
@@ -55,15 +45,9 @@ public class ViewPersonal extends AbstractController implements Serializable {
 
     @EJB
     TestServiceFacade testService;
-
-    /**
-     * Dato seleccionado
-     */
+ 
     private PersonalGridDTO datoSeleccionado;
-
-    /**
-     * Filtro
-     **/
+ 
     private PersonalFiltro filtro;
 
 
@@ -74,9 +58,6 @@ public class ViewPersonal extends AbstractController implements Serializable {
 
     // ACCIONS
 
-    /**
-     * Carrega la unitat orgànica i els procediments.
-     */
     public void load() {
         LOG.debug("load");
 
@@ -86,13 +67,8 @@ public class ViewPersonal extends AbstractController implements Serializable {
         filtro = new PersonalFiltro();
         filtro.setIdUA(sessionBean.getUnidadActiva().getId());//UtilJSF.getSessionUnidadActiva());
         filtro.setIdioma(sessionBean.getLang());//UtilJSF.getSessionLang());
+ 
 
-        LOG.error("Rol admin: " + this.isUserRoleRSCAdmin());
-        LOG.error("Rol user: " + this.isUserRoleRSCUser());
-        LOG.error("Rol user: " + this.isUserRoleRSCMentira());
-        LOG.error("Username: " + this.getUserName());
-
-        //Generamos una búsqueda
         buscar();
     }
 
@@ -174,7 +150,7 @@ public class ViewPersonal extends AbstractController implements Serializable {
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getId().toString());
         }
-        UtilJSF.openDialog("dialogPersonal", modoAcceso, params, true, 1050, 350);
+        
     }
 
 
@@ -201,32 +177,15 @@ public class ViewPersonal extends AbstractController implements Serializable {
         // Parametros
         String idParam = "";
         final Map<String, List<String>> paramsDialog = new HashMap<>();
-        paramsDialog.put(/*TypeParametroVentana.MODO_ACCESO.toString()*/"MODO_ACCESO", Collections.singletonList(/*modoAcceso.toString()*/"CONSULTA"));
-        /*if (params != null) {
-            for (final String key : params.keySet()) {
-                paramsDialog.put(key, Collections.singletonList(params.get(key)));
-                if (TypeParametroVentana.ID.toString().equals(key)) {
-                    idParam = params.get(key);
-                }
-            }
-        }*/
+      
 
-        // Metemos en sessionbean un parámetro de seguridad para evitar que se
-        // pueda cambiar el modo de acceso
+        
         final String secOpenDialog = "CONSULTA"/*modoAcceso.toString()*/ + "-" + idParam + "-" + System.currentTimeMillis();
-        //getSessionBean().getMochilaDatos().put(SEC_OPEN_DIALOG, secOpenDialog);
-
-        // Abre dialogo
+       
         PrimeFaces.current().dialog().openDynamic("dialogPersonal", options, paramsDialog);
     }
 
 
-    /**
-     * Esborra el procediment l'identificador indicat. El mètode retorna void perquè no cal navegació ja que
-     * l'eliminació es realitza des de la pàgina de llistat, i quedam en aquesta pàgina.
-     *
-     * @param id identificador de del procediment.
-     */
     public void delete(Long id) {
         LOG.debug("delete");
 

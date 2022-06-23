@@ -1,0 +1,117 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+>
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTipoTramitacion.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogTipoTramitacion.id}"/>
+            <f:viewAction action="#{dialogTipoTramitacion.load}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogTipoTramitacion.titulo']}"/>
+    </ui:define>
+
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="true"
+                 life="5000"
+                 escape="false"/>
+        <p:panel>
+            <div class="row">
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <h:outputText value="Id trámite:" for="txtTramiteId"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:inputText id="txtTramiteId" value="#{dialogTipoTramitacion.data.tramiteId}" styleClass="w95"
+                                 required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="50"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <h:outputText value="#{labels['viewTipoTramitacion.tramiteVersion']}:" for="txtTramiteVersion"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:inputNumber id="txtTramiteVersion" value="#{dialogTipoTramitacion.data.tramiteVersion}"
+                                   styleClass="w95"
+                                   required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" minValue="0"
+                                   maxValue="999" decimalPlaces="0"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <h:outputText value="#{labels['viewTipoTramitacion.tramiteParametros']}:" for="txtTramiteParametros"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:inputText id="txtTramiteParametros" value="#{dialogTipoTramitacion.data.tramiteParametros}"
+                                 styleClass="w95"
+                                 required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="500"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <h:outputText value="#{labels['viewTipoTramitacion.urlTramitacion']}:" for="txtTramitacionUrl"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:inputText id="txtTramitacionUrl" value="#{dialogTipoTramitacion.data.urlTramitacion}"
+                                 styleClass="w95"
+                                 required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="500"
+                                 validatorMessage="#{labels['viewTipoTramitacion.urlTramitacion.validation.message']}">
+                        <f:validateRegex
+                                pattern="^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$"/>
+                    </p:inputText>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.platTramitacion']}:"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:selectBooleanCheckbox value="#{dialogTipoTramitacion.data.tramitElectronica}"
+                                             itemLabel="#{labels['viewTipoTramitacion.tramitElectronica']}"
+                                             disabled="#{dialogTipoTramitacion.isModoConsulta()}"/>
+
+                    <p:selectBooleanCheckbox value="#{dialogTipoTramitacion.data.tramitPresencial}"
+                                             itemLabel="#{labels['viewTipoTramitacion.tramitPresencial']}"
+                                             disabled="#{dialogTipoTramitacion.isModoConsulta()}"/>
+                </div>
+
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.platTramitacion']}:"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:selectOneMenu id="txtCodPlatTramitacion" required="true" value="#{dialogTipoTramitacion.data.codPlatTramitacion}"
+                                     converter="#{platTramitElectronicaConverter}"
+                                     styleClass="w95" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
+                        <f:selectItem itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}" itemValue="#{null}" id="seleccione"/>
+                        <f:selectItems value="#{dialogTipoTramitacion.plataformasTramiteList}" var="plataforma"
+                                       itemLabel="#{plataforma.descripcion}" itemValue="#{plataforma}"/>
+                    </p:selectOneMenu>
+                </div>
+            </div>
+        </p:panel>
+    </ui:define>
+
+
+
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogTipoTramitacion.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogTipoTramitacion.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         process="@all"/>
+        <p:commandButton action="#{dialogTipoTramitacion.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all"/>
+    </ui:define>
+
+</ui:composition>
+</html>

@@ -141,7 +141,8 @@
             </dependency>
             <dependency>
                 <groupId>org.primefaces.themes</groupId>
-                <artifactId>bootstrap</artifactId>
+                <!--<artifactId>bootstrap</artifactId>-->
+                <artifactId>all-themes</artifactId>
                 <version>${primefaces.theme.version}</version>
             </dependency>
             <dependency>

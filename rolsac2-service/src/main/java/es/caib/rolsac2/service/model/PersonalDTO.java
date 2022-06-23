@@ -21,7 +21,8 @@ public class PersonalDTO {
     private String funciones;
     private String cargo;
     private String email;
-    private Long unidadAdministrativa;
+    private Long idUnidadAdministrativa;
+    private UnidadAdministrativaDTO unidadAdministrativa;
 
     /**
      * Telefono Fijo
@@ -49,7 +50,7 @@ public class PersonalDTO {
     public PersonalDTO(Long id, String nombre, Long idUnitat) {
         this.id = id;
         this.nombre = nombre;
-        this.unidadAdministrativa = idUnitat;
+        this.idUnidadAdministrativa = idUnitat;
     }
 
     public Long getId() {
@@ -100,12 +101,12 @@ public class PersonalDTO {
         this.email = email;
     }
 
-    public Long getUnidadAdministrativa() {
-        return unidadAdministrativa;
+    public Long getIdUnidadAdministrativa() {
+        return idUnidadAdministrativa;
     }
 
-    public void setUnidadAdministrativa(Long unidadAdministrativa) {
-        this.unidadAdministrativa = unidadAdministrativa;
+    public void setIdUnidadAdministrativa(Long idUnidadAdministrativa) {
+        this.idUnidadAdministrativa = idUnidadAdministrativa;
     }
 
     public String getTelefonoFijo() {
@@ -140,12 +141,20 @@ public class PersonalDTO {
         this.telefonoExteriorMovil = telefonoExteriorMovil;
     }
 
+    public UnidadAdministrativaDTO getUnidadAdministrativa() {
+        return unidadAdministrativa;
+    }
+
+    public void setUnidadAdministrativa(UnidadAdministrativaDTO unidadAdministrativa) {
+        this.unidadAdministrativa = unidadAdministrativa;
+    }
+
     @Override
     public String toString() {
         return "PersonalDTO{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
-                ", idUnitat=" + unidadAdministrativa +
+                ", idUnitat=" + idUnidadAdministrativa +
                 '}';
     }
 }

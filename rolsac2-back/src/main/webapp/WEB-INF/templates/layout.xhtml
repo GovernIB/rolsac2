@@ -34,7 +34,7 @@ Plantilla.
         -->
         <h:outputStylesheet name="css/bootstrap.min.css" />
         <h:outputStylesheet name="css/open-iconic-bootstrap.css" />
-        <h:outputStylesheet name="css/stylesNou.css" />
+        <h:outputStylesheet name="css/styles.css" />
         <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
 
         <h:form prependId="false">
@@ -64,123 +64,17 @@ Plantilla.
 
         <h:form>
             <p:confirmDialog global="true">
-                <p:commandButton value="#{labels.button_si}" type="button" styleClass="ui-confirmdialog-yes"
+                <p:commandButton value="#{labels['dict.si']}" type="button" styleClass="ui-confirmdialog-yes"
                                  icon="ui-icon-check"/>
-                <p:commandButton value="#{labels.button_no}" type="button" styleClass="ui-confirmdialog-no"
+                <p:commandButton value="#{labels['dict.no']}" type="button" styleClass="ui-confirmdialog-no"
                                  icon="ui-icon-close"/>
             </p:confirmDialog>
 
-            <!-- Breadcrumb -->
-            <p:toolbar id="toolbar">
-
-                <f:facet name="left">
-                    <nav aria-label="breadcrumb" class="miga" style="width:70%">
-                        <p:breadCrumb id="migaPan" styleClass="breadcrumb" homeDisplay="text" style="background-image: none !important;background: transparent;  border: none;">
-                            <p:menuitem value="#{labels.inici_link}" outcome="/index"/>
-                            <ui:insert name="breadcrumb"/>
-                        </p:breadCrumb>
-                    </nav>
-                </f:facet>
-                <f:facet name="right">
-
-                    <div style="width: 200px; height: 40px">
-                        <ul class="colorGris navbar-nav mobilClaro">
-                            <li class="nav-item dropdown "  style="z-index:2 !important;" >
-                                <a class="dropdown mobilClaro" title="Unidades" href="#" id="unidades"
-                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
-                                              aria-hidden="true"></span>
-                                    <span class="mb-0 float-right botoCurt">Opciones</span>
-                                    <span class="oi oi-menu visibleLG" title="#{labels['idioma_link']}" aria-hidden="true"></span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="unidades">
-                                    <c:choose>
-                                        <c:when test="#{sessionBean.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR}">
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/superadministrador/viewEntidades.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right ">Adm. entidades</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/superadministrador/viewPropiedadesGlobales.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right ">Prop. globales</span>
-                                            </p:link>
-                                        </c:when>
-                                        <c:when test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD }">
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/entidades/viewConfiguracionEntidad.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right ">Config. entidad</span>
-                                            </p:link>
-                                            <!-- Las tablas maeastras de color amarillo -->
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/tipo/viewTipoAfeccion.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right ">Tipo afección</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/tipo/viewTipoNormativa.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right ">Tipo normativa</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/tipo/viewTipoSexo.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right ">Tipo Sexo</span>
-                                            </p:link>
-                                            <!-- SIA , SOLR e indexacion, ver rolsac1 -->
-                                            <!--
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="entidades/viewMantenimientoProcesos.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right botoCurt">Manten. procesos</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="entidades/viewRolesPermisos.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right botoCurt">Gestión permisos</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="entidades/viewPlugins.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right botoCurt">Plugins</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/monitorizacion/viewAvisos.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right botoCurt">Avisos y alertas</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/monitorizacion/viewEstadisticas.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right botoCurt">Estadísticas</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/monitorizacion/viewAcontecimientos.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right botoCurt">Acontecimientos</span>
-                                            </p:link> -->
-                                        </c:when>
-                                        <c:when test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS}">
-
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/viewPersonal.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right botoCurt">Personal</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/viewFichas.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right botoCurt">Fichas</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/viewNormativas.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right botoCurt">Normativas</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/viewProcedimientos.xhtml"
-                                                    title="#{labels.configuracio_link}">
-                                                <span class="mb-0 float-right botoCurt">Procedimientos</span>
-                                            </p:link>
-                                        </c:when>
-                                    </c:choose>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </f:facet>
-            </p:toolbar>
-            <!-- FI Breadcrumb -->
+            <ui:include src="/WEB-INF/includes/header_breadcrumb.xhtml" />
         </h:form>
 
         <!-- Content -->
-        <div class="p-3 aplicacio contenido">
+        <div class="aplicacio contenido">
             <div class="bg-white rounded box-shadow">
                 <!-- Contingut -->
                 <div class="card mb-12 border-0">

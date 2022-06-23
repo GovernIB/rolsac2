@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+>
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
 -->
@@ -12,12 +12,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="metadata">
         <f:metadata>
             <!--<f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />-->
-            <f:viewAction action="#{viewPersonal.load}" />
+            <f:viewAction action="#{viewTipoSexo.load}"/>
         </f:metadata>
     </ui:define>
 
     <ui:define name="pageTitle">
-        Tipos de sexo
+        <h:outputFormat value="#{labels['viewTipoSexo.titulo']}"/>
     </ui:define>
 
     <ui:define name="breadcrumb">
@@ -29,7 +29,102 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="content">
         <h:form>
-             View Tipo Sexo
+            <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
+                             action="#{viewTipoSexo.buscar}" update="dataTable"/>
+
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                     widgetVar="panel" collapsed="true">
+                <f:facet name="header">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputFormat value="#{labels['dict.filtro']}:"  styleClass="mr-2"/>
+                            <p:inputText value="#{viewTipoSexo.filtro.texto}" styleClass="mr-2"/>
+                            <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
+                                             update="messages dataTable" actionListener="#{viewTipoSexo.buscar}"
+                                             process="@form" styleClass="mr-2"/>
+                            <!-- NO ES NECESARIO LA BUSQ. AVANZADA <p:commandButton type="button" value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus" iconPos="top" /> -->
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" styleClass="mr-2"
+                                             iconPos="top" actionListener="#{viewTipoSexo.nuevoTipoSexo()}"
+                                             process="@this">
+                                <p:ajax event="dialogReturn" listener="#{viewTipoSexo.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
+                                             iconPos="top" actionListener="#{viewTipoSexo.editarTipoSexo}"
+                                             process="@form" update="messages">
+                                <p:ajax event="dialogReturn" listener="#{viewTipoSexo.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" styleClass="mr-2"
+                                             iconPos="top" action="#{viewTipoSexo.borrarTipoSexo}" process="@form"
+                                             update="messages dataTable">
+                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                             action="#{viewTipoSexo.ayuda}" process="@this" update="messages"/>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:panel>
+            <p:dataTable id="dataTable" value="#{viewTipoSexo.lazyModel}" var="tipoAfectacion"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="tipoAfectacionTable"
+                         rows="#{viewTipoSexo.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                         first="#{viewTipoSexo.filtro.paginaFirst}"
+                         paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                         paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         emptyMessage="#{labels['dict.noHayDatos']}"
+                         selectionMode="single" selection="#{viewTipoSexo.datoSeleccionado}"
+                         rowKey="#{tipoAfectacion.id}"
+                         reflow="true"
+                         sortBy="#{viewTipoSexo.filtro.orderBy}"
+                         sortOrder="#{viewTipoSexo.filtro.order}"
+                         style="min-height: 300px;"
+            >
+                <!--<p:ajax event="rowDblselect" listener="#{viewPersonal.consultarPersonal}"
+                        update="dataTable" /> -->
+                <p:ajax
+                  event="rowDblselect"
+                  oncomplete="triggerDblClick();"
+                  global="false"/>
+                <f:facet name="{RowsPerPageLabel}">
+                    #{labels.dataTable_rowsPerPage}
+                </f:facet>
+                <p:column sortBy="#{tipoAfectacion.id}">
+                    <f:facet name="header">#{labels['dict.id']}</f:facet>
+                    <h:outputText value="#{tipoAfectacion.id}"/>
+                </p:column>
+                <p:column sortBy="#{tipoAfectacion.identificador}">
+                    <f:facet name="header">#{labels['dict.identificador']}</f:facet>
+                    <h:outputText value="#{tipoAfectacion.identificador}"/>
+                </p:column>
+                <p:column sortBy="#{tipoAfectacion.descripcion}" styleClass="overflow-datagrid-cell">
+                    <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
+                    <h:outputText value="#{tipoAfectacion.descripcion.getTraduccion(sessionBean.lang)}"/>
+                </p:column>
+            </p:dataTable>
+
+            <h:outputScript>
+                function triggerDblClick() {
+                myDoubleClickCommand();
+                /*$('#form\\:btnConsultaHidden').click();*/
+                }
+            </h:outputScript>
+
+            <p:remoteCommand name="myDoubleClickCommand"
+                             widgetVar="myDoubleClickCommand"
+                             action="#{viewTipoSexo.consultarTipoSexo()}"
+                             autoRun="false"
+                             partialSubmit="true"
+                             process="@this"/>
+            <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
+                             actionListener="#{viewTipoSexo.consultarTipoSexo}" process="@this" update="messages"
+                             style="display: none">
+                <p:ajax event="dialogReturn" listener="#{viewTipoSexo.returnDialogo}" update="messages dataTable"/>
+            </p:commandButton>
         </h:form>
     </ui:define>
 </ui:composition>

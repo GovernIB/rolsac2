@@ -31,10 +31,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </c:forEach>
     </ui:define>
 
-    <ui:define name="content">
-        <h:form>
-             View conf. entidad
-        </h:form>
-    </ui:define>
+            <ui:define name="content">
+            <h:form>
+            <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
+                             action="#{viewConfiguracionesGlobales.buscar}" update="dataTable"/>
+
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
+            <f:facet name="header">
+                <p style="margin:10px">VIEW CONFIGURACION ENTIDAD</p>
+            </f:facet>
+            </p:panel>
+            </h:form>
+            </ui:define>
 </ui:composition>
 </html>

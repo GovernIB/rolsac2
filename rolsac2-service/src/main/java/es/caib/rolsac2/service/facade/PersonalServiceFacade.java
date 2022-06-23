@@ -55,4 +55,11 @@ public interface PersonalServiceFacade {
      */
     Pagina<PersonalGridDTO> findByFiltro(PersonalFiltro filtro);
 
+    /**
+     * Devuelve el total de personal relacionado con los parámetros del filtro.
+     *
+     * @param filtro
+     * @return
+     */
+    int countByFiltro(PersonalFiltro filtro);
 }

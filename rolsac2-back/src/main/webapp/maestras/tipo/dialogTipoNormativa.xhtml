@@ -1,0 +1,96 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:t="http://back.rolsac2.caib.es/tags"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+>
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTipoNormativa.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogTipoNormativa.id}"/>
+            <f:viewAction action="#{dialogTipoNormativa.load}"/>
+        </f:metadata>
+    </ui:define>
+
+
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dict.detalle']} - #{dialogTipoNormativa.data.identificador} "
+                        rendered="#{!dialogTipoNormativa.isModoAlta()}"/>
+        <h:outputFormat value="Nuevo Tipo Normativa"
+                        rendered="#{dialogTipoNormativa.isModoAlta()}"/>
+    </ui:define>
+
+
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="true"
+                 life="5000"
+                 escape="false"/>
+
+        <p:panel>
+            <div class="row">
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <h:outputText value="#{labels['dict.id']}:" for="txtNombre"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:inputText id="txtNombre" value="#{dialogTipoNormativa.data.id}" styleClass="w95"
+                                 required="false" disabled="true"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <h:outputText value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:inputText id="txtIdentificador" value="#{dialogTipoNormativa.data.identificador}"
+                                 styleClass="w95" required="true"
+                                 disabled="#{dialogTipoNormativa.isModoConsulta()}" maxlength="50"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <h:outputText value="#{labels['dict.descripcion']}: #{dialogTipoNormativa.idioma}"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <my:literalComponent  id="inputDescripcion" value="#{dialogTipoNormativa.data.descripcion}"
+                                          idioma="#{dialogTipoNormativa.idioma}"  />
+                </div>
+            </div>
+        </p:panel>
+
+
+    </ui:define>
+
+
+    <ui:define name="contentFooterDialogLeft">
+        <span class="pi pi-tag" style="margin-top:5px" />
+        <h:outputText value="Literal:" style="margin-right:4px;margin-top:5px;"  />
+        <p:selectOneMenu id="opcionIdioma" value="#{dialogTipoNormativa.idioma}">
+            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+            <p:ajax update="@form" process="@this"/>
+        </p:selectOneMenu>
+    </ui:define>
+
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogTipoNormativa.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogTipoNormativa.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         process="@all"/>
+        <p:commandButton action="#{dialogTipoNormativa.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this"/>
+
+    </ui:define>
+
+</ui:composition>
+</html>

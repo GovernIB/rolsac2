@@ -56,6 +56,7 @@ public class SessionBean implements Serializable {
      **/
     private String lang;
 
+
     /**
      * Perfil activo del usuario
      **/
@@ -66,11 +67,16 @@ public class SessionBean implements Serializable {
     private List<TypePerfiles> perfiles;
 
     /**
+     * Opcion seleccionada
+     **/
+    private String opcion = "dict.opcion";
+
+    /**
      * Inicializacion de los datos de usuario
      */
     @PostConstruct
     private void init() {
-        LOG.error("Inicialitzant locale de l'usuari");
+        LOG.info("Inicialitzant locale de l'usuari");
         Application app = context.getApplication();
         current = app.getViewHandler().calculateLocale(context);
         lang = current.getDisplayLanguage().contains("ca") ? "ca" : "es";
@@ -78,6 +84,7 @@ public class SessionBean implements Serializable {
         // inicializamos mochila
         mochilaDatos = new HashMap<>();
 
+        opcion = "dict.opcion";
         cargarDatosMockup();
     }
 
@@ -91,8 +98,8 @@ public class SessionBean implements Serializable {
         padre.setId(1l);
         Literal literalPadre = new Literal();
         List<Traduccion> traduccionesPadre = new ArrayList<>();
-        traduccionesPadre.add(new Traduccion("es", "Govern de les illes Balears"));
-        traduccionesPadre.add(new Traduccion("ca", "Govern de les illes Balears"));
+        traduccionesPadre.add(new Traduccion("es", "GOIB"));
+        traduccionesPadre.add(new Traduccion("ca", "GOIB"));
         literalPadre.setTraducciones(traduccionesPadre);
         padre.setNombre(literalPadre);
 
@@ -198,12 +205,44 @@ public class SessionBean implements Serializable {
                 .add("location.replace(location)");
     }
 
+    // Mètodes
+    public void reloadPerfil() {
+        String rolsac2back = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+        switch (this.perfil) {
+            case ADMINISTRADOR_CONTENIDOS:
+                opcion = "viewFichas.titulo";
+                context.getPartialViewContext().getEvalScripts()
+                        .add("location.replace('" + rolsac2back + "/maestras/viewFichas.xhtml')");
+                break;
+            case ADMINISTRADOR_ENTIDAD:
+                opcion = "viewConfiguracionEntidad.titulo";
+                context.getPartialViewContext().getEvalScripts()
+                        .add("location.replace('" + rolsac2back + "/entidades/viewConfiguracionEntidad.xhtml')");
+                break;
+            case GESTOR:
+                context.getPartialViewContext().getEvalScripts()
+                        .add("location.replace(location)");
+                break;
+            case INFORMADOR:
+                context.getPartialViewContext().getEvalScripts()
+                        .add("location.replace(location)");
+                break;
+            case SUPER_ADMINISTRADOR:
+                opcion = "viewTipoEntidades.titulo";
+                context.getPartialViewContext().getEvalScripts()
+                        .add("location.replace('" + rolsac2back + "/superadministrador/viewEntidades.xhtml')");
+                break;
+        }
+
+    }
+
     public Locale getCurrent() {
         return current;
     }
 
     public void setCurrent(Locale current) {
         this.current = current;
+        this.lang = current.getDisplayLanguage().contains("ca") ? "ca" : "es";
     }
 
     public UnidadAdministrativaDTO getUnidad() {
@@ -260,5 +299,32 @@ public class SessionBean implements Serializable {
 
     public void setMochilaDatos(Map<String, Object> mochilaDatos) {
         this.mochilaDatos = mochilaDatos;
+    }
+
+    public void anyadirMochila(String key, Object value) {
+        if (this.mochilaDatos == null) {
+            this.mochilaDatos = new HashMap<>();
+        }
+        this.mochilaDatos.put(key, value);
+    }
+
+    public Object getValorMochilaByKey(String key) {
+        return this.mochilaDatos == null ? null : this.mochilaDatos.get(key);
+    }
+
+    public void vaciarMochila() {
+        this.mochilaDatos = new HashMap<>();
+    }
+
+    public String getOpcion() {
+        return opcion;
+    }
+
+    public void setOpcion(String opcion) {
+        this.opcion = opcion;
+    }
+
+    public void setearOpcion() {
+        this.opcion = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("opcion");
     }
 }
