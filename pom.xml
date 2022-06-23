@@ -44,6 +44,7 @@
     </properties>
     <dependencyManagement>
         <dependencies>
+        
             <!-- Dependències internes -->
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
