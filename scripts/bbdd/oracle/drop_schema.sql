@@ -1,8 +1,10 @@
-/** select 'drop table ', table_name, 'cascade constraints;' from user_tables; **/
-drop table 	RS2_UNASEC	cascade constraints;
-drop table 	RS2_UNIADM	cascade constraints;
-drop table 	RS2_USER	cascade constraints;
-drop table 	RS2_USERUA	cascade constraints;
+/**
+ * sobre ROLSAC2
+ * select 'drop table ', table_name, 'cascade constraints;' from user_tables order by table_name
+ * select 'drop sequence', sequence_name, ' ;' from user_sequences order by sequence_name
+ * Sobre WWW_ROLSAC2
+ * select 'drop synonym', synonym_name, ' ;' from user_synonyms order by synonym_name
+ **/
 drop table 	RS2_AFECTA	cascade constraints;
 drop table 	RS2_BOLETI	cascade constraints;
 drop table 	RS2_CNFGLO	cascade constraints;
@@ -49,6 +51,41 @@ drop table 	RS2_TIPOUNA	cascade constraints;
 drop table 	RS2_TIPOVIA	cascade constraints;
 drop table 	RS2_TRADOPR	cascade constraints;
 drop table 	RS2_TRAEDIF	cascade constraints;
+drop table 	RS2_TRAENT	cascade constraints;
+drop table 	RS2_TRAFCDO	cascade constraints;
+drop table 	RS2_TRAFCEN	cascade constraints;
+drop table 	RS2_TRAFIC	cascade constraints;
+drop table 	RS2_TRANORM	cascade constraints;
+drop table 	RS2_TRAPRTA	cascade constraints;
+drop table 	RS2_TRAPRWF	cascade constraints;
+drop table 	RS2_TRASECC	cascade constraints;
+drop table 	RS2_TRATEMA	cascade constraints;
+drop table 	RS2_TRATPAN	cascade constraints;
+drop table 	RS2_TRATPFI	cascade constraints;
+drop table 	RS2_TRATPLE	cascade constraints;
+drop table 	RS2_TRATPME	cascade constraints;
+drop table 	RS2_TRATPMF	cascade constraints;
+drop table 	RS2_TRATPMS	cascade constraints;
+drop table 	RS2_TRATPMU	cascade constraints;
+drop table 	RS2_TRATPNO	cascade constraints;
+drop table 	RS2_TRATPPO	cascade constraints;
+drop table 	RS2_TRATPSA	cascade constraints;
+drop table 	RS2_TRATPSX	cascade constraints;
+drop table 	RS2_TRATPUA	cascade constraints;
+drop table 	RS2_TRATPVI	cascade constraints;
+drop table 	RS2_TRAUNAD	cascade constraints;
+drop table 	RS2_TRMPRE	cascade constraints;
+drop table 	RS2_TRMSOL	cascade constraints;
+drop table 	RS2_UADNOR	cascade constraints;
+drop table 	RS2_UNAAUDIT	cascade constraints;
+drop table 	RS2_UNAEDI	cascade constraints;
+drop table 	RS2_UNAEVO	cascade constraints;
+drop table 	RS2_UNAHIS	cascade constraints;
+drop table 	RS2_UNAMED	cascade constraints;
+drop table 	RS2_UNASEC	cascade constraints;
+drop table 	RS2_UNIADM	cascade constraints;
+drop table 	RS2_USER	cascade constraints;
+drop table 	RS2_USERUA	cascade constraints;
 
 drop sequence RS2_AFECTA_SEQ;
 drop sequence RS2_BOLETI_SEQ;
