@@ -67,6 +67,12 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                    <webResources>
+                        <webResource>
+                            <directory>src\main\jboss\${webXml.loginConfig.authMethod}</directory>
+                            <targetPath>/WEB-INF</targetPath>
+                        </webResource>
+                    </webResources>
                 </configuration>
             </plugin>
         </plugins>
