@@ -1,8 +1,9 @@
 package es.caib.rolsac2.back.controller;
 
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
+import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
+import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +14,18 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 
 /**
  * Bean per mantener todos los datos importantes de session. En resumen:
  * <ul>
- *     <li>Usuario</li>
- *     <li>Permisos</li>
- *     <li>UA del usuario</li>
- *     <li>Idioma</li>
+ * <li>Usuario</li>
+ * <li>Permisos</li>
+ * <li>UA del usuario</li>
+ * <li>Idioma</li>
  * </ul>
  *
  * @author Indra
@@ -38,11 +41,28 @@ public class SessionBean implements Serializable {
     @Inject
     private FacesContext context;
 
+    @Inject
+    private AdministracionEntServiceFacade administracionEntServiceFacade;
+
+    @Inject
+    private AdministracionSupServiceFacade entidadservice;
+    @Inject
+    private UnidadAdministrativaServiceFacade uaservice;
+
     private UnidadAdministrativaDTO unidad;
 
-    private UnidadAdministrativaDTO unidadActiva;
 
+    @Inject
+    private AdministracionSupServiceFacade administracionSupServiceFacade;
+    private UnidadAdministrativaDTO unidadActiva;
     private List<UnidadAdministrativaDTO> unidades;
+
+
+    /**
+     * Entidades
+     **/
+    private EntidadDTO entidad;
+    private List<EntidadDTO> entidades;
 
     private Map<String, Object> mochilaDatos;
 
@@ -85,59 +105,66 @@ public class SessionBean implements Serializable {
         mochilaDatos = new HashMap<>();
 
         opcion = "dict.opcion";
-        cargarDatosMockup();
+        // cargarDatosMockup();
+        // cargarDatos2();
+        cargarDatos();
     }
 
     public boolean isPerfil(TypePerfiles typePerfil) {
         return perfil != null && perfil == typePerfil;
     }
 
-    private void cargarDatosMockup() {
-        //Obtenemos la UA del usuario (mockup)
-        UnidadAdministrativaDTO padre = new UnidadAdministrativaDTO();
-        padre.setId(1l);
-        Literal literalPadre = new Literal();
-        List<Traduccion> traduccionesPadre = new ArrayList<>();
-        traduccionesPadre.add(new Traduccion("es", "GOIB"));
-        traduccionesPadre.add(new Traduccion("ca", "GOIB"));
-        literalPadre.setTraducciones(traduccionesPadre);
-        padre.setNombre(literalPadre);
+    private String getUsuarioMockup() {
+        String ruta = System.getProperty("es.caib.rolsac2.properties", null);
+        if (ruta == null || ruta.isEmpty()) {
+            return null;
+        }
 
-        UnidadAdministrativaDTO hijo = new UnidadAdministrativaDTO();
-        hijo.setId(2l);
-        Literal literalHijo = new Literal();
-        List<Traduccion> traduccionesHijo = new ArrayList<>();
-        traduccionesHijo.add(new Traduccion("es", "Conselleria de educación"));
-        traduccionesHijo.add(new Traduccion("ca", "Conselleria d'educació"));
-        literalHijo.setTraducciones(traduccionesHijo);
-        hijo.setNombre(literalHijo);
-        hijo.setPadre(padre);
+        try (InputStream input = new FileInputStream(ruta)) {
 
-        UnidadAdministrativaDTO nieto = new UnidadAdministrativaDTO();
-        nieto.setId(3l);
-        Literal literalNieto = new Literal();
-        List<Traduccion> traduccionesNieto = new ArrayList<>();
-        traduccionesNieto.add(new Traduccion("es", "Secretaría de educación"));
-        traduccionesNieto.add(new Traduccion("ca", "Secretaria d'educació"));
-        literalNieto.setTraducciones(traduccionesNieto);
-        nieto.setNombre(literalNieto);
-        nieto.setPadre(hijo);
+            Properties prop = new Properties();
+            prop.load(input);
+            String usuario = prop.getProperty("mockup.sesion.usuario");
+            return usuario;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
-        unidad = padre;
-        unidadActiva = nieto;
-        unidades = new ArrayList<>();
-        unidades.add(unidad);
-        //Ayto Baleares
-        UnidadAdministrativaDTO uaAyto = new UnidadAdministrativaDTO();
-        uaAyto.setId(4l);
-        Literal literaluaAyto = new Literal();
-        List<Traduccion> traduccionesuaAyto = new ArrayList<>();
-        traduccionesuaAyto.add(new Traduccion("es", "Ayto. Mallorca"));
-        traduccionesuaAyto.add(new Traduccion("ca", "Ajunt. Mallorca"));
-        literaluaAyto.setTraducciones(traduccionesuaAyto);
-        uaAyto.setNombre(literaluaAyto);
-        uaAyto.setPadre(null);
-        unidades.add(uaAyto);
+
+    private void cargarDatos() {
+        String idUsuario = getUsuarioMockup();
+        Long lUsuario = 1l;
+        if (idUsuario != null && !idUsuario.isEmpty()) {
+            lUsuario = Long.valueOf(idUsuario);
+        }
+        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioById(lUsuario);
+
+        if (usuario.getEntidad() != null) {
+            entidades = new ArrayList<>();
+            entidad = usuario.getEntidad();
+            if (Boolean.TRUE.equals(entidad.getActiva())) {
+                entidades.add(entidad);
+            }
+        }
+
+        if (usuario.getUsuarioUnidadAdministrativa() != null) {
+            unidades = new ArrayList<>();
+
+            for (UsuarioUnidadAdministrativaDTO usuarioUnidadAdministrativa : usuario
+                    .getUsuarioUnidadAdministrativa()) {
+                UnidadAdministrativaDTO ua = usuarioUnidadAdministrativa.getUnidadAdministrativa();
+                if (Boolean.TRUE.equals(entidad.getActiva()) && ua.getEntidad().getCodigo().equals(entidad.getCodigo())) {
+                    unidades.add(usuarioUnidadAdministrativa.getUnidadAdministrativa());
+                }
+            }
+        }
+
+
+        if (unidad == null || !unidades.isEmpty()) {
+            unidad = unidades.get(0);
+            unidadActiva = unidades.get(0);
+        }
 
         perfil = TypePerfiles.ADMINISTRADOR_CONTENIDOS;
         perfiles = new ArrayList<TypePerfiles>();
@@ -148,21 +175,134 @@ public class SessionBean implements Serializable {
         perfiles.add(TypePerfiles.INFORMADOR);
     }
 
+    private void cargarDatos2() {
+        try {
+            cargarDatosMockupPerfiles();
+            UnidadAdministrativaDTO nieto = uaservice.findById(33l);
+            unidadActiva = nieto;
+            if (nieto == null) {
+                cargarDatosMockup();
+                cargarDatosMuckupEntidad();
+            } else {
+                cargarDatosMuckupEntidad();
+                EntidadDTO entidad1 = administracionSupServiceFacade.findEntidadById(61l);
+                EntidadDTO entidad2 = administracionSupServiceFacade.findEntidadById(5l);
+
+                entidad = entidad1;
+                entidades = new ArrayList<>();
+                entidades.add(entidad1);
+                entidades.add(entidad2);
+            }
+        } catch (Exception e) {
+            cargarDatosMockup();
+            cargarDatosMuckupEntidad();
+        }
+    }
+
+    private void cargarDatosMockupPerfiles() {
+        perfil = TypePerfiles.ADMINISTRADOR_CONTENIDOS;
+        perfiles = new ArrayList<TypePerfiles>();
+        perfiles.add(TypePerfiles.SUPER_ADMINISTRADOR);
+        perfiles.add(TypePerfiles.ADMINISTRADOR_ENTIDAD);
+        perfiles.add(TypePerfiles.ADMINISTRADOR_CONTENIDOS);
+        perfiles.add(TypePerfiles.GESTOR);
+        perfiles.add(TypePerfiles.INFORMADOR);
+    }
+
+    private void cargarDatosMockup() {
+        // Obtenemos la UA del usuario (mockup)
+
+        UnidadAdministrativaDTO hijo = new UnidadAdministrativaDTO();
+        hijo.setCodigo(1l);
+        Literal literalHijo = new Literal();
+        List<Traduccion> traduccionHijo = new ArrayList<>();
+        traduccionHijo.add(new Traduccion("es", "GOIB"));
+        traduccionHijo.add(new Traduccion("ca", "GOIB"));
+        literalHijo.setTraducciones(traduccionHijo);
+        hijo.setNombre(literalHijo);
+        hijo.setPadre(null);
+
+        UnidadAdministrativaDTO padre = new UnidadAdministrativaDTO();
+        padre.setCodigo(2l);
+        Literal literalPadre = new Literal();
+        List<Traduccion> traduccionPadre = new ArrayList<>();
+        traduccionPadre.add(new Traduccion("es", "Conselleria d'educación"));
+        traduccionPadre.add(new Traduccion("ca", "Conselleria d'educación"));
+        literalPadre.setTraducciones(traduccionPadre);
+        padre.setNombre(literalPadre);
+        padre.setPadre(hijo);
+
+        UnidadAdministrativaDTO nieto = new UnidadAdministrativaDTO();
+        nieto.setCodigo(3l);
+        Literal literalNieto = new Literal();
+        List<Traduccion> traduccionesNieto = new ArrayList<>();
+        traduccionesNieto.add(new Traduccion("es", "Secretaría de educación"));
+        traduccionesNieto.add(new Traduccion("ca", "Secretaria d'educació"));
+        literalNieto.setTraducciones(traduccionesNieto);
+        nieto.setNombre(literalNieto);
+        nieto.setPadre(padre);
+
+        // unidad = padre;
+        unidadActiva = nieto;
+        // Ayto Baleares
+        /*
+         * UnidadAdministrativaDTO uaAyto = new UnidadAdministrativaDTO(); uaAyto.setId(4l); Literal literaluaAyto = new
+         * Literal(); List<Traduccion> traduccionesuaAyto = new ArrayList<>(); traduccionesuaAyto.add(new
+         * Traduccion("es", "Ayto. Mallorca")); traduccionesuaAyto.add(new Traduccion("ca", "Ajunt. Mallorca"));
+         * literaluaAyto.setTraducciones(traduccionesuaAyto); uaAyto.setNombre(literaluaAyto); uaAyto.setPadre(null);
+         * unidades.add(uaAyto);
+         */
+
+
+    }
+
+    public void cargarDatosMuckupEntidad() {
+        // ID 33
+        EntidadDTO entidad1 = new EntidadDTO();
+        Literal literalEnt1 = new Literal();
+        List<Traduccion> traduccionesEnt1 = new ArrayList<>();
+        traduccionesEnt1.add(new Traduccion("es", "GOIB"));
+        traduccionesEnt1.add(new Traduccion("ca", "GOIB"));
+        literalEnt1.setTraducciones(traduccionesEnt1);
+        entidad1.setDescripcion(literalEnt1);
+
+        EntidadDTO entidad2 = new EntidadDTO();
+        Literal literalEnt2 = new Literal();
+        List<Traduccion> traduccionesEnt2 = new ArrayList<>();
+        traduccionesEnt2.add(new Traduccion("es", "Ayto. Mallorca"));
+        traduccionesEnt2.add(new Traduccion("ca", "Ajunt. Mallorca"));
+        literalEnt2.setTraducciones(traduccionesEnt2);
+        entidad2.setDescripcion(literalEnt2);
+
+        entidad = entidad1;
+        entidades = new ArrayList<>();
+        entidades.add(entidad1);
+        entidades.add(entidad2);
+    }
+
     public void cambiarUnidadAdministrativa(UnidadAdministrativaDTO ua) {
-        if (unidad != null && ua != null) {
+        if (unidadActiva != null && ua != null) {
             cambiarUnidadAdministrativaRecursivo(unidadActiva, ua);
         }
     }
 
-    public void actualizarUnidadAdministrativa(UnidadAdministrativaDTO ua) {
-        if (ua != null && unidades.contains(ua)) {
-            unidadActiva = ua;
-            unidad = ua;
+    /*
+     * @Deprecated public void actualizarUnidadAdministrativa(UnidadAdministrativaDTO ua) { if (ua != null &&
+     * unidades.contains(ua)) { unidadActiva = ua; unidad = ua; } }
+     */
+
+    public void actualizarEntidad(EntidadDTO ent) {
+        if (ent != null && entidades.contains(ent)) {
+            // TODO Faltaría calcular la unidad activa conectandose a bbdd
+            // unidadActiva = ua;
+            entidad = ent;
         }
     }
 
-    private void cambiarUnidadAdministrativaRecursivo(UnidadAdministrativaDTO unidadAdministrativa, UnidadAdministrativaDTO ua) {
-        if (unidadAdministrativa == null || ua == null || unidadAdministrativa.getId().compareTo(ua.getId()) == 0) {
+
+    private void cambiarUnidadAdministrativaRecursivo(UnidadAdministrativaDTO unidadAdministrativa,
+                                                      UnidadAdministrativaDTO ua) {
+        if (unidadAdministrativa == null || ua == null || unidadAdministrativa.getCodigo().compareTo(ua.getCodigo()) == 0) {
             this.unidadActiva = ua;
             return;
         } else {
@@ -201,8 +341,7 @@ public class SessionBean implements Serializable {
 
     // Mètodes
     public void reload() {
-        context.getPartialViewContext().getEvalScripts()
-                .add("location.replace(location)");
+        context.getPartialViewContext().getEvalScripts().add("location.replace(location)");
     }
 
     // Mètodes
@@ -210,22 +349,20 @@ public class SessionBean implements Serializable {
         String rolsac2back = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
         switch (this.perfil) {
             case ADMINISTRADOR_CONTENIDOS:
-                opcion = "viewFichas.titulo";
+                opcion = "viewPersonal.titulo";
                 context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace('" + rolsac2back + "/maestras/viewFichas.xhtml')");
+                        .add("location.replace('" + rolsac2back + "/maestras/viewPersonal.xhtml')");
                 break;
             case ADMINISTRADOR_ENTIDAD:
                 opcion = "viewConfiguracionEntidad.titulo";
-                context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace('" + rolsac2back + "/entidades/viewConfiguracionEntidad.xhtml')");
+                context.getPartialViewContext().getEvalScripts().add(
+                        "location.replace('" + rolsac2back + "/entidades/viewConfiguracionEntidad.xhtml')");
                 break;
             case GESTOR:
-                context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace(location)");
+                context.getPartialViewContext().getEvalScripts().add("location.replace(location)");
                 break;
             case INFORMADOR:
-                context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace(location)");
+                context.getPartialViewContext().getEvalScripts().add("location.replace(location)");
                 break;
             case SUPER_ADMINISTRADOR:
                 opcion = "viewTipoEntidades.titulo";
@@ -243,14 +380,6 @@ public class SessionBean implements Serializable {
     public void setCurrent(Locale current) {
         this.current = current;
         this.lang = current.getDisplayLanguage().contains("ca") ? "ca" : "es";
-    }
-
-    public UnidadAdministrativaDTO getUnidad() {
-        return unidad;
-    }
-
-    public void setUnidad(UnidadAdministrativaDTO unidad) {
-        this.unidad = unidad;
     }
 
     public String getLang() {
@@ -277,13 +406,6 @@ public class SessionBean implements Serializable {
         this.perfiles = perfiles;
     }
 
-    public List<UnidadAdministrativaDTO> getUnidades() {
-        return unidades;
-    }
-
-    public void setUnidades(List<UnidadAdministrativaDTO> unidades) {
-        this.unidades = unidades;
-    }
 
     public UnidadAdministrativaDTO getUnidadActiva() {
         return unidadActiva;
@@ -326,5 +448,25 @@ public class SessionBean implements Serializable {
 
     public void setearOpcion() {
         this.opcion = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("opcion");
+    }
+
+    public void setearMigaPan() {
+        cambiarUnidadAdministrativa(unidadActiva);
+    }
+
+    public EntidadDTO getEntidad() {
+        return entidad;
+    }
+
+    public void setEntidad(EntidadDTO entidad) {
+        this.entidad = entidad;
+    }
+
+    public List<EntidadDTO> getEntidades() {
+        return entidades;
+    }
+
+    public void setEntidades(List<EntidadDTO> entidades) {
+        this.entidades = entidades;
     }
 }
