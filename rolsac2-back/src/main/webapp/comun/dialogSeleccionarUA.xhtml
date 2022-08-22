@@ -35,15 +35,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <p:tree value="#{dialogSeleccionarUA.root}" var="node" dynamic="true"
                     selectionMode="single"
-                    selection="#{dialogSeleccionarUA.selectedNode}"
+                    selection="#{dialogSeleccionarUA.selectedNode}" style="width: 100% !important; height: 90vh; overflow-y: scroll;"
                 >
-                <p:ajax event="select" listener="#{dialogSeleccionarUA.guardar}" update="@form:messagesDialog"/>
+                <p:ajax event="expand" listener="#{dialogSeleccionarUA.onNodeExpand}" />
+                <p:ajax event="select" listener="#{dialogSeleccionarUA.onNodeSelect}" update="@form:messagesDialog"/>
 
-                <p:treeNode type="UnidadAdministrativaDTO" nodeType="UnidadAdministrativaDTO">
-                    <h:outputText value="#{node.nombre.getTraduccion(sessionBean.lang)}"/>
-                </p:treeNode>
-
-                <p:treeNode>
+                <p:treeNode type="UnidadAdministrativaDTO" nodeType="UnidadAdministrativaDTO" >
                     <h:outputText value="#{node.nombre.getTraduccion(sessionBean.lang)}"/>
                 </p:treeNode>
             </p:tree>
@@ -64,8 +61,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          rendered="#{!dialogSeleccionarUA.isModoConsulta()}"
                          process="@all" />
         <p:commandButton action="#{dialogSeleccionarUA.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" />
+                         value="#{labels['dict.cerrar']}"
+                         process="@this" />
 
     </ui:define>
 

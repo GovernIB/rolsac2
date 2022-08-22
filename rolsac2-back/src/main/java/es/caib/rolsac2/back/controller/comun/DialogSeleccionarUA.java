@@ -1,15 +1,20 @@
 package es.caib.rolsac2.back.controller.comun;
 
+import es.caib.rolsac2.back.comparators.TreeNodeUAComparator;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.event.NodeExpandEvent;
+import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
+import org.primefaces.util.TreeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +22,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -44,122 +49,144 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
 
     private UnidadAdministrativaDTO ua;
 
+    private Boolean esCabecera;
+
     public void load() {
         LOG.debug("init");
-        //Inicializamos combos/desplegables/inputs
-        //De momento, no tenemos desplegables.
 
-        // root = initMockup();
-        LOG.error("Modo aceeso " + this.getModoAcceso());
-        String valor = this.getModoAcceso();
-        ua = (UnidadAdministrativaDTO) UtilJSF.getValorMochilaByKey("ua"); //(Literal) sessionBean.getValorMochilaByKey("literal");
+        ua = (UnidadAdministrativaDTO) UtilJSF.getValorMochilaByKey("ua");
+        esCabecera = Boolean.parseBoolean((String) UtilJSF.getDialogParam("esCabecera"));
+        root = new LazyLoadingTreeNode();
 
-        UnidadAdministrativaDTO uaRoot = new UnidadAdministrativaDTO(1l, "GOIB", "GOIB");
-        UnidadAdministrativaDTO hijo1 = new UnidadAdministrativaDTO(1l, "Hijo1", "Hijo1");
-        UnidadAdministrativaDTO hijo2 = new UnidadAdministrativaDTO(1l, "Hijo2", "Hijo2");
-
-        root = new LazyLoadingTreeNode(uaRoot, uaService);
-
+        //
+        if (ua != null && ua.getCodigo() != null) {
+            ua = uaService.findById(ua.getCodigo());
+            if (ua.getPadre() != null) {
+                construirArbolDesdeHoja(ua, (LazyLoadingTreeNode) root);
+            } else {
+                UnidadAdministrativaDTO uaRoot =
+                        uaService.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+                LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
+                rootChildNode.setSelected(true);
+                addTreeNodeCargando(rootChildNode);
+            }
+        } else {
+            UnidadAdministrativaDTO uaRoot = uaService.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+            LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
+            addTreeNodeCargando(rootChildNode);
+        }
+        ordenarArbol();
     }
 
-    private List<UnidadAdministrativaDTO> listFiles(String folder) {
-        UnidadAdministrativaDTO[] files = new UnidadAdministrativaDTO[2];
-        UnidadAdministrativaDTO hijo1 = new UnidadAdministrativaDTO(1l, "Hijo1", "Hijo1");
-        UnidadAdministrativaDTO hijo2 = new UnidadAdministrativaDTO(1l, "Hijo2", "Hijo2");
-
-        /*if (files == null) {
-            return new ArrayList<>();
-        }*/
-
-        List<UnidadAdministrativaDTO> result = new ArrayList<>();
-        result.add(hijo1);
-        result.add(hijo2);
-        return result;
+    private void ordenarArbol() {
+        if (root.getChildren().get(0) != null) {
+            TreeUtils.sortNode(root.getChildren().get(0), new TreeNodeUAComparator());
+        }
     }
 
-    public TreeNode initMockup() {
-        TreeNode root = new DefaultTreeNode(new UnidadAdministrativaDTO(1l, "GOIB", "GOIB"), null);
+    private LazyLoadingTreeNode construirArbolDesdeHoja(UnidadAdministrativaDTO hoja, LazyLoadingTreeNode arbol) {
+        LazyLoadingTreeNode nodo = null;
+        if (hoja.getPadre() != null) {
+            nodo = new LazyLoadingTreeNode(hoja, construirArbolDesdeHoja(hoja.getPadre(), arbol));
+        } else {
+            nodo = new LazyLoadingTreeNode(hoja, arbol);
+        }
 
-        TreeNode applications = new DefaultTreeNode(new UnidadAdministrativaDTO(2l, "Ministeri de Educació", "Ministerio de educación"), root);
-        TreeNode cloud = new DefaultTreeNode(new UnidadAdministrativaDTO(3l, "Ministeri de Sanitat", "Ministerio de sanidad"), root);
-        TreeNode desktop = new DefaultTreeNode(new UnidadAdministrativaDTO(4l, "Ministeri de Defensa", "Ministerio de defensa"), root);
-        TreeNode documents = new DefaultTreeNode(new UnidadAdministrativaDTO(5l, "Ministeri d'Interior'", "Ministerio de interior"), root);
-        TreeNode downloads = new DefaultTreeNode(new UnidadAdministrativaDTO(6l, "Ministeri de Cultura", "Ministerio de cultura"), root);
-        TreeNode main = new DefaultTreeNode(new UnidadAdministrativaDTO(7l, "Ministeri de la dona'", "Ministerio de la mujer"), root);
-        TreeNode other = new DefaultTreeNode(new UnidadAdministrativaDTO(8l, "Ministeri d'e 'Ordre", "Ministerio de orden"), root);
-        TreeNode pictures = new DefaultTreeNode(new UnidadAdministrativaDTO(9l, "Ministeri d'Adicio", "Ministerio de adición"), root);
-        TreeNode videos = new DefaultTreeNode(new UnidadAdministrativaDTO(10l, "Ministeri de Jubiliació", "Ministerio de jubilicación"), root);
+        final LazyLoadingTreeNode resultNodo = nodo;
+        resultNodo.setType("UnidadAdministrativaDTO");
+        resultNodo.setExpanded(true);
 
-        //Applications
-        TreeNode primeface = new DefaultTreeNode(new UnidadAdministrativaDTO(11l, "Viceministre1", "Viceministro1"), applications);
-        TreeNode primefacesapp = new DefaultTreeNode("app", new UnidadAdministrativaDTO(12l, "Viceministre2", "Viceministro2"), primeface);
-        TreeNode nativeapp = new DefaultTreeNode("app", new UnidadAdministrativaDTO(13l, "Viceministre3", "Viceministro3"), primeface);
-        TreeNode mobileapp = new DefaultTreeNode("app", new UnidadAdministrativaDTO(14l, "Viceministre4", "Viceministro4"), primeface);
-        TreeNode editorapp = new DefaultTreeNode("app", new UnidadAdministrativaDTO(15l, "Viceministre5", "Viceministro5"), applications);
-        TreeNode settingsapp = new DefaultTreeNode("app", new UnidadAdministrativaDTO(16l, "Viceministre6", "Viceministro6"), applications);
-/*
-        //Cloud
-        TreeNode backup1 = new DefaultTreeNode("document", new Document("backup-1.zip", "10kb", "Zip"), cloud);
-        TreeNode backup2 = new DefaultTreeNode("document", new Document("backup-2.zip", "10kb", "Zip"), cloud);
+        List<UnidadAdministrativaDTO> childs = uaService
+                .getHijos(((UnidadAdministrativaDTO) resultNodo.getData()).getCodigo(), sessionBean.getLang());
 
-        //Desktop
-        TreeNode note1 = new DefaultTreeNode("document", new Document("note-meeting.txt", "50kb", "Text"), desktop);
-        TreeNode note2 = new DefaultTreeNode("document", new Document("note-todo.txt", "100kb", "Text"), desktop);
+        childs.removeIf(c -> ua.getPadre() != null && c.getCodigo().equals(ua.getPadre().getCodigo()));
 
-        //Documents
-        TreeNode work = new DefaultTreeNode(new Document("Work", "55kb", "Folder"), documents);
-        TreeNode expenses = new DefaultTreeNode("document", new Document("Expenses.doc", "30kb", "Document"), work);
-        TreeNode resume = new DefaultTreeNode("document", new Document("Resume.doc", "25kb", "Resume"), work);
-        TreeNode home = new DefaultTreeNode(new Document("Home", "20kb", "Folder"), documents);
-        TreeNode invoices = new DefaultTreeNode("excel", new Document("Invoice.xsl", "20kb", "Excel"), home);
+        if (((UnidadAdministrativaDTO) resultNodo.getData()).getCodigo().equals(ua.getCodigo())) {
+            resultNodo.setSelected(true);
+            resultNodo.setExpanded(false);
 
-        //Downloads
-        TreeNode spanish = new DefaultTreeNode(new Document("Spanish", "10kb", "Folder"), downloads);
-        TreeNode tutorial1 = new DefaultTreeNode("document", new Document("tutorial-a1.txt", "5kb", "Text"), spanish);
-        TreeNode tutorial2 = new DefaultTreeNode("document", new Document("tutorial-a2.txt", "5kb", "Text"), spanish);
-        TreeNode travel = new DefaultTreeNode(new Document("Travel", "15kb", "Folder"), downloads);
-        TreeNode hotelpdf = new DefaultTreeNode("travel", new Document("Hotel.pdf", "10kb", "PDF"), travel);
-        TreeNode flightpdf = new DefaultTreeNode("travel", new Document("Flight.pdf", "5kb", "PDF"), travel);
+            if (!childs.isEmpty()) {
+                resultNodo.getChildren().add(addTreeNodeCargando(resultNodo));
+            }
+            selectedNode = resultNodo;
+        } else {
+            if (!childs.isEmpty()) {
+                nodo.getChildren().clear();
+                childs.forEach(c -> {
+                    if (!c.getCodigo().equals(ua.getCodigo())) {
+                        LazyLoadingTreeNode grandChild = new LazyLoadingTreeNode(c, resultNodo);
+                        addTreeNodeCargando(grandChild);
+                        resultNodo.getChildren().add(grandChild);
+                    }
+                });
+            }
+        }
+        return resultNodo;
+    }
 
-        //Main
-        TreeNode bin = new DefaultTreeNode("document", new Document("bin", "50kb", "Link"), main);
-        TreeNode etc = new DefaultTreeNode("document", new Document("etc", "100kb", "Link"), main);
-        TreeNode var = new DefaultTreeNode("document", new Document("var", "100kb", "Link"), main);
+    private LazyLoadingTreeNode addTreeNodeCargando(TreeNode parentTreeNode) {
+        UnidadAdministrativaDTO cargando = new UnidadAdministrativaDTO();
+        Literal nombre = new Literal();
+        Traduccion tradEs = new Traduccion();
+        tradEs.setIdioma("es");
+        tradEs.setLiteral("Cargando");
+        Traduccion tradCa = new Traduccion();
+        tradCa.setIdioma("ca");
+        tradCa.setLiteral("Carregant");
+        nombre.setTraducciones(Arrays.asList(tradEs, tradCa));
+        cargando.setNombre(nombre);
+        return new LazyLoadingTreeNode(cargando, parentTreeNode);
+    }
 
-        //Other
-        TreeNode todotxt = new DefaultTreeNode("document", new Document("todo.txt", "3kb", "Text"), other);
-        TreeNode logopng = new DefaultTreeNode("picture", new Document("logo.png", "2kb", "Picture"), other);
+    public void onNodeExpand(NodeExpandEvent event) {
+        final TreeNode expandedTreeNode = event.getTreeNode();
 
-        //Pictures
-        TreeNode barcelona = new DefaultTreeNode("picture", new Document("barcelona.jpg", "90kb", "Picture"), pictures);
-        TreeNode primeng = new DefaultTreeNode("picture", new Document("primefaces.png", "30kb", "Picture"), pictures);
-        TreeNode prime = new DefaultTreeNode("picture", new Document("prime.jpg", "30kb", "Picture"), pictures);
+        List<UnidadAdministrativaDTO> childs = uaService.getHijos(
+                ((UnidadAdministrativaDTO) expandedTreeNode.getData()).getCodigo(), sessionBean.getLang());
 
-        //Videos
-        TreeNode primefacesmkv = new DefaultTreeNode("video", new Document("primefaces.mkv", "1000kb", "Video"), videos);
-        TreeNode introavi = new DefaultTreeNode("video", new Document("intro.avi", "500kb", "Video"), videos);
-*/
-        return root;
+        if (!childs.isEmpty()) {
+            expandedTreeNode.getChildren().clear();
+            childs.forEach(c -> {
+                LazyLoadingTreeNode grandChild = new LazyLoadingTreeNode(c, expandedTreeNode);
+                addTreeNodeCargando(grandChild);
+                expandedTreeNode.getChildren().add(grandChild);
+            });
+
+            expandedTreeNode.setExpanded(true);
+        } else {
+            expandedTreeNode.getChildren().clear();
+            expandedTreeNode.setExpanded(false);
+        }
+    }
+
+    public void onNodeSelect(NodeSelectEvent event) {
+        String node = event.getTreeNode().getData().toString();
     }
 
 
     public void guardar() {
 
         /*
-        Faltaría ver si la UA seleccionada
-        if (this.data.getId() == null) {
-            personalService.create(this.data, sessionBean.getUnidadActiva().getId());
-        } */
+         * Faltaría ver si la UA seleccionada if (this.data.getId() == null) { personalService.create(this.data,
+         * sessionBean.getUnidadActiva().getId()); }
+         */
 
         if (selectedNode == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
+                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
             return;
+        } else {
+            if (Boolean.TRUE.equals(esCabecera) && !sessionBean.getUnidadActiva().getCodigo()
+                    .equals(((UnidadAdministrativaDTO) selectedNode.getData()).getCodigo())) {
+                sessionBean.cambiarUnidadAdministrativa((UnidadAdministrativaDTO) selectedNode.getData());
+            }
         }
 
         // Retornamos resultado
         LOG.error("Acceso:" + this.getModoAcceso());
+
         final DialogResult result = new DialogResult();
-        result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        result.setModoAcceso(TypeModoAcceso.EDICION);
         result.setResult(selectedNode.getData());
         UtilJSF.closeDialog(result);
     }
@@ -167,7 +194,7 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
     public void cerrar() {
 
         final DialogResult result = new DialogResult();
-        result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
+        result.setModoAcceso(TypeModoAcceso.EDICION);
         result.setCanceled(true);
         UtilJSF.closeDialog(result);
     }
@@ -195,4 +222,6 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
     public void setSelectedNode(TreeNode selectedNode) {
         this.selectedNode = selectedNode;
     }
+
 }
+

@@ -31,6 +31,11 @@ public class DialogResult {
     private DialogResultMessage mensaje;
 
     /**
+     * Si el resultado pertecene a un elemento de la cabecera
+     */
+    private Boolean esCabecera;
+
+    /**
      * Obtiene el valor del resultado.
      *
      * @return el valor del resultado
@@ -98,5 +103,13 @@ public class DialogResult {
 
     public boolean isEdicion() {
         return this.getModoAcceso() != null && this.getModoAcceso() == TypeModoAcceso.EDICION;
+    }
+
+    public Boolean getEsCabecera() {
+        return esCabecera;
+    }
+
+    public void setEsCabecera(Boolean esCabecera) {
+        this.esCabecera = esCabecera;
     }
 }
