@@ -27,5 +27,9 @@ public enum TypeParametroVentana {
     /**
      * Ambito (Global, Entidad, Area)
      */
-    AMBITO;
+    AMBITO,
+    /**
+     * PLANTILLA (TIPO TRAMITACION)
+     */
+    PLANTILLA;
 }

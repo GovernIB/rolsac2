@@ -1,35 +1,31 @@
 package es.caib.rolsac2.back.controller.component;
 
 
-import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.event.SelectEvent;
 
-import javax.ejb.EJB;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIInput;
 import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@FacesComponent(createTag = true, tagName = "unidadAdministrativaComponent", namespace = "http://back.rolsac2.caib.es/tags")
+@FacesComponent(createTag = true, tagName = "unidadAdministrativaComponent")
 public class UnidadAdministrativaComponent extends UIInput implements NamingContainer {
 
+    private static final String ES_CABECERA = "esCabecera";
+
     // Fields -------------------------------------------------------------------------------------
-    @Inject
-    protected SessionBean sessionBean;
 
     private UIInput texto;
     private UIInput textoES;
@@ -42,11 +38,17 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
 
     private String textoValor;
 
+    private String ocultarTexto;
+
+    private Boolean esCabecera;
+
+    private String updateElementos;
+
+
     // Actions ------------------------------------------------------------------------------------
 
     /**
-     * Returns the component family of {@link UINamingContainer}.
-     * (that's just required by composite component)
+     * Returns the component family of {@link UINamingContainer}. (that's just required by composite component)
      */
     @Override
     public String getFamily() {
@@ -60,45 +62,51 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
         return modoAcceso != null && modoAcceso == TypeModoAcceso.CONSULTA;
     }
 
-    private UnidadAdministrativaDTO ua;
+    /**
+     * Para ver si es modo creación.
+     **/
 
-    @EJB
-    UnidadAdministrativaServiceFacade uaService;
-
+    public boolean isModoCrear() {
+        return modoAcceso != null && (modoAcceso == TypeModoAcceso.CONSULTA);
+    }
 
     /**
      * Set the selected and available values of the day, month and year fields based on the model.
      */
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-
-        ua = (UnidadAdministrativaDTO) getValue();
         String idioma = (String) getAttributes().get("idioma");
         String iModoAcceso = (String) getAttributes().get("soloLecture");
-        String ocultarTexto = (String) getAttributes().get("ocultarTexto");
-        if (ocultarTexto != null && "true".equalsIgnoreCase(ocultarTexto)) {
+        ocultarTexto = (String) getAttributes().get("ocultarTexto");
+        esCabecera = (Boolean) getAttributes().get(ES_CABECERA);
+
+        if (ocultarTexto != null && ocultarTexto.equalsIgnoreCase("true")) {
             ((InputText) texto).setStyle("display:none;");
         }
-        modoAcceso = (iModoAcceso != null && "true".equals(iModoAcceso.toLowerCase())) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+        modoAcceso = ("true".equalsIgnoreCase(iModoAcceso)) ? TypeModoAcceso.CONSULTA
+                : TypeModoAcceso.EDICION;
 
-        if (ua == null) {
-            ua = UnidadAdministrativaDTO.createInstance();
+        if (this.getValue() == null) {
+            this.setValue(UnidadAdministrativaDTO.createInstance());
         }
+
         if (idioma == null) {
             idioma = "es";
         }
 
         textoIdioma.setValue(idioma);
-        setearTextos(ua);
+        setearTextos((UnidadAdministrativaDTO) this.getValue());
         super.encodeBegin(context);
     }
 
     private void setearTextos(UnidadAdministrativaDTO ua) {
-        String idioma = (String) textoIdioma.getValue();
-        textoValor = ua.getNombre().getTraduccion(idioma);
-        textoES.setValue(ua.getNombre().getTraduccion("es"));
-        textoCA.setValue(ua.getNombre().getTraduccion("ca"));
-        textoID.setValue(ua.getId());
+        if (ua != null) {
+            String idioma = (String) textoIdioma.getValue();
+            textoValor = ua.getNombre().getTraduccion(idioma);
+            textoES.setValue(ua.getNombre().getTraduccion("es"));
+            textoCA.setValue(ua.getNombre().getTraduccion("ca"));
+            textoID.setValue(ua.getCodigo());
+        }
     }
 
     /**
@@ -106,16 +114,7 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
      */
     @Override
     public Object getSubmittedValue() {
-        return getCalcularUA();
-    }
-
-    private UnidadAdministrativaDTO getCalcularUA() {
-        UnidadAdministrativaDTO ua = null;
-        Long codigo = (Long) textoID.getValue();
-        if (codigo != null) {
-            ua = uaService.findById(codigo);
-        }
-        return ua;
+        return this.getValue();
     }
 
     /**
@@ -135,10 +134,11 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
-        if (!respuesta.isCanceled() && !respuesta.getModoAcceso().equals(TypeModoAcceso.CONSULTA)) {
-            UnidadAdministrativaDTO ua = (UnidadAdministrativaDTO) respuesta.getResult();
-            if (ua != null) {
-                setearTextos(ua);
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
+            if (uaSeleccionada != null) {
+                setearTextos(uaSeleccionada);
+                this.setValue(uaSeleccionada);
             }
         }
     }
@@ -146,14 +146,18 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
     public void abrirVentana() {
         final Map<String, String> params = new HashMap<>();
         /*
-        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
-            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getId().toString());
-        }*/
+         * if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso ==
+         * TypeModoAcceso.CONSULTA)) { params.put(TypeParametroVentana.ID.toString(),
+         * this.datoSeleccionado.getId().toString()); }
+         */
         this.modoAcceso = TypeModoAcceso.ALTA;
         params.put(TypeParametroVentana.MODO_ACCESO.toString(), this.modoAcceso.toString());
         String direccion = "/comun/dialogSeleccionarUA";
-        UtilJSF.anyadirMochila("ua", getCalcularUA());
-        UtilJSF.openDialog(direccion, modoAcceso, params, true, 1050, 350);
+
+        UtilJSF.anyadirMochila("ua", this.getValue());
+        esCabecera = (Boolean) getAttributes().get(ES_CABECERA);
+        params.put(ES_CABECERA, esCabecera != null ? esCabecera.toString() : null);
+        UtilJSF.openDialog(direccion, modoAcceso, params, true, 850, 550);
     }
 
 
@@ -183,15 +187,6 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
 
     public void setModoAcceso(TypeModoAcceso modoAcceso) {
         this.modoAcceso = modoAcceso;
-    }
-
-
-    public SessionBean getSessionBean() {
-        return sessionBean;
-    }
-
-    public void setSessionBean(SessionBean sessionBean) {
-        this.sessionBean = sessionBean;
     }
 
     public String getTextoValor() {
@@ -234,4 +229,14 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
     public void setTextoIdioma(UIInput textoIdioma) {
         this.textoIdioma = textoIdioma;
     }
+
+    public String getUpdateElementos() {
+        if (Boolean.TRUE.equals(getAttributes().get(ES_CABECERA))) {
+            updateElementos = "texto @form";
+        } else {
+            updateElementos = "texto";
+        }
+        return updateElementos;
+    }
+
 }
