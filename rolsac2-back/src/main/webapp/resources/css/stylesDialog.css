@@ -9,6 +9,29 @@ body {
 	color: #333;
 	background-color: #eaeaea;
 }
+/*example*/
+.botoneraRed.ui-selectonebutton {
+	border-color: white;
+}
+
+.botoneraRed.ui-selectonebutton .ui-button {
+	background-color: #cc073c !important;
+	color: black;
+}
+
+.botoneraRed.ui-selectonebutton .ui-button.ui-state-hover,
+.botoneraRed.ui-selectonebutton .ui-state-hover {
+	background-color: #cc073c !important
+}
+
+.botoneraRed.ui-selectonebutton .ui-state-active {
+	background-color: #cc073c !important;
+	color: white !important;
+}
+.ui-icon{
+	/** Para aumentar el tamaño. **/
+	font-size:1.2em;
+}
 a{
 	color: #4dba79;
 }
