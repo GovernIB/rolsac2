@@ -2,10 +2,9 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Dades de una Unidad Administrativa.
@@ -13,12 +12,12 @@ import java.util.List;
  * @author Indra
  */
 @Schema(name = "UnidadAdministrativa")
-public class UnidadAdministrativaDTO {
+public class UnidadAdministrativaDTO extends ModelApi {
 
     /**
      * ID
      */
-    private Long id;
+    private Long codigo;
 
     /**
      * Entidad
@@ -28,6 +27,10 @@ public class UnidadAdministrativaDTO {
      * Padre
      **/
     private UnidadAdministrativaDTO padre;
+    /**
+     * Código DIR3.
+     **/
+    private String codigoDIR3;
     /**
      * Tipo de UA
      **/
@@ -62,21 +65,17 @@ public class UnidadAdministrativaDTO {
      * Responsable INFO
      **/
     private String responsableNombre;
-    private String responsableSexo;
+    private TipoSexoDTO responsableSexo;
     private String responsableEmail;
     /**
      * Orden
      **/
-    private long orden;
+    private Integer orden;
 
-    @NotEmpty
-    @Size(max = 255)
     private Literal nombre;
 
-    @Size(max = 4000)
     private Literal presentacion;
 
-    @Size(max = 255)
     private Literal url;
 
     private Literal responsable;
@@ -85,8 +84,8 @@ public class UnidadAdministrativaDTO {
     }
 
     public UnidadAdministrativaDTO(Long iId, String nombreCa, String nombreEs) {
-        //TODO Borrar
-        this.id = iId;
+        // TODO Borrar
+        this.codigo = iId;
         this.nombre = new Literal();
         List<Traduccion> traducciones = new ArrayList<>();
         traducciones.add(new Traduccion("es", nombreEs));
@@ -95,7 +94,7 @@ public class UnidadAdministrativaDTO {
     }
 
     public UnidadAdministrativaDTO(Long id) {
-        this.id = id;
+        this.codigo = id;
     }
 
     public static UnidadAdministrativaDTO createInstance() {
@@ -104,12 +103,36 @@ public class UnidadAdministrativaDTO {
         return ua;
     }
 
-    public Long getId() {
-        return id;
+    /**
+     * Estos dos metodos se necesitan para el datatable y el rowKey
+     *
+     * @return the codigo
+     */
+    public String getIdString() {
+        if (codigo == null) {
+            return null;
+        } else {
+            return String.valueOf(codigo);
+        }
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    /**
+     * @param idString the codigo to set
+     */
+    public void setIdString(final String idString) {
+        if (idString == null) {
+            this.codigo = null;
+        } else {
+            this.codigo = Long.valueOf(idString);
+        }
+    }
+
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public Literal getNombre() {
@@ -132,11 +155,11 @@ public class UnidadAdministrativaDTO {
         this.hijos = hijos;
     }
 
-    public long getOrden() {
+    public Integer getOrden() {
         return orden;
     }
 
-    public void setOrden(long orden) {
+    public void setOrden(Integer orden) {
         this.orden = orden;
     }
 
@@ -144,11 +167,150 @@ public class UnidadAdministrativaDTO {
         this.nombre = nombre;
     }
 
+    public EntidadDTO getEntidad() {
+        return entidad;
+    }
+
+    public void setEntidad(EntidadDTO entidad) {
+        this.entidad = entidad;
+    }
+
+    public TipoUnidadAdministrativaDTO getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoUnidadAdministrativaDTO tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
+
+    public String getAbreviatura() {
+        return abreviatura;
+    }
+
+    public void setAbreviatura(String abreviatura) {
+        this.abreviatura = abreviatura;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getDominio() {
+        return dominio;
+    }
+
+    public void setDominio(String dominio) {
+        this.dominio = dominio;
+    }
+
+    public String getResponsableNombre() {
+        return responsableNombre;
+    }
+
+    public void setResponsableNombre(String responsableNombre) {
+        this.responsableNombre = responsableNombre;
+    }
+
+    public TipoSexoDTO getResponsableSexo() {
+        return responsableSexo;
+    }
+
+    public void setResponsableSexo(TipoSexoDTO responsableSexo) {
+        this.responsableSexo = responsableSexo;
+    }
+
+    public String getResponsableEmail() {
+        return responsableEmail;
+    }
+
+    public void setResponsableEmail(String responsableEmail) {
+        this.responsableEmail = responsableEmail;
+    }
+
+    public Literal getPresentacion() {
+        return presentacion;
+    }
+
+    public void setPresentacion(Literal presentacion) {
+        this.presentacion = presentacion;
+    }
+
+    public Literal getUrl() {
+        return url;
+    }
+
+    public void setUrl(Literal url) {
+        this.url = url;
+    }
+
+    public Literal getResponsable() {
+        return responsable;
+    }
+
+    public void setResponsable(Literal responsable) {
+        this.responsable = responsable;
+    }
+
+    public String getCodigoDIR3() {
+        return codigoDIR3;
+    }
+
+    public void setCodigoDIR3(String codigoDIR3) {
+        this.codigoDIR3 = codigoDIR3;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UnidadAdministrativaDTO that = (UnidadAdministrativaDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
     @Override
     public String toString() {
         return "UnidadAdministrativaDTO{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
+                "id=" + codigo +
                 '}';
+    }
+
+    public int compareTo(final UnidadAdministrativaDTO ua) {
+        if (ua == null)
+            throw new NullPointerException("ua");
+
+        return Long.compare(this.getOrden(), ua.getOrden());
     }
 }

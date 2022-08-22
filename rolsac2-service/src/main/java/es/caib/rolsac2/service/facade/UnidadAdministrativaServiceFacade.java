@@ -1,9 +1,7 @@
 package es.caib.rolsac2.service.facade;
 
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.PersonalGridDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 
 import java.util.List;
@@ -22,7 +20,10 @@ public interface UnidadAdministrativaServiceFacade {
      * @return EL identificador del nuevo personal
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    List<UnidadAdministrativaDTO> getHijos(Long idUnitat);
+    List<UnidadAdministrativaDTO> getHijos(Long idUnitat, String idioma);
+
+
+    UnidadAdministrativaDTO getRoot(String idioma, Long entidadId);
 
 
     /**
@@ -50,10 +51,10 @@ public interface UnidadAdministrativaServiceFacade {
     void delete(Long id) throws RecursoNoEncontradoException;
 
     /**
-     * Retorna una ua indicat per l'identificador.
+     * Devuelve una ua indicat por el identificador.
      *
-     * @param id identificador de la ua a cercar
-     * @return un opcional amb les dades del ua indicat o buid si no existeix.
+     * @param id identificador de la ua a buscar
+     * @return un opcional con los datos de la ua indicador o vacio si no existe.
      */
     UnidadAdministrativaDTO findById(Long id);
 
@@ -61,9 +62,9 @@ public interface UnidadAdministrativaServiceFacade {
      * Devuelve una página con el ua relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
-     * @return una pàgina amb el nombre total de personal i la llista de uas pel rang indicat.
+     * @return una pagina con el numero total de ua y la lista de uas por el rango indicado.
      */
-    Pagina<PersonalGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro);
+    Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro);
 
     /**
      * Devuelve el total de uas relacionado con los parámetros del filtro.
@@ -72,4 +73,12 @@ public interface UnidadAdministrativaServiceFacade {
      * @return
      */
     int countByFiltro(UnidadAdministrativaFiltro filtro);
+
+    Long getCountHijos(Long parentId);
+
+    List<TipoSexoDTO> findTipoSexo();
+
+    Boolean checkIdentificador(String identificador);
+
+    List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId);
 }

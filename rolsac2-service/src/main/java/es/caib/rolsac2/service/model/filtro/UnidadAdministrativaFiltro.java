@@ -11,6 +11,15 @@ public class UnidadAdministrativaFiltro extends AbstractFiltro {
     private String texto;
     private String nombre;
     private String identificador;
+    private Long codEnti;
+
+    public Long getCodEnti() {
+        return codEnti;
+    }
+
+    public void setCodEnti(Long codEnti) {
+        this.codEnti = codEnti;
+    }
 
     public String getTexto() {
         return texto;
@@ -59,6 +68,14 @@ public class UnidadAdministrativaFiltro extends AbstractFiltro {
     public boolean isRellenoIdentificador() {
         return identificador != null && !identificador.isEmpty();
     }
+
+    /**
+     * Esta relleno el codEnti
+     **/
+    public boolean isRellenoCodEnti() {
+        return codEnti != null;
+    }
+
 
     @Override
     protected String getDefaultOrder() {
