@@ -38,6 +38,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
     private UIInput textoIdioma;
     private UIInput boton;
 
+    private UIInput textoInicializado;
     private String idioma;
     private TypeModoAcceso modoAcceso;
 
@@ -63,25 +64,37 @@ public class LiteralComponent extends UIInput implements NamingContainer {
 
     private Literal literal;
 
+
     /**
      * Set the selected and available values of the day, month and year fields based on the model.
      */
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
 
-        literal = (Literal) getValue();
-        idioma = (String) getAttributes().get("idioma");
-        String iModoAcceso = (String) getAttributes().get("soloLecture");
-        modoAcceso = (iModoAcceso != null && "true".equals(iModoAcceso.toLowerCase())) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-        String ocultarTexto = (String) getAttributes().get("ocultarTexto");
-        if (ocultarTexto != null && "true".equalsIgnoreCase(ocultarTexto)) {
-            ((InputText) texto).setStyle("display:none;");
-        }
-        if (literal == null) {
-            literal = Literal.createInstance();
-        }
-        if (idioma == null) {
-            idioma = "es";
+        final String inicializado = (String) textoInicializado.getValue();
+        if (inicializado == null || inicializado.isEmpty()) {
+            textoInicializado.setValue("true"); //Lo marcamos como ya inicializado
+            literal = (Literal) getValue();
+            idioma = (String) getAttributes().get("idioma");
+            String iModoAcceso = (String) getAttributes().get("soloLecture");
+            modoAcceso = (iModoAcceso != null && "true".equals(iModoAcceso.toLowerCase())) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            String ocultarTexto = (String) getAttributes().get("ocultarTexto");
+            if (ocultarTexto != null && "true".equalsIgnoreCase(ocultarTexto)) {
+                ((InputText) texto).setStyle("display:none;");
+            }
+            if (literal == null) {
+                literal = Literal.createInstance();
+            }
+            if (idioma == null) {
+                idioma = "es";
+            }
+        } else {
+            literal = new Literal();
+            idioma = (String) getAttributes().get("idioma");
+            textoIdioma.setValue(idioma);
+            literal.add(new Traduccion("es", (String) textoES.getValue()));
+            literal.add(new Traduccion("ca", (String) textoCA.getValue()));
+            literal.setCodigo((Long) textoID.getValue());
         }
 
         textoValor = literal.getTraduccion(idioma);
@@ -89,6 +102,8 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         textoCA.setValue(literal.getTraduccion("ca"));
         textoID.setValue(literal.getCodigo());
         textoIdioma.setValue(idioma);
+        texto.setValue(literal.getTraduccion(idioma));
+
         super.encodeBegin(context);
     }
 
@@ -103,10 +118,22 @@ public class LiteralComponent extends UIInput implements NamingContainer {
     }
 
     private Literal getCalcularLiteral() {
+        Long codigoAux = null;
         Literal literal = Literal.createInstance();
-        literal.add(new Traduccion("es", textoES.getValue().toString()));
-        literal.add(new Traduccion("ca", textoCA.getValue().toString()));
-        literal.setCodigo((Long) textoID.getValue());
+        if (textoES.getValue() != null && !((String) textoES.getValue()).isBlank()) {
+            literal.add(new Traduccion("es", textoES.getValue().toString()));
+        }
+        if (textoCA.getValue() != null && !((String) textoCA.getValue()).isBlank()) {
+            literal.add(new Traduccion("ca", textoCA.getValue().toString()));
+        }
+
+        if (textoID.getValue() instanceof String) {
+            codigoAux = Long.parseLong((String) textoID.getValue());
+        } else if (textoID.getValue() instanceof Long) {
+            codigoAux = (Long) textoID.getValue();
+        }
+
+        literal.setCodigo(codigoAux);
         return literal;
     }
 
@@ -139,7 +166,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
-        if (!respuesta.isCanceled() && !respuesta.getModoAcceso().equals(TypeModoAcceso.CONSULTA)) {
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             literal = (Literal) respuesta.getResult();
             this.setValue(literal);
             texto.setValue(literal.getTraduccion((String) textoIdioma.getValue()));
@@ -158,7 +185,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         params.put(TypeParametroVentana.MODO_ACCESO.toString(), this.modoAcceso.toString());
         String direccion = "/comun/dialogLiteral";
         UtilJSF.anyadirMochila("literal", getCalcularLiteral());
-        UtilJSF.openDialog(direccion, modoAcceso, params, true, 1050, 350);
+        UtilJSF.openDialog(direccion, modoAcceso, params, true, 1050, 380);
     }
 
 
@@ -252,5 +279,13 @@ public class LiteralComponent extends UIInput implements NamingContainer {
 
     public void setTextoIdioma(UIInput textoIdioma) {
         this.textoIdioma = textoIdioma;
+    }
+
+    public UIInput getTextoInicializado() {
+        return textoInicializado;
+    }
+
+    public void setTextoInicializado(UIInput textoInicializado) {
+        this.textoInicializado = textoInicializado;
     }
 }

@@ -34,26 +34,38 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <p:panel>
       <div class="row">
 
-        <div class="ui-g-12 ui-md-3 ui-lg-2">
-          <h:outputText value="#{labels['dialogTipoBoletin.identificador']}:" for="txtIdentificador"/>
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
         </div>
-        <div class="ui-g-12 ui-md-9 ui-lg-4">
-          <p:inputText id="txtIdentificador" value="#{dialogTipoBoletin.data.identificador}" styleClass="w95"
-                       required="true" disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"/>
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
+          <p:inputText id="txtCodigo" value="#{dialogTipoBoletin.data.codigo}"
+                       styleClass="w95" disabled="true" maxlength="50"/>
         </div>
 
-        <div class="ui-g-12 ui-md-3 ui-lg-2">
-          <h:outputText value="#{labels['dialogTipoBoletin.nombre']}:" for="txtNombre"/>
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <p:outputLabel value="#{labels['dialogTipoBoletin.identificador']}:" for="txtIdentificador"/>
         </div>
-        <div class="ui-g-12 ui-md-9 ui-lg-4">
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
+          <p:inputText id="txtIdentificador" value="#{dialogTipoBoletin.data.identificador}" styleClass="w95"
+                       required="true" disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"
+                       onblur="this.value = this.value.toUpperCase();">
+            <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+            <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+          </p:inputText>
+        </div>
+
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <p:outputLabel value="#{labels['dialogTipoBoletin.nombre']}:" for="txtNombre"/>
+        </div>
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
           <p:inputText id="txtNombre" value="#{dialogTipoBoletin.data.nombre}" styleClass="w95" required="true"
                        disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"/>
         </div>
 
-        <div class="ui-g-12 ui-md-3 ui-lg-2">
-          <h:outputText value="#{labels['dialogTipoBoletin.url']}:" for="txtUrl"/>
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <p:outputLabel value="#{labels['dialogTipoBoletin.url']}:" for="txtUrl"/>
         </div>
-        <div class="ui-g-12 ui-md-9 ui-lg-4">
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
           <p:inputText id="txtUrl" value="#{dialogTipoBoletin.data.url}" styleClass="w95" required="true"
                        disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"/>
         </div>
@@ -76,8 +88,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      rendered="#{!dialogTipoBoletin.isModoConsulta()}"
                      process="@all"/>
     <p:commandButton action="#{dialogTipoBoletin.cerrar}"
-                     value="#{labels['dict.cerrar']}" update="messagesDialog"
-                     process="@all"/>
+                     value="#{labels['dict.cerrar']}"
+                     process="@this"/>
 
   </ui:define>
 

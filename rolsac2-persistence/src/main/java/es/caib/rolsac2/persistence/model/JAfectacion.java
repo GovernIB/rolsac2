@@ -12,7 +12,7 @@ public class JAfectacion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "afectacion-sequence")
     @Column(name = "AFNO_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "AFNO_TIPAFNO", nullable = false)
@@ -24,12 +24,12 @@ public class JAfectacion {
     @Column(name = "AFNO_NORAFE", nullable = false)
     private Long normativaAfectada;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JTipoAfectacion getTipoAfectacion() {

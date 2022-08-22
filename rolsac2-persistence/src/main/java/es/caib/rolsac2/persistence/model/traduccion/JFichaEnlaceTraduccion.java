@@ -14,7 +14,7 @@ public class JFichaEnlaceTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ficha-enlace-trad-sequence")
     @Column(name = "TRFC_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRFC_CODFCEN", nullable = false)
@@ -29,12 +29,12 @@ public class JFichaEnlaceTraduccion {
     @Column(name = "TRFC_URL")
     private String url;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JFichaEnlace getFichaEnlace() {

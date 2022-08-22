@@ -35,27 +35,29 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
         <p:panel>
             <div class="row">
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dict.id']}:" for="txtNombre"/>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
                 </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:inputText id="txtNombre" value="#{dialogTipoPublicoObjetivo.data.id}" styleClass="w95"
-                                 required="false" disabled="true"/>
-                </div>
-
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="Identificador:" for="txtIdentificador"/>
-                </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:inputText id="txtIdentificador" value="#{dialogTipoPublicoObjetivo.data.identificador}"
-                                 styleClass="w95" required="true"
-                                 disabled="#{dialogTipoPublicoObjetivo.isModoConsulta()}" maxlength="50"/>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtCodigo" value="#{dialogTipoPublicoObjetivo.data.codigo}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
                 </div>
 
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="Descripción:"/>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.id']}:" for="txtNombre"/>
                 </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtNombre" value="#{dialogTipoPublicoObjetivo.data.identificador}" styleClass="w95"
+                                 required="true" disabled="#{dialogTipoPublicoObjetivo.isModoConsulta()}" onblur="this.value = this.value.toUpperCase();">
+                        <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+                    </p:inputText>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <h:outputText value="#{labels['dict.descripcion']}:"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputDescripcion" styleClass="w95"
                                          value="#{dialogTipoPublicoObjetivo.data.descripcion}"
                                          idioma="#{dialogTipoPublicoObjetivo.idioma}"/>
@@ -68,12 +70,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
     <ui:define name="contentFooterDialogLeft">
-        <span class="pi pi-tag" style="margin-top:5px" />
-        <h:outputText value="Literal:" style="margin-right:4px;margin-top:5px;"  />
         <p:selectOneMenu id="opcionIdioma" value="#{dialogTipoPublicoObjetivo.idioma}">
-            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"  />
-            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es" />
-            <p:ajax update="@form" process="@this" />
+            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+            <p:ajax update="@form:inputDescripcion" process="@this"/>
         </p:selectOneMenu>
     </ui:define>
 

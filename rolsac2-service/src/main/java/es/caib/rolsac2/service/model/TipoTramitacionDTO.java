@@ -7,133 +7,162 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
- *
  * @author Indra
  */
 @Schema(name = "TipoTramitacion")
-public class TipoTramitacionDTO {
+public class TipoTramitacionDTO extends ModelApi {
 
-  private Long id;
+    private Long codigo;
 
-  /**
-   * Tramitación presencial
-   */
-  private boolean tramitPresencial;
+    /**
+     * Tramitación presencial
+     */
+    private boolean tramitPresencial;
 
-  /**
-   * Tramitación electrónica
-   */
-  private boolean tramitElectronica;
+    /**
+     * Tramitación electrónica
+     */
+    private boolean tramitElectronica;
 
-  /**
-   * URL tramitación
-   */
-  @NotEmpty
-  @Size(max = 500)
-  private String urlTramitacion;
+    /**
+     * URL tramitación
+     */
+    @NotEmpty
+    @Size(max = 500)
+    private String urlTramitacion;
 
-  /**
-   * Código plataforma tramitación
-   */
-  @NotNull
-  private PlatTramitElectronicaDTO codPlatTramitacion;
+    /**
+     * Código plataforma tramitación
+     */
+    @NotNull
+    private PlatTramitElectronicaDTO codPlatTramitacion;
 
-  /**
-   * Trámite Id
-   */
-  @NotEmpty
-  @Size(max = 50)
-  private String tramiteId;
+    /**
+     * Trámite Id
+     */
+    @NotEmpty
+    @Size(max = 50)
+    private String tramiteId;
 
-  /**
-   * Trámite Versión
-   */
-  @NotNull
-  private Integer tramiteVersion;
+    /**
+     * Trámite Versión
+     */
+    @NotNull
+    private Integer tramiteVersion;
 
-  /**
-   * Trámite parámetros
-   */
-  @NotEmpty
-  @Size(max = 500)
-  private String tramiteParametros;
+    /**
+     * Trámite parámetros
+     */
+    @NotEmpty
+    @Size(max = 500)
+    private String tramiteParametros;
 
-  public TipoTramitacionDTO() {}
+    /**
+     * Indica si es una plantilla
+     **/
+    private boolean plantilla;
 
-  public TipoTramitacionDTO(Long id) {
-    this.id = id;
-  }
+    /**
+     * Indica la entidad que pertenece si es una entidad.
+     **/
+    private EntidadDTO entidad;
 
-  public Long getId() {
-    return id;
-  }
+    /**
+     * Constructor
+     **/
+    public TipoTramitacionDTO() {
+        //Vacio
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public TipoTramitacionDTO(Long id) {
+        this.codigo = id;
+    }
 
-  public boolean isTramitPresencial() {
-    return tramitPresencial;
-  }
+    public Long getCodigo() {
+        return codigo;
+    }
 
-  public void setTramitPresencial(boolean tramitPresencial) {
-    this.tramitPresencial = tramitPresencial;
-  }
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-  public boolean isTramitElectronica() {
-    return tramitElectronica;
-  }
+    public boolean isTramitPresencial() {
+        return tramitPresencial;
+    }
 
-  public void setTramitElectronica(boolean tramitElectronica) {
-    this.tramitElectronica = tramitElectronica;
-  }
+    public void setTramitPresencial(boolean tramitPresencial) {
+        this.tramitPresencial = tramitPresencial;
+    }
 
-  public String getUrlTramitacion() {
-    return urlTramitacion;
-  }
+    public boolean isTramitElectronica() {
+        return tramitElectronica;
+    }
 
-  public void setUrlTramitacion(String urlTramitacion) {
-    this.urlTramitacion = urlTramitacion;
-  }
+    public void setTramitElectronica(boolean tramitElectronica) {
+        this.tramitElectronica = tramitElectronica;
+    }
 
-  public PlatTramitElectronicaDTO getCodPlatTramitacion() {
-    return codPlatTramitacion;
-  }
+    public String getUrlTramitacion() {
+        return urlTramitacion;
+    }
 
-  public void setCodPlatTramitacion(PlatTramitElectronicaDTO codPlatTramitacion) {
-    this.codPlatTramitacion = codPlatTramitacion;
-  }
+    public void setUrlTramitacion(String urlTramitacion) {
+        this.urlTramitacion = urlTramitacion;
+    }
 
-  public String getTramiteId() {
-    return tramiteId;
-  }
+    public PlatTramitElectronicaDTO getCodPlatTramitacion() {
+        return codPlatTramitacion;
+    }
 
-  public void setTramiteId(String tramiteId) {
-    this.tramiteId = tramiteId;
-  }
+    public void setCodPlatTramitacion(PlatTramitElectronicaDTO codPlatTramitacion) {
+        this.codPlatTramitacion = codPlatTramitacion;
+    }
 
-  public Integer getTramiteVersion() {
-    return tramiteVersion;
-  }
+    public String getTramiteId() {
+        return tramiteId;
+    }
 
-  public void setTramiteVersion(Integer tramiteVersion) {
-    this.tramiteVersion = tramiteVersion;
-  }
+    public void setTramiteId(String tramiteId) {
+        this.tramiteId = tramiteId;
+    }
 
-  public String getTramiteParametros() {
-    return tramiteParametros;
-  }
+    public Integer getTramiteVersion() {
+        return tramiteVersion;
+    }
 
-  public void setTramiteParametros(String tramiteParametros) {
-    this.tramiteParametros = tramiteParametros;
-  }
+    public void setTramiteVersion(Integer tramiteVersion) {
+        this.tramiteVersion = tramiteVersion;
+    }
 
-  @Override
-  public String toString() {
-    return "TipoTramitacionDTO{" + "id=" + id + ", tramitPresencial=" + tramitPresencial + ", tramitElectronica="
-        + tramitElectronica + ", urlTramitacion='" + urlTramitacion + '\'' + ", codPlatTramitacion="
-        + codPlatTramitacion + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion
-        + ", tramiteParametros='" + tramiteParametros + '\'' + '}';
-  }
+    public String getTramiteParametros() {
+        return tramiteParametros;
+    }
+
+    public void setTramiteParametros(String tramiteParametros) {
+        this.tramiteParametros = tramiteParametros;
+    }
+
+    public boolean isPlantilla() {
+        return plantilla;
+    }
+
+    public void setPlantilla(boolean plantilla) {
+        this.plantilla = plantilla;
+    }
+
+    public EntidadDTO getEntidad() {
+        return entidad;
+    }
+
+    public void setEntidad(EntidadDTO entidad) {
+        this.entidad = entidad;
+    }
+
+    @Override
+    public String toString() {
+        return "TipoTramitacionDTO{" + "id=" + codigo + ", tramitPresencial=" + tramitPresencial + ", plantilla=" + plantilla
+                + ", tramitElectronica=" + tramitElectronica + ", urlTramitacion='" + urlTramitacion + '\''
+                + ", codPlatTramitacion=" + codPlatTramitacion + ", tramiteId='" + tramiteId + '\''
+                + ", tramiteVersion=" + tramiteVersion + ", tramiteParametros='" + tramiteParametros + '\'' + '}';
+    }
 }

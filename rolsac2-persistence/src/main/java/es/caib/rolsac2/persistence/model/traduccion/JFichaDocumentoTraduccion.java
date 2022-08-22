@@ -14,7 +14,7 @@ public class JFichaDocumentoTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ficha-doc-traduccion-sequence")
     @Column(name = "TRDF_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRDF_CODFCDO", nullable = false)
@@ -29,12 +29,12 @@ public class JFichaDocumentoTraduccion {
     @Column(name = "TRDF_DESCRI", length = 4000)
     private String descripcion;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JFichaDocumento getDocumento() {

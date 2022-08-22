@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "RS2_PRCMAS")
 public class JProcedimientoMateriaSIA {
     @EmbeddedId
-    private JProcedimientoMateriaSIAPK id;
+    private JProcedimientoMateriaSIAPK codigo;
 
     @MapsId("procedimento")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -20,12 +20,12 @@ public class JProcedimientoMateriaSIA {
     @JoinColumn(name = "PRMS_TIPMSIA", nullable = false)
     private JTipoMateriaSIA tipoMateriaSIA;
 
-    public JProcedimientoMateriaSIAPK getId() {
-        return id;
+    public JProcedimientoMateriaSIAPK getCodigo() {
+        return codigo;
     }
 
-    public void setId(JProcedimientoMateriaSIAPK id) {
-        this.id = id;
+    public void setCodigo(JProcedimientoMateriaSIAPK id) {
+        this.codigo = id;
     }
 
     public JProcedimientoWorkflow getProcedimientoWF() {

@@ -1,0 +1,97 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+>
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogPlugins.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogPlugins.id}"/>
+            <f:viewAction action="#{dialogPlugins.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dict.detalle']}"
+                        rendered="#{!dialogPlugins.isModoAlta()}"/>
+
+        <h:outputFormat value="#{labels['dict.nuevo']}"
+                        rendered="#{dialogPlugins.isModoAlta()}"/>
+    </ui:define>
+
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="true"
+                 life="5000"
+                 escape="false"/>
+
+        <p:panel>
+            <div class="row">
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtCodigo" value="#{dialogPlugins.data.codigo}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dialogPlugins.descripcion']}:" for="txtDescripcion"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtDescripcion" value="#{dialogPlugins.data.descripcion}"
+                                 styleClass="w95" required="true"
+                                 disabled="#{dialogPlugins.isModoConsulta()}" maxlength="50"/>
+                </div>
+
+                <!--
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <h:outputText value="#{labels['dict.entidad']}:" for="selectEntidad"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:selectOneMenu id="selectEntidad" value="#{dialogPlugins.data.entidad}"
+                                     styleClass="w95" required="true"
+                                     disabled="#{dialogPlugins.isModoConsulta()}"
+                                     converter="#{entidadConverter}">
+                        <f:selectItem itemLabel="#{labels['dict.selecciona.entidad']}" itemValue="#{null}"/>
+                        <f:selectItems value="#{dialogPlugins.entidadesActivas}" var="entidad"
+                                       itemLabel="#{entidad.dir3}" itemValue="#{entidad}"/>
+                    </p:selectOneMenu>
+                </div> -->
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dialogPlugins.classname']}:" for="txtClassname"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputTextarea id="txtClassname" value="#{dialogPlugins.data.classname}"
+                                 styleClass="w95" required="true" rows="3" autoResize="false"
+                                 disabled="#{dialogPlugins.isModoConsulta()}" maxlength="1000"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dialogPlugins.propiedades']}:" for="txtPropiedades"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputTextarea id="txtPropiedades" value="#{dialogPlugins.data.propiedades}"
+                                 styleClass="w95" required="true" rows="8" autoResize="false"
+                                 disabled="#{dialogPlugins.isModoConsulta()}" maxlength="4000"/>
+                </div>
+            </div>
+        </p:panel>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogPlugins.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogPlugins.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         process="@all"/>
+        <p:commandButton action="#{dialogPlugins.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>

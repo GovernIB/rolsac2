@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JTipoPublicoObjetivoTraduccion;
-import es.caib.rolsac2.persistence.model.traduccion.JTipoSilencioAdministrativoTraduccion;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
 )
 @NamedQueries({
         @NamedQuery(name = JTipoPublicoObjetivo.FIND_BY_ID,
-                query = "select p from JTipoPublicoObjetivo p where p.id = :id"),
+                query = "select p from JTipoPublicoObjetivo p where p.codigo = :id"),
         @NamedQuery(name = JTipoPublicoObjetivo.COUNT_BY_IDENTIFICADOR,
                 query = "select count(p) from JTipoPublicoObjetivo p where p.identificador = :identificador")
 })
@@ -28,7 +27,7 @@ public class JTipoPublicoObjetivo extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String FIND_BY_ID = "TipoPublicoObjetivo.FIND_BY_ID";
+    public static final String FIND_BY_ID = "JTipoPublicoObjetivo.FIND_BY_ID";
 
     public static final String COUNT_BY_IDENTIFICADOR = "JTipoPublicoObjetivo.COUNT_BY_IDENTIFICADOR";
 
@@ -36,20 +35,20 @@ public class JTipoPublicoObjetivo extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-publicoobj-sequence")
     @Column(name = "TPPO_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
-    @OneToMany(mappedBy="tipoPublicoObjetivo", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tipoPublicoObjetivo", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoPublicoObjetivoTraduccion> descripcion;
 
     @Column(name = "TPPO_IDENTI", length = 50)
     private String identificador;
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public String getIdentificador() {
@@ -71,7 +70,7 @@ public class JTipoPublicoObjetivo extends BaseEntity {
     @Override
     public String toString() {
         return "JTipoPublicoObjetivo{" +
-                "id=" + id +
+                "id=" + codigo +
                 "identificador=" + identificador +
                 "descripcion=" + descripcion +
                 '}';

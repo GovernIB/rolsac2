@@ -11,15 +11,8 @@ import java.util.Objects;
  */
 @Entity
 @SequenceGenerator(name = "personal-sequence", sequenceName = "RS2_PERSON_SEQ", allocationSize = 1)
-@Table(name = "RS2_PERSON",
-        indexes = {
-                @Index(name = "RS2_PERSON_PK_I", columnList = "PERS_CODIGO")
-        }
-)
-@NamedQueries({
-        @NamedQuery(name = JPersonal.FIND_BY_ID,
-                query = "select p from JPersonal p where p.id = :id")
-})
+@Table(name = "RS2_PERSON", indexes = {@Index(name = "RS2_PERSON_PK_I", columnList = "PERS_CODIGO")})
+@NamedQueries({@NamedQuery(name = JPersonal.FIND_BY_ID, query = "select p from JPersonal p where p.codigo = :id")})
 public class JPersonal extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -29,14 +22,14 @@ public class JPersonal extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personal-sequence")
     @Column(name = "PERS_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     /**
      * Identificacion del personal.
      */
     @Column(name = "PERS_IDENTI", length = 50)
-    //@NotNull
-    //@Pattern(regexp = "[0-9]{6,8}", message = "{codiSia.Pattern.message}")
+    // @NotNull
+    // @Pattern(regexp = "[0-9]{6,8}", message = "{codiSia.Pattern.message}")
     private String identificador;
 
 
@@ -46,67 +39,64 @@ public class JPersonal extends BaseEntity {
     /**
      * Cargo de la persona.
      */
-    @Column(name = "PERS_CARGO", /*nullable = false,*/ length = 500)
-    //@NotEmpty
+    @Column(name = "PERS_CARGO", /* nullable = false, */ length = 500)
+    // @NotEmpty
     @Size(max = 500)
     private String cargo;
 
-    @Column(name = "PERS_FUNC", /*nullable = false,*/ length = 4000)
-    //@NotEmpty
+    @Column(name = "PERS_FUNC", /* nullable = false, */ length = 4000)
+    // @NotEmpty
     @Size(max = 4000)
     private String funciones;
 
     /**
-     * La unidad administrativa (UA).
-     * De momento, es un Long pero deberia ser un JUnidadAdministrativa!!
+     * La unidad administrativa (UA). De momento, es un Long pero deberia ser un JUnidadAdministrativa!!
      */
-   /* @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UNITATORGANICAID", nullable = false,
-            foreignKey = @ForeignKey(name = "RSC_PROCEDIMENT_UNITAT_FK"))*/
-    @Column(name = "PERS_CODUA", /*nullable = false,*/ length = 10)
-    private Long unidadAdministrativa;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PERS_CODUA", nullable = false)
+    private JUnidadAdministrativa unidadAdministrativa;
 
     /**
      * Cargo de la persona.
      */
-    @Column(name = "PERS_EMAIL", /*nullable = false,*/ length = 100)
+    @Column(name = "PERS_EMAIL", /* nullable = false, */ length = 100)
     @Size(max = 100)
     private String email;
 
     /**
      * Telefono fijo
      **/
-    @Column(name = "PERS_TFNOFIJ", /*nullable = false,*/ length = 9)
+    @Column(name = "PERS_TFNOFIJ", /* nullable = false, */ length = 9)
     @Size(max = 9)
     private String telefonoFijo;
 
     /**
      * Telefono movil
      **/
-    @Column(name = "PERS_TFNOMOV", /*nullable = false,*/ length = 9)
+    @Column(name = "PERS_TFNOMOV", /* nullable = false, */ length = 9)
     @Size(max = 9)
     private String telefonoMovil;
 
     /**
      * Telefono Exterior fijo
      **/
-    @Column(name = "PERS_EXTFIJ", /*nullable = false,*/ length = 9)
+    @Column(name = "PERS_EXTFIJ", /* nullable = false, */ length = 9)
     @Size(max = 9)
     private String telefonoExteriorFijo;
 
     /**
      * Telefono Exterior movil
      **/
-    @Column(name = "PERS_EXTMOV", /*nullable = false,*/ length = 9)
+    @Column(name = "PERS_EXTMOV", /* nullable = false, */ length = 9)
     @Size(max = 9)
     private String telefonoExteriorMovil;
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public String getIdentificador() {
@@ -125,11 +115,11 @@ public class JPersonal extends BaseEntity {
         this.cargo = cargo;
     }
 
-    public Long getUnidadAdministrativa() {
+    public JUnidadAdministrativa getUnidadAdministrativa() {
         return unidadAdministrativa;
     }
 
-    public void setUnidadAdministrativa(Long unidadAdministrativa) {
+    public void setUnidadAdministrativa(JUnidadAdministrativa unidadAdministrativa) {
         this.unidadAdministrativa = unidadAdministrativa;
     }
 
@@ -191,22 +181,23 @@ public class JPersonal extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof JPersonal)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof JPersonal))
+            return false;
         JPersonal that = (JPersonal) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(codigo, that.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
-        return "JPersonal{" +
-                "id=" + id +
-                //  ", codiSia='" + codiSia + '\'' +
+        return "JPersonal{" + "id=" + codigo +
+                // ", codiSia='" + codiSia + '\'' +
                 '}';
     }
 

@@ -2,18 +2,15 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
 /**
  * Dades d'un TipoNormativa.
  *
  * @author jsegovia
  */
 @Schema(name = "TipoNormativaGrid")
-public class TipoNormativaGridDTO {
+public class TipoNormativaGridDTO extends ModelApi {
 
-    private Long id;;
+    private Long codigo;
     private String identificador;
     private Literal descripcion;
 
@@ -27,10 +24,10 @@ public class TipoNormativaGridDTO {
      * @return the codigo
      */
     public String getIdString() {
-        if (id == null) {
+        if (codigo == null) {
             return null;
         } else {
-            return String.valueOf(id);
+            return String.valueOf(codigo);
         }
     }
 
@@ -39,22 +36,22 @@ public class TipoNormativaGridDTO {
      */
     public void setIdString(final String idString) {
         if (idString == null) {
-            this.id = null;
+            this.codigo = null;
         } else {
-            this.id = Long.valueOf(idString);
+            this.codigo = Long.valueOf(idString);
         }
     }
 
     public TipoNormativaGridDTO(Long id) {
-        this.id = id;
+        this.codigo = id;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public String getIdentificador() {
@@ -76,7 +73,7 @@ public class TipoNormativaGridDTO {
     @Override
     public String toString() {
         return "TipoNormativaGridDTO{" +
-                "id=" + id +
+                "id=" + codigo +
                 ", identificador=" + identificador +
                 ", descripcion=" + descripcion.toString() +
                 '}';

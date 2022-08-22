@@ -15,10 +15,12 @@ import java.util.Objects;
 @Entity
 @SequenceGenerator(name = "tipo-afectacion-sequence", sequenceName = "RS2_TIPOAFE_SEQ", allocationSize = 1)
 @Table(name = "RS2_TIPOAFE", indexes = {@Index(name = "RS2_TIPOAFE_PK", columnList = "TPAN_CODIGO")})
-@NamedQueries({@NamedQuery(name = JTipoAfectacion.FIND_BY_ID,
-        query = "select p from JTipoAfectacion p where p.id = :id"),
+@NamedQueries({
+        @NamedQuery(name = JTipoAfectacion.FIND_BY_ID,
+                query = "select p from JTipoAfectacion p where p.codigo = :id"),
         @NamedQuery(name = JTipoAfectacion.COUNT_BY_IDENTIFICADOR,
-                query = "select COUNT(p) from JTipoAfectacion p where p.identificador = :identificador")})
+                query = "select COUNT(p) from JTipoAfectacion p where p.identificador = :identificador")
+})
 public class JTipoAfectacion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -29,7 +31,7 @@ public class JTipoAfectacion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-afectacion-sequence")
     @Column(name = "TPAN_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     /**
      * Identificacion del tipo de afectación
@@ -45,12 +47,12 @@ public class JTipoAfectacion extends BaseEntity {
     @OneToMany(mappedBy = "tipoAfectacion", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoAfectacionTraduccion> descripcion;
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public String getIdentificador() {
@@ -76,17 +78,17 @@ public class JTipoAfectacion extends BaseEntity {
         if (!(o instanceof JTipoAfectacion))
             return false;
         JTipoAfectacion that = (JTipoAfectacion) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(codigo, that.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
-        return "JTipoAfectacion{" + "id=" + id + "identificador=" + identificador + '}';
+        return "JTipoAfectacion{" + "id=" + codigo + "identificador=" + identificador + '}';
     }
 
 }

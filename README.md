@@ -1,4 +1,4 @@
-# ![Logo](https://github.com/GovernIB/maven/raw/binaris/rolsac/projectinfo_Attachments/icon.jpg) rolsac2 (rolsac2)
+# ![Logo](https://github.com/GovernIB/maven/raw/binaris/portafib/projectinfo_Attachments/icon.jpg) rolsac2 (rolsac2)
  *rolsac2 de les Illes Balears*
 
 ***Versions***

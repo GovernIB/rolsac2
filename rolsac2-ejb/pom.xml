@@ -114,7 +114,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                        	<overwrite>true</overwrite>
+                            <overwrite>true</overwrite>
                             <outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
                             <resources>
                                 <resource>

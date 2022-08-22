@@ -12,7 +12,7 @@ public class JFichaDocumento {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ficha-doc-sequence")
     @Column(name = "FCDO_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     /**
      * Fichero
@@ -28,12 +28,12 @@ public class JFichaDocumento {
     private JFicha ficha;
 
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public Integer getFichero() {

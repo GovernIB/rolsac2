@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+>
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogUsuario.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogUsuario.id}"/>
+            <f:viewAction action="#{dialogUsuario.load}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dict.detalle']}"
+                        rendered="#{!dialogUsuario.isModoAlta()}"/>
+
+        <h:outputFormat value="#{labels['dict.nuevo']}"
+                        rendered="#{dialogUsuario.isModoAlta()}"/>
+
+    </ui:define>
+
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="true"
+                 life="5000"
+                 escape="false"/>
+
+        <p:panel>
+            <div class="row">
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtCodigo" value="#{dialogUsuario.data.codigo}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtIdentificador" value="#{dialogUsuario.data.identificador}"
+                                 styleClass="w95" required="true"
+                                 disabled="#{dialogUsuario.isModoConsulta()}" maxlength="50"/>
+                </div>
+
+                <!--
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <h:outputText value="#{labels['dialogUsuario.entidad']}:" for="selectEntidad"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:selectOneMenu id="selectEntidad" value="#{dialogUsuario.data.entidad}"
+                                     styleClass="w95" required="true"
+                                     disabled="#{dialogUsuario.isModoConsulta()}"
+                                     converter="#{entidadConverter}">
+                        <f:selectItem itemLabel="#{labels['dict.selecciona.entidad']}" itemValue="#{null}"/>
+                        <f:selectItems value="#{dialogUsuario.entidadesActivas}" var="entidad"
+                                       itemLabel="#{entidad.dir3}" itemValue="#{entidad}"/>
+                    </p:selectOneMenu>
+                </div> -->
+            </div>
+        </p:panel>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogUsuario.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogUsuario.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         process="@all"/>
+        <p:commandButton action="#{dialogUsuario.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>

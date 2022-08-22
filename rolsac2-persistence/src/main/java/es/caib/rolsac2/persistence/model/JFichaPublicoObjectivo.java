@@ -8,19 +8,19 @@ import javax.persistence.*;
 @Table(name = "RS2_FCHPOB")
 public class JFichaPublicoObjectivo {
     @EmbeddedId
-    private JFichaPublicoObjectivoPK id;
+    private JFichaPublicoObjectivoPK codigo;
 
     @MapsId("tipoPublicoObjetivo")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FCPO_TIPOPO", nullable = false)
     private JTipoPublicoObjetivo tipoPublicoObjectivo;
 
-    public JFichaPublicoObjectivoPK getId() {
-        return id;
+    public JFichaPublicoObjectivoPK getCodigo() {
+        return codigo;
     }
 
-    public void setId(JFichaPublicoObjectivoPK id) {
-        this.id = id;
+    public void setCodigo(JFichaPublicoObjectivoPK id) {
+        this.codigo = id;
     }
 
     public JTipoPublicoObjetivo getTipoPublicoObjectivo() {

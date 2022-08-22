@@ -95,7 +95,7 @@ public class PersonalIT {
         em.persist(jpersonal);
         em.flush();
 
-        Assert.assertNotNull(jpersonal.getId());
+        Assert.assertNotNull(jpersonal.getCodigo());
     }
 
     /**

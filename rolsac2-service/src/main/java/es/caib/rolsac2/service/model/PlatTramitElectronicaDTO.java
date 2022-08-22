@@ -2,20 +2,17 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import java.util.Objects;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 /**
- *
- *
  * @author Indra
  */
 @Schema(name = "PlatTramitElectronica")
-public class PlatTramitElectronicaDTO {
+public class PlatTramitElectronicaDTO extends ModelApi {
 
-    private Long id;
+    private Long codigo;
 
     /**
      * Código entidad
@@ -48,12 +45,12 @@ public class PlatTramitElectronicaDTO {
     @Size(max = 500)
     private String urlAcceso;
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public EntidadDTO getCodEntidad() {
@@ -95,19 +92,19 @@ public class PlatTramitElectronicaDTO {
         if (o == null || getClass() != o.getClass())
             return false;
         PlatTramitElectronicaDTO that = (PlatTramitElectronicaDTO) o;
-        return id.equals(that.id) && codEntidad.equals(that.codEntidad) && identificador.equals(that.identificador)
-                        && descripcion.equals(that.descripcion) && urlAcceso.equals(that.urlAcceso);
+        return codigo.equals(that.codigo) && codEntidad.equals(that.codEntidad) && identificador.equals(that.identificador)
+                && descripcion.equals(that.descripcion) && urlAcceso.equals(that.urlAcceso);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, codEntidad, identificador, descripcion, urlAcceso);
+        return Objects.hash(codigo, codEntidad, identificador, descripcion, urlAcceso);
     }
 
     @Override
     public String toString() {
-        return "PlatTramitElectronicaDTO{" + "id=" + id + ", codEntidad=" + codEntidad + ", identificador='"
-                        + identificador + '\'' + ", descripcion='" + descripcion + '\'' + ", urlAcceso='" + urlAcceso
-                        + '\'' + '}';
+        return "PlatTramitElectronicaDTO{" + "id=" + codigo + ", codEntidad=" + codEntidad + ", identificador='"
+                + identificador + '\'' + ", descripcion='" + descripcion + '\'' + ", urlAcceso='" + urlAcceso
+                + '\'' + '}';
     }
 }

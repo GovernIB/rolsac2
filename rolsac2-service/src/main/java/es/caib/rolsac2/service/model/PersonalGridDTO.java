@@ -11,9 +11,9 @@ import javax.validation.constraints.Size;
  * @author Indra
  */
 @Schema(name = "PersonalGrid")
-public class PersonalGridDTO {
+public class PersonalGridDTO extends ModelApi {
 
-    private Long id;
+    private Long codigo;
     @NotEmpty
     @Size(max = 50)
     private String nombre;
@@ -30,10 +30,10 @@ public class PersonalGridDTO {
      * @return the codigo
      */
     public String getIdString() {
-        if (id == null) {
+        if (codigo == null) {
             return null;
         } else {
-            return String.valueOf(id);
+            return String.valueOf(codigo);
         }
     }
 
@@ -42,23 +42,23 @@ public class PersonalGridDTO {
      */
     public void setIdString(final String idString) {
         if (idString == null) {
-            this.id = null;
+            this.codigo = null;
         } else {
-            this.id = Long.valueOf(idString);
+            this.codigo = Long.valueOf(idString);
         }
     }
 
     public PersonalGridDTO(Long id, String nombre) {
-        this.id = id;
+        this.codigo = id;
         this.nombre = nombre;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public String getNombre() {
@@ -88,7 +88,7 @@ public class PersonalGridDTO {
     @Override
     public String toString() {
         return "PersonalDTO{" +
-                "id=" + id +
+                "id=" + codigo +
                 ", nombre='" + nombre + '\'' +
                 ", username=" + identificador +
                 '}';

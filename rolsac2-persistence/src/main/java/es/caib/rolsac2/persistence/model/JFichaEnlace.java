@@ -12,18 +12,18 @@ public class JFichaEnlace {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ficha-enlace-sequence")
     @Column(name = "FCEN_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FCEN_CODFCH", nullable = false)
     private JFicha ficha;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JFicha getFicha() {

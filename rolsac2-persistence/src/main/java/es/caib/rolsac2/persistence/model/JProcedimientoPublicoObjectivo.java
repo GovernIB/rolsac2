@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "RS2_PRCPUB")
 public class JProcedimientoPublicoObjectivo {
     @EmbeddedId
-    private JProcedimientoPublicoObjectivoPK id;
+    private JProcedimientoPublicoObjectivoPK codigo;
 
     @MapsId("procedimiento")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -20,12 +20,12 @@ public class JProcedimientoPublicoObjectivo {
     @JoinColumn(name = "PRPO_TIPPOBJ", nullable = false)
     private JTipoPublicoObjetivo tipoPublicoObjetivo;
 
-    public JProcedimientoPublicoObjectivoPK getId() {
-        return id;
+    public JProcedimientoPublicoObjectivoPK getCodigo() {
+        return codigo;
     }
 
-    public void setId(JProcedimientoPublicoObjectivoPK id) {
-        this.id = id;
+    public void setCodigo(JProcedimientoPublicoObjectivoPK id) {
+        this.codigo = id;
     }
 
     public JProcedimientoWorkflow getProcedimiento() {

@@ -2,15 +2,17 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.util.Objects;
+
 /**
  * Dades d'un TipoUnidadAdministrativa.
  *
  * @author jsegovia
  */
 @Schema(name = "TipoUnidadAdministrativa")
-public class TipoUnidadAdministrativaDTO {
+public class TipoUnidadAdministrativaDTO extends ModelApi {
 
-    private Long id;
+    private Long codigo;
     private EntidadDTO entidad;
     private String identificador;
     private Literal descripcion;
@@ -29,10 +31,10 @@ public class TipoUnidadAdministrativaDTO {
      * @return the codigo
      */
     public String getIdString() {
-        if (id == null) {
+        if (codigo == null) {
             return null;
         } else {
-            return String.valueOf(id);
+            return String.valueOf(codigo);
         }
     }
 
@@ -41,22 +43,22 @@ public class TipoUnidadAdministrativaDTO {
      */
     public void setIdString(final String idString) {
         if (idString == null) {
-            this.id = null;
+            this.codigo = null;
         } else {
-            this.id = Long.valueOf(idString);
+            this.codigo = Long.valueOf(idString);
         }
     }
 
     public TipoUnidadAdministrativaDTO(Long id) {
-        this.id = id;
+        this.codigo = id;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public String getIdentificador() {
@@ -116,9 +118,22 @@ public class TipoUnidadAdministrativaDTO {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TipoUnidadAdministrativaDTO that = (TipoUnidadAdministrativaDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo, entidad, identificador, descripcion, cargoMasculino, cargoFemenino, tratamientoMasculino, tratamientoFemenino);
+    }
+
+    @Override
     public String toString() {
         return "TipoUnidadAdministrativaDTO{" +
-                "id=" + id +
+                "id=" + codigo +
                 ", entidad=" + entidad +
                 ", identificador='" + identificador + '\'' +
                 ", descripcion=" + descripcion +

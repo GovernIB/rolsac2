@@ -15,7 +15,7 @@ public class JProcedimientoWorkflowTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-wf-trad-sequence")
     @Column(name = "TRPW_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRPW_CODPRWF", nullable = false)
@@ -65,12 +65,12 @@ public class JProcedimientoWorkflowTraduccion {
     @Column(name = "TRPW_PRRESO")
     private String terminoResolucion;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JProcedimientoWorkflow getProcedimientoWorkflow() {

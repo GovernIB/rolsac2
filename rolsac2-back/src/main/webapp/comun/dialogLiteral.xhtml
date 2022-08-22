@@ -10,7 +10,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 -->
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
 
-
     <ui:define name="metadata">
         <f:metadata>
             <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogLiteral.modoAcceso}" />
@@ -25,7 +24,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
 
-    <ui:define name="contentDialog">
+    <ui:define name="contentDialog" >
+        <p:panel>
            <p:growl id="messagesDialog"
                      globalOnly="false"
                      showDetail="true"
@@ -33,20 +33,21 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      process="@all"
                      escape="false"/>
 
-                <div class="row">
-                    <div class="ui-g-12 ui-md-3 ui-lg-3 p-3">
-                        <h:outputText value="Texto en catalán:" for="txtCA" />
+                <div class="row p-3">
+                    <div class="ui-g-12 ui-md-2 ui-lg-2">
+                        <h:outputText value="#{labels['dict.textoCa']}:" for="txtCA" />
                     </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-9">
+                    <div class="ui-g-12 ui-md-10 ui-lg-10">
                         <p:inputTextarea id="txtCA" value="#{dialogLiteral.textoCA}" rows="5" cols="30" styleClass="w95" autoResize="false"/>
                     </div>
-                    <div class="ui-g-12 ui-md-3 ui-lg-3 p-3">
-                        <h:outputText value="Texto en español:" for="txtES" />
+                    <div class="ui-g-12 ui-md-2 ui-lg-2">
+                        <h:outputText value="#{labels['dict.textoEs']}:" for="txtES" />
                     </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-9">
+                    <div class="ui-g-12 ui-md-10 ui-lg-10">
                         <p:inputTextarea id="txtES" value="#{dialogLiteral.textoES}" rows="5" cols="30" styleClass="w95" autoResize="false"/>
                     </div>
                 </div>
+            </p:panel>
         </ui:define>
 
 
@@ -63,8 +64,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          rendered="#{!dialogLiteral.isModoConsulta()}"
                          process="@all" />
         <p:commandButton action="#{dialogLiteral.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" />
+                         value="#{labels['dict.cerrar']}"
+                         process="@this" />
 
     </ui:define>
 

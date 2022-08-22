@@ -8,9 +8,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
  * @author jsegovia
  */
 @Schema(name = "TipoPublicoObjetivo")
-public class TipoPublicoObjetivoDTO {
+public class TipoPublicoObjetivoDTO extends ModelApi {
 
-    private Long id;;
+    private Long codigo;
     private String identificador;
     private Literal descripcion;
 
@@ -24,10 +24,10 @@ public class TipoPublicoObjetivoDTO {
      * @return the codigo
      */
     public String getIdString() {
-        if (id == null) {
+        if (codigo == null) {
             return null;
         } else {
-            return String.valueOf(id);
+            return String.valueOf(codigo);
         }
     }
 
@@ -36,22 +36,22 @@ public class TipoPublicoObjetivoDTO {
      */
     public void setIdString(final String idString) {
         if (idString == null) {
-            this.id = null;
+            this.codigo = null;
         } else {
-            this.id = Long.valueOf(idString);
+            this.codigo = Long.valueOf(idString);
         }
     }
 
     public TipoPublicoObjetivoDTO(Long id) {
-        this.id = id;
+        this.codigo = id;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public String getIdentificador() {
@@ -73,7 +73,7 @@ public class TipoPublicoObjetivoDTO {
     @Override
     public String toString() {
         return "TipoNormativaDTO{" +
-                "id=" + id +
+                "id=" + codigo +
                 ", identificador=" + identificador +
                 ", descripcion=" + descripcion.toString() +
                 '}';

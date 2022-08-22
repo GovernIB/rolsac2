@@ -12,14 +12,14 @@ public class JListaDocumentos {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lista-doc-sequence")
     @Column(name = "LSDO_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
 }

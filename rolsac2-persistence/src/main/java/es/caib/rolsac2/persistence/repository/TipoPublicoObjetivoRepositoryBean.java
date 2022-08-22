@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
-import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
@@ -43,7 +42,7 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
         if (jTipoPublicoObjetivo != null) {
             for (Object[] jtipoNom : jTipoPublicoObjetivo) {
                 TipoPublicoObjetivoGridDTO tipoNormativaGridDTO = new TipoPublicoObjetivoGridDTO();
-                tipoNormativaGridDTO.setId((Long) jtipoNom[0]);
+                tipoNormativaGridDTO.setCodigo((Long) jtipoNom[0]);
                 tipoNormativaGridDTO.setIdentificador((String) jtipoNom[1]);
                 Literal literal = new Literal();
                 literal.add(new Traduccion(filtro.getIdioma(), (String) jtipoNom[2]));
@@ -66,7 +65,7 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
         } else {
-            sql = new StringBuilder("SELECT j.id, j.identificador, t.descripcion FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  where 1 = 1  ");
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, t.descripcion FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  where 1 = 1  ");
         }
 //        if (filtro.isRellenoIdUA()) {
 //            sql.append(" and j.unidadAdministrativa = :ua");
@@ -115,6 +114,6 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
     public Boolean checkIdentificador(String identificador) {
         TypedQuery<Long> query = entityManager.createNamedQuery(JTipoPublicoObjetivo.COUNT_BY_IDENTIFICADOR, Long.class);
         query.setParameter("identificador", identificador);
-        return query.getSingleResult().longValue() == 1L;
+        return query.getSingleResult().longValue() >= 1L;
     }
 }

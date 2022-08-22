@@ -50,20 +50,20 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(PlatTramitElectronicaDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
 
-        if (dto.getId() != null) {
-            throw new DatoDuplicadoException(dto.getId());
+        if (dto.getCodigo() != null) {
+            throw new DatoDuplicadoException(dto.getCodigo());
         }
 
         JPlatTramitElectronica jPlatTramitElectronica = converter.createEntity(dto);
         tipoMateriaSIARepository.create(jPlatTramitElectronica);
-        return jPlatTramitElectronica.getId();
+        return jPlatTramitElectronica.getCodigo();
     }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(PlatTramitElectronicaDTO dto) throws RecursoNoEncontradoException {
-        JPlatTramitElectronica jPlatTramitElectronica = tipoMateriaSIARepository.getReference(dto.getId());
+        JPlatTramitElectronica jPlatTramitElectronica = tipoMateriaSIARepository.getReference(dto.getCodigo());
         converter.mergeEntity(jPlatTramitElectronica, dto);
     }
 

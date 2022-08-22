@@ -3,16 +3,13 @@ package es.caib.rolsac2.back.controller.maestras.tipo;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.TipoMateriaSIAServiceFacade;
-import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.TipoMateriaSIAFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -24,7 +21,10 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Named
@@ -41,7 +41,7 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
     private LazyDataModel<TipoMateriaSIAGridDTO> lazyModel;
 
     @EJB
-    TipoMateriaSIAServiceFacade tipoMateriaSIAService;
+    private MaestrasSupServiceFacade maestrasSupService;
 
     /**
      * Dato seleccionado
@@ -66,15 +66,12 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
      */
     public void load() {
         LOG.debug("load");
-
         this.setearIdioma();
-
-        //No hace falta sessionBean.setOpcion(this.getLiteral("viewTipoBoletin.titulo"));
 
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoMateriaSIAFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getId());// UtilJSF.getSessionUnidadActiva());
-        filtro.setIdioma(sessionBean.getLang());// UtilJSF.getSessionLang());
+        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        filtro.setIdioma(sessionBean.getLang());
 
         // Generamos una búsqueda
         buscar();
@@ -91,7 +88,7 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
             @Override
             public TipoMateriaSIAGridDTO getRowData(String rowKey) {
                 for (TipoMateriaSIAGridDTO TipoMateriaSIA : getWrappedData()) {
-                    if (TipoMateriaSIA.getId().toString().equals(rowKey))
+                    if (TipoMateriaSIA.getCodigo().toString().equals(rowKey))
                         return TipoMateriaSIA;
                 }
                 return null;
@@ -99,18 +96,19 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
 
             @Override
             public Object getRowKey(TipoMateriaSIAGridDTO tipoMateriaSIA) {
-                return tipoMateriaSIA.getId().toString();
+                return tipoMateriaSIA.getCodigo().toString();
             }
 
             @Override
             public List<TipoMateriaSIAGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
                                                     Map<String, FilterMeta> filterBy) {
                 try {
+                    filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
                     }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    Pagina<TipoMateriaSIAGridDTO> pagina = tipoMateriaSIAService.findByFiltro(filtro);
+                    Pagina<TipoMateriaSIAGridDTO> pagina = maestrasSupService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 } catch (Exception e) {
@@ -129,7 +127,7 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
 
     public void editarTipoMateriaSIA() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
             abrirVentana(TypeModoAcceso.EDICION);
         }
@@ -145,7 +143,7 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
-        if (!respuesta.isCanceled() && !respuesta.getModoAcceso().equals(TypeModoAcceso.CONSULTA)) {
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             this.buscar();
         }
     }
@@ -155,17 +153,17 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
         final Map<String, String> params = new HashMap<>();
         if (this.datoSeleccionado != null
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
-            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getId().toString());
+            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoMateriaSIA", modoAcceso, params, true, 780, 200);
+        UtilJSF.openDialog("dialogTipoMateriaSIA", modoAcceso, params, true, 780, 240);
     }
 
 
     public void borrarTipoMateriaSIA() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            tipoMateriaSIAService.delete(datoSeleccionado.getId());
+            maestrasSupService.deleteTipoMateriaSIA(datoSeleccionado.getCodigo());
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
         }
     }

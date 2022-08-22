@@ -31,7 +31,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="content">
         <h:form>
-            <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
+            <p:commandButton value="#{labels['viewTipoMaterialSIA.actualizarBusqueda']}" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewTipoMateriaSIA.buscar}" update="dataTable"/>
 
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
@@ -80,7 +80,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoMateriaSIA.datoSeleccionado}"
-                         rowKey="#{tipoMateriaSIA.id}"
+                         rowKey="#{tipoMateriaSIA.codigo}"
                          reflow="true"
                          sortBy="#{viewTipoMateriaSIA.filtro.orderBy}"
                          sortOrder="#{viewTipoMateriaSIA.filtro.order}"
@@ -95,16 +95,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{tipoMateriaSIA.id}">
-                    <f:facet name="header">#{labels['dict.id']}</f:facet>
-                    <h:outputText value="#{tipoMateriaSIA.id}"/>
+                <p:column sortBy="#{tipoMateriaSIA.codigo}" headerText="#{labels['dict.codigo']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tipoMateriaSIA.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{tipoMateriaSIA.identificador}">
-                    <f:facet name="header">#{labels['dict.identificador']}</f:facet>
+                <p:column sortBy="#{tipoMateriaSIA.identificador}" headerText="#{labels['dict.identificador']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{tipoMateriaSIA.identificador}"/>
                 </p:column>
-                <p:column sortBy="#{tipoMateriaSIA.descripcion}" styleClass="overflow-datagrid-cell">
-                    <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
+                <p:column sortBy="#{tipoMateriaSIA.descripcion}" styleClass="overflow-datagrid-cell"
+                headerText="#{labels['dict.descripcion']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{tipoMateriaSIA.descripcion.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
             </p:dataTable>

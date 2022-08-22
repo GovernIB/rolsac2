@@ -15,7 +15,7 @@ public class JSeccionTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seccion-trad-sequence")
     @Column(name = "TRSE_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRSE_CODSECC", nullable = false)
@@ -30,12 +30,12 @@ public class JSeccionTraduccion {
     @Column(name = "TRSE_DESCRI", length = 4000)
     private String descripcion;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JSeccion getSeccion() {

@@ -18,7 +18,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="Detalle - #{dialogConfiguracionGlobal.data.propiedad} "
+        <h:outputFormat value="#{labels['dialogEntidad.detalle']}"
                         rendered="#{!dialogConfiguracionGlobal.isModoAlta()}"/>
     </ui:define>
 
@@ -33,7 +33,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:panel>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="Código:" for="txtPropiedad"/>
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtPropiedad"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtPropiedad" value="#{dialogConfiguracionGlobal.data.propiedad}"
@@ -43,7 +43,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             </div>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="Valor" for="txtValor"/>
+                    <h:outputText value="#{labels['dict.valor']}:" for="txtValor"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtValor" value="#{dialogConfiguracionGlobal.data.valor}"
@@ -53,7 +53,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             </div>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="Descripción:" for="txtDescripcion"/>
+                    <h:outputText value="#{labels['dict.descripcion']}:" for="txtDescripcion"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputTextarea id="txtDescripcion" value="#{dialogConfiguracionGlobal.data.descripcion}"
@@ -68,16 +68,16 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentFooterDialogLeft">
         <p:commandButton action="#{dialogConfiguracionGlobal.ayuda}"
                          icon="pi pi-info-circle" iconPos="top"
-                         value="Ayuda"
+                         value="#{labels['dict.ayuda']}"
                          process="@this"/>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogConfiguracionGlobal.guardar}"
-                         value="Guardar" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
                          process="@all"/>
         <p:commandButton action="#{dialogConfiguracionGlobal.cerrar}"
-                         value="Cerrar" update="messagesDialog"
-                         process="@all"/>
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
 
     </ui:define>
 

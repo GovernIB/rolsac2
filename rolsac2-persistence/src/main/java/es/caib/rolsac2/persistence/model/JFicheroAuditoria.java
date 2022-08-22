@@ -13,7 +13,7 @@ public class JFicheroAuditoria {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fichero-audit-sequence")
     @Column(name = "FCAU_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "RS2_CODFCH", nullable = false)
@@ -35,12 +35,12 @@ public class JFicheroAuditoria {
     @Column(name = "FCAU_USUMOD", nullable = false, length = 100)
     private String usuarioModificacion;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public LocalDate getFechaModificacion() {

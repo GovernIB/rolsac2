@@ -1,8 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoNormativa;
-import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
-import es.caib.rolsac2.persistence.model.traduccion.JTipoNormativaTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoNormativaGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
@@ -44,7 +42,7 @@ public class TipoNormativaRepositoryBean extends AbstractCrudRepository<JTipoNor
         if (jTipoNormativa != null) {
             for (Object[] jtipoNom : jTipoNormativa) {
                 TipoNormativaGridDTO tipoNormativaGridDTO = new TipoNormativaGridDTO();
-                tipoNormativaGridDTO.setId((Long) jtipoNom[0]);
+                tipoNormativaGridDTO.setCodigo((Long) jtipoNom[0]);
                 tipoNormativaGridDTO.setIdentificador((String) jtipoNom[1]);
                 Literal literal = new Literal();
                 literal.add(new Traduccion(filtro.getIdioma(), (String) jtipoNom[2]));
@@ -67,7 +65,7 @@ public class TipoNormativaRepositoryBean extends AbstractCrudRepository<JTipoNor
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JTipoNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder("SELECT j.id, j.identificador, t.descripcion FROM JTipoNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, t.descripcion FROM JTipoNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
         }
 //        if (filtro.isRellenoIdUA()) {
 //            sql.append(" and j.unidadAdministrativa = :ua");

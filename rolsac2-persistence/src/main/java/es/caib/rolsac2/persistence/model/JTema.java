@@ -13,7 +13,7 @@ public class JTema {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tema-sequence")
     @Column(name = "TEMA_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TEMA_CODENTI", nullable = false)
@@ -26,12 +26,12 @@ public class JTema {
     @JoinColumn(name = "TEMA_PADRE")
     private JTema temaPadre;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JEntidad getEntidad() {

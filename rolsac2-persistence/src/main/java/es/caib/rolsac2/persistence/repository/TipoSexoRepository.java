@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoSexo;
+import es.caib.rolsac2.service.model.TipoSexoDTO;
 import es.caib.rolsac2.service.model.TipoSexoGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoSexoFiltro;
 
@@ -16,5 +17,7 @@ public interface TipoSexoRepository extends CrudRepository<JTipoSexo, Long> {
   long countByFiltro(TipoSexoFiltro filtro);
 
   boolean existeIdentificador(String identificador);
+
+  List<TipoSexoDTO> findAll();
 
 }

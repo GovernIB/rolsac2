@@ -12,7 +12,7 @@ public class JFichaMedia {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ficha-media-sequence")
     @Column(name = "FCME_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     /**
      * Fichero
@@ -25,7 +25,7 @@ public class JFichaMedia {
      **/
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FCME_TIPOMED", nullable = false)
-    private JFicheroTipoMultimediaEdificio tipoMedia;
+    private JTipoMediaEdificio tipoMedia;
 
 
     /**
@@ -35,12 +35,12 @@ public class JFichaMedia {
     @JoinColumn(name = "FCME_CODFCH", nullable = false)
     private JFicha ficha;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public Integer getFichero() {
@@ -59,11 +59,11 @@ public class JFichaMedia {
         this.ficha = ficha;
     }
 
-    public JFicheroTipoMultimediaEdificio getTipoMedia() {
+    public JTipoMediaEdificio getTipoMedia() {
         return tipoMedia;
     }
 
-    public void setTipoMedia(JFicheroTipoMultimediaEdificio tipoMedia) {
+    public void setTipoMedia(JTipoMediaEdificio tipoMedia) {
         this.tipoMedia = tipoMedia;
     }
 }

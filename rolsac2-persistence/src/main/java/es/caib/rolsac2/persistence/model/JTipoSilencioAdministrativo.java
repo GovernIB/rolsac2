@@ -19,7 +19,7 @@ import java.util.List;
 )
 @NamedQueries({
         @NamedQuery(name = JTipoSilencioAdministrativo.FIND_BY_ID,
-                query = "select p from JTipoSilencioAdministrativo p where p.id = :id"),
+                query = "select p from JTipoSilencioAdministrativo p where p.codigo = :id"),
         @NamedQuery(name = JTipoSilencioAdministrativo.COUNT_BY_IDENTIFICADOR,
                 query = "select count(p) from JTipoSilencioAdministrativo p where p.identificador = :identificador")
 })
@@ -35,20 +35,20 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-silencionadmvo-sequence")
     @Column(name = "TPSA_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     @Column(name = "TPSA_IDENTI", length = 50)
     private String identificador;
 
-    @OneToMany(mappedBy="tipoSilencioAdministrativo", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tipoSilencioAdministrativo", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoSilencioAdministrativoTraduccion> descripcion;
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public String getIdentificador() {
@@ -70,7 +70,7 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
     @Override
     public String toString() {
         return "JTipoSilencioAdministrativo{" +
-                "id=" + id +
+                "id=" + codigo +
                 "identificador=" + identificador +
                 "descripcion=" + descripcion +
                 '}';

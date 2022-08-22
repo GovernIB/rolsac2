@@ -1,8 +1,7 @@
 package es.caib.rolsac2.persistence.model;
 
-import java.util.Objects;
-
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Representacion de un tipo de tramitación. A nivel de clase, definimos la secuencia que utilizaremos y sus claves
@@ -14,7 +13,7 @@ import javax.persistence.*;
 @SequenceGenerator(name = "tipo-tramitacion-sequence", sequenceName = "RS2_TRMPRE_SEQ", allocationSize = 1)
 @Table(name = "RS2_TRMPRE", indexes = {@Index(name = "RS2_TRMPRE_PK", columnList = "PRES_CODIGO")})
 @NamedQueries({@NamedQuery(name = JTipoTramitacion.FIND_BY_ID,
-                query = "select p from JTipoTramitacion p where p.id = :id")})
+        query = "select p from JTipoTramitacion p where p.codigo = :id")})
 public class JTipoTramitacion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -24,7 +23,7 @@ public class JTipoTramitacion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-tramitacion-sequence")
     @Column(name = "PRES_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     /**
      * Tramitación presencial
@@ -69,12 +68,22 @@ public class JTipoTramitacion extends BaseEntity {
     @Column(name = "PRES_INTTPA", nullable = false, length = 500)
     private String tramiteParametros;
 
-    public Long getId() {
-        return id;
+    /**
+     * Tramitación electrónica
+     */
+    @Column(name = "PRES_PLANTI", nullable = false, precision = 1, scale = 0)
+    private boolean plantilla;
+
+    @ManyToOne
+    @JoinColumn(name = "PRES_CODENTI")
+    private JEntidad entidad;
+
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public boolean isTramitPresencial() {
@@ -133,6 +142,22 @@ public class JTipoTramitacion extends BaseEntity {
         this.tramiteParametros = tramiteParametros;
     }
 
+    public boolean isPlantilla() {
+        return plantilla;
+    }
+
+    public void setPlantilla(boolean plantilla) {
+        this.plantilla = plantilla;
+    }
+
+    public JEntidad getEntidad() {
+        return entidad;
+    }
+
+    public void setEntidad(JEntidad entidad) {
+        this.entidad = entidad;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -140,19 +165,19 @@ public class JTipoTramitacion extends BaseEntity {
         if (!(o instanceof JTipoTramitacion))
             return false;
         JTipoTramitacion that = (JTipoTramitacion) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(codigo, that.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
-        return "JTipoTramitacion{" + "id=" + id + ", tramitPresencial=" + tramitPresencial + ", tramitElectronica="
-                        + tramitElectronica + ", urlTramitacion='" + urlTramitacion + '\'' + ", codPlatTramitacion="
-                        + codPlatTramitacion + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion
-                        + ", tramiteParametros='" + tramiteParametros + '\'' + '}';
+        return "JTipoTramitacion{" + "id=" + codigo + ", tramitPresencial=" + tramitPresencial + ", plantilla=" + plantilla
+                + ", tramitElectronica=" + tramitElectronica + ", urlTramitacion='" + urlTramitacion + '\'' + ", codPlatTramitacion="
+                + codPlatTramitacion + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion
+                + ", tramiteParametros='" + tramiteParametros + '\'' + '}';
     }
 }

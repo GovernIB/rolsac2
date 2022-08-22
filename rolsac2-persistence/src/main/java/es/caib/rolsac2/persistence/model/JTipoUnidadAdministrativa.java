@@ -1,10 +1,10 @@
 package es.caib.rolsac2.persistence.model;
 
-import es.caib.rolsac2.persistence.model.traduccion.JTipoSilencioAdministrativoTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoUnidadAdministrativaTraduccion;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representacion de un personal. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
@@ -20,9 +20,9 @@ import java.util.List;
 )
 @NamedQueries({
         @NamedQuery(name = JTipoUnidadAdministrativa.FIND_BY_ID,
-                query = "select p from JTipoUnidadAdministrativa p where p.id = :id"),
+                query = "select p from JTipoUnidadAdministrativa p where p.codigo = :id"),
         @NamedQuery(name = JTipoUnidadAdministrativa.COUNT_BY_IDENTIFICADOR,
-                query = "select count(p) from JTipoUnidadAdministrativa p where p.identificador = :identificador")
+                query = "select count(p) from JTipoUnidadAdministrativa p where p.entidad.codigo = :entidad and lower(p.identificador) like :identificador")
 })
 public class JTipoUnidadAdministrativa extends BaseEntity {
 
@@ -34,24 +34,24 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-ua-sequence")
     @Column(name = "TPUA_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
-    @ManyToOne
-    @JoinColumn(name = "TPUA_CODENTI")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TPUA_CODENTI", nullable = false)
     private JEntidad entidad;
 
-    @OneToMany(mappedBy="tipoUnidadAdministrativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tipoUnidadAdministrativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoUnidadAdministrativaTraduccion> descripcion;
 
     @Column(name = "TPUA_IDENTI", length = 50, unique = true)
     private String identificador;
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public JEntidad getEntidad() {
@@ -75,13 +75,30 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     }
 
     public void setDescripcion(List<JTipoUnidadAdministrativaTraduccion> descripcion) {
-        this.descripcion = descripcion;
+        if (this.descripcion == null || this.descripcion.isEmpty()) {
+            this.descripcion = descripcion;
+        } else {
+            this.descripcion.addAll(descripcion);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JTipoUnidadAdministrativa that = (JTipoUnidadAdministrativa) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
         return "JTipoUnidadAdministrativa{" +
-                "id=" + id +
+                "id=" + codigo +
                 ", entidad=" + entidad +
                 ", descripcion=" + descripcion +
                 ", identificador='" + identificador + '\'' +

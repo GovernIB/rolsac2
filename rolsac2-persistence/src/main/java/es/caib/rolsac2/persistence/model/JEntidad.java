@@ -1,6 +1,10 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
+
 import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Representacion de una Entidad. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
@@ -16,21 +20,24 @@ import javax.persistence.*;
 )
 @NamedQueries({
         @NamedQuery(name = JEntidad.FIND_BY_ID,
-                query = "select p from JEntidad p where p.id = :id")
+                query = "select p from JEntidad p where p.codigo = :id"),
+        @NamedQuery(name = JEntidad.COUNT_BY_IDENTIFICADOR,
+                query = "select COUNT(p) from JEntidad p where lower(p.identificador) like :identificador")
 })
 public class JEntidad extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String FIND_BY_ID = "Entidad.FIND_BY_ID";
+    public static final String FIND_BY_ID = "JEntidad.FIND_BY_ID";
+    public static final String COUNT_BY_IDENTIFICADOR = "JEntidad.COUNT_BY_IDENTIFICADOR";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-entidad-sequence")
     @Column(name = "ENTI_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
-    @Column(name = "ENTI_DIR3", length = 20, nullable = false)
-    private String dir3;
+    @Column(name = "ENTI_IDENTI", length = 50, nullable = false)
+    private String identificador;
 
     @Column(name = "ENTI_ACTIVA", nullable = false)
     private Boolean activa;
@@ -50,21 +57,19 @@ public class JEntidad extends BaseEntity {
     @Column(name = "ENTI_LOGO", nullable = false, length = 10)
     private Long logo;
 
+    /**
+     * Descripción
+     */
+    @OneToMany(mappedBy = "entidad", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JEntidadTraduccion> descripcion;
 
-    public Long getId() {
-        return id;
+
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDir3() {
-        return dir3;
-    }
-
-    public void setDir3(String dir3) {
-        this.dir3 = dir3;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public Boolean getActiva() {
@@ -115,11 +120,59 @@ public class JEntidad extends BaseEntity {
         this.logo = logo;
     }
 
+    public List<JEntidadTraduccion> getDescripcion() {
+        return descripcion;
+    }
+
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
+
+    public String getDescripcion(String idioma) {
+        if (descripcion == null || descripcion.isEmpty()) {
+            return "";
+        }
+        for (JEntidadTraduccion trad : this.descripcion) {
+            if (trad.getIdioma() != null && idioma.equalsIgnoreCase(idioma)) {
+                return trad.getDescripcion();
+            }
+        }
+        return "";
+    }
+
+    public void setDescripcion(List<JEntidadTraduccion> descripcion) {
+        if (this.descripcion == null || this.descripcion.isEmpty()) {
+            this.descripcion = descripcion;
+        } else {
+            this.descripcion.addAll(descripcion);
+        }
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof JEntidad))
+            return false;
+        JEntidad jEntidad = (JEntidad) o;
+        return Objects.equals(codigo, jEntidad.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
     @Override
     public String toString() {
         return "JEntidad{" +
-                "id=" + id +
-                ", dir3='" + dir3 + '\'' +
+                "id=" + codigo +
+                ", identificador='" + identificador + '\'' +
                 ", activa=" + activa +
                 ", rolAdmin='" + rolAdmin + '\'' +
                 ", rolAdminContenido='" + rolAdminContenido + '\'' +

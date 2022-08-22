@@ -60,26 +60,26 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" styleClass="mr-2"
                                              iconPos="top" action="#{viewTipoSexo.borrarTipoSexo}" process="@form"
                                              update="messages dataTable">
-                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                              <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                             action="#{viewTipoSexo.ayuda}" process="@this" update="messages"/>
+                          <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                           action="#{viewTipoSexo.ayuda}" process="@this" update="messages"/>
                         </div>
                     </div>
                 </f:facet>
             </p:panel>
-            <p:dataTable id="dataTable" value="#{viewTipoSexo.lazyModel}" var="tipoAfectacion"
-                         paginator="true" lazy="true" filterDelay="300" widgetVar="tipoAfectacionTable"
-                         rows="#{viewTipoSexo.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
-                         first="#{viewTipoSexo.filtro.paginaFirst}"
-                         paginatorPosition="bottom" paginatorAlwaysVisible="true"
-                         paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+          <p:dataTable id="dataTable" value="#{viewTipoSexo.lazyModel}" var="tipoSexo"
+                       paginator="true" lazy="true" filterDelay="300" widgetVar="tipoSexoTable"
+                       rows="#{viewTipoSexo.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                       first="#{viewTipoSexo.filtro.paginaFirst}"
+                       paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                       paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                          {NextPageLink} {LastPageLink}"
-                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
-                         emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewTipoSexo.datoSeleccionado}"
-                         rowKey="#{tipoAfectacion.id}"
-                         reflow="true"
+                       currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                       emptyMessage="#{labels['dict.noHayDatos']}"
+                       selectionMode="single" selection="#{viewTipoSexo.datoSeleccionado}"
+                       rowKey="#{tipoSexo.codigo}"
+                       reflow="true"
                          sortBy="#{viewTipoSexo.filtro.orderBy}"
                          sortOrder="#{viewTipoSexo.filtro.order}"
                          style="min-height: 300px;"
@@ -93,18 +93,18 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{tipoAfectacion.id}">
-                    <f:facet name="header">#{labels['dict.id']}</f:facet>
-                    <h:outputText value="#{tipoAfectacion.id}"/>
-                </p:column>
-                <p:column sortBy="#{tipoAfectacion.identificador}">
-                    <f:facet name="header">#{labels['dict.identificador']}</f:facet>
-                    <h:outputText value="#{tipoAfectacion.identificador}"/>
-                </p:column>
-                <p:column sortBy="#{tipoAfectacion.descripcion}" styleClass="overflow-datagrid-cell">
-                    <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
-                    <h:outputText value="#{tipoAfectacion.descripcion.getTraduccion(sessionBean.lang)}"/>
-                </p:column>
+            <p:column sortBy="#{tipoSexo.codigo}">
+              <f:facet name="header">#{labels['dict.codigo']}</f:facet>
+              <h:outputText value="#{tipoSexo.codigo}"/>
+            </p:column>
+            <p:column sortBy="#{tipoSexo.identificador}">
+              <f:facet name="header">#{labels['dict.identificador']}</f:facet>
+              <h:outputText value="#{tipoSexo.identificador}"/>
+            </p:column>
+            <p:column sortBy="#{tipoSexo.descripcion}" styleClass="overflow-datagrid-cell">
+              <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
+              <h:outputText value="#{tipoSexo.descripcion.getTraduccion(sessionBean.lang)}"/>
+            </p:column>
             </p:dataTable>
 
             <h:outputScript>

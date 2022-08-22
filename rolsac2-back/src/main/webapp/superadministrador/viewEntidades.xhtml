@@ -17,7 +17,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
 
     <ui:define name="pageTitle">
-        <h:outputFormat value="Gestión de Entidades"/>
+        <h:outputFormat value="#{labels['viewEntidades.gestion']}"/>
     </ui:define>
 
     <ui:define name="breadcrumb">
@@ -31,39 +31,41 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
 
     <ui:define name="content">
         <h:form>
-            <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
+            <p:commandButton value="#{labels['viewEntidades.boton.actualizar']}" id="actualizarBusqueda"
+                             style="display:none" ajax="false"
                              action="#{viewEntidades.buscar}" update="dataTable"/>
 
-            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
-                <f:facet name="header">
-                    <div class="row">
-                    <div class="ui-g-12 ui-md-6 ui-lg-6">
-                        <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
-                        <p:inputText id="filtroBusqueda" value="#{viewEntidades.filtroTexto}" styleClass="mr-2"  />
-                        <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
-                                         actionListener="#{viewEntidades.buscar()}" process="@form" styleClass="mr-2" />
-                    </div>
-                    <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
-                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
-                                             actionListener="#{viewEntidades.nuevoEntidad}" process="@this" styleClass="mr-2" >
-                                <p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}"
-                                        update="messages dataTable"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
-                                             actionListener="#{viewEntidades.editarEntidad}" process="@form" update="messages" styleClass="mr-2" >
-                                <p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}"
-                                        update="messages dataTable"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
-                                             action="#{viewEntidades.borrarEntidad}" process="@form" update="messages dataTable" styleClass="mr-2" >
-                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                             action="#{viewEntidades.ayuda}" process="@this" update="messages"/>
-                        </div>
-                    </div>
+            <p:toolbar id="toolbar">
+                <f:facet name=""></f:facet>
+                <f:facet name="left">
+                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                                                                                     value="#{viewEntidades.filtroTexto}"/>
+                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                     actionListener="#{viewEntidades.buscar()}" process="@form"/>
+                    <p:commandButton value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus" iconPos="top"
+                                     update="messages dataTable" actionListener="#{viewEntidades.ayuda}"
+                                     process="@form"/>
                 </f:facet>
-            </p:panel>
+                <f:facet name="right">
+                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
+                                     actionListener="#{viewEntidades.nuevoEntidad}" process="@this">
+                        <p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                                     actionListener="#{viewEntidades.editarEntidad}" process="@form" update="messages">
+                        <p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                                     action="#{viewEntidades.borrarEntidad}" process="@form"
+                                     update="messages dataTable">
+                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                     action="#{viewEntidades.ayuda}" process="@this" update="messages"/>
+                </f:facet>
+            </p:toolbar>
             <p:dataTable id="dataTable" value="#{viewEntidades.lazyModel}" var="entidad"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="entidadTable"
                          rows="#{viewEntidades.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
@@ -73,14 +75,12 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewEntidades.datoSeleccionado}" rowKey="#{entidad.id}"
+                         selectionMode="single" selection="#{viewEntidades.datoSeleccionado}" rowKey="#{entidad.codigo}"
                          reflow="true"
                          sortBy="#{viewEntidades.filtro.orderBy}"
                          sortOrder="#{viewEntidades.filtro.order}"
                          style="min-height: 300px;"
             >
-                <!--<p:ajax event="rowDblselect" listener="#{viewEntidad.consultarPersonal}"
-                        update="dataTable" /> -->
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"
@@ -88,28 +88,37 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{entidad.dir3}">
-                    <f:facet name="header">Código DIR3</f:facet>
-                    <h:outputText value="#{entidad.dir3}"/>
+                <p:column sortBy="#{entidad.codigo}" headerText="#{labels['dict.codigo']}">
+                    <f:facet name="header" />
+                    <h:outputText value="#{entidad.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{entidad.activa}">
-                    <f:facet name="header">Activa</f:facet>
+                <p:column sortBy="#{entidad.identificador}" headerText="#{labels['dict.identificador']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{entidad.identificador}"/>
+                </p:column>
+                <p:column sortBy="#{entidad.descripcion}" headerText="#{labels['dict.descripcion']}">
+                    <f:facet name="header" />
+                    <h:outputText value="#{entidad.descripcion}" />
+                </p:column>
+                <p:column sortBy="#{entidad.activa}" headerText="#{labels['viewEntidades.activa']}">
+                    <f:facet name="header"/>
                     <h:selectBooleanCheckbox value="#{entidad.activa}" disabled="true"/>
                 </p:column>
-                <p:column sortBy="#{entidad.rolAdmin}">
-                    <f:facet name="header">Rol Admin</f:facet>
+                <p:column sortBy="#{entidad.rolAdmin}" headerText="#{labels['dialogEntidad.rol.admin']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{entidad.rolAdmin}"/>
                 </p:column>
-                <p:column sortBy="#{entidad.rolAdminContenido}">
-                    <f:facet name="header">Rol Admin. Contenido</f:facet>
+                <p:column sortBy="#{entidad.rolAdminContenido}"
+                          headerText="#{labels['dialogEntidad.rol.adminContenido']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{entidad.rolAdminContenido}"/>
                 </p:column>
-                <p:column sortBy="#{entidad.rolGestor}">
-                    <f:facet name="header">Rol Gestor</f:facet>
+                <p:column sortBy="#{entidad.rolGestor}" headerText="#{labels['dialogEntidad.rol.gestor']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{entidad.rolGestor}"/>
                 </p:column>
-                <p:column sortBy="#{entidad.rolInformador}">
-                    <f:facet name="header">Rol Informador</f:facet>
+                <p:column sortBy="#{entidad.rolInformador}" headerText="#{labels['dialogEntidad.rol.informador']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{entidad.rolInformador}"/>
                 </p:column>
             </p:dataTable>

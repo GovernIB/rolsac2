@@ -3,6 +3,7 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.service.exception.ServiceException;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.model.EntidadGridDTO;
 import es.caib.rolsac2.service.model.Pagina;
@@ -20,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -72,8 +75,8 @@ public class ViewEntidades extends AbstractController implements Serializable {
         // Inicializamos combos/desplegables/inputs/filtro
         this.setearIdioma();
         filtro = new EntidadFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getId());// UtilJSF.getSessionUnidadActiva());
-        filtro.setIdioma(sessionBean.getLang());// UtilJSF.getSessionLang());
+        //filtro.setIdUA(sessionBean.getUnidadActiva().getId());
+        filtro.setIdioma(sessionBean.getLang());
 
         // Generamos una búsqueda
         buscar();
@@ -94,7 +97,7 @@ public class ViewEntidades extends AbstractController implements Serializable {
             @Override
             public EntidadGridDTO getRowData(String rowKey) {
                 for (EntidadGridDTO pers : (List<EntidadGridDTO>) getWrappedData()) {
-                    if (pers.getId().toString().equals(rowKey))
+                    if (pers.getCodigo().toString().equals(rowKey))
                         return pers;
                 }
                 return null;
@@ -102,13 +105,14 @@ public class ViewEntidades extends AbstractController implements Serializable {
 
             @Override
             public Object getRowKey(EntidadGridDTO pers) {
-                return pers.getId().toString();
+                return pers.getCodigo().toString();
             }
 
             @Override
             public List<EntidadGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
                                              Map<String, FilterMeta> filterBy) {
                 try {
+                    filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
                     }
@@ -148,7 +152,7 @@ public class ViewEntidades extends AbstractController implements Serializable {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
-        if (!respuesta.isCanceled() && !respuesta.getModoAcceso().equals(TypeModoAcceso.CONSULTA)) {
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             this.buscar();
         }
     }
@@ -158,18 +162,23 @@ public class ViewEntidades extends AbstractController implements Serializable {
         final Map<String, String> params = new HashMap<>();
         if (this.datoSeleccionado != null
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
-            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getId().toString());
+            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogEntidad", modoAcceso, params, true, 780, 385);
+        UtilJSF.openDialog("dialogEntidad", modoAcceso, params, true, 780, 475);
     }
 
     public void borrarEntidad() {
-        if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
-        } else {
-            administracionSupServiceFacade.deleteEntidad(datoSeleccionado.getId());
-            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        try{
+            if (datoSeleccionado == null) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+            } else {
+                administracionSupServiceFacade.deleteEntidad(datoSeleccionado.getCodigo());
+                addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+            }
+        }catch(ServiceException e){
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.ua.relacionadas"));
         }
+
     }
 
     public EntidadGridDTO getDatoSeleccionado() {

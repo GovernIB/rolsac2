@@ -1,10 +1,9 @@
 package es.caib.rolsac2.back.controller.maestras.tipo;
 
 import es.caib.rolsac2.back.controller.AbstractController;
-import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.TipoSilencioAdministrativoServiceFacade;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
@@ -14,11 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -31,17 +27,14 @@ import java.util.Objects;
 public class DialogTipoSilencioAdministrativo extends AbstractController implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(DialogTipoSilencioAdministrativo.class);
 
-
     private String id;
 
     private TipoSilencioAdministrativoDTO data;
 
     private String identificadorOld;
 
-    @Inject
-    private SessionBean sessionBean;
     @EJB
-    TipoSilencioAdministrativoServiceFacade tipoSilencioAdministrativoServiceFacade;
+    private MaestrasSupServiceFacade maestrasSupService;
 
     public void load() {
         LOG.debug("init");
@@ -52,7 +45,7 @@ public class DialogTipoSilencioAdministrativo extends AbstractController impleme
         if (this.isModoAlta()) {
             data = new TipoSilencioAdministrativoDTO();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = tipoSilencioAdministrativoServiceFacade.findById(Long.valueOf(id));
+            data = maestrasSupService.findTipoSilencioAdministrativoById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
         }
         if (data.getDescripcion() == null) {
@@ -61,27 +54,24 @@ public class DialogTipoSilencioAdministrativo extends AbstractController impleme
 
     }
 
-    public void abrirDlg() {
-        final Map<String, String> params = new HashMap<>();
-        UtilJSF.openDialog("dialogPersonal", TypeModoAcceso.ALTA, params, true, 1050, 550);
-    }
-
-    public void testMsg() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "Test MSG desde dialog", "INFO");// UtilJSF.getLiteral("info.borrado.ok"));
-    }
-
     public void guardar() {
 
-        if ((Objects.nonNull(this.data.getId()) && !this.identificadorOld.equals(this.data.getIdentificador())) || Objects.isNull(this.data.getId())
-                && Boolean.TRUE.equals(tipoSilencioAdministrativoServiceFacade.checkIdentificador(this.data.getIdentificador()))) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "Ya existe el identificador", true);
+        if (Objects.isNull(this.data.getCodigo())
+                && maestrasSupService.checkIdentificadorTipoSilencioAdministrativo(this.data.getIdentificador())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return;
         }
 
-        if (this.data.getId() == null) {
-            tipoSilencioAdministrativoServiceFacade.create(this.data, sessionBean.getUnidadActiva().getId());
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
+                && maestrasSupService.checkIdentificadorTipoSilencioAdministrativo(this.data.getIdentificador())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            return;
+        }
+
+        if (this.data.getCodigo() == null) {
+            maestrasSupService.create(this.data, sessionBean.getUnidadActiva().getCodigo());
         } else {
-            tipoSilencioAdministrativoServiceFacade.update(this.data);
+            maestrasSupService.update(this.data);
         }
 
         // Retornamos resultado

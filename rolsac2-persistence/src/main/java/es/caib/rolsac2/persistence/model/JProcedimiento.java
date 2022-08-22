@@ -10,11 +10,16 @@ import java.time.LocalDate;
                 @Index(name = "RS2_PROC_PK_I", columnList = "PROC_CODIGO")
         }
 )
+@NamedQueries({
+        @NamedQuery(name = JProcedimiento.FIND_BY_ID,
+                query = "select p from JProcedimiento p where p.codigo = :id")
+})
 public class JProcedimiento {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-sequence")
     @Column(name = "PROC_CODIGO", nullable = false)
-    private Integer id;
+    private Long codigo;
+    public static final String FIND_BY_ID = "Procedimiento.FIND_BY_ID";
 
     /**
      * PROCEDIMIENTO (P) / SERVICIO (S)
@@ -34,12 +39,12 @@ public class JProcedimiento {
     @Column(name = "PROC_SIADIR3", length = 20)
     private String codigoDir3SIA;
 
-    public Integer getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public String getTipo() {

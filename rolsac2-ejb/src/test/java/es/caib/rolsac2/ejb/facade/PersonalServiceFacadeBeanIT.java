@@ -31,7 +31,7 @@ public class PersonalServiceFacadeBeanIT extends AbstractFacadeIT {
     @InSequence(1)
     public void testCreateUnitat() {
         PersonalDTO dto = new PersonalDTO();
-        dto.setId(1l);
+        dto.setCodigo(1l);
         dto.setIdentificador("Identif");
         dto.setEmail("fewfji2@iof.es");
 
@@ -47,12 +47,12 @@ public class PersonalServiceFacadeBeanIT extends AbstractFacadeIT {
     @InSequence(2)
     public void testCreateUnitatDuplicat() {
         PersonalDTO dto = new PersonalDTO();
-        dto.setId(1l);
+        dto.setCodigo(1l);
         dto.setIdentificador("U87654321");
         dto.setEmail("fewfji2@iof.es");
 
         adminManager.exec(() -> {
-            personalServiceFacade.create(dto, 1l);
+            personalServiceFacade.create(dto);
             Assert.fail("No s'hauria d'haver pogut crear");
         });
     }

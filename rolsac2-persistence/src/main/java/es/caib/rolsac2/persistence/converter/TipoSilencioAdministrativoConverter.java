@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.converter;
 
 import es.caib.rolsac2.persistence.model.JTipoSilencioAdministrativo;
-import es.caib.rolsac2.persistence.model.JTipoSilencioAdministrativo;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoSilencioAdministrativoTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
@@ -39,7 +38,6 @@ public interface TipoSilencioAdministrativoConverter extends Converter<JTipoSile
     void mergeEntity(@MappingTarget JTipoSilencioAdministrativo entity, TipoSilencioAdministrativoDTO dto);
 
 
-
     default List<JTipoSilencioAdministrativoTraduccion> convierteLiteralToTraduccion(JTipoSilencioAdministrativo jTipoSilencioAdministrativo, Literal descripcion) {
 
         if (jTipoSilencioAdministrativo.getDescripcion() == null || jTipoSilencioAdministrativo.getDescripcion().isEmpty()) {
@@ -49,7 +47,9 @@ public interface TipoSilencioAdministrativoConverter extends Converter<JTipoSile
             }
         }
         for (JTipoSilencioAdministrativoTraduccion traduccion : jTipoSilencioAdministrativo.getDescripcion()) {
-            traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));
+            if (descripcion != null) {
+                traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));
+            }
         }
         return jTipoSilencioAdministrativo.getDescripcion();
     }
@@ -59,10 +59,10 @@ public interface TipoSilencioAdministrativoConverter extends Converter<JTipoSile
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
-            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoSilencioAdministrativo().getId()).findFirst().orElse(null));
+            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoSilencioAdministrativo().getCodigo()).findFirst().orElse(null));
             for (JTipoSilencioAdministrativoTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
-                trad.setCodigo(traduccion.getId());
+                trad.setCodigo(traduccion.getCodigo());
                 trad.setIdioma(traduccion.getIdioma());
                 trad.setLiteral(traduccion.getDescripcion());
                 resultado.add(trad);

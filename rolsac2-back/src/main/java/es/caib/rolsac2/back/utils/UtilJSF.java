@@ -29,6 +29,7 @@ public class UtilJSF {
         // not called
     }
 
+
     /**
      * Abre pantalla de dialogo
      *
@@ -199,6 +200,10 @@ public class UtilJSF {
 
     public static Object getValorMochilaByKey(String literal) {
         return getSessionBean().getValorMochilaByKey(literal);
+    }
+
+    public static Object getDialogParam(String parametro) {
+        return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(parametro);
     }
 
 }

@@ -1,14 +1,13 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.persistence.*;
-
 import es.caib.rolsac2.persistence.model.BaseEntity;
 import es.caib.rolsac2.persistence.model.JTipoFormaInicio;
 import es.caib.rolsac2.service.model.Constantes;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "tipo-forma-inicio-trad-sequence", sequenceName = "RS2_TRATPFI_SEQ", allocationSize = 1)
@@ -17,7 +16,7 @@ public class JTipoFormaInicioTraduccion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-forma-inicio-trad-sequence")
     @Column(name = "TRTF_CODIGO", nullable = false)
-    private Long id;
+    private Long codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRTF_CODTPFI", nullable = false)
@@ -39,12 +38,12 @@ public class JTipoFormaInicioTraduccion extends BaseEntity {
         return traducciones;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public JTipoFormaInicio getTipoFormaInicio() {
@@ -78,16 +77,16 @@ public class JTipoFormaInicioTraduccion extends BaseEntity {
         if (o == null || getClass() != o.getClass())
             return false;
         JTipoFormaInicioTraduccion that = (JTipoFormaInicioTraduccion) o;
-        return id.equals(that.id);
+        return codigo.equals(that.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
-        return "JTipoFormaInicioTraduccion{" + "id=" + id + "}";
+        return "JTipoFormaInicioTraduccion{" + "id=" + codigo + "}";
     }
 }

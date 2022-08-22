@@ -17,7 +17,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
 
     <ui:define name="pageTitle">
-        <h:outputFormat value="Gestión de Configuración Global"/>
+        <h:outputFormat value="#{labels['viewConfigGlobales.gestion']}"/>
     </ui:define>
 
     <ui:define name="breadcrumb">
@@ -34,28 +34,28 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewConfiguracionesGlobales.buscar}" update="dataTable"/>
 
-            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
-                <f:facet name="header">
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
-                            <p:inputText id="filtroBusqueda"  value="#{viewConfiguracionesGlobales.filtroTexto}" styleClass="mr-2"  />
-                            <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable" actionListener="#{viewConfiguracionesGlobales.buscar()}" process="@form"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
-
-                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
-                                             actionListener="#{viewConfiguracionesGlobales.editarConfiguracionGlobal}"
-                                             process="@form" update="messages" styleClass="mr-2" >
-                                <p:ajax event="dialogReturn" listener="#{viewConfiguracionesGlobales.returnDialogo}"
-                                        update="messages dataTable"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                             action="#{viewConfiguracionesGlobales.ayuda}" process="@this" update="messages"/>
-                        </div>
-                    </div>
+            <p:toolbar id="toolbar">
+                <f:facet name=""></f:facet>
+                <f:facet name="left">
+                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                                                                                     value="#{viewConfiguracionesGlobales.filtroTexto}"/>
+                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                     actionListener="#{viewConfiguracionesGlobales.buscar()}" process="@form"/>
+                    <p:commandButton value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus" iconPos="top"
+                                     update="messages dataTable" actionListener="#{viewConfiguracionesGlobales.ayuda}"
+                                     process="@form"/>
                 </f:facet>
-            </p:panel>
+                <f:facet name="right">
+                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                                     actionListener="#{viewConfiguracionesGlobales.editarConfiguracionGlobal}"
+                                     process="@form" update="messages">
+                        <p:ajax event="dialogReturn" listener="#{viewConfiguracionesGlobales.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                     action="#{viewConfiguracionesGlobales.ayuda}" process="@this" update="messages"/>
+                </f:facet>
+            </p:toolbar>
             <p:dataTable id="dataTable" value="#{viewConfiguracionesGlobales.lazyModel}" var="configuracionGlobal"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="configuracionGlobalTable"
                          rows="#{viewConfiguracionesGlobales.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
@@ -66,7 +66,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewConfiguracionesGlobales.datoSeleccionado}"
-                         rowKey="#{configuracionGlobal.id}"
+                         rowKey="#{configuracionGlobal.codigo}"
                          reflow="true"
                          sortBy="#{viewConfiguracionesGlobales.filtro.orderBy}"
                          sortOrder="#{viewConfiguracionesGlobales.filtro.order}"
@@ -79,16 +79,21 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{configuracionGlobal.codigo}">
-                    <f:facet name="header">Código</f:facet>
+                <p:column sortBy="#{configuracionGlobal.codigo}" headerText="#{labels['dict.codigo']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{configuracionGlobal.propiedad}"/>
                 </p:column>
-                <p:column sortBy="#{configuracionGlobal.valor}">
-                    <f:facet name="header">Valor</f:facet>
+                <p:column sortBy="#{configuracionGlobal.noModificable}"
+                          headerText="#{labels['viewConfiguacionesGlobales.noModificable']}">
+                    <f:facet name="header"/>
+                    <h:selectBooleanCheckbox value="#{configuracionGlobal.noModificable}" disabled="true"/>
+                </p:column>
+                <p:column sortBy="#{configuracionGlobal.valor}" headerText="#{labels['dict.valor']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{configuracionGlobal.valor}"/>
                 </p:column>
-                <p:column sortBy="#{configuracionGlobal.descripcion}">
-                    <f:facet name="header">Descripción</f:facet>
+                <p:column sortBy="#{configuracionGlobal.descripcion}" headerText="#{labels['dict.descripcion']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{configuracionGlobal.descripcion}"/>
                 </p:column>
             </p:dataTable>

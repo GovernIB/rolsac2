@@ -13,7 +13,7 @@ public class JPersonaAuditoria {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "persona-audit-sequence")
     @Column(name = "PERAU_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PERAU_CODPER", nullable = false)
@@ -29,12 +29,12 @@ public class JPersonaAuditoria {
     @Column(name = "PERAU_USUMOD", nullable = false, length = 100)
     private String usuarioModificacion;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JPersonal getPersona() {

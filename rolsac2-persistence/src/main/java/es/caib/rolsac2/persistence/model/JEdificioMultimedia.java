@@ -12,7 +12,7 @@ public class JEdificioMultimedia {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "edificio-sequence")
     @Column(name = "EDME_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     /**
      * Edificio
@@ -26,7 +26,7 @@ public class JEdificioMultimedia {
      **/
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "EDME_TIPOMED", nullable = false)
-    private JFicheroTipoMultimediaEdificio tipoMedia;
+    private JTipoMediaEdificio tipoMedia;
 
     /**
      * Fichero *
@@ -34,12 +34,12 @@ public class JEdificioMultimedia {
     @Column(name = "EDME_CODFIC")
     private Integer fichero;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JEdificio getEdificio() {
@@ -58,11 +58,11 @@ public class JEdificioMultimedia {
         this.fichero = edmeCodfic;
     }
 
-    public JFicheroTipoMultimediaEdificio getTipoMedia() {
+    public JTipoMediaEdificio getTipoMedia() {
         return tipoMedia;
     }
 
-    public void setTipoMedia(JFicheroTipoMultimediaEdificio tipoMedia) {
+    public void setTipoMedia(JTipoMediaEdificio tipoMedia) {
         this.tipoMedia = tipoMedia;
     }
 }

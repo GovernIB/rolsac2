@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "RS2_UNAEDI")
 public class JEdificioUnidadAdministrativa {
     @EmbeddedId
-    private JEdificioUnidadAdministrativaPK id;
+    private JEdificioUnidadAdministrativaPK codigo;
 
     @MapsId("edificio")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -20,12 +20,12 @@ public class JEdificioUnidadAdministrativa {
     @JoinColumn(name = "UAED_CODUA", nullable = false)
     private JUnidadAdministrativa unidadAdministrativa;
 
-    public JEdificioUnidadAdministrativaPK getId() {
-        return id;
+    public JEdificioUnidadAdministrativaPK getCodigo() {
+        return codigo;
     }
 
-    public void setId(JEdificioUnidadAdministrativaPK id) {
-        this.id = id;
+    public void setCodigo(JEdificioUnidadAdministrativaPK id) {
+        this.codigo = id;
     }
 
     public JEdificio getEdificio() {

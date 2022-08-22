@@ -8,9 +8,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
  * @author Indra
  */
 @Schema(name = "TipoUnidadAdministrativa")
-public class TipoUnidadAdministrativaGridDTO {
+public class TipoUnidadAdministrativaGridDTO extends ModelApi {
 
-    private Long id;;
+    private Long codigo;
     private String identificador;
     private String entidad;
     private Literal descripcion;
@@ -29,10 +29,10 @@ public class TipoUnidadAdministrativaGridDTO {
      * @return the codigo
      */
     public String getIdString() {
-        if (id == null) {
+        if (codigo == null) {
             return null;
         } else {
-            return String.valueOf(id);
+            return String.valueOf(codigo);
         }
     }
 
@@ -41,22 +41,22 @@ public class TipoUnidadAdministrativaGridDTO {
      */
     public void setIdString(final String idString) {
         if (idString == null) {
-            this.id = null;
+            this.codigo = null;
         } else {
-            this.id = Long.valueOf(idString);
+            this.codigo = Long.valueOf(idString);
         }
     }
 
     public TipoUnidadAdministrativaGridDTO(Long id) {
-        this.id = id;
+        this.codigo = id;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public String getIdentificador() {
@@ -118,7 +118,7 @@ public class TipoUnidadAdministrativaGridDTO {
     @Override
     public String toString() {
         return "TipoUnidadAdministrativaGridDTO{" +
-                "id=" + id +
+                "id=" + codigo +
                 ", identificador=" + identificador +
                 ", descripcion=" + descripcion.toString() +
                 ", entidad=" + entidad.toString() +

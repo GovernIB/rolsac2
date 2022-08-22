@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.BaseEntity;
-import es.caib.rolsac2.persistence.model.JTipoNormativa;
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
 import es.caib.rolsac2.service.model.Constantes;
 
@@ -23,7 +22,7 @@ import java.util.List;
 )
 @NamedQueries({
         @NamedQuery(name = JTipoPublicoObjetivoTraduccion.FIND_BY_ID,
-                query = "select p from JTipoPublicoObjetivoTraduccion p where p.id = :id")
+                query = "select p from JTipoPublicoObjetivoTraduccion p where p.codigo = :id")
 })
 public class JTipoPublicoObjetivoTraduccion extends BaseEntity {
 
@@ -34,7 +33,7 @@ public class JTipoPublicoObjetivoTraduccion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-publicoobjtra-sequence")
     @Column(name = "TRTP_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     @ManyToOne
     @JoinColumn(name = "TRTP_CODTPPO")
@@ -56,12 +55,12 @@ public class JTipoPublicoObjetivoTraduccion extends BaseEntity {
         return traducciones;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public JTipoPublicoObjetivo getTipoPublicoObjetivo() {
@@ -91,7 +90,7 @@ public class JTipoPublicoObjetivoTraduccion extends BaseEntity {
     @Override
     public String toString() {
         return "JTipoPublicoObjetivo{" +
-                "id=" + id +
+                "id=" + codigo +
                 "tipoPublicoObjetivo=" + tipoPublicoObjetivo +
                 "idioma=" + idioma +
                 "descripcion=" + descripcion +

@@ -52,10 +52,10 @@ public interface TipoSexoConverter extends Converter<JTipoSexo, TipoSexoDTO> {
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
-            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoSexo().getId()).findFirst().orElse(null));
+            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoSexo().getCodigo()).findFirst().orElse(null));
             for (JTipoSexoTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
-                trad.setCodigo(traduccion.getId());
+                trad.setCodigo(traduccion.getCodigo());
                 trad.setIdioma(traduccion.getIdioma());
                 trad.setLiteral(traduccion.getDescripcion());
                 resultado.add(trad);

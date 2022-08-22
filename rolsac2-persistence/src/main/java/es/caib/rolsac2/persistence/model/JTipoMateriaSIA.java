@@ -15,7 +15,7 @@ import java.util.Objects;
 @SequenceGenerator(name = "tipo-materia-sia-sequence", sequenceName = "RS2_TIPOMSI_SEQ", allocationSize = 1)
 @Table(name = "RS2_TIPOMSI", indexes = {@Index(name = "RS2_TIPOMSI_PK", columnList = "TPMS_CODIGO")})
 @NamedQueries({
-        @NamedQuery(name = JTipoMateriaSIA.FIND_BY_ID, query = "select p from JTipoMateriaSIA p where p.id = :id"),
+        @NamedQuery(name = JTipoMateriaSIA.FIND_BY_ID, query = "select p from JTipoMateriaSIA p where p.codigo = :id"),
         @NamedQuery(name = JTipoMateriaSIA.COUNT_BY_IDENTIFICADOR,
                 query = "select COUNT(p) from JTipoMateriaSIA p where p.identificador = :identificador")})
 public class JTipoMateriaSIA extends BaseEntity {
@@ -32,7 +32,7 @@ public class JTipoMateriaSIA extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-materia-sia-sequence")
     @Column(name = "TPMS_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     /**
      * Identificacion del tipo de materia SIA
@@ -46,12 +46,12 @@ public class JTipoMateriaSIA extends BaseEntity {
     @OneToMany(mappedBy = "tipoMateriaSIA", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoMateriaSIATraduccion> descripcion;
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public String getIdentificador() {
@@ -77,17 +77,17 @@ public class JTipoMateriaSIA extends BaseEntity {
         if (!(o instanceof JTipoMateriaSIA))
             return false;
         JTipoMateriaSIA that = (JTipoMateriaSIA) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(codigo, that.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
-        return "JTipoMateriaSIA{" + "id=" + id + "identificador=" + identificador + '}';
+        return "JTipoMateriaSIA{" + "id=" + codigo + "identificador=" + identificador + '}';
     }
 
 }

@@ -1,11 +1,10 @@
 package es.caib.rolsac2.persistence.model;
 
-import java.util.List;
-import java.util.Objects;
+import es.caib.rolsac2.persistence.model.traduccion.JTipoFormaInicioTraduccion;
 
 import javax.persistence.*;
-
-import es.caib.rolsac2.persistence.model.traduccion.JTipoFormaInicioTraduccion;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Representacion de un tipo materia SIA. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
@@ -16,9 +15,9 @@ import es.caib.rolsac2.persistence.model.traduccion.JTipoFormaInicioTraduccion;
 @SequenceGenerator(name = "tipo-forma-inicio-sequence", sequenceName = "RS2_TIPOFOI_SEQ", allocationSize = 1)
 @Table(name = "RS2_TIPOFOI", indexes = {@Index(name = "RS2_TIPOFOI_PK", columnList = "TPFI_CODIGO")})
 @NamedQueries({@NamedQuery(name = JTipoFormaInicio.FIND_BY_ID,
-                query = "select p from JTipoFormaInicio p where p.id = :id"),
-                @NamedQuery(name = JTipoFormaInicio.COUNT_BY_IDENTIFICADOR,
-                                query = "select COUNT(p) from JTipoFormaInicio p where p.identificador = :identificador")})
+        query = "select p from JTipoFormaInicio p where p.codigo = :id"),
+        @NamedQuery(name = JTipoFormaInicio.COUNT_BY_IDENTIFICADOR,
+                query = "select COUNT(p) from JTipoFormaInicio p where p.identificador = :identificador")})
 public class JTipoFormaInicio extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -29,7 +28,7 @@ public class JTipoFormaInicio extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-forma-inicio-sequence")
     @Column(name = "TPFI_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     /**
      * Identificacion del tipo de forma de inicio
@@ -43,12 +42,12 @@ public class JTipoFormaInicio extends BaseEntity {
     @OneToMany(mappedBy = "tipoFormaInicio", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoFormaInicioTraduccion> descripcion;
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public String getIdentificador() {
@@ -74,17 +73,17 @@ public class JTipoFormaInicio extends BaseEntity {
         if (!(o instanceof JTipoFormaInicio))
             return false;
         JTipoFormaInicio that = (JTipoFormaInicio) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(codigo, that.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
-        return "JTipoFormaInicio{" + "id=" + id + "identificador=" + identificador + '}';
+        return "JTipoFormaInicio{" + "id=" + codigo + "identificador=" + identificador + '}';
     }
 
 }

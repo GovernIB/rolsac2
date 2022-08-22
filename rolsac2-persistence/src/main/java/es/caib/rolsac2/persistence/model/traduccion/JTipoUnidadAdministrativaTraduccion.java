@@ -1,13 +1,13 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.BaseEntity;
-import es.caib.rolsac2.persistence.model.JTipoSilencioAdministrativo;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representacion de un personal. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
@@ -23,7 +23,7 @@ import java.util.List;
 )
 @NamedQueries({
         @NamedQuery(name = JTipoUnidadAdministrativaTraduccion.FIND_BY_ID,
-                query = "select p from JTipoUnidadAdministrativaTraduccion p where p.id = :id")
+                query = "select p from JTipoUnidadAdministrativaTraduccion p where p.codigo = :id")
 })
 public class JTipoUnidadAdministrativaTraduccion extends BaseEntity {
 
@@ -34,7 +34,7 @@ public class JTipoUnidadAdministrativaTraduccion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-uatra-sequence")
     @Column(name = "TRTU_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     @ManyToOne
     @JoinColumn(name = "TRTU_CODTPUA")
@@ -73,13 +73,13 @@ public class JTipoUnidadAdministrativaTraduccion extends BaseEntity {
         }
         return traducciones;
     }
-    
-    public Long getId() {
-        return id;
+
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public String getIdioma() {
@@ -139,9 +139,22 @@ public class JTipoUnidadAdministrativaTraduccion extends BaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JTipoUnidadAdministrativaTraduccion that = (JTipoUnidadAdministrativaTraduccion) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
     public String toString() {
         return "JTipoUnidadAdministrativaTraduccion{" +
-                "id=" + id +
+                "id=" + codigo +
                 "idioma=" + idioma +
                 "descripcion=" + descripcion +
                 "cargoMasculino=" + cargoMasculino +

@@ -22,7 +22,7 @@ import java.util.List;
 )
 @NamedQueries({
         @NamedQuery(name = JTipoNormativaTraduccion.FIND_BY_ID,
-                query = "select p from JTipoNormativaTraduccion p where p.id = :id")
+                query = "select p from JTipoNormativaTraduccion p where p.codigo = :id")
 })
 public class JTipoNormativaTraduccion extends BaseEntity {
 
@@ -33,7 +33,7 @@ public class JTipoNormativaTraduccion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-normativatra-sequence")
     @Column(name = "TRTN_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     @ManyToOne
     @JoinColumn(name = "TRTN_CODTPNO")
@@ -55,12 +55,12 @@ public class JTipoNormativaTraduccion extends BaseEntity {
         return traducciones;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public JTipoNormativa getTipoNormativa() {
@@ -90,7 +90,7 @@ public class JTipoNormativaTraduccion extends BaseEntity {
     @Override
     public String toString() {
         return "JTipoNormativaTraduccion{" +
-                "id=" + id +
+                "id=" + codigo +
                 "tipoNormativa=" + tipoNormativa +
                 "idioma=" + idioma +
                 "descripcion=" + descripcion +

@@ -11,8 +11,8 @@ import javax.validation.constraints.Size;
  * @author Indra
  */
 @Schema(name = "Personal")
-public class PersonalDTO {
-    private Long id;
+public class PersonalDTO extends ModelApi {
+    private Long codigo;
     @NotEmpty
     @Size(max = 50)
     private String nombre;
@@ -21,7 +21,6 @@ public class PersonalDTO {
     private String funciones;
     private String cargo;
     private String email;
-    private Long idUnidadAdministrativa;
     private UnidadAdministrativaDTO unidadAdministrativa;
 
     /**
@@ -47,18 +46,17 @@ public class PersonalDTO {
     public PersonalDTO() {
     }
 
-    public PersonalDTO(Long id, String nombre, Long idUnitat) {
-        this.id = id;
+    public PersonalDTO(Long id, String nombre) {
+        this.codigo = id;
         this.nombre = nombre;
-        this.idUnidadAdministrativa = idUnitat;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public String getNombre() {
@@ -99,14 +97,6 @@ public class PersonalDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Long getIdUnidadAdministrativa() {
-        return idUnidadAdministrativa;
-    }
-
-    public void setIdUnidadAdministrativa(Long idUnidadAdministrativa) {
-        this.idUnidadAdministrativa = idUnidadAdministrativa;
     }
 
     public String getTelefonoFijo() {
@@ -151,10 +141,6 @@ public class PersonalDTO {
 
     @Override
     public String toString() {
-        return "PersonalDTO{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", idUnitat=" + idUnidadAdministrativa +
-                '}';
+        return "PersonalDTO{" + "id=" + codigo + ", nombre='" + nombre + '\'' + '}';
     }
 }

@@ -13,7 +13,7 @@ public class JSeccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seccion-sequence")
     @Column(name = "SECC_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "SECC_CODENTI", nullable = false)
@@ -32,12 +32,12 @@ public class JSeccion {
     @Column(name = "SECC_ADME", nullable = false)
     private boolean manteniblePorAdmEntidad = false;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JEntidad getEntidad() {

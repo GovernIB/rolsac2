@@ -6,6 +6,8 @@ import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.TipoUnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoUnidadAdministrativaFiltro;
 
+import java.util.List;
+
 /**
  * Servicio para los casos de uso de mantenimiento del tipo de normativa.
  *
@@ -60,8 +62,17 @@ public interface TipoUnidadAdministrativaServiceFacade {
      * Devuelve si existe el identificador en la entidad
      *
      * @param identificador identificador a comprobar
+     * @param idEntidad     Id entidad
      * @return si existe o no
      */
-    Boolean checkIdentificador(String identificador);
+    Boolean checkIdentificador(String identificador, Long idEntidad);
+
+    /**
+     * Devuelve la lista de todos los tipos de unidad administrativa
+     *
+     * @param
+     * @return lista de DTOs de TipoUnidadAdministrativa
+     */
+    List<TipoUnidadAdministrativaDTO> findTipo();
 
 }

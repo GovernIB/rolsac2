@@ -10,10 +10,9 @@ import java.util.Date;
  * @author jsegovia
  */
 @Schema(name = "TipoSilencioAdministrativo")
-public class TipoSilencioAdministrativoDTO {
+public class TipoSilencioAdministrativoDTO extends ModelApi {
 
-    private Long id;
-    ;
+    private Long codigo;
     private String identificador;
     private Literal descripcion;
 
@@ -31,10 +30,10 @@ public class TipoSilencioAdministrativoDTO {
      * @return the codigo
      */
     public String getIdString() {
-        if (id == null) {
+        if (codigo == null) {
             return null;
         } else {
-            return String.valueOf(id);
+            return String.valueOf(codigo);
         }
     }
 
@@ -43,22 +42,22 @@ public class TipoSilencioAdministrativoDTO {
      */
     public void setIdString(final String idString) {
         if (idString == null) {
-            this.id = null;
+            this.codigo = null;
         } else {
-            this.id = Long.valueOf(idString);
+            this.codigo = Long.valueOf(idString);
         }
     }
 
     public TipoSilencioAdministrativoDTO(Long id) {
-        this.id = id;
+        this.codigo = id;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public String getIdentificador() {
@@ -80,7 +79,7 @@ public class TipoSilencioAdministrativoDTO {
     @Override
     public String toString() {
         return "TipoSilencioAdministrativo{" +
-                "id=" + id +
+                "id=" + codigo +
                 ", identificador=" + identificador +
                 ", descripcion=" + descripcion.toString() +
                 '}';

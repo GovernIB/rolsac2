@@ -28,9 +28,9 @@ public class PersonalModel implements Serializable {
     }
 
     public void load() {
-        if (value.getId() == null) {
+        if (value.getCodigo() == null) {
             throw new IllegalArgumentException("id is null");
         }
-        value = personalService.findById(value.getId());
+        value = personalService.findById(value.getCodigo());
     }
 }

@@ -1,29 +1,27 @@
 package es.caib.rolsac2.back.controller.maestras.tipo;
 
-import org.primefaces.event.SelectEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.Objects;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.TipoAfectacionServiceFacade;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoAfectacionDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.primefaces.event.SelectEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Controlador para editar un tipo de afectación.
  *
- * @author jrodrigof
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -38,10 +36,8 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
 
     private TipoAfectacionDTO data;
 
-    private Literal descripcion;
-
     @EJB
-    TipoAfectacionServiceFacade tipoAfectacionService;
+    private MaestrasSupServiceFacade maestrasSupService;
 
     public void load() {
         LOG.debug("init");
@@ -50,7 +46,7 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
 
         data = new TipoAfectacionDTO();
         if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = tipoAfectacionService.findById(Long.valueOf(id));
+            data = maestrasSupService.findTipoAfectacionById(Long.valueOf(id));
             identificadorAntiguo = data.getIdentificador();
         }
 
@@ -65,10 +61,10 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
             return;
         }
 
-        if (this.data.getId() == null) {
-            tipoAfectacionService.create(this.data);
+        if (this.data.getCodigo() == null) {
+            maestrasSupService.create(this.data);
         } else {
-            tipoAfectacionService.update(this.data);
+            maestrasSupService.update(this.data);
         }
 
         // Retornamos resultado
@@ -83,14 +79,14 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
     }
 
     private boolean verificarGuardar() {
-        if (Objects.isNull(this.data.getId())
-                        && tipoAfectacionService.existeIdentificador(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo())
+                && maestrasSupService.existeIdentificadorTipoAfectacion(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
 
-        if (Objects.nonNull(this.data.getId()) && !identificadorAntiguo.equals(this.data.getIdentificador())
-                        && tipoAfectacionService.existeIdentificador(this.data.getIdentificador())) {
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equals(this.data.getIdentificador())
+                && maestrasSupService.existeIdentificadorTipoAfectacion(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
@@ -127,15 +123,6 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
         this.data = data;
     }
 
-    private void explorarLiteral(final Literal pLiteral) {
-        TypeModoAcceso modoAccesoDlg = TypeModoAcceso.CONSULTA;
-        // if (getPermiteEditar()) {
-        // modoAccesoDlg = TypeModoAcceso.EDICION;
-        // }
-        // UtilTraducciones.openDialogTraduccion(modoAccesoDlg, pLiteral, UtilJSF.getSessionBean().getIdiomas(),
-        // UtilJSF.getSessionBean().getIdiomas(), true, modoAcceso, modoAcceso);
-    }
-
     /**
      * Abre explorar Descripcion.
      */
@@ -157,11 +144,4 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
         }
     }
 
-    public Literal getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(Literal descripcion) {
-        this.descripcion = descripcion;
-    }
 }

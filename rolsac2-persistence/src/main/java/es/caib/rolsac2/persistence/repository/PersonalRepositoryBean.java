@@ -40,7 +40,7 @@ public class PersonalRepositoryBean extends AbstractCrudRepository<JPersonal, Lo
         if (jpersonales != null) {
             for (Object[] jpersonal : jpersonales) {
                 PersonalGridDTO personalGrid = new PersonalGridDTO();
-                personalGrid.setId((Long) jpersonal[0]);
+                personalGrid.setCodigo((Long) jpersonal[0]);
                 personalGrid.setIdentificador((String) jpersonal[1]);
                 personalGrid.setNombre((String) jpersonal[2]);
                 personalGrid.setEmail((String) jpersonal[3]);
@@ -62,13 +62,13 @@ public class PersonalRepositoryBean extends AbstractCrudRepository<JPersonal, Lo
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JPersonal j where 1 = 1 ");
         } else {
-            sql = new StringBuilder("SELECT j.id, j.identificador, j.nombre,  j.email FROM JPersonal j where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, j.nombre,  j.email FROM JPersonal j where 1 = 1 ");
         }
         if (filtro.isRellenoIdUA()) {
-            sql.append(" and j.unidadAdministrativa = :ua");
+            sql.append(" and j.unidadAdministrativa.codigo = :ua");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.nombre) LIKE :filtro  OR LOWER(j.identificador) LIKE :filtro  OR LOWER(j.email) LIKE :filtro  )");
+            sql.append(" and ( cast(j.codigo as string) like :filtro OR LOWER(j.nombre) LIKE :filtro  OR LOWER(j.identificador) LIKE :filtro  OR LOWER(j.email) LIKE :filtro  )");
         }
         if (filtro.isRellenoNombre()) {
             sql.append(" and LOWER(j.nombre) like :nombre");

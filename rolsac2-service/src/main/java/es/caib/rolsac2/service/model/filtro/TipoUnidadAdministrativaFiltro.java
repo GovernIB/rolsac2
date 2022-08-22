@@ -10,6 +10,7 @@ public class TipoUnidadAdministrativaFiltro extends AbstractFiltro {
      **/
     private String texto;
 
+
     public String getTexto() {
         return texto;
     }
@@ -17,6 +18,7 @@ public class TipoUnidadAdministrativaFiltro extends AbstractFiltro {
     public void setTexto(String texto) {
         this.texto = texto;
     }
+
 
     /**
      * Esta relleno el texto

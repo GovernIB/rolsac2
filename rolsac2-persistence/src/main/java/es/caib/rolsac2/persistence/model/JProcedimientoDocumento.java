@@ -13,7 +13,7 @@ public class JProcedimientoDocumento {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-doc-sequence")
     @Column(name = "DOPR_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     /**
      * Lista de documentos
@@ -22,12 +22,12 @@ public class JProcedimientoDocumento {
     @JoinColumn(name = "DOCPR_CODLSD")
     private JListaDocumentos listaDocumentos;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JListaDocumentos getListaDocumentos() {

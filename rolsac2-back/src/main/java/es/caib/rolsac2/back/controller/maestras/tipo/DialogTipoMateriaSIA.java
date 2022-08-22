@@ -1,27 +1,23 @@
 package es.caib.rolsac2.back.controller.maestras.tipo;
 
-import org.primefaces.event.SelectEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.TipoMateriaSIAServiceFacade;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.primefaces.event.SelectEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * Controlador para editar un tipo materia SIA
@@ -40,11 +36,10 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
 
     private TipoMateriaSIADTO data;
 
-    private Literal descripcion;
     private Date fecha;
 
     @EJB
-    TipoMateriaSIAServiceFacade tipoMateriaSIAService;
+    private MaestrasSupServiceFacade maestrasSupService;
 
     public void load() {
         LOG.debug("init");
@@ -54,7 +49,7 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
         this.setearIdioma();
         data = new TipoMateriaSIADTO();
         if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = tipoMateriaSIAService.findById(Long.valueOf(id));
+            data = maestrasSupService.findTipoMateriaSIAById(Long.valueOf(id));
             identificadorAntiguo = data.getIdentificador();
         }
 
@@ -69,10 +64,10 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
             return;
         }
 
-        if (this.data.getId() == null) {
-            tipoMateriaSIAService.create(this.data);
+        if (this.data.getCodigo() == null) {
+            maestrasSupService.create(this.data);
         } else {
-            tipoMateriaSIAService.update(this.data);
+            maestrasSupService.update(this.data);
         }
 
         // Retornamos resultado
@@ -88,14 +83,14 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
     }
 
     private boolean verificarGuardar() {
-        if (Objects.isNull(this.data.getId())
-                        && tipoMateriaSIAService.existeIdentificador(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo())
+                && maestrasSupService.existeIdentificadorTipoMateriaSIA(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
 
-        if (Objects.nonNull(this.data.getId()) && !identificadorAntiguo.equals(this.data.getIdentificador())
-                        && tipoMateriaSIAService.existeIdentificador(this.data.getIdentificador())) {
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equals(this.data.getIdentificador())
+                && maestrasSupService.existeIdentificadorTipoMateriaSIA(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
@@ -150,14 +145,6 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
             final Literal literales = (Literal) respuesta.getResult();
             data.setDescripcion(literales);
         }
-    }
-
-    public Literal getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(Literal descripcion) {
-        this.descripcion = descripcion;
     }
 
     public String getIdentificadorAntiguo() {

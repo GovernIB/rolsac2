@@ -3,7 +3,7 @@ package es.caib.rolsac2.back.controller.maestras.tipo;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.TipoTramitacionServiceFacade;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoTramitacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
@@ -42,7 +42,7 @@ public class ViewTipoTramitacion extends AbstractController implements Serializa
     private LazyDataModel<TipoTramitacionGridDTO> lazyModel;
 
     @EJB
-    TipoTramitacionServiceFacade tipoTramitacionService;
+    private MaestrasSupServiceFacade maestrasSupService;
 
     /**
      * Dato seleccionado
@@ -69,8 +69,9 @@ public class ViewTipoTramitacion extends AbstractController implements Serializa
         this.setearIdioma();
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoTramitacionFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getId());// UtilJSF.getSessionUnidadActiva());
-        filtro.setIdioma(sessionBean.getLang());// UtilJSF.getSessionLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        filtro.setTipoPlantilla(true);
+        filtro.setIdioma(sessionBean.getLang());
 
         // Generamos una búsqueda
         buscar();
@@ -87,7 +88,7 @@ public class ViewTipoTramitacion extends AbstractController implements Serializa
             @Override
             public TipoTramitacionGridDTO getRowData(String rowKey) {
                 for (TipoTramitacionGridDTO tipoTramitacion : getWrappedData()) {
-                    if (tipoTramitacion.getId().toString().equals(rowKey))
+                    if (tipoTramitacion.getCodigo().toString().equals(rowKey))
                         return tipoTramitacion;
                 }
                 return null;
@@ -95,18 +96,19 @@ public class ViewTipoTramitacion extends AbstractController implements Serializa
 
             @Override
             public Object getRowKey(TipoTramitacionGridDTO tipoTramitacion) {
-                return tipoTramitacion.getId().toString();
+                return tipoTramitacion.getCodigo().toString();
             }
 
             @Override
             public List<TipoTramitacionGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
                                                      Map<String, FilterMeta> filterBy) {
                 try {
+                    filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
                     }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    Pagina<TipoTramitacionGridDTO> pagina = tipoTramitacionService.findByFiltro(filtro);
+                    Pagina<TipoTramitacionGridDTO> pagina = maestrasSupService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 } catch (Exception e) {
@@ -125,7 +127,7 @@ public class ViewTipoTramitacion extends AbstractController implements Serializa
 
     public void editarTipoTramitacion() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
             abrirVentana(TypeModoAcceso.EDICION);
         }
@@ -141,7 +143,7 @@ public class ViewTipoTramitacion extends AbstractController implements Serializa
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
-        if (!respuesta.isCanceled() && !respuesta.getModoAcceso().equals(TypeModoAcceso.CONSULTA)) {
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             this.buscar();
         }
     }
@@ -151,16 +153,17 @@ public class ViewTipoTramitacion extends AbstractController implements Serializa
         final Map<String, String> params = new HashMap<>();
         if (this.datoSeleccionado != null
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
-            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getId().toString());
+            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoTramitacion", modoAcceso, params, true, 780, 360);
+        params.put(TypeParametroVentana.PLANTILLA.toString(), "S");
+        UtilJSF.openDialog("dialogTipoTramitacion", modoAcceso, params, true, 780, 400);
     }
 
     public void borrarTipoTramitacion() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            tipoTramitacionService.delete(datoSeleccionado.getId());
+            maestrasSupService.deleteTipoTramitacion(datoSeleccionado.getCodigo());
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
         }
     }

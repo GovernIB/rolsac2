@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class ListaDocumentosDto implements Serializable {
-    private final Integer id;
+    private final Integer codigo;
 
     public ListaDocumentosDto(Integer id) {
-        this.id = id;
+        this.codigo = id;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
     @Override
@@ -19,17 +19,17 @@ public class ListaDocumentosDto implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ListaDocumentosDto entity = (ListaDocumentosDto) o;
-        return Objects.equals(this.id, entity.id);
+        return Objects.equals(this.codigo, entity.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
-                "id = " + id + ")";
+                "id = " + codigo + ")";
     }
 }

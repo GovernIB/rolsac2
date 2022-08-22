@@ -215,4 +215,23 @@ public class Literal {
         this.codigo = codigo;
     }
 
+    /**
+     * Devuelve true si están todos los idiomas rellenos.
+     * False si está vacío o algún idioma no está relleno (todos los idiomas cuentan como obligatorios).
+     *
+     * @return
+     */
+    public boolean checkObligatorio() {
+        if (this.getTraducciones().isEmpty()) {
+            return false;
+        }
+
+        for (String idioma : Constantes.IDIOMAS) {
+            String trad = this.getTraduccion(idioma);
+            if (trad == null || trad.trim().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

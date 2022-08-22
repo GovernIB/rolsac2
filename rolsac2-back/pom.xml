@@ -74,6 +74,8 @@
                         </webResource>
                     </webResources>
                 </configuration>
+
+
             </plugin>
         </plugins>
     </build>

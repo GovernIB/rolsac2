@@ -14,7 +14,7 @@ public class JProcedimientoAuditoria {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-audit-sequence")
     @Column(name = "PRAU_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PRAU_CODPROC", nullable = false)
@@ -30,12 +30,12 @@ public class JProcedimientoAuditoria {
     @Column(name = "PRAU_USUMOD", nullable = false, length = 100)
     private String usuarioModificacion;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public LocalDate getFechaModificacion() {

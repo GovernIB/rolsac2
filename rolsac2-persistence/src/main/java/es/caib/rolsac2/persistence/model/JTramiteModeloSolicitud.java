@@ -14,13 +14,13 @@ public class JTramiteModeloSolicitud {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tram-modelo-sequence")
     @Column(name = "PRTR_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 }

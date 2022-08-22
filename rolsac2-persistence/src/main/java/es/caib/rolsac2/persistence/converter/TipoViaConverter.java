@@ -52,10 +52,10 @@ public interface TipoViaConverter extends Converter<JTipoVia, TipoViaDTO> {
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
-            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoVia().getId()).findFirst().orElse(null));
+            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoVia().getCodigo()).findFirst().orElse(null));
             for (JTipoViaTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
-                trad.setCodigo(traduccion.getId());
+                trad.setCodigo(traduccion.getCodigo());
                 trad.setIdioma(traduccion.getIdioma());
                 trad.setLiteral(traduccion.getDescripcion());
                 resultado.add(trad);

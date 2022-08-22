@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.converter;
 
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
-import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoPublicoObjetivoTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
@@ -47,7 +46,9 @@ public interface TipoPublicoObjetivoConverter extends Converter<JTipoPublicoObje
             }
         }
         for (JTipoPublicoObjetivoTraduccion traduccion : jTipoPublicoObjetivo.getDescripcion()) {
-            traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));
+            if (descripcion != null) {
+                traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));
+            }
         }
         return jTipoPublicoObjetivo.getDescripcion();
     }
@@ -57,10 +58,10 @@ public interface TipoPublicoObjetivoConverter extends Converter<JTipoPublicoObje
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
-            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoPublicoObjetivo().getId()).findFirst().orElse(null));
+            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoPublicoObjetivo().getCodigo()).findFirst().orElse(null));
             for (JTipoPublicoObjetivoTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
-                trad.setCodigo(traduccion.getId());
+                trad.setCodigo(traduccion.getCodigo());
                 trad.setIdioma(traduccion.getIdioma());
                 trad.setLiteral(traduccion.getDescripcion());
                 resultado.add(trad);

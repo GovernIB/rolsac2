@@ -3,7 +3,7 @@ package es.caib.rolsac2.back.controller.maestras.tipo;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.TipoBoletinServiceFacade;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoBoletinGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoBoletinFiltro;
@@ -30,167 +30,164 @@ import java.util.Map;
 @ViewScoped
 public class ViewTipoBoletin extends AbstractController implements Serializable {
 
-  private static final long serialVersionUID = -7992474170848445700L;
+    private static final long serialVersionUID = -7992474170848445700L;
 
-  private static final Logger LOG = LoggerFactory.getLogger(ViewTipoBoletin.class);
-  @EJB
-  TipoBoletinServiceFacade TipoBoletinService;
-  /**
-   * Model de dades emprat pel compoment dataTable de primefaces.
-   */
-  private LazyDataModel<TipoBoletinGridDTO> lazyModel;
+    private static final Logger LOG = LoggerFactory.getLogger(ViewTipoBoletin.class);
+    @EJB
+    MaestrasSupServiceFacade TipoBoletinService;
+    /**
+     * Model de dades emprat pel compoment dataTable de primefaces.
+     */
+    private LazyDataModel<TipoBoletinGridDTO> lazyModel;
 
 //  @EJB
 //  TestServiceFacade testService;
-  /**
-   * Dato seleccionado
-   */
-  private TipoBoletinGridDTO datoSeleccionado;
+    /**
+     * Dato seleccionado
+     */
+    private TipoBoletinGridDTO datoSeleccionado;
 
-  /**
-   * Filtro
-   **/
-  private TipoBoletinFiltro filtro;
+    /**
+     * Filtro
+     **/
+    private TipoBoletinFiltro filtro;
 
-  public LazyDataModel<TipoBoletinGridDTO> getLazyModel() {
-    return lazyModel;
-  }
-
-
-  // ACCIONS
-
-  /**
-   * Carrega la unitat orgànica i els procediments.
-   */
-  public void load() {
-    LOG.debug("load");
-    this.setearIdioma();
-
-    //this.tienePermisos(this.getClass().getName());
-
-    //Inicializamos combos/desplegables/inputs/filtro
-    filtro = new TipoBoletinFiltro();
-    filtro.setIdUA(sessionBean.getUnidadActiva().getId());//UtilJSF.getSessionUnidadActiva());
-    filtro.setIdioma(sessionBean.getLang());//UtilJSF.getSessionLang());
+    public LazyDataModel<TipoBoletinGridDTO> getLazyModel() {
+        return lazyModel;
+    }
 
 
-    //Generamos una búsqueda
-    buscar();
-  }
+    // ACCIONS
 
-  public void update() {
-    buscar();
-  }
+    /**
+     * Carrega la unitat orgànica i els procediments.
+     */
+    public void load() {
+        LOG.debug("load");
+        this.setearIdioma();
 
-  public void buscar() {
-    lazyModel = new LazyDataModel<>() {
-      private static final long serialVersionUID = 1L;
+        //this.tienePermisos(this.getClass().getName());
 
-      @Override
-      public TipoBoletinGridDTO getRowData(String rowKey) {
-        for (TipoBoletinGridDTO pers : (List<TipoBoletinGridDTO>) getWrappedData()) {
-          if (pers.getId().toString().equals(rowKey)) {
-            return pers;
-          }
+        //Inicializamos combos/desplegables/inputs/filtro
+        filtro = new TipoBoletinFiltro();
+        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());//UtilJSF.getSessionUnidadActiva());
+        filtro.setIdioma(sessionBean.getLang());//UtilJSF.getSessionLang());
+
+
+        //Generamos una búsqueda
+        buscar();
+    }
+
+    public void update() {
+        buscar();
+    }
+
+    public void buscar() {
+        lazyModel = new LazyDataModel<>() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public TipoBoletinGridDTO getRowData(String rowKey) {
+                for (TipoBoletinGridDTO pers : (List<TipoBoletinGridDTO>) getWrappedData()) {
+                    if (pers.getCodigo().toString().equals(rowKey)) {
+                        return pers;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public Object getRowKey(TipoBoletinGridDTO pers) {
+                return pers.getCodigo().toString();
+            }
+
+            @Override
+            public List<TipoBoletinGridDTO> load(
+                    int first, int pageSize, String sortField, SortOrder sortOrder,
+                    Map<String, FilterMeta> filterBy
+            ) {
+                try {
+                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                    Pagina<TipoBoletinGridDTO> pagina = pagina = TipoBoletinService.findByFiltro(filtro);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<TipoBoletinGridDTO> pagina = pagina = new Pagina(new ArrayList(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
+            }
+        };
+    }
+
+    public void nuevoTipoBoletin() {
+        abrirVentana(TypeModoAcceso.ALTA);
+    }
+
+    public void editarTipoBoletin() {
+        if (datoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
+                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+        } else {
+            abrirVentana(TypeModoAcceso.EDICION);
         }
-        return null;
-      }
+    }
 
-      @Override
-      public Object getRowKey(TipoBoletinGridDTO pers) {
-        return pers.getId().toString();
-      }
-
-      @Override
-      public List<TipoBoletinGridDTO> load(
-        int first, int pageSize, String sortField, SortOrder sortOrder,
-        Map<String, FilterMeta> filterBy
-      ) {
-        try {
-          filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-          Pagina<TipoBoletinGridDTO> pagina = pagina = TipoBoletinService.findByFiltro(filtro);
-          setRowCount((int) pagina.getTotal());
-          return pagina.getItems();
-        } catch (Exception e) {
-          LOG.error("Error llamando", e);
-          Pagina<TipoBoletinGridDTO> pagina = pagina = new Pagina(new ArrayList(), 0);
-          setRowCount((int) pagina.getTotal());
-          return pagina.getItems();
+    public void consultarTipoBoletin() {
+        if (datoSeleccionado != null) {
+            abrirVentana(TypeModoAcceso.CONSULTA);
         }
-      }
-    };
-  }
-
-  public void nuevoTipoBoletin() {
-    abrirVentana(TypeModoAcceso.ALTA);
-  }
-
-  public void editarTipoBoletin() {
-    if (datoSeleccionado == null) {
-      UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-        getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
     }
-    else {
-      abrirVentana(TypeModoAcceso.EDICION);
+
+    public void returnDialogo(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        // Verificamos si se ha modificado
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            this.buscar();
+            if (respuesta.isAlta()) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.creaciocorrecta"));
+            } else if (respuesta.isEdicion()) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
+                        getLiteral("msg.actualitzaciocorrecta"));
+            }
+        }
     }
-  }
 
-  public void consultarTipoBoletin() {
-    if (datoSeleccionado != null) {
-      abrirVentana(TypeModoAcceso.CONSULTA);
+    private void abrirVentana(TypeModoAcceso modoAcceso) {
+        // Muestra dialogo
+        final Map<String, String> params = new HashMap<>();
+        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
+            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
+        }
+        UtilJSF.openDialog("dialogTipoBoletin", modoAcceso, params, true, 800, 280);
     }
-  }
 
-  public void returnDialogo(final SelectEvent event) {
-    final DialogResult respuesta = (DialogResult) event.getObject();
-
-    // Verificamos si se ha modificado
-    if (!respuesta.isCanceled() && !respuesta.getModoAcceso().equals(TypeModoAcceso.CONSULTA)) {
-      this.buscar();
-      if (respuesta.isAlta()) {
-        UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.creaciocorrecta"));
-      }
-      else if (respuesta.isEdicion()) {
-        UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-          getLiteral("msg.actualitzaciocorrecta"));
-      }
+    public void borrarTipoBoletin() {
+        if (datoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO,
+                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+        } else {
+            TipoBoletinService.deleteTipoBoletin(datoSeleccionado.getCodigo());
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+        }
     }
-  }
 
-  private void abrirVentana(TypeModoAcceso modoAcceso) {
-    // Muestra dialogo
-    final Map<String, String> params = new HashMap<>();
-    if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
-      params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getId().toString());
+    public TipoBoletinGridDTO getDatoSeleccionado() {
+        return datoSeleccionado;
     }
-    UtilJSF.openDialog("dialogTipoBoletin", modoAcceso, params, true, 800, 300);
-  }
 
-  public void borrarTipoBoletin() {
-    if (datoSeleccionado == null) {
-      UtilJSF.addMessageContext(TypeNivelGravedad.INFO,
-        getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+    public void setDatoSeleccionado(TipoBoletinGridDTO datoSeleccionado) {
+        this.datoSeleccionado = datoSeleccionado;
     }
-    else {
-      TipoBoletinService.delete(datoSeleccionado.getId());
-      UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+
+    public TipoBoletinFiltro getFiltro() {
+        return filtro;
     }
-  }
 
-  public TipoBoletinGridDTO getDatoSeleccionado() {
-    return datoSeleccionado;
-  }
-
-  public void setDatoSeleccionado(TipoBoletinGridDTO datoSeleccionado) {
-    this.datoSeleccionado = datoSeleccionado;
-  }
-
-  public TipoBoletinFiltro getFiltro() {
-    return filtro;
-  }
-
-  public void setFiltro(TipoBoletinFiltro filtro) {
-    this.filtro = filtro;
-  }
+    public void setFiltro(TipoBoletinFiltro filtro) {
+        this.filtro = filtro;
+    }
 
 }

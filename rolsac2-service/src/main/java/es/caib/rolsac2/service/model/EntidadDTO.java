@@ -12,9 +12,9 @@ import java.util.Objects;
 @Schema(name = "Entidad")
 public class EntidadDTO extends ModelApi {
 
-    private Long id;
+    private Long codigo;
 
-    private String dir3;
+    private String identificador;
 
     private Boolean activa;
 
@@ -28,6 +28,8 @@ public class EntidadDTO extends ModelApi {
 
     private Long logo;
 
+    private Literal descripcion;
+
     public EntidadDTO() {
     }
 
@@ -37,10 +39,10 @@ public class EntidadDTO extends ModelApi {
      * @return the codigo
      */
     public String getIdString() {
-        if (id == null) {
+        if (codigo == null) {
             return null;
         } else {
-            return String.valueOf(id);
+            return String.valueOf(codigo);
         }
     }
 
@@ -49,30 +51,22 @@ public class EntidadDTO extends ModelApi {
      */
     public void setIdString(final String idString) {
         if (idString == null) {
-            this.id = null;
+            this.codigo = null;
         } else {
-            this.id = Long.valueOf(idString);
+            this.codigo = Long.valueOf(idString);
         }
     }
 
     public EntidadDTO(Long id) {
-        this.id = id;
+        this.codigo = id;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDir3() {
-        return dir3;
-    }
-
-    public void setDir3(String dir3) {
-        this.dir3 = dir3;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public Boolean getActiva() {
@@ -123,19 +117,50 @@ public class EntidadDTO extends ModelApi {
         this.logo = logo;
     }
 
+    public Literal getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(Literal descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntidadDTO that = (EntidadDTO) o;
-        return id.equals(that.id) && dir3.equals(that.dir3) && activa.equals(that.activa) &&
+        return codigo.equals(that.codigo) && activa.equals(that.activa) &&
                 rolAdmin.equals(that.rolAdmin) && rolAdminContenido.equals(that.rolAdminContenido) &&
-                rolGestor.equals(that.rolGestor) && rolInformador.equals(that.rolInformador) &&
-                logo.equals(that.logo);
+                rolGestor.equals(that.rolGestor) && rolInformador.equals(that.rolInformador);
     }
+
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dir3, activa, rolAdmin, rolAdminContenido, rolGestor, rolInformador, logo);
+        return Objects.hash(codigo, activa, rolAdmin, rolAdminContenido, rolGestor, rolInformador, logo, descripcion);
+    }
+
+    @Override
+    public String toString() {
+        return "EntidadDTO{" +
+                "id=" + codigo +
+                ", identificador=" + identificador +
+                ", activa=" + activa +
+                ", rolAdmin='" + rolAdmin + '\'' +
+                ", rolAdminContenido='" + rolAdminContenido + '\'' +
+                ", rolGestor='" + rolGestor + '\'' +
+                ", rolInformador='" + rolInformador + '\'' +
+                ", logo=" + logo +
+                ", descripcion=" + descripcion +
+                '}';
     }
 }

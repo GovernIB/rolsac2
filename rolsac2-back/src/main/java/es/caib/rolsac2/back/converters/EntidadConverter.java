@@ -22,6 +22,11 @@ public class EntidadConverter implements Converter, Serializable {
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
+        // Workaround para que salte la validación de que hay que seleccionar un valor
+        if (s != null && (s.contains("Seleccioni una") || s.contains("Seleccione una"))) {
+            s = null;
+        }
+
         if (s != null && s.trim().length() > 0) {
             return administracionSupServiceFacade.findEntidadById(Long.parseLong(s));
         } else {
@@ -32,7 +37,7 @@ public class EntidadConverter implements Converter, Serializable {
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object o) {
         if (o != null) {
-            return String.valueOf(((EntidadDTO) o).getId());
+            return String.valueOf(((EntidadDTO) o).getCodigo());
         } else {
             return null;
         }

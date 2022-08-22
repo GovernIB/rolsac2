@@ -10,12 +10,25 @@ public class TipoTramitacionFiltro extends AbstractFiltro {
      **/
     private String texto;
 
+    /**
+     * Indica si es de tipo plantilla
+     **/
+    private Boolean tipoPlantilla;
+
     public String getTexto() {
         return texto;
     }
 
     public void setTexto(String texto) {
         this.texto = texto;
+    }
+
+    public Boolean getTipoPlantilla() {
+        return tipoPlantilla;
+    }
+
+    public void setTipoPlantilla(Boolean tipoPlantilla) {
+        this.tipoPlantilla = tipoPlantilla;
     }
 
     /**
@@ -25,6 +38,15 @@ public class TipoTramitacionFiltro extends AbstractFiltro {
      */
     public boolean isRellenoTexto() {
         return texto != null && !texto.isEmpty();
+    }
+
+    /**
+     * Esta relleno el tipo plantilla
+     *
+     * @return
+     */
+    public boolean isRellenoTipoPlantilla() {
+        return tipoPlantilla != null;
     }
 
     @Override

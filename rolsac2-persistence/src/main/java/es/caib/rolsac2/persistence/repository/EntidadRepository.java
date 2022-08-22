@@ -22,4 +22,6 @@ public interface EntidadRepository extends CrudRepository<JEntidad, Long> {
     List<EntidadDTO> findActivas();
 
     long countByFiltro(EntidadFiltro filtro);
+
+    boolean existeIdentificadorEntidad(String identificador);
 }

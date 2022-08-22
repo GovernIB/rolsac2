@@ -31,12 +31,23 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtCodigo" value="#{dialogTipoMateriaSIA.data.codigo}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogTipoMateriaSIA.data.identificador}"
-                                 styleClass="w95"
-                                 required="true" disabled="#{dialogTipoMateriaSIA.isModoConsulta()}" maxlength="50"/>
+                                 styleClass="w95" onblur="this.value = this.value.toUpperCase();"
+                                 required="true" disabled="#{dialogTipoMateriaSIA.isModoConsulta()}" maxlength="50">
+                        <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+                    </p:inputText>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
@@ -57,7 +68,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:selectOneMenu id="opcionIdioma" value="#{dialogTipoMateriaSIA.idioma}">
             <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
             <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
-            <p:ajax update="@form" process="@this"/>
+            <p:ajax update="@form:inputDescripcion" process="@this"/>
         </p:selectOneMenu>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
@@ -69,8 +80,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          process="@all"/>
         <p:commandButton action="#{dialogTipoMateriaSIA.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all"/>
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
 
     </ui:define>
 

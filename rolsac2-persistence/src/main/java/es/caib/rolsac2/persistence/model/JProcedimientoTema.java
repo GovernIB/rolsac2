@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "RS2_PRCTEM")
 public class JProcedimientoTema {
     @EmbeddedId
-    private JProcedimientoTemaPK id;
+    private JProcedimientoTemaPK codigo;
 
     @MapsId("tema")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -21,12 +21,12 @@ public class JProcedimientoTema {
     private JProcedimientoWorkflow procedimiento;
 
 
-    public JProcedimientoTemaPK getId() {
-        return id;
+    public JProcedimientoTemaPK getCodigo() {
+        return codigo;
     }
 
-    public void setId(JProcedimientoTemaPK id) {
-        this.id = id;
+    public void setCodigo(JProcedimientoTemaPK id) {
+        this.codigo = id;
     }
 
     public JTema getTema() {

@@ -12,7 +12,7 @@ public class JBoletinOficial {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "boletin-sequence")
     @Column(name = "BOLE_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     /**
      * Identificador
@@ -32,12 +32,12 @@ public class JBoletinOficial {
     @Column(name = "BOLE_URL", length = 500)
     private String url;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public String getIdentificador() {

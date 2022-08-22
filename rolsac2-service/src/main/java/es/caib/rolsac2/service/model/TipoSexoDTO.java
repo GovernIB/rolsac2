@@ -4,55 +4,69 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Schema(name = "TipoSexo")
-public class TipoSexoDTO {
+public class TipoSexoDTO extends ModelApi {
 
-  private Long id;
-  @NotEmpty
-  @Size(max = 50)
-  private String identificador;
-  private Literal descripcion;
+    private Long codigo;
+    @NotEmpty
+    @Size(max = 50)
+    private String identificador;
+    private Literal descripcion;
 
-  public TipoSexoDTO() {
-  }
+    public TipoSexoDTO() {
+    }
 
-  //todo descripcion
-  public TipoSexoDTO(Long id, String identificador) {
-    this.id = id;
-    this.identificador = identificador;
-  }
+    //todo descripcion
+    public TipoSexoDTO(Long id, String identificador) {
+        this.codigo = id;
+        this.identificador = identificador;
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public Long getCodigo() {
+        return codigo;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-  public String getIdentificador() {
-    return identificador;
-  }
+    public String getIdentificador() {
+        return identificador;
+    }
 
-  public void setIdentificador(String identificador) {
-    this.identificador = identificador;
-  }
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
 
-  public Literal getDescripcion() {
-    return descripcion;
-  }
+    public Literal getDescripcion() {
+        return descripcion;
+    }
 
-  public void setDescripcion(Literal descripcion) {
-    this.descripcion = descripcion;
-  }
+    public void setDescripcion(Literal descripcion) {
+        this.descripcion = descripcion;
+    }
 
-  @Override
-  public String toString() {
-    return "TipoSexoDTO{" +
-      "id=" + id +
-      ", identificador='" + identificador + '\'' +
-      ", descripcion=" + descripcion +
-      '}';
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TipoSexoDTO that = (TipoSexoDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo, identificador, descripcion);
+    }
+
+    @Override
+    public String toString() {
+        return "TipoSexoDTO{" +
+                "id=" + codigo +
+                ", identificador='" + identificador + '\'' +
+                ", descripcion=" + descripcion +
+                '}';
+    }
 }

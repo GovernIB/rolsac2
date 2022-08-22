@@ -9,11 +9,19 @@ import javax.persistence.*;
                 @Index(name = "RS2_PLUGIN_PK_I", columnList = "PLUG_CODIGO")
         }
 )
-public class JPlugin {
+@NamedQueries({
+        @NamedQuery(name = JPlugin.FIND_BY_ID,
+                query = "select p from JPlugin p where p.codigo = :id"),
+})
+public class JPlugin extends BaseEntity {
+
+    private static final long serialVersionUID = 1L;
+    public static final String FIND_BY_ID = "Plugin.FIND_BY_ID";
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "plugin-sequence")
     @Column(name = "PLUG_CODIGO", nullable = false)
-    private Integer id;
+    private Long codigo;
 
     /**
      * Entidad
@@ -40,12 +48,12 @@ public class JPlugin {
     @Column(name = "PLUG_PROPS", length = 4000)
     private String propiedades;
 
-    public Integer getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public JEntidad getEntidad() {

@@ -31,42 +31,41 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="content">
         <h:form>
-            <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
+            <p:commandButton value="#{labels['viewTipoTramitacion.actualizarBusqueda']}" id="actualizarBusqueda"
+                             style="display:none" ajax="false"
                              action="#{viewTipoTramitacion.buscar}" update="dataTable"/>
 
-            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
-                     widgetVar="panel" collapsed="true">
-                <f:facet name="header">
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
-                            <p:inputText value="#{viewTipoTramitacion.filtro.texto}" styleClass="mr-2"/>
-                            <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
-                                             actionListener="#{viewTipoTramitacion.buscar}" process="@form"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
-
-                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top" actionListener="#{viewTipoTramitacion.nuevoTipoTramitacion()}" process="@this" styleClass="mr-2">
-                                <p:ajax event="dialogReturn" listener="#{viewTipoTramitacion.returnDialogo}"
-                                        update="messages dataTable"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top" styleClass="mr-2"
-                                             actionListener="#{viewTipoTramitacion.editarTipoTramitacion}" process="@form"
-                                             update="messages">
-                                <p:ajax event="dialogReturn" listener="#{viewTipoTramitacion.returnDialogo}"
-                                        update="messages dataTable"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top" styleClass="mr-2"
-                                             action="#{viewTipoTramitacion.borrarTipoTramitacion}" process="@form"
-                                             update="messages dataTable">
-                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                             action="#{viewTipoTramitacion.ayuda}" process="@this" update="messages"/>
-                        </div>
-                    </div>
+            <p:toolbar id="toolbar">
+                <f:facet name=""/>
+                <f:facet name="left">
+                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText
+                        value="#{viewTipoTramitacion.filtro.texto}"/>
+                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                     actionListener="#{viewTipoTramitacion.buscar}" process="@form"/>
+                    <p:commandButton type="button" value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus"
+                                     iconPos="top"/>
                 </f:facet>
-            </p:panel>
+                <f:facet name="right">
+                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
+                                     actionListener="#{viewTipoTramitacion.nuevoTipoTramitacion()}" process="@this">
+                        <p:ajax event="dialogReturn" listener="#{viewTipoTramitacion.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                                     actionListener="#{viewTipoTramitacion.editarTipoTramitacion}" process="@form"
+                                     update="messages">
+                        <p:ajax event="dialogReturn" listener="#{viewTipoTramitacion.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                                     action="#{viewTipoTramitacion.borrarTipoTramitacion}" process="@form"
+                                     update="messages dataTable">
+                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                     action="#{viewTipoTramitacion.ayuda}" process="@this" update="messages"/>
+                </f:facet>
+            </p:toolbar>
             <p:dataTable id="dataTable" value="#{viewTipoTramitacion.lazyModel}" var="tipoTramitacion"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="tipoTramitacionTable"
                          rows="#{viewTipoTramitacion.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
@@ -77,7 +76,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoTramitacion.datoSeleccionado}"
-                         rowKey="#{tipoTramitacion.id}"
+                         rowKey="#{tipoTramitacion.codigo}"
                          reflow="true"
                          sortBy="#{viewTipoTramitacion.filtro.orderBy}"
                          sortOrder="#{viewTipoTramitacion.filtro.order}"
@@ -92,20 +91,22 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{tipoTramitacion.id}">
-                    <f:facet name="header">#{labels['dict.id']}</f:facet>
-                    <h:outputText value="#{tipoTramitacion.id}"/>
+                <p:column sortBy="#{tipoTramitacion.codigo}" headerText="#{labels['dict.codigo']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tipoTramitacion.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{tipoTramitacion.tramiteId}">
-                    <f:facet name="header">#{labels['viewTipoTramitacion.tramiteId']}</f:facet>
+                <p:column sortBy="#{tipoTramitacion.tramiteId}" headerText="#{labels['viewTipoTramitacion.tramiteId']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{tipoTramitacion.tramiteId}"/>
                 </p:column>
-                <p:column sortBy="#{tipoTramitacion.tramiteVersion}">
-                    <f:facet name="header">#{labels['viewTipoTramitacion.tramiteVersion']}</f:facet>
+                <p:column sortBy="#{tipoTramitacion.tramiteVersion}"
+                          headerText="#{labels['viewTipoTramitacion.tramiteVersion']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{tipoTramitacion.tramiteVersion}"/>
                 </p:column>
-                <p:column sortBy="#{tipoTramitacion.codPlatTramitacion}">
-                    <f:facet name="header">#{labels['viewTipoTramitacion.codPlatTramitacion']}</f:facet>
+                <p:column sortBy="#{tipoTramitacion.codPlatTramitacion}"
+                          headerText="#{labels['viewTipoTramitacion.codPlatTramitacion']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{tipoTramitacion.codPlatTramitacion}"/>
                 </p:column>
             </p:dataTable>

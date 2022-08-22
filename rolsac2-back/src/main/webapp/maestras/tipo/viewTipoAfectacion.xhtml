@@ -80,7 +80,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoAfectacion.datoSeleccionado}"
-                         rowKey="#{tipoAfectacion.id}"
+                         rowKey="#{tipoAfectacion.codigo}"
                          reflow="true"
                          sortBy="#{viewTipoAfectacion.filtro.orderBy}"
                          sortOrder="#{viewTipoAfectacion.filtro.order}"
@@ -95,16 +95,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{tipoAfectacion.id}">
-                    <f:facet name="header">#{labels['dict.id']}</f:facet>
-                    <h:outputText value="#{tipoAfectacion.id}"/>
+                <p:column sortBy="#{tipoAfectacion.codigo}" headerText="#{labels['dict.codigo']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tipoAfectacion.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{tipoAfectacion.identificador}">
-                    <f:facet name="header">#{labels['dict.identificador']}</f:facet>
+                <p:column sortBy="#{tipoAfectacion.identificador}" headerText="#{labels['dict.identificador']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{tipoAfectacion.identificador}"/>
                 </p:column>
-                <p:column sortBy="#{tipoAfectacion.descripcion}" styleClass="overflow-datagrid-cell">
-                    <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
+                <p:column sortBy="#{tipoAfectacion.descripcion}" styleClass="overflow-datagrid-cell"
+                headerText="#{labels['dict.descripcion']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{tipoAfectacion.descripcion.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
             </p:dataTable>

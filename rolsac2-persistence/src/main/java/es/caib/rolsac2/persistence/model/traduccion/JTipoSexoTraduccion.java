@@ -18,7 +18,7 @@ import java.util.Objects;
 )
 @NamedQueries({
         @NamedQuery(name = JTipoSexoTraduccion.FIND_BY_ID,
-                query = "select p from JTipoSexoTraduccion p where p.id = :id")
+                query = "select p from JTipoSexoTraduccion p where p.codigo = :id")
 })
 public class JTipoSexoTraduccion extends BaseEntity {
 
@@ -28,7 +28,7 @@ public class JTipoSexoTraduccion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-sexo-traduccion-sequence")
     @Column(name = "TRTS_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     @ManyToOne
     @JoinColumn(name = "TRTS_CODTPSX")
@@ -50,12 +50,12 @@ public class JTipoSexoTraduccion extends BaseEntity {
         return traducciones;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public JTipoSexo getTipoSexo() {
@@ -91,13 +91,13 @@ public class JTipoSexoTraduccion extends BaseEntity {
             return false;
         }
         JTipoSexoTraduccion that = (JTipoSexoTraduccion) o;
-        return Objects.equals(id, that.id) && Objects.equals(tipoSexo,
-          that.tipoSexo) && Objects.equals(idioma, that.idioma) && Objects.equals(descripcion,
-          that.descripcion);
+        return Objects.equals(codigo, that.codigo) && Objects.equals(tipoSexo,
+                that.tipoSexo) && Objects.equals(idioma, that.idioma) && Objects.equals(descripcion,
+                that.descripcion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tipoSexo, idioma, descripcion);
+        return Objects.hash(codigo, tipoSexo, idioma, descripcion);
     }
 }

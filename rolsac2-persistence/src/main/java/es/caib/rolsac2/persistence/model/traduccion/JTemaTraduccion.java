@@ -15,7 +15,7 @@ public class JTemaTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tema-trad-sequence")
     @Column(name = "TRTE_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRTE_CODTEMA", nullable = false)
@@ -27,12 +27,12 @@ public class JTemaTraduccion {
     @Column(name = "TNTR_DESCR")
     private String descripcion;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JTema getTema() {

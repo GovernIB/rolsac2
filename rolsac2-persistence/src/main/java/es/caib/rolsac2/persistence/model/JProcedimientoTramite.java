@@ -13,7 +13,7 @@ public class JProcedimientoTramite {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-tram-sequence")
     @Column(name = "PRTA_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     /**
      * Unidad administrativa competente
@@ -41,12 +41,12 @@ public class JProcedimientoTramite {
     @Column(name = "PRTA_TASA", nullable = false)
     private Boolean tasaAsociada = false;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JUnidadAdministrativa getUnidadAdministrativa() {

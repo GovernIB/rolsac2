@@ -65,8 +65,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
           </div>
         </f:facet>
       </p:panel>
-      <p:dataTable id="dataTable" value="#{viewTipoVia.lazyModel}" var="tipoAfectacion"
-                   paginator="true" lazy="true" filterDelay="300" widgetVar="tipoAfectacionTable"
+      <p:dataTable id="dataTable" value="#{viewTipoVia.lazyModel}" var="tipoVia"
+                   paginator="true" lazy="true" filterDelay="300" widgetVar="tipoViaTable"
                    rows="#{viewTipoVia.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
                    first="#{viewTipoVia.filtro.paginaFirst}"
                    paginatorPosition="bottom" paginatorAlwaysVisible="true"
@@ -74,7 +74,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          {NextPageLink} {LastPageLink}"
                    currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                    emptyMessage="#{labels['dict.noHayDatos']}"
-                   selectionMode="single" selection="#{viewTipoVia.datoSeleccionado}" rowKey="#{tipoAfectacion.id}"
+                   selectionMode="single" selection="#{viewTipoVia.datoSeleccionado}" rowKey="#{tipoVia.codigo}"
                    reflow="true"
                    sortBy="#{viewTipoVia.filtro.orderBy}"
                    sortOrder="#{viewTipoVia.filtro.order}"
@@ -89,17 +89,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <f:facet name="{RowsPerPageLabel}">
           #{labels.dataTable_rowsPerPage}
         </f:facet>
-        <p:column sortBy="#{tipoAfectacion.id}">
-          <f:facet name="header">#{labels['dict.id']}</f:facet>
-          <h:outputText value="#{tipoAfectacion.id}"/>
+        <p:column sortBy="#{tipoVia.codigo}">
+          <f:facet name="header">#{labels['dict.codigo']}</f:facet>
+          <h:outputText value="#{tipoVia.codigo}"/>
         </p:column>
-        <p:column sortBy="#{tipoAfectacion.identificador}">
+        <p:column sortBy="#{tipoVia.identificador}">
           <f:facet name="header">#{labels['dict.identificador']}</f:facet>
-          <h:outputText value="#{tipoAfectacion.identificador}"/>
+          <h:outputText value="#{tipoVia.identificador}"/>
         </p:column>
-        <p:column sortBy="#{tipoAfectacion.descripcion}" styleClass="overflow-datagrid-cell">
+        <p:column sortBy="#{tipoVia.descripcion}" styleClass="overflow-datagrid-cell">
           <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
-          <h:outputText value="#{tipoAfectacion.descripcion.getTraduccion(sessionBean.lang)}"/>
+          <h:outputText value="#{tipoVia.descripcion.getTraduccion(sessionBean.lang)}"/>
         </p:column>
       </p:dataTable>
 

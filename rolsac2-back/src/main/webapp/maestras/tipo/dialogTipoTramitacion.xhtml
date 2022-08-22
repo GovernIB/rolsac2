@@ -12,6 +12,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <f:metadata>
             <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTipoTramitacion.modoAcceso}"/>
             <f:viewParam id="ID" name="ID" value="#{dialogTipoTramitacion.id}"/>
+            <f:viewParam id="PLANTILLA" name="PLANTILLA" value="#{dialogTipoTramitacion.plantilla}"/>
             <f:viewAction action="#{dialogTipoTramitacion.load}"/>
         </f:metadata>
     </ui:define>
@@ -29,15 +30,27 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:panel>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="Id trámite:" for="txtTramiteId"/>
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:inputText id="txtTramiteId" value="#{dialogTipoTramitacion.data.tramiteId}" styleClass="w95"
-                                 required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="50"/>
+                    <p:inputText id="txtCodigo" value="#{dialogTipoTramitacion.data.codigo}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['viewTipoTramitacion.tramiteVersion']}:" for="txtTramiteVersion"/>
+                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtTramiteId"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:inputText id="txtTramiteId" value="#{dialogTipoTramitacion.data.tramiteId}" styleClass="w95"
+                                 onblur="this.value = this.value.toUpperCase();"
+                                 required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="50">
+                        <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+                    </p:inputText>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <p:outputLabel value="#{labels['viewTipoTramitacion.tramiteVersion']}:" for="txtTramiteVersion"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputNumber id="txtTramiteVersion" value="#{dialogTipoTramitacion.data.tramiteVersion}"
@@ -47,7 +60,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['viewTipoTramitacion.tramiteParametros']}:" for="txtTramiteParametros"/>
+                    <p:outputLabel value="#{labels['viewTipoTramitacion.tramiteParametros']}:"
+                                  for="txtTramiteParametros"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtTramiteParametros" value="#{dialogTipoTramitacion.data.tramiteParametros}"
@@ -56,7 +70,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['viewTipoTramitacion.urlTramitacion']}:" for="txtTramitacionUrl"/>
+                    <p:outputLabel value="#{labels['viewTipoTramitacion.urlTramitacion']}:" for="txtTramitacionUrl"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtTramitacionUrl" value="#{dialogTipoTramitacion.data.urlTramitacion}"
@@ -86,18 +100,19 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.platTramitacion']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:selectOneMenu id="txtCodPlatTramitacion" required="true" value="#{dialogTipoTramitacion.data.codPlatTramitacion}"
+                    <p:selectOneMenu id="txtCodPlatTramitacion" required="true"
+                                     value="#{dialogTipoTramitacion.data.codPlatTramitacion}"
                                      converter="#{platTramitElectronicaConverter}"
                                      styleClass="w95" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
-                        <f:selectItem itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}" itemValue="#{null}" id="seleccione"/>
+                        <f:selectItem itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}"
+                                      itemValue="#{null}" id="seleccione"/>
                         <f:selectItems value="#{dialogTipoTramitacion.plataformasTramiteList}" var="plataforma"
-                                       itemLabel="#{plataforma.descripcion}" itemValue="#{plataforma}"/>
+                                       itemLabel="#{plataforma.identificador}" itemValue="#{plataforma}"/>
                     </p:selectOneMenu>
                 </div>
             </div>
         </p:panel>
     </ui:define>
-
 
 
     <ui:define name="contentFooterDialogRight">
@@ -109,8 +124,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          process="@all"/>
         <p:commandButton action="#{dialogTipoTramitacion.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all"/>
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
     </ui:define>
 
 </ui:composition>

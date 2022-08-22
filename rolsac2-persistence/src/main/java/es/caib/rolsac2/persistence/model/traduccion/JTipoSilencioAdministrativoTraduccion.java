@@ -22,7 +22,7 @@ import java.util.List;
 )
 @NamedQueries({
         @NamedQuery(name = JTipoSilencioAdministrativoTraduccion.FIND_BY_ID,
-                query = "select p from JTipoSilencioAdministrativoTraduccion p where p.id = :id")
+                query = "select p from JTipoSilencioAdministrativoTraduccion p where p.codigo = :id")
 })
 public class JTipoSilencioAdministrativoTraduccion extends BaseEntity {
 
@@ -33,7 +33,7 @@ public class JTipoSilencioAdministrativoTraduccion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-silencionadmvotra-sequence")
     @Column(name = "TRTS_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     @ManyToOne
     @JoinColumn(name = "TRTS_CODTPSA")
@@ -56,12 +56,12 @@ public class JTipoSilencioAdministrativoTraduccion extends BaseEntity {
     }
 
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public String getIdioma() {
@@ -91,7 +91,7 @@ public class JTipoSilencioAdministrativoTraduccion extends BaseEntity {
     @Override
     public String toString() {
         return "JTipoSilencioAdministrativoTraduccion{" +
-                "id=" + id +
+                "id=" + codigo +
                 "idioma=" + idioma +
                 "descripcion=" + descripcion +
                 '}';

@@ -1,8 +1,13 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
+import es.caib.rolsac2.persistence.model.BaseEntity;
 import es.caib.rolsac2.persistence.model.JEntidad;
+import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "RS2_TRAENT",
@@ -11,11 +16,11 @@ import javax.persistence.*;
         })
 
 @SequenceGenerator(name = "entidad-traduccion-sequence", sequenceName = "RS2_TRAENT_SEQ", allocationSize = 1)
-public class JEntidadTraduccion {
+public class JEntidadTraduccion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "entidad-traduccion-sequence")
     @Column(name = "TREN_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TREN_CODENT", nullable = false)
@@ -27,12 +32,23 @@ public class JEntidadTraduccion {
     @Column(name = "TREN_DESCRI")
     private String descripcion;
 
-    public Integer getId() {
-        return id;
+    public static List<JEntidadTraduccion> createInstance(JEntidad jentidad) {
+        List<JEntidadTraduccion> traducciones = new ArrayList<>();
+        for (String idioma : Constantes.IDIOMAS) {
+            JEntidadTraduccion trad = new JEntidadTraduccion();
+            trad.setIdioma(idioma);
+            trad.setEntidad(jentidad);
+            traducciones.add(trad);
+        }
+        return traducciones;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public Integer getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JEntidad getEntidad() {
@@ -59,4 +75,27 @@ public class JEntidadTraduccion {
         this.descripcion = trenDescri;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        JEntidadTraduccion that = (JEntidadTraduccion) o;
+        return Objects.equals(codigo, that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
+    public String toString() {
+        return "JEntidadTraduccion{" +
+                "id=" + codigo +
+                ", entidad=" + entidad +
+                ", idioma='" + idioma + '\'' +
+                '}';
+    }
 }

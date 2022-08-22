@@ -17,7 +17,7 @@ public class JFicheroExterno {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fichero-ext-sequence")
     @Column(name = "FIE_REFDOC", nullable = false, length = 1000)
-    private String id;
+    private String codigo;
 
     /**
      * Fecha referencia (sólo será válida la última, el resto se borrarán)
@@ -34,12 +34,12 @@ public class JFicheroExterno {
     @Column(name = "FIE_BORRAR", nullable = false)
     private Boolean marcadoParaBorrar = false;
 
-    public String getId() {
-        return id;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCodigo(String id) {
+        this.codigo = id;
     }
 
     public Instant getFechaReferencia() {

@@ -17,11 +17,10 @@ public interface PersonalServiceFacade {
      * Crea un nuevo personal a la base de datos relacionada con la unidad indicada.
      *
      * @param dto      datos del personal
-     * @param idUnitat identificador de la unidad
      * @return EL identificador del nuevo personal
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    Long create(PersonalDTO dto, Long idUnitat) throws RecursoNoEncontradoException;
+    Long create(PersonalDTO dto) throws RecursoNoEncontradoException;
 
     /**
      * Actualiza los datos de un personal a la base de datos.

@@ -12,13 +12,13 @@ import java.util.Objects;
 @Entity
 @SequenceGenerator(name = "tipo-legitimacion-traduccion-sequence", sequenceName = "RS2_TRATPLE_SEQ", allocationSize = 1)
 @Table(name = "RS2_TRATPLE",
-  indexes = {
-    @Index(name = "RS2_TRATPLE_PK", columnList = "TRTL_CODIGO")
-  }
+        indexes = {
+                @Index(name = "RS2_TRATPLE_PK", columnList = "TRTL_CODIGO")
+        }
 )
 @NamedQueries({
-  @NamedQuery(name = JTipoLegitimacionTraduccion.FIND_BY_ID,
-    query = "select p from JTipoLegitimacionTraduccion p where p.id = :id")
+        @NamedQuery(name = JTipoLegitimacionTraduccion.FIND_BY_ID,
+                query = "select p from JTipoLegitimacionTraduccion p where p.codigo = :id")
 })
 public class JTipoLegitimacionTraduccion extends BaseEntity {
 
@@ -28,7 +28,7 @@ public class JTipoLegitimacionTraduccion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-legitimacion-traduccion-sequence")
     @Column(name = "TRTL_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     @ManyToOne
     @JoinColumn(name = "TRTL_CODTPLE")
@@ -50,12 +50,12 @@ public class JTipoLegitimacionTraduccion extends BaseEntity {
         return traducciones;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public JTipoLegitimacion getTipoLegitimacion() {
@@ -91,13 +91,13 @@ public class JTipoLegitimacionTraduccion extends BaseEntity {
             return false;
         }
         JTipoLegitimacionTraduccion that = (JTipoLegitimacionTraduccion) o;
-        return Objects.equals(id, that.id) && Objects.equals(tipoLegitimacion,
-          that.tipoLegitimacion) && Objects.equals(idioma, that.idioma) && Objects.equals(descripcion,
-          that.descripcion);
+        return Objects.equals(codigo, that.codigo) && Objects.equals(tipoLegitimacion,
+                that.tipoLegitimacion) && Objects.equals(idioma, that.idioma) && Objects.equals(descripcion,
+                that.descripcion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tipoLegitimacion, idioma, descripcion);
+        return Objects.hash(codigo, tipoLegitimacion, idioma, descripcion);
     }
 }

@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+>
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
 -->
@@ -12,7 +12,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="metadata">
         <f:metadata>
             <!--<f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />-->
-            <f:viewAction action="#{viewTipoFormaInicio.load}" />
+            <f:viewAction action="#{viewTipoFormaInicio.load}"/>
         </f:metadata>
     </ui:define>
 
@@ -22,39 +22,49 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                        action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
+                        oncomplete="$('#form:actualizarBusqueda').click();">
             </p:menuitem>
         </c:forEach>
     </ui:define>
 
     <ui:define name="content">
         <h:form>
-            <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda"  style="display:none" ajax="false" action="#{viewTipoFormaInicio.buscar}" update="dataTable" />
+            <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
+                             action="#{viewTipoFormaInicio.buscar}" update="dataTable"/>
 
-            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
-                     widgetVar="panel" collapsed="true">
-                <f:facet name="header">
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-6 ui-lg-6">
-                           <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2"/>
-                            <p:inputText value="#{viewTipoFormaInicio.filtro.texto}" styleClass="mr-2" />
-                          <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable" actionListener="#{viewTipoFormaInicio.buscar}" process="@form" styleClass="mr-2" />
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
-                            <p:commandButton value="#{labels['dict.nuevo']}"  icon="pi pi-file-o" iconPos="top"  actionListener="#{viewTipoFormaInicio.nuevoTipoFormaInicio()}" process="@this" styleClass="mr-2">
-                                <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}" update="messages dataTable"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"  actionListener="#{viewTipoFormaInicio.editarTipoFormaInicio}" process="@form" update="messages" styleClass="mr-2">
-                                <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}" update="messages dataTable"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"  action="#{viewTipoFormaInicio.borrarTipoFormaInicio}" process="@form" update="messages dataTable" styleClass="mr-2">
-                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"  action="#{viewTipoFormaInicio.ayuda}" process="@this" update="messages" />
-                        </div>
-                    </div>
+            <p:toolbar id="toolbar">
+                <f:facet name=""/>
+                <f:facet name="left">
+                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText
+                        value="#{viewTipoFormaInicio.filtro.texto}"/>
+                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                     actionListener="#{viewTipoFormaInicio.buscar}" process="@form"/>
+                    <p:commandButton type="button" value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus"
+                                     iconPos="top"/>
                 </f:facet>
-            </p:panel>
+                <f:facet name="right">
+                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
+                                     actionListener="#{viewTipoFormaInicio.nuevoTipoFormaInicio()}" process="@this">
+                        <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                                     actionListener="#{viewTipoFormaInicio.editarTipoFormaInicio}" process="@form"
+                                     update="messages">
+                        <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                                     action="#{viewTipoFormaInicio.borrarTipoFormaInicio}" process="@form"
+                                     update="messages dataTable">
+                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                     action="#{viewTipoFormaInicio.ayuda}" process="@this" update="messages"/>
+                </f:facet>
+            </p:toolbar>
             <p:dataTable id="dataTable" value="#{viewTipoFormaInicio.lazyModel}" var="tipoFormaInicio"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="tipoFormaInicioTable"
                          rows="#{viewTipoFormaInicio.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
@@ -64,7 +74,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewTipoFormaInicio.datoSeleccionado}" rowKey="#{tipoFormaInicio.id}"
+                         selectionMode="single" selection="#{viewTipoFormaInicio.datoSeleccionado}"
+                         rowKey="#{tipoFormaInicio.codigo}"
                          reflow="true"
                          sortBy="#{viewTipoFormaInicio.filtro.orderBy}"
                          sortOrder="#{viewTipoFormaInicio.filtro.order}"
@@ -75,28 +86,29 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"
-                        global="false" />
+                        global="false"/>
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{tipoFormaInicio.id}">
-                    <f:facet name="header">#{labels['dict.id']}</f:facet>
-                    <h:outputText value="#{tipoFormaInicio.id}"/>
+                <p:column sortBy="#{tipoFormaInicio.codigo}" headerText="#{labels['dict.codigo']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tipoFormaInicio.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{tipoFormaInicio.identificador}">
-                    <f:facet name="header">#{labels['dict.identificador']}</f:facet>
+                <p:column sortBy="#{tipoFormaInicio.identificador}" headerText="#{labels['dict.identificador']}">
+                    <f:facet name="header"/>
                     <h:outputText value="#{tipoFormaInicio.identificador}"/>
                 </p:column>
-                <p:column sortBy="#{tipoFormaInicio.descripcion}" styleClass="overflow-datagrid-cell">
-                    <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
-                    <h:outputText  value="#{tipoFormaInicio.descripcion.getTraduccion(sessionBean.lang)}"/>
+                <p:column sortBy="#{tipoFormaInicio.descripcion}" styleClass="overflow-datagrid-cell"
+                          headerText="#{labels['dict.descripcion']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tipoFormaInicio.descripcion.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
             </p:dataTable>
 
-            <h:outputScript >
+            <h:outputScript>
                 function triggerDblClick() {
-                myDoubleClickCommand();
-                /*$('#form\\:btnConsultaHidden').click();*/
+                    myDoubleClickCommand();
+                    /*$('#form\\:btnConsultaHidden').click();*/
                 }
             </h:outputScript>
 
@@ -105,9 +117,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                              action="#{viewTipoFormaInicio.consultarTipoFormaInicio()}"
                              autoRun="false"
                              partialSubmit="true"
-                             process="@this" />
-            <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden" actionListener="#{viewTipoFormaInicio.consultarTipoFormaInicio}" process="@this" update="messages" style="display: none">
-                <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}" update="messages dataTable"/>
+                             process="@this"/>
+            <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
+                             actionListener="#{viewTipoFormaInicio.consultarTipoFormaInicio}" process="@this"
+                             update="messages" style="display: none">
+                <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}"
+                        update="messages dataTable"/>
             </p:commandButton>
         </h:form>
     </ui:define>

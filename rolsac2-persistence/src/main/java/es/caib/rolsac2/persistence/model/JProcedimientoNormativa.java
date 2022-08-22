@@ -9,32 +9,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "RS2_PRCNOR")
 public class JProcedimientoNormativa {
-
-    //RS2_PRCNOR_PK
     @EmbeddedId
-    private JProcedimientoNormativaPK id;/*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRWF_CODIGO")
-    private JProcedimientoWorkflow procedimiento;
+    private JProcedimientoNormativaPK codigo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "NORM_CODIGO")
-    private JNormativa normativa;
-
-    public JProcedimientoWorkflow getProcedimiento() {
-        return procedimiento;
+    public JProcedimientoNormativaPK getCodigo() {
+        return codigo;
     }
 
-    public void setProcedimiento(JProcedimientoWorkflow prwfCodigo) {
-        this.procedimiento = prwfCodigo;
+    public void setCodigo(JProcedimientoNormativaPK codigo) {
+        this.codigo = codigo;
     }
-
-    public JNormativa getNormativa() {
-        return normativa;
-    }
-
-    public void setNormativa(JNormativa normCodigo) {
-        this.normativa = normCodigo;
-    }
-*/
 }

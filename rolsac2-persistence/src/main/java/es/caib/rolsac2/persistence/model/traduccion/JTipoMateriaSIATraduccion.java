@@ -18,7 +18,7 @@ import java.util.Objects;
 @SequenceGenerator(name = "tipo-materia-sia-traduccion-sequence", sequenceName = "RS2_TRATPMS_SEQ", allocationSize = 1)
 @Table(name = "RS2_TRATPMS", indexes = {@Index(name = "RS2_TRATPMS_PK", columnList = "TRTI_CODIGO")})
 @NamedQueries({@NamedQuery(name = JTipoMateriaSIATraduccion.FIND_BY_ID,
-        query = "select p from JTipoMateriaSIATraduccion p where p.id = :id")})
+        query = "select p from JTipoMateriaSIATraduccion p where p.codigo = :id")})
 public class JTipoMateriaSIATraduccion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -28,7 +28,7 @@ public class JTipoMateriaSIATraduccion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-materia-sia-traduccion-sequence")
     @Column(name = "TRTI_CODIGO", nullable = false, length = 10)
-    private Long id;
+    private Long codigo;
 
     /**
      * Tipo materia SIA
@@ -59,12 +59,12 @@ public class JTipoMateriaSIATraduccion extends BaseEntity {
         return traducciones;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public JTipoMateriaSIA getTipoMateriaSIA() {
@@ -98,17 +98,17 @@ public class JTipoMateriaSIATraduccion extends BaseEntity {
         if (!(o instanceof JTipoMateriaSIATraduccion))
             return false;
         JTipoMateriaSIATraduccion that = (JTipoMateriaSIATraduccion) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(codigo, that.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
-        return "JTipoMateriaSIATraduccion{" + "id=" + id + "}";
+        return "JTipoMateriaSIATraduccion{" + "id=" + codigo + "}";
     }
 
 }

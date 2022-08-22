@@ -1,26 +1,22 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import es.caib.rolsac2.back.controller.AbstractController;
-import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.model.EntidadDTO;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.primefaces.event.SelectEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Controlador para editar un DialogEntidad.
@@ -30,77 +26,112 @@ import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 @Named
 @ViewScoped
 public class DialogEntidad extends AbstractController implements Serializable {
-  private static final Logger LOG = LoggerFactory.getLogger(DialogEntidad.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DialogEntidad.class);
 
-  private String id;
+    private String id;
 
-  private EntidadDTO data;
+    private EntidadDTO data;
 
-  @Inject
-  private SessionBean sessionBean;
+    private String identificadorAntiguo;
+    @EJB
+    private AdministracionSupServiceFacade administracionSupServiceFacade;
 
-  @EJB
-  private AdministracionSupServiceFacade administracionSupServiceFacade;
+    public void load() {
+        LOG.debug("init");
+        // Inicializamos combos/desplegables/inputs
+        // De momento, no tenemos desplegables.
+        this.setearIdioma();
 
-  public void load() {
-    LOG.debug("init");
-    // Inicializamos combos/desplegables/inputs
-    // De momento, no tenemos desplegables.
-    this.setearIdioma();
-
-    data = new EntidadDTO();
-    if (this.isModoAlta()) {
-      data = new EntidadDTO();
-    } else if (this.isModoEdicion() || this.isModoConsulta()) {
-      data = administracionSupServiceFacade.findEntidadById(Long.valueOf(id));
-    }
-  }
-
-  public void guardar() {
-
-    if (this.data.getId() == null) {
-      administracionSupServiceFacade.createEntidad(this.data, sessionBean.getUnidadActiva().getId());
-    } else {
-      administracionSupServiceFacade.updateEntidad(this.data);
+        data = new EntidadDTO();
+        if (this.isModoAlta()) {
+            data = new EntidadDTO();
+        } else if (this.isModoEdicion() || this.isModoConsulta()) {
+            data = administracionSupServiceFacade.findEntidadById(Long.valueOf(id));
+            identificadorAntiguo = data.getIdentificador();
+        }
     }
 
-    // Retornamos resultado
-    final DialogResult result = new DialogResult();
-    if(Objects.isNull(this.getModoAcceso())) {
-      this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
-    } else {
-      result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+    public void guardar() {
+
+        if (!checkObligatorio()) {
+            return;
+        }
+
+        if (this.data.getCodigo() == null) {
+            administracionSupServiceFacade.createEntidad(this.data, sessionBean.getUnidadActiva().getCodigo());
+        } else {
+            administracionSupServiceFacade.updateEntidad(this.data);
+        }
+
+        // Cerramos y retornamos resultado
+        cerrar();
     }
-    result.setResult(data);
-    UtilJSF.closeDialog(result);
-  }
 
-  public void cerrar() {
+    private boolean checkObligatorio() {
+        if (this.data.getDescripcion() == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogEntidad.obligatorio.descripcion"));
+            return false;
+        }
 
-    final DialogResult result = new DialogResult();
-    if(Objects.isNull(this.getModoAcceso())) {
-      this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
-    } else {
-      result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        if (!this.data.getDescripcion().checkObligatorio()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogEntidad.obligatorio.descripcion"));
+            return false;
+        }
+
+        if (Objects.isNull(this.data.getCodigo())
+                && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            return false;
+        }
+
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equalsIgnoreCase(this.data.getIdentificador())
+                && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            return false;
+        }
+
+        return true;
     }
-    result.setCanceled(true);
-    UtilJSF.closeDialog(result);
-  }
+
+    public void cerrar() {
+
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        }
+        result.setCanceled(true);
+        UtilJSF.closeDialog(result);
+    }
+
+    /**
+     * Gestión de retorno Descripcion.
+     *
+     * @param event
+     */
+    public void returnDialogoDescripcion(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled() && respuesta.getModoAcceso() != TypeModoAcceso.CONSULTA) {
+            final Literal literales = (Literal) respuesta.getResult();
+            data.setDescripcion(literales);
+        }
+    }
 
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public EntidadDTO getData() {
-    return data;
-  }
+    public EntidadDTO getData() {
+        return data;
+    }
 
-  public void setData(EntidadDTO data) {
-    this.data = data;
-  }
+    public void setData(EntidadDTO data) {
+        this.data = data;
+    }
 }

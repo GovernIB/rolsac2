@@ -15,7 +15,7 @@ public class JProcedimientoTramiteTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-tram-trad-sequence")
     @Column(name = "TRTA_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRTA_CODPRTA", nullable = false)
@@ -40,12 +40,12 @@ public class JProcedimientoTramiteTraduccion {
     @Column(name = "TRTA_TERMIN", length = 512)
     private String terminoMaximo;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JProcedimientoTramite getProcedimientoTramite() {

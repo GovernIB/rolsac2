@@ -14,7 +14,7 @@ public class JNormativaTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "normativa-trad-sequence")
     @Column(name = "TRNO_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRNO_CODTPNO", nullable = false)
@@ -26,12 +26,12 @@ public class JNormativaTraduccion {
     @Column(name = "TRNO_TITUL", length = 2000)
     private String titulo;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JNormativa getNormativa() {

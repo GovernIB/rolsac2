@@ -1,8 +1,8 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
+import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.TipoUnidadAdministrativaGridDTO;
-import es.caib.rolsac2.service.model.filtro.TipoPublicoObjetivoFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoUnidadAdministrativaFiltro;
 
 import java.util.List;
@@ -21,5 +21,7 @@ public interface TipoUnidadAdministrativaRepository extends CrudRepository<JTipo
 
     long countByFiltro(TipoUnidadAdministrativaFiltro filtro);
 
-    Boolean checkIdentificador(String identificador);
+    Boolean checkIdentificador(String identificador, Long idEntidad);
+
+    List<TipoUnidadAdministrativaDTO> findTipo();
 }

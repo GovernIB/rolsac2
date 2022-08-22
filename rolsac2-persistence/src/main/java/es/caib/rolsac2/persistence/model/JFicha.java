@@ -8,11 +8,17 @@ import javax.persistence.*;
         indexes = {
                 @Index(name = "RS2_FICHA_PK_I", columnList = "FCHA_CODIGO")
         })
+@NamedQueries({
+        @NamedQuery(name = JFicha.FIND_BY_ID,
+                query = "select p from JFicha p where p.codigo = :id")
+})
 public class JFicha {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ficha-sequence")
     @Column(name = "FCHA_CODIGO", nullable = false)
-    private Integer id;
+    private Long codigo;
+
+    public static final String FIND_BY_ID = "Ficha.FIND_BY_ID";
 
     @Column(name = "FCHA_RESPNOM")
     private String responsable;
@@ -25,12 +31,12 @@ public class JFicha {
     private JUnidadAdministrativaSeccion seccionUA;
 
 
-    public Integer getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public String getResponsable() {

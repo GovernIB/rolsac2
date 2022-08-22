@@ -1,0 +1,91 @@
+<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns="http://www.w3.org/1999/xhtml"
+>
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTipoMediaUA.modoAcceso}"/>
+      <f:viewParam id="ID" name="ID" value="#{dialogTipoMediaUA.id}"/>
+      <f:viewAction action="#{dialogTipoMediaUA.load}"/>
+    </f:metadata>
+  </ui:define>
+
+  <ui:define name="pageTitleDialog">
+    <h:outputFormat value="Detalle - #{labels['viewTipoMediaUA.titulo']} "/>
+  </ui:define>
+
+
+  <ui:define name="contentDialog">
+    <p:panel>
+      <p:growl id="messagesDialog"
+               globalOnly="false"
+               showDetail="true"
+               life="5000"
+               escape="false"/>
+
+      <div class="row">
+
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+        </div>
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
+          <p:inputText id="txtCodigo" value="#{dialogTipoMediaUA.data.codigo}"
+                       styleClass="w95" disabled="true" maxlength="50"/>
+        </div>
+
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador" />
+        </div>
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
+          <p:inputText id="txtIdentificador" value="#{dialogTipoMediaUA.data.identificador}"
+                       styleClass="w95"  onblur="this.value = this.value.toUpperCase();"
+                       required="true" disabled="#{dialogTipoMediaUA.isModoConsulta()}" maxlength="50">
+                <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+                <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+          </p:inputText>
+        </div>
+
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <h:outputText value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+        </div>
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
+          <my:literalComponent id="inputDescripcion" value="#{dialogTipoMediaUA.data.descripcion}"
+                               idioma="#{dialogTipoMediaUA.idioma}"/>
+        </div>
+      </div>
+    </p:panel>
+  </ui:define>
+
+
+  <ui:define name="contentFooterDialogLeft">
+    <span class="pi pi-tag" style="margin-top:5px"/>
+    <h:outputText value="Literal:" style="margin-right:4px;margin-top:5px;" />
+    <p:selectOneMenu id="opcionIdioma" value="#{dialogTipoMediaUA.idioma}">
+      <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+      <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+      <p:ajax update="@form" process="@this"/>
+    </p:selectOneMenu>
+  </ui:define>
+  <ui:define name="contentFooterDialogRight">
+    <p:commandButton action="#{dialogTipoMediaUA.ayuda}"
+                     icon="pi pi-info-circle" iconPos="top"
+                     value="#{labels['dict.ayuda']}"
+                     process="@this"/>
+    <p:commandButton action="#{dialogTipoMediaUA.guardar}"
+                     value="#{labels['dict.guardar']}" update="messagesDialog"
+                     process="@all"/>
+    <p:commandButton action="#{dialogTipoMediaUA.cerrar}"
+                     value="#{labels['dict.cerrar']}" update="messagesDialog"
+                     process="@this"/>
+
+  </ui:define>
+
+</ui:composition>
+</html>

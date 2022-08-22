@@ -12,18 +12,18 @@
     </cc:interface>
     <cc:implementation>
         <span id="#{cc.clientId}" style="white-space:nowrap">
-            <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w85"  disabled="#{cc.isModoConsulta()}">
+            <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90"  disabled="#{cc.isModoConsulta()}">
                 <p:ajax event="keyup" listener="#{cc.actualizarLiteral}" />
             </p:inputText>
-           <!-- <p:inputText id="texto2" value="#{cc.value}" style="display:none" />-->
             <p:inputText id="textoES" binding="#{cc.textoES}" style="display:none"  />
             <p:inputText id="textoCA" binding="#{cc.textoCA}" style="display:none"  />
             <p:inputText id="textoID" binding="#{cc.textoID}" style="display:none"  />
             <p:inputText id="textoIdioma" binding="#{cc.textoIdioma}" style="display:none"  />
+            <p:inputText id="textoInicializado" binding="#{cc.textoInicializado}" style="display:none"  />
             <p:commandButton action="#{cc.abrirVentana()}"
                              icon="pi pi-tag"
                              value=" "
-                             styleClass="w10 h25px"
+                             styleClass="w35px h25px"
                              process="@this"
             >
                      <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"  update="texto"/>
