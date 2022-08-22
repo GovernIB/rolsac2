@@ -9,9 +9,9 @@ import javax.validation.constraints.Size;
  * @author Indra
  */
 @Schema(name = "TipoMateriaSIA")
-public class TipoMateriaSIADTO {
+public class TipoMateriaSIADTO extends ModelApi {
 
-    private Long id;
+    private Long codigo;
 
     /**
      * Identificador
@@ -29,16 +29,16 @@ public class TipoMateriaSIADTO {
     }
 
     public TipoMateriaSIADTO(Long id, String identificador) {
-        this.id = id;
+        this.codigo = id;
         this.identificador = identificador;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public String getIdentificador() {
@@ -59,6 +59,6 @@ public class TipoMateriaSIADTO {
 
     @Override
     public String toString() {
-        return "TipoMateriaSIADTO{" + "id=" + id + ", identificador='" + identificador + '\'' + '}';
+        return "TipoMateriaSIADTO{" + "id=" + codigo + ", identificador='" + identificador + '\'' + '}';
     }
 }

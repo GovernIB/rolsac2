@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
-http://xmlns.jcp.org/xml/ns/javaee/beans_2_0.xsd" bean-discovery-mode="all" version="2.0">
+                            http://xmlns.jcp.org/xml/ns/javaee/beans_2_0.xsd
+                            http://www.springframework.org/schema/context
+        		            http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        		" bean-discovery-mode="all" version="2.0">
+
+    <context:property-placeholder
+            location="file:#{systemProperties['es.caib.sistrages.properties.path']}" />
+
+    <bean id="frontModuleConfig" class="es.caib.sistrages.frontend.ModuleConfig">
+        <property name="entorno" value="${entorno}" />
+        <property name="version" value="${sistra2.version}" />
+        <property name="commitSvn" value="${commitSvn}" />
+        <property name="commitGit" value="${commitGit}" />
+        <property name="promocionSe2Pro" value="${promocioSe2Pro}" />
+    </bean>
+
 </beans>

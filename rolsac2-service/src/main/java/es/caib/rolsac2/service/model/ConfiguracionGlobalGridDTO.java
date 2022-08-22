@@ -12,106 +12,107 @@ import java.util.Objects;
 @Schema(name = "ConfiguracionGlobalGrid")
 public class ConfiguracionGlobalGridDTO extends ModelApi {
 
-  private Long id;
+    private Long codigo;
 
-  private String propiedad;
+    private String propiedad;
 
-  private String valor;
+    private String valor;
 
-  private String descripcion;
+    private String descripcion;
 
-  private Boolean noModificable = false;
+    private Boolean noModificable = false;
 
-  public ConfiguracionGlobalGridDTO() {}
-
-
-  /**
-   * Estos dos metodos se necesitan para el datatable y el rowKey
-   *
-   * @return the codigo
-   */
-  public String getIdString() {
-    if (id == null) {
-      return null;
-    } else {
-      return String.valueOf(id);
+    public ConfiguracionGlobalGridDTO() {
     }
-  }
 
-  /**
-   * @param idString the codigo to set
-   */
-  public void setIdString(final String idString) {
-    if (idString == null) {
-      this.id = null;
-    } else {
-      this.id = Long.valueOf(idString);
+
+    /**
+     * Estos dos metodos se necesitan para el datatable y el rowKey
+     *
+     * @return the codigo
+     */
+    public String getIdString() {
+        if (codigo == null) {
+            return null;
+        } else {
+            return String.valueOf(codigo);
+        }
     }
-  }
 
-  public ConfiguracionGlobalGridDTO(Long id) {
-    this.id = id;
-  }
+    /**
+     * @param idString the codigo to set
+     */
+    public void setIdString(final String idString) {
+        if (idString == null) {
+            this.codigo = null;
+        } else {
+            this.codigo = Long.valueOf(idString);
+        }
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public ConfiguracionGlobalGridDTO(Long id) {
+        this.codigo = id;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public Long getCodigo() {
+        return codigo;
+    }
 
-  public String getPropiedad() {
-    return propiedad;
-  }
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-  public void setPropiedad(String propiedad) {
-    this.propiedad = propiedad;
-  }
+    public String getPropiedad() {
+        return propiedad;
+    }
 
-  public String getValor() {
-    return valor;
-  }
+    public void setPropiedad(String propiedad) {
+        this.propiedad = propiedad;
+    }
 
-  public void setValor(String valor) {
-    this.valor = valor;
-  }
+    public String getValor() {
+        return valor;
+    }
 
-  public String getDescripcion() {
-    return descripcion;
-  }
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
 
-  public void setDescripcion(String descripcion) {
-    this.descripcion = descripcion;
-  }
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-  public Boolean getNoModificable() {
-    return noModificable;
-  }
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-  public void setNoModificable(Boolean noModificable) {
-    this.noModificable = noModificable;
-  }
+    public Boolean getNoModificable() {
+        return noModificable;
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
-    ConfiguracionGlobalGridDTO that = (ConfiguracionGlobalGridDTO) o;
-    return id.equals(that.id) && propiedad.equals(that.propiedad) && valor.equals(that.valor)
-        && descripcion.equals(that.descripcion) && noModificable.equals(that.noModificable);
-  }
+    public void setNoModificable(Boolean noModificable) {
+        this.noModificable = noModificable;
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, propiedad, valor, descripcion, noModificable);
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        ConfiguracionGlobalGridDTO that = (ConfiguracionGlobalGridDTO) o;
+        return codigo.equals(that.codigo) && propiedad.equals(that.propiedad) && valor.equals(that.valor)
+                && descripcion.equals(that.descripcion) && noModificable.equals(that.noModificable);
+    }
 
-  @Override
-  public String toString() {
-    return "ConfiguracionGlobalGridDTO{" + "id=" + id + ", propiedad='" + propiedad + '\'' + ", valor='" + valor + '\''
-        + ", descripcion='" + descripcion + '\'' + ", noModificable=" + noModificable + '}';
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo, propiedad, valor, descripcion, noModificable);
+    }
+
+    @Override
+    public String toString() {
+        return "ConfiguracionGlobalGridDTO{" + "id=" + codigo + ", propiedad='" + propiedad + '\'' + ", valor='" + valor + '\''
+                + ", descripcion='" + descripcion + '\'' + ", noModificable=" + noModificable + '}';
+    }
 }

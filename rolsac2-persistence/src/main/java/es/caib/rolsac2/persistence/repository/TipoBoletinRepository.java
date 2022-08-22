@@ -9,9 +9,11 @@ import java.util.Optional;
 
 public interface TipoBoletinRepository extends CrudRepository<JTipoBoletin, Long> {
 
-  Optional<JTipoBoletin> findById(String id);
+    Optional<JTipoBoletin> findById(String id);
 
-  List<TipoBoletinGridDTO> findPagedByFiltro(TipoBoletinFiltro filtro);
+    List<TipoBoletinGridDTO> findPagedByFiltro(TipoBoletinFiltro filtro);
 
-  long countByFiltro(TipoBoletinFiltro filtro);
+    long countByFiltro(TipoBoletinFiltro filtro);
+
+    boolean checkIdentificadorTipoBoletin(String identificador);
 }

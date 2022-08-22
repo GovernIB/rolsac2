@@ -6,69 +6,59 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 /**
- *
- *
  * @author Indra
  */
 @Schema(name = "TipoAfectacion")
-public class TipoAfectacionDTO {
+public class TipoAfectacionDTO extends ModelApi {
 
-  private Long id;
+    private Long codigo;
 
-  /**
-   * Identificador
-   */
-  @NotEmpty
-  @Size(max = 50)
-  private String identificador;
+    /**
+     * Identificador
+     */
+    @NotEmpty
+    @Size(max = 50)
+    private String identificador;
 
-  /**
-   * Descripción
-   */
-  private Literal descripcion;
-//    private Long descripcion;
+    /**
+     * Descripción
+     */
+    private Literal descripcion;
 
-  public TipoAfectacionDTO() { }
+    public TipoAfectacionDTO() {
+    }
 
-  public TipoAfectacionDTO(Long id, String identificador) {
-    this.id = id;
-    this.identificador = identificador;
-  }
+    public TipoAfectacionDTO(Long id, String identificador) {
+        this.codigo = id;
+        this.identificador = identificador;
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public Long getCodigo() {
+        return codigo;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-  public String getIdentificador() {
-    return identificador;
-  }
+    public String getIdentificador() {
+        return identificador;
+    }
 
-  public void setIdentificador(String identificador) {
-    this.identificador = identificador;
-  }
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
 
-  public Literal getDescripcion() {
-    return descripcion;
-  }
+    public Literal getDescripcion() {
+        return descripcion;
+    }
 
-  public void setDescripcion(Literal descripcion) {
-    this.descripcion = descripcion;
-  }
+    public void setDescripcion(Literal descripcion) {
+        this.descripcion = descripcion;
+    }
 
-//  public Long getDescripcion() {
-//    return descripcion;
-//  }
-//
-//  public void setDescripcion(Long descripcion) {
-//    this.descripcion = descripcion;
-//  }
-
-  @Override
-  public String toString() {
-    return "TipoAfectacionDTO{" + "id=" + id + ", identificador='" + identificador + '\'' + '}';
-  }
+    @Override
+    public String toString() {
+        return "TipoAfectacionDTO{" + "id=" + codigo + ", identificador='" + identificador + '\'' + '}';
+    }
 }

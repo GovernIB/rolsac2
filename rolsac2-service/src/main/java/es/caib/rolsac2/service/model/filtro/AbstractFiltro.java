@@ -24,6 +24,11 @@ public abstract class AbstractFiltro implements Serializable {
     private Long idUA;
 
     /**
+     * Entidad
+     */
+    private Long idEntidad;
+
+    /**
      * Tamaño pagina.
      **/
     private Integer paginaTamanyo = 10; //30
@@ -113,6 +118,14 @@ public abstract class AbstractFiltro implements Serializable {
 
     public void setIdUA(Long idUA) {
         this.idUA = idUA;
+    }
+
+    public Long getIdEntidad() {
+        return idEntidad;
+    }
+
+    public void setIdEntidad(Long idEntidad) {
+        this.idEntidad = idEntidad;
     }
 
     /**
@@ -207,6 +220,15 @@ public abstract class AbstractFiltro implements Serializable {
     public boolean isRellenoIdioma() {
         return this.getIdioma() != null && !this.getIdioma().isEmpty();
     }
+
+
+    /**
+     * Está relleno el idioma.
+     */
+    public boolean isRellenoEntidad() {
+        return this.getIdEntidad() != null;
+    }
+
 
     /**
      * @return the paginacionActiva

@@ -1,17 +1,16 @@
 package es.caib.rolsac2.persistence.converter;
 
+import es.caib.rolsac2.persistence.model.JTipoFormaInicio;
+import es.caib.rolsac2.persistence.model.traduccion.JTipoFormaInicioTraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
 import java.util.Objects;
-
-import es.caib.rolsac2.persistence.model.JTipoFormaInicio;
-import es.caib.rolsac2.persistence.model.traduccion.JTipoFormaInicioTraduccion;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
-import es.caib.rolsac2.service.model.Traduccion;
 
 /**
  * Conversor entre JTipoFormaInicio y TipoFormaInicioDTO. La implementacion se generará automaticamente por MapStruct
@@ -27,16 +26,16 @@ public interface TipoFormaInicioConverter extends Converter<JTipoFormaInicio, Ti
 
     @Override
     @Mapping(target = "descripcion",
-                    expression = "java(convierteLiteralToTraduccion(jTipoFormaInicio,dto.getDescripcion()))")
+            expression = "java(convierteLiteralToTraduccion(jTipoFormaInicio,dto.getDescripcion()))")
     JTipoFormaInicio createEntity(TipoFormaInicioDTO dto);
 
     @Override
     @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(entity,dto.getDescripcion()))")
-    /// , ignore = true)
+        /// , ignore = true)
     void mergeEntity(@MappingTarget JTipoFormaInicio entity, TipoFormaInicioDTO dto);
 
     default List<JTipoFormaInicioTraduccion> convierteLiteralToTraduccion(JTipoFormaInicio jTipoFormaInicio,
-                    Literal descripcion) {
+                                                                          Literal descripcion) {
 
         if (jTipoFormaInicio.getDescripcion() == null || jTipoFormaInicio.getDescripcion().isEmpty()) {
             jTipoFormaInicio.setDescripcion(JTipoFormaInicioTraduccion.createInstance());
@@ -45,8 +44,9 @@ public interface TipoFormaInicioConverter extends Converter<JTipoFormaInicio, Ti
             }
         }
         for (JTipoFormaInicioTraduccion traduccion : jTipoFormaInicio.getDescripcion()) {
-            traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));
-            // traduccion.setTipoFormaInicio(jTipoMateria);
+            if (descripcion != null) {
+                traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));
+            }
         }
         return jTipoFormaInicio.getDescripcion();
     }
@@ -57,10 +57,10 @@ public interface TipoFormaInicioConverter extends Converter<JTipoFormaInicio, Ti
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
             resultado.setCodigo(
-                            traducciones.stream().map(t -> t.getTipoFormaInicio().getId()).findFirst().orElse(null));
+                    traducciones.stream().map(t -> t.getTipoFormaInicio().getCodigo()).findFirst().orElse(null));
             for (JTipoFormaInicioTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
-                trad.setCodigo(traduccion.getId());
+                trad.setCodigo(traduccion.getCodigo());
                 trad.setIdioma(traduccion.getIdioma());
                 trad.setLiteral(traduccion.getDescripcion());
                 resultado.add(trad);

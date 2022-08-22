@@ -33,7 +33,7 @@ public class TestPersonalRepository {
     public void testFindByCodisiaPresent() {
 
         JPersonal personal = new JPersonal();
-        personal.setId(1l);
+        personal.setCodigo(1l);
         personal.setIdentificador("Personal_identif");
 
 

@@ -4,37 +4,61 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class PluginDto implements Serializable {
-    private final Integer id;
+    private Long codigo;
 
     /**
      * Entidad
      **/
-    private final EntidadDTO entidad;
+    private EntidadDTO entidad;
 
     /**
      * Descripcion
      **/
-    private final String descripcion;
+    private String descripcion;
     /**
      * NOMBRE CLASE PLUGIN
      */
-    private final String classname;
+    private String classname;
 
     /**
      * PROPIEDADES PLUGIN (JSON)
      */
-    private final String propiedades;
+    private String propiedades;
 
-    public PluginDto(Integer id, EntidadDTO entidad, String descripcion, String classname, String propiedades) {
-        this.id = id;
+
+    public PluginDto(Long id, EntidadDTO entidad, String descripcion, String classname, String propiedades) {
+        this.codigo = id;
         this.entidad = entidad;
         this.descripcion = descripcion;
         this.classname = classname;
         this.propiedades = propiedades;
     }
 
-    public Integer getId() {
-        return id;
+    public PluginDto() {
+    }
+
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
+
+    public void setEntidad(EntidadDTO entidad) {
+        this.entidad = entidad;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setClassname(String classname) {
+        this.classname = classname;
+    }
+
+    public void setPropiedades(String propiedades) {
+        this.propiedades = propiedades;
+    }
+
+    public Long getCodigo() {
+        return codigo;
     }
 
     public EntidadDTO getEntidad() {
@@ -58,7 +82,7 @@ public class PluginDto implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PluginDto entity = (PluginDto) o;
-        return Objects.equals(this.id, entity.id) &&
+        return Objects.equals(this.codigo, entity.codigo) &&
                 Objects.equals(this.entidad, entity.entidad) &&
                 Objects.equals(this.descripcion, entity.descripcion) &&
                 Objects.equals(this.classname, entity.classname) &&
@@ -67,13 +91,13 @@ public class PluginDto implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, entidad, descripcion, classname, propiedades);
+        return Objects.hash(codigo, entidad, descripcion, classname, propiedades);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
+                "id = " + codigo + ", " +
                 "entidad = " + entidad + ", " +
                 "descripcion = " + descripcion + ", " +
                 "classname = " + classname + ", " +

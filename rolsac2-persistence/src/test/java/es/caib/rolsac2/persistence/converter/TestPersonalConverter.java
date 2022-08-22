@@ -11,13 +11,13 @@ public class TestPersonalConverter {
     //@Test
     public void testToDTO() {
         JPersonal entity = new JPersonal();
-        entity.setId(1L);
+        entity.setCodigo(1L);
         entity.setCargo("cargo");
         entity.setIdentificador("Identi");
 
         PersonalDTO dto = converter.createDTO(entity);
 
-        Assert.assertEquals(1L, (long) dto.getId());
+        Assert.assertEquals(1L, (long) dto.getCodigo());
         Assert.assertEquals("cargo", dto.getCargo());
         Assert.assertEquals("Identi", dto.getIdentificador());
         //Assert.assertEquals(2L, (long) dto.getIdUnitat());
@@ -26,14 +26,13 @@ public class TestPersonalConverter {
     //@Test
     public void testToEntity() {
         PersonalDTO dto = new PersonalDTO();
-        dto.setId(1L);
+        dto.setCodigo(1L);
         dto.setIdentificador("identif");
         dto.setCargo("cargo");
-        dto.setIdUnidadAdministrativa(2L);
 
         JPersonal entity = converter.createEntity(dto);
 
-        Assert.assertEquals(1L, (long) entity.getId());
+        Assert.assertEquals(1L, (long) entity.getCodigo());
         Assert.assertEquals("cargo", entity.getCargo());
         Assert.assertEquals("identif", entity.getIdentificador());
         //Assert.assertNull(entity.getUnitatOrganica()); // no s'actualitza

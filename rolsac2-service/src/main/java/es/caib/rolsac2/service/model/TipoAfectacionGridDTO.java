@@ -6,60 +6,59 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 /**
- *
- *
  * @author Indra
  */
 @Schema(name = "TipoAfectacionGrid")
-public class TipoAfectacionGridDTO {
+public class TipoAfectacionGridDTO extends ModelApi {
 
-  private Long id;
+    private Long codigo;
 
-  /**
-   * Identificador
-   */
-  @NotEmpty
-  @Size(max = 50)
-  private String identificador;
+    /**
+     * Identificador
+     */
+    @NotEmpty
+    @Size(max = 50)
+    private String identificador;
 
-  /**
-   * Descripción
-   */
-  private Literal descripcion;
+    /**
+     * Descripción
+     */
+    private Literal descripcion;
 
-  public TipoAfectacionGridDTO() {}
+    public TipoAfectacionGridDTO() {
+    }
 
-  public TipoAfectacionGridDTO(Long id, String identificador) {
-    this.id = id;
-    this.identificador = identificador;
-  }
+    public TipoAfectacionGridDTO(Long id, String identificador) {
+        this.codigo = id;
+        this.identificador = identificador;
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public Long getCodigo() {
+        return codigo;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-  public String getIdentificador() {
-    return identificador;
-  }
+    public String getIdentificador() {
+        return identificador;
+    }
 
-  public void setIdentificador(String identificador) {
-    this.identificador = identificador;
-  }
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
 
-  public Literal getDescripcion() {
-    return descripcion;
-  }
+    public Literal getDescripcion() {
+        return descripcion;
+    }
 
-  public void setDescripcion(Literal descripcion) {
-    this.descripcion = descripcion;
-  }
+    public void setDescripcion(Literal descripcion) {
+        this.descripcion = descripcion;
+    }
 
-  @Override
-  public String toString() {
-    return "TipoAfectacionGridDTO{" + "id=" + id + ", identificador='" + identificador + '\'' + '}';
-  }
+    @Override
+    public String toString() {
+        return "TipoAfectacionGridDTO{" + "id=" + codigo + ", identificador='" + identificador + '\'' + '}';
+    }
 }

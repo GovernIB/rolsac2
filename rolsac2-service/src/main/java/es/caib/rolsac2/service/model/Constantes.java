@@ -7,5 +7,9 @@ import java.util.List;
 public class Constantes {
     public final static List<String> IDIOMAS = new ArrayList<>(Arrays.asList("es", "ca"));
     public final static String IDIOMA_ESPANYOL = "es";
-    public final static String IDIOMA_CATALAN = "es";
+    public final static String IDIOMA_CATALAN = "ca";
+
+    // Campos auditoria persona
+    public static final String PERSONA_IDENTIFICADOR = "auditoria.personas.identificador";
+
 }

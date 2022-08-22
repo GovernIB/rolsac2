@@ -34,7 +34,7 @@ public interface TipoLegitimacionConverter extends Converter<JTipoLegitimacion, 
     void mergeEntity(@MappingTarget JTipoLegitimacion entity, TipoLegitimacionDTO dto);
 
     default List<JTipoLegitimacionTraduccion> convierteLiteralToTraduccion(
-      JTipoLegitimacion jtipoLegitimacion, Literal descripcion
+            JTipoLegitimacion jtipoLegitimacion, Literal descripcion
     ) {
 
         if (jtipoLegitimacion.getDescripcion() == null || jtipoLegitimacion.getDescripcion().isEmpty()) {
@@ -55,10 +55,10 @@ public interface TipoLegitimacionConverter extends Converter<JTipoLegitimacion, 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
             resultado.setCodigo(
-              traducciones.stream().map(t -> t.getTipoLegitimacion().getId()).findFirst().orElse(null));
+                    traducciones.stream().map(t -> t.getTipoLegitimacion().getCodigo()).findFirst().orElse(null));
             for (JTipoLegitimacionTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
-                trad.setCodigo(traduccion.getId());
+                trad.setCodigo(traduccion.getCodigo());
                 trad.setIdioma(traduccion.getIdioma());
                 trad.setLiteral(traduccion.getDescripcion());
                 resultado.add(trad);

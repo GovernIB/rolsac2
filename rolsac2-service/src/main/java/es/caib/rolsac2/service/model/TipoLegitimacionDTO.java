@@ -6,47 +6,47 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Schema(name = "TipoLegitimacion")
-public class TipoLegitimacionDTO {
+public class TipoLegitimacionDTO extends ModelApi {
 
-  private Long id;
-  @NotEmpty
-  @Size(max = 50)
-  private String identificador;
-  private Literal descripcion;
+    private Long codigo;
+    @NotEmpty
+    @Size(max = 50)
+    private String identificador;
+    private Literal descripcion;
 
-  public TipoLegitimacionDTO() {
-  }
+    public TipoLegitimacionDTO() {
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public Long getCodigo() {
+        return codigo;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-  public String getIdentificador() {
-    return identificador;
-  }
+    public String getIdentificador() {
+        return identificador;
+    }
 
-  public void setIdentificador(String identificador) {
-    this.identificador = identificador;
-  }
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
 
-  public Literal getDescripcion() {
-    return descripcion;
-  }
+    public Literal getDescripcion() {
+        return descripcion;
+    }
 
-  public void setDescripcion(Literal descripcion) {
-    this.descripcion = descripcion;
-  }
+    public void setDescripcion(Literal descripcion) {
+        this.descripcion = descripcion;
+    }
 
-  @Override
-  public String toString() {
-    return "TipoLegitimacionDTO{" +
-      "id=" + id +
-      ", identificador='" + identificador + '\'' +
-      ", descripcion=" + descripcion +
-      '}';
-  }
+    @Override
+    public String toString() {
+        return "TipoLegitimacionDTO{" +
+                "id=" + codigo +
+                ", identificador='" + identificador + '\'' +
+                ", descripcion=" + descripcion +
+                '}';
+    }
 }

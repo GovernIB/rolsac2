@@ -42,7 +42,7 @@ public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMa
         if (jTiposMateriaSIA != null) {
             for (Object[] jTipoMateriaSIA : jTiposMateriaSIA) {
                 TipoMateriaSIAGridDTO materiaSIAGrid = new TipoMateriaSIAGridDTO();
-                materiaSIAGrid.setId((Long) jTipoMateriaSIA[0]);
+                materiaSIAGrid.setCodigo((Long) jTipoMateriaSIA[0]);
                 materiaSIAGrid.setIdentificador((String) jTipoMateriaSIA[1]);
                 Literal literal = new Literal();
                 literal.add(new Traduccion(filtro.getIdioma(), (String) jTipoMateriaSIA[2]));
@@ -70,34 +70,25 @@ public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMa
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder("SELECT count(j) FROM JTipoMateriaSIA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder(
+                    "SELECT count(j) FROM JTipoMateriaSIA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-//      sql = new StringBuilder("SELECT j.id, j.identificador, j.descripcion FROM JTipoMateriaSIA j where 1 = 1 "); where t.idioma = :idioma
-            sql = new StringBuilder("SELECT j.id, j.identificador, t.descripcion FROM JTipoMateriaSIA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder(
+                    "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoMateriaSIA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         }
-
-//    if (filtro.isRellenoIdUA()) {
-//      sql.append(" and j.unidadAdministrativa = :ua");
-//    }
 
 
         if (filtro.isRellenoTexto()) {
-//      sql.append(" LEFT JOIN e.descripcion.trads t ");
-            sql.append(
-//          " and ( cast(j.id as string) like :filtro OR (t.idioma.identificador = :idioma AND LOWER(t.literal) LIKE :filtro) OR LOWER(j.identificador) LIKE :filtro )");
-                    " and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro )");
+            sql.append(" and ( cast(j.id as string) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro)");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
         }
         Query query = entityManager.createQuery(sql.toString());
-//    if (filtro.isRellenoIdUA()) {
-//      query.setParameter("ua", filtro.getIdUA());
-//    }
+
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto() + "%");
-//      query.setParameter("idioma", filtro.getIdioma());
         }
 
         if (filtro.isRellenoIdioma()) {
@@ -108,8 +99,11 @@ public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMa
     }
 
     private String getOrden(String order) {
-        // Se puede hacer un switch/if pero en este caso, con j.+order sobra
-        return "j." + order;
+        if ("descripcion".equalsIgnoreCase(order)) {
+            return "t." + order;
+        } else {
+            return "j." + order;
+        }
     }
 
     @Override

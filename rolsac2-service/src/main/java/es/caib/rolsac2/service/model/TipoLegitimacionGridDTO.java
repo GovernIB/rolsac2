@@ -3,50 +3,50 @@ package es.caib.rolsac2.service.model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Schema(name = "TipoLegitimacionGrid")
-public class TipoLegitimacionGridDTO {
+public class TipoLegitimacionGridDTO extends ModelApi {
 
-  private Long id;
-  private String identificador;
-  private Literal descripcion;
+    private Long codigo;
+    private String identificador;
+    private Literal descripcion;
 
-  public TipoLegitimacionGridDTO() {
-  }
+    public TipoLegitimacionGridDTO() {
+    }
 
-  public TipoLegitimacionGridDTO(Long id, String identificador) {
-    this.id = id;
-    this.identificador = identificador;
-  }
+    public TipoLegitimacionGridDTO(Long id, String identificador) {
+        this.codigo = id;
+        this.identificador = identificador;
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public Long getCodigo() {
+        return codigo;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-  public String getIdentificador() {
-    return identificador;
-  }
+    public String getIdentificador() {
+        return identificador;
+    }
 
-  public void setIdentificador(String identificador) {
-    this.identificador = identificador;
-  }
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
 
-  public Literal getDescripcion() {
-    return descripcion;
-  }
+    public Literal getDescripcion() {
+        return descripcion;
+    }
 
-  public void setDescripcion(Literal descripcion) {
-    this.descripcion = descripcion;
-  }
+    public void setDescripcion(Literal descripcion) {
+        this.descripcion = descripcion;
+    }
 
-  @Override
-  public String toString() {
-    return "TipoLegitimacionGridDTO{" +
-      "id=" + id +
-      ", identificador='" + identificador + '\'' +
-      ", descripcion='" + descripcion + '\'' +
-      '}';
-  }
+    @Override
+    public String toString() {
+        return "TipoLegitimacionGridDTO{" +
+                "id=" + codigo +
+                ", identificador='" + identificador + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                '}';
+    }
 }

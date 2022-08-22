@@ -151,7 +151,7 @@
 
     <login-config>
         <auth-method>${webXml.loginConfig.authMethod}</auth-method>
-        <realm-name>${webXml.loginConfig.realmName}</realm-name>
+        <realm-name>${webXml.loginConfig.authMethod}</realm-name>
     </login-config>
 
     <security-role>
