@@ -14,7 +14,7 @@ public class JUnidadAdministrativaEvolucion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ua-evol-sequence")
     @Column(name = "UAEV_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @Column(name = "UAEV_TIPO", nullable = false, length = 1)
     private String tipo;
@@ -26,12 +26,12 @@ public class JUnidadAdministrativaEvolucion {
     @JoinColumn(name = "UAEV_UADEP")
     private JUnidadAdministrativa unidadAdministrativa;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public String getTipo() {

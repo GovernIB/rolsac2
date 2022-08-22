@@ -13,7 +13,7 @@ public class JUnidadAdministrativaSeccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ua-seccion-sequence")
     @Column(name = "UASE_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "UASE_CODUA", nullable = false)
@@ -23,12 +23,12 @@ public class JUnidadAdministrativaSeccion {
     @JoinColumn(name = "UASE_CODSEC", nullable = false)
     private JSeccion seccion;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JUnidadAdministrativa getUnidadAdministrativa() {

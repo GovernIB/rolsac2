@@ -1,8 +1,12 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
+import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "ua-trad-sequence", sequenceName = "RS2_TRAUNAD_SEQ", allocationSize = 1)
@@ -15,7 +19,7 @@ public class JUnidadAdministrativaTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ua-trad-sequence")
     @Column(name = "TRUA_CODIGO", nullable = false)
-    private Integer id;
+    private Long codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRUA_CODUNAD", nullable = false)
@@ -37,12 +41,22 @@ public class JUnidadAdministrativaTraduccion {
     @Column(name = "TRUA_RSPCV")
     private String responsableCV;
 
-    public Integer getId() {
-        return id;
+    public static List<JUnidadAdministrativaTraduccion> createInstance() {
+        List<JUnidadAdministrativaTraduccion> traducciones = new ArrayList<>();
+        for (String idioma : Constantes.IDIOMAS) {
+            JUnidadAdministrativaTraduccion trad = new JUnidadAdministrativaTraduccion();
+            trad.setIdioma(idioma);
+            traducciones.add(trad);
+        }
+        return traducciones;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public JUnidadAdministrativa getUnidadAdministrativa() {
@@ -93,4 +107,29 @@ public class JUnidadAdministrativaTraduccion {
         this.responsableCV = truaRspcv;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JUnidadAdministrativaTraduccion that = (JUnidadAdministrativaTraduccion) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
+    public String toString() {
+        return "JUnidadAdministrativaTraduccion{" +
+                "id=" + codigo +
+                ", unidadAdministrativa=" + unidadAdministrativa +
+                ", idioma='" + idioma + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", presentacion='" + presentacion + '\'' +
+                ", url='" + url + '\'' +
+                ", responsableCV='" + responsableCV + '\'' +
+                '}';
+    }
 }

@@ -31,26 +31,96 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <h:form>
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda"  style="display:none" ajax="false" action="#{viewPersonal.buscar}" update="dataTable" />
 
-            <p:toolbar id="toolbar">
-                <f:facet name=""></f:facet>
-                <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}:" /> <p:inputText value="#{viewPersonal.filtro.texto}"></p:inputText>
-                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" actionListener="#{viewPersonal.buscar()}" update="messages dataTable" />
-                   <!--<p:commandButton value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus" iconPos="top" />-->
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
+                <f:facet name="header">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
+                            <p:inputText value="#{viewPersonal.filtro.texto}" styleClass="mr-2" ></p:inputText>
+                            <p:commandButton value="#{labels['dict.busqueda']}" styleClass="mr-2"  icon="pi pi-search" actionListener="#{viewPersonal.buscar()}" update="messages dataTable" />
+                            <p:commandButton  value="+" onclick="PF('panel').toggle()" />
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                            <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2"  icon="pi pi-file-o" iconPos="top"  actionListener="#{viewPersonal.nuevoPersonal()}" process="@this">
+                                <p:ajax event="dialogReturn" listener="#{viewPersonal.returnDialogo}" update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.editar']}" styleClass="mr-2"  icon="pi pi-pencil" iconPos="top"  actionListener="#{viewPersonal.editarPersonal}" process="@form" update="messages">
+                                <p:ajax event="dialogReturn" listener="#{viewPersonal.returnDialogo}" update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.borrar']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewPersonal.borrarPersonal}" process="@form" update="messages dataTable">
+                                <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"  action="#{viewPersonal.ayuda}" process="@this" update="messages" />
+                        </div>
+                    </div>
                 </f:facet>
-                <f:facet name="right">
-                    <p:commandButton value="#{labels['dict.nuevo']}"  icon="pi pi-file-o" iconPos="top"  actionListener="#{viewPersonal.nuevoPersonal()}" process="@this">
-                        <p:ajax event="dialogReturn" listener="#{viewPersonal.returnDialogo}" update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"  actionListener="#{viewPersonal.editarPersonal}" process="@form" update="messages">
-                        <p:ajax event="dialogReturn" listener="#{viewPersonal.returnDialogo}" update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"  action="#{viewPersonal.borrarPersonal}" process="@form" update="messages dataTable">
-                        <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"  action="#{viewPersonal.ayuda}" process="@this" update="messages" />
-                </f:facet>
-            </p:toolbar>
+                <p class="p-m-0">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dict.nombre']}:" for="txtNombre" />
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText id="txtNombre" value="#{viewPersonal.filtro.nombre}" styleClass="w95" />
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dict.identificador']}:"  for="txtIdentificador" />
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText id="txtIdentificador" value="#{viewPersonal.filtro.identificador}" styleClass="w95"   />
+                        </div>
+
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dict.cargo']}:" />
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText value="#{viewPersonal.filtro.cargo}" styleClass="w95"  maxlength="500"  />
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dict.funciones']}:" />
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText value="#{viewPersonal.filtro.funciones}" styleClass="w95"  maxlength="4000"  />
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2" >
+                            <h:outputText value="#{labels['dict.unidadAdministrativa']}:" for="txtUA" />
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4" >
+                            <p:inputText id="txtUA" value="#{viewPersonal.filtro.unidadAdministrativa}" styleClass="w95"    />
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dict.email']}:" for="txtEmail" />
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText id="txtEmail" value="#{viewPersonal.filtro.email}" styleClass="w95" />
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogPersonal.telefonoFijo']}:"  />
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText value="#{viewPersonal.filtro.telefonoFijo}" styleClass="w95" maxlength="9" />
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogPersonal.telefonoMovil']}:"  />
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText value="#{viewPersonal.filtro.telefonoMovil}" styleClass="w95"  maxlength="9"  />
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogPersonal.telefonoExteriorFijo']}:"  />
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText value="#{viewPersonal.filtro.telefonoExteriorFijo}" styleClass="w95"  maxlength="9" />
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogPersonal.telefonoExteriorMovil']}:"  />
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText value="#{viewPersonal.filtro.telefonoExteriorMovil}" styleClass="w95"  maxlength="9"  />
+                        </div>
+                    </div>
+                </p>
+            </p:panel>
+
             <p:dataTable id="dataTable" value="#{viewPersonal.lazyModel}" var="personal"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="personalTable"
                          rows="#{viewPersonal.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
@@ -60,7 +130,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewPersonal.datoSeleccionado}" rowKey="#{personal.id}"
+                         selectionMode="single" selection="#{viewPersonal.datoSeleccionado}" rowKey="#{personal.codigo}"
                          reflow="true"
                          sortBy="#{viewPersonal.filtro.orderBy}"
                          sortOrder="#{viewPersonal.filtro.order}"
@@ -75,9 +145,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{personal.id}">
-                    <f:facet name="header">#{labels['dict.id']}</f:facet>
-                    <h:outputText value="#{personal.id}"/>
+                <p:column sortBy="#{personal.codigo}">
+                    <f:facet name="header">#{labels['dict.codigo']}</f:facet>
+                    <h:outputText value="#{personal.codigo}"/>
                 </p:column>
                 <p:column sortBy="#{personal.nombre}">
                     <f:facet name="header">#{labels['dict.nombre']}</f:facet>

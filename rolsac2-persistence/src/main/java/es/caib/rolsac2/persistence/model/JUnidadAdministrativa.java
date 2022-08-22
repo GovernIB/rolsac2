@@ -1,19 +1,33 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
+
 import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "ua-sequence", sequenceName = "RS2_UNIADM_SEQ", allocationSize = 1)
-@Table(name = "RS2_UNIADM",
-        indexes = {
-                @Index(name = "RS2_UNIADM_PK_I", columnList = "UNAD_CODIGO")
-        }
-)
-public class JUnidadAdministrativa {
+@Table(name = "RS2_UNIADM", indexes = {@Index(name = "RS2_UNIADM_PK_I", columnList = "UNAD_CODIGO")})
+
+@NamedQueries({
+        @NamedQuery(name = JUnidadAdministrativa.FIND_BY_ID,
+                query = "select p from JUnidadAdministrativa p where p.codigo = :id"),
+        @NamedQuery(name = JUnidadAdministrativa.COUNT_BY_IDENTIFICADOR,
+                query = "select count(p) from JUnidadAdministrativa p where p.identificador = :identificador")
+})
+
+public class JUnidadAdministrativa extends BaseEntity {
+
+    private static final long serialVersionUID = 1L;
+
+    public static final String FIND_BY_ID = "UnidadAdministrativa.FIND_BY_ID";
+    public static final String COUNT_BY_IDENTIFICADOR = "UnidadAdministrativa.COUNT_BY_IDENTIFICADOR";
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ua-sequence")
     @Column(name = "UNAD_CODIGO", nullable = false)
-    private Integer id;
+    private Long codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "UNAD_CODENTI", nullable = false)
@@ -31,7 +45,7 @@ public class JUnidadAdministrativa {
     private String codigoDIR3;
 
     @Column(name = "UNAD_IDENTI", length = 50)
-    private String identificacion;
+    private String identificador;
 
     @Column(name = "UNAD_ABREVI", length = 10)
     private String abreviatura;
@@ -54,18 +68,22 @@ public class JUnidadAdministrativa {
     @Column(name = "UNAD_RSPEMA", length = 100)
     private String responsableEmail;
 
-    @Column(name = "UNAD_RSPSEX", length = 100)
-    private String responsableSexo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UNAD_RSPSEX")
+    private JTipoSexo responsableSexo;
 
-    @Column(name = "UNAD_ORDEN", nullable = false)
+    @Column(name = "UNAD_ORDEN", nullable = false, length = 3)
     private Integer orden;
 
-    public Integer getId() {
-        return id;
+    @OneToMany(mappedBy = "unidadAdministrativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JUnidadAdministrativaTraduccion> descripcion;
+
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public JEntidad getEntidad() {
@@ -100,12 +118,12 @@ public class JUnidadAdministrativa {
         this.codigoDIR3 = unadDir3;
     }
 
-    public String getIdentificacion() {
-        return identificacion;
+    public String getIdentificador() {
+        return identificador;
     }
 
-    public void setIdentificacion(String unadIdenti) {
-        this.identificacion = unadIdenti;
+    public void setIdentificador(String unadIdenti) {
+        this.identificador = unadIdenti;
     }
 
     public String getAbreviatura() {
@@ -172,11 +190,57 @@ public class JUnidadAdministrativa {
         this.orden = unadOrden;
     }
 
-    public String getResponsableSexo() {
+    public JTipoSexo getResponsableSexo() {
         return responsableSexo;
     }
 
-    public void setResponsableSexo(String responsableSexo) {
+    public void setResponsableSexo(JTipoSexo responsableSexo) {
         this.responsableSexo = responsableSexo;
+    }
+
+    public List<JUnidadAdministrativaTraduccion> getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(List<JUnidadAdministrativaTraduccion> descripcion) {
+        if (this.descripcion == null || this.descripcion.isEmpty()) {
+            this.descripcion = descripcion;
+        } else {
+            this.descripcion.addAll(descripcion);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JUnidadAdministrativa that = (JUnidadAdministrativa) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
+    public String toString() {
+        return "JUnidadAdministrativa{" +
+                "id=" + codigo +
+                ", entidad=" + entidad +
+                ", tipo=" + tipo +
+                ", padre=" + padre +
+                ", codigoDIR3='" + codigoDIR3 + '\'' +
+                ", identificacion='" + identificador + '\'' +
+                ", abreviatura='" + abreviatura + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", fax='" + fax + '\'' +
+                ", email='" + email + '\'' +
+                ", dominio='" + dominio + '\'' +
+                ", responsableNombre='" + responsableNombre + '\'' +
+                ", responsableEmail='" + responsableEmail + '\'' +
+                ", responsableSexo=" + responsableSexo +
+                ", orden=" + orden +
+                '}';
     }
 }

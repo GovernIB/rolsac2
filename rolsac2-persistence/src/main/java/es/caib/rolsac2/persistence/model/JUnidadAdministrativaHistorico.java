@@ -14,7 +14,7 @@ public class JUnidadAdministrativaHistorico {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ua-hist-sequence")
     @Column(name = "UAHI_CODIGO", nullable = false)
-    private Integer id;
+    private Integer codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "UAHI_CODUAOLD", nullable = false)
@@ -33,12 +33,12 @@ public class JUnidadAdministrativaHistorico {
     @Column(name = "UAHI_USUMOD", nullable = false, length = 100)
     private String usuarioModificacion;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer id) {
+        this.codigo = id;
     }
 
     public JUnidadAdministrativa getUnidadAdministrativaAntigua() {

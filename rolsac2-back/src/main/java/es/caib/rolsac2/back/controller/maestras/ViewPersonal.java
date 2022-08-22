@@ -4,14 +4,12 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.PersonalServiceFacade;
-import es.caib.rolsac2.service.facade.TestServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.PersonalGridDTO;
 import es.caib.rolsac2.service.model.filtro.PersonalFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -21,11 +19,17 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Controlador per obtenir la vista dels procediments d'una unitat orgànica. El definim a l'scope de view perquè
+ * a nivell de request es reconstruiria per cada petició AJAX, com ara amb els errors de validació.
+ * Amb view es manté mentre no es canvii de vista.
+ *
+ * @author areus
+ */
 @Named
 @ViewScoped
 public class ViewPersonal extends AbstractController implements Serializable {
@@ -43,11 +47,15 @@ public class ViewPersonal extends AbstractController implements Serializable {
     @EJB
     PersonalServiceFacade personalService;
 
-    @EJB
-    TestServiceFacade testService;
- 
+
+    /**
+     * Dato seleccionado
+     */
     private PersonalGridDTO datoSeleccionado;
- 
+
+    /**
+     * Filtro
+     **/
     private PersonalFiltro filtro;
 
 
@@ -58,6 +66,9 @@ public class ViewPersonal extends AbstractController implements Serializable {
 
     // ACCIONS
 
+    /**
+     * Carrega la unitat orgànica i els procediments.
+     */
     public void load() {
         LOG.debug("load");
 
@@ -65,10 +76,15 @@ public class ViewPersonal extends AbstractController implements Serializable {
 
         //Inicializamos combos/desplegables/inputs/filtro
         filtro = new PersonalFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getId());//UtilJSF.getSessionUnidadActiva());
+        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());//UtilJSF.getSessionUnidadActiva());
         filtro.setIdioma(sessionBean.getLang());//UtilJSF.getSessionLang());
- 
 
+        LOG.error("Rol admin: " + this.isUserRoleRSCAdmin());
+        LOG.error("Rol user: " + this.isUserRoleRSCUser());
+        LOG.error("Rol user: " + this.isUserRoleRSCMentira());
+        LOG.error("Username: " + this.getUserName());
+
+        //Generamos una búsqueda
         buscar();
     }
 
@@ -83,7 +99,7 @@ public class ViewPersonal extends AbstractController implements Serializable {
             @Override
             public PersonalGridDTO getRowData(String rowKey) {
                 for (PersonalGridDTO pers : (List<PersonalGridDTO>) getWrappedData()) {
-                    if (pers.getId().toString().equals(rowKey))
+                    if (pers.getCodigo().toString().equals(rowKey))
                         return pers;
                 }
                 return null;
@@ -91,7 +107,7 @@ public class ViewPersonal extends AbstractController implements Serializable {
 
             @Override
             public Object getRowKey(PersonalGridDTO pers) {
-                return pers.getId().toString();
+                return pers.getCodigo().toString();
             }
 
             @Override
@@ -104,7 +120,7 @@ public class ViewPersonal extends AbstractController implements Serializable {
                     return pagina.getItems();
                 } catch (Exception e) {
                     LOG.error("Error llamando", e);
-                    Pagina<PersonalGridDTO> pagina = pagina = new Pagina(new ArrayList(), 3);
+                    Pagina<PersonalGridDTO> pagina = pagina = new Pagina(new ArrayList(), 0);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
@@ -130,11 +146,12 @@ public class ViewPersonal extends AbstractController implements Serializable {
         }
     }
 
+
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
-        if (!respuesta.isCanceled() && !respuesta.getModoAcceso().equals(TypeModoAcceso.CONSULTA)) {
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             this.buscar();
             if (respuesta.isAlta()) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.creaciocorrecta"));
@@ -148,44 +165,26 @@ public class ViewPersonal extends AbstractController implements Serializable {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
-            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getId().toString());
+            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        
+        UtilJSF.openDialog("dialogPersonal", modoAcceso, params, true, 800, 410);
     }
-
 
     public void borrarPersonal() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "Seleccione un elemento");// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
-            personalService.delete(datoSeleccionado.getId());
+            personalService.delete(datoSeleccionado.getCodigo());
         }
     }
 
-    public void borrar() {
-        // Opciones dialogo
-        LOG.error("llega");
-        final Map<String, Object> options = new HashMap<>();
-        options.put("modal", true);
-        options.put("width", 800);
-        options.put("height", 800);
-        options.put("contentWidth", "100%");
-        options.put("contentHeight", "100%");
-        options.put("headerElement", "customheader");
-        options.put("id", "someId");
 
-        // Parametros
-        String idParam = "";
-        final Map<String, List<String>> paramsDialog = new HashMap<>();
-      
-
-        
-        final String secOpenDialog = "CONSULTA"/*modoAcceso.toString()*/ + "-" + idParam + "-" + System.currentTimeMillis();
-       
-        PrimeFaces.current().dialog().openDynamic("dialogPersonal", options, paramsDialog);
-    }
-
-
+    /**
+     * Esborra el procediment l'identificador indicat. El mètode retorna void perquè no cal navegació ja que
+     * l'eliminació es realitza des de la pàgina de llistat, i quedam en aquesta pàgina.
+     *
+     * @param id identificador de del procediment.
+     */
     public void delete(Long id) {
         LOG.debug("delete");
 
