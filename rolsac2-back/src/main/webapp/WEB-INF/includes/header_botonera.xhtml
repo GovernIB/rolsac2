@@ -9,19 +9,19 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mobil">
             <li class="nav-item dropdown colorRojo">
-                <a class="nav-link dropdown mobil" title="Unidades" href="#" id="unidades"
+                <a class="nav-link dropdown mobil" title="Entidades" href="#" id="entidades"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
                                           aria-hidden="true"></span>
-                    <span class="mb-0 float-right botoCurt">#{sessionBean.unidad.nombre.getTraduccion(sessionBean.getLang())}</span>
+                    <span class="mb-0 float-right botoCurt">#{sessionBean.entidad.descripcion.getTraduccion(sessionBean.getLang())}</span>
                     <span class="oi oi-globe" title="#{labels['idioma_link']}" aria-hidden="true"></span>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="unidades">
-                    <p:repeat value="#{sessionBean.unidades}" var="unidad">
-                        <p:commandLink styleClass="dropdown-item mobil" hreflang="#{unidad}"
+                <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="entidades">
+                    <p:repeat value="#{sessionBean.entidades}" var="entidad">
+                        <p:commandLink styleClass="dropdown-item mobil" hreflang="#{entidad}"
                                        action="#{sessionBean.reload()}"
-                                       value="#{unidad.nombre.getTraduccion(sessionBean.getLang())}">
-                            <p:ajax listener="#{sessionBean.actualizarUnidadAdministrativa(unidad)}" />
+                                       value="#{entidad.descripcion.getTraduccion(sessionBean.getLang())}">
+                            <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}" />
                         </p:commandLink>
                     </p:repeat>
                 </div>
@@ -51,11 +51,11 @@
                                     <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
                                           aria-hidden="true"></span>
                     <span class="mb-0 float-right botoCurt">#{labels['dict.configuracion']}</span>
-                    <span class="oi oi-cog" title="#{labels['idioma_link']}" aria-hidden="true"></span>
+                    <span class="oi oi-cog" title="#{labels['dict.configuracion']}" aria-hidden="true"></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="idiomas">
                     <p:link styleClass="dropdown-item mobil" outcome="/configuracio"
-                            title="{labels['dict.configuracion']}">
+                            title="#{labels['dict.configuracion']}">
                         <span class="mb-0 float-right botoCurt">#{labels['dict.configuracion']}</span>
                     </p:link>
                     <p:repeat value="#{applicationLocales.available}" var="locale">
