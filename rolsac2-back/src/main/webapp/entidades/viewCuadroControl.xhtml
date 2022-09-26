@@ -1,0 +1,232 @@
+<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+>
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewAction action="#{viewTipoSexo.load}"/>
+      <f:viewAction action="#{viewTipoBoletin.load}"/>
+    </f:metadata>
+  </ui:define>
+
+  <ui:define name="pageTitle">
+    <h:outputFormat value="#{labels['viewCuadroControl.titulo']}"/>
+  </ui:define>
+
+  <ui:define name="breadcrumb">
+    <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
+      <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                  action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
+                  oncomplete="$('#form:actualizarBusqueda').click();">
+      </p:menuitem>
+    </c:forEach>
+  </ui:define>
+
+  <ui:define name="content">
+    <h:form>
+      <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
+                       action="#{viewConfiguracionesGlobales.buscar}" update="dataTable"/>
+
+      <!--
+      <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
+        <f:facet name="header">
+          <p style="margin:10px">Cuadro control</p>
+        </f:facet>
+
+      </p:panel>
+
+      -->
+      <br/><br/>
+
+
+      <h:outputText value="Gràfica resum última setmana" style="font-weight:bold; font-size:20px"/>
+
+
+      <br/><br/>
+
+      <h:form>
+
+        <h:panelGrid columns="2" cellpadding="5">
+
+          <h:outputLabel value="Unitats administratives:"/>
+
+
+          <!--
+          poner icono
+          -->
+
+
+          <my:unidadAdministrativaComponent id="uaGeneral"
+                                            value="#{sessionBean.unidadActiva}" idioma="#{sessionBean.lang}"
+                                            ocultarTexto="true" esCabecera="true">
+          </my:unidadAdministrativaComponent>
+
+
+        </h:panelGrid>
+
+        <p:selectBooleanCheckbox value="#{selectBooleanView.value1}" itemLabel="Seleccionar totes les unitats"/>
+
+        <p:commandButton value="Buscar"/>
+
+
+      </h:form>
+
+
+      <br/><br/>
+
+
+      <p:layout style="min-width:400px;min-height:200px;">
+        <p:layoutUnit position="west" size="50%">
+          <h:outputText value="Darreres modificacions" style="font-weight:bold; font-size:20px"/>
+          <br/><br/>
+
+          <p:dataTable id="dataTable1" value="#{viewTipoSexo.lazyModel}" var="tipoSexo"
+                       paginator="true" lazy="true" filterDelay="300" widgetVar="tipoSexoTable"
+                       rows="#{viewTipoSexo.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                       first="#{viewTipoSexo.filtro.paginaFirst}"
+                       paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                       paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                                {NextPageLink} {LastPageLink}"
+                       currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                       emptyMessage="#{labels['dict.noHayDatos']}"
+                       rowKey="#{tipoSexo.codigo}"
+                       reflow="true"
+                       sortBy="#{viewTipoSexo.filtro.orderBy}"
+                       sortOrder="#{viewTipoSexo.filtro.order}"
+          >
+            <f:facet name="{RowsPerPageLabel}">
+              #{labels.dataTable_rowsPerPage}
+            </f:facet>
+            <p:column sortBy="#{tipoSexo.codigo}">
+              <f:facet name="header">#{labels['viewCuadroControl.tipus']}</f:facet>
+              <h:outputText value="#{tipoSexo.codigo}"/>
+            </p:column>
+            <p:column sortBy="#{tipoSexo.identificador}">
+              <f:facet name="header">#{labels['viewCuadroControl.visible']}</f:facet>
+              <h:outputText value="#{tipoSexo.identificador}"/>
+            </p:column>
+            <p:column sortBy="#{tipoSexo.descripcion}" styleClass="overflow-datagrid-cell">
+              <f:facet name="header">#{labels['viewCuadroControl.noVisible']}</f:facet>
+              <h:outputText value="#{tipoSexo.descripcion.getTraduccion(sessionBean.lang)}"/>
+            </p:column>
+            <p:column sortBy="#{tipoSexo.descripcion}" styleClass="overflow-datagrid-cell">
+              <f:facet name="header">#{labels['viewCuadroControl.total']}</f:facet>
+              <h:outputText value="#{tipoSexo.descripcion.getTraduccion(sessionBean.lang)}"/>
+            </p:column>
+          </p:dataTable>
+
+
+        </p:layoutUnit>
+
+        <p:layoutUnit position="center">
+          <h:outputText value="Nombre de continguts" style="font-weight:bold; font-size:20px"/>
+          <br/><br/>
+
+
+          <!--
+          <p:dataTable id="dataTable2" value="#{viewTipoSexo.lazyModel}" var="tipoSexo"
+                       lazy="true" filterDelay="300" widgetVar="tipoSexoTable"
+                       rows="#{viewTipoSexo.filtro.paginaTamanyo}"
+                       first="#{viewTipoSexo.filtro.paginaFirst}"
+                       currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                       emptyMessage="#{labels['dict.noHayDatos']}"
+                       rowKey="#{tipoSexo.codigo}"
+                       reflow="true"
+                       sortBy="#{viewTipoSexo.filtro.orderBy}"
+                       sortOrder="#{viewTipoSexo.filtro.order}"
+          >
+
+
+            <p:column sortBy="#{tipoSexo.codigo}">
+              <f:facet name="header">#{labels['viewCuadroControl.tipus']}</f:facet>
+              <h:outputText value="#{tipoSexo.codigo}"/>
+            </p:column>
+            <p:column sortBy="#{tipoSexo.identificador}">
+              <f:facet name="header">#{labels['viewCuadroControl.visible']}</f:facet>
+              <h:outputText value="#{tipoSexo.identificador}"/>
+            </p:column>
+            <p:column sortBy="#{tipoSexo.descripcion}" styleClass="overflow-datagrid-cell">
+              <f:facet name="header">#{labels['viewCuadroControl.noVisible']}</f:facet>
+              <h:outputText value="#{tipoSexo.descripcion.getTraduccion(sessionBean.lang)}"/>
+            </p:column>
+            <p:column sortBy="#{tipoSexo.descripcion}" styleClass="overflow-datagrid-cell">
+              <f:facet name="header">#{labels['viewCuadroControl.total']}</f:facet>
+              <h:outputText value="#{tipoSexo.descripcion.getTraduccion(sessionBean.lang)}"/>
+            </p:column>
+          </p:dataTable>
+          -->
+
+
+          <p:dataTable var="contingut" value="#{dtBasicView.continguts}" style="background-color:#edce6f;">
+            <p:column headerText="#{labels['viewCuadroControl.tipus']}" style="font-weight:bold">
+              <h:outputText value="#{contingut.id}" style="color: blue;"/>
+            </p:column>
+
+            <p:column headerText="#{labels['viewCuadroControl.visible']}">
+              <h:outputText value="#{contingut.year}"/>
+            </p:column>
+
+            <p:column headerText="#{labels['viewCuadroControl.noVisible']}">
+              <h:outputText value="#{contingut.brand}"/>
+            </p:column>
+
+            <p:column headerText="#{labels['viewCuadroControl.total']}">
+              <h:outputText value="#{contingut.color}"/>
+            </p:column>
+          </p:dataTable>
+
+
+        </p:layoutUnit>
+      </p:layout>
+
+      <br/><br/>
+
+
+      <h:outputText value="Estadístiques de l'unitat administrativa Presidència"
+                    style="font-weight:bold; font-size:20px"/>
+      <br/><br/>
+      <div class="card">
+        <p:chart type="bar" model="#{chartView.barModel}" style="height:300px"/>
+      </div>
+
+      <br/><br/>
+
+      <h:outputText value="Gràfica resum de la darrera setmana" style="font-weight:bold; font-size:20px"/>
+
+      <br/><br/>
+
+      <p:tabView>
+        <p:tab title="Altes">
+          <div class="card">
+            <p:chart type="bar" model="#{chartView.barModel}" style="height:300px"/>
+          </div>
+
+        </p:tab>
+        <p:tab title="Baixes">
+          <div class="card">
+            <p:chart type="bar" model="#{chartView.barModel}" style="height:300px"/>
+          </div>
+
+        </p:tab>
+        <p:tab title="Modificacions">
+          <div class="card">
+            <p:chart type="bar" model="#{chartView.barModel}" style="height:300px"/>
+          </div>
+
+        </p:tab>
+      </p:tabView>
+
+
+    </h:form>
+  </ui:define>
+
+</ui:composition>
+</html>
