@@ -3,6 +3,7 @@ package es.caib.rolsac2.service.model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * Dades de una normativa.
@@ -13,17 +14,19 @@ import java.time.LocalDate;
 public class NormativaDTO extends ModelApi {
     private Long codigo;
 
-    private BoletinOficialDTO boletin;
+    private BoletinOficialDTO boletinOficial;
 
-    private AfectacionDTO afectacion;
+    //private AfectacionDTO afectacion;
     private TipoNormativaDTO tipoNormativa;
     private String numero;
     private LocalDate fechaAprobacion;
-    private TipoBoletinDTO tipoBoletin;
+    //private TipoBoletinDTO tipoBoletin;
     private LocalDate fechaBoletin;
     private String numeroBoletin;
     private String urlBoletin;
     private String nombreResponsable;
+    private Literal nombre;
+    private EntidadDTO entidad;
 
     public Long getCodigo() {
         return codigo;
@@ -90,28 +93,41 @@ public class NormativaDTO extends ModelApi {
         this.nombreResponsable = nombreResponsable;
     }
 
-    public BoletinOficialDTO getBoletin() {
-        return boletin;
+    public BoletinOficialDTO getBoletinOficial() {
+        return boletinOficial;
     }
 
-    public void setBoletin(BoletinOficialDTO boletin) {
-        this.boletin = boletin;
+    public void setBoletinOficial(BoletinOficialDTO boletin) {
+        this.boletinOficial = boletin;
     }
 
-    public AfectacionDTO getAfectacion() {
-        return afectacion;
+    public Literal getNombre() {
+        return nombre;
     }
 
-    public void setAfectacion(AfectacionDTO afectacion) {
-        this.afectacion = afectacion;
+    public void setNombre(Literal nombre) {
+        this.nombre = nombre;
     }
 
-    public TipoBoletinDTO getTipoBoletin() {
-        return tipoBoletin;
+    public EntidadDTO getEntidad() {
+        return entidad;
     }
 
-    public void setTipoBoletin(TipoBoletinDTO tipoBoletin) {
-        this.tipoBoletin = tipoBoletin;
+    public void setEntidad(EntidadDTO entidad) {
+        this.entidad = entidad;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NormativaDTO that = (NormativaDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 
     @Override

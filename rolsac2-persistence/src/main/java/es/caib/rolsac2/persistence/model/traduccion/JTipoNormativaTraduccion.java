@@ -7,6 +7,7 @@ import es.caib.rolsac2.service.model.Constantes;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representacion de un personal. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
@@ -88,10 +89,22 @@ public class JTipoNormativaTraduccion extends BaseEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JTipoNormativaTraduccion that = (JTipoNormativaTraduccion) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
     public String toString() {
         return "JTipoNormativaTraduccion{" +
                 "id=" + codigo +
-                "tipoNormativa=" + tipoNormativa +
                 "idioma=" + idioma +
                 "descripcion=" + descripcion +
                 '}';

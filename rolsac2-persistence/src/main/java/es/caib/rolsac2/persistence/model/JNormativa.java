@@ -1,7 +1,12 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
+import es.caib.rolsac2.persistence.model.traduccion.JNormativaTraduccion;
+
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "normativa-sequence", sequenceName = "RS2_NORMA_SEQ", allocationSize = 1)
@@ -9,11 +14,19 @@ import java.time.LocalDate;
         indexes = {
                 @Index(name = "RS2_NORMA_PK_I", columnList = "NORM_CODIGO")
         })
-public class JNormativa {
+@NamedQueries({
+        @NamedQuery(name = JNormativa.FIND_BY_ID,
+                query = "select p from JNormativa p where p.codigo = :codigo")
+})
+public class JNormativa extends BaseEntity {
+
+    public static final String FIND_BY_ID = "normativa.FIND_BY_ID";
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "normativa-sequence")
     @Column(name = "NORM_CODIGO", nullable = false)
-    private Integer codigo;
+    private Long codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "NORM_CODENTI", nullable = false)
@@ -31,7 +44,7 @@ public class JNormativa {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "NORM_BOLECOD", nullable = false)
-    private JBoletinOficial boletin;
+    private JBoletinOficial boletinOficial;
 
     @Column(name = "NORM_BOLEFEC")
     private LocalDate fechaBoletin;
@@ -45,11 +58,17 @@ public class JNormativa {
     @Column(name = "NORM_RESPNOM")
     private String nombreResponsable;
 
-    public Integer getCodigo() {
+    /**
+     * Descripción
+     */
+    @OneToMany(mappedBy = "normativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JNormativaTraduccion> descripcion;
+
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Integer id) {
+    public void setCodigo(Long id) {
         this.codigo = id;
     }
 
@@ -85,12 +104,12 @@ public class JNormativa {
         this.fechaAprobacion = normFcapro;
     }
 
-    public JBoletinOficial getBoletin() {
-        return boletin;
+    public JBoletinOficial getBoletinOficial() {
+        return boletinOficial;
     }
 
-    public void setBoletin(JBoletinOficial normBolecod) {
-        this.boletin = normBolecod;
+    public void setBoletinOficial(JBoletinOficial normBolecod) {
+        this.boletinOficial = normBolecod;
     }
 
     public LocalDate getFechaBoletin() {
@@ -125,4 +144,44 @@ public class JNormativa {
         this.nombreResponsable = normRespnom;
     }
 
+    public List<JNormativaTraduccion> getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(List<JNormativaTraduccion> descripcion) {
+        if (this.descripcion == null || this.descripcion.isEmpty()) {
+            this.descripcion = descripcion;
+        } else {
+            this.descripcion.addAll(descripcion);
+        }
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JNormativa that = (JNormativa) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
+    public String toString() {
+        return "JNormativa{" +
+                "codigo=" + codigo +
+                ", numero='" + numero + '\'' +
+                ", fechaAprobacion=" + fechaAprobacion +
+                ", boletin=" + boletinOficial +
+                ", fechaBoletin=" + fechaBoletin +
+                ", numeroBoletin='" + numeroBoletin + '\'' +
+                ", urlBoletin='" + urlBoletin + '\'' +
+                ", nombreResponsable='" + nombreResponsable + '\'' +
+                ", descripcion=" + descripcion +
+                '}';
+    }
 }

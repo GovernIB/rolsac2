@@ -1,8 +1,12 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.JNormativa;
+import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "normativa-trad-sequence", sequenceName = "RS2_TRANORM_SEQ", allocationSize = 1)
@@ -14,7 +18,7 @@ public class JNormativaTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "normativa-trad-sequence")
     @Column(name = "TRNO_CODIGO", nullable = false)
-    private Integer codigo;
+    private Long codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRNO_CODTPNO", nullable = false)
@@ -26,11 +30,21 @@ public class JNormativaTraduccion {
     @Column(name = "TRNO_TITUL", length = 2000)
     private String titulo;
 
-    public Integer getCodigo() {
+    public static List<JNormativaTraduccion> createInstance() {
+        List<JNormativaTraduccion> traducciones = new ArrayList<>();
+        for (String idioma : Constantes.IDIOMAS) {
+            JNormativaTraduccion trad = new JNormativaTraduccion();
+            trad.setIdioma(idioma);
+            traducciones.add(trad);
+        }
+        return traducciones;
+    }
+
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Integer id) {
+    public void setCodigo(Long id) {
         this.codigo = id;
     }
 
@@ -58,4 +72,25 @@ public class JNormativaTraduccion {
         this.titulo = trnoTitul;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JNormativaTraduccion that = (JNormativaTraduccion) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
+    public String toString() {
+        return "JNormativaTraduccion{" +
+                "codigo=" + codigo +
+                ", idioma='" + idioma + '\'' +
+                ", titulo='" + titulo + '\'' +
+                '}';
+    }
 }

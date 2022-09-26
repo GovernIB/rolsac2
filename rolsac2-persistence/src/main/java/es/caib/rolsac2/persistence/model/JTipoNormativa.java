@@ -1,9 +1,11 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoNormativaTraduccion;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representacion de un personal. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
@@ -62,17 +64,46 @@ public class JTipoNormativa extends BaseEntity {
         return descripcion;
     }
 
+    public String getDescripcion(String idioma) {
+        if (descripcion == null || descripcion.isEmpty()) {
+            return "";
+        }
+        for (JTipoNormativaTraduccion trad : this.descripcion) {
+            if (trad.getIdioma() != null && idioma.equalsIgnoreCase(idioma)) {
+                return trad.getDescripcion();
+            }
+        }
+        return "";
+    }
+
     public void setDescripcion(List<JTipoNormativaTraduccion> descripcion) {
-        this.descripcion = descripcion;
+        if (this.descripcion == null || this.descripcion.isEmpty()) {
+            this.descripcion = descripcion;
+        } else {
+            this.descripcion.addAll(descripcion);
+        }
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JTipoNormativa that = (JTipoNormativa) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
         return "JTipoNormativa{" +
-                "id=" + codigo +
-                "identificador=" + identificador +
-                "descripcion=" + descripcion +
+                "codigo=" + codigo +
+                ", identificador='" + identificador + '\'' +
+                ", descripcion=" + descripcion +
                 '}';
     }
-
 }

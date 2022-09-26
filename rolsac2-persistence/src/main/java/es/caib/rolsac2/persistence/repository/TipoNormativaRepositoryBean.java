@@ -1,7 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.TipoNormativaConverter;
 import es.caib.rolsac2.persistence.model.JTipoNormativa;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import es.caib.rolsac2.service.model.TipoNormativaGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.TipoNormativaFiltro;
@@ -10,6 +12,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -30,6 +33,9 @@ public class TipoNormativaRepositoryBean extends AbstractCrudRepository<JTipoNor
     protected TipoNormativaRepositoryBean() {
         super(JTipoNormativa.class);
     }
+
+    @Inject
+    private TipoNormativaConverter converter;
 
     @Override
     public List<TipoNormativaGridDTO> findPagedByFiltro(TipoNormativaFiltro filtro) {
@@ -115,5 +121,19 @@ public class TipoNormativaRepositoryBean extends AbstractCrudRepository<JTipoNor
         TypedQuery<Long> query = entityManager.createNamedQuery(JTipoNormativa.COUNT_BY_IDENTIFICADOR, Long.class);
         query.setParameter("identificador", identificador);
         return query.getSingleResult().longValue() == 1L;
+    }
+
+    @Override
+    public List<TipoNormativaDTO> findAll() {
+        TypedQuery<JTipoNormativa> query =
+                entityManager.createQuery("SELECT j FROM JTipoNormativa j", JTipoNormativa.class);
+        List<JTipoNormativa> jTipoNormativas = query.getResultList();
+        List<TipoNormativaDTO> tipoNormativaDTOS = new ArrayList<>();
+        if (jTipoNormativas != null) {
+            for (JTipoNormativa jTipoNormativa : jTipoNormativas) {
+                tipoNormativaDTOS.add(this.converter.createDTO(jTipoNormativa));
+            }
+        }
+        return tipoNormativaDTOS;
     }
 }

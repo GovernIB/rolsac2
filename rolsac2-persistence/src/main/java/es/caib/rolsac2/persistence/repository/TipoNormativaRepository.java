@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.model.JPersonal;
 import es.caib.rolsac2.persistence.model.JTipoNormativa;
 import es.caib.rolsac2.service.model.PersonalGridDTO;
+import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import es.caib.rolsac2.service.model.TipoNormativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.PersonalFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoNormativaFiltro;
@@ -24,4 +25,6 @@ public interface TipoNormativaRepository extends CrudRepository<JTipoNormativa, 
     long countByFiltro(TipoNormativaFiltro filtro);
 
     Boolean checkIdentificador(String identificador);
+
+    List<TipoNormativaDTO> findAll();
 }
