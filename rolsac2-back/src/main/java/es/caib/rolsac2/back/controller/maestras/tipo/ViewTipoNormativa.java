@@ -162,7 +162,7 @@ public class ViewTipoNormativa extends AbstractController implements Serializabl
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoNormativa", modoAcceso, params, true, 850, 240);
+        UtilJSF.openDialog("dialogTipoNormativa", modoAcceso, params, true, 850, 265);
     }
 
 

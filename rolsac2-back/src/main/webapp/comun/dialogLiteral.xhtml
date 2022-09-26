@@ -60,11 +60,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogLiteral.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.aceptar']}" update="messagesDialog"
                          rendered="#{!dialogLiteral.isModoConsulta()}"
                          process="@all" />
         <p:commandButton action="#{dialogLiteral.cerrar}"
-                         value="#{labels['dict.cerrar']}"
+                         value="#{labels['dict.cancelar']}"
                          process="@this" />
 
     </ui:define>

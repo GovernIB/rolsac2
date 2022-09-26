@@ -14,12 +14,12 @@
     </ui:define>
 
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dict.detalle']}"
-                        rendered="#{!dialogUsuario.isModoAlta()}"/>
-
-        <h:outputFormat value="#{labels['dict.nuevo']}"
+        <h:outputFormat value="#{labels['dialogUsuario.consulta']}"
+                        rendered="#{dialogUsuario.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogUsuario.detalle']}"
+                        rendered="#{dialogUsuario.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogUsuario.nuevo']}"
                         rendered="#{dialogUsuario.isModoAlta()}"/>
-
     </ui:define>
 
     <ui:define name="contentDialog">

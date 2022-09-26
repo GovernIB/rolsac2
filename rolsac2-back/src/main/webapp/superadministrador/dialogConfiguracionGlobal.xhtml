@@ -18,10 +18,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogEntidad.detalle']}"
-                        rendered="#{!dialogConfiguracionGlobal.isModoAlta()}"/>
+        <h:outputFormat value="#{labels['dialogConfiguracionGlobal.consulta']}"
+                        rendered="#{dialogConfiguracionGlobal.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogConfiguracionGlobal.detalle']}"
+                        rendered="#{dialogConfiguracionGlobal.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogConfiguracionGlobal.nuevo']}"
+                        rendered="#{dialogConfiguracionGlobal.isModoAlta()}"/>
     </ui:define>
-
 
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"

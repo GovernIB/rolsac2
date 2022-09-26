@@ -7,6 +7,7 @@ import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.model.PluginDto;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +65,10 @@ public class DialogPlugins extends AbstractController implements Serializable {
 
         result.setResult(data);
         UtilJSF.closeDialog(result);
+    }
+
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
     }
 /*
     private boolean verificarGuardar() {

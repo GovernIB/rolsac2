@@ -25,6 +25,22 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         rendered="#{dialogTipoNormativa.isModoAlta()}"/>
     </ui:define>
 
+    <ui:define name="contentIdioma">
+
+        <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoNormativa.idioma}" styleClass="botoneraRed">
+            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+            <p:ajax update="inputDescripcion" process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogTipoNormativa.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this" />
+    </ui:define>
 
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
@@ -61,21 +77,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputDescripcion" value="#{dialogTipoNormativa.data.descripcion}"
+                                         soloLecture="#{dialogTipoNormativa.isModoConsulta()}"
                                          idioma="#{dialogTipoNormativa.idioma}"/>
                 </div>
             </div>
         </p:panel>
 
 
-    </ui:define>
-
-
-    <ui:define name="contentFooterDialogLeft">
-        <p:selectOneMenu id="opcionIdioma" value="#{dialogTipoNormativa.idioma}">
-            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
-            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
-            <p:ajax update="@form:inputDescripcion" process="@this"/>
-        </p:selectOneMenu>
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">

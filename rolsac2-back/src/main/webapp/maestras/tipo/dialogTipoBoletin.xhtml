@@ -18,10 +18,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
   <ui:define name="pageTitleDialog">
-    <h:outputFormat value="Tipo Boletin"/>
-    <h:outputFormat value="- #{dialogTipoBoletin.data.identificador} " renderer="{!dialogTipoBoletin.isAlta()}"/>
+    <h:outputFormat value="#{labels['dialogTipoBoletin.consulta']}"
+                    rendered="#{dialogTipoBoletin.isModoConsulta()}"/>
+    <h:outputFormat value="#{labels['dialogTipoBoletin.detalle']}"
+                    rendered="#{dialogTipoBoletin.isModoEdicion()}"/>
+    <h:outputFormat value="#{labels['dialogTipoBoletin.nuevo']}"
+                    rendered="#{dialogTipoBoletin.isModoAlta()}"/>
   </ui:define>
-
 
   <ui:define name="contentDialog">
     <p:growl id="messagesDialog"
@@ -69,14 +72,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
           <p:inputText id="txtUrl" value="#{dialogTipoBoletin.data.url}" styleClass="w95" required="true"
                        disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"/>
         </div>
-
       </div>
-
-
     </p:panel>
   </ui:define>
-
-
 
   <ui:define name="contentFooterDialogRight">
     <p:commandButton action="#{dialogTipoBoletin.ayuda}"

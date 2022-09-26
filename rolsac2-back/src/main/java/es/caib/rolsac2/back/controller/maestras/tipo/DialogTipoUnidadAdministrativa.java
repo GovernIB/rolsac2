@@ -71,6 +71,10 @@ public class DialogTipoUnidadAdministrativa extends AbstractController implement
         }
     }
 
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+    }
+
     public void guardar() {
 
         if (this.identificadorOld != null && !this.identificadorOld.equalsIgnoreCase(this.data.getIdentificador()) && Boolean.TRUE.equals(tipoUnidadAdministrativaServiceFacade.checkIdentificador(this.data.getIdentificador(), UtilJSF.getSessionBean().getEntidad().getCodigo()))) {

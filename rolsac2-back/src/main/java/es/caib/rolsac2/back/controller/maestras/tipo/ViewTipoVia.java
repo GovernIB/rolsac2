@@ -158,7 +158,7 @@ public class ViewTipoVia extends AbstractController implements Serializable {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoVia", modoAcceso, params, true, 800, 240);
+        UtilJSF.openDialog("dialogTipoVia", modoAcceso, params, true, 800, 265);
 
 
     }

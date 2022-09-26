@@ -147,6 +147,7 @@ public class ViewConfiguracionesGlobales extends AbstractController implements S
         }
     }
 
+
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
@@ -163,7 +164,7 @@ public class ViewConfiguracionesGlobales extends AbstractController implements S
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogConfiguracionGlobal", modoAcceso, params, true, 780, 382);
+        UtilJSF.openDialog("dialogConfiguracionGlobal", modoAcceso, params, true, 780, 407);
     }
 
     public ConfiguracionGlobalGridDTO getDatoSeleccionado() {

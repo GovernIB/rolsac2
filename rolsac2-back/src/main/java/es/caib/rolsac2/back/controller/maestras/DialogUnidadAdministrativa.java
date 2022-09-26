@@ -14,6 +14,8 @@ import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+
+import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +46,8 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
     private String identificadorOld;
 
+    private String modoAccesoAux;
+
     @Inject
     private SessionBean sessionBean;
 
@@ -61,6 +65,10 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
         this.setearIdioma();
         data = new UnidadAdministrativaDTO();
+
+        if(this.getModoAcceso()==null && modoAccesoAux !=null) {
+        	this.setModoAcceso(modoAccesoAux);
+        }
 
         tiposSexo = unidadAdministrativaServiceFacade.findTipoSexo();
         entidadesActivas = administracionSupServiceFacade.findEntidadActivas();
@@ -136,7 +144,6 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             return false;
         }
 
-
         return true;
     }
 
@@ -187,4 +194,13 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
     public void setTiposSexo(List<TipoSexoDTO> tiposSexo) {
         this.tiposSexo = tiposSexo;
     }
+
+	public String getModoAccesoAux() {
+		return modoAccesoAux;
+	}
+
+	public void setModoAccesoAux(String modoAccesoAux) {
+		this.modoAccesoAux = modoAccesoAux;
+	}
+
 }

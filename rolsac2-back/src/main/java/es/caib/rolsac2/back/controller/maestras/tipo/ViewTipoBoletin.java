@@ -161,7 +161,7 @@ public class ViewTipoBoletin extends AbstractController implements Serializable 
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoBoletin", modoAcceso, params, true, 800, 280);
+        UtilJSF.openDialog("dialogTipoBoletin", modoAcceso, params, true, 800, 305);
     }
 
     public void borrarTipoBoletin() {

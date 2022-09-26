@@ -51,6 +51,10 @@ public class DialogTipoMediaFicha extends AbstractController implements Serializ
         }
     }
 
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+    }
+
     public void abrirDlg() {
         final Map<String, String> params = new HashMap<>();
         UtilJSF.openDialog("dialogTipoMediaFicha", TypeModoAcceso.ALTA, params, true, 1050, 550);

@@ -54,6 +54,10 @@ public class DialogTipoVia extends AbstractController implements Serializable {
         }
     }
 
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+    }
+
     public void abrirDlg() {
         final Map<String, String> params = new HashMap<>();
         UtilJSF.openDialog("dialogTipoVia", TypeModoAcceso.ALTA, params, true, 1050, 550);

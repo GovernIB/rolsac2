@@ -18,9 +18,30 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
   </ui:define>
 
   <ui:define name="pageTitleDialog">
-    <h:outputFormat value="Detalle - #{labels['viewTipoLegitimacion.titulo']} "/>
+    <h:outputFormat value="#{labels['dialogTipoLegitimacion.consulta']}"
+                    rendered="#{dialogTipoLegitimacion.isModoConsulta()}"/>
+    <h:outputFormat value="#{labels['dialogTipoLegitimacion.detalle']}"
+                    rendered="#{dialogTipoLegitimacion.isModoEdicion()}"/>
+    <h:outputFormat value="#{labels['dialogTipoLegitimacion.nuevo']}"
+                    rendered="#{dialogTipoLegitimacion.isModoAlta()}"/>
   </ui:define>
 
+  <ui:define name="contentIdioma">
+
+    <span class="pi pi-tag" style="margin-top:5px"/>
+    <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+    <p:selectOneButton id="opcionIdioma" value="#{dialogTipoLegitimacion.idioma}" styleClass="botoneraRed">
+      <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+      <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+      <p:ajax update="inputDescripcion" process="@this"/>
+    </p:selectOneButton>
+    <p:commandButton action="#{dialogTipoLegitimacion.traducir}"
+                     icon="pi pi-compass" iconPos="top"
+                     value="#{labels['dict.traducir']}"
+                     style="margin-left:10px"
+                     update="messagesDialog"
+                     process="@this" />
+  </ui:define>
 
   <ui:define name="contentDialog">
     <p:panel>
@@ -56,22 +77,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
           <my:literalComponent id="inputDescripcion" value="#{dialogTipoLegitimacion.data.descripcion}"
+                               soloLecture="#{dialogTipoLegitimacion.isModoConsulta()}"
                                idioma="#{dialogTipoLegitimacion.idioma}"/>
         </div>
       </div>
     </p:panel>
   </ui:define>
 
-
-  <ui:define name="contentFooterDialogLeft">
-    <span class="pi pi-tag" style="margin-top:5px" />
-    <h:outputText value="Literal:" style="margin-right:4px;margin-top:5px;"  />
-    <p:selectOneMenu id="opcionIdioma" value="#{dialogTipoLegitimacion.idioma}">
-      <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
-      <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
-      <p:ajax update="@form:inputDescripcion" process="@this"/>
-    </p:selectOneMenu>
-  </ui:define>
   <ui:define name="contentFooterDialogRight">
     <p:commandButton action="#{dialogTipoLegitimacion.ayuda}"
                      icon="pi pi-info-circle" iconPos="top"

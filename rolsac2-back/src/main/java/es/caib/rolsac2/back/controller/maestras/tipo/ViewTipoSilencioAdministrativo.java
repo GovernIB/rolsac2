@@ -162,7 +162,7 @@ public class ViewTipoSilencioAdministrativo extends AbstractController implement
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoSilencioAdministrativo", modoAcceso, params, true, 850, 240);
+        UtilJSF.openDialog("dialogTipoSilencioAdministrativo", modoAcceso, params, true, 850, 265);
     }
 
     public void borrarTipoSilencioAdministrativo() {

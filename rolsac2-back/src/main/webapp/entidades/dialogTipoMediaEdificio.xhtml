@@ -18,9 +18,30 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
   </ui:define>
 
   <ui:define name="pageTitleDialog">
-    <h:outputFormat value="Detalle - #{labels['viewTipoMediaEdificio.titulo']} "/>
+    <h:outputFormat value="#{labels['dialogTipoMediaEdificio.consulta']}"
+                    rendered="#{dialogTipoMediaEdificio.isModoConsulta()}"/>
+    <h:outputFormat value="#{labels['dialogTipoMediaEdificio.detalle']}"
+                    rendered="#{dialogTipoMediaEdificio.isModoEdicion()}"/>
+    <h:outputFormat value="#{labels['dialogTipoMediaEdificio.nuevo']}"
+                    rendered="#{dialogTipoMediaEdificio.isModoAlta()}"/>
   </ui:define>
 
+  <ui:define name="contentIdioma">
+
+    <span class="pi pi-tag" style="margin-top:5px"/>
+    <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+    <p:selectOneButton id="opcionIdioma" value="#{dialogTipoMediaEdificio.idioma}" styleClass="botoneraRed">
+        <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+        <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+        <p:ajax update="inputDescripcion" process="@this"/>
+    </p:selectOneButton>
+    <p:commandButton action="#{dialogTipoMediaEdificio.traducir}"
+                     icon="pi pi-compass" iconPos="top"
+                     value="#{labels['dict.traducir']}"
+                     style="margin-left:10px"
+                     update="messagesDialog"
+                     process="@this" />
+  </ui:define>
 
   <ui:define name="contentDialog">
     <p:panel>
@@ -49,42 +70,46 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                        required="true" disabled="#{dialogTipoMediaEdificio.isModoConsulta()}" maxlength="50">
                 <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                 <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+                <p:ajax event="keyup" listener="#{dialogTipoMediaEdificio.actualizadoComponente()}"   />
           </p:inputText>
+
         </div>
         <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <h:outputText value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+          <h:outputText value="#{labels['dict.descripcion']}:*" for="inputDescripcion"/>
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
           <my:literalComponent id="inputDescripcion" value="#{dialogTipoMediaEdificio.data.descripcion}"
-                               idioma="#{dialogTipoMediaEdificio.idioma}"/>
+                               vista="#{dialogTipoMediaEdificio}"
+                               soloLecture="#{dialogTipoMediaEdificio.isModoConsulta()}"
+                               idioma="#{dialogTipoMediaEdificio.idioma}" required="true" />
         </div>
-
       </div>
     </p:panel>
   </ui:define>
 
 
-  <ui:define name="contentFooterDialogLeft">
-    <span class="pi pi-tag" style="margin-top:5px"/>
-    <h:outputText value="Literal:" style="margin-right:4px;margin-top:5px;"/>
-    <p:selectOneMenu id="opcionIdioma" value="#{dialogTipoMediaEdificio.idioma}">
-      <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
-      <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
-      <p:ajax update="@form" process="@this"/>
-    </p:selectOneMenu>
-  </ui:define>
+
   <ui:define name="contentFooterDialogRight">
     <p:commandButton action="#{dialogTipoMediaEdificio.ayuda}"
                      icon="pi pi-info-circle" iconPos="top"
                      value="#{labels['dict.ayuda']}"
                      process="@this"/>
-    <p:commandButton action="#{dialogTipoMediaEdificio.guardar}"
+    <p:commandButton action="#{dialogTipoMediaEdificio.guardar}" validateClient="true"
                      value="#{labels['dict.guardar']}" update="messagesDialog"
                      process="@all"/>
     <p:commandButton action="#{dialogTipoMediaEdificio.cerrar}"
                      value="#{labels['dict.cerrar']}" update="messagesDialog"
-                     process="@this"/>
+                     process="@this">
+         <!-- <p:confirm header="Confirmation" message="Tienes cambios pendientes, ¿quieres guardarlos?" icon="pi pi-exclamation-triangle" disabled="#{!dialogTipoMediaEdificio.isActualizadoSinGuardar()}" />-->
 
+    </p:commandButton>
+    <!--<p:confirmDialog global="true" widgetVar="cd">
+      <p:commandButton value="Cancelar" onclick="PF('cd').hide();" type="button" />
+      <p:commandButton value="No" action="#{dialogTipoMediaEdificio.cerrar}" validateClient="false"
+                       update="messagesDialog" oncomplete="PF('cd').hide()"/>
+      <p:commandButton value="Sí" actionListener="#{dialogTipoMediaEdificio.guardar}"
+                       update="messagesDialog" oncomplete="PF('cd').hide()"/>
+    </p:confirmDialog> -->
   </ui:define>
 
 </ui:composition>

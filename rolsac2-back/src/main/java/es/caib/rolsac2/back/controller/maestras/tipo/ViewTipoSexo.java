@@ -155,7 +155,7 @@ public class ViewTipoSexo extends AbstractController implements Serializable {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoSexo", modoAcceso, params, true, 800, 240);
+        UtilJSF.openDialog("dialogTipoSexo", modoAcceso, params, true, 800, 265);
 
 
     }

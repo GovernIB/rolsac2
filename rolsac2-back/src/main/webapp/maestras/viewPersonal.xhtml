@@ -19,16 +19,20 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <h:outputFormat value="#{labels['viewPersonal.titulo']}" />
     </ui:define>
 
+    <ui:define name="breadcrumbBoton">
+        <p:ajax event="eventoUpdate"   oncomplete="rc()" listener="#{viewPersonal.buscarEvt()}" update="form:dataTable"  />
+    </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
-                <!--<p:ajax event="change" listener="#{viewPersonal.update}" execute="@this" update="dataTable" ></p:ajax>-->
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                        action="#{viewPersonal.cambiarUAbuscarEvt(ua)}" update="migaPan @form form:dataTable"
+            >
             </p:menuitem>
         </c:forEach>
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda"  style="display:none" ajax="false" action="#{viewPersonal.buscar}" update="dataTable" />
 
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
@@ -172,7 +176,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <p:remoteCommand name="myDoubleClickCommand"
                              widgetVar="myDoubleClickCommand"
-                             action="#{viewPersonal.consultarPersonal()}"
+                             action="#{viewPersonal.editarPersonal()}"
                              autoRun="false"
                              partialSubmit="true"
                              process="@this" />

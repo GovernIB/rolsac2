@@ -54,6 +54,10 @@ public class DialogTipoLegitimacion extends AbstractController implements Serial
         }
     }
 
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+    }
+
     public void initMockup() {
         data = new TipoLegitimacionDTO();
         data.setCodigo(1l);

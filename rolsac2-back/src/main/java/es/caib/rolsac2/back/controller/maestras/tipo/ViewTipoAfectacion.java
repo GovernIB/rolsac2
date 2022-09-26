@@ -153,7 +153,7 @@ public class ViewTipoAfectacion extends AbstractController implements Serializab
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoAfectacion", modoAcceso, params, true, 780, 240);
+        UtilJSF.openDialog("dialogTipoAfectacion", modoAcceso, params, true, 780, 265);
     }
 
 

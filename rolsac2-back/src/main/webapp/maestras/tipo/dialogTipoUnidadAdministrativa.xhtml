@@ -18,12 +18,30 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogTipoUnidadAdministrativa.detalle']} "
-                        rendered="#{!dialogTipoUnidadAdministrativa.isModoAlta()}"/>
-        <h:outputFormat value="#{labels['dialogTipoUnidadAdministrativa.nuevo']} "
+        <h:outputFormat value="#{labels['dialogTipoUnidadAdministrativa.consulta']}"
+                        rendered="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogTipoUnidadAdministrativa.detalle']}"
+                        rendered="#{dialogTipoUnidadAdministrativa.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogTipoUnidadAdministrativa.nuevo']}"
                         rendered="#{dialogTipoUnidadAdministrativa.isModoAlta()}"/>
     </ui:define>
 
+    <ui:define name="contentIdioma">
+
+        <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoUnidadAdministrativa.idioma}" styleClass="botoneraRed">
+            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+            <p:ajax update="inputDescripcion inputCargoMasc inputCargoFem inputTratMasc inputTratFem" process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogTipoUnidadAdministrativa.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this" />
+    </ui:define>
 
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
@@ -61,6 +79,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputDescripcion" styleClass="w95"
                                          value="#{dialogTipoUnidadAdministrativa.data.descripcion}"
+                                         soloLecture="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"/>
                 </div>
 
@@ -71,6 +90,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputCargoMasc" styleClass="w95"
                                          value="#{dialogTipoUnidadAdministrativa.data.cargoMasculino}"
+                                         soloLecture="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"/>
                 </div>
 
@@ -81,6 +101,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputCargoFem" styleClass="w95"
                                          value="#{dialogTipoUnidadAdministrativa.data.cargoFemenino}"
+                                         soloLecture="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"/>
                 </div>
 
@@ -91,6 +112,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputTratMasc" styleClass="w95"
                                          value="#{dialogTipoUnidadAdministrativa.data.tratamientoMasculino}"
+                                         soloLecture="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"/>
                 </div>
 
@@ -101,26 +123,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputTratFem" styleClass="w95"
                                          value="#{dialogTipoUnidadAdministrativa.data.tratamientoFemenino}"
+                                         soloLecture="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"/>
                 </div>
             </div>
         </p:panel>
 
 
-    </ui:define>
-
-
-    <ui:define name="contentFooterDialogLeft">
-        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoUnidadAdministrativa.idioma}" styleClass="botoneraRed">
-            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
-            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
-            <p:ajax update="inputCargoMasc inputCargoFem inputTratMasc inputTratFem" process="@this"/>
-        </p:selectOneButton>
-       <!-- <p:commandButton action="#{dialogTipoUnidadAdministrativa.ayuda}"
-                         icon="pi pi-compass" iconPos="top"
-                         value="Traducir"
-                         style="margin-left:10px"
-                         process="@this"/>-->
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">

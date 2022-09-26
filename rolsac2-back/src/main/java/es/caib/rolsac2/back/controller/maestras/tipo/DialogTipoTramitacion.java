@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +61,10 @@ public class DialogTipoTramitacion extends AbstractController implements Seriali
         }
 
         plataformasTramiteList = platTramitElectronicaService.findAll();
+    }
+
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
     }
 
     public void guardar() {

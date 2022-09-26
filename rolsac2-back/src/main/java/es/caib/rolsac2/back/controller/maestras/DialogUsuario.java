@@ -50,6 +50,10 @@ public class DialogUsuario extends AbstractController implements Serializable {
         }
     }
 
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+    }
+
     public void guardar() {
         if (!verificarGuardar()) {
             return;

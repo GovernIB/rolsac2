@@ -102,6 +102,10 @@ public class DialogTipoMediaEdificio extends AbstractController implements Seria
         return true;
     }
 
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+    }
+
     public void cerrar() {
 
         final DialogResult result = new DialogResult();

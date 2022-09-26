@@ -157,7 +157,7 @@ public class ViewTipoLegitimacion extends AbstractController implements Serializ
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoLegitimacion", modoAcceso, params, true, 800, 240);
+        UtilJSF.openDialog("dialogTipoLegitimacion", modoAcceso, params, true, 800, 265);
 
 
     }

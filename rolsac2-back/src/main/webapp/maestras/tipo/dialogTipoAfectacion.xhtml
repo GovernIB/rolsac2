@@ -22,6 +22,23 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <h:outputFormat value="#{labels['dialogTipoAfectacion.titulo']}"/>
     </ui:define>
 
+    <ui:define name="contentIdioma">
+
+        <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoAfectacion.idioma}" styleClass="botoneraRed">
+            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+            <p:ajax update="inputDescripcion" process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogTipoAfectacion.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this" />
+    </ui:define>
+
     <ui:define name="contentDialog">
 
         <p:growl id="messagesDialog"
@@ -56,22 +73,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputDescripcion" required="true"
                                          value="#{dialogTipoAfectacion.data.descripcion}"
+                                         soloLecture="#{dialogTipoAfectacion.isModoConsulta()}"
                                          idioma="#{dialogTipoAfectacion.idioma}"/>
                 </div>
             </div>
         </p:panel>
     </ui:define>
 
-    <ui:define name="contentFooterDialogLeft">
-            <span class="pi pi-tag" style="margin-top:5px" />
-            <h:outputText value="Literal:" style="margin-right:4px;margin-top:5px;"  />
-            <p:selectOneMenu id="opcionIdioma" value="#{dialogTipoAfectacion.idioma}">
-                <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
-                <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
-            <p:ajax update="@form:inputDescripcion" process="@this"/>
-            </p:selectOneMenu>
-
-    </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogTipoAfectacion.ayuda}"
                          icon="pi pi-info-circle" iconPos="top"

@@ -151,7 +151,7 @@ public class ViewTipoMediaEdificio extends AbstractController implements Seriali
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoMediaEdificio", modoAcceso, params, true, 800, 240);
+        UtilJSF.openDialog("dialogTipoMediaEdificio", modoAcceso, params, true, 800, 305);
 
 
     }

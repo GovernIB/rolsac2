@@ -92,6 +92,10 @@ public class DialogTipoFormaInicio extends AbstractController implements Seriali
         return true;
     }
 
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+    }
+
     public void cerrar() {
         final DialogResult result = new DialogResult();
         if (Objects.isNull(this.getModoAcceso())) {

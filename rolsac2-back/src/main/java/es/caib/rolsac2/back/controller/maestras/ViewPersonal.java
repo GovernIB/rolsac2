@@ -6,6 +6,7 @@ import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.PersonalServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.PersonalGridDTO;
+import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.filtro.PersonalFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -79,10 +80,10 @@ public class ViewPersonal extends AbstractController implements Serializable {
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());//UtilJSF.getSessionUnidadActiva());
         filtro.setIdioma(sessionBean.getLang());//UtilJSF.getSessionLang());
 
-        LOG.error("Rol admin: " + this.isUserRoleRSCAdmin());
-        LOG.error("Rol user: " + this.isUserRoleRSCUser());
-        LOG.error("Rol user: " + this.isUserRoleRSCMentira());
-        LOG.error("Username: " + this.getUserName());
+        LOG.debug("Rol admin: " + this.isUserRoleRSCAdmin());
+        LOG.debug("Rol user: " + this.isUserRoleRSCUser());
+        LOG.debug("Rol user: " + this.isUserRoleRSCMentira());
+        LOG.debug("Username: " + this.getUserName());
 
         //Generamos una búsqueda
         buscar();
@@ -90,6 +91,20 @@ public class ViewPersonal extends AbstractController implements Serializable {
 
     public void update() {
         buscar();
+    }
+
+    public void cambiarUAbuscarEvt(UnidadAdministrativaDTO ua) {
+        sessionBean.cambiarUnidadAdministrativa(ua);
+        buscarEvt();
+    }
+
+    /**
+     * El buscar desde el evento de seleccionar una UA.
+     */
+    public void buscarEvt() {
+        if (filtro.getIdUA() == null || filtro.getIdUA().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
+            buscar();
+        }
     }
 
     public void buscar() {
@@ -167,7 +182,7 @@ public class ViewPersonal extends AbstractController implements Serializable {
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogPersonal", modoAcceso, params, true, 800, 410);
+        UtilJSF.openDialog("dialogPersonal", modoAcceso, params, true, 800, 435);
     }
 
     public void borrarPersonal() {

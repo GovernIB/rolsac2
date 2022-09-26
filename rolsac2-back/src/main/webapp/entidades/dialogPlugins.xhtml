@@ -13,13 +13,13 @@
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dict.detalle']}"
-                        rendered="#{!dialogPlugins.isModoAlta()}"/>
-
-        <h:outputFormat value="#{labels['dict.nuevo']}"
+        <h:outputFormat value="#{labels['dialogPlugins.consulta']}"
+                        rendered="#{dialogPlugins.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogPlugins.detalle']}"
+                        rendered="#{dialogPlugins.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogPlugins.nuevo']}"
                         rendered="#{dialogPlugins.isModoAlta()}"/>
     </ui:define>
-
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"

@@ -14,6 +14,13 @@
         </f:metadata>
     </ui:define>
 
+    <ui:define name="breadcrumb">
+        <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
+            </p:menuitem>
+        </c:forEach>
+    </ui:define>
+
     <ui:define name="pageTitle">
         <h:outputFormat value="#{labels['viewPlugins.titulo']}" />
     </ui:define>
@@ -99,7 +106,7 @@
                 </h:outputScript>
             <p:remoteCommand name="myDoubleClickCommand"
                              widgetVar="myDoubleClickCommand"
-                             action="#{viewPlugins.consultarPlugin()}"
+                             action="#{viewPlugins.editarPlugin()}"
                              autoRun="false"
                              partialSubmit="true"
                              process="@this" />

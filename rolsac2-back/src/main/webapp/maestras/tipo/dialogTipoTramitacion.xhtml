@@ -18,7 +18,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogTipoTramitacion.titulo']}"/>
+        <h:outputFormat value="#{labels['dialogTipoTramitacion.consulta']}"
+                        rendered="#{dialogTipoTramitacion.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogTipoTramitacion.detalle']}"
+                        rendered="#{dialogTipoTramitacion.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogTipoTramitacion.nuevo']}"
+                        rendered="#{dialogTipoTramitacion.isModoAlta()}"/>
     </ui:define>
 
     <ui:define name="contentDialog">

@@ -86,8 +86,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                    sortOrder="#{viewTipoMediaEdificio.filtro.order}"
                    style="min-height: 300px;"
       >
-        <!--<p:ajax event="rowDblselect" listener="#{viewPersonal.consultarPersonal}"
-                update="dataTable" /> -->
         <p:ajax
           event="rowDblselect"
           oncomplete="triggerDblClick();"
@@ -118,7 +116,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
       <p:remoteCommand name="myDoubleClickCommand"
                        widgetVar="myDoubleClickCommand"
-                       action="#{viewTipoMediaEdificio.consultarTipoMediaEdificio()}"
+                       action="#{viewTipoMediaEdificio.editarTipoMediaEdificio()}"
                        autoRun="false"
                        partialSubmit="true"
                        process="@this"/>

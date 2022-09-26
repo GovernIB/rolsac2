@@ -7,6 +7,7 @@ import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.model.ConfiguracionGlobalDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +76,10 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);
+    }
+
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
     }
 
 

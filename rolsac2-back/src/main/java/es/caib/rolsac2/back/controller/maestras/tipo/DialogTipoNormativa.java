@@ -54,6 +54,10 @@ public class DialogTipoNormativa extends AbstractController implements Serializa
 
     }
 
+    public void traducir() {
+        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+    }
+
     public void guardar() {
 
         if (Objects.isNull(this.data.getCodigo())

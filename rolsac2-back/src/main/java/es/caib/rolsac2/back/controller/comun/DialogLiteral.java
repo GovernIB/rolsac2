@@ -8,6 +8,8 @@ import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+
+import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +53,7 @@ public class DialogLiteral extends AbstractController implements Serializable {
         textoCA = literal.getTraduccion("ca");
 
         UtilJSF.vaciarMochila();//sessionBean.vaciarMochila();
-        LOG.error("Modo acceso " + this.getModoAcceso());
+        LOG.debug("Modo acceso " + this.getModoAcceso());
 
 
     }
@@ -63,7 +65,7 @@ public class DialogLiteral extends AbstractController implements Serializable {
         literal.add(new Traduccion("ca", textoCA));
 
         // Retornamos resultado
-        LOG.error("Acceso:" + this.getModoAcceso());
+        LOG.debug("Acceso:" + this.getModoAcceso());
         if (this.getModoAcceso() == null) {
             //TODO Pendiente
             this.setModoAcceso(TypeModoAcceso.ALTA.toString());

@@ -8,10 +8,81 @@
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
         <f:metadata>
-            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogUnidadAdministrativa.modoAcceso}"/>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogUnidadAdministrativa.modoAccesoAux}"/>
             <f:viewParam id="ID" name="ID" value="#{dialogUnidadAdministrativa.id}"/>
             <f:viewAction action="#{dialogUnidadAdministrativa.load}"/>
         </f:metadata>
+    </ui:define>
+	 <ui:define name="icerik">
+	 	  <style>
+	 	  	.show {
+				display: block;
+			}
+
+			.hide {
+				display: none !important;
+			}
+
+			.contenido{
+				display:inline !important;
+			}
+
+			.footer{
+				display:inline !important;
+			}
+	 	  </style>
+	 	  <script src="../tinymce/js/tinymce/tinymce.min.js" type="text/javascript"></script>
+    	  <script type="text/javascript">
+    	  	window.onload = function(){
+    	  		let idioma = "#{dialogUnidadAdministrativa.idioma}";
+    	  		renderIdioma(idioma);
+    	  	}
+
+    	  	tinyMCE.init({
+    	 		   // General options
+    	 		    mode : "textareas",
+    	 		    height: 300,
+    	 		    plugins: "code image link lists paste textcolor",
+    	 		    toolbar: "bold italic | forecolor backcolor | link image | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat #{dialogLiteralHTML.sourceCode}" ,
+    	 		    menubar: "",
+    	 		    paste_as_text : false,
+    	 		    readonly: #{dialogUnidadAdministrativa.isModoConsulta()},
+    	 		   setup : function(ed) {
+    	 		        ed.on("keyup", function(){
+    	 		        	console.log(ed);
+    	 		        	tinyMCE.triggerSave(true,true);
+							miComando();
+    	 		        });
+    	 		   }
+    	 		 });
+
+    	  	function recargarTiny(strEs, strCa){
+ 	  			let editor = tinymce.get('formDialog:tabs:txtPresentacion:textoESA');
+ 	  			editor.setContent(strEs);
+ 	  			let editor2 = tinymce.get('formDialog:tabs:txtPresentacion:textoCAA');
+ 	  			editor2.setContent(strCa);
+    	  	}
+
+      		function rerenderTiny(el){
+				let idioma = el.value;
+				renderIdioma(idioma);
+      		}
+
+      		function renderIdioma(idioma){
+      			if(idioma == "es"){
+					  var element = document.getElementById("formDialog:tabs:txtPresentacion:tmcES");
+					  element.classList.remove("hide");
+					  element.classList.add("show");
+					  document.getElementById("formDialog:tabs:txtPresentacion:tmcCA").classList.add("hide");
+				}else{
+					var element = document.getElementById("formDialog:tabs:txtPresentacion:tmcCA");
+					element.classList.add("show");
+					element.classList.remove("hide");
+					document.getElementById("formDialog:tabs:txtPresentacion:tmcES").classList.add("hide");
+
+				}
+      		}
+        </script>
     </ui:define>
     <ui:define name="pageTitleDialog">
         <h:outputFormat value="#{labels['dict.detalle']} "
@@ -26,7 +97,7 @@
                  life="5000"
                  escape="false"/>
         <p:tabView id="tabs">
-            <p:tab title="#{labels['dict.info']}">
+            <p:tab title="#{labels['dict.info']}" onload="isConsulta()">
                 <div class="row">
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
@@ -128,6 +199,7 @@
                     <div class="ui-g-12 ui-md-9 ui-lg-4">
                         <my:literalComponent id="txtPresentacion" styleClass="w95"
                                              value="#{dialogUnidadAdministrativa.data.presentacion}"
+                                             tipo="html"
                                              disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                              idioma="#{dialogUnidadAdministrativa.idioma}"/>
 
@@ -139,7 +211,8 @@
                     <div class="ui-g-12 ui-md-9 ui-lg-4">
                         <my:literalComponent id="txtUrl" styleClass="w95"
                                              value="#{dialogUnidadAdministrativa.data.url}"
-                                             idioma="#{dialogUnidadAdministrativa.idioma}"/>
+                                             idioma="#{dialogUnidadAdministrativa.idioma}"
+                                             disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
 
                     </div>
 
@@ -192,7 +265,8 @@
                     <div class="ui-g-12 ui-md-9 ui-lg-4">
                         <my:literalComponent id="txtResponsable" styleClass="w95"
                                              value="#{dialogUnidadAdministrativa.data.responsable}"
-                                             idioma="#{dialogUnidadAdministrativa.idioma}"/>
+                                             idioma="#{dialogUnidadAdministrativa.idioma}"
+                                             disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
 
                     </div>
 
@@ -241,10 +315,10 @@
     <ui:define name="contentFooterDialogLeft">
         <span class="pi pi-tag" style="margin-top:5px"/>
         <h:outputText value="Literal:" style="margin-right:4px;margin-top:5px;"/>
-        <p:selectOneMenu id="opcionIdioma" value="#{dialogUnidadAdministrativa.idioma}">
+        <p:selectOneMenu id="opcionIdioma" value="#{dialogUnidadAdministrativa.idioma}" onchange="rerenderTiny(this)">
             <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
             <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
-            <p:ajax update="@form:tabs:txtNombre @form:tabs:txtPresentacion @form:tabs:txtUrl @form:tabs:txtResponsable" process="@this"/>
+            <p:ajax update="@form:tabs:txtNombre @form:tabs:txtUrl @form:tabs:txtResponsable" process="@this"/>
         </p:selectOneMenu>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
@@ -252,7 +326,8 @@
                          icon="pi pi-info-circle" iconPos="top"
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
-        <p:commandButton action="#{dialogUnidadAdministrativa.guardar}"
+        <p:commandButton onclick="tinyMCE.triggerSave(true,true);"
+        				 action="#{dialogUnidadAdministrativa.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}"
                          process="@all"/>

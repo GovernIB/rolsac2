@@ -19,10 +19,29 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
     <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogEntidad.consulta']}"
+                        rendered="#{dialogEntidad.isModoConsulta()}"/>
         <h:outputFormat value="#{labels['dialogEntidad.detalle']}"
-                        rendered="#{!dialogEntidad.isModoAlta()}"/>
+                        rendered="#{dialogEntidad.isModoEdicion()}"/>
         <h:outputFormat value="#{labels['dialogEntidad.nueva']}"
                         rendered="#{dialogEntidad.isModoAlta()}"/>
+    </ui:define>
+
+    <ui:define name="contentIdioma">
+
+        <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogEntidad.idioma}" styleClass="botoneraRed">
+            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+            <p:ajax update="inputDescripcion" process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogEntidad.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this" />
     </ui:define>
 
 
@@ -51,7 +70,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                      <p:inputText id="txtIdentificador" value="#{dialogEntidad.data.identificador}"
                                  styleClass="w95" onblur="this.value = this.value.toUpperCase();"
-                                 required="true" disabled="#{dialogTipoMateriaSIA.isModoConsulta()}" maxlength="50">
+                                 required="true" disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
                     </p:inputText>
@@ -65,7 +84,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <my:literalComponent id="inputDescripcion" value="#{dialogEntidad.data.descripcion}"
-                                         idioma="#{dialogEntidad.idioma}"/>
+                                         soloLecture="#{dialogEntidad.isModoConsulta()}" idioma="#{dialogEntidad.idioma}"/>
                 </div>
             </div>
             <!--
@@ -140,13 +159,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
             </div>
         </p:panel>
-    </ui:define>
-    <ui:define name="contentFooterDialogLeft">
-        <p:selectOneMenu id="opcionIdioma" value="#{dialogEntidad.idioma}">
-            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
-            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
-            <p:ajax update="inputDescripcion" process="@this"/>
-        </p:selectOneMenu>
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
