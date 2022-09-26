@@ -1,0 +1,107 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewAction action="#{viewPlatTramitElectronica.load}" />
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitle">
+        <h:outputFormat value="#{labels['viewPlatTramitElectronica.titulo.pagina']}" />
+    </ui:define>
+    <ui:define name="content">
+        <h:form>
+            <p:commandButton value="#{labels['viewPlatTramitElectronica.actualizar']}" id="actualizarBusqueda"  style="display:none" ajax="false" action="#{viewPlatTramitElectronica.buscar}" update="dataTable" />
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
+                <f:facet name="header">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputFormat value="#{labels['dict.filtro']}:" />
+                            <p:inputText id="filtroBusqueda" value="#{viewPlatTramitElectronica.filtroTexto}"/>
+                            <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                             actionListener="#{viewPlatTramitElectronica.buscar()}" process="@form" />
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
+                                             actionListener="#{viewPlatTramitElectronica.nuevoTramiteElectronico}" process="@this">
+                                <p:ajax event="dialogReturn" listener="#{viewPlatTramitElectronica.returnDialogo}" update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                                             actionListener="#{viewPlatTramitElectronica.editarTramiteElectronico}" process="@form" update="messages">
+                                <p:ajax event="dialogReturn" listener="#{viewPlatTramitElectronica.returnDialogo}" update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                                             action="#{viewPlatTramitElectronica.borrarTramiteElectronico}" process="@form" update="messages dataTable">
+                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"
+                                             action="#{viewPlatTramitElectronica.ayuda}" process="@this" update="messages" />
+                        </div>
+                    </div>
+                </f:facet>
+            </p:panel>
+            <p:dataTable id="dataTable" value="#{viewPlatTramitElectronica.lazyModel}" var="tramite"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="tramiteTable"
+                         rows="#{viewPlatTramitElectronica.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                         first="#{viewPlatTramitElectronica.filtro.paginaFirst}"
+                         paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                         paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         emptyMessage="#{labels['dict.noHayDatos']}"
+                         selectionMode="single" selection="#{viewPlatTramitElectronica.datoSeleccionado}" rowKey="#{tramite.codigo}"
+                         reflow="true"
+                         sortBy="#{viewPlatTramitElectronica.filtro.orderBy}"
+                         sortOrder="#{viewPlatTramitElectronica.filtro.order}"
+                         style="min-height: 300px;">
+                <p:ajax
+                        event="rowDblselect"
+                        oncomplete="triggerDblClick();"
+                        global="false" />
+                <f:facet name="{RowsPerPageLabel}">
+                    #{labels.dataTable_rowsPerPage}
+                </f:facet>
+                <p:column sortBy="#{tramite.codigo}" headerText="#{labels['dict.codigo']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tramite.codigo}"/>
+                </p:column>
+                <p:column sortBy="#{tramite.identificador}" headerText="#{labels['dict.identificador']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tramite.identificador}"/>
+                </p:column>
+                <p:column sortBy="#{tramite.codEntidad}" headerText="#{labels['dict.entidad']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tramite.codEntidad}"/>
+                </p:column>
+                <p:column sortBy="#{tramite.descripcion}" headerText="#{labels['viewPlatTramitElectronica.descripcion']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tramite.descripcion}"/>
+                </p:column>
+                <p:column sortBy="#{tramite.urlAcceso}" headerText="#{labels['viewPlatTramitElectronica.urlAcceso']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tramite.urlAcceso}"/>
+                </p:column>
+            </p:dataTable>
+            <h:outputScript >
+                function triggerDblClick() {
+                myDoubleClickCommand();
+                /*$('#form\\:btnConsultaHidden').click();*/
+                }
+            </h:outputScript>
+            <p:remoteCommand name="myDoubleClickCommand"
+                             widgetVar="myDoubleClickCommand"
+                             action="#{viewPlatTramitElectronica.editarTramiteElectronico()}"
+                             autoRun="false"
+                             partialSubmit="true"
+                             process="@this" />
+            <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
+                             actionListener="#{viewPlatTramitElectronica.consultarTramiteElectronico}" process="@this" update="messages" style="display: none">
+                <p:ajax event="dialogReturn" listener="#{viewPlatTramitElectronica.returnDialogo}" update="messages dataTable"/>
+            </p:commandButton>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
