@@ -2,7 +2,9 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-@Schema(name = "Boletin")
+import java.util.Objects;
+
+@Schema(name = "BoletinOficial")
 public class BoletinOficialDTO extends ModelApi {
 
     private Long codigo;
@@ -14,6 +16,8 @@ public class BoletinOficialDTO extends ModelApi {
     private String url;
 
     private Long normativa;
+
+    public BoletinOficialDTO(){}
 
 
     public Long getCodigo() {
@@ -57,9 +61,26 @@ public class BoletinOficialDTO extends ModelApi {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BoletinOficialDTO that = (BoletinOficialDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
     public String toString() {
-        return "BoletinDTO{" +
-                "id=" + codigo +
+        return "BoletinOficialDTO{" +
+                "codigo=" + codigo +
+                ", identificador='" + identificador + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", url='" + url + '\'' +
+                ", normativa=" + normativa +
                 '}';
     }
 }

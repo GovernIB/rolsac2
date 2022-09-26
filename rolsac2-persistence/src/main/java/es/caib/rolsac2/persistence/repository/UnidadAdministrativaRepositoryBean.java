@@ -16,7 +16,6 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @Stateless
@@ -75,23 +74,27 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         if (isTotal) {
             sql = new StringBuilder(
                     "SELECT count(j) FROM JUnidadAdministrativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
-                            + " LEFT OUTER JOIN j.tipo  LEFT OUTER JOIN j.padre tp "
+                            + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp "
                             + " LEFT OUTER JOIN tp.descripcion tpd ON tpd.idioma=:idioma "
                             + " LEFT OUTER JOIN j.entidad je "
                             + " where 1 = 1 AND je.codigo=:codEnti");
         } else {
-            sql = new StringBuilder("SELECT j.codigo, j.tipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 "
+            sql = new StringBuilder("SELECT j.codigo, jtipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 "
                     + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
                     + " LEFT OUTER JOIN j.padre tp "
                     + " LEFT OUTER JOIN tp.descripcion tpd ON tpd.idioma=:idioma "
                     + " LEFT OUTER JOIN j.entidad je "
-                    + " LEFT OUTER JOIN j.tipo where 1 = 1 AND je.codigo=:codEnti");
+                    + " LEFT OUTER JOIN j.tipo jtipo where 1 = 1 AND je.codigo=:codEnti");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and (LOWER(j.tipo.identificador) LIKE :filtro "
+            sql.append(" and (LOWER(jtipo.identificador) LIKE :filtro "
                     + " OR LOWER(j.codigoDIR3) LIKE :filtro OR cast(j.id as string) like :filtro "
                     + " OR LOWER(t.nombre) LIKE :filtro OR LOWER(cast(j.orden as string)) LIKE :filtro "
                     + " OR LOWER(tpd.nombre) LIKE :filtro OR LOWER(cast(je.codigo as string)) LIKE :filtro ) ");
+        }
+
+        if (filtro.isRellenoIdUA()) {
+            sql.append(" and ( j.codigo = :idUA OR j.padre.codigo = :idUA) ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -113,7 +116,9 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
         }
-
+        if (filtro.isRellenoIdUA()) {
+            query.setParameter("idUA", filtro.getIdUA());
+        }
         query.setParameter("codEnti", filtro.getCodEnti());
 
 

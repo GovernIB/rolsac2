@@ -1,5 +1,6 @@
 package es.caib.rolsac2.back.controller.comun;
 
+import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 
 import org.primefaces.model.DefaultTreeNode;
@@ -12,6 +13,10 @@ public class LazyLoadingTreeNode extends DefaultTreeNode {
 
     public LazyLoadingTreeNode(UnidadAdministrativaDTO data, TreeNode parent) {
         super(UnidadAdministrativaDTO.class.getSimpleName(), data, parent);
+    }
+
+    public LazyLoadingTreeNode(TemaDTO data, TreeNode parent) {
+        super(TemaDTO.class.getSimpleName(), data, parent);
     }
 
     public LazyLoadingTreeNode() {}

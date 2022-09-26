@@ -4,6 +4,8 @@ import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.*;
 
+import java.util.List;
+
 public interface MaestrasSupServiceFacade {
 
     /**************************************************
@@ -96,12 +98,26 @@ public interface MaestrasSupServiceFacade {
     TipoBoletinDTO findTipoBoletinById(Long id);
 
     /**
+     * Devuelve una lista de todos los tipoBoletin en la bbdd.
+     *
+     * @return lista de todos los tipoBoletin.
+     */
+    List<TipoBoletinDTO> findBoletines();
+
+    /**
      * Devuelve una página con el TipoBoletin relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de TipoBoletin i la llista de TipoBoletin pel rang indicat.
      */
     Pagina<TipoBoletinGridDTO> findByFiltro(TipoBoletinFiltro filtro);
+
+    /**
+     * Devuelve una lista de todos los tipoBoletin
+     *
+     * @return una lista con todos los tipo boletín.
+     */
+    List<TipoBoletinDTO> findAll();
 
 
     /**************************************************
@@ -314,6 +330,13 @@ public interface MaestrasSupServiceFacade {
      * @return si existe o no
      */
     Boolean checkIdentificadorTipoNormativa(String identificador);
+
+    /**
+     * Devuelve todos los tipos de normativa en la bbdd
+     *
+     * @return lista de todos los tipoNormativa
+     */
+    List<TipoNormativaDTO> findTipoNormativa();
 
     /**************************************************
      **************** TIPO PUBLICO OBJ. ***************

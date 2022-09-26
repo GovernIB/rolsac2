@@ -115,6 +115,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     private TipoViaConverter tipoViaConverter;
 
 
+
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -215,6 +216,18 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoBoletinDTO> findBoletines(){
+        try {
+            List<TipoBoletinDTO> items = tipoBoletinRepository.findAll();
+            return items;
+        } catch (Exception e) {
+            LOG.error("Error: ", e);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<TipoBoletinGridDTO> findByFiltro(TipoBoletinFiltro filtro) {
         try {
             List<TipoBoletinGridDTO> items = tipoBoletinRepository.findPagedByFiltro(filtro);
@@ -225,6 +238,17 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             List<TipoBoletinGridDTO> items = new ArrayList<>();
             long total = items.size();
             return new Pagina<>(items, total);
+        }
+    }
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoBoletinDTO> findAll(){
+        try {
+            List<TipoBoletinDTO> items = tipoBoletinRepository.findAll();
+            return items;
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            return new ArrayList<>();
         }
     }
 
@@ -479,6 +503,17 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             return false;
+        }
+    }
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoNormativaDTO> findTipoNormativa(){
+        try {
+            List<TipoNormativaDTO> items = tipoNormativaRepository.findAll();
+            return items;
+        } catch (Exception e) {
+            LOG.error("Error: ", e);
+            return new ArrayList<>();
         }
     }
 

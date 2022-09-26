@@ -134,11 +134,12 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
-        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
             if (uaSeleccionada != null) {
                 setearTextos(uaSeleccionada);
                 this.setValue(uaSeleccionada);
+                textoID.setValue(uaSeleccionada.getCodigo());
             }
         }
     }
@@ -157,7 +158,7 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
         UtilJSF.anyadirMochila("ua", this.getValue());
         esCabecera = (Boolean) getAttributes().get(ES_CABECERA);
         params.put(ES_CABECERA, esCabecera != null ? esCabecera.toString() : null);
-        UtilJSF.openDialog(direccion, modoAcceso, params, true, 850, 550);
+        UtilJSF.openDialog(direccion, modoAcceso, params, true, 850, 575);
     }
 
 
@@ -232,9 +233,9 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
 
     public String getUpdateElementos() {
         if (Boolean.TRUE.equals(getAttributes().get(ES_CABECERA))) {
-            updateElementos = "texto @form";
+            updateElementos = "texto @form textoID";
         } else {
-            updateElementos = "texto";
+            updateElementos = "texto textoID";
         }
         return updateElementos;
     }

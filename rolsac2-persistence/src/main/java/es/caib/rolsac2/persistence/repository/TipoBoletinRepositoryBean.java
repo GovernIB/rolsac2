@@ -1,13 +1,19 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.TipoBoletinConverter;
+import es.caib.rolsac2.persistence.converter.TipoNormativaConverter;
 import es.caib.rolsac2.persistence.model.JTipoBoletin;
+import es.caib.rolsac2.persistence.model.JTipoSexo;
+import es.caib.rolsac2.service.model.TipoBoletinDTO;
 import es.caib.rolsac2.service.model.TipoBoletinGridDTO;
+import es.caib.rolsac2.service.model.TipoSexoDTO;
 import es.caib.rolsac2.service.model.filtro.TipoBoletinFiltro;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -22,6 +28,9 @@ public class TipoBoletinRepositoryBean extends AbstractCrudRepository<JTipoBolet
     protected TipoBoletinRepositoryBean() {
         super(JTipoBoletin.class);
     }
+
+    @Inject
+    private TipoBoletinConverter converter;
 
     @Override
     public List<TipoBoletinGridDTO> findPagedByFiltro(TipoBoletinFiltro filtro) {
@@ -95,5 +104,19 @@ public class TipoBoletinRepositoryBean extends AbstractCrudRepository<JTipoBolet
         query.setParameter("id", id);
         List<JTipoBoletin> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
+    }
+
+    @Override
+    public List<TipoBoletinDTO> findAll(){
+        TypedQuery<JTipoBoletin> query =
+                entityManager.createQuery("SELECT j FROM JTipoBoletin  j", JTipoBoletin.class);
+        List<JTipoBoletin> jTipoBoletines = query.getResultList();
+        List<TipoBoletinDTO> tipoBoletinDTOS = new ArrayList<>();
+        if (jTipoBoletines != null) {
+            for (JTipoBoletin jTipoBoletin : jTipoBoletines) {
+                tipoBoletinDTOS.add(this.converter.createDTO(jTipoBoletin));
+            }
+        }
+        return tipoBoletinDTOS;
     }
 }

@@ -29,6 +29,8 @@ public abstract class AbstractController {
      **/
     private String modoAcceso;
 
+    private boolean actualizadoSinGuardar = false;
+
     public void setOpcion(String literalOpcion) {
         ResourceBundle bundle = context.getApplication().getResourceBundle(context, "labels");
         String texto = bundle.getString(literalOpcion);
@@ -85,7 +87,9 @@ public abstract class AbstractController {
     }
 
     public void setModoAcceso(String modoAcceso) {
-        this.modoAcceso = modoAcceso;
+    	if(modoAcceso!=null) {
+    		this.modoAcceso = modoAcceso;
+    	}
     }
 
     protected FacesContext getContext() {
@@ -139,5 +143,17 @@ public abstract class AbstractController {
 
     public void setIdioma(String idioma) {
         this.idioma = idioma;
+    }
+
+    public boolean isActualizadoSinGuardar() {
+        return actualizadoSinGuardar;
+    }
+
+    public void setActualizadoSinGuardar(boolean actualizadoSinGuardar) {
+        this.actualizadoSinGuardar = actualizadoSinGuardar;
+    }
+
+    public void actualizadoComponente() {
+        this.actualizadoSinGuardar = true;
     }
 }

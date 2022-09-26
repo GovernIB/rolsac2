@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "afectacion-sequence", sequenceName = "RS2_AFECTA_SEQ", allocationSize = 1)
@@ -8,7 +9,7 @@ import javax.persistence.*;
         indexes = {
                 @Index(name = "RS2_AFECTA_PK_I", columnList = "AFNO_CODIGO")
         })
-public class JAfectacion {
+public class JAfectacion extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "afectacion-sequence")
     @Column(name = "AFNO_CODIGO", nullable = false)
@@ -23,6 +24,7 @@ public class JAfectacion {
 
     @Column(name = "AFNO_NORAFE", nullable = false)
     private Long normativaAfectada;
+
 
     public Integer getCodigo() {
         return codigo;
@@ -46,5 +48,28 @@ public class JAfectacion {
 
     public void setNormativaOrigen(Long normativaOrigen) {
         this.normativaOrigen = normativaOrigen;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JAfectacion that = (JAfectacion) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
+    public String toString() {
+        return "JAfectacion{" +
+                "codigo=" + codigo +
+                ", tipoAfectacion=" + tipoAfectacion +
+                ", normativaOrigen=" + normativaOrigen +
+                ", normativaAfectada=" + normativaAfectada +
+                '}';
     }
 }

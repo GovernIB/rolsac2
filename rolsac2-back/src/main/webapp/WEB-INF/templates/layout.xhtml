@@ -28,8 +28,8 @@ Plantilla.
                 type="text/javascript"></script>
     </h:head>
     <h:body>
-        <!-- 
-        Les declaram aquí enlloc de a HEAD per assegurar que es carreguen després dels de Primefaces 
+        <!--
+        Les declaram aquí enlloc de a HEAD per assegurar que es carreguen després dels de Primefaces
         Veure: https://stackoverflow.com/a/8774997/11751648
         -->
         <h:outputStylesheet name="css/bootstrap.min.css" />
@@ -89,6 +89,8 @@ Plantilla.
         <!-- FI Content -->
 
         <ui:include src="/WEB-INF/includes/footer.xhtml"/>
+        <h:outputScript library="js" name="common.js" />
+
     </h:body>
 </f:view>
 </html>

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Representacion de un personal. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Entity
 @SequenceGenerator(name = "tipo-publicoobj-sequence", sequenceName = "RS2_TIPOPUB_SEQ", allocationSize = 1)

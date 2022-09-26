@@ -10,6 +10,7 @@ public class ValidacionTipoUtils {
     public static final String PATRON_TELEFONO = "^\\d{9}$";
     public static final String PATRON_COD_POSTAL = "^\\d{5}$";
     public static final String PATRON_COORDENADA = "^[-]?\\d+[\\.]?\\d*$";
+    public static final String PATRON_URL = "^((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))(%{2}|[-()_.!~*';/?:@&=+$, A-Za-z0-9])+)" + "([).!';/?:, ][[:blank:]])?$";
 
     private ValidacionTipoUtils() {}
 
@@ -18,6 +19,16 @@ public class ValidacionTipoUtils {
         final Pattern patron = Pattern.compile(PATRON_TELEFONO);
         if (!esCadenaVacia(telefono)) {
             final Matcher m = patron.matcher(telefono);
+            resultado = m.matches();
+        }
+        return resultado;
+    }
+
+    public static boolean esUrlValido(String url) {
+        boolean resultado = false;
+        final Pattern patron = Pattern.compile(PATRON_URL);
+        if (!esCadenaVacia(url)) {
+            final Matcher m = patron.matcher(url);
             resultado = m.matches();
         }
         return resultado;

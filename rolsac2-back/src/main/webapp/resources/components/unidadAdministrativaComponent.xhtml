@@ -15,14 +15,20 @@
         <cc:attribute name="idioma" required="true"/>
         <cc:attribute name="esCabecera" type="Boolean"
                       shortDescription="Indica si es utilizado en la cabecera o en una pantalla de dialog"/>
+        <!--<cc:clientBehavior name="eventoChange" event="change" targets="textoID" />
+            <cc:clientBehavior name="eventoUpdate" event="valueUpdate" targets="textoID" />-->
+        <cc:clientBehavior name="eventoUpdate" event="dialogReturn" targets="btnAbrir" />
     </cc:interface>
     <cc:implementation>
         <span id="#{cc.clientId}" style="white-space:nowrap">
             <p:importConstants type="es.caib.rolsac2.service.model.types.TypeModoAcceso" var="ModoAcceso"/>
+            <!-- <p:inputText id="inputField1" value="#{cc.attrs.value}">
+                 <p:ajax event="change" listener="#{semanticAnnotationsContent.updateEntry(cc.attrs.entry)}" update="@(.semanticAnnotationValue)"/>
+            </p:inputText>-->
             <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w85" disabled="true"/>
             <p:inputText id="textoES" binding="#{cc.textoES}" style="display:none"/>
             <p:inputText id="textoCA" binding="#{cc.textoCA}" style="display:none"/>
-            <p:inputText id="textoID" binding="#{cc.textoID}" style="display:none"/>
+            <p:inputText id="textoID" name="#{cc.textoID}"  binding="#{cc.textoID}" style="display:none"/>
             <p:inputText id="textoIdioma" binding="#{cc.textoIdioma}" style="display:none"/>
             <p:commandButton action="#{cc.abrirVentana()}"
                              icon="pi pi-sitemap"
@@ -30,9 +36,10 @@
                              styleClass="w45px h25px iconoUAselector"
                              process="@this"
                              disabled="#{cc.isModoCrear()}"
+                             id="btnAbrir"
             >
                      <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
-                             update="#{cc.updateElementos}"/>
+                             update="#{cc.updateElementos}" />
             </p:commandButton>
         </span>
     </cc:implementation>

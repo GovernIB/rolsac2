@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoBoletin;
+import es.caib.rolsac2.service.model.TipoBoletinDTO;
 import es.caib.rolsac2.service.model.TipoBoletinGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoBoletinFiltro;
 
@@ -16,4 +17,6 @@ public interface TipoBoletinRepository extends CrudRepository<JTipoBoletin, Long
     long countByFiltro(TipoBoletinFiltro filtro);
 
     boolean checkIdentificadorTipoBoletin(String identificador);
+
+    List<TipoBoletinDTO> findAll();
 }
