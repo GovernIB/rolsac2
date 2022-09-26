@@ -11,9 +11,12 @@ import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
+import org.primefaces.model.TreeNodeChildren;
 import org.primefaces.util.TreeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -116,10 +120,16 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
                     if (!c.getCodigo().equals(ua.getCodigo())) {
                         LazyLoadingTreeNode grandChild = new LazyLoadingTreeNode(c, resultNodo);
                         addTreeNodeCargando(grandChild);
+
                         resultNodo.getChildren().add(grandChild);
                     }
                 });
             }
+        }
+        for(TreeNode nodo2 : resultNodo.getChildren()) {
+        	if(!tieneHijos((UnidadAdministrativaDTO) nodo2.getData())) {
+        		nodo2.getChildren().clear();
+        	}
         }
         return resultNodo;
     }
@@ -153,6 +163,12 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
             });
 
             expandedTreeNode.setExpanded(true);
+            for(TreeNode nodo : expandedTreeNode.getChildren()) {
+            	if(!tieneHijos((UnidadAdministrativaDTO) nodo.getData())) {
+            		nodo.getChildren().clear();
+            	}
+            }
+            PrimeFaces.current().executeScript("seleccion()");
         } else {
             expandedTreeNode.getChildren().clear();
             expandedTreeNode.setExpanded(false);
@@ -163,6 +179,11 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
         String node = event.getTreeNode().getData().toString();
     }
 
+    public Boolean tieneHijos(UnidadAdministrativaDTO ua) {
+    	List<UnidadAdministrativaDTO> childs = uaService.getHijos(
+                ua.getCodigo(), sessionBean.getLang());
+    	return (childs.size()>=1);
+    }
 
     public void guardar() {
 
