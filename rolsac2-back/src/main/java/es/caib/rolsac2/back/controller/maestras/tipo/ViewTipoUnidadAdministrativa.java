@@ -158,7 +158,7 @@ public class ViewTipoUnidadAdministrativa extends AbstractController implements 
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoUnidadAdministrativa", modoAcceso, params, true, 850, 410);
+        UtilJSF.openDialog("dialogTipoUnidadAdministrativa", modoAcceso, params, true, 850, 435);
     }
 
 

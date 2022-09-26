@@ -154,7 +154,7 @@ public class ViewEdificios extends AbstractController implements Serializable {
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogEdificio", modoAcceso, params, true, 780, 530);
+        UtilJSF.openDialog("dialogEdificio", modoAcceso, params, true, 780, 555);
     }
 
 
