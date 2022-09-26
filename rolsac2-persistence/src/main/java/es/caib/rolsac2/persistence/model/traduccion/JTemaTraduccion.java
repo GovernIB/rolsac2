@@ -1,8 +1,12 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.JTema;
+import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "tema-trad-sequence", sequenceName = "RS2_TRATEMA_SEQ", allocationSize = 1)
@@ -15,7 +19,7 @@ public class JTemaTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tema-trad-sequence")
     @Column(name = "TRTE_CODIGO", nullable = false)
-    private Integer codigo;
+    private Long codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRTE_CODTEMA", nullable = false)
@@ -27,11 +31,21 @@ public class JTemaTraduccion {
     @Column(name = "TNTR_DESCR")
     private String descripcion;
 
-    public Integer getCodigo() {
+    public static List<JTemaTraduccion> createInstance() {
+        List<JTemaTraduccion> traducciones = new ArrayList<>();
+        for (String idioma : Constantes.IDIOMAS) {
+            JTemaTraduccion trad = new JTemaTraduccion();
+            trad.setIdioma(idioma);
+            traducciones.add(trad);
+        }
+        return traducciones;
+    }
+
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Integer id) {
+    public void setCodigo(Long id) {
         this.codigo = id;
     }
 
@@ -55,8 +69,29 @@ public class JTemaTraduccion {
         return descripcion;
     }
 
-    public void setDescripcion(String tntrDescr) {
-        this.descripcion = tntrDescr;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JTemaTraduccion that = (JTemaTraduccion) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
+    public String toString() {
+        return "JTemaTraduccion{" +
+                "codigo=" + codigo +
+                ", idioma='" + idioma + '\'' +
+                ", descripcion=" + descripcion +
+                '}';
+    }
 }

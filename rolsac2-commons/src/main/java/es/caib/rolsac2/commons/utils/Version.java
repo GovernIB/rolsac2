@@ -26,6 +26,9 @@ public class Version {
     private String scmRevision;
     private String jdkVersion;
     private String projectName;
+    private String commit;
+    private String url = "https://github.com/GovernIB/sistra2/commit/";
+
 
     /**
      * Inicialitza el bean amb els valors de Version.properties
@@ -41,6 +44,8 @@ public class Version {
                 .format(BUILD_TIME_PATTERN);
         scmRevision = bundle.getString("scm.revision");
         jdkVersion = bundle.getString("jdk.version");
+        commit = !bundle.getString("commitGit").isEmpty() ? bundle.getString("commitGit") : bundle.getString("commitSvn");
+        url = !bundle.getString("commitGit").isEmpty() ? url+bundle.getString("commitGit") : url;
         projectName = "ROLSAC2";// bundle.getString("project.name");
     }
 
@@ -78,4 +83,22 @@ public class Version {
     public String getProjectName() {
         return this.projectName;
     }
+
+	public String getCommit() {
+		return commit;
+	}
+
+	public void setCommit(String commit) {
+		this.commit = commit;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+
 }

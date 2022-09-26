@@ -1,15 +1,26 @@
 package es.caib.rolsac2.back.utils;
 
 import es.caib.rolsac2.back.controller.SessionBean;
+import es.caib.rolsac2.back.controller.maestras.ViewEntidades;
+import es.caib.rolsac2.back.controller.maestras.ViewPersonal;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
+
 import org.primefaces.PrimeFaces;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.concurrent.ContextService;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +32,17 @@ public class UtilJSF {
      * Parametro de sesion para securizar apertura dialogs.
      */
     private static final String SEC_OPEN_DIALOG = "SEC_OPEN_DIALOG";
+
+	/** Path views. */
+	public static final String PATH_VIEWS_SUPER_ADMIN = "/superadministrador/";
+	public static final String PATH_VIEWS_ENTIDAD = "/entidades/";
+	public static final String PATH_VIEWS_MAESTRAS = "/maestras/";
+
+	/** Extensión .html **/
+	private static final String EXTENSION_XHTML = ".xhtml";
+
+	/** Log. */
+	final static Logger LOG = LoggerFactory.getLogger(UtilJSF.class);
 
     /**
      * Constructor privado para evitar problema.
@@ -74,6 +96,79 @@ public class UtilJSF {
         // Abre dialogo
         PrimeFaces.current().dialog().openDynamic(dialog, options, paramsDialog);
     }
+
+	/**
+	 * Redirige pagina JSF por defecto para role.
+	 *
+	 * @param jsfPage path JSF page
+	 */
+	public static void redirectJsfDefaultPagePerfil(final TypePerfiles perfil) {
+		redirectJsfPage(getDefaultUrlPerfil(perfil));
+	}
+
+	/**
+	 * Redirige pagina JSF.
+	 *
+	 * @param jsfPage path JSF page
+	 */
+	public static void redirectJsfPage(final String jsfPage) {
+		try {
+			final ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance()
+					.getExternalContext().getContext();
+			final String contextPath = servletContext.getContextPath();
+			FacesContext.getCurrentInstance().getExternalContext().redirect(contextPath + jsfPage);
+		} catch (final IOException e) {
+			UtilJSF.loggearErrorFront("Error redirigiendo", e);
+		}
+	}
+
+	/**
+	 * Devuelve url por defecto segun perfil.
+	 *
+	 * @param role role
+	 * @return url
+	 */
+	public static String getDefaultUrlPerfil(final TypePerfiles perfil) {
+		String url = null;
+		if (perfil == null) {
+			url = "/error/errorUsuarioSinRol.xhtml";
+		} else {
+			switch (perfil) {
+			case SUPER_ADMINISTRADOR:
+				url = PATH_VIEWS_SUPER_ADMIN + UtilJSF.getViewNameFromClass(ViewEntidades.class) + EXTENSION_XHTML;
+				break;
+			case ADMINISTRADOR_ENTIDAD:
+				url = PATH_VIEWS_ENTIDAD + "viewConfiguracionEntidad" + EXTENSION_XHTML;
+				break;
+			case ADMINISTRADOR_CONTENIDOS:
+				url = PATH_VIEWS_MAESTRAS + UtilJSF.getViewNameFromClass(ViewPersonal.class) + EXTENSION_XHTML;
+				break;
+				//TO DO SUSTITUIR AL CREAR SU RESPECTIVA PÁGINA
+			case GESTOR:
+				url = PATH_VIEWS_SUPER_ADMIN + UtilJSF.getViewNameFromClass(ViewEntidades.class) + EXTENSION_XHTML;
+				break;
+				//TO DO SUSTITUIR AL CREAR SU RESPECTIVA PÁGINA
+			case INFORMADOR:
+				url = PATH_VIEWS_SUPER_ADMIN + UtilJSF.getViewNameFromClass(ViewEntidades.class) + EXTENSION_XHTML;
+				break;
+			default:
+				url = "/error/errorUsuarioSinRol.xhtml";
+				break;
+			}
+		}
+		return url;
+	}
+
+	/**
+	 * Devuelve view name suponiendo que se llama igual que la clase.
+	 *
+	 * @param clase clase
+	 * @return view name
+	 */
+	public static String getViewNameFromClass(final Class<?> clase) {
+		final String className = clase.getSimpleName();
+		return className.substring(0, 1).toLowerCase() + className.substring(1);
+	}
 
     private static Severity getSeverity(final TypeNivelGravedad nivel) {
         Severity severity;
@@ -205,5 +300,13 @@ public class UtilJSF {
     public static Object getDialogParam(String parametro) {
         return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(parametro);
     }
+
+	public static void loggearErrorFront(String mensaje, Exception e) {
+		if (e == null) {
+			LOG.error(mensaje);
+		} else {
+			LOG.error(mensaje, e);
+		}
+	}
 
 }
