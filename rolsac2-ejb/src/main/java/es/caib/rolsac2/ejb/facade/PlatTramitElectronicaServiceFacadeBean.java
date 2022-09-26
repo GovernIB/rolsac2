@@ -3,12 +3,17 @@ package es.caib.rolsac2.ejb.facade;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
+import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
+import es.caib.rolsac2.persistence.repository.EntidadRepository;
 import es.caib.rolsac2.persistence.repository.PlatTramitElectronicaRepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
+import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
+import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
+import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +24,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +51,9 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
     @Inject
     private PlatTramitElectronicaConverter converter;
 
+    @Inject
+    private EntidadRepository entidadRepository;
+
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -64,7 +73,10 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(PlatTramitElectronicaDTO dto) throws RecursoNoEncontradoException {
         JPlatTramitElectronica jPlatTramitElectronica = tipoMateriaSIARepository.getReference(dto.getCodigo());
+        JEntidad jEntidad = entidadRepository.getReference(dto.getCodEntidad().getCodigo());
+        jPlatTramitElectronica.setCodEntidad(jEntidad);
         converter.mergeEntity(jPlatTramitElectronica, dto);
+        tipoMateriaSIARepository.update(jPlatTramitElectronica);
     }
 
     @Override
@@ -93,19 +105,25 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
         return listaDTOs;
     }
 
-    // @Override
-    // @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-    // TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    // public Pagina<PlatTramitElectronicaGridDTO> findByFiltro(PlatTramitElectronicaFiltro filtro) {
-    // try {
-    // List<PlatTramitElectronicaGridDTO> items = tipoMateriaSIARepository.findPagedByFiltro(filtro);
-    // long total = tipoMateriaSIARepository.countByFiltro(filtro);
-    // return new Pagina<>(items, total);
-    // } catch (Exception e) {
-    // LOG.error("Error", e);
-    // List<PlatTramitElectronicaGridDTO> items = new ArrayList<>();
-    // long total = items.size();
-    // return new Pagina<>(items, total);
-    // }
-    // }
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+    TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Pagina<PlatTramitElectronicaGridDTO> findByFiltro(PlatTramitElectronicaFiltro filtro) {
+        try {
+            List<PlatTramitElectronicaGridDTO> items = tipoMateriaSIARepository.findPagedByFiltro(filtro);
+            long total = tipoMateriaSIARepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            List<PlatTramitElectronicaGridDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Boolean checkIdentificador(String identificador) {
+        return tipoMateriaSIARepository.checkIdentificador(identificador);
+    }
 }

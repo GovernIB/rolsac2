@@ -18,7 +18,6 @@ public class PlatTramitElectronicaDTO extends ModelApi {
      * Código entidad
      */
 
-    @NotEmpty
     private EntidadDTO codEntidad;
 
     /**

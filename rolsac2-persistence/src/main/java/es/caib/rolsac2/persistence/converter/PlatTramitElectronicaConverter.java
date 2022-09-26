@@ -16,7 +16,8 @@ import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
  *
  * @author Indra
  */
-@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {EntidadConverter.class})
+@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+        uses = {EntidadConverter.class})
 public interface PlatTramitElectronicaConverter extends Converter<JPlatTramitElectronica, PlatTramitElectronicaDTO> {
 
     @Override

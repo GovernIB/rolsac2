@@ -3,7 +3,10 @@ package es.caib.rolsac2.service.facade;
 import java.util.List;
 
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
+import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
+import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
+import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
 
 /**
  * Servicio para los casos de uso de mantenimiento de una plataforma de tramitación electrónica
@@ -60,6 +63,14 @@ public interface PlatTramitElectronicaServiceFacade {
 //   * @return una página con el número total de la plataforma de tramitación electrónica y la lista de las plataformas de
 //   *         tramitación electrónica con el rango indicado
 //   */
-//  Pagina<PlatTramitElectronicaGridDTO> findByFiltro(PlatTramitElectronicaFiltro filtro);
+  Pagina<PlatTramitElectronicaGridDTO> findByFiltro(PlatTramitElectronicaFiltro filtro);
+
+  /**
+   * Devuelve si existe el identificador en la entidad
+   *
+   * @param identificador identificador a comprobar
+   * @return si existe o no
+   */
+  Boolean checkIdentificador(String identificador);
 
 }

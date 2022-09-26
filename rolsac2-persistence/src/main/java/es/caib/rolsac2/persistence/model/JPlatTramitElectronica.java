@@ -15,13 +15,17 @@ import java.util.Objects;
 @NamedQueries({
         @NamedQuery(name = JPlatTramitElectronica.FIND_BY_ID,
                 query = "select p from JPlatTramitElectronica p where p.codigo = :id"),
-        @NamedQuery(name = JPlatTramitElectronica.FIND_ALL, query = "select p from JPlatTramitElectronica p")})
+        @NamedQuery(name = JPlatTramitElectronica.FIND_ALL, query = "select p from JPlatTramitElectronica p"),
+        @NamedQuery(name = JPlatTramitElectronica.COUNT_BY_IDENTIFICADOR,
+                query = "select count(p) from JPlatTramitElectronica p where p.identificador = :identificador")
+})
 public class JPlatTramitElectronica extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     public static final String FIND_BY_ID = "PlatTramitElectronica.FIND_BY_ID";
     public static final String FIND_ALL = "PlatTramitElectronica.FIND_ALL";
+    public static final String COUNT_BY_IDENTIFICADOR = "PlatTramitElectronica.COUNT_BY_IDENTIFICADOR";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "plat-tramit-electronica-sequence")
@@ -31,7 +35,7 @@ public class JPlatTramitElectronica extends BaseEntity {
     /**
      * Código entidad
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PTTR_CODENTI", nullable = false)
     private JEntidad codEntidad;
 
