@@ -21,7 +21,7 @@ body {
 
 .botoneraRed.ui-selectonebutton .ui-button.ui-state-hover,
 .botoneraRed.ui-selectonebutton .ui-state-hover {
-	background-color: #cc073c !important
+	background-color: #cc073c !important;
 }
 
 .botoneraRed.ui-selectonebutton .ui-state-active {
@@ -31,6 +31,12 @@ body {
 .ui-icon{
 	/** Para aumentar el tamaño. **/
 	font-size:1.2em;
+}
+.iconoRojo {
+	color: red !important;
+}
+.cabeceraIdiomas {
+	padding: 5px;
 }
 a{
 	color: #4dba79;
@@ -286,6 +292,11 @@ a:hover{
 	.marg0 {
 		border: 0px !important;
 	}
+
+	.form-row {
+		height:auto !important;
+	}
+
 }
 /* FI */
 
@@ -642,3 +653,75 @@ a.iconoXarxes{
 	color: #000;
 	text-decoration: none;
 }
+
+.panel-container .ui-panel	.ui-panel-titlebar {
+	color: #d25b5b !important;
+}
+
+.titulo-tab {
+	color: #d25b5b !important;
+	text-shadow: none;
+	font-weight: bold;
+	border: 2px solid #d9cad6 !important;
+}
+
+.tab-container .ui-accordion .ui-accordion-header {
+	padding: .5em .5em .5em 1em !important;
+}
+
+.tab-valor {
+	border: 1px solid #d9cad6;
+	background-color: #ffeef2;
+	border-radius: 5px;
+}
+
+.left-container {
+	background-color: #f2d8d8;
+	border-radius: 5px;
+}
+
+.form-row {
+	height: 50px;
+}
+
+.left-container-header {
+	background-color: #cc073c;
+	border-radius: 5px 5px 0px 0px;
+
+}
+
+.left-container-tit {
+	font-weight: bold;
+	color: #fff;
+}
+
+.noHeader.ui-datatable table thead tr {
+	display: none;
+}
+
+.btn-footer > span:first-child {
+	left: 7%;
+	width: 20px;
+	height: auto;
+	top: 47%;
+}
+
+.btn-footer > span:nth-last-of-type(1){
+	width: 8rem;
+}
+
+/*CAmbios para el calendario*/
+.fecha {
+	display: inline-block;
+	width: 100%
+}
+.fecha > input {
+	width: 75% !important;
+}
+
+/*Clase para secciones de la izquierda*/
+.panel{
+	margin-top: .8em;
+}
+
+

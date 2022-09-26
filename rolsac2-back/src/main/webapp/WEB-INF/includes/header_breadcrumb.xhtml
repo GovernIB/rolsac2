@@ -2,197 +2,323 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:my="http://java.sun.com/jsf/composite/components">
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+>
 <ui:composition>
 
-    <nav class="navbar navbar-light navbar-expand-md  ">
-        <div style="margin-top:5px">
-            <my:unidadAdministrativaComponent id="uaGeneral" value="#{sessionBean.unidadActiva}"
-                                              idioma="#{sessionBean.lang}" ocultarTexto="true" esCabecera="true">
-            </my:unidadAdministrativaComponent>
-        </div>
-        <p:breadCrumb id="migaPan" styleClass="breadcrumb migaPan" homeDisplay="text"
-                      style="background-image: none !important;background: transparent;  border: none;">
-            <ui:insert name="breadcrumb"/>
-        </p:breadCrumb>
-        <button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target="#collapsingNavbar2">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse justify-content-end align-items-end w100px" id="collapsingNavbar2">
+    <nav class="navbar navbar-light navbar-expand-sm">
+        <div class="d-flex flex-column">
+            <div class="d-flex flex-row align-content-center">
+                <div style="margin-top: 5px">
+                    <!--
+                    <my:unidadAdministrativaComponent id="uaGeneral"
+                                                      value="#{sessionBean.unidadActiva}" idioma="#{sessionBean.lang}"
+                                                      ocultarTexto="true" esCabecera="true">
+                    </my:unidadAdministrativaComponent> -->
+                    <div style="margin-top: 5px">
+                        <my:unidadAdministrativaComponent id="uaGeneral"
+                                                          value="#{sessionBean.unidadActiva}"
+                                                          idioma="#{sessionBean.lang}"
+                                                          ocultarTexto="true" esCabecera="true"
+                        >
+
+                            <!--<p:ajax event="eventoUpdate"   oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}"  />-->
+                            <ui:insert name="breadcrumbBoton"/>
+
+                        </my:unidadAdministrativaComponent>
+                    </div>
+                </div>
+                <p:breadCrumb id="migaPan" styleClass="breadcrumb migaPan"
+                              homeDisplay="text"
+                              style="background-image: none !important;background: transparent;  border: none; margin-top: 5px">
+                    <ui:insert name="breadcrumb"/>
+                </p:breadCrumb>
+            </div>
+            <button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target="#collapsingNavbar2">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div>
-                <ul class="navbar-nav text-right">
-                    <!-- Remote command para una vez se selecciona una opcion, actualizar la opcion visual en sessionBean-->
-                    <p:remoteCommand name="commandSetearOpcion" action="#{sessionBean.setearOpcion}"/>
+                <div class="navbar-collapse collapse" id="collapsingNavbar2">
+                    <ul id="listaOpciones" class="navbar-nav text-right">
+                        <!-- Remote command para una vez se selecciona una opcion, actualizar la opcion visual en sessionBean-->
+                        <p:remoteCommand name="commandSetearOpcion"
+                                         action="#{sessionBean.setearOpcion}" process="@all"/>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle opcionMenu" href="#">
-                            #{labels[sessionBean.opcion]}
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <c:choose>
-                                <c:when test="#{sessionBean.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR}">
-                                    <p:link styleClass="pb-4 dropdown-item mobil"
-                                            outcome="/superadministrador/viewEntidades.xhtml"
-                                            title="#{labels['viewTipoEntidades.titulo']}"
-                                            onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoEntidades.titulo'}]); return true;">
-                                        <p:ajax listener="#{sessionBean.setOpcion('Adm. entidades')}"/>
-                                        <span class="mb-0 float-right "> #{labels['viewTipoEntidades.titulo']}</span>
-                                    </p:link>
-                                    <p:link styleClass="pb-4 dropdown-item mobil"
-                                            outcome="/superadministrador/viewConfiguracionesGlobales.xhtml"
-                                            title="#{labels['viewConfigGlobales.titulo']}"
-                                            onclick="commandSetearOpcion([{name: 'opcion', value: 'viewConfigGlobales.titulo'}]); return true;">
-                                        <p:ajax listener="#{sessionBean.setOpcion('Conf. globales')}"/>
-                                        <span class="mb-0 float-right "> #{labels['viewConfigGlobales.titulo']}</span>
-                                    </p:link>
+                        <c:choose>
+                            <c:when
+                                    test="#{sessionBean.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR}">
+                                <li class="nav-item mt-3 mb-1 opcion-menu"><p:link
+                                        styleClass=" #{sessionBean.isActive('viewTipoEntidades.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
+                                        outcome="/superadministrador/viewEntidades.xhtml"
+                                        title="#{labels['viewTipoEntidades.titulo']}"
+                                        onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoEntidades.titulo'}]); return true;">
+										<span class="mb-0 float-right ">
+											#{labels['viewTipoEntidades.titulo']}</span>
+                                </p:link></li>
+                                <li class="nav-item mt-3 mb-1 opcion-menu"><p:link
+                                        styleClass="#{sessionBean.isActive('viewConfigGlobales.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
+                                        outcome="/superadministrador/viewConfiguracionesGlobales.xhtml"
+                                        title="#{labels['viewConfigGlobales.titulo']}"
+                                        onclick="commandSetearOpcion([{name: 'opcion', value: 'viewConfigGlobales.titulo'}]); return true;">
+										<span class="mb-0 float-right ">
+											#{labels['viewConfigGlobales.titulo']}</span>
+                                </p:link></li>
+                                <!-- Las tablas maeastras de color amarillo -->
 
-                                    <!-- Las tablas maeastras de color amarillo -->
+                                <!--En sessionBean hacer String value = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("param"); -->
+                                <div class="menuD nav-item mt-3 mb-1 opcion-menu" onclick="showMenuTipos()"
+                                     style="margin: 0">
+                                    <li class="nav-item">
+                                        <ui:fragment rendered="#{sessionBean.isTipoActivo()}">
+                                            <a href="#">
+												<span class="mb-0 float-right dropdown-toggle rosa font-weight-bold spanClick"
+                                                      data-bs-toggle="dropdown">#{labels['viewConfigGloables.config.plat']}</span>
+                                            </a>
+                                        </ui:fragment>
 
-                                    <!--En sessionBean hacer String value = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("param"); -->
-                                    <div class="menuD" style="margin: 0">
-                                        <p:link styleClass="pb-4 dropdown-item mobil">
-                                        <span class="mb-0 float-right dropdown-toggle"
-                                              data-bs-toggle="dropdown">Tipos</span>
+                                        <ui:fragment rendered="#{!sessionBean.isTipoActivo()}">
+                                            <a href="#">
+												<span class="mb-0 float-right dropdown-toggle rosa spanClick"
+                                                      data-bs-toggle="dropdown">#{labels['viewConfigGloables.config.plat']}</span>
+                                            </a>
+                                        </ui:fragment>
+
+                                    </li>
+
+                                    <div class="menuTipos mt-4" id="menuTipos">
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoAfectacion.xhtml"
+                                                title="#{labels['viewTipoAfectacion.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoAfectacion.titulo'}]); return true;">
+                                            <span class="mb-0 float-right ">#{labels['viewTipoAfectacion.titulo']}</span>
                                         </p:link>
-                                        <div class="menuTipos">
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoAfectacion.xhtml"
-                                                    title="#{labels['viewTipoAfectacion.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoAfectacion.titulo'}]); return true;">
-                                                <p:ajax listener="#{sessionBean.setOpcion('Tipo afectación')}"/>
-                                                <span class="mb-0 float-right ">#{labels['viewTipoAfectacion.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoMateriaSIA.xhtml"
-                                                    title="#{labels['viewTipoMateriaSIA.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoMateriaSIA.titulo'}]); return true;">
-                                                <p:ajax listener="#{sessionBean.setOpcion('Tipo Mat. SIA')}"/>
-                                                <span class="mb-0 float-right">#{labels['viewTipoMateriaSIA.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoFormaInicio.xhtml"
-                                                    title="#{labels['viewTipoFormaInicio.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoFormaInicio.titulo'}]); return true;">
-                                                <p:ajax listener="#{sessionBean.setOpcion('Tipo Forma de Inicio')}"/>
-                                                <span class="mb-0 float-right">#{labels['viewTipoFormaInicio.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoNormativa.xhtml"
-                                                    title="#{labels['viewTipoNormativa.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoNormativa.titulo'}]); return true;">
-                                                <span class="mb-0 float-right ">#{labels['viewTipoNormativa.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoSexo.xhtml"
-                                                    title="#{labels['viewTipoSexo.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoSexo.titulo'}]); return true;">
-                                                <span class="mb-0 float-right ">#{labels['viewTipoSexo.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoBoletin.xhtml"
-                                                    title="#{labels['viewTipoBoletin.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoBoletin.titulo'}]); return true;">
-                                                <span class="mb-0 float-right ">#{labels['viewTipoBoletin.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoVia.xhtml"
-                                                    title="#{labels['viewTipoVia.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoVia.titulo'}]); return true;">
-                                                <span class="mb-0 float-right ">#{labels['viewTipoVia.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoPublicoObjetivo.xhtml"
-                                                    title="#{labels['viewTipoPublicoObjetivo.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoPublicoObjetivo.titulo'}]); return true;">
-                                                <span class="mb-0 float-right botoCurt">#{labels['viewTipoPublicoObjetivo.titulo']}</span>
-                                            </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoMateriaSIA.xhtml"
+                                                title="#{labels['viewTipoMateriaSIA.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoMateriaSIA.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoMateriaSIA.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoFormaInicio.xhtml"
+                                                title="#{labels['viewTipoFormaInicio.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoFormaInicio.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoFormaInicio.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoNormativa.xhtml"
+                                                title="#{labels['viewTipoNormativa.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoNormativa.titulo'}]); return true;">
+                                            <span class="mb-0 float-right ">#{labels['viewTipoNormativa.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoSexo.xhtml"
+                                                title="#{labels['viewTipoSexo.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoSexo.titulo'}]); return true;">
+                                            <span class="mb-0 float-right ">#{labels['viewTipoSexo.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoBoletin.xhtml"
+                                                title="#{labels['viewTipoBoletin.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoBoletin.titulo'}]); return true;">
+                                            <span class="mb-0 float-right ">#{labels['viewTipoBoletin.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoVia.xhtml"
+                                                title="#{labels['viewTipoVia.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoVia.titulo'}]); return true;">
+                                            <span class="mb-0 float-right ">#{labels['viewTipoVia.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoPublicoObjetivo.xhtml"
+                                                title="#{labels['viewTipoPublicoObjetivo.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoPublicoObjetivo.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoPublicoObjetivo.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoSilencioAdministrativo.xhtml"
+                                                title="#{labels['viewTipoSilencioAdministrativo.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoSilencioAdministrativo.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoSilencioAdministrativo.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoLegitimacion.xhtml"
+                                                title="#{labels['viewTipoLegitimacion.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoLegitimacion.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoLegitimacion.titulo']}</span>
+                                        </p:link>
 
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoSilencioAdministrativo.xhtml"
-                                                    title="#{labels['viewTipoSilencioAdministrativo.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoSilencioAdministrativo.titulo'}]); return true;">
-                                                <span class="mb-0 float-right botoCurt">#{labels['viewTipoSilencioAdministrativo.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoLegitimacion.xhtml"
-                                                    title="#{labels['viewTipoLegitimacion.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoLegitimacion.titulo'}]); return true;">
-
-                                  <span
-                                          class="mb-0 float-right botoCurt">#{labels['viewTipoLegitimacion.titulo']}</span>
-                                            </p:link>
-
-                                        </div>
                                     </div>
-                                </c:when>
-                                <c:when test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD }">
-
-                                    <p:link styleClass="pb-4 dropdown-item mobil"
+                                </div>
+                            </c:when>
+                            <c:when
+                                    test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD }">
+                                <li class="nav-item mt-3 mb-1 opcion-menu">
+                                    <p:link styleClass=" #{sessionBean.isActive('viewConfiguracionEntidad.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
                                             outcome="/entidades/viewConfiguracionEntidad.xhtml"
-                                            title="#{labels['viewConfiguracionEntidad.titulo']}"
+                                            title="#{labels['viewCuadroControl.titulo']}"
                                             onclick="commandSetearOpcion([{name: 'opcion', value: 'viewConfiguracionEntidad.titulo'}]); return true;">
                                         <span class="mb-0 float-right ">#{labels['viewConfiguracionEntidad.titulo']}</span>
                                     </p:link>
-                                    <p:link styleClass="pb-4 dropdown-item mobil"
+                                </li>
+                                <li class="nav-item mt-3 mb-1 opcion-menu">
+                                    <p:link styleClass=" #{sessionBean.isActive('viewPlugins.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
                                             outcome="/entidades/viewPlugins.xhtml"
                                             title="#{labels['viewPlugins.titulo']}"
                                             onclick="commandSetearOpcion([{name: 'opcion', value: 'viewPlugins.titulo'}]); return true;">
-                                        <span class="mb-0 float-right botoCurt">#{labels['viewPlugins.titulo']}</span>
-                                    </p:link>
-                                    <p:link styleClass="pb-4 dropdown-item mobil" outcome="/entidades/viewUsuario.xhtml"
-                                            title="#{labels['viewUsuario.titulo']}"
-                                            onclick="commandSetearOpcion([{name: 'opcion', value: 'viewUsuario.titulo'}]); return true;">
-                                        <p:ajax listener="#{sessionBean.setOpcion('Usuario')}"/>
-                                        <span class="mb-0 float-right "> #{labels['viewUsuario.titulo']}</span>
-                                    </p:link>
-                                    <p:link styleClass="pb-4 dropdown-item mobil"
-                                            outcome="/entidades/viewEdificios.xhtml"
-                                            title="#{labels['viewEdificios.titulo']}"
-                                            onclick="commandSetearOpcion([{name: 'opcion', value: 'viewEdificios.titulo'}]); return true;">
-                                        <span class="mb-0 float-right botoCurt">#{labels['viewEdificios.titulo']}</span>
-                                    </p:link>
-                                    <div class="menuD" style="margin: 0">
-                                        <p:link styleClass="pb-4 dropdown-item mobil">
-                                        <span class="mb-0 float-right dropdown-toggle"
-                                              data-bs-toggle="dropdown">Tipos</span>
+                                        <span class="mb-0 float-right">#{labels['viewPlugins.titulo']}</span>
+                                    </p:link></li>
+                                <li class="menuD nav-item mt-3 mb-1 opcion-menu" onclick="showMenuUsuarios()">
+                                    <a href="#">
+                                        <span class="mb-0 float-right dropdown-toggle rosa spanClick #{sessionBean.isAdminUsuariosActivo() ? 'font-weight-bold' : 'font-weight-light'}"
+                                              data-bs-toggle="dropdown">#{labels['menu.label.adm.usuarios']}</span>
+                                    </a>
+                                    <div class="menuTipos mt-4" id="menuUsuarios">
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/entidades/viewUsuario.xhtml"
+                                                title="#{labels['viewUsuario.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewUsuario.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewUsuario.titulo']}</span>
                                         </p:link>
-                                        <div class="menuTipos">
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoUnidadAdministrativa.xhtml"
-                                                    title="#{labels['viewTipoUnidadAdministrativa.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoUnidadAdministrativa.titulo'}]); return true;">
-                                                <span class="mb-0 float-right botoCurt">#{labels['viewTipoUnidadAdministrativa.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/entidades/viewTipoMediaEdificio.xhtml"
-                                                    title="#{labels['viewTipoMediaEdificio.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoMediaEdificio.titulo'}]); return true;">
-                                                <span class="mb-0 float-right botoCurt">#{labels['viewTipoMediaEdificio.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/entidades/viewTipoMediaFicha.xhtml"
-                                                    title="#{labels['viewTipoMediaFicha.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoMediaFicha.titulo'}]); return true;">
-                                                <span class="mb-0 float-right botoCurt">#{labels['viewTipoMediaFicha.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/entidades/viewTipoMediaUA.xhtml"
-                                                    title="#{labels['viewTipoMediaUA.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoMediaUA.titulo'}]); return true;">
-                                                <span class="mb-0 float-right botoCurt">#{labels['viewTipoMediaUA.titulo']}</span>
-                                            </p:link>
-                                            <p:link styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoTramitacion.xhtml"
-                                                    title="#{labels['viewTipoTramitacion.titulo']}"
-                                                    onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoTramitacion.titulo'}]); return true;">
-                                                <p:ajax listener="#{sessionBean.setOpcion('Tipo de tramitación')}"/>
-                                                <span class="mb-0 float-right">#{labels['viewTipoTramitacion.titulo']}</span>
-                                            </p:link>
-                                        </div>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/entidades/viewRoles.xhtml"
+                                                title="#{labels['viewRoles.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewRoles.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewRoles.titulo']}</span>
+                                        </p:link>
                                     </div>
+                                </li>
+                                <li class="menuD nav-item mt-3 mb-1 opcion-menu" onclick="showMenuPersonalizacion()">
+                                    <a href="#">
+												<span class="mb-0 float-right dropdown-toggle rosa spanClick
+												        #{sessionBean.isPersonalizacionActivo() ? 'font-weight-bold' : 'font-weight-light'}"
+                                                      data-bs-toggle="dropdown">#{labels['menu.label.pers.entidad']}</span>
+                                    </a>
+                                    <div class="menuTipos mt-4" id="menuPersonalizacion">
+                                        <p:outputLabel
+                                                styleClass="font-weight-bold dropdown-item mobil mb-0 dropdown-label"
+                                                value="#{labels['menu.label.pers.entidad.uas']}"></p:outputLabel>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoUnidadAdministrativa.xhtml"
+                                                title="#{labels['viewTipoUnidadAdministrativa.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoUnidadAdministrativa.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoUnidadAdministrativa.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/entidades/viewTipoMediaUA.xhtml"
+                                                title="#{labels['viewTipoMediaUA.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoMediaUA.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoMediaUA.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/entidades/viewEdificios.xhtml"
+                                                title="#{labels['viewEdificios.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewEdificios.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewEdificios.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-5 dropdown-item mobil"
+                                                outcome="/entidades/viewTipoMediaEdificio.xhtml"
+                                                title="#{labels['viewTipoMediaEdificio.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoMediaEdificio.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoMediaEdificio.titulo']}</span>
+                                        </p:link>
+                                        <p:outputLabel
+                                                styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
+                                                value="#{labels['menu.label.pers.entidad.proc']}"></p:outputLabel>
+                                        <p:link styleClass=" pb-4 dropdown-item mobil"
+                                                outcome="/entidades/viewPlatTramitElectronica.xhtml"
+                                                title="#{labels['viewPlatTramitElectronica.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewPlatTramitElectronica.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewPlatTramitElectronica.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoTramitacion.xhtml"
+                                                title="#{labels['viewTipoTramitacion.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoTramitacion.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoTramitacion.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-5 dropdown-item mobil"
+                                                outcome="/superadministrador/viewTema.xhtml"
+                                                title="#{labels['viewTema.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTema.titulo'}]); return true;">
+									        <span class="mb-0 float-right ">
+										        #{labels['viewTema.titulo']}</span>
+                                        </p:link>
+                                        <p:outputLabel
+                                                styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
+                                                value="#{labels['menu.label.pers.entidad.fichas']}"></p:outputLabel>
+                                        <p:link styleClass="pb-5 dropdown-item mobil"
+                                                outcome="/entidades/viewTipoMediaFicha.xhtml"
+                                                title="#{labels['viewTipoMediaFicha.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoMediaFicha.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoMediaFicha.titulo']}</span>
+                                        </p:link>
+                                    </div>
+                                </li>
+                                <li class="menuD nav-item mt-3 mb-1 opcion-menu" onclick="showMenuMonitorizacion()">
+                                    <a href="#">
+												<span class="mb-0 float-right dropdown-toggle rosa spanClick
+                                                            #{sessionBean.isMonitorizacionActivo() ? 'font-weight-bold' : 'font-weight-light'}"
+                                                      data-bs-toggle="dropdown">#{labels['menu.label.mon.entidad']}</span>
+                                    </a>
+                                    <div class="menuTipos mt-4" id="menuMonitorizacion">
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/monitorizacion/viewAlertas.xhtml"
+                                                title="#{labels['viewAlertas.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewAlertas.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewAlertas.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/monitorizacion/viewCuadroControl.xhtml"
+                                                title="#{labels['viewCuadroControl.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewCuadroControl.titulo'}]); return true;">
+                                            <span class="mb-0 float-right ">#{labels['viewCuadroControl.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/monitorizacion/viewEventosPlat.xhtml"
+                                                title="#{labels['viewEventosPlat.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewEventosPlat.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewEventosPlat.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/monitorizacion/viewGestionProcesosSIA.xhtml"
+                                                title="#{labels['viewGestionProcesosSIA.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewGestionProcesosSIA.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewGestionProcesosSIA.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass=" pb-4 dropdown-item mobil"
+                                                outcome="/monitorizacion/viewGestionProcesosIndex.xhtml"
+                                                title="#{labels['viewGestionProcesosIndex.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewGestionProcesosIndex.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewGestionProcesosIndex.titulo']}</span>
+                                        </p:link>
+                                    </div>
+                                </li>
+                                <li class="menuD nav-item mt-3 mb-1 opcion-menu" onclick="showMenuGestionOrganigrama()">
+                                    <a href="#">
+												<span class="mb-0 float-right dropdown-toggle rosa spanClick
+                                                                #{sessionBean.isGestionOrganigramaActivo() ? 'font-weight-bold' : 'font-weight-light'}"
+                                                      data-bs-toggle="dropdown">#{labels['menu.label.ges.entidad']}</span>
+                                    </a>
+                                    <div class="menuTipos mt-4" id="menuGestionOrganigrama">
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/entidades/viewEvolucion.xhtml"
+                                                title="#{labels['viewEvolucion.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewEvolucion.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewEvolucion.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/entidades/viewContenidos.xhtml"
+                                                title="#{labels['viewContenidos.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewContenidos.titulo'}]); return true;">
+                                            <span class="mb-0 float-right ">#{labels['viewContenidos.titulo']}</span>
+                                        </p:link>
 
-                                    <!-- SIA , SOLR e indexacion, ver rolsac1 -->
-                                    <!--
+                                    </div>
+                                </li>
+
+
+                                <!-- SIA , SOLR e indexacion, ver rolsac1 -->
+                                <!--
                                     <p:link styleClass="pb-4 dropdown-item mobil" outcome="entidades/viewMantenimientoProcesos.xhtml"
                                             title="#{labels.configuracio_link}">
                                         <span class="mb-0 float-right ">Manten. procesos</span>
@@ -217,46 +343,56 @@
                                             title="#{labels.configuracio_link}">
                                         <span class="mb-0 float-right ">Acontecimientos</span>
                                     </p:link> -->
-                                </c:when>
-                                <c:when test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS}">
-                                   <p:link styleClass="pb-4 dropdown-item mobil"
+                            </c:when>
+                            <c:when
+                                    test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS}">
+                                <li class="nav-item mt-3 mb-1 opcion-menu">
+                                    <p:link styleClass="#{sessionBean.isActive('viewUnidadAdministrativa.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
                                             outcome="/superadministrador/viewUnidadAdministrativa.xhtml"
                                             title="#{labels['viewUnidadAdministrativa.titulo']}"
                                             onclick="commandSetearOpcion([{name: 'opcion', value: 'viewUnidadAdministrativa.titulo'}]); return true;">
-                                        <p:ajax listener="#{sessionBean.setOpcion('Unid. Administrativa')}"/>
-                                        <span class="mb-0 float-right "> #{labels['viewUnidadAdministrativa.titulo']}</span>
-                                    </p:link>
-
-                                    <p:link styleClass="pb-4 dropdown-item mobil"
+									<span class="mb-0 float-right ">
+										#{labels['viewUnidadAdministrativa.titulo']}</span>
+                                    </p:link></li>
+                                <li class="nav-item mt-3 mb-1 opcion-menu">
+                                    <p:link styleClass="#{sessionBean.isActive('viewPersonal.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
                                             outcome="/maestras/viewPersonal.xhtml"
                                             title="#{labels['viewPersonal.titulo']}"
                                             onclick="commandSetearOpcion([{name: 'opcion', value: 'viewPersonal.titulo'}]); return true;">
-                                        <span class="mb-0 float-right botoCurt">#{labels['viewPersonal.titulo']}</span>
-                                    </p:link>
-                                    <p:link styleClass="pb-4 dropdown-item mobil" outcome="/maestras/viewFichas.xhtml"
-                                            title="#{labels.configuracio_link}">
-                                        <span class="mb-0 float-right botoCurt">Fichas</span>
-                                    </p:link>
-                                    <p:link styleClass="pb-4 dropdown-item mobil"
-                                            outcome="/maestras/viewNormativas.xhtml"
-                                            title="#{labels.configuracio_link}">
-                                        <span class="mb-0 float-right botoCurt">Normativas</span>
-                                    </p:link>
-                                    <p:link styleClass="pb-4 dropdown-item mobil"
+                                        <span class="mb-0 float-right">#{labels['viewPersonal.titulo']}</span>
+                                    </p:link></li>
+                                <li class="nav-item mt-3 mb-1 opcion-menu">
+                                    <p:link styleClass="#{sessionBean.isActive('viewFichas.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
+                                            outcome="/maestras/viewFichas.xhtml"
+                                            title="#{labels['viewFichas.titulo']}"
+                                            onclick="commandSetearOpcion([{name: 'opcion', value: 'viewFichas.titulo'}]); return true;">
+                                        <span class="mb-0 float-right">#{labels['viewFichas.titulo']}</span>
+                                    </p:link></li>
+                                <li class="nav-item mt-3 mb-1 opcion-menu">
+                                    <p:link styleClass="#{sessionBean.isActive('viewNormativas.titulo.pagina') ? 'font-weight-bold' : 'font-weight-light'}"
+                                            outcome="/maestras/viewNormativa.xhtml"
+                                            title="#{labels['viewNormativas.titulo.pagina']}"
+                                            onclick="commandSetearOpcion([{name: 'opcion', value: 'viewNormativas.titulo.pagina'}]); return true;">
+                                        <span class="mb-0 float-right">#{labels['viewNormativas.titulo.pagina']}</span>
+                                    </p:link></li>
+                                <li class="nav-item mt-3 mb-1 opcion-menu">
+                                    <p:link styleClass="#{sessionBean.isActive('viewProcedimientos.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
                                             outcome="/maestras/viewProcedimientos.xhtml"
-                                            title="#{labels.configuracio_link}">
-                                        <span class="mb-0 float-right botoCurt">Procedimientos</span>
-                                    </p:link>
-                                </c:when>
-                            </c:choose>
-                        </div>
-                    </li>
-                </ul>
+                                            title="#{labels['viewProcedimientos.titulo']}"
+                                            onclick="commandSetearOpcion([{name: 'opcion', value: 'viewProcedimientos.titulo'}]); return true;">
+                                        <span class="mb-0 float-right">#{labels['viewProcedimientos.titulo']}</span>
+                                    </p:link></li>
+
+                            </c:when>
+                        </c:choose>
+
+
+                    </ul>
+                </div>
             </div>
-
         </div>
-    </nav>
 
+    </nav>
 
 </ui:composition>
 </html>

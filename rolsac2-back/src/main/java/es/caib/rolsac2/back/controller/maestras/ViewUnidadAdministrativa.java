@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
+import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
@@ -64,7 +65,22 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         System.out.println();
     }
 
+    public void cambiarUAbuscarEvt(UnidadAdministrativaDTO ua) {
+        sessionBean.cambiarUnidadAdministrativa(ua);
+        buscarEvt();
+    }
+
+    /**
+     * El buscar desde el evento de seleccionar una UA.
+     */
+    public void buscarEvt() {
+        if (filtro.getIdUA() == null || filtro.getIdUA().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
+            buscar();
+        }
+    }
+
     public void buscar() {
+        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         lazyModel = new LazyDataModel<>() {
             private static final long serialVersionUID = 1L;
 
@@ -93,6 +109,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<UnidadAdministrativaGridDTO> pagina = unidadAdministrativaService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
+
                     return pagina.getItems();
                 } catch (Exception e) {
                     LOG.error("Error llamando", e);
@@ -102,6 +119,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
                 }
             }
         };
+
     }
 
     public void nuevaUnidadAdministrativa() {
@@ -138,7 +156,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogUnidadAdministrativa", modoAcceso, params, true, 850, 510);
+        UtilJSF.openDialog("dialogUnidadAdministrativa", modoAcceso, params, true, 850, 535);
     }
 
     public void borrarUnidadAdministrativa() {

@@ -3,7 +3,8 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:my="http://java.sun.com/jsf/composite/components">
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
@@ -16,17 +17,22 @@
         <!--<h:outputFormat value="#{labels['viewTipoUnidadAdministrativa.titulo.pagina']}"/>-->
         <h:outputFormat value="Pagina"/>
     </ui:define>
+    <ui:define name="breadcrumbBoton">
+        <p:ajax event="eventoUpdate"   oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}" update="form:dataTable"  />
+    </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
             <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
-                        action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
-                        oncomplete="$('#form:actualizarBusqueda').click();">
+                        action="#{viewUnidadAdministrativa.cambiarUAbuscarEvt(ua)}" update="migaPan @form form:dataTable"
+                        >
             </p:menuitem>
         </c:forEach>
     </ui:define>
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
+            <p:remoteCommand name="rc" update="dataTable @form" process="@this"  />
             <p:commandButton value="#{labels['viewUnidadAdministrativa.actualizar']}" id="actualizarBusqueda"
+                             widgetVar="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewUnidadAdministrativa.buscar}"
                              update="dataTable"/>
             <p:toolbar id="toolbar">
@@ -114,7 +120,7 @@
             </h:outputScript>
             <p:remoteCommand name="myDoubleClickCommand"
                              widgetVar="myDoubleClickCommand"
-                             action="#{viewUnidadAdministrativa.consultarUnidadAdministrativa()}"
+                             action="#{viewUnidadAdministrativa.editarUnidadAdministrativa()}"
                              autoRun="false"
                              partialSubmit="true"
                              process="@this"/>

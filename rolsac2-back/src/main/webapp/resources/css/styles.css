@@ -11,6 +11,9 @@
 .iconoUAselector{
     font-color:red;
 }
+.iconoRojo {
+    color: red !important;
+}
 .iconoUAselector span {
     width: 20px;
     height: 20px;
@@ -125,6 +128,10 @@ a:hover {
 
 .verde {
     color: #d25b5b;
+}
+
+.rosa {
+	color: #d25b5b;
 }
 
 .box-shadow {
@@ -605,9 +612,7 @@ a:hover {
         display: none;
     }
 
-    .mobil {
-        float: left !important;
-    }
+
 
     .mobilClaro {
         float: left !important;
@@ -702,6 +707,10 @@ a:hover {
     }
 
     .marg0 {
+        border: 0px !important;
+    }
+
+    .opcion-menu {
         border: 0px !important;
     }
 }
@@ -801,13 +810,6 @@ a:hover {
 }
 
 /* FI */
-
-/* Boto Dropdown */
-.dropdown:hover > .dropdown-menu {
-    margin-top: 0px; /* Añadido para solucionar el problema del menu desplegable */
-    display: block;
-    border: 1px #000000;
-}
 
 .dropdown > .dropdown-toggle:active {
     pointer-events: none;
@@ -1203,9 +1205,26 @@ a.iconoXarxes {
     position: absolute;
     right: 0;
     left: auto;
+    z-index: 1;
 }
 
-.menuD:hover .menuTipos {
-    display: block;
+.opcion-menu {
+    border-right: 1px solid #000;
+    padding: 0 20px;
+}
+
+
+.show {
+	display: block;
+}
+
+/*Fondo color panel desplegable */
+.dropdown-label {
+    background-color: #dadada !important;
+}
+
+/*Título view*/
+.titulo-view {
+    margin: 1.4rem;
 }
 
