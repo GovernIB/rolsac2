@@ -91,7 +91,7 @@
 						</goals>
 						<configuration>
 							<files>
-								<file>${project.basedir}/../target/rolsac-commit.properties</file>
+								<file>${project.basedir}/../rolsac-commit.properties</file>
 							</files>
 						</configuration>
 					</execution>

@@ -13,7 +13,7 @@
 
     <bean id="frontModuleConfig" class="es.caib.sistrages.frontend.ModuleConfig">
         <property name="entorno" value="${entorno}" />
-        <property name="version" value="${sistra2.version}" />
+        <property name="version" value="${rolsac2.version}" />
         <property name="commitSvn" value="${commitSvn}" />
         <property name="commitGit" value="${commitGit}" />
         <property name="promocionSe2Pro" value="${promocioSe2Pro}" />

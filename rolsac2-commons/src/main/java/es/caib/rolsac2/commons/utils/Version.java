@@ -27,7 +27,7 @@ public class Version {
     private String jdkVersion;
     private String projectName;
     private String commit;
-    private String url = "https://github.com/GovernIB/sistra2/commit/";
+    private String url = "https://github.com/GovernIB/rolsac2/commit/";
 
 
     /**
