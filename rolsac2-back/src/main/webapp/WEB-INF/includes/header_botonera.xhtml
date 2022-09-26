@@ -59,15 +59,15 @@
                         <span class="mb-0 float-right botoCurt">#{labels['dict.configuracion']}</span>
                     </p:link>
                     <p:repeat value="#{applicationLocales.available}" var="locale">
-                        <p:commandLink styleClass="dropdown-item mobil" hreflang="#{locale.toLanguageTag()}"
+                        <h:commandLink styleClass="dropdown-item mobil" hreflang="#{locale.toLanguageTag()}"
                                        action="#{sessionBean.reload()}"
                                        title="#{labels['dict.' += locale.toLanguageTag()]}"
                                        rendered="#{sessionBean.lang != locale.toLanguageTag()}"
                                        update="@form" execute="@form" render="@form"
                                        >
                             <span class="mb-0 float-right botoCurt">#{labels['dict.' += locale.toLanguageTag()]}</span>
-                            <p:ajax listener="#{sessionBean.setCurrent(locale)}" update="@form" execute="@form" render="@form"  />
-                        </p:commandLink>
+                            <f:ajax listener="#{sessionBean.setCurrent(locale)}" update="@form" execute="@form" render="@form"  />
+                        </h:commandLink>
                     </p:repeat>
                     <p:commandLink action="#{logout.logout}"
                                    ajax="false" immediate="true" styleClass="dropdown-item mobil"
