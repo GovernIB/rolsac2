@@ -1,5 +1,7 @@
 package es.caib.rolsac2.back.controller;
 
+import es.caib.rolsac2.back.security.Security;
+import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
@@ -37,6 +39,9 @@ public class SessionBean implements Serializable {
     private static final long serialVersionUID = -3709390221710580769L;
 
     private static final Logger LOG = LoggerFactory.getLogger(SessionBean.class);
+
+    @Inject
+    private Security seguridad;
 
     @Inject
     private FacesContext context;
@@ -91,6 +96,15 @@ public class SessionBean implements Serializable {
      **/
     private String opcion = "dict.opcion";
 
+    private String opcionActiva = "";
+
+    private String style = "font-weight-bold";
+
+    /*Atributos para el ancho y largo de los dialog*/
+    private String screenWidth;
+
+    private String screenHeight;
+
     /**
      * Inicializacion de los datos de usuario
      */
@@ -100,7 +114,6 @@ public class SessionBean implements Serializable {
         Application app = context.getApplication();
         current = app.getViewHandler().calculateLocale(context);
         lang = current.getDisplayLanguage().contains("ca") ? "ca" : "es";
-
         // inicializamos mochila
         mochilaDatos = new HashMap<>();
 
@@ -130,7 +143,6 @@ public class SessionBean implements Serializable {
             return null;
         }
     }
-
 
     private void cargarDatos() {
         String idUsuario = getUsuarioMockup();
@@ -166,14 +178,36 @@ public class SessionBean implements Serializable {
             unidadActiva = unidades.get(0);
         }
 
-        perfil = TypePerfiles.ADMINISTRADOR_CONTENIDOS;
-        perfiles = new ArrayList<TypePerfiles>();
-        perfiles.add(TypePerfiles.SUPER_ADMINISTRADOR);
-        perfiles.add(TypePerfiles.ADMINISTRADOR_ENTIDAD);
-        perfiles.add(TypePerfiles.ADMINISTRADOR_CONTENIDOS);
-        perfiles.add(TypePerfiles.GESTOR);
-        perfiles.add(TypePerfiles.INFORMADOR);
+        perfiles = seguridad.getPerfiles();
+        if (!perfiles.isEmpty()) {
+            perfil = perfiles.get(0);
+        }
     }
+
+    /**
+     * Redirige a la URL por defecto para el rol activo.
+     */
+    public void redirectDefaultUrl() {
+        UtilJSF.redirectJsfDefaultPagePerfil(perfil);
+        switch (this.perfil) {
+            case ADMINISTRADOR_CONTENIDOS:
+                opcion = "viewPersonal.titulo";
+                break;
+            case ADMINISTRADOR_ENTIDAD:
+                opcion = "viewConfiguracionEntidad.titulo";
+                break;
+            case GESTOR:
+                break;
+            case INFORMADOR:
+                break;
+            case SUPER_ADMINISTRADOR:
+                opcion = "viewTipoEntidades.titulo";
+                break;
+        }
+
+
+    }
+
 
     private void cargarDatos2() {
         try {
@@ -355,8 +389,8 @@ public class SessionBean implements Serializable {
                 break;
             case ADMINISTRADOR_ENTIDAD:
                 opcion = "viewConfiguracionEntidad.titulo";
-                context.getPartialViewContext().getEvalScripts().add(
-                        "location.replace('" + rolsac2back + "/entidades/viewConfiguracionEntidad.xhtml')");
+                context.getPartialViewContext().getEvalScripts()
+                        .add("location.replace('" + rolsac2back + "/entidades/viewConfiguracionEntidad.xhtml')");
                 break;
             case GESTOR:
                 context.getPartialViewContext().getEvalScripts().add("location.replace(location)");
@@ -372,6 +406,82 @@ public class SessionBean implements Serializable {
         }
 
     }
+
+    /**
+     * Función que verifica que opción de las posibles del menú es la que está seleccionada
+     */
+
+    public boolean isActive(String opcionActiva) {
+        return this.opcion.equals(opcionActiva);
+    }
+
+    /**
+     * Función para establecer si la opción activa seleccionada es de un desplegable de Tipos
+     */
+
+    public boolean isTipoActivo() {
+        if (this.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR) {
+            boolean resultado = this.opcion.equals("viewTipoAfectacion.titulo") || this.opcion.equals("viewTipoMateriaSIA.titulo") || this.opcion.equals("viewTipoFormaInicio.titulo") ||
+                    this.opcion.equals("viewTipoNormativa.titulo") || this.opcion.equals("viewTipoSexo.titulo") || this.opcion.equals("viewTipoBoletin.titulo") ||
+                    this.opcion.equals("viewTipoVia.titulo") || this.opcion.equals("viewTipoPublicoObjetivo.titulo") || this.opcion.equals("viewTipoSilencioAdministrativo.titulo") ||
+                    this.opcion.equals("viewTipoLegitimacion.titulo");
+            return resultado;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isAdminUsuariosActivo() {
+        if (this.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD) {
+            return this.opcion.equals("viewUsuario.titulo") || this.opcion.equals("viewRoles.titulo");
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isPersonalizacionActivo() {
+        if (this.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD) {
+            return this.opcion.equals("viewTipoUnidadAdministrativa.titulo") || this.opcion.equals("viewTipoMediaUA.titulo")
+                    || this.opcion.equals("viewEdificios.titulo") || this.opcion.equals("viewTipoMediaEdificio.titulo")
+                    || this.opcion.equals("viewTipoMediaEdificio.titulo") || this.opcion.equals("viewPlatTramitElectronica.titulo")
+                    || this.opcion.equals("viewTipoTramitacion.titulo") || this.opcion.equals("viewTipoMediaFicha.titulo")
+                    || this.opcion.equals("viewTema.titulo");
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isMonitorizacionActivo() {
+        if (this.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD) {
+            return this.opcion.equals("viewAlertas.titulo") || this.opcion.equals("viewGestionProcesosIndex.titulo")
+                    || this.opcion.equals("viewGestionProcesosSIA.titulo") || this.opcion.equals("viewEventosPlat.titulo")
+                    || this.opcion.equals("viewCuadroControl.titulo");
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isGestionOrganigramaActivo() {
+        if (this.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD) {
+            return this.opcion.equals("viewEvolucion.titulo") || this.opcion.equals("viewContenidos.titulo");
+        } else {
+            return false;
+        }
+    }
+
+    public void updateAspect() {
+        String width = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
+                .get("formAspect:windowWidth");
+        String height = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
+                .get("formAspect:windowHeight");
+        if (width != null) {
+            this.screenWidth = width;
+        }
+        if (height != null) {
+            this.screenHeight = height;
+        }
+    }
+
 
     public Locale getCurrent() {
         return current;
@@ -468,5 +578,29 @@ public class SessionBean implements Serializable {
 
     public void setEntidades(List<EntidadDTO> entidades) {
         this.entidades = entidades;
+    }
+
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
+    public String getScreenWidth() {
+        return screenWidth;
+    }
+
+    public void setScreenWidth(String screenWidth) {
+        this.screenWidth = screenWidth;
+    }
+
+    public String getScreenHeight() {
+        return screenHeight;
+    }
+
+    public void setScreenHeight(String screenHeight) {
+        this.screenHeight = screenHeight;
     }
 }

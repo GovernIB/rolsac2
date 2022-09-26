@@ -9,24 +9,32 @@
     <cc:interface componentType="literalComponent">
         <cc:attribute name="value" type="es.caib.rolsac2.service.model.Literal" shortDescription="El literal." />
         <cc:attribute name="ocultarTexto" type="boolean" shortDescription="Indica si hay que ocultar el texto o no. Valores posibles: true, false o null" />
+        <cc:attribute name="tipo" type="String" shortDescription="Indica si hay que ocultar el texto o no. Valores posibles: true, false o null" />
+        <cc:attribute name="required" type="boolean" shortDescription="Indica si es obligatorio que esté relleno. Si es obligatorio y no está relleno, se verá como en rojo" />
+        <cc:attribute name="soloLecture" type="String"
+                      shortDescription="Indica si es solo lectura. Valores posibles: true, false o null"/>
+
     </cc:interface>
     <cc:implementation>
         <span id="#{cc.clientId}" style="white-space:nowrap">
-            <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90"  disabled="#{cc.isModoConsulta()}">
-                <p:ajax event="keyup" listener="#{cc.actualizarLiteral}" />
+            <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1"  disabled="#{cc.isModoConsulta()}">
+                <p:ajax event="keyup" listener="#{cc.actualizarLiteral}" update="btnAbrir" />
             </p:inputText>
             <p:inputText id="textoES" binding="#{cc.textoES}" style="display:none"  />
             <p:inputText id="textoCA" binding="#{cc.textoCA}" style="display:none"  />
             <p:inputText id="textoID" binding="#{cc.textoID}" style="display:none"  />
             <p:inputText id="textoIdioma" binding="#{cc.textoIdioma}" style="display:none"  />
             <p:inputText id="textoInicializado" binding="#{cc.textoInicializado}" style="display:none"  />
-            <p:commandButton action="#{cc.abrirVentana()}"
+            <p:commandButton id="btnAbrir"
+                             action="#{cc.abrirVentana()}"
                              icon="pi pi-tag"
                              value=" "
-                             styleClass="w35px h25px"
+                             styleClass="w35px h25px #{cc.getEstiloBoton()}"
+                             disabled="#{cc.isModoConsulta()}"
                              process="@this"
             >
-                     <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"  update="texto"/>
+                     <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
+                             update="texto btnAbrir"/>
             </p:commandButton>
         </span>
     </cc:implementation>
