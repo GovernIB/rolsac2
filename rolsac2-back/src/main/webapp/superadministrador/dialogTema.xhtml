@@ -1,0 +1,100 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components">
+
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTema.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogTema.id}"/>
+            <f:viewAction action="#{dialogTema.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogTema.consulta']}"
+                        rendered="#{dialogTema.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogTema.detalle']}"
+                        rendered="#{dialogTema.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogTema.nuevo']}"
+                        rendered="#{dialogTema.isModoAlta()}"/>
+    </ui:define>
+    <ui:define name="contentIdioma">
+
+        <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTema.idioma}" styleClass="botoneraRed">
+            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
+            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+            <p:ajax update="inputDescripcion" process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogTema.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this" />
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+        <p:panel>
+            <div class="row">
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:inputText id="txtCodigo" value="#{dialogTema.data.codigo}"
+                                 styleClass="w95"   disabled="true" />
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:inputText id="txtIdentificador" value="#{dialogTema.data.identificador}"
+                                 styleClass="w95"
+                                 required="true" disabled="#{dialogTema.isModoConsulta()}" maxlength="50">
+                    </p:inputText>
+                </div>
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <h:outputText value="#{labels['dialogTema.temaPadre']}:" for="txtTemaPadre"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <my:temaComponent id="txtTemaPadre" value="#{dialogTema.data.temaPadre}"
+                                                      idioma="#{dialogTema.idioma}" ocultarTexto="false"
+                                                      soloLecture="false"
+                    />
+                </div>
+
+                    <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <h:outputText value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-9 ui-lg-4">
+                        <my:literalComponent id="inputDescripcion" value="#{dialogTema.data.descripcion}"
+                                             soloLecture="#{dialogTema.isModoConsulta()}" idioma="#{dialogTema.idioma}"/>
+                    </div>
+                </div>
+
+        </p:panel>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogTema.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogTema.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         process="@all"/>
+        <p:commandButton action="#{dialogTema.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>

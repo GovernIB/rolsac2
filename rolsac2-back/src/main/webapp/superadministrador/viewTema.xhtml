@@ -1,0 +1,114 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewAction action="#{viewTema.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitle">
+        <h:outputFormat value="Pagina"/>
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                        action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
+                        oncomplete="$('#form:actualizarBusqueda').click();">
+            </p:menuitem>
+        </c:forEach>
+    </ui:define>
+    <ui:define name="content">
+        <h:form>
+            <p:commandButton value="#{labels['viewTema.actualizar']}" id="actualizarBusqueda"
+                             style="display:none" ajax="false" action="#{viewTema.buscar}"
+                             update="dataTable"/>
+            <p:toolbar id="toolbar">
+                <f:facet name="left">
+                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                                                                                     value="#{viewTema.filtroTexto}"/>
+                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                     actionListener="#{viewTema.buscar()}" process="@form"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
+                                     actionListener="#{viewTema.nuevoTema}"
+                                     process="@this">
+                        <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                                     actionListener="#{viewTema.editarTema}"
+                                     process="@form" update="messages">
+                        <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                                     action="#{viewTema.borrarTema}"
+                                     process="@form" update="messages dataTable">
+                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                     action="#{viewTema.ayuda}" process="@this" update="messages"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable id="dataTable" value="#{viewTema.lazyModel}" var="tema"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="temaTable"
+                         rows="#{viewTema.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                         first="#{viewTema.filtro.paginaFirst}"
+                         paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                         paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         emptyMessage="#{labels['dict.noHayDatos']}"
+                         selectionMode="single" selection="#{viewTema.datoSeleccionado}"
+                         rowKey="#{tema.codigo}"
+                         reflow="true"
+                         sortBy="#{viewTema.filtro.orderBy}"
+                         sortOrder="#{viewTema.filtro.order}"
+                         style="min-height: 300px;">
+                <p:ajax
+                        event="rowDblselect"
+                        oncomplete="triggerDblClick();"
+                        global="false"/>
+                <f:facet name="{RowsPerPageLabel}">
+                    #{labels.dataTable_rowsPerPage}
+                </f:facet>
+                <p:column sortBy="#{tema.codigo}" headerText="#{labels['dict.codigo']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tema.codigo}"/>
+                </p:column>
+                <p:column sortBy="#{tema.identificador}" headerText="#{labels['dict.identificador']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tema.identificador}"/>
+                </p:column>
+                <p:column sortBy="#{tema.temaPadre}" headerText="#{labels['viewTema.temaPadre']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tema.temaPadre}"/>
+                </p:column>
+            </p:dataTable>
+            <h:outputScript>
+                function triggerDblClick() {
+                myDoubleClickCommand();
+                /*$('#form\\:btnConsultaHidden').click();*/
+                }
+            </h:outputScript>
+            <p:remoteCommand name="myDoubleClickCommand"
+                             widgetVar="myDoubleClickCommand"
+                             action="#{viewTema.editarTema()}"
+                             autoRun="false"
+                             partialSubmit="true"
+                             process="@this"/>
+            <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
+                             actionListener="#{viewTema.consultarTema}"
+                             process="@this" update="messages" style="display: none">
+                <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
+                        update="messages dataTable"/>
+            </p:commandButton>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

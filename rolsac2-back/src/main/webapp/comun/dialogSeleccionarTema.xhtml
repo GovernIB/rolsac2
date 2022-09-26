@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:t="http://back.rolsac2.caib.es/tags">
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogSeleccionarTema.modoAcceso}" />
+            <f:viewParam id="ID" name="ID" value="#{dialogSeleccionarTema.id}" />
+            <f:viewAction action="#{dialogSeleccionarTema.load}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="pageTitleDialog">
+        Seleccionar Tema
+    </ui:define>
+
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="true"
+                 life="5000"
+                 process="@all"
+                 escape="false"/>
+        <p:tree value="#{dialogSeleccionarTema.root}" var="node" dynamic="true"
+                selectionMode="single"
+                selection="#{dialogSeleccionarTema.selectedNode}" style="width: 100% !important; height: 90vh; overflow-y: scroll;"
+                >
+            <p:ajax event="expand" listener="#{dialogSeleccionarTema.onNodeExpand}" />
+            <p:ajax event="select" listener="#{dialogSeleccionarTema.onNodeSelect}" update="@form:messagesDialog"/>
+
+            <p:treeNode type="TemaDTO" nodeType="TemaDTO" >
+                <!--<h:outputText value="#{node.nombre.getTraduccion(sessionBean.lang)}"/>-->
+                <h:outputText value="#{node.identificador}"/>
+            </p:treeNode>
+        </p:tree>
+    </ui:define>
+
+    <ui:define name="contentFooterDialogLeft">
+        <p:commandButton  action="#{dialogSeleccionarTema.ayuda}"
+                          icon="pi pi-info-circle" iconPos="top"
+                          value="#{labels['dict.ayuda']}"
+                          process="@this" />
+    </ui:define>
+
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogSeleccionarTema.guardar}"
+                         value="#{labels['dict.seleccionar']}" update="messagesDialog"
+                         rendered="#{!dialogSeleccionarTema.isModoConsulta()}"
+                         process="@all" />
+        <p:commandButton action="#{dialogSeleccionarTema.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this" />
+
+    </ui:define>
+
+</ui:composition>
+</html>
