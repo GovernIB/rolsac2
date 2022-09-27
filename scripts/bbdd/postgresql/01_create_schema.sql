@@ -480,6 +480,7 @@ CREATE TABLE "RS2_FCHTEM"
 
 CREATE TABLE "RS2_FICEXT"
 (
+    "FIE_CODIGO" NUMBER(10) NOT NULL, --'Código fichero externo'
     "FIE_REFDOC" VARCHAR2(1000 CHAR) NOT NULL,    -- Referencia externa (path fichero)
     /*
     REFERENCIA DOC:  Path
@@ -489,8 +490,11 @@ CREATE TABLE "RS2_FICEXT"
 
     Nombre de fichero: id generado automaticamente
     */
-    "FIE_REFFEC" TIMESTAMP(6) NOT NULL,    -- Fecha referencia (sólo será válida la última, el resto se borrarán)
-    "FIE_CODFIC" NUMBER(10) NOT NULL,    -- Código fichero al que está enlazado
+    "FIE_FECHA" TIMESTAMP(6) NOT NULL,    -- Fecha referencia (sólo será válida la última, el resto se borrarán)
+    "FIE_TEMP" NUMBER(1),   -- 'Indica si fichero es temporal (hasta que se enlace)';
+    "FIE_FICTIP" VARCHAR2(50), -- 'Tipo fichero (indica tabla donde se usa)';
+    "FIE_FICELE" NUMBER(10), --'Elemento fichero (indica elemento asociado al fichero)' ;
+    "FIE_FILENAME" VARCHAR2(100), --Nombre original del fichero (en disco se guardará con el nombre de referencia documento)
     "FIE_BORRAR" NUMBER(1) DEFAULT 0  NOT NULL    -- Indica si esta marcado para borrar (proceso de purgado)
 )TABLESPACE ROLSAC2_DADES;
 
@@ -1413,14 +1417,11 @@ REFERENCIA DOC:  Path
 '
 ;
 
-COMMENT ON COLUMN "RS2_FICEXT"."FIE_REFFEC" IS 'Fecha referencia (sólo será válida la última, el resto se borrarán)'
-;
-
-COMMENT ON COLUMN "RS2_FICEXT"."FIE_CODFIC" IS 'Código fichero al que está enlazado'
-;
-
-COMMENT ON COLUMN "RS2_FICEXT"."FIE_BORRAR" IS 'Indica si esta marcado para borrar (proceso de purgado)'
-;
+COMMENT ON COLUMN "RS2_FICEXT"."FIE_BORRAR" IS 'Indica si esta marcado para borrar (proceso de purgado)';
+COMMENT ON COLUMN "RS2_FICEXT".FIE_FICTIP IS 'Tipo fichero (indica tabla donde se usa)';
+COMMENT ON COLUMN "RS2_FICEXT".FIE_FICELE IS 'Elemento fichero (indica elemento asociado al fichero)' ;
+COMMENT ON COLUMN "RS2_FICEXT". FILENAME IS 'Nombre original del fichero (en disco se guardará con el nombre de referencia documento)' ;
+COMMENT ON COLUMN "RS2_FICEXT".FIE_FECHA IS 'Fecha creación' ;
 
 GRANT ALTER, DELETE, INDEX, INSERT, SELECT, UPDATE, REFERENCES, ON COMMIT REFRESH, QUERY REWRITE, DEBUG, FLASHBACK ON "RS2_FICEXT" TO www_rolsac2
 ;
@@ -3052,7 +3053,7 @@ ALTER TABLE "RS2_FCHTEM"
 
 ALTER TABLE "RS2_FICEXT"
     ADD CONSTRAINT "RS2_FICEXT_PK"
-        PRIMARY KEY ("FIE_REFDOC") USING INDEX (CREATE UNIQUE INDEX  "RS2_FICEXT_PK_I" on "RS2_FICEXT" ("FIE_REFDOC") TABLESPACE "ROLSAC2_INDEX")
+        PRIMARY KEY ("FIE_CODIGO") USING INDEX (CREATE UNIQUE INDEX  "RS2_FICEXT_PK_I" on "RS2_FICEXT" ("FIE_REFDOC") TABLESPACE "ROLSAC2_INDEX")
 ;
 
 ALTER TABLE "RS2_FICHA"
