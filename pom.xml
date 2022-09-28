@@ -533,7 +533,7 @@
 									<goal>replace</goal>
 								</goals>
 								<configuration>
-									<filesToInclude>sistra-commit.properties</filesToInclude>
+									<filesToInclude>rolsac-commit.properties</filesToInclude>
 									<preserveDir>true</preserveDir>
 									<outputDir>target</outputDir>
 									<replacements>
