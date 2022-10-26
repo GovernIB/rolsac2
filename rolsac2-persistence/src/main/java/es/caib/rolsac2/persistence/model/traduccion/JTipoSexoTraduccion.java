@@ -40,9 +40,9 @@ public class JTipoSexoTraduccion extends BaseEntity {
     @Column(name = "TRTS_DESCRI", length = 255)
     private String descripcion;
 
-    public static List<JTipoSexoTraduccion> createInstance() {
+    public static List<JTipoSexoTraduccion> createInstance(List<String> idiomas) {
         List<JTipoSexoTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTipoSexoTraduccion trad = new JTipoSexoTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

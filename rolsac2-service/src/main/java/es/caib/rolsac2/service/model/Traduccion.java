@@ -1,5 +1,7 @@
 package es.caib.rolsac2.service.model;
 
+import java.util.Objects;
+
 /**
  * Traduccion.
  *
@@ -99,4 +101,16 @@ public class Traduccion {
         this.literal = literal;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Traduccion that = (Traduccion) o;
+        return Objects.equals(codigo, that.codigo) && Objects.equals(idioma, that.idioma) && Objects.equals(literal, that.literal);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo, idioma, literal);
+    }
 }

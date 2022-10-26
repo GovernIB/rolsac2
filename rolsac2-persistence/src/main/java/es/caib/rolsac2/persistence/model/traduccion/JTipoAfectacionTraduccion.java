@@ -28,9 +28,9 @@ public class JTipoAfectacionTraduccion extends BaseEntity {
     @Column(name = "TRTA_DESCRI")
     private String descripcion;
 
-    public static List<JTipoAfectacionTraduccion> createInstance() {
+    public static List<JTipoAfectacionTraduccion> createInstance(List<String> idiomas) {
         List<JTipoAfectacionTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTipoAfectacionTraduccion trad = new JTipoAfectacionTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

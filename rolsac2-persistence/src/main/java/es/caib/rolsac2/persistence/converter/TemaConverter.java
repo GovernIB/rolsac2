@@ -36,12 +36,12 @@ public interface TemaConverter extends Converter<JTema, TemaDTO>{
 
     @Override
     @Mapping(target = "descripcion",
-            expression = "java(convierteLiteralToTraduccion(jTema,dto))")
+            expression = "java(convierteLiteralToTraduccion(jTema,dto.getDescripcion()))")
     JTema createEntity(TemaDTO dto);
 
     @Override
     @Mapping(target = "descripcion",
-            expression = "java(convierteLiteralToTraduccion(entity,dto))")
+            expression = "java(convierteLiteralToTraduccion(entity,dto.getDescripcion()))")
     void mergeEntity(@MappingTarget JTema entity, TemaDTO dto);
 
     default List<TemaDTO> createTreeDTOs(List<JTema> entities) {
@@ -60,16 +60,41 @@ public interface TemaConverter extends Converter<JTema, TemaDTO>{
         return resultado;
     }
 
-    default List<JTemaTraduccion> convierteLiteralToTraduccion(JTema jTema, TemaDTO temaDTO) {
+    default List<JTemaTraduccion> convierteLiteralToTraduccion(JTema jTema, Literal descripcion) {
+        //Iteramos sobre el literal para ver que idiomas se han rellenado
+        List<String> idiomasRellenos = new ArrayList<>();
+        for(String idioma : descripcion.getIdiomas()) {
+            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+                idiomasRellenos.add(idioma);
+            }
+        }
+
         if (jTema.getDescripcion() == null || jTema.getDescripcion().isEmpty()){
-            jTema.setDescripcion(JTemaTraduccion.createInstance());
+            jTema.setDescripcion(JTemaTraduccion.createInstance(idiomasRellenos));
             for (JTemaTraduccion jTrad : jTema.getDescripcion()) {
                 jTrad.setTema(jTema);
             }
+        } else if(idiomasRellenos.size() >  jTema.getDescripcion().size()) {
+            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+            List<JTemaTraduccion> tradsAux = jTema.getDescripcion();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+
+            for (JTemaTraduccion traduccion : jTema.getDescripcion()) {
+                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            for (String idioma : idiomasNuevos) {
+                JTemaTraduccion trad = new JTemaTraduccion();
+                trad.setIdioma(idioma);
+                trad.setTema(jTema);
+                tradsAux.add(trad);
+            }
+            jTema.setDescripcion(tradsAux);
         }
         for (JTemaTraduccion traduccion : jTema.getDescripcion()) {
-            if (temaDTO.getDescripcion() != null) {
-                traduccion.setDescripcion(temaDTO.getDescripcion().getTraduccion(traduccion.getIdioma()));
+            if (descripcion != null) {
+                traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));
             }
         }
         return jTema.getDescripcion();

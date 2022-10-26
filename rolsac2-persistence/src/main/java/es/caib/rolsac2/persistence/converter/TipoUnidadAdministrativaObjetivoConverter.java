@@ -10,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,59 +28,79 @@ public interface TipoUnidadAdministrativaObjetivoConverter
     // @Mapping(target = "idUnitat", source = "unitatOrganica.id")
     @Override
     @Mapping(target = "descripcion",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"descripcion\"))")
     @Mapping(target = "cargoMasculino",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"cargoMasculino\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"cargoMasculino\"))")
     @Mapping(target = "cargoFemenino",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"cargoFemenino\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"cargoFemenino\"))")
     @Mapping(target = "tratamientoMasculino",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"tratamientoMasculino\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"tratamientoMasculino\"))")
     @Mapping(target = "tratamientoFemenino",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"tratamientoFemenino\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"tratamientoFemenino\"))")
     TipoUnidadAdministrativaDTO createDTO(JTipoUnidadAdministrativa entity);
 
     // @Mapping(target = "unidadOrganica", ignore = true)
     @Override
-    @Mapping(target = "descripcion",
-            expression = "java(convierteLiteralToTraduccion(jTipoUnidadAdministrativa,dto.getDescripcion(), dto.getCargoMasculino(), dto.getCargoFemenino(), dto.getTratamientoMasculino(), dto.getTratamientoFemenino()))")
+    @Mapping(target = "traducciones",
+            expression = "java(convierteLiteralToTraduccion(jTipoUnidadAdministrativa, dto))")
     JTipoUnidadAdministrativa createEntity(TipoUnidadAdministrativaDTO dto);
 
     // @Mapping(target = "unidadOrganica", ignore = true)
     @Override
-    @Mapping(target = "descripcion",
-            expression = "java(convierteLiteralToTraduccion(entity,dto.getDescripcion(), dto.getCargoMasculino(), dto.getCargoFemenino(), dto.getTratamientoMasculino(), dto.getTratamientoFemenino()))")
+    @Mapping(target = "traducciones",
+            expression = "java(convierteLiteralToTraduccion(entity,dto))")
     void mergeEntity(@MappingTarget JTipoUnidadAdministrativa entity, TipoUnidadAdministrativaDTO dto);
 
 
     default List<JTipoUnidadAdministrativaTraduccion> convierteLiteralToTraduccion(
-            JTipoUnidadAdministrativa jTipoUnidadAdministrativa, Literal descripcion, Literal cargoMasculino,
-            Literal cargoFemenino, Literal tratamientoMasculino, Literal tratamientoFemenino) {
+            JTipoUnidadAdministrativa jTipoUnidadAdministrativa, TipoUnidadAdministrativaDTO dto) {
 
-        if (jTipoUnidadAdministrativa.getDescripcion() == null
-                || jTipoUnidadAdministrativa.getDescripcion().isEmpty()) {
-            jTipoUnidadAdministrativa.setDescripcion(JTipoUnidadAdministrativaTraduccion.createInstance());
-            for (JTipoUnidadAdministrativaTraduccion jtrad : jTipoUnidadAdministrativa.getDescripcion()) {
+        List<String> idiomasPermitidos = List.of(dto.getEntidad().getIdiomasPermitidos().split(";"));
+
+        if (jTipoUnidadAdministrativa.getTraducciones() == null
+                || jTipoUnidadAdministrativa.getTraducciones().isEmpty()) {
+            jTipoUnidadAdministrativa.setTraducciones(JTipoUnidadAdministrativaTraduccion.createInstance(idiomasPermitidos));
+            for (JTipoUnidadAdministrativaTraduccion jtrad : jTipoUnidadAdministrativa.getTraducciones()) {
                 jtrad.setTipoUnidadAdministrativa(jTipoUnidadAdministrativa);
             }
+        } else if (jTipoUnidadAdministrativa.getTraducciones().size() < idiomasPermitidos.size()) {
+            //En caso de que se haya creado, comprobamos que tenga todas las traducciones (pueden haberse dado de alta idiomas nuevos en entidad)
+            List<JTipoUnidadAdministrativaTraduccion> tradsAux = jTipoUnidadAdministrativa.getTraducciones();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasPermitidos);
+
+            for (JTipoUnidadAdministrativaTraduccion traduccion : jTipoUnidadAdministrativa.getTraducciones()) {
+                if (idiomasPermitidos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            //Añadimos a la lista de traducciones los nuevos valores
+
+            for (String idioma : idiomasNuevos) {
+                JTipoUnidadAdministrativaTraduccion trad = new JTipoUnidadAdministrativaTraduccion();
+                trad.setIdioma(idioma);
+                trad.setTipoUnidadAdministrativa(jTipoUnidadAdministrativa);
+                tradsAux.add(trad);
+            }
+            jTipoUnidadAdministrativa.setTraducciones(tradsAux);
         }
-        for (JTipoUnidadAdministrativaTraduccion traduccion : jTipoUnidadAdministrativa.getDescripcion()) {
-            if (descripcion != null) {
-                traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));
+        for (JTipoUnidadAdministrativaTraduccion traduccion : jTipoUnidadAdministrativa.getTraducciones()) {
+            if (dto.getDescripcion() != null) {
+                traduccion.setDescripcion(dto.getDescripcion().getTraduccion(traduccion.getIdioma()));
             }
-            if (cargoMasculino != null) {
-                traduccion.setCargoMasculino(cargoMasculino.getTraduccion(traduccion.getIdioma()));
+            if (dto.getCargoMasculino() != null) {
+                traduccion.setCargoMasculino(dto.getCargoMasculino().getTraduccion(traduccion.getIdioma()));
             }
-            if (cargoFemenino != null) {
-                traduccion.setCargoFemenino(cargoFemenino.getTraduccion(traduccion.getIdioma()));
+            if (dto.getCargoFemenino() != null) {
+                traduccion.setCargoFemenino(dto.getCargoFemenino().getTraduccion(traduccion.getIdioma()));
             }
-            if (tratamientoMasculino != null) {
-                traduccion.setTratamientoMasculino(tratamientoMasculino.getTraduccion(traduccion.getIdioma()));
+            if (dto.getTratamientoMasculino() != null) {
+                traduccion.setTratamientoMasculino(dto.getTratamientoMasculino().getTraduccion(traduccion.getIdioma()));
             }
-            if (tratamientoFemenino != null) {
-                traduccion.setTratamientoFemenino(tratamientoFemenino.getTraduccion(traduccion.getIdioma()));
+            if (dto.getTratamientoFemenino() != null) {
+                traduccion.setTratamientoFemenino(dto.getTratamientoFemenino().getTraduccion(traduccion.getIdioma()));
             }
         }
-        return jTipoUnidadAdministrativa.getDescripcion();
+        return jTipoUnidadAdministrativa.getTraducciones();
     }
 
     default Literal convierteTraduccionToLiteral(List<JTipoUnidadAdministrativaTraduccion> traducciones,

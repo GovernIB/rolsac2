@@ -3,6 +3,7 @@ package es.caib.rolsac2.service.model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Dades d'un TipoSilencioAdministrativo.
@@ -99,5 +100,18 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
 
     public void setFechaBorrar(Date fechaBorrar) {
         this.fechaBorrar = fechaBorrar;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TipoSilencioAdministrativoDTO that = (TipoSilencioAdministrativoDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 }

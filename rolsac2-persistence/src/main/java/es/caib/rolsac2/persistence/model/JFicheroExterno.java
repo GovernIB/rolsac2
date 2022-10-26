@@ -11,9 +11,8 @@ import java.util.Date;
         })
 public class JFicheroExterno {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STG_FICEXT_SEQ")
-    @SequenceGenerator(allocationSize = 1, name = "STG_FICEXT_SEQ", sequenceName = "STG_FICEXT_SEQ")
-    @Column(name = "FIE_CODIGO", unique = true, nullable = false, precision = 18, scale = 0)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fichero-ext-sequence")
+    @Column(name = "FIE_CODIGO", unique = true, nullable = false, precision = 10, scale = 0)
     private Long codigo;
     @Column(name = "FIE_REFDOC", unique = true, nullable = false, length = 1000)
     private String referencia;

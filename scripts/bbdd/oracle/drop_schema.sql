@@ -56,6 +56,7 @@ drop table 	RS2_TRAFCDO	cascade constraints;
 drop table 	RS2_TRAFCEN	cascade constraints;
 drop table 	RS2_TRAFIC	cascade constraints;
 drop table 	RS2_TRANORM	cascade constraints;
+drop table 	RS2_TRAPLATRE	cascade constraints;
 drop table 	RS2_TRAPRTA	cascade constraints;
 drop table 	RS2_TRAPRWF	cascade constraints;
 drop table 	RS2_TRASECC	cascade constraints;
@@ -74,6 +75,7 @@ drop table 	RS2_TRATPSX	cascade constraints;
 drop table 	RS2_TRATPUA	cascade constraints;
 drop table 	RS2_TRATPVI	cascade constraints;
 drop table 	RS2_TRAUNAD	cascade constraints;
+drop table 	RS2_TRAUSER	cascade constraints;
 drop table 	RS2_TRMPRE	cascade constraints;
 drop table 	RS2_TRMSOL	cascade constraints;
 drop table 	RS2_UADNOR	cascade constraints;
@@ -86,6 +88,16 @@ drop table 	RS2_UNASEC	cascade constraints;
 drop table 	RS2_UNIADM	cascade constraints;
 drop table 	RS2_USER	cascade constraints;
 drop table 	RS2_USERUA	cascade constraints;
+drop table 	RS2_DOCNORM	cascade constraints;
+drop table 	RS2_TRADONO	cascade constraints;
+drop table 	RS2_TIPOSPU	cascade constraints;
+drop table 	RS2_TRATPSP	cascade constraints;
+drop table 	RS2_TIPOPRO	cascade constraints;
+drop table 	RS2_TRATPPR	cascade constraints;
+drop table 	RS2_PRCSPU	cascade constraints;
+
+
+
 
 drop sequence RS2_AFECTA_SEQ;
 drop sequence RS2_BOLETI_SEQ;
@@ -133,6 +145,7 @@ drop sequence RS2_TRAFCDO_SEQ;
 drop sequence RS2_TRAFCEN_SEQ;
 drop sequence RS2_TRAFIC_SEQ;
 drop sequence RS2_TRANORM_SEQ;
+drop sequence RS2_TRAPTTR_SEQ;
 drop sequence RS2_TRAPRTA_SEQ;
 drop sequence RS2_TRAPRWF_SEQ;
 drop sequence RS2_TRASECC_SEQ;
@@ -151,6 +164,7 @@ drop sequence RS2_TRATPSX_SEQ;
 drop sequence RS2_TRATPUA_SEQ;
 drop sequence RS2_TRATPVI_SEQ;
 drop sequence RS2_TRAUNAD_SEQ;
+drop sequence RS2_TRAUSER_SEQ;
 drop sequence RS2_TRMPRE_SEQ;
 drop sequence RS2_TRMSOL_SEQ;
 drop sequence RS2_UNAAUDIT_SEQ;
@@ -160,3 +174,14 @@ drop sequence RS2_UNAMED_SEQ;
 drop sequence RS2_UNASEC_SEQ;
 drop sequence RS2_UNIADM_SEQ;
 drop sequence RS2_USER_SEQ;
+
+drop sequence RS2_DOCNORM_SEQ;
+drop sequence RS2_TRADONO_SEQ;
+drop sequence RS2_TIPOSPU_SEQ;
+drop sequence RS2_TRATPSP_SEQ;
+drop sequence RS2_TIPOPRO_SEQ;
+drop sequence RS2_TRATPPR_SEQ;
+
+
+
+

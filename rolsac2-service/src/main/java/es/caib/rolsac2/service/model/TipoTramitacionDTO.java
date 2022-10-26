@@ -5,6 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 /**
  * @author Indra
@@ -164,5 +165,36 @@ public class TipoTramitacionDTO extends ModelApi {
                 + ", tramitElectronica=" + tramitElectronica + ", urlTramitacion='" + urlTramitacion + '\''
                 + ", codPlatTramitacion=" + codPlatTramitacion + ", tramiteId='" + tramiteId + '\''
                 + ", tramiteVersion=" + tramiteVersion + ", tramiteParametros='" + tramiteParametros + '\'' + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TipoTramitacionDTO that = (TipoTramitacionDTO) o;
+        if (codigo != null && that.codigo != null) {
+            return codigo.equals(that.codigo);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    public TipoTramitacionDTO(TipoTramitacionDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.tramitPresencial = otro.tramitPresencial;
+            this.tramitElectronica = otro.tramitElectronica;
+            this.urlTramitacion = otro.urlTramitacion;
+            this.codPlatTramitacion = otro.codPlatTramitacion;
+            this.tramiteId = otro.tramiteId;
+            this.tramiteVersion = otro.tramiteVersion;
+            this.tramiteParametros = otro.tramiteParametros;
+            this.plantilla = otro.plantilla;
+            this.entidad = new EntidadDTO(otro.entidad);
+        }
     }
 }

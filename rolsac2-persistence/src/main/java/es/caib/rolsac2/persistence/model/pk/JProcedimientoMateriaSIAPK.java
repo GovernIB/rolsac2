@@ -8,25 +8,26 @@ import java.util.Objects;
 @Embeddable
 public class JProcedimientoMateriaSIAPK implements Serializable {
     private static final long serialVersionUID = 8754334654034342054L;
+    //procedimiento workflow
     @Column(name = "PRMS_CODPRWF", nullable = false)
-    private Integer procedimento;
+    private Long procedimento;
 
     @Column(name = "PRMS_TIPMSIA", nullable = false)
-    private Integer tipoMateriaSIA;
+    private Long tipoMateriaSIA;
 
-    public Integer getProcedimento() {
+    public Long getProcedimento() {
         return procedimento;
     }
 
-    public void setProcedimento(Integer prmsCodprwf) {
+    public void setProcedimento(Long prmsCodprwf) {
         this.procedimento = prmsCodprwf;
     }
 
-    public Integer getTipoMateriaSIA() {
+    public Long getTipoMateriaSIA() {
         return tipoMateriaSIA;
     }
 
-    public void setTipoMateriaSIA(Integer prmsTipmsia) {
+    public void setTipoMateriaSIA(Long prmsTipmsia) {
         this.tipoMateriaSIA = prmsTipmsia;
     }
 

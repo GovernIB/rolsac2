@@ -1,21 +1,20 @@
 package es.caib.rolsac2.persistence.model;
 
-import es.caib.rolsac2.persistence.model.traduccion.JTipoSilencioAdministrativoTraduccion;
+import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "procedimiento-wf-sequence", sequenceName = "RS2_PRCWF_SEQ", allocationSize = 1)
-@Table(name = "RS2_PRCWF",
-        indexes = {
-                @Index(name = "RS2_PRCWF_PK_I", columnList = "PRWF_CODIGO")
-        }
-)
+@Table(name = "RS2_PRCWF", indexes = {@Index(name = "RS2_PRCWF_PK_I", columnList = "PRWF_CODIGO")})
 public class JProcedimientoWorkflow {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-wf-sequence")
     @Column(name = "PRWF_CODIGO", nullable = false)
-    private Integer codigo;
+    private Long codigo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_CODPROC")
@@ -32,6 +31,11 @@ public class JProcedimientoWorkflow {
     @Column(name = "PRWF_WFESTADO", nullable = false, length = 1)
     private String estado;
 
+    @Column(name = "PRWF_FECPUB")
+    private Date fechaPublicacion;
+
+    @Column(name = "PRWF_FECCAD")
+    private Date fechaCaducidad;
     @Column(name = "PRWF_WFUSUA", length = 100)
     private String usuario;
 
@@ -61,9 +65,16 @@ public class JProcedimientoWorkflow {
     @Column(name = "PROC_DPACTV", nullable = false)
     private Boolean datosPersonalesActivo = false;
 
-    @Column(name = "PRWF_DPTIPLEGI", nullable = false)
-    private Boolean datosPersonalesLegitimacion = false;
+    @Column(name = "PROC_LOPDRESP", nullable = false)
+    private String lopdResponsable;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRWF_DPTIPLEGI", nullable = false)
+    private JTipoLegitimacion datosPersonalesLegitimacion;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRWF_TIPPRO", nullable = false)
+    private JTipoProcedimiento tipoProcedimiento;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_LSTDOC")
     private JListaDocumentos listaDocumentos;
@@ -87,7 +98,7 @@ public class JProcedimientoWorkflow {
      **/
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_PRTIPSIAD")
-    private JTipoSilencioAdministrativoTraduccion silencioAdministrativo;
+    private JTipoSilencioAdministrativo silencioAdministrativo;
 
     /**
      * PARA PROC: FIN VIA ADMINISTRATIVA
@@ -110,11 +121,19 @@ public class JProcedimientoWorkflow {
     @JoinColumn(name = "PRWF_SVTPRE", nullable = false)
     private JTipoTramitacion tramiteElectronico;
 
-    public Integer getCodigo() {
+
+    /**
+     * Traducciones
+     */
+    @OneToMany(mappedBy = "procedimientoWorkflow", fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<JProcedimientoWorkflowTraduccion> traducciones;
+
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Integer id) {
+    public void setCodigo(Long id) {
         this.codigo = id;
     }
 
@@ -230,11 +249,11 @@ public class JProcedimientoWorkflow {
         this.formaInicio = prwfPrtipinic;
     }
 
-    public JTipoSilencioAdministrativoTraduccion getSilencioAdministrativo() {
+    public JTipoSilencioAdministrativo getSilencioAdministrativo() {
         return silencioAdministrativo;
     }
 
-    public void setSilencioAdministrativo(JTipoSilencioAdministrativoTraduccion prwfPrtipsiad) {
+    public void setSilencioAdministrativo(JTipoSilencioAdministrativo prwfPrtipsiad) {
         this.silencioAdministrativo = prwfPrtipsiad;
     }
 
@@ -254,11 +273,11 @@ public class JProcedimientoWorkflow {
         this.tramiteElectronico = prwfSvtpre;
     }
 
-    public Boolean getDatosPersonalesLegitimacion() {
+    public JTipoLegitimacion getDatosPersonalesLegitimacion() {
         return datosPersonalesLegitimacion;
     }
 
-    public void setDatosPersonalesLegitimacion(Boolean datosPersonalesLegitimacion) {
+    public void setDatosPersonalesLegitimacion(JTipoLegitimacion datosPersonalesLegitimacion) {
         this.datosPersonalesLegitimacion = datosPersonalesLegitimacion;
     }
 
@@ -268,5 +287,71 @@ public class JProcedimientoWorkflow {
 
     public void setFinVia(JTipoVia finVia) {
         this.finVia = finVia;
+    }
+
+
+    public Date getFechaPublicacion() {
+        return fechaPublicacion;
+    }
+
+    public void setFechaPublicacion(Date fechaPublicacion) {
+        this.fechaPublicacion = fechaPublicacion;
+    }
+
+    public Date getFechaCaducidad() {
+        return fechaCaducidad;
+    }
+
+    public void setFechaCaducidad(Date fechaCaducidad) {
+        this.fechaCaducidad = fechaCaducidad;
+    }
+
+    public String getLopdResponsable() {
+        return lopdResponsable;
+    }
+
+    public void setLopdResponsable(String lopdResponsable) {
+        this.lopdResponsable = lopdResponsable;
+    }
+
+    @Override
+    public String toString() {
+        return "JProcedimientoWorkflow{" +
+                "codigo=" + codigo +
+                '}';
+    }
+
+    public List<JProcedimientoWorkflowTraduccion> getTraducciones() {
+        return traducciones;
+    }
+
+    public JTipoProcedimiento getTipoProcedimiento() {
+        return tipoProcedimiento;
+    }
+
+    public void setTipoProcedimiento(JTipoProcedimiento tipoProcedimiento) {
+        this.tipoProcedimiento = tipoProcedimiento;
+    }
+
+    public void setTraducciones(List<JProcedimientoWorkflowTraduccion> traducciones) {
+        if (this.traducciones == null || this.traducciones.isEmpty()) {
+            this.traducciones = traducciones;
+        } else {
+            this.traducciones.addAll(traducciones);
+        }
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JProcedimientoWorkflow that = (JProcedimientoWorkflow) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 }

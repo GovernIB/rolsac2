@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,11 +36,36 @@ public interface TipoViaConverter extends Converter<JTipoVia, TipoViaDTO> {
 
     default List<JTipoViaTraduccion> convierteLiteralToTraduccion(JTipoVia jtipoVia, Literal descripcion) {
 
+        //Iteramos sobre el literal para ver que idiomas se han rellenado
+        List<String> idiomasRellenos = new ArrayList<>();
+        for(String idioma : descripcion.getIdiomas()) {
+            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+                idiomasRellenos.add(idioma);
+            }
+        }
+
         if (jtipoVia.getDescripcion() == null || jtipoVia.getDescripcion().isEmpty()) {
-            jtipoVia.setDescripcion(JTipoViaTraduccion.createInstance());
+            jtipoVia.setDescripcion(JTipoViaTraduccion.createInstance(idiomasRellenos));
             for (JTipoViaTraduccion jtrad : jtipoVia.getDescripcion()) {
                 jtrad.setTipoVia(jtipoVia);
             }
+        } else if(idiomasRellenos.size() >  jtipoVia.getDescripcion().size()) {
+            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+            List<JTipoViaTraduccion> tradsAux = jtipoVia.getDescripcion();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+
+            for (JTipoViaTraduccion traduccion : jtipoVia.getDescripcion()) {
+                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            for (String idioma : idiomasNuevos) {
+                JTipoViaTraduccion trad = new JTipoViaTraduccion();
+                trad.setIdioma(idioma);
+                trad.setTipoVia(jtipoVia);
+                tradsAux.add(trad);
+            }
+            jtipoVia.setDescripcion(tradsAux);
         }
         for (JTipoViaTraduccion traduccion : jtipoVia.getDescripcion()) {
             traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));

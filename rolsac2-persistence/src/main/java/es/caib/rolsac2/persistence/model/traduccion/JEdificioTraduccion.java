@@ -27,7 +27,7 @@ public class JEdificioTraduccion {
     @Column(name = "TRED_NOMBRE", length = 4000)
     private String nombre;
 
-    public static List<JEdificioTraduccion> createInstance() {
+    public static List<JEdificioTraduccion> createInstance(List<String> idiomas) {
         List<JEdificioTraduccion> traducciones = new ArrayList<>();
         for (String idioma : Constantes.IDIOMAS) {
             JEdificioTraduccion trad = new JEdificioTraduccion();

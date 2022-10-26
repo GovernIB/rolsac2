@@ -1,0 +1,37 @@
+<ui:component
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:cc="http://java.sun.com/jsf/composite"
+>
+
+    <cc:interface componentType="seccionComponent">
+        <cc:attribute name="value" type="es.caib.rolsac2.service.model.SeccionDTO"
+                      shortDescription="La sec."/>
+        <cc:attribute name="ocultarTexto" type="String"
+                      shortDescription="Indica si hay que ocultar el texto o no. Valores posibles: true, false o null"/>
+        <cc:attribute name="disable" type="String"
+                      shortDescription="Indica si es solo lectura. Valores posibles: true, false o null"/>
+        <cc:attribute name="idioma" required="true"/>
+    </cc:interface>
+    <cc:implementation>
+        <span id="#{cc.clientId}" style="white-space:nowrap">
+            <p:importConstants type="es.caib.rolsac2.service.model.types.TypeModoAcceso" var="ModoAcceso"/>
+            <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w85" disabled="true"/>
+            <p:inputText id="textoES" binding="#{cc.textoES}" style="display:none"/>
+            <p:inputText id="textoCA" binding="#{cc.textoCA}" style="display:none"/>
+            <p:inputText id="textoID" binding="#{cc.textoID}" style="display:none"/>
+            <p:inputText id="textoIdioma" binding="#{cc.textoIdioma}" style="display:none"/>
+            <p:commandButton action="#{cc.abrirVentana()}"
+                             icon="pi pi-sitemap"
+                             value=" "
+                             styleClass="w45px h25px iconoUAselector"
+                             process="@this"
+                             disabled="#{cc.isModoCrear()}"
+            >
+                     <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
+                             update="#{cc.updateElementos}"/>
+            </p:commandButton>
+        </span>
+    </cc:implementation>
+</ui:component>

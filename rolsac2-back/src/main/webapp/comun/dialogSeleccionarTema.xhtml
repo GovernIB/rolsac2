@@ -17,7 +17,92 @@
     <ui:define name="pageTitleDialog">
         Seleccionar Tema
     </ui:define>
+	<ui:define name="icerik">
+        <script>
+        	window.onload = function(){
+        		let elementos = document.getElementsByClassName("cabeceraIdiomas");
+        		if(elementos != null  &amp;&amp; elementos[0] != null){
+        			elementos[0].classList.add("hide");
+        		}
 
+        		let elements = document.getElementsByClassName("etElemento");
+
+            	let seleccionar = function() {
+            		seleccion();
+            	};
+
+            	for (let i = 0; i &lt; elements.length; i++) {
+            	    elements[i].addEventListener('dblclick', seleccionar, false);
+            	}
+
+        		let seleccionado =  document.getElementsByClassName("ui-treenode-leaf");
+
+            	if("#{dialogSeleccionarTema.selectedNode}"!=null &amp;&amp; seleccionado.length!=0){
+            		let seleccionado = document.getElementsByClassName("ui-treenode-leaf");
+            		seleccionado[0].classList.add("ui-treenode-parent");
+            	}
+
+            	setEstilos();
+        	}
+
+        	function seleccion(){
+        		let elements = document.getElementsByClassName("etElemento");
+
+            	let seleccionar = function() {
+            		document.getElementById('formDialog:seleccionar').click();
+            	};
+
+            	for (let i = 0; i &lt; elements.length; i++) {
+            	    elements[i].addEventListener('dblclick', seleccionar, false);
+            	}
+
+				setEstilos();
+        	}
+
+        	function setEstilos(){
+        		let elementos = document.getElementsByClassName("ui-treenode-leaf");
+				for(let i=0; i&lt;elementos.length; i++){
+        			elementos[i].classList.add("ui-treenode-parent");
+				}
+        	}
+
+        	//function addLeaf(el){
+        		//el.classList.add("ui-treenode-leaf");
+        	//}
+        </script>
+        <style>
+        	.ui-treenode-parent{
+        		margin-top:15px !important;
+        	}
+
+			.ui-state-highlight{
+				background-color: #e3f2fd !important;
+				background-image: none !important;
+				border: 2px #a6d5fa solid !important;
+				outline: none !important;
+			}
+
+        	.ui-treenode-label{
+        		width:98% !important;
+        		color:#495057 !important;
+        		font-size: 1.5em;
+				word-wrap:break-word !important;
+				white-space: normal !important;
+        	}
+
+			.ui-tree-container{
+				width:98.5% !important;
+			}
+
+        	.ui-treenode-children{
+        		padding: 0px 0px 0px 33px !important;
+        	}
+
+        	.hide{
+        		display:none;
+        	}
+        </style>
+    </ui:define>
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"
@@ -34,7 +119,7 @@
 
             <p:treeNode type="TemaDTO" nodeType="TemaDTO" >
                 <!--<h:outputText value="#{node.nombre.getTraduccion(sessionBean.lang)}"/>-->
-                <h:outputText value="#{node.identificador}"/>
+                <h:outputText value="#{node.identificador}" class="etElemento"/>
             </p:treeNode>
         </p:tree>
     </ui:define>
@@ -50,7 +135,7 @@
         <p:commandButton action="#{dialogSeleccionarTema.guardar}"
                          value="#{labels['dict.seleccionar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionarTema.isModoConsulta()}"
-                         process="@all" />
+                         process="@all" id="seleccionar"/>
         <p:commandButton action="#{dialogSeleccionarTema.cerrar}"
                          value="#{labels['dict.cerrar']}"
                          process="@this" />

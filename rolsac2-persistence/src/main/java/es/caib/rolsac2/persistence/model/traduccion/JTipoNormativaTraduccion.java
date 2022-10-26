@@ -46,9 +46,9 @@ public class JTipoNormativaTraduccion extends BaseEntity {
     @Column(name = "TNTR_DESCR", length = 255)
     private String descripcion;
 
-    public static List<JTipoNormativaTraduccion> createInstance() {
+    public static List<JTipoNormativaTraduccion> createInstance(List<String> idiomas) {
         List<JTipoNormativaTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTipoNormativaTraduccion trad = new JTipoNormativaTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

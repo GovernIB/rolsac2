@@ -55,18 +55,35 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
 
         if (tema != null && tema.getCodigo() != null){
             tema = temaServiceFacade.findById(tema.getCodigo());
-            if (tema.getTemaPadre() != null) {
-                construirArbolDesdeHoja(tema, (LazyLoadingTreeNode) root);
-            } else {
+
                 List<TemaDTO> temasRoot =
                         temaServiceFacade.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
-                for(TemaDTO temaRoot : temasRoot) {
-                    LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
-                    rootChildNode.setSelected(true);
-                    addTreeNodeCargando(rootChildNode);
+
+                TemaDTO temaP = new TemaDTO();
+                if(tema.getTemaPadre()!=null) {
+	                temaP = tema.getTemaPadre();
+	                while(temaP.getTemaPadre()!=null) {
+	                	temaP = temaP.getTemaPadre();
+	                }
                 }
 
-            }
+                for(TemaDTO temaRoot : temasRoot) {
+                    if(temaRoot.getCodigo().equals(tema.getCodigo())) {
+                        LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
+                    	rootChildNode.setSelected(true);
+                    	addTreeNodeCargando(rootChildNode);
+
+                    }else if(temaRoot.getCodigo().equals(temaP.getCodigo())) {
+                    	construirArbolDesdeHoja(tema, (LazyLoadingTreeNode) root);
+                    }else {
+                        LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
+                    	addTreeNodeCargando(rootChildNode);
+
+
+                    }
+
+                }
+
         } else {
             List<TemaDTO> temasRoot = temaServiceFacade.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
             for(TemaDTO temaRoot : temasRoot) {

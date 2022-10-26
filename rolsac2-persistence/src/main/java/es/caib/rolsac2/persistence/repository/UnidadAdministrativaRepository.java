@@ -2,9 +2,9 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
+import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,4 +27,6 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     Boolean checkIdentificador(String identificador);
 
     List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId);
+
+    JUnidadAdministrativa findJUAById(UnidadAdministrativaDTO uaResponsable);
 }

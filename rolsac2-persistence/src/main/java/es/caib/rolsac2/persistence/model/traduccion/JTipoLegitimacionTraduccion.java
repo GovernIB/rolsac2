@@ -40,9 +40,9 @@ public class JTipoLegitimacionTraduccion extends BaseEntity {
     @Column(name = "TRTL_DESCRI", length = 255)
     private String descripcion;
 
-    public static List<JTipoLegitimacionTraduccion> createInstance() {
+    public static List<JTipoLegitimacionTraduccion> createInstance(List<String> idiomas) {
         List<JTipoLegitimacionTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTipoLegitimacionTraduccion trad = new JTipoLegitimacionTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

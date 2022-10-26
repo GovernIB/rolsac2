@@ -14,7 +14,6 @@ import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.concurrent.ContextService;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
@@ -243,6 +242,20 @@ public class UtilJSF {
     public static void addMessageContext(final TypeNivelGravedad nivel, final String message,
                                          final boolean validationFailed) {
         addMessageContext(nivel, message, message, validationFailed, null);
+    }
+
+    /**
+     * Añade mensaje al contexto para que lo trate la aplicación (growl,
+     * messages,...).
+     *
+     * @param nivel            Nivel gravedad
+     * @param message          Mensaje
+     * @param detail           Detalle del mensaje
+     * @param validationFailed añade la marca de error de validacion
+     */
+    public static void addMessageContext(final TypeNivelGravedad nivel, final String message,
+                                         final String detail, final boolean validationFailed) {
+        addMessageContext(nivel, message, detail, validationFailed, null);
     }
 
     /**

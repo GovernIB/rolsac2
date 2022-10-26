@@ -4,6 +4,15 @@
     src: url("#{resource['fonts/Bariol_Regular.ttf']}");
 }
 
+/*Sección título de los views*/
+.view-title {
+    background-color: #979797;
+    padding: 10px;
+    color: #FFFFFF;
+    text-align: center;
+    margin-bottom: 0px;
+}
+
 .ui-icon{
     /** Para aumentar el tamaño. **/
     font-size:1.4em;

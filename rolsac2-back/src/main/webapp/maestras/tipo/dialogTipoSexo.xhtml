@@ -30,8 +30,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <span class="pi pi-tag" style="margin-top:5px"/>
     <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
     <p:selectOneButton id="opcionIdioma" value="#{dialogTipoSexo.idioma}" styleClass="botoneraRed">
-      <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
-      <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+      <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                     itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
       <p:ajax update="inputDescripcion" process="@this"/>
     </p:selectOneButton>
     <p:commandButton action="#{dialogTipoSexo.traducir}"
@@ -73,11 +73,16 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </div>
 
         <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <h:outputText value="#{labels['dialogTipoSexo.descripcion']}:" for="inputDescripcion"/>
+          <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
-          <my:literalComponent id="inputDescripcion" value="#{dialogTipoSexo.data.descripcion}"
+          <my:literalComponent id="inputDescripcion"
+                               literal="#{dialogTipoSexo.data.descripcion}"
                                idioma="#{dialogTipoSexo.idioma}"
+                               required="true"
+                               idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                               idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                               nombreLiteral="#{labels['dict.descripcion']}"
                                soloLecture="#{dialogTipoSexo.isModoConsulta()}"/>
         </div>
       </div>

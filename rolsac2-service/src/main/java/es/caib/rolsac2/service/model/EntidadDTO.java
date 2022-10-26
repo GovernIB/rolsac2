@@ -26,11 +26,34 @@ public class EntidadDTO extends ModelApi {
 
     private String rolInformador;
 
-    private Long logo;
+    private FicheroDTO logo;
 
     private Literal descripcion;
 
+    private String idiomaDefectoRest;
+
+    private String idiomasPermitidos;
+
+    private String idiomasObligatorios;
+
     public EntidadDTO() {
+    }
+
+    public EntidadDTO(EntidadDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.activa = otro.activa;
+            this.rolAdmin = otro.rolAdmin;
+            this.rolAdminContenido = otro.rolAdminContenido;
+            this.rolGestor = otro.rolGestor;
+            this.rolInformador = otro.rolInformador;
+            this.logo = otro.logo;
+            this.descripcion = otro.descripcion;
+            this.idiomaDefectoRest = otro.idiomaDefectoRest;
+            this.idiomasPermitidos = otro.idiomasPermitidos;
+            this.idiomasObligatorios = otro.idiomasObligatorios;
+        }
     }
 
     /**
@@ -109,11 +132,11 @@ public class EntidadDTO extends ModelApi {
         this.rolInformador = rolInformador;
     }
 
-    public Long getLogo() {
+    public FicheroDTO getLogo() {
         return logo;
     }
 
-    public void setLogo(Long logo) {
+    public void setLogo(FicheroDTO logo) {
         this.logo = logo;
     }
 
@@ -133,6 +156,18 @@ public class EntidadDTO extends ModelApi {
         this.identificador = identificador;
     }
 
+    public String getIdiomaDefectoRest() { return idiomaDefectoRest; }
+
+    public void setIdiomaDefectoRest(String idiomaDefectoRest) { this.idiomaDefectoRest = idiomaDefectoRest; }
+
+    public String getIdiomasPermitidos() { return idiomasPermitidos; }
+
+    public void setIdiomasPermitidos(String idiomasPermitidos) { this.idiomasPermitidos = idiomasPermitidos; }
+
+    public String getIdiomasObligatorios() { return idiomasObligatorios; }
+
+    public void setIdiomasObligatorios(String idiomasObligatorios) { this.idiomasObligatorios = idiomasObligatorios; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -146,14 +181,14 @@ public class EntidadDTO extends ModelApi {
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo, activa, rolAdmin, rolAdminContenido, rolGestor, rolInformador, logo, descripcion);
+        return Objects.hash(codigo, activa, rolAdmin, rolAdminContenido, rolGestor, rolInformador, logo, descripcion, idiomaDefectoRest, idiomasPermitidos, idiomasObligatorios);
     }
 
     @Override
     public String toString() {
         return "EntidadDTO{" +
-                "id=" + codigo +
-                ", identificador=" + identificador +
+                "codigo=" + codigo +
+                ", identificador='" + identificador + '\'' +
                 ", activa=" + activa +
                 ", rolAdmin='" + rolAdmin + '\'' +
                 ", rolAdminContenido='" + rolAdminContenido + '\'' +
@@ -161,6 +196,9 @@ public class EntidadDTO extends ModelApi {
                 ", rolInformador='" + rolInformador + '\'' +
                 ", logo=" + logo +
                 ", descripcion=" + descripcion +
+                ", idiomaDefectoRest='" + idiomaDefectoRest + '\'' +
+                ", idiomasPermitidos='" + idiomasPermitidos + '\'' +
+                ", idiomasObligatorios='" + idiomasObligatorios + '\'' +
                 '}';
     }
 }

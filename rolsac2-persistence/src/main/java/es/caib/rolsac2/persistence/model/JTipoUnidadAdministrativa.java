@@ -41,7 +41,7 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     private JEntidad entidad;
 
     @OneToMany(mappedBy = "tipoUnidadAdministrativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<JTipoUnidadAdministrativaTraduccion> descripcion;
+    private List<JTipoUnidadAdministrativaTraduccion> traducciones;
 
     @Column(name = "TPUA_IDENTI", length = 50, unique = true)
     private String identificador;
@@ -70,15 +70,15 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
         this.identificador = identificador;
     }
 
-    public List<JTipoUnidadAdministrativaTraduccion> getDescripcion() {
-        return descripcion;
+    public List<JTipoUnidadAdministrativaTraduccion> getTraducciones() {
+        return traducciones;
     }
 
-    public void setDescripcion(List<JTipoUnidadAdministrativaTraduccion> descripcion) {
-        if (this.descripcion == null || this.descripcion.isEmpty()) {
-            this.descripcion = descripcion;
+    public void setTraducciones(List<JTipoUnidadAdministrativaTraduccion> traducciones) {
+        if (this.traducciones == null || this.traducciones.isEmpty()) {
+            this.traducciones = traducciones;
         } else {
-            this.descripcion.addAll(descripcion);
+            this.traducciones.addAll(traducciones);
         }
     }
 
@@ -100,7 +100,7 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
         return "JTipoUnidadAdministrativa{" +
                 "id=" + codigo +
                 ", entidad=" + entidad +
-                ", descripcion=" + descripcion +
+                ", traducciones=" + traducciones +
                 ", identificador='" + identificador + '\'' +
                 '}';
     }

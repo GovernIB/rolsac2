@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import es.caib.rolsac2.persistence.model.JTipoFormaInicio;
+import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
 import es.caib.rolsac2.service.model.TipoFormaInicioGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoFormaInicioFiltro;
 
@@ -21,4 +22,6 @@ public interface TipoFormaInicioRepository extends CrudRepository<JTipoFormaInic
   long countByFiltro(TipoFormaInicioFiltro filtro);
 
   boolean existeIdentificador(String identificador);
+
+  List<TipoFormaInicioDTO> findAllTipoFormaInicio();
 }

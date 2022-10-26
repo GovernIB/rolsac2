@@ -1,5 +1,7 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JUsuarioTraduccion;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +32,16 @@ public class JUsuario extends BaseEntity {
     @Column(name = "USER_USER", nullable = false, length = 100)
     private String identificador;
 
+    @Column(name="USER_NOMBRE", nullable = false)
+    private String nombre;
+
+    @Column(name="USER_EMAIL", nullable = false)
+    private String email;
+
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,  cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JUsuarioTraduccion> traducciones;
+
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     private List<JUsuarioUnidadAdministrativa> usuarioUnidadAdministrativa;
 
@@ -57,6 +69,20 @@ public class JUsuario extends BaseEntity {
         this.identificador = userUser;
     }
 
+    public String getNombre() { return nombre; }
+
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public List<JUsuarioTraduccion> getTraducciones() { return traducciones; }
+
+    public void setTraducciones(List<JUsuarioTraduccion> traducciones) {
+        this.traducciones = traducciones;
+    }
+
     public List<JUsuarioUnidadAdministrativa> getUsuarioUnidadAdministrativa() {
         return usuarioUnidadAdministrativa;
     }
@@ -82,6 +108,14 @@ public class JUsuario extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JUsuario{" + "id=" + codigo + ", entidad=" + entidad + ", identificador='" + identificador + '\'' + '}';
+        return "JUsuario{" +
+                "codigo=" + codigo +
+                ", entidad=" + entidad +
+                ", identificador='" + identificador + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", email='" + email + '\'' +
+                ", traducciones=" + traducciones +
+                ", usuarioUnidadAdministrativa=" + usuarioUnidadAdministrativa +
+                '}';
     }
 }

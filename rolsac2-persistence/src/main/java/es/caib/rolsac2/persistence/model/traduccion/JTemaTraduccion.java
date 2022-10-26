@@ -31,9 +31,9 @@ public class JTemaTraduccion {
     @Column(name = "TNTR_DESCR")
     private String descripcion;
 
-    public static List<JTemaTraduccion> createInstance() {
+    public static List<JTemaTraduccion> createInstance(List<String> idiomas) {
         List<JTemaTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTemaTraduccion trad = new JTemaTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

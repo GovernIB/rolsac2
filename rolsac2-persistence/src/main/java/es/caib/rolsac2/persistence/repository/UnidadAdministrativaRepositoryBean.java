@@ -73,16 +73,16 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder(
-                    "SELECT count(j) FROM JUnidadAdministrativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
+                    "SELECT count(j) FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma "
                             + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp "
-                            + " LEFT OUTER JOIN tp.descripcion tpd ON tpd.idioma=:idioma "
+                            + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma "
                             + " LEFT OUTER JOIN j.entidad je "
                             + " where 1 = 1 AND je.codigo=:codEnti");
         } else {
             sql = new StringBuilder("SELECT j.codigo, jtipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 "
-                    + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
+                    + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma "
                     + " LEFT OUTER JOIN j.padre tp "
-                    + " LEFT OUTER JOIN tp.descripcion tpd ON tpd.idioma=:idioma "
+                    + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma "
                     + " LEFT OUTER JOIN j.entidad je "
                     + " LEFT OUTER JOIN j.tipo jtipo where 1 = 1 AND je.codigo=:codEnti");
         }
@@ -130,7 +130,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         TypedQuery<JUnidadAdministrativa> query = null;
 
         String sql = "SELECT ua FROM JUnidadAdministrativa ua "
-                + " LEFT OUTER JOIN ua.descripcion t ON t.idioma=:idioma WHERE ua.padre.codigo = :idUnidadPadre";
+                + " LEFT OUTER JOIN ua.traducciones t ON t.idioma=:idioma WHERE ua.padre.codigo = :idUnidadPadre";
 
         query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
         query.setParameter("idUnidadPadre", idUnitat);
@@ -168,7 +168,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         TypedQuery<JUnidadAdministrativa> query = null;
 
         String sql = "SELECT ua FROM JUnidadAdministrativa ua "
-                + " LEFT OUTER JOIN ua.descripcion t ON t.idioma = :idioma "
+                + " LEFT OUTER JOIN ua.traducciones t ON t.idioma = :idioma "
                 + " WHERE ua.padre.codigo IS NULL AND ua.entidad.codigo = :entidadId ORDER BY ua.orden DESC";
 
         query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
@@ -216,5 +216,13 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     @Override
     public List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId) {
         return null;
+    }
+
+    @Override
+    public JUnidadAdministrativa findJUAById(UnidadAdministrativaDTO ua) {
+        if (ua == null || ua.getCodigo() == null) {
+            return null;
+        }
+        return entityManager.find(JUnidadAdministrativa.class, ua.getCodigo());
     }
 }

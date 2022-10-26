@@ -4,6 +4,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 /**
  * @author Indra
@@ -69,5 +70,18 @@ public class TipoFormaInicioDTO extends ModelApi {
     @Override
     public String toString() {
         return "TipoFormaInicioDTO{" + "id=" + codigo + ", identificador='" + identificador + '\'' + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TipoFormaInicioDTO that = (TipoFormaInicioDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 }

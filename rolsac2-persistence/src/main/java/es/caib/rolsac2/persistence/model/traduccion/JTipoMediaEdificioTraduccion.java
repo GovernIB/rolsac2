@@ -37,9 +37,9 @@ public class JTipoMediaEdificioTraduccion {
     @Column(name = "TRTD_DESCRI")
     private String descripcion;
 
-    public static List<JTipoMediaEdificioTraduccion> createInstance() {
+    public static List<JTipoMediaEdificioTraduccion> createInstance(List<String> idiomas) {
         List<JTipoMediaEdificioTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTipoMediaEdificioTraduccion trad = new JTipoMediaEdificioTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

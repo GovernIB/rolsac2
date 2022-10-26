@@ -10,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,12 +35,35 @@ public interface TipoMediaEdificioConverter extends Converter<JTipoMediaEdificio
     default List<JTipoMediaEdificioTraduccion> convierteLiteralToTraduccion(
             JTipoMediaEdificio jtipoMediaEdificio, Literal descripcion
     ) {
-
+        //Iteramos sobre el literal para ver que idiomas se han rellenado
+        List<String> idiomasRellenos = new ArrayList<>();
+        for(String idioma : descripcion.getIdiomas()) {
+            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+                idiomasRellenos.add(idioma);
+            }
+        }
         if (jtipoMediaEdificio.getDescripcion() == null || jtipoMediaEdificio.getDescripcion().isEmpty()) {
-            jtipoMediaEdificio.setDescripcion(JTipoMediaEdificioTraduccion.createInstance());
+            jtipoMediaEdificio.setDescripcion(JTipoMediaEdificioTraduccion.createInstance(idiomasRellenos));
             for (JTipoMediaEdificioTraduccion jtrad : jtipoMediaEdificio.getDescripcion()) {
                 jtrad.setTipoMediaEdificio(jtipoMediaEdificio);
             }
+        } else if(idiomasRellenos.size() >  jtipoMediaEdificio.getDescripcion().size()) {
+            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+            List<JTipoMediaEdificioTraduccion> tradsAux = jtipoMediaEdificio.getDescripcion();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+
+            for (JTipoMediaEdificioTraduccion traduccion : jtipoMediaEdificio.getDescripcion()) {
+                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            for (String idioma : idiomasNuevos) {
+                JTipoMediaEdificioTraduccion trad = new JTipoMediaEdificioTraduccion();
+                trad.setIdioma(idioma);
+                trad.setTipoMediaEdificio(jtipoMediaEdificio);
+                tradsAux.add(trad);
+            }
+            jtipoMediaEdificio.setDescripcion(tradsAux);
         }
         for (JTipoMediaEdificioTraduccion traduccion : jtipoMediaEdificio.getDescripcion()) {
             traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));

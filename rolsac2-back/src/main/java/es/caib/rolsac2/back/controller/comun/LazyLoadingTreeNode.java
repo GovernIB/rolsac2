@@ -1,5 +1,6 @@
 package es.caib.rolsac2.back.controller.comun;
 
+import es.caib.rolsac2.service.model.SeccionDTO;
 import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 
@@ -20,6 +21,10 @@ public class LazyLoadingTreeNode extends DefaultTreeNode {
     }
 
     public LazyLoadingTreeNode() {}
+
+    public LazyLoadingTreeNode(SeccionDTO data, TreeNode parent) {
+        super(SeccionDTO.class.getSimpleName(), data, parent);
+    }
 
     @Override
     public List<TreeNode> getChildren() {

@@ -32,12 +32,11 @@ public class JEntidadTraduccion extends BaseEntity {
     @Column(name = "TREN_DESCRI")
     private String descripcion;
 
-    public static List<JEntidadTraduccion> createInstance(JEntidad jentidad) {
+    public static List<JEntidadTraduccion> createInstance(List<String> idiomas) {
         List<JEntidadTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JEntidadTraduccion trad = new JEntidadTraduccion();
             trad.setIdioma(idioma);
-            trad.setEntidad(jentidad);
             traducciones.add(trad);
         }
         return traducciones;

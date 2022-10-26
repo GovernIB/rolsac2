@@ -88,8 +88,14 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
-
         JUnidadAdministrativa jUnidadAdministrativa = converter.createEntity(dto);
+
+        JUnidadAdministrativa jUnidadAdministrativaPadre =
+                (dto.getPadre() != null && dto.getPadre().getCodigo() != null)? unidadAdministrativaRepository.getReference(dto.getPadre().getCodigo())
+                        : null;
+
+        jUnidadAdministrativa.setPadre(jUnidadAdministrativaPadre);
+
         unidadAdministrativaRepository.create(jUnidadAdministrativa);
         return jUnidadAdministrativa.getCodigo();
     }
@@ -113,7 +119,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         jUnidadAdministrativa.setResponsableSexo(jTipoSexo);
 
         JUnidadAdministrativa jUnidadAdministrativaPadre =
-                dto.getPadre() != null ? unidadAdministrativaRepository.getReference(dto.getPadre().getCodigo())
+                (dto.getPadre() != null && dto.getPadre().getCodigo() != null)? unidadAdministrativaRepository.getReference(dto.getPadre().getCodigo())
                         : null;
 
         jUnidadAdministrativa.setPadre(jUnidadAdministrativaPadre);

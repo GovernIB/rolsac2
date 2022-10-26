@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoSilencioAdministrativo;
+import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
 import es.caib.rolsac2.service.model.TipoSilencioAdministrativoGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoSilencioAdministrativoFiltro;
 
@@ -21,4 +22,6 @@ public interface TipoSilencioAdministrativoRepository extends CrudRepository<JTi
     long countByFiltro(TipoSilencioAdministrativoFiltro filtro);
 
     Boolean checkIdentificador(String identificador);
+
+    List<TipoSilencioAdministrativoDTO> findAllTipoSilencio();
 }

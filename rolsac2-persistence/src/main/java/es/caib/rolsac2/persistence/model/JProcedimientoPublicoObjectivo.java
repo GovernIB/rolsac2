@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoPublicoObjectivoPK;
+import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
 
 import javax.persistence.*;
 
@@ -18,7 +19,7 @@ public class JProcedimientoPublicoObjectivo {
     @MapsId("tipoPublicoObjetivo")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PRPO_TIPPOBJ", nullable = false)
-    private JTipoPublicoObjetivo tipoPublicoObjetivo;
+    private JTipoPublicoObjetivoEntidad tipoPublicoObjetivo;
 
     public JProcedimientoPublicoObjectivoPK getCodigo() {
         return codigo;
@@ -36,12 +37,18 @@ public class JProcedimientoPublicoObjectivo {
         this.procedimiento = prpoCodprwf;
     }
 
-    public JTipoPublicoObjetivo getTipoPublicoObjetivo() {
+    public JTipoPublicoObjetivoEntidad getTipoPublicoObjetivo() {
         return tipoPublicoObjetivo;
     }
 
-    public void setTipoPublicoObjetivo(JTipoPublicoObjetivo prpoTippobj) {
+    public void setTipoPublicoObjetivo(JTipoPublicoObjetivoEntidad prpoTippobj) {
         this.tipoPublicoObjetivo = prpoTippobj;
+    }
+
+    public TipoPublicoObjetivoEntidadGridDTO toModel() {
+        TipoPublicoObjetivoEntidadGridDTO tipo = this.getTipoPublicoObjetivo().toModel();
+        tipo.setCodigoProcWF(this.getProcedimiento().getCodigo());
+        return tipo;
     }
 
 }

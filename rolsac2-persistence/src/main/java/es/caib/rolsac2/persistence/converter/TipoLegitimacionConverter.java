@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,11 +38,36 @@ public interface TipoLegitimacionConverter extends Converter<JTipoLegitimacion, 
             JTipoLegitimacion jtipoLegitimacion, Literal descripcion
     ) {
 
+        //Iteramos sobre el literal para ver que idiomas se han rellenado
+        List<String> idiomasRellenos = new ArrayList<>();
+        for(String idioma : descripcion.getIdiomas()) {
+            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+                idiomasRellenos.add(idioma);
+            }
+        }
+
         if (jtipoLegitimacion.getDescripcion() == null || jtipoLegitimacion.getDescripcion().isEmpty()) {
-            jtipoLegitimacion.setDescripcion(JTipoLegitimacionTraduccion.createInstance());
+            jtipoLegitimacion.setDescripcion(JTipoLegitimacionTraduccion.createInstance(idiomasRellenos));
             for (JTipoLegitimacionTraduccion jtrad : jtipoLegitimacion.getDescripcion()) {
                 jtrad.setTipoLegitimacion(jtipoLegitimacion);
             }
+        } else if(idiomasRellenos.size() >  jtipoLegitimacion.getDescripcion().size()) {
+            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+            List<JTipoLegitimacionTraduccion> tradsAux = jtipoLegitimacion.getDescripcion();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+
+            for (JTipoLegitimacionTraduccion traduccion : jtipoLegitimacion.getDescripcion()) {
+                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            for (String idioma : idiomasNuevos) {
+                JTipoLegitimacionTraduccion trad = new JTipoLegitimacionTraduccion();
+                trad.setIdioma(idioma);
+                trad.setTipoLegitimacion(jtipoLegitimacion);
+                tradsAux.add(trad);
+            }
+            jtipoLegitimacion.setDescripcion(tradsAux);
         }
         for (JTipoLegitimacionTraduccion traduccion : jtipoLegitimacion.getDescripcion()) {
             traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));

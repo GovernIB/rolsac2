@@ -1,11 +1,13 @@
 package es.caib.rolsac2.persistence.converter;
 
 import es.caib.rolsac2.persistence.model.JTipoTramitacion;
+import es.caib.rolsac2.persistence.model.JUsuarioUnidadAdministrativa;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import es.caib.rolsac2.service.model.UsuarioUnidadAdministrativaDTO;
+import org.mapstruct.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Conversor entre JTipoTramitacion y TipoTramitacionDTO. La implementacion se generará automaticamente por MapStruct
@@ -27,4 +29,13 @@ public interface TipoTramitacionConverter extends Converter<JTipoTramitacion, Ti
     @Override
     @Mapping(target = "entidad", ignore = true)
     void mergeEntity(@MappingTarget JTipoTramitacion entity, TipoTramitacionDTO dto);
+
+    @Named("createTipoTramitacionDTOs")
+    default List<TipoTramitacionDTO> createTipoTramitacionDTOs(List<JTipoTramitacion> entities) {
+        List<TipoTramitacionDTO> dtos = new ArrayList<>();
+        if (entities != null) {
+            entities.forEach(e -> dtos.add(createDTO(e)));
+        }
+        return dtos;
+    }
 }

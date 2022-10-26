@@ -1,5 +1,9 @@
 package es.caib.rolsac2.back.utils;
 
+import es.caib.rolsac2.service.model.Literal;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,5 +111,15 @@ public class ValidacionTipoUtils {
 
     public static boolean esCadenaVacia(String cadena) {
         return cadena == null || cadena.isEmpty() || cadena.isBlank();
+    }
+
+    public static List<String> esLiteralCorrecto(Literal literal, List<String> idiomasObligatorios) {
+        List<String> idiomasPendientes = new ArrayList<>();
+        for(String idioma: idiomasObligatorios) {
+            if(literal.getTraduccion(idioma) == null || literal.getTraduccion(idioma).isEmpty()) {
+                idiomasPendientes.add(idioma);
+            }
+        }
+        return idiomasPendientes;
     }
 }

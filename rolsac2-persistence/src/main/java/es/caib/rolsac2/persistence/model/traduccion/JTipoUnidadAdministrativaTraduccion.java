@@ -64,9 +64,9 @@ public class JTipoUnidadAdministrativaTraduccion extends BaseEntity {
     private String tratamientoFemenino;
 
 
-    public static List<JTipoUnidadAdministrativaTraduccion> createInstance() {
+    public static List<JTipoUnidadAdministrativaTraduccion> createInstance(List<String> idiomas) {
         List<JTipoUnidadAdministrativaTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTipoUnidadAdministrativaTraduccion trad = new JTipoUnidadAdministrativaTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

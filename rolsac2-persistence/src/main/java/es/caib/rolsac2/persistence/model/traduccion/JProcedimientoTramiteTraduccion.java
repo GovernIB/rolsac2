@@ -3,6 +3,8 @@ package es.caib.rolsac2.persistence.model.traduccion;
 import es.caib.rolsac2.persistence.model.JProcedimientoTramite;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @SequenceGenerator(name = "procedimiento-tram-trad-sequence", sequenceName = "RS2_TRAPRTA_SEQ", allocationSize = 1)
@@ -15,7 +17,7 @@ public class JProcedimientoTramiteTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-tram-trad-sequence")
     @Column(name = "TRTA_CODIGO", nullable = false)
-    private Integer codigo;
+    private Long codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRTA_CODPRTA", nullable = false)
@@ -40,11 +42,21 @@ public class JProcedimientoTramiteTraduccion {
     @Column(name = "TRTA_TERMIN", length = 512)
     private String terminoMaximo;
 
-    public Integer getCodigo() {
+    public static List<JProcedimientoTramiteTraduccion> createInstance(List<String> idiomas) {
+        List<JProcedimientoTramiteTraduccion> traducciones = new ArrayList<>();
+        for (String idioma : idiomas) {
+            JProcedimientoTramiteTraduccion trad = new JProcedimientoTramiteTraduccion();
+            trad.setIdioma(idioma);
+            traducciones.add(trad);
+        }
+        return traducciones;
+    }
+
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Integer id) {
+    public void setCodigo(Long id) {
         this.codigo = id;
     }
 

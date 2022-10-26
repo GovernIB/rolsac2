@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,11 +35,36 @@ public interface EdificioConverter extends Converter<JEdificio, EdificioDTO> {
 
     default List<JEdificioTraduccion> convierteLiteralToTraduccion(JEdificio jEdificio, Literal descripcion) {
 
+        //Iteramos sobre el literal para ver que idiomas se han rellenado
+        List<String> idiomasRellenos = new ArrayList<>();
+        for(String idioma : descripcion.getIdiomas()) {
+            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+                idiomasRellenos.add(idioma);
+            }
+        }
+
         if (jEdificio.getDescripcion() == null || jEdificio.getDescripcion().isEmpty()) {
-            jEdificio.setDescripcion(JEdificioTraduccion.createInstance());
+            jEdificio.setDescripcion(JEdificioTraduccion.createInstance(idiomasRellenos));
             for (JEdificioTraduccion jtrad : jEdificio.getDescripcion()) {
                 jtrad.setEdificio(jEdificio);
             }
+        } else if(idiomasRellenos.size() >  jEdificio.getDescripcion().size()) {
+            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+            List<JEdificioTraduccion> tradsAux = jEdificio.getDescripcion();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+
+            for (JEdificioTraduccion traduccion : jEdificio.getDescripcion()) {
+                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            for (String idioma : idiomasNuevos) {
+                JEdificioTraduccion trad = new JEdificioTraduccion();
+                trad.setIdioma(idioma);
+                trad.setEdificio(jEdificio);
+                tradsAux.add(trad);
+            }
+            jEdificio.setDescripcion(tradsAux);
         }
         for (JEdificioTraduccion traduccion : jEdificio.getDescripcion()) {
             if (descripcion != null) {

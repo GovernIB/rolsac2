@@ -49,9 +49,9 @@ public class JTipoMateriaSIATraduccion extends BaseEntity {
     @Column(name = "TRTI_DESCRI", length = 255)
     private String descripcion;
 
-    public static List<JTipoMateriaSIATraduccion> createInstance() {
+    public static List<JTipoMateriaSIATraduccion> createInstance(List<String> idiomas) {
         List<JTipoMateriaSIATraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTipoMateriaSIATraduccion trad = new JTipoMateriaSIATraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

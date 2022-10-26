@@ -2,7 +2,6 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.EntidadConverter;
 import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.EntidadGridDTO;
 import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 
@@ -53,7 +52,7 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
                 entidadGridDTO.setRolGestor((String) jEntidad[5]);
                 entidadGridDTO.setRolInformador((String) jEntidad[6]);
                 //El 7 es el logo
-                entidadGridDTO.setDescripcion((String) jEntidad[8]);
+                entidadGridDTO.setDescripcion((String) jEntidad[7]);
                 entidad.add(entidadGridDTO);
             }
         }
@@ -61,18 +60,14 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
     }
 
     @Override
-    public List<EntidadDTO> findActivas() {
+    public List<JEntidad> findActivas() {
         TypedQuery<JEntidad> query =
                 entityManager.createQuery("SELECT j FROM JEntidad j where j.activa = true", JEntidad.class);
 
         List<JEntidad> jEntidad = query.getResultList();
-        List<EntidadDTO> entidad = new ArrayList<>();
-        if (jEntidad != null) {
-            for (JEntidad jentidad : jEntidad) {
-                entidad.add(this.converter.createDTO(jentidad));
-            }
-        }
-        return entidad;
+
+
+        return jEntidad;
     }
 
     @Override
@@ -95,7 +90,7 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
             sql = new StringBuilder("SELECT count(j) FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder("SELECT j.codigo, j.identificador, j.activa, j.rolAdmin, j.rolAdminContenido, "
-                    + " j.rolGestor, j.rolInformador, j.logo, t.descripcion FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma   where 1 = 1 ");
+                    + " j.rolGestor, j.rolInformador, t.descripcion FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma   where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.id as string) like :filtro  "

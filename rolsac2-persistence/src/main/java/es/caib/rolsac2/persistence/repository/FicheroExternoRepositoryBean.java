@@ -29,8 +29,7 @@ import java.util.List;
 @Stateless
 @Local(FicheroExternoRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicheroExterno, Long>
-        implements FicheroExternoRepository {
+public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicheroExterno, Long> implements FicheroExternoRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(FicheroExternoRepositoryBean.class);
 
@@ -39,14 +38,8 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         super(JFicheroExterno.class);
     }
 
-    /**
-     * Path almacenamiento.
-     */
-    //TODO Como declarar esto. @Value("${ficherosExternos.path}")
-    private String pathAlmacenamientoFicheros;
-
     @Override
-    public FicheroDTO getContentById(final Long id) {
+    public FicheroDTO getContentById(final Long id, final String pathAlmacenamientoFicheros) {
         // Obtiene metadatos fichero
         final JFicheroExterno fic = entityManager.find(JFicheroExterno.class, id);
         if (fic == null) {
@@ -54,8 +47,8 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         }
 
         // Obtiene path fichero
-        String pathFile = pathAlmacenamientoFicheros
-                + fic.getReferencia();
+        String pathFile = pathAlmacenamientoFicheros + "\\"
+                + fic.getReferencia() + fic.getFilename();
 
         // Obtiene contenido fichero
         try {
@@ -64,6 +57,8 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
             fis.close();
 
             final FicheroDTO cf = new FicheroDTO();
+            cf.setCodigo(fic.getCodigo());
+            cf.setTipo(TypeFicheroExterno.fromString(fic.getTipo()));
             cf.setFilename(fic.getFilename());
             cf.setContenido(content);
 
@@ -76,7 +71,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
 
 
     @Override
-    public Long createFicheroExterno(byte[] content, String fileName, TypeFicheroExterno tipoFicheroExterno, Long elementoFicheroExterno) {
+    public Long createFicheroExterno(byte[] content, String fileName, TypeFicheroExterno tipoFicheroExterno, Long elementoFicheroExterno, String pathAlmacenamientoFicheros) {
         if (tipoFicheroExterno == null || content == null || fileName == null || elementoFicheroExterno == null) {
             throw new FicheroExternoException("Ningún parámetro puede ser nulo");
         }
@@ -88,12 +83,12 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         jFicheroExterno.setFilename(fileName);
         jFicheroExterno.setTemporal(true);
         jFicheroExterno.setTipo(tipoFicheroExterno.getTipo());
-        jFicheroExterno.setReferencia(elementoFicheroExterno + "/" + tipoFicheroExterno.getRuta());
+        jFicheroExterno.setReferencia(elementoFicheroExterno + tipoFicheroExterno.getRuta());
         entityManager.persist(jFicheroExterno);
 
         // Almacena fichero
         final String pathAbsolutoFichero = pathAlmacenamientoFicheros + "/"
-                + jFicheroExterno.getReferencia();
+                + jFicheroExterno.getReferencia() + jFicheroExterno.getFilename();
         try {
             // FileUtils de apache.
             final ByteArrayInputStream bis = new ByteArrayInputStream(content);
@@ -117,7 +112,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
     }
 
     @Override
-    public void persistFicheroExterno(Long codigoFichero) {
+    public void persistFicheroExterno(Long codigoFichero, Long idElemento, String pathAlmacenamientoFicheros) {
         JFicheroExterno jFicheroExterno = entityManager.find(JFicheroExterno.class, codigoFichero);
         if (!jFicheroExterno.isBorrar() && jFicheroExterno.isTemporal()) {
             jFicheroExterno.setTemporal(false);
@@ -129,15 +124,14 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
     public void deleteFicheroExterno(Long codigoFichero) {
 
         JFicheroExterno jFicheroExterno = entityManager.find(JFicheroExterno.class, codigoFichero);
-        if (jFicheroExterno.isBorrar() && !jFicheroExterno.isTemporal()) {
+        if (!jFicheroExterno.isBorrar() && !jFicheroExterno.isTemporal()) {
             jFicheroExterno.setBorrar(true);
             entityManager.merge(jFicheroExterno);
         }
-
     }
 
     @Override
-    public void purgeFicherosExternos() {
+    public void purgeFicherosExternos(String pathAlmacenamientoFicheros) {
 
         //Primero borramos los marcados como pendientes para borrar
         final Query query = entityManager.createQuery(
@@ -170,7 +164,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
 
                 // Borramos fichero en BD
                 entityManager.remove(jFicheroExterno);
-                
+
                 // Borramos fichero en disco
                 final String pathAbsoluteFichero = pathAlmacenamientoFicheros
                         + jFicheroExterno.getReferencia();

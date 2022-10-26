@@ -96,4 +96,6 @@ public interface AdministracionSupServiceFacade {
      * @return
      */
     boolean existeIdentificadorEntidad(String identificador);
+
+    FicheroDTO getLogoEntidad(Long codigo);
 }

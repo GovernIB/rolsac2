@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,12 +37,36 @@ public interface TipoMediaFichaConverter extends Converter<JTipoMediaFicha, Tipo
     default List<JTipoMediaFichaTraduccion> convierteLiteralToTraduccion(
             JTipoMediaFicha jtipoMediaFicha, Literal descripcion
     ) {
+        //Iteramos sobre el literal para ver que idiomas se han rellenado
+        List<String> idiomasRellenos = new ArrayList<>();
+        for(String idioma : descripcion.getIdiomas()) {
+            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+                idiomasRellenos.add(idioma);
+            }
+        }
 
         if (jtipoMediaFicha.getDescripcion() == null || jtipoMediaFicha.getDescripcion().isEmpty()) {
-            jtipoMediaFicha.setDescripcion(JTipoMediaFichaTraduccion.createInstance());
+            jtipoMediaFicha.setDescripcion(JTipoMediaFichaTraduccion.createInstance(idiomasRellenos));
             for (JTipoMediaFichaTraduccion jtrad : jtipoMediaFicha.getDescripcion()) {
                 jtrad.setTipoMediaFicha(jtipoMediaFicha);
             }
+        } else if(idiomasRellenos.size() >  jtipoMediaFicha.getDescripcion().size()) {
+            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+            List<JTipoMediaFichaTraduccion> tradsAux = jtipoMediaFicha.getDescripcion();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+
+            for (JTipoMediaFichaTraduccion traduccion : jtipoMediaFicha.getDescripcion()) {
+                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            for (String idioma : idiomasNuevos) {
+                JTipoMediaFichaTraduccion trad = new JTipoMediaFichaTraduccion();
+                trad.setIdioma(idioma);
+                trad.setTipoMediaFicha(jtipoMediaFicha);
+                tradsAux.add(trad);
+            }
+            jtipoMediaFicha.setDescripcion(tradsAux);
         }
         for (JTipoMediaFichaTraduccion traduccion : jtipoMediaFicha.getDescripcion()) {
             traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));

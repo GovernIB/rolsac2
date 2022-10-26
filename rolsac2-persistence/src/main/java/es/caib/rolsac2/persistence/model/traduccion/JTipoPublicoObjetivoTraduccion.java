@@ -45,9 +45,9 @@ public class JTipoPublicoObjetivoTraduccion extends BaseEntity {
     @Column(name = "TRTP_DESCRI", length = 255)
     private String descripcion;
 
-    public static List<JTipoPublicoObjetivoTraduccion> createInstance() {
+    public static List<JTipoPublicoObjetivoTraduccion> createInstance(List<String> idiomas) {
         List<JTipoPublicoObjetivoTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTipoPublicoObjetivoTraduccion trad = new JTipoPublicoObjetivoTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

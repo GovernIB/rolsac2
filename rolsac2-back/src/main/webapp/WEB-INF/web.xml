@@ -53,7 +53,7 @@
         <param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
         <param-value>true</param-value>
     </context-param>
-    
+
     <!--
         Opcions de configuració de Primefaces
         Veure: https://primefaces.github.io/primefaces/7_0/#/gettingstarted/configuration
@@ -62,6 +62,10 @@
         <param-name>primefaces.TRANSFORM_METADATA</param-name>
         <param-value>true</param-value>
     </context-param>
+    <context-param>
+    	<param-name>primefaces.FONT_AWESOME</param-name>
+    	<param-value>true</param-value>
+	</context-param>
     <!-- El tema ha de coincidir amb la dependència inclosa dins el WAR. Per no emprar-ne cap posar el valor none -->
     <context-param>
         <param-name>primefaces.THEME</param-name>
@@ -105,7 +109,7 @@
         </web-resource-collection>
         <auth-constraint />
     </security-constraint>
-    
+
     <security-constraint>
         <display-name>Permetre accés als recursos a través de JSF</display-name>
         <web-resource-collection>
@@ -113,7 +117,7 @@
             <url-pattern>/javax.faces.resource/*</url-pattern>
         </web-resource-collection>
     </security-constraint>
-    
+
     <security-constraint>
         <display-name>Accés restringit a administradors</display-name>
         <web-resource-collection>
@@ -141,7 +145,7 @@
             <role-name>RS2_INF</role-name>
         </auth-constraint>
     </security-constraint>
-    
+
     <session-config>
         <cookie-config>
             <http-only>true</http-only>

@@ -34,7 +34,7 @@ public class TipoTramitacionGridDTO extends ModelApi {
     /**
      * Código plataforma tramitación
      */
-    @NotNull
+
 //  private Long codPlatTramitacion;
     private String codPlatTramitacion;
 

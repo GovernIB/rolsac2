@@ -18,17 +18,17 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
 
     @Override
     @Mapping(target = "nombre",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
     @Mapping(target = "presentacion",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"presentacion\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"presentacion\"))")
     @Mapping(target = "url",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"url\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"url\"))")
     @Mapping(target = "responsable",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"responsableCV\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"responsableCV\"))")
     UnidadAdministrativaDTO createDTO(JUnidadAdministrativa entity);
 
     @Mapping(target = "nombre",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
     @Mapping(target = "presentacion",
             ignore = true)
     @Mapping(target = "url",
@@ -40,7 +40,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     UnidadAdministrativaDTO createTreeDTO(JUnidadAdministrativa entity);
 
     @Mapping(target = "nombre",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
     @Mapping(target = "presentacion",
             ignore = true)
     @Mapping(target = "url",
@@ -52,12 +52,17 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     UnidadAdministrativaDTO createTreeDTOSinPadre(JUnidadAdministrativa entity);
 
     @Override
-    @Mapping(target = "descripcion",
+    @Mapping(target = "traducciones",
             expression = "java(convierteLiteralToTraduccion(jUnidadAdministrativa,dto))")
+    @Mapping(target = "padre", ignore = true)
     JUnidadAdministrativa createEntity(UnidadAdministrativaDTO dto);
 
     @Override
-    @Mapping(target = "descripcion",
+    @Mapping(target = "entidad", ignore = true)
+    @Mapping(target = "responsableSexo", ignore = true)
+    @Mapping(target = "padre", ignore = true)
+    @Mapping(target = "tipo", ignore = true)
+    @Mapping(target = "traducciones",
             expression = "java(convierteLiteralToTraduccion(entity,dto))")
     void mergeEntity(@MappingTarget JUnidadAdministrativa entity, UnidadAdministrativaDTO dto);
 
@@ -80,14 +85,35 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
 
     default List<JUnidadAdministrativaTraduccion> convierteLiteralToTraduccion(
             JUnidadAdministrativa jUnidadAdministrativa, UnidadAdministrativaDTO unidadAdministrativa) {
+        List<String> idiomasPermitidos = List.of(unidadAdministrativa.getEntidad().getIdiomasPermitidos().split(";"));
 
-        if (jUnidadAdministrativa.getDescripcion() == null || jUnidadAdministrativa.getDescripcion().isEmpty()) {
-            jUnidadAdministrativa.setDescripcion(JUnidadAdministrativaTraduccion.createInstance());
-            for (JUnidadAdministrativaTraduccion jtrad : jUnidadAdministrativa.getDescripcion()) {
+        if (jUnidadAdministrativa.getTraducciones() == null || jUnidadAdministrativa.getTraducciones().isEmpty()) {
+            jUnidadAdministrativa.setTraducciones(JUnidadAdministrativaTraduccion.createInstance(idiomasPermitidos));
+            for (JUnidadAdministrativaTraduccion jtrad : jUnidadAdministrativa.getTraducciones()) {
                 jtrad.setUnidadAdministrativa(jUnidadAdministrativa);
             }
+        } else if (jUnidadAdministrativa.getTraducciones().size() < idiomasPermitidos.size()) {
+            //En caso de que se haya creado, comprobamos que tenga todas las traducciones (pueden haberse dado de alta idiomas nuevos en entidad)
+            List<JUnidadAdministrativaTraduccion> tradsAux = jUnidadAdministrativa.getTraducciones();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasPermitidos);
+
+            for (JUnidadAdministrativaTraduccion traduccion : jUnidadAdministrativa.getTraducciones()) {
+                if (idiomasPermitidos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            //Añadimos a la lista de traducciones los nuevos valores
+
+            for (String idioma : idiomasNuevos) {
+                JUnidadAdministrativaTraduccion trad = new JUnidadAdministrativaTraduccion();
+                trad.setIdioma(idioma);
+                trad.setUnidadAdministrativa(jUnidadAdministrativa);
+                tradsAux.add(trad);
+            }
+            jUnidadAdministrativa.setTraducciones(tradsAux);
         }
-        for (JUnidadAdministrativaTraduccion traduccion : jUnidadAdministrativa.getDescripcion()) {
+
+        for (JUnidadAdministrativaTraduccion traduccion : jUnidadAdministrativa.getTraducciones()) {
             if (unidadAdministrativa.getNombre() != null) {
                 traduccion.setNombre(unidadAdministrativa.getNombre().getTraduccion(traduccion.getIdioma()));
             }
@@ -101,7 +127,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
                 traduccion.setResponsableCV(unidadAdministrativa.getResponsable().getTraduccion(traduccion.getIdioma()));
             }
         }
-        return jUnidadAdministrativa.getDescripcion();
+        return jUnidadAdministrativa.getTraducciones();
     }
 
     default Literal convierteTraduccionToLiteral(List<JUnidadAdministrativaTraduccion> traducciones,
@@ -145,4 +171,5 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
 
         return resultado;
     }
+
 }

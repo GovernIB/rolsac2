@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<ui:composition template="/WEB-INF/templates/layoutDialogSeleccion.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewAction action="#{dialogSelectSeccion.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['viewSeccion.titulo.pagina']}" />
+    </ui:define>
+    <ui:define name="contentDialogSelec">
+            <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
+                             style="display:none" ajax="false" action="#{dialogSelectSeccion.buscar}"
+                             update="dataTable"/>
+            <p:toolbar id="toolbar">
+                <f:facet name="left">
+                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                                                                                     value="#{dialogSelectSeccion.filtroTexto}"/>
+                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                     actionListener="#{dialogSelectSeccion.buscar()}" process="@form"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable id="dataTable" value="#{dialogSelectSeccion.lazyModel}" var="seccion"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="seccionTable"
+                         rows="5" rowsPerPageTemplate="5,10,20,50,100"
+                         first="#{dialogSelectSeccion.filtro.paginaFirst}"
+                         paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                         paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         emptyMessage="#{labels['dict.noHayDatos']}"
+                         selectionMode="single" selection="#{dialogSelectSeccion.datoSeleccionado}"
+                         rowKey="#{seccion.codigo}"
+                         reflow="true"
+                         sortBy="#{dialoSelectSeccion.filtro.orderBy}"
+                         sortOrder="#{dialogSelectSeccion.filtro.order}"
+                         style="min-height: 300px;">
+                <p:ajax
+                        event="rowDblselect"
+                        oncomplete="triggerDblClick();"
+                        global="false"/>
+
+                <f:facet name="{RowsPerPageLabel}">
+                    #{labels.dataTable_rowsPerPage}
+                </f:facet>
+                <p:column sortBy="#{seccion.codigo}" headerText="#{labels['dict.codigo']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{seccion.codigo}"/>
+                </p:column>
+                <p:column sortBy="#{seccion.entidad}" headerText="#{labels['dict.entidad']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{seccion.entidad}"/>
+                </p:column>
+                <p:column sortBy="#{seccion.identificador}" headerText="#{labels['dict.identificador']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{seccion.identificador}"/>
+                </p:column>
+                <p:column sortBy="#{seccion.padre}" headerText="#{labels['viewSeccion.padre']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{seccion.padre.getTraduccion(sessionBean.lang)}"/>
+                </p:column>
+                <p:column sortBy="#{seccion.nombre}" headerText="#{labels['dict.nombre']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{seccion.nombre.getTraduccion(sessionBean.lang)}"/>
+                </p:column>
+            </p:dataTable>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogSelectSeccion.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialogSelec"
+                         rendered="#{!dialogSeccion.isModoConsulta()}"
+                         process="@all"/>
+        <p:commandButton action="#{dialogSelectSeccion.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialogSelec"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>

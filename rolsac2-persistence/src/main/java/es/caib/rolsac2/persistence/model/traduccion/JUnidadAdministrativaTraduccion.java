@@ -41,9 +41,9 @@ public class JUnidadAdministrativaTraduccion {
     @Column(name = "TRUA_RSPCV")
     private String responsableCV;
 
-    public static List<JUnidadAdministrativaTraduccion> createInstance() {
+    public static List<JUnidadAdministrativaTraduccion> createInstance(List<String> idiomas) {
         List<JUnidadAdministrativaTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JUnidadAdministrativaTraduccion trad = new JUnidadAdministrativaTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

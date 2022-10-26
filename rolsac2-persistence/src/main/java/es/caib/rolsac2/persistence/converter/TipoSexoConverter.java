@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.converter;
 
 import es.caib.rolsac2.persistence.model.JTipoSexo;
+import es.caib.rolsac2.persistence.model.traduccion.JTipoNormativaTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoSexoTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoSexoDTO;
@@ -9,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,11 +37,36 @@ public interface TipoSexoConverter extends Converter<JTipoSexo, TipoSexoDTO> {
 
     default List<JTipoSexoTraduccion> convierteLiteralToTraduccion(JTipoSexo jtipoSexo, Literal descripcion) {
 
+        //Iteramos sobre el literal para ver que idiomas se han rellenado
+        List<String> idiomasRellenos = new ArrayList<>();
+        for(String idioma : descripcion.getIdiomas()) {
+            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+                idiomasRellenos.add(idioma);
+            }
+        }
+
         if (jtipoSexo.getDescripcion() == null || jtipoSexo.getDescripcion().isEmpty()) {
-            jtipoSexo.setDescripcion(JTipoSexoTraduccion.createInstance());
+            jtipoSexo.setDescripcion(JTipoSexoTraduccion.createInstance(idiomasRellenos));
             for (JTipoSexoTraduccion jtrad : jtipoSexo.getDescripcion()) {
                 jtrad.setTipoSexo(jtipoSexo);
             }
+        } else if(idiomasRellenos.size() >  jtipoSexo.getDescripcion().size()) {
+            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+            List<JTipoSexoTraduccion> tradsAux = jtipoSexo.getDescripcion();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+
+            for (JTipoSexoTraduccion traduccion : jtipoSexo.getDescripcion()) {
+                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            for (String idioma : idiomasNuevos) {
+                JTipoSexoTraduccion trad = new JTipoSexoTraduccion();
+                trad.setIdioma(idioma);
+                trad.setTipoSexo(jtipoSexo);
+                tradsAux.add(trad);
+            }
+            jtipoSexo.setDescripcion(tradsAux);
         }
         for (JTipoSexoTraduccion traduccion : jtipoSexo.getDescripcion()) {
             traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));

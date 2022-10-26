@@ -114,6 +114,11 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @Inject
     private TipoViaConverter tipoViaConverter;
 
+    @Inject
+    private TipoPublicoObjetivoEntidadConverter tipoPublicoObjetivoEntidadConverter;
+
+    @Inject
+    private TipoPublicoObjetivoEntidadRepository tipoPublicoObjetivoEntidadRepository;
 
 
     @Override
@@ -216,7 +221,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<TipoBoletinDTO> findBoletines(){
+    public List<TipoBoletinDTO> findBoletines() {
         try {
             List<TipoBoletinDTO> items = tipoBoletinRepository.findAll();
             return items;
@@ -240,9 +245,10 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             return new Pagina<>(items, total);
         }
     }
+
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<TipoBoletinDTO> findAll(){
+    public List<TipoBoletinDTO> findAll() {
         try {
             List<TipoBoletinDTO> items = tipoBoletinRepository.findAll();
             return items;
@@ -303,6 +309,19 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             return new Pagina<>(new ArrayList<>(), 0);
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoFormaInicioDTO> findAllTipoFormaInicio() {
+        try {
+            List<TipoFormaInicioDTO> items = tipoFormaInicioRepository.findAllTipoFormaInicio();
+            return items;
+        } catch (Exception e) {
+            LOG.error("Error: ", e);
+            return new ArrayList<>();
         }
     }
 
@@ -375,6 +394,19 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public boolean existeIdentificadorTipoLegitimacion(String identificador) {
         return tipoLegitimacionRepository.existeIdentificador(identificador);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoLegitimacionDTO> findAllTipoLegitimacion() {
+        try {
+            List<TipoLegitimacionDTO> items = tipoLegitimacionRepository.findAllTipoLegitimacion();
+            return items;
+        } catch (Exception e) {
+            LOG.error("Error: ", e);
+            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -505,9 +537,10 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             return false;
         }
     }
+
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<TipoNormativaDTO> findTipoNormativa(){
+    public List<TipoNormativaDTO> findTipoNormativa() {
         try {
             List<TipoNormativaDTO> items = tipoNormativaRepository.findAll();
             return items;
@@ -585,6 +618,18 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         }
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoPublicoObjetivoDTO> findAllTiposPublicoObjetivo() {
+        try {
+            return tipoPublicoObjetivoRepository.findAll();
+        } catch (Exception e) {
+            LOG.error("Error: ", e);
+            return new ArrayList<>();
+        }
+    }
+
 
     @Inject
     private TipoSexoRepository tipoSexoRepository;
@@ -653,6 +698,91 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public boolean existeIdentificadorTipoSexo(String identificador) {
         return tipoSexoRepository.existeIdentificador(identificador);
+    }
+
+    @Inject
+    private TipoProcedimientoRepository tipoProcedimientoRepository;
+
+    @Inject
+    private TipoProcedimientoConverter tipoProcedimientoConverter;
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long create(TipoProcedimientoDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
+
+        if (dto.getCodigo() != null) {
+            throw new DatoDuplicadoException(dto.getCodigo());
+        }
+
+        JTipoProcedimiento jTipoProcedimiento = tipoProcedimientoConverter.createEntity(dto);
+        JEntidad jentidad = entidadRepository.findById(dto.getEntidad().getCodigo());
+        jTipoProcedimiento.setEntidad(jentidad);
+        tipoProcedimientoRepository.create(jTipoProcedimiento);
+        return jTipoProcedimiento.getCodigo();
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void update(TipoProcedimientoDTO dto) throws RecursoNoEncontradoException {
+        JTipoProcedimiento jTipoProcedimiento = tipoProcedimientoRepository.findById(dto.getCodigo());
+        tipoProcedimientoConverter.mergeEntity(jTipoProcedimiento, dto);
+        tipoProcedimientoRepository.update(jTipoProcedimiento);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void deleteTipoProcedimiento(Long id) throws RecursoNoEncontradoException {
+        JTipoProcedimiento jTipoProcedimiento = tipoProcedimientoRepository.getReference(id);
+        tipoProcedimientoRepository.delete(jTipoProcedimiento);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public TipoProcedimientoDTO findTipoProcedimientoById(Long id) {
+        JTipoProcedimiento jTipoProcedimiento = tipoProcedimientoRepository.getReference(id);
+        TipoProcedimientoDTO tipoProcedimientoDTO = tipoProcedimientoConverter.createDTO(jTipoProcedimiento);
+        return tipoProcedimientoDTO;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Pagina<TipoProcedimientoGridDTO> findByFiltro(TipoProcedimientoFiltro filtro) {
+        try {
+            List<TipoProcedimientoGridDTO> items = tipoProcedimientoRepository.findPagedByFiltro(filtro);
+            long total = tipoProcedimientoRepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error(ERROR_LITERAL, e);
+            List<TipoProcedimientoGridDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
+
+    /**
+     * Devuelve todos los procedimientos de una entidad.
+     *
+     * @param codigoEntidad
+     * @return
+     */
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoProcedimientoDTO> findAllTipoProcedimiento(Long codigoEntidad) {
+        return tipoProcedimientoRepository.findAll(codigoEntidad);
+
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeIdentificadorTipoProcedimiento(String identificador) {
+        return tipoProcedimientoRepository.existeIdentificador(identificador);
     }
 
 
@@ -724,6 +854,18 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoSilencioAdministrativoDTO> findAllTipoSilencio() {
+        try {
+            List<TipoSilencioAdministrativoDTO> items = tipoSilencioAdministrativoRepository.findAllTipoSilencio();
+            return items;
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(TipoTramitacionDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
@@ -785,6 +927,30 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             List<TipoTramitacionGridDTO> items = new ArrayList<>();
             long total = items.size();
             return new Pagina<>(items, total);
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoTramitacionDTO> findAllTiposTramitacion() {
+        try {
+            return tipoTramitacionRepository.findAll();
+        } catch (Exception e) {
+            LOG.error("Error: ", e);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoTramitacionDTO> findPlantillasTiposTramitacion() {
+        try {
+            return tipoTramitacionRepository.findPlantillas();
+        } catch (Exception e) {
+            LOG.error("Error: ", e);
+            return new ArrayList<>();
         }
     }
 
@@ -858,4 +1024,65 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         return tipoBoletinRepository.checkIdentificadorTipoBoletin(identificador);
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long create(TipoPublicoObjetivoEntidadDTO dta) throws RecursoNoEncontradoException, DatoDuplicadoException {
+        if (dta.getCodigo() != null) {
+            throw new DatoDuplicadoException(6L);
+        }
+
+        JTipoPublicoObjetivoEntidad jTipoPOE = tipoPublicoObjetivoEntidadConverter.createEntity(dta);
+        tipoPublicoObjetivoEntidadRepository.create(jTipoPOE);
+        return jTipoPOE.getCodigo();
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void update(TipoPublicoObjetivoEntidadDTO dto) throws RecursoNoEncontradoException {
+        JTipoPublicoObjetivoEntidad jTipoPublicoObjetivoEntidad = tipoPublicoObjetivoEntidadRepository.findById(dto.getCodigo());
+        tipoPublicoObjetivoEntidadConverter.mergeEntity(jTipoPublicoObjetivoEntidad, dto);
+        tipoPublicoObjetivoEntidadRepository.update(jTipoPublicoObjetivoEntidad);
+
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void deleteTipoPublicoObjetivoEntidad(Long id) throws RecursoNoEncontradoException {
+        JTipoPublicoObjetivoEntidad jTipoPublicoObjetivoEntidad = tipoPublicoObjetivoEntidadRepository.getReference(id);
+        tipoPublicoObjetivoEntidadRepository.delete(jTipoPublicoObjetivoEntidad);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public TipoPublicoObjetivoEntidadDTO findTipoPublicoObjetivoEntidadById(Long id) {
+        JTipoPublicoObjetivoEntidad jTipoPublicoObjetivoEntidad = tipoPublicoObjetivoEntidadRepository.getReference(id);
+        return tipoPublicoObjetivoEntidadConverter.createDTO(jTipoPublicoObjetivoEntidad);
+    }
+
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Pagina<TipoPublicoObjetivoEntidadGridDTO> findByFiltro(TipoPublicoObjetivoEntidadFiltro filtro) {
+        try {
+            List<TipoPublicoObjetivoEntidadGridDTO> items = tipoPublicoObjetivoEntidadRepository.findPagedByFiltro(filtro);
+            long total = tipoPublicoObjetivoEntidadRepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error(ERROR_LITERAL, e);
+            return new Pagina<>(new ArrayList<>(), 0);
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeIdentificadorTipoPublicoObjetivoEntidad(String identificador) {
+        return tipoPublicoObjetivoEntidadRepository.existeIdentificador(identificador);
+
+    }
 }

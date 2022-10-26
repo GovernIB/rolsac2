@@ -66,7 +66,7 @@ public class DialogPersonal extends AbstractController implements Serializable {
         }
 
         // Retornamos resultado
-        LOG.error("Acceso:" + this.getModoAcceso());
+        LOG.debug("Acceso:" + this.getModoAcceso());
         final DialogResult result = new DialogResult();
         if (this.getModoAcceso() == null) {
             result.setModoAcceso(TypeModoAcceso.ALTA);
@@ -81,16 +81,6 @@ public class DialogPersonal extends AbstractController implements Serializable {
 
         if (Objects.nonNull(this.data.getEmail()) && !ValidacionTipoUtils.esEmailValido(this.data.getEmail())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.email.novalido"), true);
-            return false;
-        }
-        if (Objects.nonNull(this.data.getTelefonoFijo())
-                && !ValidacionTipoUtils.esTelefonoValido(this.data.getTelefonoFijo())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.telefono.novalido"), true);
-            return false;
-        }
-        if (Objects.nonNull(this.data.getTelefonoMovil())
-                && !ValidacionTipoUtils.esTelefonoValido(this.data.getTelefonoMovil())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.telefono.novalido"), true);
             return false;
         }
         if (Objects.nonNull(this.data.getTelefonoExteriorFijo())

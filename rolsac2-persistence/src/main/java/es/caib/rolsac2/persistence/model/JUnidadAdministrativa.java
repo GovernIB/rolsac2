@@ -1,6 +1,9 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 
 import javax.persistence.*;
 import java.util.List;
@@ -76,7 +79,7 @@ public class JUnidadAdministrativa extends BaseEntity {
     private Integer orden;
 
     @OneToMany(mappedBy = "unidadAdministrativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<JUnidadAdministrativaTraduccion> descripcion;
+    private List<JUnidadAdministrativaTraduccion> traducciones;
 
     public Long getCodigo() {
         return codigo;
@@ -198,15 +201,15 @@ public class JUnidadAdministrativa extends BaseEntity {
         this.responsableSexo = responsableSexo;
     }
 
-    public List<JUnidadAdministrativaTraduccion> getDescripcion() {
-        return descripcion;
+    public List<JUnidadAdministrativaTraduccion> getTraducciones() {
+        return traducciones;
     }
 
-    public void setDescripcion(List<JUnidadAdministrativaTraduccion> descripcion) {
-        if (this.descripcion == null || this.descripcion.isEmpty()) {
-            this.descripcion = descripcion;
+    public void setTraducciones(List<JUnidadAdministrativaTraduccion> traducciones) {
+        if (this.traducciones == null || this.traducciones.isEmpty()) {
+            this.traducciones = traducciones;
         } else {
-            this.descripcion.addAll(descripcion);
+            this.traducciones.addAll(traducciones);
         }
     }
 
@@ -242,5 +245,33 @@ public class JUnidadAdministrativa extends BaseEntity {
                 ", responsableSexo=" + responsableSexo +
                 ", orden=" + orden +
                 '}';
+    }
+
+    public UnidadAdministrativaDTO toDTO() {
+        UnidadAdministrativaDTO ua = new UnidadAdministrativaDTO();
+        ua.setCodigo(this.getCodigo());
+        ua.setCodigoDIR3(this.getCodigoDIR3());
+        ua.setIdentificador(this.getIdentificador());
+        ua.setOrden(this.getOrden());
+        ua.setAbreviatura(this.getAbreviatura());
+        ua.setDominio(this.getDominio());
+
+        Literal nombre = new Literal();
+        Literal url = new Literal();
+        Literal presentacion = new Literal();
+        Literal responsableCV = new Literal();
+        if (this.getTraducciones() != null) {
+            for (JUnidadAdministrativaTraduccion trad : this.getTraducciones()) {
+                nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+                url.add(new Traduccion(trad.getIdioma(), trad.getUrl()));
+                presentacion.add(new Traduccion(trad.getIdioma(), trad.getPresentacion()));
+                responsableCV.add(new Traduccion(trad.getIdioma(), trad.getResponsableCV()));
+            }
+        }
+        ua.setNombre(nombre);
+        ua.setUrl(url);
+        ua.setPresentacion(presentacion);
+        ua.setResponsable(responsableCV);
+        return ua;
     }
 }

@@ -9,6 +9,7 @@ import es.caib.rolsac2.service.model.types.TypePerfiles;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public abstract class AbstractController {
@@ -121,6 +122,10 @@ public abstract class AbstractController {
         return labelsBundle.getString(literal);
     }
 
+    public String getLiteralFaltanIdiomas(String campo, String msg, List<String> idiomasPendientes) {
+        return getLiteral(campo) + ": " + getLiteral(msg) + idiomasPendientes;
+    }
+
     protected void addGlobalMessage(String message) {
         context.addMessage(null, new FacesMessage(message));
     }
@@ -156,4 +161,6 @@ public abstract class AbstractController {
     public void actualizadoComponente() {
         this.actualizadoSinGuardar = true;
     }
+
+
 }

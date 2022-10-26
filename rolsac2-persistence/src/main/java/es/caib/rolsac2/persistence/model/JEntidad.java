@@ -42,7 +42,7 @@ public class JEntidad extends BaseEntity {
     @Column(name = "ENTI_ACTIVA", nullable = false)
     private Boolean activa;
 
-    @Column(name = "ROLE_ROLADE", nullable = false, length = 100)
+    @Column(name = "ENTI_ROLADE", nullable = false, length = 100)
     private String rolAdmin;
 
     @Column(name = "ENTI_ROLADC", nullable = false, length = 100)
@@ -54,8 +54,19 @@ public class JEntidad extends BaseEntity {
     @Column(name = "ENTI_ROLINF", nullable = false, length = 100)
     private String rolInformador;
 
-    @Column(name = "ENTI_LOGO", nullable = false, length = 10)
-    private Long logo;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ENTI_LOGO", nullable = false)
+    private JFicheroExterno logo;
+
+    @Column(name = "ENTI_IDIDEF", nullable = false, length = 20)
+    private String idiomaDefectoRest;
+
+    @Column(name = "ENTI_IDIPER", nullable = false, length = 20)
+    private String idiomasPermitidos;
+
+    @Column(name = "ENTI_IDIOBL", nullable = false, length = 20)
+    private String idiomasObligatorios;
+
 
     /**
      * Descripción
@@ -112,11 +123,11 @@ public class JEntidad extends BaseEntity {
         this.rolInformador = rolInformador;
     }
 
-    public Long getLogo() {
+    public JFicheroExterno getLogo() {
         return logo;
     }
 
-    public void setLogo(Long logo) {
+    public void setLogo(JFicheroExterno logo) {
         this.logo = logo;
     }
 
@@ -130,6 +141,30 @@ public class JEntidad extends BaseEntity {
 
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
+    }
+
+    public String getIdiomaDefectoRest() {
+        return idiomaDefectoRest;
+    }
+
+    public void setIdiomaDefectoRest(String idiomaDefectoRest) {
+        this.idiomaDefectoRest = idiomaDefectoRest;
+    }
+
+    public String getIdiomasPermitidos() {
+        return idiomasPermitidos;
+    }
+
+    public void setIdiomasPermitidos(String idiomasPermitidos) {
+        this.idiomasPermitidos = idiomasPermitidos;
+    }
+
+    public String getIdiomasObligatorios() {
+        return idiomasObligatorios;
+    }
+
+    public void setIdiomasObligatorios(String idiomasObligatorios) {
+        this.idiomasObligatorios = idiomasObligatorios;
     }
 
     public String getDescripcion(String idioma) {
@@ -168,10 +203,11 @@ public class JEntidad extends BaseEntity {
         return Objects.hash(codigo);
     }
 
+
     @Override
     public String toString() {
         return "JEntidad{" +
-                "id=" + codigo +
+                "codigo=" + codigo +
                 ", identificador='" + identificador + '\'' +
                 ", activa=" + activa +
                 ", rolAdmin='" + rolAdmin + '\'' +
@@ -179,6 +215,10 @@ public class JEntidad extends BaseEntity {
                 ", rolGestor='" + rolGestor + '\'' +
                 ", rolInformador='" + rolInformador + '\'' +
                 ", logo=" + logo +
+                ", idiomaDefectoRest='" + idiomaDefectoRest + '\'' +
+                ", idiomasPermitidos='" + idiomasPermitidos + '\'' +
+                ", idiomasObligatorios='" + idiomasObligatorios + '\'' +
+                ", descripcion=" + descripcion +
                 '}';
     }
 }

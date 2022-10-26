@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,11 +41,35 @@ public interface TipoSilencioAdministrativoConverter extends Converter<JTipoSile
 
     default List<JTipoSilencioAdministrativoTraduccion> convierteLiteralToTraduccion(JTipoSilencioAdministrativo jTipoSilencioAdministrativo, Literal descripcion) {
 
+        //Iteramos sobre el literal para ver que idiomas se han rellenado
+        List<String> idiomasRellenos = new ArrayList<>();
+        for(String idioma : descripcion.getIdiomas()) {
+            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+                idiomasRellenos.add(idioma);
+            }
+        }
         if (jTipoSilencioAdministrativo.getDescripcion() == null || jTipoSilencioAdministrativo.getDescripcion().isEmpty()) {
-            jTipoSilencioAdministrativo.setDescripcion(JTipoSilencioAdministrativoTraduccion.createInstance());
+            jTipoSilencioAdministrativo.setDescripcion(JTipoSilencioAdministrativoTraduccion.createInstance(idiomasRellenos));
             for (JTipoSilencioAdministrativoTraduccion jtrad : jTipoSilencioAdministrativo.getDescripcion()) {
                 jtrad.setTipoSilencioAdministrativo(jTipoSilencioAdministrativo);
             }
+        } else if(idiomasRellenos.size() >  jTipoSilencioAdministrativo.getDescripcion().size()) {
+            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+            List<JTipoSilencioAdministrativoTraduccion> tradsAux = jTipoSilencioAdministrativo.getDescripcion();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+
+            for (JTipoSilencioAdministrativoTraduccion traduccion : jTipoSilencioAdministrativo.getDescripcion()) {
+                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            for (String idioma : idiomasNuevos) {
+                JTipoSilencioAdministrativoTraduccion trad = new JTipoSilencioAdministrativoTraduccion();
+                trad.setIdioma(idioma);
+                trad.setTipoSilencioAdministrativo(jTipoSilencioAdministrativo);
+                tradsAux.add(trad);
+            }
+            jTipoSilencioAdministrativo.setDescripcion(tradsAux);
         }
         for (JTipoSilencioAdministrativoTraduccion traduccion : jTipoSilencioAdministrativo.getDescripcion()) {
             if (descripcion != null) {

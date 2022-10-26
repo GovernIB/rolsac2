@@ -1,6 +1,10 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JSeccionTraduccion;
+
 import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "seccion-sequence", sequenceName = "RS2_SECCION_SEQ", allocationSize = 1)
@@ -9,11 +13,23 @@ import javax.persistence.*;
                 @Index(name = "RS2_SECCION_PK_I", columnList = "SECC_CODIGO")
         }
 )
-public class JSeccion {
+@NamedQueries({
+        @NamedQuery(name = JSeccion.FIND_BY_ID,
+                query = "select p from JSeccion p where p.codigo = :id"),
+        @NamedQuery(name = JSeccion.COUNT_BY_IDENTIFICADOR,
+                query = "select count(p) from JSeccion p where p.identificador = :identificador")
+})
+public class JSeccion extends BaseEntity {
+
+    private static final long serialVersionUID = 1L;
+
+    public static final String FIND_BY_ID = "Seccion.FIND_BY_ID";
+    public static final String COUNT_BY_IDENTIFICADOR = "Seccion.COUNT_BY_IDENTIFICADOR";
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seccion-sequence")
     @Column(name = "SECC_CODIGO", nullable = false)
-    private Integer codigo;
+    private Long codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "SECC_CODENTI", nullable = false)
@@ -32,11 +48,14 @@ public class JSeccion {
     @Column(name = "SECC_ADME", nullable = false)
     private boolean manteniblePorAdmEntidad = false;
 
-    public Integer getCodigo() {
+    @OneToMany(mappedBy = "seccion", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JSeccionTraduccion> descripcion;
+
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Integer id) {
+    public void setCodigo(Long id) {
         this.codigo = id;
     }
 
@@ -72,4 +91,38 @@ public class JSeccion {
         this.manteniblePorAdmEntidad = seccAdme;
     }
 
+    public List<JSeccionTraduccion> getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(List<JSeccionTraduccion> descripcion) {
+        if (this.descripcion == null || this.descripcion.isEmpty()) {
+            this.descripcion = descripcion;
+        } else {
+            this.descripcion.addAll(descripcion);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JSeccion jSeccion = (JSeccion) o;
+        return codigo.equals(jSeccion.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
+    public String toString() {
+        return "JSeccion{" +
+                "codigo=" + codigo +
+                ", entidad=" + entidad +
+                ", identificador='" + identificador + '\'' +
+                ", manteniblePorAdmEntidad=" + manteniblePorAdmEntidad +
+                '}';
+    }
 }

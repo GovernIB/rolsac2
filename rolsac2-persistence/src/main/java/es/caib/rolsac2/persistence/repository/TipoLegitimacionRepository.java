@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoLegitimacion;
+import es.caib.rolsac2.service.model.TipoLegitimacionDTO;
 import es.caib.rolsac2.service.model.TipoLegitimacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoLegitimacionFiltro;
 
@@ -16,5 +17,7 @@ public interface TipoLegitimacionRepository extends CrudRepository<JTipoLegitima
   long countByFiltro(TipoLegitimacionFiltro filtro);
 
   boolean existeIdentificador(String identificador);
+
+  List<TipoLegitimacionDTO> findAllTipoLegitimacion();
 
 }

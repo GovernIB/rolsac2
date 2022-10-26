@@ -45,9 +45,9 @@ public class JTipoSilencioAdministrativoTraduccion extends BaseEntity {
     @Column(name = "TRTS_DESCRI", length = 4000)
     private String descripcion;
 
-    public static List<JTipoSilencioAdministrativoTraduccion> createInstance() {
+    public static List<JTipoSilencioAdministrativoTraduccion> createInstance(List<String> idiomas) {
         List<JTipoSilencioAdministrativoTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTipoSilencioAdministrativoTraduccion trad = new JTipoSilencioAdministrativoTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

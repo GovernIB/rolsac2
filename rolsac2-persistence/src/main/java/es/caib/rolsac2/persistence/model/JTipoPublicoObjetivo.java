@@ -1,6 +1,9 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JTipoPublicoObjetivoTraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
 import java.util.List;
@@ -63,6 +66,18 @@ public class JTipoPublicoObjetivo extends BaseEntity {
         return descripcion;
     }
 
+    public String getDescripcion(String idioma) {
+        if (descripcion == null || descripcion.isEmpty()) {
+            return "";
+        }
+        for (JTipoPublicoObjetivoTraduccion trad : this.descripcion) {
+            if (trad.getIdioma() != null && idioma.equalsIgnoreCase(idioma)) {
+                return trad.getDescripcion();
+            }
+        }
+        return "";
+    }
+
     public void setDescripcion(List<JTipoPublicoObjetivoTraduccion> descripcion) {
         this.descripcion = descripcion;
     }
@@ -76,4 +91,16 @@ public class JTipoPublicoObjetivo extends BaseEntity {
                 '}';
     }
 
+    public TipoPublicoObjetivoEntidadGridDTO toModel() {
+        TipoPublicoObjetivoEntidadGridDTO tipo = new TipoPublicoObjetivoEntidadGridDTO();
+        tipo.setCodigo(this.getCodigo());
+        tipo.setIdentificador(this.getIdentificador());
+        Literal literal = new Literal();
+        if (this.getDescripcion() != null) {
+            for (JTipoPublicoObjetivoTraduccion trad : this.getDescripcion()) {
+                literal.add(new Traduccion(trad.getIdioma(), trad.getDescripcion()));
+            }
+        }
+        return tipo;
+    }
 }

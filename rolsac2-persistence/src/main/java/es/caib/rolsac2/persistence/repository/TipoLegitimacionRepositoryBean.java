@@ -1,7 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.TipoLegitimacionConverter;
 import es.caib.rolsac2.persistence.model.JTipoLegitimacion;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoLegitimacionDTO;
 import es.caib.rolsac2.service.model.TipoLegitimacionGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.TipoLegitimacionFiltro;
@@ -10,6 +12,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -24,6 +27,9 @@ public class TipoLegitimacionRepositoryBean extends AbstractCrudRepository<JTipo
     protected TipoLegitimacionRepositoryBean() {
         super(JTipoLegitimacion.class);
     }
+
+    @Inject
+    private TipoLegitimacionConverter converter;
 
     @Override
     public List<TipoLegitimacionGridDTO> findPagedByFiltro(TipoLegitimacionFiltro filtro) {
@@ -103,5 +109,19 @@ public class TipoLegitimacionRepositoryBean extends AbstractCrudRepository<JTipo
         query.setParameter("id", id);
         List<JTipoLegitimacion> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
+    }
+
+    @Override
+    public List<TipoLegitimacionDTO> findAllTipoLegitimacion() {
+        TypedQuery query =
+                entityManager.createQuery("SELECT j FROM JTipoLegitimacion j", JTipoLegitimacion.class);
+        List<JTipoLegitimacion> jTipoLegitimacions = query.getResultList();
+        List<TipoLegitimacionDTO> tipoLegitimacionDTOS = new ArrayList<>();
+        if (jTipoLegitimacions  != null) {
+            for (JTipoLegitimacion jTipoLegitimacion : jTipoLegitimacions) {
+                tipoLegitimacionDTOS.add(this.converter.createDTO(jTipoLegitimacion));
+            }
+        }
+        return tipoLegitimacionDTOS;
     }
 }

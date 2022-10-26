@@ -4,6 +4,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Schema(name = "TipoLegitimacion")
 public class TipoLegitimacionDTO extends ModelApi {
@@ -48,5 +49,18 @@ public class TipoLegitimacionDTO extends ModelApi {
                 ", identificador='" + identificador + '\'' +
                 ", descripcion=" + descripcion +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TipoLegitimacionDTO that = (TipoLegitimacionDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 }

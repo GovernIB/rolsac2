@@ -1,5 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.model.JFicheroExterno;
 import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 
@@ -8,7 +9,8 @@ import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
  *
  * @author Indra
  */
-public interface FicheroExternoRepository {
+public interface FicheroExternoRepository extends CrudRepository<JFicheroExterno, Long> {
+
 
     /**
      * Devuelve el contenido de un fichero.
@@ -16,7 +18,8 @@ public interface FicheroExternoRepository {
      * @param idFichero
      * @return
      */
-    FicheroDTO getContentById(Long idFichero);
+    FicheroDTO getContentById(Long idFichero, String pathAlmacenamientoFicheros);
+
 
     /**
      * Crea fichero externo temporal. Deberá c posteriormente para consolidarse, si no se enlaza se borrará tras 24h.
@@ -27,14 +30,15 @@ public interface FicheroExternoRepository {
      * @param elementoFicheroExterno Elmento al que está asociado (entidad, ficha, procedimiento,...)
      * @return Código fichero.
      */
-    Long createFicheroExterno(byte[] content, String fileName, TypeFicheroExterno tipoFicheroExterno, Long elementoFicheroExterno);
+    Long createFicheroExterno(byte[] content, String fileName, TypeFicheroExterno tipoFicheroExterno, Long elementoFicheroExterno, String pathAlmacenamientoFicheros);
 
     /**
      * Persiste fichero externo (pasa de borrador a consolidado). Solo se puede persistir un fichero que está en borrador.
      *
      * @param codigoFichero Código fichero.
+     * @param idElemento    Id del elemento
      */
-    void persistFicheroExterno(Long codigoFichero);
+    void persistFicheroExterno(Long codigoFichero, Long idElemento, String pathAlmacenamientoFicheros);
 
     /**
      * Borra fichero externo (se marca para borrar y se procederá a borrar en proceso background).
@@ -46,6 +50,6 @@ public interface FicheroExternoRepository {
     /**
      * Purga ficheros externos (marcados para borrar y temporales > 24h).
      */
-    void purgeFicherosExternos();
+    void purgeFicherosExternos(String pathAlmacenamientoFicheros);
 
 }

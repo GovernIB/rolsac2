@@ -1,6 +1,9 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JTipoMateriaSIATraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
 import java.util.List;
@@ -90,4 +93,15 @@ public class JTipoMateriaSIA extends BaseEntity {
         return "JTipoMateriaSIA{" + "id=" + codigo + "identificador=" + identificador + '}';
     }
 
+    public TipoMateriaSIAGridDTO toModel() {
+        TipoMateriaSIAGridDTO tipo = new TipoMateriaSIAGridDTO();
+        tipo.setCodigo(this.getCodigo());
+        Literal literal = new Literal();
+        for (JTipoMateriaSIATraduccion trad : this.getDescripcion()) {
+            literal.add(new Traduccion(trad.getIdioma(), trad.getDescripcion()));
+        }
+        tipo.setDescripcion(literal);
+        tipo.setIdentificador(this.getIdentificador());
+        return tipo;
+    }
 }

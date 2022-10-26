@@ -11,7 +11,7 @@
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitle">
-        <h:outputFormat value="Pagina"/>
+        <h:outputFormat value="#{labels['viewTema.titulo']}"/>
     </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">

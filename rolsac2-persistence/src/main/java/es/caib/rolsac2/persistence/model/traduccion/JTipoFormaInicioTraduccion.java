@@ -28,9 +28,9 @@ public class JTipoFormaInicioTraduccion extends BaseEntity {
     @Column(name = "TRTF_DESCRI")
     private String descripcion;
 
-    public static List<JTipoFormaInicioTraduccion> createInstance() {
+    public static List<JTipoFormaInicioTraduccion> createInstance(List<String> idiomas) {
         List<JTipoFormaInicioTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JTipoFormaInicioTraduccion trad = new JTipoFormaInicioTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

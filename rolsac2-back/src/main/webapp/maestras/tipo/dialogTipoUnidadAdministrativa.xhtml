@@ -31,8 +31,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <span class="pi pi-tag" style="margin-top:5px"/>
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogTipoUnidadAdministrativa.idioma}" styleClass="botoneraRed">
-            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
-            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="inputDescripcion inputCargoMasc inputCargoFem inputTratMasc inputTratFem" process="@this"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogTipoUnidadAdministrativa.traducir}"
@@ -40,7 +40,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this" />
+                         process="@this"/>
     </ui:define>
 
     <ui:define name="contentDialog">
@@ -53,7 +53,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:panel>
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogTipoUnidadAdministrativa.data.codigo}"
@@ -61,70 +61,81 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador" />
+                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogTipoUnidadAdministrativa.data.identificador}"
                                  styleClass="w95" required="true" onblur="this.value = this.value.toUpperCase();"
                                  disabled="#{dialogTipoUnidadAdministrativa.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
-                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
                     </p:inputText>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.descripcion']}:"/>
-                    <i class="pi pi pi-tag"  />
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <my:literalComponent id="inputDescripcion" styleClass="w95"
-                                         value="#{dialogTipoUnidadAdministrativa.data.descripcion}"
+                    <my:literalComponent id="inputDescripcion"
+                                         literal="#{dialogTipoUnidadAdministrativa.data.descripcion}"
                                          soloLecture="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"
-                                         idioma="#{dialogTipoUnidadAdministrativa.idioma}"/>
+                                         idioma="#{dialogTipoUnidadAdministrativa.idioma}"
+                                         required="true"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['dict.descripcion']}"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['viewTipoUnidadAdministrativa.cargo.masculino']}:"/>
-                    <i class="pi pi pi-tag"  />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <my:literalComponent id="inputCargoMasc" styleClass="w95"
-                                         value="#{dialogTipoUnidadAdministrativa.data.cargoMasculino}"
+                    <my:literalComponent id="inputCargoMasc"
+                                         literal="#{dialogTipoUnidadAdministrativa.data.cargoMasculino}"
                                          soloLecture="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"
-                                         idioma="#{dialogTipoUnidadAdministrativa.idioma}"/>
+                                         idioma="#{dialogTipoUnidadAdministrativa.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.cargo.masculino']}"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['viewTipoUnidadAdministrativa.cargo.femenino']}:"/>
-                    <i class="pi pi pi-tag"  />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <my:literalComponent id="inputCargoFem" styleClass="w95"
-                                         value="#{dialogTipoUnidadAdministrativa.data.cargoFemenino}"
+                    <my:literalComponent id="inputCargoFem"
+                                         literal="#{dialogTipoUnidadAdministrativa.data.cargoFemenino}"
                                          soloLecture="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"
-                                         idioma="#{dialogTipoUnidadAdministrativa.idioma}"/>
+                                         idioma="#{dialogTipoUnidadAdministrativa.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.cargo.femenino']}"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['viewTipoUnidadAdministrativa.tratamiento.masculino']}:"/>
-                    <i class="pi pi pi-tag"  />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <my:literalComponent id="inputTratMasc" styleClass="w95"
-                                         value="#{dialogTipoUnidadAdministrativa.data.tratamientoMasculino}"
+                    <my:literalComponent id="inputTratMasc"
+                                         literal="#{dialogTipoUnidadAdministrativa.data.tratamientoMasculino}"
                                          soloLecture="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"
-                                         idioma="#{dialogTipoUnidadAdministrativa.idioma}"/>
+                                         idioma="#{dialogTipoUnidadAdministrativa.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.tratamiento.masculino']}"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['viewTipoUnidadAdministrativa.tratamiento.femenino']}:"/>
-                    <i class="pi pi pi-tag"  />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <my:literalComponent id="inputTratFem" styleClass="w95"
-                                         value="#{dialogTipoUnidadAdministrativa.data.tratamientoFemenino}"
+                    <my:literalComponent id="inputTratFem"
+                                         literal="#{dialogTipoUnidadAdministrativa.data.tratamientoFemenino}"
                                          soloLecture="#{dialogTipoUnidadAdministrativa.isModoConsulta()}"
-                                         idioma="#{dialogTipoUnidadAdministrativa.idioma}"/>
+                                         idioma="#{dialogTipoUnidadAdministrativa.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.tratamiento.femenino']}"/>
                 </div>
             </div>
         </p:panel>

@@ -1,18 +1,22 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
 import es.caib.rolsac2.persistence.model.JTipoTramitacion;
+import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Implementación del repositorio de tipo de tramitación.
@@ -23,7 +27,10 @@ import java.util.Optional;
 @Local(TipoTramitacionRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoTramitacion, Long>
-        implements TipoTramitacionRepository {
+                implements TipoTramitacionRepository {
+
+    @Inject
+    private TipoTramitacionConverter converter;
 
     protected TipoTramitacionRepositoryBean() {
         super(JTipoTramitacion.class);
@@ -60,17 +67,32 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         return (long) getQuery(true, filtro).getSingleResult();
     }
 
+    @Override
+    public List<TipoTramitacionDTO> findAll() {
+        TypedQuery<JTipoTramitacion> query =
+                        entityManager.createQuery("SELECT j FROM JTipoTramitacion j", JTipoTramitacion.class);
+        return converter.createTipoTramitacionDTOs(query.getResultList());
+    }
+
+    @Override
+    public List<TipoTramitacionDTO> findPlantillas() {
+        TypedQuery<JTipoTramitacion> query = entityManager.createQuery(
+                        "SELECT j FROM JTipoTramitacion j WHERE j.plantilla = true", JTipoTramitacion.class);
+        return converter.createTipoTramitacionDTOs(query.getResultList());
+    }
+
     private Query getQuery(boolean isTotal, TipoTramitacionFiltro filtro) {
 
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JTipoTramitacion j JOIN j.codPlatTramitacion p where 1 = 1 ");
         } else {
-            // sql = new StringBuilder("SELECT j.codigo, j.identificador, j.descripcion FROM JTipoTramitacion j where 1 = 1 ");
+            // sql = new StringBuilder("SELECT j.codigo, j.identificador, j.descripcion FROM JTipoTramitacion j where 1
+            // = 1 ");
             sql = new StringBuilder(
-                    "SELECT j.codigo, j.tramitPresencial, j.tramitElectronica, j.urlTramitacion, p.descripcion, "
-                            + " j.tramiteId, j.tramiteVersion, j.tramiteParametros FROM JTipoTramitacion j " +
-                            " JOIN j.codPlatTramitacion p where 1 = 1 ");
+                            "SELECT j.codigo, j.tramitPresencial, j.tramitElectronica, j.urlTramitacion, p.identificador, "
+                                            + " j.tramiteId, j.tramiteVersion, j.tramiteParametros FROM JTipoTramitacion j "
+                                            + " JOIN j.codPlatTramitacion p where 1 = 1  ");
         }
         // if (filtro.isRellenoIdUA()) {
         // sql.append(" and j.unidadAdministrativa = :ua");
@@ -79,14 +101,17 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         if (filtro.isRellenoTexto()) {
             // sql.append(" LEFT JOIN e.descripcion.trads t ");
             sql.append(
-                    // " and ( cast(j.id as string) like :filtro OR (t.idioma.identificador = :idioma AND LOWER(t.literal) LIKE
-                    // :filtro) OR LOWER(j.identificador) LIKE :filtro )");
-                    " and ( cast(j.id as string) like :filtro OR " + " cast(j.tramitPresencial as string) like :filtro OR "
-                            + " cast(j.tramitElectronica as string) like :filtro OR "
-                            + " cast(j.urlTramitacion as string) like :filtro OR "
-                            + " cast(p.descripcion as string) like :filtro OR "
-                            + " cast(j.tramiteId as string) like :filtro OR " + " cast(j.tramiteVersion as string) like :filtro OR "
-                            + " cast(j.tramiteParametros as string) like :filtro)");
+                            // " and ( cast(j.id as string) like :filtro OR (t.idioma.identificador = :idioma AND
+                            // LOWER(t.literal) LIKE
+                            // :filtro) OR LOWER(j.identificador) LIKE :filtro )");
+                            " and ( cast(j.id as string) like :filtro OR "
+                                            + " cast(j.tramitPresencial as string) like :filtro OR "
+                                            + " cast(j.tramitElectronica as string) like :filtro OR "
+                                            + " cast(j.urlTramitacion as string) like :filtro OR "
+                                            + " cast(p.descripcion as string) like :filtro OR "
+                                            + " cast(j.tramiteId as string) like :filtro OR "
+                                            + " cast(j.tramiteVersion as string) like :filtro OR "
+                                            + " cast(j.tramiteParametros as string) like :filtro)");
         }
 
         if (filtro.isRellenoTipoPlantilla()) {
@@ -97,6 +122,8 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
         }
+
+
         Query query = entityManager.createQuery(sql.toString());
         // if (filtro.isRellenoIdUA()) {
         // query.setParameter("ua", filtro.getIdUA());
@@ -119,7 +146,7 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
     @Override
     public Optional<JTipoTramitacion> findById(String id) {
         TypedQuery<JTipoTramitacion> query =
-                entityManager.createNamedQuery(JTipoTramitacion.FIND_BY_ID, JTipoTramitacion.class);
+                        entityManager.createNamedQuery(JTipoTramitacion.FIND_BY_ID, JTipoTramitacion.class);
         query.setParameter("id", id);
         List<JTipoTramitacion> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));

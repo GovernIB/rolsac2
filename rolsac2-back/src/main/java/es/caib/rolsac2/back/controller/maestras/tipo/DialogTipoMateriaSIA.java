@@ -3,6 +3,7 @@ package es.caib.rolsac2.back.controller.maestras.tipo;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
@@ -17,6 +18,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -54,7 +56,7 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
         }
 
         if (data.getDescripcion() == null) {
-            data.setDescripcion(Literal.createInstance());
+            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
         }
     }
 
@@ -92,6 +94,11 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
         if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equals(this.data.getIdentificador())
                 && maestrasSupService.existeIdentificadorTipoMateriaSIA(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            return false;
+        }
+        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
+        if(!idiomasPendientesDescripcion.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }
 

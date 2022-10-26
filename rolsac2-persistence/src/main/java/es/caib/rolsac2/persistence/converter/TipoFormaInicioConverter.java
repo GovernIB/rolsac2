@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,11 +38,36 @@ public interface TipoFormaInicioConverter extends Converter<JTipoFormaInicio, Ti
     default List<JTipoFormaInicioTraduccion> convierteLiteralToTraduccion(JTipoFormaInicio jTipoFormaInicio,
                                                                           Literal descripcion) {
 
+        //Iteramos sobre el literal para ver que idiomas se han rellenado
+        List<String> idiomasRellenos = new ArrayList<>();
+        for(String idioma : descripcion.getIdiomas()) {
+            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+                idiomasRellenos.add(idioma);
+            }
+        }
+
         if (jTipoFormaInicio.getDescripcion() == null || jTipoFormaInicio.getDescripcion().isEmpty()) {
-            jTipoFormaInicio.setDescripcion(JTipoFormaInicioTraduccion.createInstance());
+            jTipoFormaInicio.setDescripcion(JTipoFormaInicioTraduccion.createInstance(idiomasRellenos));
             for (JTipoFormaInicioTraduccion jtrad : jTipoFormaInicio.getDescripcion()) {
                 jtrad.setTipoFormaInicio(jTipoFormaInicio);
             }
+        } else if(idiomasRellenos.size() >  jTipoFormaInicio.getDescripcion().size()) {
+            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+            List<JTipoFormaInicioTraduccion> tradsAux = jTipoFormaInicio.getDescripcion();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+
+            for (JTipoFormaInicioTraduccion traduccion : jTipoFormaInicio.getDescripcion()) {
+                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            for (String idioma : idiomasNuevos) {
+                JTipoFormaInicioTraduccion trad = new JTipoFormaInicioTraduccion();
+                trad.setIdioma(idioma);
+                trad.setTipoFormaInicio(jTipoFormaInicio);
+                tradsAux.add(trad);
+            }
+            jTipoFormaInicio.setDescripcion(tradsAux);
         }
         for (JTipoFormaInicioTraduccion traduccion : jTipoFormaInicio.getDescripcion()) {
             if (descripcion != null) {

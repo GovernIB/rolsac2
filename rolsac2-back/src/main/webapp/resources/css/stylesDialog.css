@@ -5,11 +5,15 @@
 }
 body {
 	/*padding-top: 4.5rem;*/
-	font: normal 100% 'Bariol Regular', Arial, Helvetica, sans-serif;
+	font: normal 100% 'Bariol Regular', Arial, Helvetica, sans-serif !important;
 	color: #333;
 	background-color: #eaeaea;
 }
-/*example*/
+
+.ui-widget button {
+	font: normal 100% 'Bariol Regular', Arial, Helvetica, sans-serif !important;
+}
+/*Botoneras multiboton*/
 .botoneraRed.ui-selectonebutton {
 	border-color: white;
 }
@@ -27,7 +31,25 @@ body {
 .botoneraRed.ui-selectonebutton .ui-state-active {
 	background-color: #cc073c !important;
 	color: white !important;
+	text-shadow: none;
 }
+/*Para p:selectManyButton multibotón y selección*/
+.botoneraRed > .ui-button {
+	transition: 0.5s;
+}
+
+.botoneraRed > .ui-button.ui-state-active {
+	background-color: #cc073c !important;
+	color: white !important;
+}
+
+.botoneraRed >.ui-button:hover {
+	background-color: #cc073c !important;
+	color: white !important;
+	background-position-x: 0;
+	background-position-y: 100px;
+}
+
 .ui-icon{
 	/** Para aumentar el tamaño. **/
 	font-size:1.2em;
@@ -35,6 +57,13 @@ body {
 .iconoRojo {
 	color: red !important;
 }
+.iconoVerde {
+	color: #1eba12 !important;
+}
+.iconoAmarillo {
+	color: #ff8000 !important;
+}
+
 .cabeceraIdiomas {
 	padding: 5px;
 }
@@ -227,6 +256,12 @@ a:hover{
 .h15px { height: 15px;}
 .h10px { height: 10px;}
 .h5px { height: 5px;}
+
+.g-5{gap:5px;}
+.g-10{gap:10px;}
+.g-15{gap:15px;}
+.g-20{gap:20px;}
+
 
 /* APLICA QUAN WIDTH MENOR DE 992px */
 @media only screen and (max-width: 992px) {
@@ -636,10 +671,7 @@ a.iconoXarxes{
 }
 
 /* Específics per primefaces */
-.ui-growl {
-	top: 100px;
-	left: 20px;
-}
+
 .ui-outputlabel {
 	padding-top: 6px;
 }
@@ -724,4 +756,13 @@ a.iconoXarxes{
 	margin-top: .8em;
 }
 
+/*Clases para gestión de los logos*/
+.logo-form {
+	border: 0;
+	padding: 0;
+}
+
+.logo-form > .ui-panel-content {
+	padding: 0;
+}
 

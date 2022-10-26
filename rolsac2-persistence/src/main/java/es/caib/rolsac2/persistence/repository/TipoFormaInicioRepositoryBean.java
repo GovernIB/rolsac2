@@ -1,7 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.TipoFormaInicioConverter;
 import es.caib.rolsac2.persistence.model.JTipoFormaInicio;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
 import es.caib.rolsac2.service.model.TipoFormaInicioGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.TipoFormaInicioFiltro;
@@ -10,6 +12,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -30,6 +33,9 @@ public class TipoFormaInicioRepositoryBean extends AbstractCrudRepository<JTipoF
     protected TipoFormaInicioRepositoryBean() {
         super(JTipoFormaInicio.class);
     }
+
+    @Inject
+    private TipoFormaInicioConverter converter;
 
     @Override
     public List<TipoFormaInicioGridDTO> findPagedByFiltro(TipoFormaInicioFiltro filtro) {
@@ -114,5 +120,19 @@ public class TipoFormaInicioRepositoryBean extends AbstractCrudRepository<JTipoF
         query.setParameter("id", id);
         List<JTipoFormaInicio> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
+    }
+
+    @Override
+    public List<TipoFormaInicioDTO> findAllTipoFormaInicio() {
+        TypedQuery query =
+                entityManager.createQuery("SELECT j FROM JTipoFormaInicio j", JTipoFormaInicio.class);
+        List<JTipoFormaInicio> jTipoFormaInicios = query.getResultList();
+        List<TipoFormaInicioDTO> tipoFormaInicioDTOS = new ArrayList<>();
+        if (jTipoFormaInicios != null) {
+            for (JTipoFormaInicio jTipoFormaInicio : jTipoFormaInicios) {
+                tipoFormaInicioDTOS.add(this.converter.createDTO(jTipoFormaInicio));
+            }
+        }
+        return tipoFormaInicioDTOS;
     }
 }

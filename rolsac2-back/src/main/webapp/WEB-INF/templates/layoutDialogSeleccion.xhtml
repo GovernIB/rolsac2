@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      lang="#{sessionBean.current.toLanguageTag()}">
+<f:view locale="#{sessionBean.current}">
+    <p:importConstants type="es.caib.rolsac2.service.model.types.TypePerfiles" var="TypePerfiles" />
+    <ui:insert name="metadata" />
+    <h:head class="bg-aplicacio x">
+        <f:facet name="first" class="bg-aplicacio x2">
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <title class="x3 bg-aplicacio"><ui:insert name="pageTitleDialogSelec"/></title>
+            <link rel="shortcut icon" href="#{resource['img/GOIB_fav.png']}"/>
+        </f:facet>
+        <h:outputScript name="js/bootstrap.min.js" />
+        <ui:insert name="icerik"/>
+        <script src="#{resource['js/primefaceslocale_' += sessionBean.current.toLanguageTag() += '.js']}"
+                type="text/javascript"></script>
+    </h:head>
+    <h:outputStylesheet library="css">
+        html, body, #formDialogSelec {
+        height: 100%;
+        margin: 5;
+        margin-top: -35px;
+        margin-bottom: 20px;
+        }
+        .contenido {
+        min-height: 100%;
+        margin-bottom: 0px;
+        }
+        .footer{
+        height: 10px;
+        }
+
+        @media (max-width: 642px) {
+        .contenido {
+        margin-bottom: 0px;
+        }
+        }
+
+
+
+
+    </h:outputStylesheet>
+    <h:body>
+        <h:outputStylesheet name="css/bootstrap.min.css" />
+        <h:outputStylesheet name="css/open-iconic-bootstrap.css" />
+        <h:outputStylesheet name="css/styles.css" />
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+
+        <p:growl id="messagesDialogSelec"
+                 globalOnly="false"
+                 showDetail="true"
+                 life="5000"
+                 escape="false"/>
+        <h:form id="formDialogSelec">
+            <div class="contenido">
+                <div class="cabeceraIdiomas">
+                    <ui:insert name="contentIdioma" />
+                </div>
+                <ui:insert name="contentDialogSelec" />
+            </div>
+            <div class="footer">
+                <ui:include src="/WEB-INF/includes/footerDialog.xhtml"/>
+            </div>
+        </h:form>
+
+        <h:outputScript library="js" name="common.js" />
+    </h:body>
+</f:view>
+</html>

@@ -1,6 +1,7 @@
 package es.caib.rolsac2.service.model;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class PluginDto implements Serializable {
@@ -23,10 +24,10 @@ public class PluginDto implements Serializable {
     /**
      * PROPIEDADES PLUGIN (JSON)
      */
-    private String propiedades;
+    private List<Propiedad> propiedades;
 
 
-    public PluginDto(Long id, EntidadDTO entidad, String descripcion, String classname, String propiedades) {
+    public PluginDto(Long id, EntidadDTO entidad, String descripcion, String classname, List<Propiedad> propiedades) {
         this.codigo = id;
         this.entidad = entidad;
         this.descripcion = descripcion;
@@ -53,7 +54,7 @@ public class PluginDto implements Serializable {
         this.classname = classname;
     }
 
-    public void setPropiedades(String propiedades) {
+    public void setPropiedades(List<Propiedad> propiedades) {
         this.propiedades = propiedades;
     }
 
@@ -73,7 +74,7 @@ public class PluginDto implements Serializable {
         return classname;
     }
 
-    public String getPropiedades() {
+    public List<Propiedad> getPropiedades() {
         return propiedades;
     }
 

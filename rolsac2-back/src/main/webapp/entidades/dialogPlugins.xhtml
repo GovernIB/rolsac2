@@ -30,7 +30,7 @@
         <p:panel>
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogPlugins.data.codigo}"
@@ -66,20 +66,86 @@
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputTextarea id="txtClassname" value="#{dialogPlugins.data.classname}"
-                                 styleClass="w95" required="true" rows="3" autoResize="false"
-                                 disabled="#{dialogPlugins.isModoConsulta()}" maxlength="1000"/>
+                                     styleClass="w95" required="true" rows="3" autoResize="false"
+                                     disabled="#{dialogPlugins.isModoConsulta()}" maxlength="1000"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dialogPlugins.propiedades']}:" for="txtPropiedades"/>
+                    <p:outputLabel value="#{labels['dialogPlugins.propiedades']}:" for="dataTablePropiedades"/>
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputTextarea id="txtPropiedades" value="#{dialogPlugins.data.propiedades}"
-                                 styleClass="w95" required="true" rows="8" autoResize="false"
-                                 disabled="#{dialogPlugins.isModoConsulta()}" maxlength="4000"/>
+                <div class="ui-g-12 ui-md-10 ui-lg-5 d-flex w80">
+                    <p:dataTable id="dataTablePropiedades" var="td" value="#{dialogPlugins.data.propiedades}"
+                                 rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1;"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{dialogPlugins.propiedadSeleccionada}" rowKey="#{td.codigo}">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="rcEditarPropiedad();"
+                                disabled="#{dialogPlugins.modoAcceso=='TypeModoAcceso.CONSULTA'}"
+                        />
+
+                        <!-- Columnas -->
+                        <p:column headerText="#{labels['dialogPropiedades.codigo']}" class="ui-panelgrid-cell">
+                            <h:outputText value="#{td.codigo}"/>
+                        </p:column>
+
+                        <p:column headerText="#{labels['dialogPropiedades.valor']}" class="ui-panelgrid-cell">
+                            <h:outputText value="#{td.valor}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                    <div class="w5 ml-2 d-flex flex-column align-items-center g-5">
+                        <p:commandButton id="btnNuevaPropiedad" icon="fa fa-plus"
+                                         title="#{msg['botones.nuevo']}"
+                                         actionListener="#{dialogPlugins.nuevaPropiedad()}" process="@this"
+                                         update="messagesDialog"
+                                         rendered="#{dialogPlugins.modoAcceso!='TypeModoAcceso.CONSULTA'}"
+                                         styleClass="p-2">
+                            <p:ajax event="dialogReturn" listener="#{dialogPlugins.returnDialogo}"
+                                    update="messagesDialog dataTablePropiedades"/>
+                        </p:commandButton>
+                        <p:commandButton id="btnEditarPropiedad" icon="fa fa-edit"
+                                         title="#{msg['botones.editar']}"
+                                         actionListener="#{dialogPlugins.editarPropiedad()}" process="@this"
+                                         update="messagesDialog"
+                                         rendered="#{dialogPlugins.modoAcceso!='TypeModoAcceso.CONSULTA'}"
+                                         styleClass="p-2">
+                            <p:ajax event="dialogReturn" listener="#{dialogPlugins.returnDialogo}"
+                                    update="messagesDialog dataTablePropiedades"/>
+                        </p:commandButton>
+                        <p:commandButton id="btnEliminarPropiedad" icon="fa fa-minus"
+                                         title="#{msg['botones.eliminar']}"
+                                         actionListener="#{dialogPlugins.quitarPropiedad()}" process="@this"
+                                         update="messagesDialog dataTablePropiedades"
+                                         rendered="#{dialogPlugins.modoAcceso!='TypeModoAcceso.CONSULTA'}"
+                                         styleClass="p-2"/>
+                        <p:commandButton icon="fa fa-arrow-up" title="#{msg['botones.subir']}"
+                                         actionListener="#{dialogPlugins.subirPropiedad()}" process="@this"
+                                         update="messagesDialog dataTablePropiedades"
+                                         rendered="#{dialogPlugins.modoAcceso!='TypeModoAcceso.CONSULTA'}"
+                                         styleClass="p-2"/>
+                        <p:commandButton icon="fa fa-arrow-down" title="#{msg['botones.bajar']}"
+                                         actionListener="#{dialogPlugins.bajarPropiedad()}" process="@this"
+                                         update="messagesDialog dataTablePropiedades"
+                                         rendered="#{dialogPlugins.modoAcceso!='TypeModoAcceso.CONSULTA'}"
+                                         styleClass="p-2"/>
+
+                    </div>
                 </div>
             </div>
         </p:panel>
+        <h:outputScript rendered="#{dialogPlugins.modoAcceso!='TypeModoAcceso.CONSULTA'}">
+            function rcEditarPropiedad() {
+                document.getElementById("formDialog:btnEditarPropiedad").click();
+            }
+
+            function rcBorrarPropiedad() {
+                document.getElementById("formDialog:btnEliminarPropiedad").click();
+            }
+        </h:outputScript>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogPlugins.ayuda}"

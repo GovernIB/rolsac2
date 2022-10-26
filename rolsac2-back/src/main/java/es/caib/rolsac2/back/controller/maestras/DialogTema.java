@@ -4,9 +4,11 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
 import es.caib.rolsac2.service.model.EntidadDTO;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -55,6 +57,7 @@ public class DialogTema extends AbstractController implements Serializable {
 
         if (this.isModoAlta()) {
             data.setEntidad(sessionBean.getEntidad());
+            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = temaServiceFacade.findById((Long.valueOf(id)));
             this.identificadorOld = data.getIdentificador();
@@ -110,6 +113,12 @@ public class DialogTema extends AbstractController implements Serializable {
         if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
                 && temaServiceFacade.checkIdentificador(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            return false;
+        }
+
+        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
+        if(!idiomasPendientesDescripcion.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }
         return true;

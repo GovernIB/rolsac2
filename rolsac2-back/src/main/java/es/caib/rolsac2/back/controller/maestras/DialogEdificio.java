@@ -18,6 +18,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -52,7 +53,7 @@ public class DialogEdificio extends AbstractController implements Serializable {
         }
 
         if (data.getDescripcion() == null) {
-            data.setDescripcion(Literal.createInstance());
+            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
         }
     }
 
@@ -118,13 +119,9 @@ public class DialogEdificio extends AbstractController implements Serializable {
             return false;
         }
 
-        if (Objects.isNull(this.data.getDescripcion())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogEntidad.obligatorio.descripcion"));
-            return false;
-        }
-
-        if (!this.data.getDescripcion().checkObligatorio()) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogEntidad.obligatorio.descripcion"));
+        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
+        if(!idiomasPendientesDescripcion.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }
 

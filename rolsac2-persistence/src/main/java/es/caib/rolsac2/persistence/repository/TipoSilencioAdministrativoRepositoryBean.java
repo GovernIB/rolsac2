@@ -1,7 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.TipoSilencioAdministrativoConverter;
 import es.caib.rolsac2.persistence.model.JTipoSilencioAdministrativo;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
 import es.caib.rolsac2.service.model.TipoSilencioAdministrativoGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.TipoSilencioAdministrativoFiltro;
@@ -10,6 +12,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -26,6 +29,9 @@ import java.util.Optional;
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class TipoSilencioAdministrativoRepositoryBean extends AbstractCrudRepository<JTipoSilencioAdministrativo, Long>
         implements TipoSilencioAdministrativoRepository {
+
+    @Inject
+    private TipoSilencioAdministrativoConverter converter;
 
     protected TipoSilencioAdministrativoRepositoryBean() {
         super(JTipoSilencioAdministrativo.class);
@@ -115,5 +121,19 @@ public class TipoSilencioAdministrativoRepositoryBean extends AbstractCrudReposi
         TypedQuery<Long> query = entityManager.createNamedQuery(JTipoSilencioAdministrativo.COUNT_BY_IDENTIFICADOR, Long.class);
         query.setParameter("identificador", identificador);
         return query.getSingleResult().longValue() == 1L;
+    }
+
+    @Override
+    public List<TipoSilencioAdministrativoDTO> findAllTipoSilencio(){
+        TypedQuery query =
+                entityManager.createQuery("SELECT j FROM JTipoSilencioAdministrativo j", JTipoSilencioAdministrativo.class);
+        List<JTipoSilencioAdministrativo> jTipoSilencioAdministrativos = query.getResultList();
+        List<TipoSilencioAdministrativoDTO> tipoSilencioAdministrativoDTOS = new ArrayList<>();
+        if (jTipoSilencioAdministrativos != null) {
+            for (JTipoSilencioAdministrativo jTipoSilencioAdministrativo : jTipoSilencioAdministrativos) {
+                tipoSilencioAdministrativoDTOS.add(this.converter.createDTO(jTipoSilencioAdministrativo));
+            }
+        }
+        return tipoSilencioAdministrativoDTOS;
     }
 }

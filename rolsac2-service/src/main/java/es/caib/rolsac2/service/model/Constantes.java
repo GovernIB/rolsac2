@@ -12,4 +12,9 @@ public class Constantes {
     // Campos auditoria persona
     public static final String PERSONA_IDENTIFICADOR = "auditoria.personas.identificador";
 
+    public static final String PROCEDIMIENTO = "P";
+    public static final boolean PROCEDIMIENTO_PUBLICADO = false;
+    public static final boolean PROCEDIMIENTO_ENMODIFICACION = true;
+    public static final String SERVICIO = "S";
+
 }

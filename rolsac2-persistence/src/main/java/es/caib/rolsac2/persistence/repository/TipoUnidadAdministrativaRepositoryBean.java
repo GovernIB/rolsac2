@@ -84,11 +84,11 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder(
-                    "SELECT count(j) FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+                    "SELECT count(j) FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder(
                     "SELECT j.codigo, j.identificador, j.entidad, t.descripcion, t.cargoMasculino, t.cargoFemenino, t.tratamientoMasculino, t.tratamientoFemenino "
-                            + " FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
+                            + " FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1  ");
         }
         // if (filtro.isRellenoIdUA()) {
         // sql.append(" and j.unidadAdministrativa = :ua");

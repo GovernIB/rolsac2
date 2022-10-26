@@ -14,16 +14,13 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitle">
-        <h:outputFormat value="#{labels['viewAlertas.titulo.pagina']}" />
+        <h:outputFormat value="#{labels['viewEvolucion.titulo']}"/>
     </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
             <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
             </p:menuitem>
         </c:forEach>
-    </ui:define>
-    <ui:define name="content">
-        <h4>#{labels['menu.label.mon.entidad']} > #{labels['viewAlertas.titulo']} - Pendiente de implementación</h4>
     </ui:define>
 </ui:composition>
 

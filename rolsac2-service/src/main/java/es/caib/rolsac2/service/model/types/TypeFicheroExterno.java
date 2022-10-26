@@ -7,27 +7,31 @@ public enum TypeFicheroExterno {
     /**
      * Entidad (RS2_ENTIDA).
      */
-    ENTIDAD("/entidad/", "ENTIDA"),
+    ENTIDAD("\\entidad\\", "ENTIDA"),
+    /**
+     * Documento Normativa (**).
+     */
+    NORMATIVA_DOCUMENTO("\\normativas\\", "NORMATIVA"),
     /**
      * Ficha documentos (RS2_FCHDOC).
      */
-    FICHA_DOCUMENTOS("/ficha/", "FICDOC"),
+    FICHA_DOCUMENTOS("\\ficha\\", "FICDOC"),
     /**
      * Ficha multimedia (RS2_FCHMED).
      */
-    FICHA_MULTIMEDIA("/fichamulti/", "FCHMED"),
+    FICHA_MULTIMEDIA("\\fichamulti\\", "FCHMED"),
     /**
      * Edificio multimedia (RS2_EDIMED).
      */
-    EDIFICIO_MULTIMEDIA("/edificio/", "EDIMED"),
+    EDIFICIO_MULTIMEDIA("\\edificio\\", "EDIMED"),
     /**
      * UA multimedia (RS2_UNAMED).
      */
-    UNIADMIN_MULTIMEDIA("/unidad/", "UNAMED"),
+    UNIADMIN_MULTIMEDIA("\\unidad\\", "UNAMED"),
     /**
      * Procedimientos documento (RS2_TRADOPR).
      */
-    PROCEDIMIENTO_DOCUMENTOS("/proced/", "TRADOPR");
+    PROCEDIMIENTO_DOCUMENTOS("\\proced\\", "TRADOPR");
 
     private String ruta;
     private String tipo;
@@ -45,7 +49,7 @@ public enum TypeFicheroExterno {
         return this.ruta;
     }
 
-    public TypeFicheroExterno fromString(String tipo) {
+    public static TypeFicheroExterno fromString(String tipo) {
         TypeFicheroExterno type = null;
         if (tipo != null && !tipo.isEmpty()) {
             for (TypeFicheroExterno typeFic : TypeFicheroExterno.values()) {

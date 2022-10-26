@@ -9,24 +9,24 @@ import java.util.Objects;
 public class JProcedimientoPublicoObjectivoPK implements Serializable {
     private static final long serialVersionUID = -3845401494362339047L;
     @Column(name = "PRPO_CODPRWF", nullable = false)
-    private Integer procedimiento;
+    private Long procedimiento;
 
     @Column(name = "PRPO_TIPPOBJ", nullable = false)
-    private Integer tipoPublicoObjetivo;
+    private Long tipoPublicoObjetivo;
 
-    public Integer getProcedimiento() {
+    public Long getProcedimiento() {
         return procedimiento;
     }
 
-    public void setProcedimiento(Integer prpoCodprwf) {
+    public void setProcedimiento(Long prpoCodprwf) {
         this.procedimiento = prpoCodprwf;
     }
 
-    public Integer getTipoPublicoObjetivo() {
+    public Long getTipoPublicoObjetivo() {
         return tipoPublicoObjetivo;
     }
 
-    public void setTipoPublicoObjetivo(Integer prpoTippobj) {
+    public void setTipoPublicoObjetivo(Long prpoTippobj) {
         this.tipoPublicoObjetivo = prpoTippobj;
     }
 

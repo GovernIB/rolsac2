@@ -1,0 +1,77 @@
+<ui:component
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:cc="http://java.sun.com/jsf/composite"
+        xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+    <cc:interface componentType="ficheroComponent">
+        <cc:attribute name="value" type="es.caib.rolsac2.service.model.FicheroDTO" shortDescription="El fichero."/>
+        <cc:attribute name="ocultarTexto" type="boolean"
+                      shortDescription="Indica si hay que ocultar el texto o no. Valores posibles: true, false o null"/>
+        <cc:attribute name="tipo" type="String"
+                      shortDescription="Indica si hay que ocultar el texto o no. Valores posibles: true, false o null"/>
+        <cc:attribute name="required" type="boolean"
+                      shortDescription="Indica si es obligatorio que esté relleno. Si es obligatorio y no está relleno, se verá como en rojo"/>
+        <cc:attribute name="soloLecture" type="String"
+                      shortDescription="Indica si es solo lectura. Valores posibles: true, false o null"/>
+        <cc:attribute name="idioma" type="String"
+                      shortDescription="Idioma actual de la pantalla."/>
+        <cc:attribute name="fichero" type="es.caib.rolsac2.service.model.FicheroDTO"
+                      shortDescription="El fichero."></cc:attribute>
+
+        <cc:attribute name="contentType" type="String"
+                      shortDescription="El content Ype que acepta (es opcional)."></cc:attribute>
+        <cc:attribute name="contentAccept" type="String"
+                      shortDescription="El contenido que acepta (es opcional)."></cc:attribute>
+        <cc:attribute name="idElemento" type="Long"
+                      shortDescription="El identificador del elemento (su codigo)."></cc:attribute>
+        <cc:attribute name="tipoFichero" type="es.caib.rolsac2.service.model.types.TypeFicheroExterno"
+                      shortDescription="El tipo de elemento (TypeFicheroExterno)."></cc:attribute>
+
+        <!-- FALTA EL CONTENT TYPE, EL ACCEPT, EL ID_ELEMENTO Y EL TIPO -->
+
+    </cc:interface>
+    <cc:implementation>
+        <span id="#{cc.clientId}" style="white-space:nowrap">
+             <!--<p:inputText id="txtLogo" value="#{dialogEntidad.data.logo}"
+                                 styleClass="w95"
+                                 disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>-->
+            <p:panel id="logo" styleClass="logo-form w95">
+                        <c:choose>
+                            <c:when test="#{cc.fichero == null}">
+                                <p:fileUpload listener="#{cc.handleLogoUpload}"
+                                              mode="advanced"
+                                              dragDropSupport="false"
+                                              update="logo" sizeLimit="100000" fileLimit="3"
+                                              allowTypes="#{cc.contentType}"
+                                              validateContentType="true" accept="#{cc.contentAccept}"
+                                              onupload=""
+                                              label="Añadir"
+                                              uploadLabel="Subir"
+                                              cancelLabel="Cancelar"
+                                              styleClass=""
+                                />
+                            </c:when>
+                            <c:otherwise>
+                                <p:commandButton id="logoDescarga" value="#{cc.fichero.filename}"
+                                                 ajax="false" process="@this"
+                                                 icon="pi pi-arrow-down">
+                                     <p:fileDownload value="#{cc.obtenerFichero()}" ></p:fileDownload>
+                                </p:commandButton>
+                                <p:commandButton actionListener="#{cc.eliminarFichero()}" icon="pi pi-times"
+                                                 update="logo"></p:commandButton>
+                            </c:otherwise>
+                        </c:choose>
+
+
+            </p:panel>
+            <p:inputText id="textoInicializado" binding="#{cc.textoInicializado}" style="display:none"/>
+            <p:inputText id="textoID" binding="#{cc.textoID}"  style="display:none"/>
+            <p:inputText id="textoTemp"  binding="#{cc.textoTemp}" style="display:none"/>
+            <p:inputText id="textoFilename" binding="#{cc.textoFilename}"  style="display:none"/>
+        </span>
+    </cc:implementation>
+</ui:component>

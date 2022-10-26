@@ -165,6 +165,15 @@ public interface MaestrasSupServiceFacade {
     Pagina<TipoFormaInicioGridDTO> findByFiltro(TipoFormaInicioFiltro filtro);
 
     /**
+     * Devuelve una lista de todos los tipos
+     *
+     * @param
+     * @return lista con todos los tipos de forma inicio
+     */
+
+    List<TipoFormaInicioDTO> findAllTipoFormaInicio();
+
+    /**
      * Devuelve si existe un tipo de forma de inicio con el identificador indicado
      *
      * @param identificador identificador del tipo de forma de inicio
@@ -223,6 +232,14 @@ public interface MaestrasSupServiceFacade {
      * @return true si existe un tipo legit con el identificador indicado, false en caso contrario
      */
     boolean existeIdentificadorTipoLegitimacion(String identificador);
+
+    /**
+     * Devuelve una lista de TipoLegitimacion
+     *
+     * @param
+     * @return Lista de todos los objetos de TipoLegitimacion en la bbdd
+     */
+    List<TipoLegitimacionDTO> findAllTipoLegitimacion();
 
     /**************************************************
      **************** TIPO MATERIA SIA ****************
@@ -393,6 +410,75 @@ public interface MaestrasSupServiceFacade {
      */
     Boolean checkIdentificadorTipoPublicoObjetivo(String identificador);
 
+    /**
+     * Devuelve lista de tipo publico objetivo
+     *
+     * @param
+     * @return lista de tipo publico objetivo
+     */
+
+    List<TipoPublicoObjetivoDTO> findAllTiposPublicoObjetivo();
+
+    /**************************************************
+     **************** TIPO PROCEDIMIENTO ***********************
+     **************************************************/
+
+    /**
+     * Crea un nuevo tipoProcedimiento a la base de datos.
+     *
+     * @param dto datos del tipoProcedimiento
+     * @return identificador
+     */
+    Long create(TipoProcedimientoDTO dto) throws RecursoNoEncontradoException;
+
+    /**
+     * Actualiza los datos de un tipoProcedimiento a la base de datos.
+     *
+     * @param dto nuevos datos del tipoProcedimiento
+     * @throws RecursoNoEncontradoException si el tipoProcedimiento con el id no existe.
+     */
+    void update(TipoProcedimientoDTO dto) throws RecursoNoEncontradoException;
+
+    /**
+     * Borra un tipoProcedimiento de la bbdd
+     *
+     * @param id identificador del tipoProcedimiento a borrar
+     * @throws RecursoNoEncontradoException si el tipoProcedimiento con el id no existe.
+     */
+    void deleteTipoProcedimiento(Long id) throws RecursoNoEncontradoException;
+
+    /**
+     * Retorna un opcional amb el tipoProcedimiento indicat per l'identificador.
+     *
+     * @param id identificador del tipoProcedimiento a cercar
+     * @return un opcional amb les dades del tipoProcedimiento indicat o buid si no existeix.
+     */
+    TipoProcedimientoDTO findTipoProcedimientoById(Long id);
+
+    /**
+     * Devuelve una página con el tipoProcedimiento relacionado con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return una pàgina amb el nombre total de tipoProcedimiento i la llista de tipoProcedimiento pel rang indicat.
+     */
+    Pagina<TipoProcedimientoGridDTO> findByFiltro(TipoProcedimientoFiltro filtro);
+
+    /**
+     * Devuelve si existe un tipo Procedimiento con el identificador indicado
+     *
+     * @param identificador identificador del tipo Procedimiento
+     * @return true si existe un tipo Procedimiento con el identificador indicado, false en caso contrario
+     */
+    boolean existeIdentificadorTipoProcedimiento(String identificador);
+
+    /**
+     * Devuelve todos los procedimientos de una entidad.
+     *
+     * @param codigo
+     * @return
+     */
+    List<TipoProcedimientoDTO> findAllTipoProcedimiento(Long codigo);
+
     /**************************************************
      **************** TIPO SEXO ***********************
      **************************************************/
@@ -500,6 +586,15 @@ public interface MaestrasSupServiceFacade {
      */
     Boolean checkIdentificadorTipoSilencioAdministrativo(String identificador);
 
+    /**
+     * Devuelve lista de tipo silencio administrativo
+     *
+     * @param
+     * @return lista de tipo silencio adminsitrativo
+     */
+
+    List<TipoSilencioAdministrativoDTO> findAllTipoSilencio();
+
     /**************************************************
      **************** TIPO TRAMITACION  ***************
      **************************************************/
@@ -544,6 +639,24 @@ public interface MaestrasSupServiceFacade {
      * @return una página con el número total de tipo de tramitación y la lista tipo de tramitación con el rango indicado
      */
     Pagina<TipoTramitacionGridDTO> findByFiltro(TipoTramitacionFiltro filtro);
+
+    /**
+     * Devuelve lista de tipo tramitación
+     *
+     * @param
+     * @return lista de tipo tramitación
+     */
+
+    List<TipoTramitacionDTO> findAllTiposTramitacion();
+
+    /**
+     * Devuelve lista de tipo tramitación que son plantillas
+     *
+     * @param
+     * @return lista de tipo tramitación que son plantillas
+     */
+
+    List<TipoTramitacionDTO> findPlantillasTiposTramitacion();
 
     /**************************************************
      **************** TIPO VIA  ***********************
@@ -604,4 +717,48 @@ public interface MaestrasSupServiceFacade {
      * @return
      */
     boolean checkIdentificadorTipoBoletin(String identificador);
+
+    Long create(TipoPublicoObjetivoEntidadDTO dto) throws RecursoNoEncontradoException;
+
+    /**
+     * Actualiza los datos de un tipo de afectación a la base de datos.
+     *
+     * @param dto nuevos datos del tipo de afectación
+     * @throws RecursoNoEncontradoException si el tipo de afectación con el id no existe.
+     */
+    void update(TipoPublicoObjetivoEntidadDTO dto) throws RecursoNoEncontradoException;
+
+    /**
+     * Borra un tipo de afectación de la bbdd
+     *
+     * @param id identificador del tipo de afectación a borrar
+     * @throws RecursoNoEncontradoException si el tipo de afectación con el id no existe.
+     */
+    void deleteTipoPublicoObjetivoEntidad(Long id) throws RecursoNoEncontradoException;
+
+    /**
+     * Retorna el tipo de afectación indicado por el identificador
+     *
+     * @param id identificador del tipo de afectación a buscar
+     * @return dato del tipo de afectación indicado o vacío si no existe
+     */
+    TipoPublicoObjetivoEntidadDTO findTipoPublicoObjetivoEntidadById(Long id);
+
+    /**
+     * Devuelve una página con el tipo de afectación relacionado con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return una página con el número total de tipo de afectación y la lista tipo de afectación con el rango indicado
+     */
+    Pagina<TipoPublicoObjetivoEntidadGridDTO> findByFiltro(TipoPublicoObjetivoEntidadFiltro filtro);
+
+    /**
+     * Devuelve si existe un tipo de afectación con el identificador indicado
+     *
+     * @param identificador identificador del tipo de afectación
+     * @return true si existe un tipo de afectación con el identificador indicado, false en caso contrario
+     */
+    boolean existeIdentificadorTipoPublicoObjetivoEntidad(String identificador);
+
+
 }
