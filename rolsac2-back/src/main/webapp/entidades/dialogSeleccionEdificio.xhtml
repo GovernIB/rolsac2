@@ -1,0 +1,106 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<ui:composition template="/WEB-INF/templates/layoutDialogSeleccion.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewAction action="#{dialogSeleccionEdificio.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['viewSeccion.titulo.pagina']}" />
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="true"
+                 life="5000"
+                 process="@all"
+                 escape="false"/>
+        <h:form>
+            <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
+                             style="display:none" ajax="false" action="#{dialogSeleccionEdificio.buscar}"
+                             update="dataTable"/>
+            <p:toolbar id="toolbar">
+                <f:facet name="left">
+                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                                                                                     value="#{dialogSeleccionEdificio.filtroTexto}"/>
+                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                     actionListener="#{dialogSeleccionEdificio.buscar()}" process="@form"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable id="dataTable" value="#{dialogSeleccionEdificio.lazyModel}" var="edificio"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="edificioTable"
+                         rows="#{dialogSeleccionEdificio.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                         first="#{dialogSeleccionEdificio.filtro.paginaFirst}"
+                         paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                         paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         emptyMessage="#{labels['dict.noHayDatos']}"
+                         selectionMode="single" selection="#{dialogSeleccionEdificio.datoSeleccionado}"
+                         rowKey="#{edificio.codigo}"
+                         reflow="true"
+                         sortBy="#{dialogSeleccionEdificio.filtro.orderBy}"
+                         sortOrder="#{dialogSeleccionEdificio.filtro.order}"
+                         style="min-height: 420px;"
+            >
+                <!--<p:ajax event="rowDblselect" listener="#{viewPersonal.consultarPersonal}"
+                        update="dataTable" /> -->
+                <p:ajax
+                        event="rowDblselect"
+                        oncomplete="triggerDblClick();"
+                        global="false"/>
+                <f:facet name="{RowsPerPageLabel}">
+                    #{labels.dataTable_rowsPerPage}
+                </f:facet>
+                <p:column sortBy="#{edificio.codigo}" headerText="#{labels['dict.codigo']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{edificio.codigo}"/>
+                </p:column>
+                <p:column sortBy="#{edificio.direccion}" headerText="#{labels['viewEdificios.direccion']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{edificio.direccion}"/>
+                </p:column>
+                <p:column sortBy="#{edificio.poblacion}" headerText="#{labels['viewEdificios.poblacion']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{edificio.poblacion}"/>
+                </p:column>
+                <p:column sortBy="#{edificio.cp}" headerText="#{labels['viewEdificios.cp']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{edificio.cp}"/>
+                </p:column>
+                <p:column sortBy="#{edificio.telefono}" headerText="#{labels['viewEdificios.telefono']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{edificio.telefono}"/>
+                </p:column>
+                <p:column sortBy="#{edificio.fax}" headerText="#{labels['viewEdificios.fax']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{edificio.fax}"/>
+                </p:column>
+                <p:column sortBy="#{edificio.email}" headerText="#{labels['viewEdificios.email']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{edificio.email}"/>
+                </p:column>
+                <p:column sortBy="#{edificio.descripcion}" styleClass="overflow-datagrid-cell"
+                          headerText="#{labels['dict.descripcion']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{edificio.descripcion.getTraduccion(sessionBean.lang)}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogSeleccionEdificio.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         rendered="#{!dialogSeleccionEdificio.isModoConsulta()}"
+                         process="@all"/>
+        <p:commandButton action="#{dialogSeleccionEdificio.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,156 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogDocumentoNormativa.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogDocumentoNormativa.id}"/>
+            <f:viewAction action="#{dialogDocumentoNormativa.load}"/>
+        </f:metadata>
+    </ui:define>
+
+
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogDocumentoNormativa.detalle']} - #{dialogDocumentoNormativa.data.codigo} "
+                        rendered="#{!dialogDocumentoNormativa.isModoAlta()}"/>
+        <h:outputFormat value="#{labels['dialogDocumentoNormativa.nuevo.documentoNormativa']}"
+                        rendered="#{dialogDocumentoNormativa.isModoAlta()}"/>
+    </ui:define>
+
+    <ui:define name="contentIdioma">
+
+        <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogDocumentoNormativa.idioma}" styleClass="botoneraRed">
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+            <p:ajax update="formDialog:txtTitulo formDialog:inputDescripcion formDialog:txtUrl formDialog:documentosMulti" process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogDocumentoNormativa.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this"/>
+    </ui:define>
+
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="true"
+                 life="5000"
+                 escape="false"/>
+
+        <p:panel>
+            <div class="row">
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <my:literalComponent id="txtTitulo"
+                                         literal="#{dialogDocumentoNormativa.data.titulo}"
+                                         soloLecture="#{dialogDocumentoNormativa.isModoConsulta()}"
+                                         required="true"
+                                         idioma="#{dialogDocumentoNormativa.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['dict.titulo']}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <my:literalComponent id="inputDescripcion"
+                                         literal="#{dialogDocumentoNormativa.data.descripcion}"
+                                         soloLecture="#{dialogDocumentoNormativa.isModoConsulta()}"
+                                         idioma="#{dialogDocumentoNormativa.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['dict.descripcion']}"/>
+                </div>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.url']}:" for="txtUrl"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <my:literalComponent id="txtUrl"
+                                         literal="#{dialogDocumentoNormativa.data.url}"
+                                         soloLecture="#{dialogDocumentoNormativa.isModoConsulta()}"
+                                         idioma="#{dialogDocumentoNormativa.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['dict.url']}"/>
+                </div>
+                <div class="ui-g-12 ui-md-2 ui-lg-2">
+                    <h:outputText value="#{labels['dialogDocumentoNormativa.documento']}:"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-4">
+                    <p:panel id="documentosMulti">
+                        <c:forEach items="#{sessionBean.getIdiomasPermitidosList()}" var="idioma">
+                            <p:panel id="#{labels['dialog.doc.txt.' += idioma]}" styleClass="logo-form w95"
+                                     rendered="#{idioma.equals(dialogDocumentoNormativa.idioma)}">
+                                <c:choose>
+                                    <c:when test="#{!dialogDocumentoNormativa.hasDocument(idioma)}">
+                                        <p:fileUpload listener="#{dialogDocumentoNormativa.handleDocUpload}"
+                                                      mode="advanced"
+                                                      dragDropSupport="false"
+                                                      fileLimit="3"
+                                                      allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf|odt)$/"
+                                                      onupload=""
+                                                      label="Añadir"
+                                                      uploadLabel="Subir"
+                                                      cancelLabel="Cancelar"
+                                                      styleClass=""
+                                                      update="formDialog:#{labels['dialog.doc.txt.' += idioma]}"
+                                        />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p:commandButton id="logoDescarga"
+                                                         value="#{dialogDocumentoNormativa.getFileName(idioma)}"
+                                                         ajax="false" process="@this"
+                                                         icon="pi pi-arrow-down">
+                                            <p:fileDownload
+                                                    value="#{dialogDocumentoNormativa.obtenerDocumento(idioma)}"></p:fileDownload>
+                                        </p:commandButton>
+                                        <p:commandButton actionListener="#{dialogDocumentoNormativa.eliminarDocumento(idioma)}"
+                                                         icon="pi pi-times" process="@this" update="formDialog:#{labels['dialog.doc.txt.' += idioma]}"
+                                        ></p:commandButton>
+                                    </c:otherwise>
+                                </c:choose>
+                            </p:panel>
+                        </c:forEach>
+                    </p:panel>
+                </div>
+            </div>
+        </p:panel>
+
+
+    </ui:define>
+
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogDocumentoNormativa.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogDocumentoNormativa.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         process="@all"
+                         disabled="#{dialogDocumentoNormativa.isModoConsulta()}"/>
+        <p:commandButton action="#{dialogDocumentoNormativa.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this"/>
+
+    </ui:define>
+
+</ui:composition>
+</html>
