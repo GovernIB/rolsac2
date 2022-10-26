@@ -17,7 +17,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
 
     <ui:define name="pageTitle">
-        <h:outputFormat value="#{labels['viewEntidades.gestion']}"/>
+        <h:outputFormat value="#{labels['viewTipoEntidades.titulo']}"/>
     </ui:define>
 
     <ui:define name="breadcrumb">
@@ -30,7 +30,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:commandButton value="#{labels['viewEntidades.boton.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false"
                              action="#{viewEntidades.buscar}" update="dataTable"/>
@@ -125,19 +125,12 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
 
             <h:outputScript>
                 function triggerDblClick() {
-                    myDoubleClickCommand();
-                    /*$('#form\\:btnConsultaHidden').click();*/
+                    $('#form\\:btnEditarHidden').click();
                 }
             </h:outputScript>
 
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewEntidades.editarEntidad()}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this"/>
-            <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
-                             actionListener="#{viewEntidades.consultarEntidad}" process="@this" update="messages"
+            <p:commandButton  id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
+                             actionListener="#{viewEntidades.editarEntidad()}" process="@this" update="messages"
                              style="display: none">
                 <p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}" update="messages dataTable"/>
             </p:commandButton>

@@ -4,9 +4,15 @@ import es.caib.rolsac2.back.security.Security;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceBean;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
+import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +22,11 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URLConnection;
 import java.util.*;
 
 /**
@@ -39,6 +47,9 @@ public class SessionBean implements Serializable {
     private static final long serialVersionUID = -3709390221710580769L;
 
     private static final Logger LOG = LoggerFactory.getLogger(SessionBean.class);
+
+    @Inject
+    SystemServiceBean systemServiceBean;
 
     @Inject
     private Security seguridad;
@@ -80,6 +91,12 @@ public class SessionBean implements Serializable {
      * Idioma.
      **/
     private String lang;
+
+    /*Idiomas permitidos en entidad*/
+    private List<String> idiomasPermitidos;
+
+    /*Idiomas obligatorios en entidad*/;
+    private List<String> idiomasObligatorios;
 
 
     /**
@@ -378,6 +395,23 @@ public class SessionBean implements Serializable {
         context.getPartialViewContext().getEvalScripts().add("location.replace(location)");
     }
 
+    public void reloadEntidad() {
+        String idUsuario = getUsuarioMockup();
+        Long lUsuario = 1l;
+        if (idUsuario != null && !idUsuario.isEmpty()) {
+            lUsuario = Long.valueOf(idUsuario);
+        }
+        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioById(lUsuario);
+
+        if (usuario.getEntidad() != null) {
+            entidades = new ArrayList<>();
+            entidad = usuario.getEntidad();
+            if (Boolean.TRUE.equals(entidad.getActiva())) {
+                entidades.add(entidad);
+            }
+        }
+    }
+
     // Mètodes
     public void reloadPerfil() {
         String rolsac2back = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
@@ -386,17 +420,21 @@ public class SessionBean implements Serializable {
                 opcion = "viewPersonal.titulo";
                 context.getPartialViewContext().getEvalScripts()
                         .add("location.replace('" + rolsac2back + "/maestras/viewPersonal.xhtml')");
+                reloadEntidad();
                 break;
             case ADMINISTRADOR_ENTIDAD:
                 opcion = "viewConfiguracionEntidad.titulo";
                 context.getPartialViewContext().getEvalScripts()
                         .add("location.replace('" + rolsac2back + "/entidades/viewConfiguracionEntidad.xhtml')");
+                reloadEntidad();
                 break;
             case GESTOR:
                 context.getPartialViewContext().getEvalScripts().add("location.replace(location)");
+                reloadEntidad();
                 break;
             case INFORMADOR:
                 context.getPartialViewContext().getEvalScripts().add("location.replace(location)");
+                reloadEntidad();
                 break;
             case SUPER_ADMINISTRADOR:
                 opcion = "viewTipoEntidades.titulo";
@@ -405,6 +443,10 @@ public class SessionBean implements Serializable {
                 break;
         }
 
+    }
+
+    public String getPathAbsoluto() {
+        return systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
     }
 
     /**
@@ -469,6 +511,20 @@ public class SessionBean implements Serializable {
         }
     }
 
+    public boolean isSuperAdministrador() {
+        return this.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR;
+    }
+
+    public boolean checkLogo() {
+        if (this.perfil == TypePerfiles.SUPER_ADMINISTRADOR) {
+            return false;
+        } else if (this.entidad.getLogo() == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public void updateAspect() {
         String width = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
                 .get("formAspect:windowWidth");
@@ -480,6 +536,72 @@ public class SessionBean implements Serializable {
         if (height != null) {
             this.screenHeight = height;
         }
+    }
+
+    public String getIdiomasPermitidos() {
+        String idiomas = "";
+        if (perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
+            for (TypeIdiomaFijo idioma : TypeIdiomaFijo.values()) {
+                idiomas += idioma.toString() + ';';
+            }
+            for (TypeIdiomaOpcional idioma : TypeIdiomaOpcional.values()) {
+                idiomas += idioma.toString() + ';';
+            }
+            return idiomas;
+        } else {
+            return this.entidad.getIdiomasPermitidos();
+        }
+    }
+
+    public List<String> getIdiomasPermitidosList() {
+        List<String> idiomas = new ArrayList<>();
+        if (perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
+            for (TypeIdiomaFijo idioma : TypeIdiomaFijo.values()) {
+                idiomas.add(idioma.toString());
+            }
+            for (TypeIdiomaOpcional idioma : TypeIdiomaOpcional.values()) {
+                idiomas.add(idioma.toString());
+            }
+            return idiomas;
+        } else {
+            return List.of(this.entidad.getIdiomasPermitidos().split(";"));
+        }
+    }
+
+    public String getIdiomasObligatorios() {
+        String idiomas = "";
+        if (perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
+            for (TypeIdiomaFijo idioma : TypeIdiomaFijo.values()) {
+                idiomas += idioma.toString() + ';';
+            }
+            return idiomas;
+        } else {
+            return this.entidad.getIdiomasObligatorios();
+        }
+    }
+
+    public List<String> getIdiomasObligatoriosList() {
+        List<String> idiomas = new ArrayList<>();
+        if (perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
+            for (TypeIdiomaFijo idioma : TypeIdiomaFijo.values()) {
+                idiomas.add(idioma.toString());
+            }
+            return idiomas;
+        } else {
+            return List.of(this.entidad.getIdiomasObligatorios().split(";"));
+        }
+    }
+
+    public StreamedContent getLogoEntidad() {
+        FicheroDTO logo = entidadservice.getLogoEntidad(this.entidad.getLogo().getCodigo());
+        String mimeType = URLConnection.guessContentTypeFromName(logo.getFilename());
+        InputStream fis = new ByteArrayInputStream(logo.getContenido());
+        StreamedContent file = DefaultStreamedContent.builder()
+                .name(logo.getFilename())
+                .contentType(mimeType)
+                .stream(() -> fis)
+                .build();
+        return file;
     }
 
 
@@ -592,6 +714,10 @@ public class SessionBean implements Serializable {
         return screenWidth;
     }
 
+    public Integer getScreenWidthInt() {
+        return screenWidth == null ? null : Integer.parseInt(screenWidth);
+    }
+
     public void setScreenWidth(String screenWidth) {
         this.screenWidth = screenWidth;
     }
@@ -603,4 +729,7 @@ public class SessionBean implements Serializable {
     public void setScreenHeight(String screenHeight) {
         this.screenHeight = screenHeight;
     }
+
+
+
 }
