@@ -9,7 +9,7 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 
-import org.primefaces.PrimeFaces;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +17,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controlador para seleccionar una UA/entidad.
@@ -33,47 +37,69 @@ public class DialogLiteral extends AbstractController implements Serializable {
     @Inject
     private UnidadAdministrativaServiceFacade uaService;
 
-    @Inject
-    private SessionBean sessionBean;
+    private List<String> idiomasAMostrar;
 
-    private String textoCA;
-    private String textoES;
+    private Map<String, String> textosEnIdioma;
+
     private Literal literal;
+
+    private boolean required;
+
+    private String nombreLiteral;
 
     public void load() {
         LOG.debug("init");
         //Inicializamos combos/desplegables/inputs
         //De momento, no tenemos desplegables.
 
+        textosEnIdioma = new HashMap<>();
+
         literal = (Literal) UtilJSF.getValorMochilaByKey("literal"); //(Literal) sessionBean.getValorMochilaByKey("literal");
         if (literal == null) {
             literal = Literal.createInstance();
         }
-        textoES = literal.getTraduccion("es");
-        textoCA = literal.getTraduccion("ca");
+        //TODO: diferenciar si estamos en menú de admin de entidad o de superadministrador
+
+        idiomasAMostrar = sessionBean.getIdiomasPermitidosList();
+        for (String idioma : idiomasAMostrar) {
+            textosEnIdioma.put(idioma, literal.getTraduccion(idioma));
+        }
+
+        required = (boolean) UtilJSF.getValorMochilaByKey("required");
+        nombreLiteral = (String) UtilJSF.getValorMochilaByKey("nombreLiteral");
 
         UtilJSF.vaciarMochila();//sessionBean.vaciarMochila();
         LOG.debug("Modo acceso " + this.getModoAcceso());
-
-
     }
 
 
     public void guardar() {
 
-        literal.add(new Traduccion("es", textoES));
-        literal.add(new Traduccion("ca", textoCA));
-
-        // Retornamos resultado
-        LOG.debug("Acceso:" + this.getModoAcceso());
-        if (this.getModoAcceso() == null) {
-            //TODO Pendiente
-            this.setModoAcceso(TypeModoAcceso.ALTA.toString());
+        /*literal.add(new Traduccion("es", textoES));
+        literal.add(new Traduccion("ca", textoCA));*/
+        boolean errorValidacion = false;
+        if (required) {
+            errorValidacion = validar();
         }
-        final DialogResult result = new DialogResult();
-        result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
-        result.setResult(literal);
-        UtilJSF.closeDialog(result);
+        if (errorValidacion) {
+            return;
+        } else {
+            for (Map.Entry<String, String> texto : textosEnIdioma.entrySet()) {
+                literal.add(new Traduccion(texto.getKey(), texto.getValue()));
+            }
+
+            // Retornamos resultado
+            LOG.debug("Acceso:" + this.getModoAcceso());
+            if (this.getModoAcceso() == null) {
+                //TODO Pendiente
+                this.setModoAcceso(TypeModoAcceso.ALTA.toString());
+            }
+            final DialogResult result = new DialogResult();
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+            result.setResult(literal);
+            UtilJSF.closeDialog(result);
+        }
+
     }
 
     public void cerrar() {
@@ -82,6 +108,23 @@ public class DialogLiteral extends AbstractController implements Serializable {
         result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
         result.setCanceled(true);
         UtilJSF.closeDialog(result);
+    }
+
+    public boolean validar() {
+        boolean error = false;
+        List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
+        List<String> idiomasPendientes = new ArrayList<>();
+        for (String idioma : idiomasObligatorios) {
+            if (textosEnIdioma.get(idioma) == null) {
+                error = true;
+                idiomasPendientes.add(idioma);
+            }
+        }
+        if (error) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogLiteral.validacion.idiomas") +  idiomasPendientes.toString(),
+                    true);
+        }
+        return error;
     }
 
     public String getId() {
@@ -108,27 +151,35 @@ public class DialogLiteral extends AbstractController implements Serializable {
         this.sessionBean = sessionBean;
     }
 
-    public String getTextoCA() {
-        return textoCA;
-    }
-
-    public void setTextoCA(String textoCA) {
-        this.textoCA = textoCA;
-    }
-
-    public String getTextoES() {
-        return textoES;
-    }
-
-    public void setTextoES(String textoES) {
-        this.textoES = textoES;
-    }
-
     public Literal getLiteral() {
         return literal;
     }
 
     public void setLiteral(Literal literal) {
         this.literal = literal;
+    }
+
+    public List<String> getIdiomasAMostrar() {
+        return idiomasAMostrar;
+    }
+
+    public void setIdiomasAMostrar(List<String> idiomasAMostrar) {
+        this.idiomasAMostrar = idiomasAMostrar;
+    }
+
+    public Map<String, String> getTextosEnIdioma() {
+        return textosEnIdioma;
+    }
+
+    public void setTextosEnIdioma(Map<String, String> textosEnIdioma) {
+        this.textosEnIdioma = textosEnIdioma;
+    }
+
+    public String getNombreLiteral() {
+        return nombreLiteral;
+    }
+
+    public void setNombreLiteral(String nombreLiteral) {
+        this.nombreLiteral = nombreLiteral;
     }
 }

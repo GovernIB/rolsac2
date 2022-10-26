@@ -1,12 +1,7 @@
 package es.caib.rolsac2.service.model;
 
-import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
-import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * Literal.
@@ -14,7 +9,7 @@ import java.util.stream.Stream;
  * @author indra
  */
 
-public class Literal {
+public class LiteralHTML {
 
     /**
      * Serial version UID.
@@ -34,38 +29,19 @@ public class Literal {
     /**
      * Crea una nueva instancia de Traducciones.
      */
-    public Literal() {
+    public LiteralHTML() {
         super();
     }
 
-    public static Literal createInstance() {
-        Literal literal = new Literal();
+    public static LiteralHTML createInstance() {
+        LiteralHTML literal = new LiteralHTML();
         List<Traduccion> trads = new ArrayList<>();
-        List<String> idiomas = new ArrayList<>();
-        for(TypeIdiomaFijo i : TypeIdiomaFijo.values() ) {
-            idiomas.add(i.toString());
-        }
-        for(TypeIdiomaOpcional i : TypeIdiomaOpcional.values() ) {
-            idiomas.add(i.toString());
-        }
-        for (String idioma : idiomas) {
+        for (String idioma : Constantes.IDIOMAS) {
             trads.add(new Traduccion(idioma, ""));
         }
         literal.setTraducciones(trads);
         return literal;
     }
-
-    public static Literal createInstance(List<String> idiomas) {
-        Literal literal = new Literal();
-        List<Traduccion> trads = new ArrayList<>();
-
-        for (String idioma : idiomas) {
-            trads.add(new Traduccion(idioma, ""));
-        }
-        literal.setTraducciones(trads);
-        return literal;
-    }
-
 
     /**
      * Para obtener una traducción
@@ -257,18 +233,5 @@ public class Literal {
             }
         }
         return true;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Literal literal = (Literal) o;
-        return Objects.equals(trads, literal.trads) && Objects.equals(codigo, literal.codigo);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(trads, codigo);
     }
 }

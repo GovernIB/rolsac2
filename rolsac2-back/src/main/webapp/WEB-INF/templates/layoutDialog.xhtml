@@ -4,11 +4,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      lang="#{sessionBean.current.toLanguageTag()}">
+      lang="#{userLocale.current.toLanguageTag()}">
 <!--
 Plantilla.
 -->
-<f:view locale="#{sessionBean.current}">
+<f:view locale="#{userLocale.current}">
     <!-- Espai perquè les pàgines que emprin el template defineixin els seus viewParam i viewAction -->
     <ui:insert name="metadata"/>
     <h:head class="bg-aplicacio x">
@@ -18,7 +18,7 @@ Plantilla.
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
             <title class="x3 bg-aplicacio"><ui:insert name="pageTitleDialog"/></title>
-             <link rel="shortcut icon" href="#{resource['img/GOIB_fav.png']}"/>
+            <link rel="shortcut icon" href="#{resource['img/GOIB_fav.png']}"/>
         </f:facet>
         <h:outputScript name="js/bootstrap.min.js" />
         <ui:insert name="icerik"/>
@@ -31,12 +31,24 @@ Plantilla.
             height: 100%;
             margin: 0;
         }
-        .contenido {
-            min-height: 100%;
-            margin-bottom: -50px;
+
+        .wrapper {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
-        .footer{
+
+        .contenido {
+            flex: 1;
+            overflow: auto;
+        }
+
+        .footer {
             height: 50px;
+        }
+
+        .ui-dialog {
+            z-index: 1030 !important;
         }
 
         @media (max-width: 642px) {
@@ -45,19 +57,16 @@ Plantilla.
             }
         }
 
-
-
-
     </h:outputStylesheet>
-    <h:body>
+    <h:body style="z-index: 1050 !important;">
         <!--
         Les declaram aquí enlloc de a HEAD per assegurar que es carreguen després dels de Primefaces
         Veure: https://stackoverflow.com/a/8774997/11751648
         -->
-        <h:outputStylesheet name="css/bootstrap.min.css" />
-        <h:outputStylesheet name="css/open-iconic-bootstrap.css" />
-        <h:outputStylesheet name="css/stylesDialog.css" />
-        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        <h:outputStylesheet name="css/bootstrap.min.css"/>
+        <h:outputStylesheet name="css/open-iconic-bootstrap.css"/>
+        <h:outputStylesheet name="css/stylesDialog.css"/>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
 
         <!-- Content -->
         <!--
@@ -71,21 +80,20 @@ Plantilla.
         -->
 
         <h:form id="formDialog">
-
-
-
-            <div class="contenido">
-                <div class="cabeceraIdiomas">
-                    <ui:insert name="contentIdioma" />
+            <div class="wrapper">
+                <div class="contenido">
+                    <div class="cabeceraIdiomas d-flex">
+                        <ui:insert name="contentIdioma"/>
+                    </div>
+                    <ui:insert name="contentDialog"/>
                 </div>
-                <ui:insert name="contentDialog" />
+                <div class="footer">
+                    <ui:include src="/WEB-INF/includes/footerDialog.xhtml"/>
+                </div>
             </div>
-
-            <div class="footer">
-                <ui:include src="/WEB-INF/includes/footerDialog.xhtml"/>
-            </div>
-
         </h:form>
+
+
         <!--
             -->
 

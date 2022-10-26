@@ -20,8 +20,8 @@ Plantilla.
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
             <title><ui:insert name="pageTitle"/></title>
-             <link rel="shortcut icon" href="#{resource['img/GOIB_fav.png']}"/>
-         </f:facet>
+            <link rel="shortcut icon" href="#{resource['img/GOIB_fav.png']}"/>
+        </f:facet>
         <h:outputScript name="js/bootstrap.min.js" />
         <!-- Traduccions personalitzades de PrimeFaces en català i castellà -->
         <script src="#{resource['js/primefaceslocale_' += sessionBean.current.toLanguageTag() += '.js']}"
@@ -36,31 +36,52 @@ Plantilla.
         <h:outputStylesheet name="css/open-iconic-bootstrap.css" />
         <h:outputStylesheet name="css/styles.css" />
         <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        <h:form id="formAspect" style="display: none;">
+            <p:inputText id="windowWidth" value="#{sessionBean.screenWidth}">
+            </p:inputText>
+            <p:inputText id="windowHeight" value="#{sessionBean.screenHeight}">
+            </p:inputText>
+            <h:commandButton id="btnAspect" action="#{sessionBean.updateAspect()}">
+                <f:ajax execute="@this"  render="@this" />
+            </h:commandButton>
+        </h:form>
+
+
 
         <h:form prependId="false">
             <header>
-               <!-- Header -->
-                <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark bg-header">
+                <!-- Header -->
+                <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark bg-header" style="z-index:1002 !important;">
                     <button class="navbar-toggler botoMobil" type="button" data-toggle="collapse"
                             data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
                             aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
+
+
                     <ui:include src="/WEB-INF/includes/header_logo_nombre.xhtml" />
 
+
+
                     <ui:include src="/WEB-INF/includes/header_botonera.xhtml" />
+
+
 
                 </nav>
                 <!-- FI Header -->
             </header>
         </h:form>
 
+
+
         <p:growl id="messages"
                  globalOnly="false"
                  showDetail="true"
                  life="5000"
                  escape="false"/>
+
+
 
         <h:form>
             <p:confirmDialog global="true">
@@ -70,16 +91,20 @@ Plantilla.
                                  icon="ui-icon-close"/>
             </p:confirmDialog>
 
+
+
             <ui:include src="/WEB-INF/includes/header_breadcrumb.xhtml" />
         </h:form>
+
+
 
         <!-- Content -->
         <div class="aplicacio contenido">
             <div class="bg-white rounded box-shadow">
                 <!-- Contingut -->
                 <div class="card mb-12 border-0">
-                    <span class="h5 card-title border-bottom verde">
-                        <ui:insert name="pageTitle">Título por defecto</ui:insert>
+                    <span class="h5 view-title">
+                        <ui:insert name="pageTitle"></ui:insert>
                     </span>
                     <ui:insert name="content"/>
                 </div>
@@ -88,9 +113,23 @@ Plantilla.
         </div>
         <!-- FI Content -->
 
+
+
         <ui:include src="/WEB-INF/includes/footer.xhtml"/>
         <h:outputScript library="js" name="common.js" />
 
+
+
     </h:body>
 </f:view>
+<script>
+    document.getElementById("formAspect:windowWidth").setAttribute("value", window.innerWidth);
+    document.getElementById("formAspect:windowHeight").setAttribute("value", window.innerHeight);
+    document.getElementById("formAspect:btnAspect").click();
+    window.addEventListener('resize', ()=> {
+        document.getElementById("formAspect:windowWidth").setAttribute("value", window.innerWidth);
+        document.getElementById("formAspect:windowHeight").setAttribute("value", window.innerHeight);
+        document.getElementById("formAspect:btnAspect").click();
+    })
+</script>
 </html>

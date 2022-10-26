@@ -12,60 +12,87 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="metadata">
         <f:metadata>
-            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogLiteral.modoAcceso}" />
-            <f:viewParam id="ID" name="ID" value="#{dialogLiteral.id}" />
-            <f:viewAction action="#{dialogLiteral.load}" />
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogLiteral.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogLiteral.id}"/>
+            <f:viewAction action="#{dialogLiteral.load}"/>
         </f:metadata>
     </ui:define>
 
 
     <ui:define name="pageTitleDialog">
-        Gestión de literales
+        <c:choose>
+            <c:when test="#{dialogLiteral.nombreLiteral != null}">
+                #{labels['dialog.literal.title']} > #{dialogLiteral.nombreLiteral}
+            </c:when>
+            <c:otherwise>
+                #{labels['dialog.literal.title']}
+            </c:otherwise>
+        </c:choose>
+
+
     </ui:define>
 
 
-    <ui:define name="contentDialog" >
+    <ui:define name="contentDialog">
         <p:panel>
-           <p:growl id="messagesDialog"
+            <p:growl id="messagesDialog"
                      globalOnly="false"
-                     showDetail="true"
+                     showDetail="false"
                      life="5000"
                      process="@all"
-                     escape="false"/>
+                     escape="false"
 
-                <div class="row p-3">
+                        />
+
+            <div class="row p-3">
+
+                <c:forEach var="idioma" items="#{dialogLiteral.idiomasAMostrar}">
                     <div class="ui-g-12 ui-md-2 ui-lg-2">
-                        <h:outputText value="#{labels['dict.textoCa']}:" for="txtCA" />
+                        <h:outputText value="#{labels['dict.texto.' += idioma]}:"
+                                      for="#{labels['dialog.literal.txt.' += idioma]}"/>
                     </div>
                     <div class="ui-g-12 ui-md-10 ui-lg-10">
-                        <p:inputTextarea id="txtCA" value="#{dialogLiteral.textoCA}" rows="5" cols="30" styleClass="w95" autoResize="false"/>
+                        <p:inputTextarea id="#{labels['dialog.literal.txt.' += idioma]}"
+                                         value="#{dialogLiteral.textosEnIdioma[idioma]}" rows="5" cols="30"
+                                         styleClass="w95"
+                                         autoResize="false"/>
                     </div>
-                    <div class="ui-g-12 ui-md-2 ui-lg-2">
-                        <h:outputText value="#{labels['dict.textoEs']}:" for="txtES" />
-                    </div>
-                    <div class="ui-g-12 ui-md-10 ui-lg-10">
-                        <p:inputTextarea id="txtES" value="#{dialogLiteral.textoES}" rows="5" cols="30" styleClass="w95" autoResize="false"/>
-                    </div>
-                </div>
-            </p:panel>
-        </ui:define>
+                </c:forEach>
+            </div>
 
+
+            <!--<div class="ui-g-12 ui-md-2 ui-lg-2">
+                <h:outputText value="#{labels['dict.textoCa']}:" for="txtCA"/>
+            </div>
+            <div class="ui-g-12 ui-md-10 ui-lg-10">
+                <p:inputTextarea id="txtCA" value="#{dialogLiteral.textoCA}" rows="5" cols="30" styleClass="w95"
+                                 autoResize="false"/>
+            </div>
+            <div class="ui-g-12 ui-md-2 ui-lg-2">
+                <h:outputText value="#{labels['dict.textoEs']}:" for="txtES"/>
+            </div>
+            <div class="ui-g-12 ui-md-10 ui-lg-10">
+                <p:inputTextarea id="txtES" value="#{dialogLiteral.textoES}" rows="5" cols="30" styleClass="w95"
+                                 autoResize="false"/>
+            </div>-->
+        </p:panel>
+    </ui:define>
 
 
     <ui:define name="contentFooterDialogLeft">
-        <p:commandButton  action="#{dialogLiteral.ayuda}"
-                          icon="pi pi-info-circle" iconPos="top"
+        <p:commandButton action="#{dialogLiteral.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
                          value="#{labels['dict.ayuda']}"
-                         process="@this" />
+                         process="@this"/>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogLiteral.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog"
                          rendered="#{!dialogLiteral.isModoConsulta()}"
-                         process="@all" />
+                         process="@all"/>
         <p:commandButton action="#{dialogLiteral.cerrar}"
                          value="#{labels['dict.cancelar']}"
-                         process="@this" />
+                         process="@this"/>
 
     </ui:define>
 
