@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Controlador para seleccionar una UA/entidad.
+ * Controlador para introducir el literal.
  *
- * @author areus
+ * @author Indra
  */
 @Named
 @ViewScoped

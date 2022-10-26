@@ -18,6 +18,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controlador para seleccionar una UA/entidad.
@@ -27,79 +31,67 @@ import java.io.Serializable;
 @Named
 @ViewScoped
 public class DialogLiteralHTML extends AbstractController implements Serializable {
-    private static final Logger LOG = LoggerFactory.getLogger(DialogLiteralHTML.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DialogLiteralHTML.class);
 
-    private String id;
+	private String id;
 
-	/** Visible Catalan. **/
-	private boolean visibleCa = false;
-	/** Visible Espanyol. **/
-	private boolean visibleEs = false;
-	/** Indica si se añade el plugin del código fuente. **/
-	private String sourceCode =" | code";
-	/** Obligatorio catalan. **/
-	private boolean requiredCa = false;
-	/** Obligatorio espanyol. **/
-	private boolean requiredEs = false;
+	/** Visible lista. **/
+	private Map<String, Boolean> visible = new HashMap<String, Boolean>();
+	private String sourceCode = " | code";
+	/** Obligatorio lista. **/
+	private Map<String, Boolean> required = new HashMap<String, Boolean>();
 
 	/** Idioma que tiene que mostrar. **/
 	private String idiomaInicial;
 
-    @Inject
-    private UnidadAdministrativaServiceFacade uaService;
+	/** Idiomas permitidos. **/
+	private List<String> idiomasPermitidos;
 
-    @Inject
-    private SessionBean sessionBean;
+	@Inject
+	private UnidadAdministrativaServiceFacade uaService;
 
-    private String textoCA;
-    private String textoES;
-    private Literal literal;
+	@Inject
+	private SessionBean sessionBean;
 
-    public void load() {
-        LOG.debug("init");
-        //Inicializamos combos/desplegables/inputs
-        //De momento, no tenemos desplegables.
+	Map<String, String> texto = new HashMap<String, String>();
+	private Literal literal;
 
-        literal = (Literal) UtilJSF.getValorMochilaByKey("literal"); //(Literal) sessionBean.getValorMochilaByKey("literal");
-        if (literal == null) {
-            literal = Literal.createInstance();
-        }
+	public void load() {
+		LOG.debug("init");
+		// Inicializamos combos/desplegables/inputs
+		// De momento, no tenemos desplegables.
+
+		idiomasPermitidos = sessionBean.getIdiomasPermitidosList();
+
+		literal = (Literal) UtilJSF.getValorMochilaByKey("literal"); // (Literal)
+																		// sessionBean.getValorMochilaByKey("literal");
+		if (literal == null) {
+			literal = Literal.createInstance();
+		}
 		inicializarTextosPermisos();
-        UtilJSF.vaciarMochila();//sessionBean.vaciarMochila();
-        LOG.debug("Modo acceso " + this.getModoAcceso());
+		UtilJSF.vaciarMochila();// sessionBean.vaciarMochila();
+		LOG.debug("Modo acceso " + this.getModoAcceso());
 
+	}
 
-    }
+	public void onload() {
+		PrimeFaces.current().executeScript("mostrar('" + idiomaInicial + "')");
+	}
 
-    public void onload() {
-    	PrimeFaces.current().executeScript("mostrar('"+idiomaInicial+"')");
-    }
-    /**
+	/**
 	 * Inicializa los textos, la visiblidad y obligatoriedad.
 	 */
 	private void inicializarTextosPermisos() {
-		String[] idiomasPosibles = {"ca", "es"};
+		List<String> idiomasPosibles = idiomasPermitidos;
+		String idiomaCamel;
 		for (final String idioma : idiomasPosibles) {
-
-			if ( idioma != null) {
-				switch (idioma) {
-				case "ca":
-					textoCA = literal.getTraduccion(idioma);
-					visibleCa = true;
-					//idiomasObligatorios.contains(idioma)
-					if (true) {
-						requiredCa = true;
-					}
-					break;
-				case "es":
-					textoES = literal.getTraduccion(idioma);
-					visibleEs = true;
-					if (true) {
-						requiredEs = true;
-					}
-					break;
-				default:
-					break;
+			if (idioma != null) {
+				idiomaCamel = idioma.substring(0, 1).toUpperCase() + idioma.substring(1);
+				texto.put(idiomaCamel, literal.getTraduccion(idioma));
+				visible.put(idiomaCamel, true);
+				// idiomasObligatorios.contains(idioma)
+				if (true) {
+					required.put(idiomaCamel, true);
 				}
 			}
 		}
@@ -116,20 +108,20 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
 	 * Borrar.
 	 */
 	public void borrar() {
+		for (String idioma : sessionBean.getIdiomasObligatoriosList()) {
+			literal.add(new Traduccion(idioma, ""));
+		}
 
-        literal.add(new Traduccion("es", ""));
-        literal.add(new Traduccion("ca", ""));
-
-        // Retornamos resultado
-        LOG.debug("Acceso:" + this.getModoAcceso());
-        if (this.getModoAcceso() == null) {
-            //TODO Pendiente
-            this.setModoAcceso("ALTA");
-        }
-        final DialogResult result = new DialogResult();
-        result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
-        result.setResult(literal);
-        UtilJSF.closeDialog(result);
+		// Retornamos resultado
+		LOG.debug("Acceso:" + this.getModoAcceso());
+		if (this.getModoAcceso() == null) {
+			// TODO Pendiente
+			this.setModoAcceso("ALTA");
+		}
+		final DialogResult result = new DialogResult();
+		result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+		result.setResult(literal);
+		UtilJSF.closeDialog(result);
 
 	}
 
@@ -143,24 +135,23 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
 		UtilJSF.closeDialog(result);
 	}
 
-    public void cerrar() {
+	public void cerrar() {
 
-    	 literal.add(new Traduccion("es", ""));
-         literal.add(new Traduccion("ca", ""));
+		literal.add(new Traduccion("es", ""));
+		literal.add(new Traduccion("ca", ""));
 
-         // Retornamos resultado
-         LOG.debug("Acceso:" + this.getModoAcceso());
-         if (this.getModoAcceso() == null) {
-             //TODO Pendiente
-             this.setModoAcceso("ALTA");
-         }
-         final DialogResult result = new DialogResult();
-         result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
-         result.setResult(literal);
-         result.setCanceled(true);
-         UtilJSF.closeDialog(result);
-    }
-
+		// Retornamos resultado
+		LOG.debug("Acceso:" + this.getModoAcceso());
+		if (this.getModoAcceso() == null) {
+			// TODO Pendiente
+			this.setModoAcceso("ALTA");
+		}
+		final DialogResult result = new DialogResult();
+		result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+		result.setResult(literal);
+		result.setCanceled(true);
+		UtilJSF.closeDialog(result);
+	}
 
 	private String replaceComillas(String texto) {
 		texto = texto.replace("`", "'");
@@ -169,7 +160,6 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
 		texto = texto.replace("’", "'");
 		return texto;
 	}
-
 
 	/**
 	 * Indica si el dialogo se abre en modo alta.
@@ -200,6 +190,7 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
 		final TypeModoAcceso modo = TypeModoAcceso.valueOf(this.getModoAcceso());
 		return (modo == TypeModoAcceso.CONSULTA);
 	}
+
 	/**
 	 * Comprueba si se excede la longitud.
 	 *
@@ -209,161 +200,81 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
 	private boolean excedeLongitud(final String texto) {
 
 		// 4000 es el tamaño máximo en tradidi
-
 		return texto != null && texto.length() > 4000;
 	}
 
-    public void guardar() {
-
-        literal.add(new Traduccion("es", textoES));
-        literal.add(new Traduccion("ca", textoCA));
-
-        // Retornamos resultado
-        LOG.debug("Acceso:" + this.getModoAcceso());
-        if (this.getModoAcceso() == null) {
-            //TODO Pendiente
-            this.setModoAcceso("ALTA");
-        }
-        final DialogResult result = new DialogResult();
-        result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
-        result.setResult(literal);
-        UtilJSF.closeDialog(result);
-    }
-
-    /**
-	 * Aceptar.
-	 */
-	/*public void aceptar() {
-
-		if (visibleCa) {
-			if (textoCA == null || textoCA.isEmpty()) {
-				//error falta literal
-				return;
-			}
-			if (excedeLongitud(textoCA)) {
-				//error longitud
-				return;
-			}
-			textoCA = replaceComillas(textoCA);
-			literal.add(new Traduccion("ca", textoCA));
+	public void guardar() {
+		List<Traduccion> trads = new ArrayList<Traduccion>();
+		for (String idioma : idiomasPermitidos) {
+			trads.add(new Traduccion(idioma,
+					texto.get(idioma.substring(0, 1).toUpperCase().concat(idioma.substring(1))) == null ? ""
+							: texto.get(idioma.substring(0, 1).toUpperCase().concat(idioma.substring(1))).toString()));
 		}
-		if (visibleEs) {
-			if (textoES == null || textoES.isEmpty()) {
-				//error falta literal
-				return;
-			}
-			if (excedeLongitud(textoES)) {
-				//error longitud
-				return;
-			}
-			textoES = replaceComillas(textoES);
-			literal.add(new Traduccion("es", textoES));
-		}
-
-
+		literal.setTraducciones(trads);
 		// Retornamos resultado
+		LOG.debug("Acceso:" + this.getModoAcceso());
+		if (this.getModoAcceso() == null) {
+			// TODO Pendiente
+			this.setModoAcceso("ALTA");
+		}
 		final DialogResult result = new DialogResult();
-		result.setModoAcceso(TypeModoAcceso.valueOf(modoAcceso));
+		result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
 		result.setResult(literal);
 		UtilJSF.closeDialog(result);
-
-	}*/
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public UnidadAdministrativaServiceFacade getUaService() {
-        return uaService;
-    }
-
-    public void setUaService(UnidadAdministrativaServiceFacade uaService) {
-        this.uaService = uaService;
-    }
-
-    public SessionBean getSessionBean() {
-        return sessionBean;
-    }
-
-    public void setSessionBean(SessionBean sessionBean) {
-        this.sessionBean = sessionBean;
-    }
-
-    public String gettextoCA() {
-        return textoCA;
-    }
-
-    public void settextoCA(String textoCA) {
-        this.textoCA = textoCA;
-    }
-
-    public String gettextoES() {
-        return textoES;
-    }
-
-    public void settextoES(String textoES) {
-        this.textoES = textoES;
-    }
-
-    public Literal getLiteral() {
-        return literal;
-    }
-
-    public void setLiteral(Literal literal) {
-        this.literal = literal;
-    }
-
-	public boolean isVisibleCa() {
-		return visibleCa;
 	}
 
-	public void setVisibleCa(boolean visibleCa) {
-		this.visibleCa = visibleCa;
+	/**
+	 * Aceptar.
+	 */
+	/*
+	 * public void aceptar() {
+	 *
+	 * if (visibleCa) { if (textoCA == null || textoCA.isEmpty()) { //error falta
+	 * literal return; } if (excedeLongitud(textoCA)) { //error longitud return; }
+	 * textoCA = replaceComillas(textoCA); literal.add(new Traduccion("ca",
+	 * textoCA)); } if (visibleEs) { if (textoES == null || textoES.isEmpty()) {
+	 * //error falta literal return; } if (excedeLongitud(textoES)) { //error
+	 * longitud return; } textoES = replaceComillas(textoES); literal.add(new
+	 * Traduccion("es", textoES)); }
+	 *
+	 *
+	 * // Retornamos resultado final DialogResult result = new DialogResult();
+	 * result.setModoAcceso(TypeModoAcceso.valueOf(modoAcceso));
+	 * result.setResult(literal); UtilJSF.closeDialog(result);
+	 *
+	 * }
+	 */
+
+	public String getId() {
+		return id;
 	}
 
-	public boolean isVisibleEs() {
-		return visibleEs;
+	public void setId(String id) {
+		this.id = id;
 	}
 
-	public void setVisibleEs(boolean visibleEs) {
-		this.visibleEs = visibleEs;
+	public UnidadAdministrativaServiceFacade getUaService() {
+		return uaService;
 	}
 
-    public String getTextoCA() {
-        return textoCA;
-    }
-
-    public void setTextoCA(String textoCA) {
-        this.textoCA = textoCA;
-    }
-
-	public String getTextoES() {
-		return textoES;
+	public void setUaService(UnidadAdministrativaServiceFacade uaService) {
+		this.uaService = uaService;
 	}
 
-	public void setTextoES(String textoES) {
-		this.textoES = textoES;
+	public SessionBean getSessionBean() {
+		return sessionBean;
 	}
 
-	public boolean isRequiredCa() {
-		return requiredCa;
+	public void setSessionBean(SessionBean sessionBean) {
+		this.sessionBean = sessionBean;
 	}
 
-	public void setRequiredCa(boolean requiredCa) {
-		this.requiredCa = requiredCa;
+	public Literal getLiteral() {
+		return literal;
 	}
 
-	public boolean isRequiredEs() {
-		return requiredEs;
-	}
-
-	public void setRequiredEs(boolean requiredEs) {
-		this.requiredEs = requiredEs;
+	public void setLiteral(Literal literal) {
+		this.literal = literal;
 	}
 
 	public String getSourceCode() {
@@ -374,12 +285,38 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
 		this.sourceCode = sourceCode;
 	}
 
+	public final List<String> getIdiomasPermitidos() {
+		return idiomasPermitidos;
+	}
+
+	/**
+	 * @return the texto
+	 */
+	public final Map<String, String> getTexto() {
+		return texto;
+	}
+
+	/**
+	 * @param texto the texto to set
+	 */
+	public final void setTexto(Map<String, String> texto) {
+		this.texto = texto;
+	}
+
+	public final void setIdiomasPermitidos(List<String> idiomasPermitidos) {
+		this.idiomasPermitidos = idiomasPermitidos;
+	}
+
 	public String getIdiomaInicial() {
 		return idiomaInicial;
 	}
 
 	public void setIdiomaInicial(String idiomaInicial) {
 		this.idiomaInicial = idiomaInicial;
+	}
+
+	public boolean visible(String idioma) {
+		return !idioma.isEmpty() ? this.visible.get(idioma.substring(0, 1).toUpperCase() + idioma.substring(1)) : false;
 	}
 
 }

@@ -69,22 +69,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     /** Funcion que muestra el tab con la traducción de cada idioma ***/
     function mostrarTab(idioma) {
-    	ocultarTab("formDialog:txtCA");
-    	ocultarTab("formDialog:txtES");
+    	if(idioma!=null &amp;&amp; idioma!="null"){
+	    	let listaIdiomas = "#{dialogLiteralHTML.idiomasPermitidos}";
+	    	listaIdiomas = listaIdiomas.slice(1, -1);
+	    	listaIdiomas = listaIdiomas.split(", ");
+	    	listaIdiomas.forEach(element => {
+	    		ocultarTab("formDialog:txt"+element.toUpperCase());
+	    		document.getElementById("formDialog:btn"+element.charAt(0).toUpperCase()+element.slice(1)).firstChild.style.background = "#f5f5f5";
+	    	});
 
-    	if (idioma == 'ca') {
-    		document.getElementById("formDialog:txtCA").parentNode.style.display="";
-    		document.getElementById("formDialog:btnCa").firstChild.style.background = "#e0d7da";
-    		document.getElementById("formDialog:btnEs").firstChild.style.background = "#f5f5f5";
-    		console.log(document.getElementById("formDialog:btnEs").firstChild);
-
-    		return;
-    	}
-    	if (idioma == 'es') {
-    		document.getElementById("formDialog:txtES").parentNode.style.display="";
-    		document.getElementById("formDialog:btnEs").firstChild.style.background = "#e0d7da";
-    		document.getElementById("formDialog:btnCa").firstChild.style.background = "#f5f5f5";
-    		return;
+	    	document.getElementById("formDialog:txt"+idioma.toUpperCase()).parentNode.style.display="";
+			document.getElementById("formDialog:btn"+idioma.charAt(0).toUpperCase()+idioma.slice(1)).firstChild.style.background = "#e0d7da";
     	}
 
     }
@@ -96,19 +91,16 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     	}
     }
 
-    var visibleCa = #{dialogLiteralHTML.visibleCa};
-    var visibleEs = #{dialogLiteralHTML.visibleEs};
-
     function guardar() {
-    	if (visibleCa) {
-    		if (!checkTiny("formDialog:txtCA")) {
-				document.getElementById("formDialog:btnCa").click();
-    			return;
-    		}
-    	}
-    	if (visibleEs) {
-    		if (!checkTiny("formDialog:txtES")) {
-				document.getElementById("formDialog:btnEs").click();
+    	let idiomas = #{sessionBean.getIdiomasPermitidosList()};
+    	idiomas.foreach(guardarLoop)
+
+    }
+
+    function guardarLoop(item){
+    	if (#{dialogLiteralHTML.visible(item)}) {
+    		if (!checkTiny("formDialog:txt"+item.toUpperCase())) {
+				document.getElementById("formDialog:btn"+item.charAt(0).toUpperCase() + item.slice(1)).click();
     			return;
     		}
     	}
@@ -168,16 +160,15 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 								                     escape="false"/>
 
 						<div class="ui-inputgroup" align="center" style="margin-top:5px;margin-bottom:5px">
-            				<p:commandButton id="btnCa" value="#{labels['dict.textoCa']}"  oncomplete="mostrar('ca')" process="@this" style="outline:none !important;" actionListener="dialogLiteralHTML.setIdioma('es')"/>
-            				<p:commandButton id="btnEs" value="#{labels['dict.textoEs']}"  oncomplete="mostrar('es')" process="@this" style="outline:none !important;" actionListener="dialogLiteralHTML.setIdioma('ca')"/>
+							<c:forEach items="#{dialogLiteralHTML.idiomasPermitidos}" var="idioma">
+            					<p:commandButton id="btn#{idioma.substring(0, 1).toUpperCase().concat(idioma.substring(1))}" value="#{labels['idiomas.' += idioma]}"  oncomplete="mostrar('#{idioma}')" process="@this" style="outline:none !important;" actionListener="dialogLiteralHTML.setIdioma(idioma)"/>
+							</c:forEach>
         				</div>
-
-        				<div style="margin:10px" rendered="#{dialogLiteralHTML.visibleCa}" >
-							<p:inputTextarea id="txtCA" value="#{dialogLiteralHTML.textoCA}" disabled="#{dialogLiteralHTML.isConsulta()}" rows="14" cols="140" autoResize="false" maxlength="4000" style="height:559px"  />
-						</div>
-						<div style="margin:10px; height:559px !important" rendered="#{dialogLiteralHTML.visibleEs}">
-							<p:inputTextarea id="txtES" value="#{dialogLiteralHTML.textoES}" disabled="#{dialogLiteralHTML.isConsulta()}" rows="14" cols="140" autoResize="false" class="alturas"  maxlength="4000" style="height:559px !important;"/>
-						</div>
+						<c:forEach items="#{dialogLiteralHTML.idiomasPermitidos}" var="idioma">
+            				<div style="margin:10px" rendered="#{dialogLiteralHTML.visible(idioma)}" >
+								<p:inputTextarea id="txt#{idioma.toUpperCase()}" value="#{dialogLiteralHTML.texto[idioma.substring(0, 1).toUpperCase().concat(idioma.substring(1))]}" disabled="#{dialogLiteralHTML.isConsulta()}" rows="14" cols="140" autoResize="false" maxlength="4000" style="height:559px"  />
+							</div>
+            			</c:forEach>
 
 				</p:panel>
 	</ui:define>
