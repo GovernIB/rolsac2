@@ -3,6 +3,7 @@ package es.caib.rolsac2.back.controller.maestras.tipo;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoNormativaDTO;
@@ -15,6 +16,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -49,7 +51,7 @@ public class DialogTipoNormativa extends AbstractController implements Serializa
             this.identificadorOld = data.getIdentificador();
         }
         if (data.getDescripcion() == null) {
-            data.setDescripcion(Literal.createInstance());
+            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
         }
 
     }
@@ -60,15 +62,7 @@ public class DialogTipoNormativa extends AbstractController implements Serializa
 
     public void guardar() {
 
-        if (Objects.isNull(this.data.getCodigo())
-                && maestrasSupService.checkIdentificadorTipoNormativa(this.data.getIdentificador())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
-            return;
-        }
-
-        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
-                && maestrasSupService.checkIdentificadorTipoNormativa(this.data.getIdentificador())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+        if (!verificarGuardar()) {
             return;
         }
 
@@ -87,6 +81,28 @@ public class DialogTipoNormativa extends AbstractController implements Serializa
         }
         result.setResult(data);
         UtilJSF.closeDialog(result);
+    }
+
+    private boolean verificarGuardar() {
+        if (Objects.isNull(this.data.getCodigo())
+                && maestrasSupService.checkIdentificadorTipoNormativa(this.data.getIdentificador())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            return false;
+        }
+
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
+                && maestrasSupService.checkIdentificadorTipoNormativa(this.data.getIdentificador())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            return false;
+        }
+
+        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
+        if(!idiomasPendientesDescripcion.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
+            return false;
+        }
+
+        return true;
     }
 
     public void cerrar() {
