@@ -8,8 +8,6 @@ public class PlatTramitElectronicaFiltro extends AbstractFiltro{
     private Long codigo;
     private String identificador;
     private EntidadDTO entidad;
-    private String descripcion;
-    private String urlAcceso;
 
     @Override
     protected String getDefaultOrder() {
@@ -48,21 +46,6 @@ public class PlatTramitElectronicaFiltro extends AbstractFiltro{
         this.entidad = entidad;
     }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getUrlAcceso() {
-        return urlAcceso;
-    }
-
-    public void setUrlAcceso(String urlAcceso) {
-        this.urlAcceso = urlAcceso;
-    }
     public boolean isRellenoTexto() {
         return texto != null && !texto.isEmpty();
     }
@@ -79,11 +62,4 @@ public class PlatTramitElectronicaFiltro extends AbstractFiltro{
         return entidad.getCodigo() != null;
     }
 
-    public boolean isRellenoDescripcion() {
-        return descripcion != null && !descripcion.isEmpty();
-    }
-
-    public boolean isRellenoUrlAcceso() {
-        return urlAcceso != null && !urlAcceso.isEmpty();
-    }
 }

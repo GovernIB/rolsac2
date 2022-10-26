@@ -11,8 +11,8 @@ public class PlatTramitElectronicaGridDTO extends ModelApi {
     private Long codigo;
     private String identificador;
     private String codEntidad;
-    private String descripcion;
-    private String urlAcceso;
+    private Literal descripcion;
+    private Literal urlAcceso;
 
     public PlatTramitElectronicaGridDTO(){}
 
@@ -69,19 +69,19 @@ public class PlatTramitElectronicaGridDTO extends ModelApi {
         this.codEntidad = codEntidad;
     }
 
-    public String getDescripcion() {
+    public Literal getDescripcion() {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
+    public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }
 
-    public String getUrlAcceso() {
+    public Literal getUrlAcceso() {
         return urlAcceso;
     }
 
-    public void setUrlAcceso(String urlAcceso) {
+    public void setUrlAcceso(Literal urlAcceso) {
         this.urlAcceso = urlAcceso;
     }
 

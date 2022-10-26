@@ -13,7 +13,9 @@ import javax.persistence.TypedQuery;
 
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
 
 /**
@@ -44,14 +46,14 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
 
     StringBuilder sql;
     if(isTotal) {
-      sql = new StringBuilder("SELECT count(j) FROM JPlatTramitElectronica j WHERE 1 = 1 ");
+      sql = new StringBuilder("SELECT count(j) FROM JPlatTramitElectronica j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma WHERE 1 = 1 ");
     } else {
-      sql = new StringBuilder("SELECT j.codigo, j.identificador, j.codEntidad, j.descripcion, j.urlAcceso "
-              + " FROM JPlatTramitElectronica j WHERE 1 = 1 ");
+      sql = new StringBuilder("SELECT j.codigo, j.identificador, j.codEntidad, t.descripcion, t.urlAcceso"
+              + " FROM JPlatTramitElectronica j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma WHERE t.idioma=:idioma");
     }
     if (filtro.isRellenoTexto()) {
       sql.append(" and ( (cast(j.codigo as string)) like :filtro OR LOWER(j.identificador) LIKE :filtro " +
-              " OR LOWER(j.codEntidad.identificador) LIKE :filtro OR LOWER(j.descripcion) LIKE :filtro OR LOWER(j.urlAcceso) LIKE :filtro ) ");
+              " OR LOWER(j.codEntidad.identificador) LIKE :filtro  ) ");
     }
     if (filtro.getOrderBy() != null) {
       sql.append(" order by " + getOrden(filtro.getOrderBy()));
@@ -68,11 +70,8 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
     if (filtro.isRellenoIdentificador()) {
       query.setParameter("identificador", "%" + filtro.getIdentificador().toLowerCase() + "%");
     }
-    if (filtro.isRellenoDescripcion()) {
-      query.setParameter("descripcion", "%" + filtro.getIdentificador().toLowerCase() + "%");
-    }
-    if (filtro.isRellenoUrlAcceso()) {
-      query.setParameter("urlAcceso", "%" + filtro.getIdentificador().toLowerCase() + "%");
+    if (filtro.isRellenoIdioma()) {
+      query.setParameter("idioma", filtro.getIdioma());
     }
 
     return query;
@@ -92,22 +91,29 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
     query.setFirstResult(filtro.getPaginaFirst());
     query.setMaxResults(filtro.getPaginaTamanyo());
 
-    List<Object[]> jTramites = query.getResultList();
-    List<PlatTramitElectronicaGridDTO> tramite = new ArrayList<>();
-    if (jTramites != null){
-      for (Object[] jTramite : jTramites) {
+    List<Object[]> jPlatTramitElectronicas = query.getResultList();
+    List<PlatTramitElectronicaGridDTO> platTramitElectronica = new ArrayList<>();
+    if (jPlatTramitElectronicas != null){
+      for (Object[] jPlatTramitElectronica : jPlatTramitElectronicas) {
         PlatTramitElectronicaGridDTO platTramitElectronicaGridDTO = new PlatTramitElectronicaGridDTO();
-        platTramitElectronicaGridDTO.setCodigo((Long) jTramite[0]);
-        platTramitElectronicaGridDTO.setIdentificador((String) jTramite[1]);
-        platTramitElectronicaGridDTO.setCodEntidad(((JEntidad) jTramite[2]).getIdentificador());
+        platTramitElectronicaGridDTO.setCodigo((Long) jPlatTramitElectronica[0]);
+        platTramitElectronicaGridDTO.setIdentificador((String) jPlatTramitElectronica[1]);
+        platTramitElectronicaGridDTO.setCodEntidad(((JEntidad) jPlatTramitElectronica[2]).getIdentificador());
         //platTramitElectronicaGridDTO.setCodEntidad(((JEntidad) jTramite[2]).getDescripcion(filtro.getIdioma()));
-        platTramitElectronicaGridDTO.setDescripcion((String) jTramite[3]);
-        platTramitElectronicaGridDTO.setUrlAcceso((String) jTramite[4]);
+        Literal descripcionLiteral = new Literal();
+        descripcionLiteral.add(new Traduccion(filtro.getIdioma(), (String) jPlatTramitElectronica[3]));
+        platTramitElectronicaGridDTO.setDescripcion(descripcionLiteral);
 
-        tramite.add(platTramitElectronicaGridDTO);
+
+        Literal urlLiteral = new Literal();
+        urlLiteral.add(new Traduccion(filtro.getIdioma(), (String) jPlatTramitElectronica[4]));
+        platTramitElectronicaGridDTO.setUrlAcceso(urlLiteral);
+
+        platTramitElectronica.add(platTramitElectronicaGridDTO);
+
       }
     }
-    return tramite;
+    return platTramitElectronica;
   }
 
   @Override

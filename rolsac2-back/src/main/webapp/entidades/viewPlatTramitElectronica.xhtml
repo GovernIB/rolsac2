@@ -13,7 +13,7 @@
         <h:outputFormat value="#{labels['viewPlatTramitElectronica.titulo.pagina']}" />
     </ui:define>
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:commandButton value="#{labels['viewPlatTramitElectronica.actualizar']}" id="actualizarBusqueda"  style="display:none" ajax="false" action="#{viewPlatTramitElectronica.buscar}" update="dataTable" />
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
                 <f:facet name="header">
@@ -78,11 +78,11 @@
                 </p:column>
                 <p:column sortBy="#{tramite.descripcion}" headerText="#{labels['viewPlatTramitElectronica.descripcion']}">
                     <f:facet name="header"/>
-                    <h:outputText value="#{tramite.descripcion}"/>
+                    <h:outputText value="#{tramite.descripcion.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
                 <p:column sortBy="#{tramite.urlAcceso}" headerText="#{labels['viewPlatTramitElectronica.urlAcceso']}">
                     <f:facet name="header"/>
-                    <h:outputText value="#{tramite.urlAcceso}"/>
+                    <h:outputText value="#{tramite.urlAcceso.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
             </p:dataTable>
             <h:outputScript >
@@ -96,7 +96,8 @@
                              action="#{viewPlatTramitElectronica.editarTramiteElectronico()}"
                              autoRun="false"
                              partialSubmit="true"
-                             process="@this" />
+                             process="@this">
+            </p:remoteCommand>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewPlatTramitElectronica.consultarTramiteElectronico}" process="@this" update="messages" style="display: none">
                 <p:ajax event="dialogReturn" listener="#{viewPlatTramitElectronica.returnDialogo}" update="messages dataTable"/>

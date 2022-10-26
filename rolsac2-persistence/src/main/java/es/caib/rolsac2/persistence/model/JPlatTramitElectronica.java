@@ -1,6 +1,9 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JPlatTramitElectronicaTraduccion;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -27,6 +30,7 @@ public class JPlatTramitElectronica extends BaseEntity {
     public static final String FIND_ALL = "PlatTramitElectronica.FIND_ALL";
     public static final String COUNT_BY_IDENTIFICADOR = "PlatTramitElectronica.COUNT_BY_IDENTIFICADOR";
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "plat-tramit-electronica-sequence")
     @Column(name = "PTTR_CODIGO", nullable = false, length = 10)
@@ -46,16 +50,11 @@ public class JPlatTramitElectronica extends BaseEntity {
     private String identificador;
 
     /**
-     * Descripción
+     * Traducciones
      */
-    @Column(name = "PTTR_DESCR", nullable = false, length = 255)
-    private String descripcion;
 
-    /**
-     * URL acceso
-     */
-    @Column(name = "PTTR_URL", nullable = false, length = 500)
-    private String urlAcceso;
+    @OneToMany(mappedBy = "platTramitElectronica", fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JPlatTramitElectronicaTraduccion> traducciones;
 
 
     public Long getCodigo() {
@@ -82,21 +81,10 @@ public class JPlatTramitElectronica extends BaseEntity {
         this.identificador = identificador;
     }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+    public List<JPlatTramitElectronicaTraduccion> getTraducciones()  {return this.traducciones;  }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+    public void setTraducciones(List<JPlatTramitElectronicaTraduccion> traducciones) { this.traducciones = traducciones; }
 
-    public String getUrlAcceso() {
-        return urlAcceso;
-    }
-
-    public void setUrlAcceso(String urlAcceso) {
-        this.urlAcceso = urlAcceso;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -113,9 +101,14 @@ public class JPlatTramitElectronica extends BaseEntity {
         return Objects.hash(codigo);
     }
 
+
     @Override
     public String toString() {
-        return "JPlatTramitElectronica{" + "id=" + codigo + ", codEntidad=" + codEntidad + ", identificador='" + identificador
-                + '\'' + ", descripcion='" + descripcion + '\'' + ", urlAcceso=" + urlAcceso + '}';
+        return "JPlatTramitElectronica{" +
+                "codigo=" + codigo +
+                ", codEntidad=" + codEntidad +
+                ", identificador='" + identificador + '\'' +
+                ", traducciones=" + traducciones +
+                '}';
     }
 }

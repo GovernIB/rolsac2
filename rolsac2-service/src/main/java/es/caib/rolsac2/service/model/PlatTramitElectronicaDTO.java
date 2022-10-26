@@ -31,18 +31,12 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Descripción
      */
-
-    @NotEmpty
-    @Size(max = 255)
-    private String descripcion;
+    private Literal descripcion;
 
     /**
      * URL acceso
      */
-
-    @NotEmpty
-    @Size(max = 500)
-    private String urlAcceso;
+    private Literal urlAcceso;
 
     public Long getCodigo() {
         return codigo;
@@ -68,19 +62,19 @@ public class PlatTramitElectronicaDTO extends ModelApi {
         this.identificador = identificador;
     }
 
-    public String getDescripcion() {
+    public Literal getDescripcion() {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
+    public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }
 
-    public String getUrlAcceso() {
+    public Literal getUrlAcceso() {
         return urlAcceso;
     }
 
-    public void setUrlAcceso(String urlAcceso) {
+    public void setUrlAcceso(Literal urlAcceso) {
         this.urlAcceso = urlAcceso;
     }
 
@@ -91,13 +85,12 @@ public class PlatTramitElectronicaDTO extends ModelApi {
         if (o == null || getClass() != o.getClass())
             return false;
         PlatTramitElectronicaDTO that = (PlatTramitElectronicaDTO) o;
-        return codigo.equals(that.codigo) && codEntidad.equals(that.codEntidad) && identificador.equals(that.identificador)
-                && descripcion.equals(that.descripcion) && urlAcceso.equals(that.urlAcceso);
+        return codigo.equals(that.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo, codEntidad, identificador, descripcion, urlAcceso);
+        return Objects.hash(codigo);
     }
 
     @Override

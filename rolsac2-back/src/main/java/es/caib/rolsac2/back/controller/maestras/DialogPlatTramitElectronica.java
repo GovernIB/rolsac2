@@ -8,6 +8,7 @@ import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
 import es.caib.rolsac2.service.model.EntidadDTO;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -53,6 +54,8 @@ public class DialogPlatTramitElectronica extends AbstractController implements S
         if (this.isModoAlta()) {
             data = new PlatTramitElectronicaDTO();
             data.setCodEntidad(sessionBean.getEntidad());
+            data.setUrlAcceso(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = serviceFacade.findById(Long.valueOf(codigo));
             this.identificadorOld = data.getIdentificador();
@@ -97,8 +100,18 @@ public class DialogPlatTramitElectronica extends AbstractController implements S
             return false;
         }
 
-        if (Objects.nonNull(this.data.getUrlAcceso()) && !ValidacionTipoUtils.esUrlValido(this.data.getUrlAcceso())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.url.novalido"), true);
+        //Verificamos que los literales tienen los idiomas obligatorios marcados si estos campos son obligatorios
+        // (los que son campos obligatorios ya que puede ser que se hayan rellenado a través del input en vez del dialog y no estén todos)
+
+        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
+        if(!idiomasPendientesDescripcion.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
+            return false;
+        }
+
+        List<String> idiomasPendientesUrl = ValidacionTipoUtils.esLiteralCorrecto(this.data.getUrlAcceso(), sessionBean.getIdiomasObligatoriosList());
+        if(!idiomasPendientesUrl.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.urlAcceso", "dialogLiteral.validacion.idiomas", idiomasPendientesUrl), true);
             return false;
         }
 

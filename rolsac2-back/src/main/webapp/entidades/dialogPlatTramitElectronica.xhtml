@@ -3,6 +3,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -20,11 +21,30 @@
         <h:outputFormat value="#{labels['dialogPlatTramitElectronica.nuevo']}"
                         rendered="#{dialogPlatTramitElectronica.isModoAlta()}"/>
     </ui:define>
+    <ui:define name="contentIdioma">
+
+        <span class="pi pi-tag mt-1"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+
+        <p:selectOneButton id="opcionIdioma" value="#{dialogPlatTramitElectronica.idioma}"
+                            styleClass="botoneraRed"
+                            disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50" >
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+            <p:ajax process="@this" update="formDialog:txturlAcceso formDialog:txtDescripcion"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogPlatTramitElectronica.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this"/>
+    </ui:define>
 
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
         <p:panel>
@@ -47,35 +67,32 @@
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.entidad']}:" for="selectEntidad"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="txtDescripcion"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:selectOneMenu id="selectEntidad" value="#{dialogPlatTramitElectronica.data.codEntidad}"
-                                     styleClass="w95" required="true"
-                                     disabled="#{dialogPlatTramitElectronica.isModoConsulta()}"
-                                     converter="#{entidadConverter}">
-                        <f:selectItem itemLabel="#{labels['dict.selecciona.entidad']}" itemValue="#{null}"/>
-                        <f:selectItems value="#{dialogPlatTramitElectronica.entidadesActivas}" var="codEntidad"
-                                       itemLabel="#{codEntidad.identificador}" itemValue="#{codEntidad}"/>
-                    </p:selectOneMenu>
+                    <my:literalComponent id="txtDescripcion"
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                         required="true"
+                                         idioma="#{dialogPlatTramitElectronica.idioma}"
+                                         literal="#{dialogPlatTramitElectronica.data.descripcion}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['dialogPlatTramitElectronica.descripcion']}"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogPlatTramitElectronica.descripcion']}:" for="txtDescripcion" />
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputTextarea id="txtDescripcion" value="#{dialogPlatTramitElectronica.data.descripcion}"
-                                 styleClass="w95" disabled="#{dialogPlatTramitElectronica.isModoConsulta()}"
-                                 maxlength="255" rows="3" autoResize="false"/>
-                </div>
+                    <p:outputLabel value="#{labels['dialogPlatTramitElectronica.urlAcceso']}:" for="txturlAcceso" />
 
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogPlatTramitElectronica.urlAcceso']}:" for="txturlAcceso" />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputTextarea id="txturlAcceso" value="#{dialogPlatTramitElectronica.data.urlAcceso}"
-                                 styleClass="w95" rows="3" autoResize="false"
-                                 disabled="#{dialogPlatTramitElectronica.isModoConsulta()}" maxlength="500"/>
+                    <my:literalComponent id="txturlAcceso"
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                         required="true"
+                                         idioma="#{dialogPlatTramitElectronica.idioma}"
+                                         literal="#{dialogPlatTramitElectronica.data.urlAcceso}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['dialogPlatTramitElectronica.urlAcceso']}"/>
                 </div>
             </div>
         </p:panel>
