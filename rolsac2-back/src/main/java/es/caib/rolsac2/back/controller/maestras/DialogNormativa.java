@@ -11,6 +11,9 @@ import es.caib.rolsac2.service.facade.NormativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.PrimeFaces;
+import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +22,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -43,6 +45,12 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     private String identificadorOld;
 
+    private List<ProcedimientoDTO> procedimientosRelacionados;
+
+    private List<String> documentosRelacionados;
+
+    private List<UnidadAdministrativaDTO> uaRelacionadas;
+
     @Inject
     private SessionBean sessionBean;
 
@@ -54,6 +62,10 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     @EJB
     private MaestrasSupServiceFacade maestrasSupServiceFacade;
+
+    private DocumentoNormativaDTO datoSeleccionado;
+
+
 
     public void load() {
         LOG.debug("init");
@@ -70,9 +82,31 @@ public class DialogNormativa extends AbstractController implements Serializable 
         if (this.isModoAlta()) {
             data = new NormativaDTO();
             data.setEntidad(sessionBean.getEntidad());
+            data.setNombre(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = normativaServiceFacade.findById(Long.valueOf(id));
         }
+
+
+        procedimientosRelacionados = new ArrayList<>();
+        final ProcedimientoDTO pr1= new ProcedimientoDTO();
+        pr1.setNombreProcedimiento("Instancia genérica 1");
+        procedimientosRelacionados.add(pr1);
+        documentosRelacionados=new ArrayList<>();
+
+        uaRelacionadas = new ArrayList<>();
+        final UnidadAdministrativaDTO ua = new UnidadAdministrativaDTO();
+        final Literal l1= new Literal();
+        final List<Traduccion> traducciones = new ArrayList<>();
+        final Traduccion t1 = new Traduccion();
+        t1.setLiteral("Descripción del tipo de materia SIA.");
+        t1.setIdioma("es");
+        traducciones.add(t1);
+        l1.setTraducciones(traducciones);
+        ua.setNombre(l1);
+        uaRelacionadas.add(ua);
+
+
     }
 
     public void guardar() {
@@ -126,6 +160,60 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     public void traducir() {
         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+    }
+
+    public void abrirDialogDocumento(TypeModoAcceso modoAcceso) {
+        // Muestra dialogo
+        final Map<String, String> params = new HashMap<>();
+        if (this.data.getCodigo() != null
+                && (modoAcceso.equals(TypeModoAcceso.CONSULTA)|| modoAcceso.equals(TypeModoAcceso.EDICION))) {
+            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
+        }
+        params.put("idNormativa", this.data.getCodigo().toString());
+
+        UtilJSF.openDialog("dialogDocumentoNormativa", modoAcceso, params, true, 750, 450);
+    }
+
+    public void returnDialogo(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        // Verificamos si se ha modificado
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            this.buscarDocumentos();
+        }
+    }
+
+    public void abrirDocumentoRelacionado() {
+        abrirDialogDocumento(TypeModoAcceso.ALTA);
+    }
+
+    public void editarDocumentoRelacionado() {
+        if (datoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumento(TypeModoAcceso.EDICION);
+        }
+    }
+
+    public void consultarDocumentoRelacionado() {
+        if (datoSeleccionado != null) {
+            abrirDialogDocumento(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    public void borrarDocumentoRelacionado() {
+        if (datoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            normativaServiceFacade.deleteDocumentoNormativa(datoSeleccionado.getCodigo());
+            buscarDocumentos();
+        }
+    }
+
+    public void buscarDocumentos() {
+        List<DocumentoNormativaDTO> docs = normativaServiceFacade.findDocumentosNormativa(this.data.getCodigo());
+        this.data.setDocumentosNormativa(docs);
+        PrimeFaces.current().ajax().update("formDialog:dataDocumentosRelacionados");
     }
 
     public String getId() {
@@ -182,5 +270,37 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     public void setBoletinOficial(List<BoletinOficialDTO> boletinOficial) {
         this.boletinOficial = boletinOficial;
+    }
+
+    public List<ProcedimientoDTO> getProcedimientosRelacionados() {
+        return procedimientosRelacionados;
+    }
+
+    public void setProcedimientosRelacionados(List<ProcedimientoDTO> procedimientosRelacionados) {
+        this.procedimientosRelacionados = procedimientosRelacionados;
+    }
+
+    public List<String> getDocumentosRelacionados() {
+        return documentosRelacionados;
+    }
+
+    public void setDocumentosRelacionados(List<String> documentosRelacionados) {
+        this.documentosRelacionados = documentosRelacionados;
+    }
+
+    public List<UnidadAdministrativaDTO> getUaRelacionadas() {
+        return uaRelacionadas;
+    }
+
+    public void setUaRelacionadas(List<UnidadAdministrativaDTO> uaRelacionadas) {
+        this.uaRelacionadas = uaRelacionadas;
+    }
+
+    public DocumentoNormativaDTO getDatoSeleccionado() {
+        return datoSeleccionado;
+    }
+
+    public void setDatoSeleccionado(DocumentoNormativaDTO datoSeleccionado) {
+        this.datoSeleccionado = datoSeleccionado;
     }
 }

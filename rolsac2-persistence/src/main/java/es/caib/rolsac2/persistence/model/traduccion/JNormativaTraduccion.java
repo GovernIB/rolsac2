@@ -30,9 +30,9 @@ public class JNormativaTraduccion {
     @Column(name = "TRNO_TITUL", length = 2000)
     private String titulo;
 
-    public static List<JNormativaTraduccion> createInstance() {
+    public static List<JNormativaTraduccion> createInstance(List<String> idiomas) {
         List<JNormativaTraduccion> traducciones = new ArrayList<>();
-        for (String idioma : Constantes.IDIOMAS) {
+        for (String idioma : idiomas) {
             JNormativaTraduccion trad = new JNormativaTraduccion();
             trad.setIdioma(idioma);
             traducciones.add(trad);

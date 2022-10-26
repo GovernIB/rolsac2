@@ -3,6 +3,7 @@ package es.caib.rolsac2.service.model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -27,6 +28,8 @@ public class NormativaDTO extends ModelApi {
     private String nombreResponsable;
     private Literal nombre;
     private EntidadDTO entidad;
+
+    private List<DocumentoNormativaDTO> documentosNormativa;
 
     public Long getCodigo() {
         return codigo;
@@ -116,6 +119,10 @@ public class NormativaDTO extends ModelApi {
     public void setEntidad(EntidadDTO entidad) {
         this.entidad = entidad;
     }
+
+    public List<DocumentoNormativaDTO> getDocumentosNormativa() { return documentosNormativa; }
+
+    public void setDocumentosNormativa(List<DocumentoNormativaDTO> documentosNormativa) { this.documentosNormativa = documentosNormativa; }
 
     @Override
     public boolean equals(Object o) {

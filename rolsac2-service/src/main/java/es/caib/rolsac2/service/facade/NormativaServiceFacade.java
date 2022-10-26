@@ -69,4 +69,44 @@ public interface NormativaServiceFacade {
      * @return Lista de todos los objectos en afectacion
      */
     List<AfectacionDTO> findAfectacion();
+
+    /**
+     * Crea un documento de normativa asociado a ésta.
+     *
+     * @param dto nuevos datos del documento Normativa
+     * @return id del documento de normativa
+     */
+    Long createDocumentoNormativa(DocumentoNormativaDTO dto);
+
+    /**
+     * Actualiza un documento de normativa asociado a ésta.
+     *
+     * @param dto datos actualizados del documento normativa
+     */
+    void updateDocumentoNormativa(DocumentoNormativaDTO dto);
+
+    /**
+     * Borra un documento normativa de la bbdd
+     *
+     * @param id identificador del documento Normativa a borrar
+     * @throws RecursoNoEncontradoException si la Normativa con el id no existe.
+     */
+    void deleteDocumentoNormativa(Long id) throws RecursoNoEncontradoException;
+
+    /**
+     * Devuelve un documento Normativa de la bbdd.
+     *
+     * @return Lista de todos los objectos en Boletin Oficial
+     */
+     DocumentoNormativaDTO findDocumentoNormativa(Long id);
+
+
+    /**
+     * Devuelve un listado de documentos Normativa relacionados a una normativa.
+     *
+     * @return Lista de todos los objectos en Boletin Oficial
+     */
+    List<DocumentoNormativaDTO> findDocumentosNormativa(Long idNormativa);
+
+
 }

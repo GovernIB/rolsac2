@@ -25,9 +25,9 @@
         <span class="pi pi-tag mt-1"/>
         <h:outputText value="#{labels['dict.idioma']}:" styleClass="mr-1 mt-1"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogNormativa.idioma}" styleClass="botoneraRed">
-            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
-            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
-            <p:ajax update="formDialog:txtNombre" process="@this"/>
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+            <p:ajax update="formDialog:txtNombre formDialog:dataDocumentosRelacionados" process="@this"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogNormativa.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -42,127 +42,301 @@
                  showDetail="true"
                  life="5000"
                  escape="false"/>
-        <p:panel>
-            <div class="row">
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+        <div class="ui-g-12 ui-md-9 pl-4 panel-container">
+            <p:panel header="DATOS">
+                <div class="form-row">
+                    <div class="form-group col-md-10">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.titulo']}:"
+                                       for="txtNombre"/>
+                        <my:literalComponent id="txtNombre"
+                                             literal="#{dialogNormativa.data.nombre}"
+                                             soloLecture="#{dialogNormativa.isModoConsulta()}"
+                                             required="true"
+                                             idioma="#{dialogNormativa.idioma}"
+                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             nombreLiteral="#{labels['dict.descripcion']}"/>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <p class="mb-1">
+                            <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                        </p>
+                        <p:inputText id="txtCodigo" value="#{dialogNormativa.data.codigo}"
+                                     styleClass="w95" disabled="true" maxlength="50"/>
+                    </div>
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputText id="txtCodigo" value="#{dialogNormativa.data.codigo}"
-                                 styleClass="w95" disabled="true" maxlength="50"/>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <p class="mb-1">
+                            <h:outputText value="#{labels['dialogNormativa.tipoNormativa']}:"
+                                          for="selectTipoNormativa"/>
+                        </p>
+                        <p:selectOneMenu id="selectTipoNormativa" value="#{dialogNormativa.data.tipoNormativa}"
+                                         styleClass="w95" required="true"
+                                         disabled="#{dialogNormativa.isModoConsulta()}"
+                                         converter="#{tipoNormativaConverter}">
+                            <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.tipoNormativa']}"
+                                          itemValue="#{null}"/>
+                            <f:selectItems value="#{dialogNormativa.tipoNormativa}" var="tipoNormativa"
+                                           itemLabel="#{tipoNormativa.identificador}" itemValue="#{tipoNormativa}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <p class="mb-1">
+                            <h:outputText value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
+                        </p>
+                        <p:inputText id="txtNumero" value="#{dialogNormativa.data.numero}"
+                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <p class="mb-1">
+                            <h:outputText value="#{labels['dialogNormativa.fechaAprobacion']}:"
+                                          for="txtFechaAprobacion"/>
+                        </p>
+                        <p:calendar id="txtFechaAprobacion" disabled="#{dialogNormativa.isModoConsulta()}"
+                                    required="true" showOn="button"
+                                    value="#{dialogNormativa.data.fechaAprobacion}" pattern="dd/MM/yyyy"/>
+                    </div>
                 </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogNormativa.boletinOficial']}:" for="selectBoletinOficial"/>
+            </p:panel>
+            <p:panel header="DATOS DE PUBLICACIÓN">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <p class="mb-1">
+                            <h:outputText value="#{labels['dialogNormativa.boletinOficial']}:"
+                                          for="selectBoletinOficial"/>
+                        </p>
+                        <p:selectOneMenu id="selectBoletinOficial" value="#{dialogNormativa.data.boletinOficial}"
+                                         styleClass="w95" required="true"
+                                         disabled="#{dialogNormativa.isModoConsulta()}"
+                                         converter="#{boletinOficialConverter}">
+                            <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.boletinOficial']}"
+                                          itemValue="#{null}"/>
+                            <f:selectItems value="#{dialogNormativa.boletinOficial}" var="boletinOficial"
+                                           itemLabel="#{boletinOficial.nombre}" itemValue="#{boletinOficial}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <p class="mb-1">
+                            <h:outputText value="#{labels['dialogNormativa.numeroBoletin']}:" for="txtNumeroBoletin"/>
+                        </p>
+                        <p:inputText id="txtNumeroBoletin" value="#{dialogNormativa.data.numeroBoletin}"
+                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <p class="mb-1">
+                            <h:outputText styleClass="mb-1" value="#{labels['dialogNormativa.fechaBoletin']}:"
+                                          for="txtFechaBoletin"/>
+                        </p>
+                        <p:calendar id="txtFechaBoletin" disabled="#{dialogNormativa.isModoConsulta()}"
+                                    value="#{dialogNormativa.data.fechaBoletin}" pattern="dd/MM/yyyy" showOn="button"/>
+                    </div>
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:selectOneMenu id="selectBoletinOficial" value="#{dialogNormativa.data.boletinOficial}"
-                                     styleClass="w95" required="true"
-                                     disabled="#{dialogNormativa.isModoConsulta()}"
-                                     converter="#{boletinOficialConverter}">
-                        <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.boletinOficial']}" itemValue="#{null}"/>
-                        <f:selectItems value="#{dialogNormativa.boletinOficial}" var="boletinOficial"
-                                       itemLabel="#{boletinOficial.nombre}" itemValue="#{boletinOficial}"/>
-                    </p:selectOneMenu>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p class="mb-1">
+                            <h:outputText value="#{labels['dialogNormativa.urlBoletin']}:" for="txtUrlBoletin"/>
+                        </p>
+                        <p:inputText id="txtUrlBoletin" value="#{dialogNormativa.data.urlBoletin}"
+                                     required="true"
+                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
+                    </div>
                 </div>
-                <!--
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogNormativa.afectacion']}:" for="selectAfectacion"/>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p class="mb-1">
+                            <h:outputText value="#{labels['dialogNormativa.nombreResponsable']}:"
+                                          for="txtNombreResponsable"/>
+                        </p>
+                        <p:inputText id="txtNombreResponsable" value="#{dialogNormativa.data.nombreResponsable}"
+                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
+                    </div>
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:selectOneMenu id="selectAfectacion" value="#{dialogNormativa.data.afectacion}"
-                                     styleClass="w95" required="false"
-                                     disabled="#{dialogNormativa.isModoConsulta()}"
-                                     converter="#{afectacionConverter}">
-                        <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.afectacion']}" itemValue="#{afectacion}"/>
-                        <f:selectItems value="#{dialogNormativa.afectacion}" var="afectacion"
-                                       itemLabel="#{afectacion.normativaOrigen}" itemValue="#{afectacion}"/>
-                    </p:selectOneMenu>
+            </p:panel>
+        </div>
+        <div class="ui-g-12 ui-md-3 pr-1">
+            <div class="row left-container mx-0 mb-2">
+                <div class="col-12 left-container-header text-center">
+                    <p class="left-container-tit mt-2 mb-1">DOCUMENTOS RELACIONADOS</p>
                 </div>
-                -->
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogNormativa.tipoNormativa']}:" for="selectTipoNormativa"/>
+                <div class="col-10 p-1">
+                    <p:dataTable id="dataDocumentosRelacionados"
+                                 var="doc"
+                                 value="#{dialogNormativa.data.documentosNormativa}"
+                                 emptyMessage="#{labels['dict.noHayDatos']}"
+                                 scrollable="true" scrollHeight="120"
+                                 paginator="false"
+                                 styleClass="noHeader text-center"
+                                 selectionMode="single"
+                                 selection="#{dialogNormativa.datoSeleccionado}"
+                                 rowKey="#{doc.codigo}"
+                                 rendered="#{!dialogNormativa.isModoAlta()}">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax
+                                event="rowDblselect"
+                                oncomplete="triggerDblClick();"
+                                global="false"/>
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+
+
+                        <p:column styleClass="w75">
+                            <h:outputText value="#{doc.titulo.getTraduccion(dialogNormativa.idioma)}"/>
+                        </p:column>
+
+                    </p:dataTable>
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:selectOneMenu id="selectTipoNormativa" value="#{dialogNormativa.data.tipoNormativa}"
-                                     styleClass="w95" required="true"
-                                     disabled="#{dialogNormativa.isModoConsulta()}"
-                                     converter="#{tipoNormativaConverter}">
-                        <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.tipoNormativa']}" itemValue="#{null}"/>
-                        <f:selectItems value="#{dialogNormativa.tipoNormativa}" var="tipoNormativa"
-                                       itemLabel="#{tipoNormativa.identificador}" itemValue="#{tipoNormativa}"/>
-                    </p:selectOneMenu>
-                </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogNormativa.numero']}:" for="txtNumero" />
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputText id="txtNumero" value="#{dialogNormativa.data.numero}"
-                                 styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
-                </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtfechaAprobacion" />
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:calendar id="txtfechaAprobacion" disabled="#{dialogNormativa.isModoConsulta()}"
-                                required="true"
-                                value="#{dialogNormativa.data.fechaAprobacion}" pattern="dd/MM/yyyy"/>
-                </div>
-                <!--
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogNormativa.tipoBoletin']}:" for="selectTipoBoletin"/>
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:selectOneMenu id="selectTipoBoletin" value="#{dialogNormativa.data.tipoBoletin}"
-                                     styleClass="w95" required="false"
-                                     disabled="#{dialogNormativa.isModoConsulta()}"
-                                     converter="#{tipoBoletinConverter}">
-                        <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.tipoBoletin']}" itemValue="#{tipoBoletin}"/>
-                        <f:selectItems value="#{dialogNormativa.tipoBoletin}" var="tipoBoletin"
-                                       itemLabel="#{tipoBoletin.nombre}" itemValue="#{tipoBoletin}"/>
-                    </p:selectOneMenu>
-                </div>
-                -->
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin" />
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:calendar id="txtFechaBoletin" disabled="#{dialogNormativa.isModoConsulta()}"
-                                value="#{dialogNormativa.data.fechaBoletin}" pattern="dd/MM/yyyy"/>
-                </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogNormativa.numeroBoletin']}:" for="txtNumeroBoletin" />
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputText id="txtNumeroBoletin" value="#{dialogNormativa.data.numeroBoletin}"
-                                 styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
-                </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogNormativa.urlBoletin']}:" for="txtUrlBoletin" />
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputText id="txtUrlBoletin" value="#{dialogNormativa.data.urlBoletin}"
-                                 required="true"
-                                 styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
-                </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogNormativa.nombreResponsable']}:" for="txtNombreResponsable" />
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputText id="txtNombreResponsable" value="#{dialogNormativa.data.nombreResponsable}"
-                                 styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
-                </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dialogNormativa.titulo']}:" for="txtNombre"/>
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <my:literalComponent id="txtNombre" styleClass="w95"
-                                         value="#{dialogNormativa.data.nombre}"
-                                         soloLecture="#{dialogNormativa.isModoConsulta()}"
-                                         required="true"
-                                         idioma="#{dialogNormativa.idioma}"/>
+                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <p:commandButton title="#{labels['dict.nuevo']}" process="@this"
+                                     actionListener="#{dialogNormativa.abrirDocumentoRelacionado()}" icon="pi pi-plus"
+                                     styleClass="text-success"
+                                     rendered="#{!dialogNormativa.isModoAlta()}">
+                        <!--Ajax para coger el return del dialog-->
+                        <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogo}"
+                                update="formDialog:dataDocumentosRelacionados"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.eliminar']}" process="@this"
+                                     actionListener="#{dialogNormativa.borrarDocumentoRelacionado()}" icon="pi pi-minus"
+                                     styleClass="text-danger"
+                                     rendered="#{!dialogNormativa.isModoAlta()}">
+                        <p:ajax update="formDialog:dataDocumentosRelacionados"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.consultar']}" process="@this"
+                                     actionListener="#{dialogNormativa.consultarDocumentoRelacionado()}"
+                                     icon="pi pi-eye"
+                                     rendered="#{!dialogNormativa.isModoAlta()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogo}"
+                                update="formDialog:dataDocumentosRelacionados"/>
+                    </p:commandButton>
+
                 </div>
             </div>
-        </p:panel>
+            <div class="row left-container mx-0 mb-2">
+                <div class="col-12 left-container-header text-center">
+                    <p class="left-container-tit mt-2 mb-1">UAs RELACIONADAS</p>
+                </div>
+                <div class="col-10 p-1">
+                    <p:dataTable id="dataUAsRelacionadas" var="td" value="#{dialogNormativa.uaRelacionadas}"
+                                 emptyMessage="No hay UAs relacionadas" scrollable="true" scrollHeight="120"
+                                 paginator="false" styleClass="noHeader text-center">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="rcEditarPropiedad();"
+                        />
+
+                        <p:column headerText="DESCRIPCIÓN" styleClass="w75">
+                            <h:outputText value="#{td.nombre.getTraduccion()}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
+                    <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
+                    <p:button title="Consultar" icon="pi pi-eye"></p:button>
+                </div>
+            </div>
+            <div class="row left-container mx-0 mb-2">
+                <div class="col-12 left-container-header text-center">
+                    <p class="left-container-tit mt-2 mb-1">PROCEDIMIENTOS RELACIONADOS</p>
+                </div>
+                <div class="col-10 p-1">
+                    <p:dataTable id="dataProcedimientosRelacionados" var="td"
+                                 value="#{dialogNormativa.procedimientosRelacionados}"
+                                 emptyMessage="No hay documentos relacionados" scrollable="true" scrollHeight="120"
+                                 paginator="false"
+                                 styleClass="noHeader text-center">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="rcEditarPropiedad();"
+                        />
+
+                        <p:column headerText="DESCRIPCIÓN" styleClass="w75">
+                            <h:outputText value="#{td.nombreProcedimiento}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+            </div>
+            <div class="row left-container mx-0 mb-2">
+                <div class="col-12 left-container-header text-center">
+                    <p class="left-container-tit mt-2 mb-1">SERVICIOS RELACIONADOS</p>
+                </div>
+                <div class="col-10 p-1">
+                    <p:dataTable id="dataServiciosRelacionados" var="td"
+                                 value="#{dialogNormativa.procedimientosRelacionados}"
+                                 emptyMessage="No hay documentos relacionados" scrollable="true" scrollHeight="120"
+                                 paginator="false"
+                                 styleClass="noHeader text-center">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="rcEditarPropiedad();"
+                        />
+
+                        <p:column headerText="DESCRIPCIÓN" styleClass="w75">
+                            <h:outputText value="#{td.nombreProcedimiento}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+            </div>
+            <div class="row left-container mx-0 mb-2">
+                <div class="col-12 left-container-header text-center">
+                    <p class="left-container-tit mt-2 mb-1">AFECTACIONES RELACIONADAS</p>
+                </div>
+                <div class="col-10 p-1">
+                    <p:dataTable id="dataAfectacionesRelacionadas" var="td" value="#{dialogNormativa.afectacion}"
+                                 emptyMessage="No hay afectaciones relacionadas" scrollable="true" scrollHeight="120"
+                                 paginator="false" styleClass="noHeader text-center">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="rcEditarPropiedad();"
+                        />
+
+                        <p:column headerText="DESCRIPCIÓN" styleClass="w75">
+                            <h:outputText value="#{td.tipo.identificador}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
+                    <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
+                    <p:button title="Consultar" icon="pi pi-eye"></p:button>
+                </div>
+            </div>
+        </div>
+
+        <h:outputScript>
+            function triggerDblClick() {
+                myDoubleClickCommand();
+                /*$('#form\\:btnConsultaHidden').click();*/
+            }
+        </h:outputScript>
+        <p:remoteCommand name="myDoubleClickCommand"
+                         widgetVar="myDoubleClickCommand"
+                         action="#{dialogNormativa.editarDocumentoRelacionado()}"
+                         autoRun="false"
+                         partialSubmit="true"
+                         process="@this"/>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogNormativa.ayuda}"

@@ -153,7 +153,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true, 850, 535);
+        UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200) , (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
     }
 
     public NormativaGridDTO getDatoSeleccionado() {

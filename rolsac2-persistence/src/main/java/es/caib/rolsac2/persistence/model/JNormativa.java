@@ -64,6 +64,9 @@ public class JNormativa extends BaseEntity {
     @OneToMany(mappedBy = "normativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JNormativaTraduccion> descripcion;
 
+    @OneToMany(mappedBy = "normativa", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JDocumentoNormativa> documentosNormativa;
+
     public Long getCodigo() {
         return codigo;
     }
@@ -148,6 +151,10 @@ public class JNormativa extends BaseEntity {
         return descripcion;
     }
 
+    public List<JDocumentoNormativa> getDocumentosNormativa() { return documentosNormativa; }
+
+    public void setDocumentosNormativa(List<JDocumentoNormativa> documentosNormativa) { this.documentosNormativa = documentosNormativa; }
+
     public void setDescripcion(List<JNormativaTraduccion> descripcion) {
         if (this.descripcion == null || this.descripcion.isEmpty()) {
             this.descripcion = descripcion;
@@ -174,14 +181,17 @@ public class JNormativa extends BaseEntity {
     public String toString() {
         return "JNormativa{" +
                 "codigo=" + codigo +
+                ", entidad=" + entidad +
+                ", tipoNormativa=" + tipoNormativa +
                 ", numero='" + numero + '\'' +
                 ", fechaAprobacion=" + fechaAprobacion +
-                ", boletin=" + boletinOficial +
+                ", boletinOficial=" + boletinOficial +
                 ", fechaBoletin=" + fechaBoletin +
                 ", numeroBoletin='" + numeroBoletin + '\'' +
                 ", urlBoletin='" + urlBoletin + '\'' +
                 ", nombreResponsable='" + nombreResponsable + '\'' +
                 ", descripcion=" + descripcion +
+                ", documentosNormativa=" + documentosNormativa +
                 '}';
     }
 }
