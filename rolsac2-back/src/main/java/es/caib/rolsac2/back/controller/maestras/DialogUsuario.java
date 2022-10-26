@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.UsuarioDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -44,6 +45,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
         if (this.isModoAlta()) {
             data = new UsuarioDTO();
             data.setEntidad(sessionBean.getEntidad());
+            data.setObservaciones(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = administracionEntService.findUsuarioById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
@@ -93,10 +95,10 @@ public class DialogUsuario extends AbstractController implements Serializable {
 
     public void cerrar() {
         final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
-        } else {
+        if (Objects.isNull(this.getModoAcceso())) {
             result.setModoAcceso(TypeModoAcceso.CONSULTA);
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

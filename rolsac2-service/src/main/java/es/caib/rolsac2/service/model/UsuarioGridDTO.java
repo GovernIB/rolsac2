@@ -9,6 +9,10 @@ public class UsuarioGridDTO extends ModelApi {
     private String identificador;
     private String entidad;
 
+    private String nombre;
+
+    private String email;
+
     public UsuarioGridDTO() {
 
     }
@@ -66,13 +70,22 @@ public class UsuarioGridDTO extends ModelApi {
         this.entidad = entidad;
     }
 
+    public String getNombre() { return nombre; }
+
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
     @Override
     public String toString() {
         return "UsuarioGridDTO{" +
-                "id=" + codigo +
+                "codigo=" + codigo +
                 ", identificador='" + identificador + '\'' +
+                ", entidad='" + entidad + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
-
-
 }

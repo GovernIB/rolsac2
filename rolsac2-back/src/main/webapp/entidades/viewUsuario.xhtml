@@ -62,7 +62,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                             <h:outputText value="#{labels['dict.id']}:" for="txtId" />
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-4">
-                            <p:inputText id="txtId" value="#{viewUsuario.filtro.id}" styleClass="w95" />
+                            <p:inputText id="txtId" value="#{viewUsuario.filtro.codigo}" styleClass="w95" />
                         </div>
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
                             <h:outputText value="#{labels['dict.identificador']}:" for="txtIdentificador" />
@@ -106,6 +106,14 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                 <p:column sortBy="#{usuario.entidad}" headerText="#{labels['viewUsuario.entidad']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{usuario.entidad}"/>
+                </p:column>
+                <p:column sortBy="#{usuario.entidad}" headerText="#{labels['viewUsuario.nombre']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{usuario.nombre}"/>
+                </p:column>
+                <p:column sortBy="#{usuario.entidad}" headerText="#{labels['dict.email']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{usuario.email}"/>
                 </p:column>
             </p:dataTable>
             <h:outputScript >

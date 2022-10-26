@@ -55,10 +55,10 @@ ViewUsuario extends AbstractController implements Serializable {
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
 
-        LOG.error("Rol admin: " + this.isUserRoleRSCAdmin());
-        LOG.error("Rol user: " + this.isUserRoleRSCUser());
-        LOG.error("Rol user: " + this.isUserRoleRSCMentira());
-        LOG.error("Username: " + this.getUserName());
+        LOG.debug("Rol admin: " + this.isUserRoleRSCAdmin());
+        LOG.debug("Rol user: " + this.isUserRoleRSCUser());
+        LOG.debug("Rol user: " + this.isUserRoleRSCMentira());
+        LOG.debug("Username: " + this.getUserName());
 
         //idiomas = Arrays.asList("es", "ca");
 
@@ -145,7 +145,7 @@ ViewUsuario extends AbstractController implements Serializable {
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogUsuario", modoAcceso, params, true, 850, 220);
+        UtilJSF.openDialog("dialogUsuario", modoAcceso, params, true, 850, 400);
     }
 
     public void borrarUsuario() {

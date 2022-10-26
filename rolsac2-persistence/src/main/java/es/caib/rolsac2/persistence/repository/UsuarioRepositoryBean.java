@@ -48,6 +48,10 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
                 if (jUsuario[2] != null) {
                     usuarioGridDTO.setEntidad(((JEntidad) jUsuario[2]).getDescripcion(filtro.getIdioma()));
                 }
+                usuarioGridDTO.setNombre((String)jUsuario[3]);
+                if(jUsuario[4] != null) {
+                    usuarioGridDTO.setEmail((String) jUsuario[4]);
+                }
                 usuario.add(usuarioGridDTO);
             }
         }
@@ -66,7 +70,7 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JUsuario j where 1 = 1 ");
         } else {
-            sql = new StringBuilder("SELECT j.codigo, j.identificador, j.entidad FROM JUsuario j where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, j.entidad, j.nombre, j.email FROM JUsuario j where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro " +
@@ -88,7 +92,7 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
         if (filtro.isRellenoId()) {
-            query.setParameter("id", "%" + filtro.getId());
+            query.setParameter("id", "%" + filtro.getCodigo());
         }
         if (filtro.isRellenoIdentificador()) {
             query.setParameter("identificador", "%" + filtro.getIdentificador().toLowerCase() + "%");

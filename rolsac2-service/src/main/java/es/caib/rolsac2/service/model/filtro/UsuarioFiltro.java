@@ -4,16 +4,16 @@ import es.caib.rolsac2.service.model.EntidadDTO;
 
 public class UsuarioFiltro extends AbstractFiltro {
     private String texto;
-    private Long id;
+    private Long codigo;
     private String identificador;
     private EntidadDTO entidad;
 
-    public Long getId() {
-        return id;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public String getIdentificador() {
@@ -49,7 +49,7 @@ public class UsuarioFiltro extends AbstractFiltro {
     }
 
     public boolean isRellenoId() {
-        return id != null;
+        return codigo != null;
     }
 
     public boolean isRellenoEntidad() {
@@ -58,6 +58,6 @@ public class UsuarioFiltro extends AbstractFiltro {
 
     @Override
     protected String getDefaultOrder() {
-        return "id";
+        return "codigo";
     }
 }
