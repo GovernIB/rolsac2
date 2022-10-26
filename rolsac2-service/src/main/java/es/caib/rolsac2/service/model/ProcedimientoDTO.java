@@ -1,10 +1,11 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoWorfklow;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Dades d'un Procedimiento.
@@ -14,21 +15,32 @@ import java.util.Set;
 @Schema(name = "Procedimiento")
 public class ProcedimientoDTO extends ModelApi {
     private Long codigo;
+    private Long codigoWF;
+    private TypeProcedimientoWorfklow workflow;
+    private TypeProcedimientoEstado estado;
+    private boolean interno;
     private boolean publicado;
+    private boolean datosPersonalesActivo;
 
     private Integer codigoSIA;
 
-    private Boolean estadoSIA;
+    private String tipo;
 
+    private Boolean estadoSIA;
+    private Literal nombreProcedimientoWorkFlow;
+    private Literal datosPersonalesFinalidad;
+    private Literal datosPersonalesDestinatario;
+    private Literal requisitos;
     private Date fechaSIA;
     private String signatura;
-    private List<TramiteDTO> tramites;
+    private List<ProcedimientoTramiteDTO> tramites;
     private List<ProcedimientoDocumentoDTO> documentos;
-    private Set<NormativaDTO> normativas;
+    private List<NormativaDTO> normativas;
     private Date fechaCaducidad;
     private Date fechaPublicacion;
     private Date fechaActualizacion;
 
+    private TipoLegitimacionDTO datosPersonalesLegitimacion;
     private String tramite;
     private Long version;
     private String url;
@@ -36,7 +48,8 @@ public class ProcedimientoDTO extends ModelApi {
     private Long orden2;
     private Long orden3;
     private Integer validacion;
-    private UnidadAdministrativaDTO unidadAdministrativa; // organisme responsable
+    private UnidadAdministrativaDTO uaResponsable;
+    private UnidadAdministrativaDTO uaInstructor;
     //private Familia familia;
     private TipoFormaInicioDTO iniciacion;
     private String indicador;
@@ -45,12 +58,13 @@ public class ProcedimientoDTO extends ModelApi {
     // private String info;
     private String responsable;
     //private Set<HechoVitalProcedimiento> hechosVitalesProcedimientos;
-    private Set<TipoPublicoObjetivoDTO> publicosObjetivo;
-    private String taxa;
+    private List<TipoPublicoObjetivoDTO> publicosObjetivo;
+    private Boolean taxa;
     private UnidadAdministrativaDTO organResolutori;
     private UnidadAdministrativaDTO servicioResponsable;
     private String dirElectronica;
     private TipoSilencioAdministrativoDTO silencio;
+    private TipoProcedimientoDTO tipoProcedimiento;
     private boolean comun;
     private boolean pendienteValidar;
 
@@ -71,6 +85,18 @@ public class ProcedimientoDTO extends ModelApi {
     private String lopdDerechos;
     private Long lopdInfoAdicional;
 
+    private List<TipoPublicoObjetivoEntidadGridDTO> tiposPubObjEntGrid;
+    private List<TipoMateriaSIAGridDTO> materiasGridSIA;
+
+
+    public static ProcedimientoDTO createInstance(List<String> idiomas) {
+        ProcedimientoDTO proc = new ProcedimientoDTO();
+        proc.setNombreProcedimientoWorkFlow(Literal.createInstance(idiomas));
+        proc.setDatosPersonalesDestinatario(Literal.createInstance(idiomas));
+        proc.setDatosPersonalesFinalidad(Literal.createInstance(idiomas));
+        proc.setRequisitos(Literal.createInstance(idiomas));
+        return proc;
+    }
 
     public Long getCodigo() {
         return codigo;
@@ -88,6 +114,53 @@ public class ProcedimientoDTO extends ModelApi {
         this.estadoSIA = estadoSIA;
     }
 
+    public Literal getNombreProcedimientoWorkFlow() {
+        return nombreProcedimientoWorkFlow;
+    }
+
+    public Literal getRequisitos() {
+        return requisitos;
+    }
+
+    public void setRequisitos(Literal requisitos) {
+        this.requisitos = requisitos;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setNombreProcedimientoWorkFlow(Literal nombreProcedimientoWorkFlow) {
+        this.nombreProcedimientoWorkFlow = nombreProcedimientoWorkFlow;
+    }
+
+    public Literal getDatosPersonalesFinalidad() {
+        return datosPersonalesFinalidad;
+    }
+
+    public void setDatosPersonalesFinalidad(Literal datosPersonalesFinalidad) {
+        this.datosPersonalesFinalidad = datosPersonalesFinalidad;
+    }
+
+    public TipoLegitimacionDTO getDatosPersonalesLegitimacion() {
+        return datosPersonalesLegitimacion;
+    }
+
+    public void setDatosPersonalesLegitimacion(TipoLegitimacionDTO datosPersonalesLegitimacion) {
+        this.datosPersonalesLegitimacion = datosPersonalesLegitimacion;
+    }
+
+    public Literal getDatosPersonalesDestinatario() {
+        return datosPersonalesDestinatario;
+    }
+
+    public void setDatosPersonalesDestinatario(Literal datosPersonalesDestinatario) {
+        this.datosPersonalesDestinatario = datosPersonalesDestinatario;
+    }
 
     public boolean isPublicado() {
         return publicado;
@@ -105,11 +178,11 @@ public class ProcedimientoDTO extends ModelApi {
         this.signatura = signatura;
     }
 
-    public List<TramiteDTO> getTramites() {
+    public List<ProcedimientoTramiteDTO> getTramites() {
         return tramites;
     }
 
-    public void setTramites(List<TramiteDTO> tramites) {
+    public void setTramites(List<ProcedimientoTramiteDTO> tramites) {
         this.tramites = tramites;
     }
 
@@ -121,11 +194,11 @@ public class ProcedimientoDTO extends ModelApi {
         this.documentos = documentos;
     }
 
-    public Set<NormativaDTO> getNormativas() {
+    public List<NormativaDTO> getNormativas() {
         return normativas;
     }
 
-    public void setNormativas(Set<NormativaDTO> normativas) {
+    public void setNormativas(List<NormativaDTO> normativas) {
         this.normativas = normativas;
     }
 
@@ -209,13 +282,6 @@ public class ProcedimientoDTO extends ModelApi {
         this.validacion = validacion;
     }
 
-    public UnidadAdministrativaDTO getUnidadAdministrativa() {
-        return unidadAdministrativa;
-    }
-
-    public void setUnidadAdministrativa(UnidadAdministrativaDTO unidadAdministrativa) {
-        this.unidadAdministrativa = unidadAdministrativa;
-    }
 
     public TipoFormaInicioDTO getIniciacion() {
         return iniciacion;
@@ -250,19 +316,19 @@ public class ProcedimientoDTO extends ModelApi {
     }
 
 
-    public Set<TipoPublicoObjetivoDTO> getPublicosObjetivo() {
+    public List<TipoPublicoObjetivoDTO> getPublicosObjetivo() {
         return publicosObjetivo;
     }
 
-    public void setPublicosObjetivo(Set<TipoPublicoObjetivoDTO> publicosObjetivo) {
+    public void setPublicosObjetivo(List<TipoPublicoObjetivoDTO> publicosObjetivo) {
         this.publicosObjetivo = publicosObjetivo;
     }
 
-    public String getTaxa() {
+    public Boolean getTaxa() {
         return taxa;
     }
 
-    public void setTaxa(String taxa) {
+    public void setTaxa(Boolean taxa) {
         this.taxa = taxa;
     }
 
@@ -388,6 +454,93 @@ public class ProcedimientoDTO extends ModelApi {
         this.lopdInfoAdicional = lopdInfoAdicional;
     }
 
+    public Integer getCodigoSIA() {
+        return codigoSIA;
+    }
+
+    public Boolean getEstadoSIA() {
+        return estadoSIA;
+    }
+
+    public TypeProcedimientoEstado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(TypeProcedimientoEstado estado) {
+        this.estado = estado;
+    }
+
+    public boolean isInterno() {
+        return interno;
+    }
+
+    public void setInterno(boolean interno) {
+        this.interno = interno;
+    }
+
+    public boolean isDatosPersonalesActivo() {
+        return datosPersonalesActivo;
+    }
+
+    public void setDatosPersonalesActivo(boolean datosPersonalesActivo) {
+        this.datosPersonalesActivo = datosPersonalesActivo;
+    }
+
+    public Long getCodigoWF() {
+        return codigoWF;
+    }
+
+    public void setCodigoWF(Long codigoWF) {
+        this.codigoWF = codigoWF;
+    }
+
+    public TypeProcedimientoWorfklow getWorkflow() {
+        return workflow;
+    }
+
+    public void setWorkflow(TypeProcedimientoWorfklow workflow) {
+        this.workflow = workflow;
+    }
+
+    public UnidadAdministrativaDTO getUaResponsable() {
+        return uaResponsable;
+    }
+
+    public void setUaResponsable(UnidadAdministrativaDTO uaResponsable) {
+        this.uaResponsable = uaResponsable;
+    }
+
+    public UnidadAdministrativaDTO getUaInstructor() {
+        return uaInstructor;
+    }
+
+    public void setUaInstructor(UnidadAdministrativaDTO uaInstructor) {
+        this.uaInstructor = uaInstructor;
+    }
+
+    public List<TipoPublicoObjetivoEntidadGridDTO> getTiposPubObjEntGrid() {
+        return tiposPubObjEntGrid;
+    }
+
+    public void setTiposPubObjEntGrid(List<TipoPublicoObjetivoEntidadGridDTO> tiposPubObjEntGrid) {
+        this.tiposPubObjEntGrid = tiposPubObjEntGrid;
+    }
+
+    public List<TipoMateriaSIAGridDTO> getMateriasGridSIA() {
+        return materiasGridSIA;
+    }
+
+    public void setMateriasGridSIA(List<TipoMateriaSIAGridDTO> materiasGridSIA) {
+        this.materiasGridSIA = materiasGridSIA;
+    }
+
+    public TipoProcedimientoDTO getTipoProcedimiento() {
+        return tipoProcedimiento;
+    }
+
+    public void setTipoProcedimiento(TipoProcedimientoDTO tipoProcedimiento) {
+        this.tipoProcedimiento = tipoProcedimiento;
+    }
 
     @Override
     public String toString() {

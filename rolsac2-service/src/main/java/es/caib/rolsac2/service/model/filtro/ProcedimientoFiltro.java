@@ -1,5 +1,7 @@
 package es.caib.rolsac2.service.model.filtro;
 
+import java.time.LocalDate;
+
 /**
  * Filtro de procedimientos.
  */
@@ -9,103 +11,45 @@ public class ProcedimientoFiltro extends AbstractFiltro {
      * El filtro que hay en el viewProcedimientos
      **/
     private String texto;
-    private String nombre;
-    private String identificador;
-    private String funciones;
-    private String cargo;
-    private String email;
-    private Long unidadAdministrativa;
-    private String telefonoFijo;
-    private String telefonoMovil;
-    private String telefonoExteriorFijo;
-    private String telefonoExteriorMovil;
+    private String tipo;
+    private String codigoSIA;
+    private String estadoSIA;
+    private String siaFecha;
+    private String codigoDir3SIA;
 
     public String getTexto() {
         return texto;
     }
-
     public void setTexto(String texto) {
         this.texto = texto;
     }
-
-    public String getNombre() {
-        return nombre;
+    public String getTipo() {
+        return tipo;
     }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setTipo(String procTipo) {
+        this.tipo = procTipo;
     }
-
-    public String getIdentificador() {
-        return identificador;
+    public String getCodigoSIA() {
+        return codigoSIA;
     }
-
-    public void setIdentificador(String identificador) {
-        this.identificador = identificador;
+    public void setCodigoSIA(String procSiacod) {this.codigoSIA = procSiacod; }
+    public String getEstadoSIA() {
+        return estadoSIA;
     }
-
-    public String getFunciones() {
-        return funciones;
+    public void setEstadoSIA(String procSiaest) {
+        this.estadoSIA = procSiaest;
     }
-
-    public void setFunciones(String funciones) {
-        this.funciones = funciones;
+    public String  getSiaFecha() {
+        return siaFecha;
     }
-
-    public String getCargo() {
-        return cargo;
+    public void setSiaFecha(String procSiafc) {
+        this.siaFecha = procSiafc;
     }
-
-    public void setCargo(String cargo) {
-        this.cargo = cargo;
+    public String getCodigoDir3SIA() {
+        return codigoDir3SIA;
     }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Long getUnidadAdministrativa() {
-        return unidadAdministrativa;
-    }
-
-    public void setUnidadAdministrativa(Long unidadAdministrativa) {
-        this.unidadAdministrativa = unidadAdministrativa;
-    }
-
-    public String getTelefonoFijo() {
-        return telefonoFijo;
-    }
-
-    public void setTelefonoFijo(String telefonoFijo) {
-        this.telefonoFijo = telefonoFijo;
-    }
-
-    public String getTelefonoMovil() {
-        return telefonoMovil;
-    }
-
-    public void setTelefonoMovil(String telefonoMovil) {
-        this.telefonoMovil = telefonoMovil;
-    }
-
-    public String getTelefonoExteriorFijo() {
-        return telefonoExteriorFijo;
-    }
-
-    public void setTelefonoExteriorFijo(String telefonoExteriorFijo) {
-        this.telefonoExteriorFijo = telefonoExteriorFijo;
-    }
-
-    public String getTelefonoExteriorMovil() {
-        return telefonoExteriorMovil;
-    }
-
-    public void setTelefonoExteriorMovil(String telefonoExteriorMovil) {
-        this.telefonoExteriorMovil = telefonoExteriorMovil;
+    public void setCodigoDir3SIA(String procSiadir3) {
+        this.codigoDir3SIA = procSiadir3;
     }
 
     /**
@@ -116,76 +60,22 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public boolean isRellenoTexto() {
         return texto != null && !texto.isEmpty();
     }
-
-    /**
-     * Esta relleno el nombre
-     **/
-    public boolean isRellenoNombre() {
-        return nombre != null && !nombre.isEmpty();
+    public boolean isRellenoTipo() {
+        return tipo != null && !tipo.isEmpty();
     }
-
-    /**
-     * Esta relleno el identificador
-     **/
-    public boolean isRellenoIdentificador() {
-        return identificador != null && !identificador.isEmpty();
+    public boolean isRellenoCodigoSIA() {
+        return codigoSIA != null && !codigoSIA.isEmpty();
     }
-
-    /**
-     * Esta relleno el funciones
-     **/
-    public boolean isRellenoFunciones() {
-        return funciones != null && !funciones.isEmpty();
+    public boolean isRellenoEstadoSIA() {
+        return estadoSIA != null && !estadoSIA.isEmpty();
     }
-
-    /**
-     * Esta relleno el cargo
-     **/
-    public boolean isRellenoCargo() {
-        return cargo != null && !cargo.isEmpty();
+    public boolean isRellenoSiaFecha() {
+        return siaFecha != null && !siaFecha.isEmpty();
     }
+    public boolean isRellenoCodigoDir3SIA() { return codigoDir3SIA != null && !codigoDir3SIA.isEmpty();}
 
-    /**
-     * Esta relleno el email
-     **/
-    public boolean isRellenoEmail() {
-        return email != null && !email.isEmpty();
-    }
 
-    /**
-     * Esta relleno la unidiad administrativa
-     **/
-    public boolean isRellenoUnidadAdministrativa() {
-        return unidadAdministrativa != null;
-    }
 
-    /**
-     * Esta relleno el telefono fijo
-     **/
-    public boolean isRellenoTelefonoFijo() {
-        return telefonoFijo != null && !telefonoFijo.isEmpty();
-    }
-
-    /**
-     * Esta relleno el telefono movil
-     **/
-    public boolean isRellenoTelefonoMovil() {
-        return telefonoMovil != null && !telefonoMovil.isEmpty();
-    }
-
-    /**
-     * Esta relleno el telefono fijo exterior
-     **/
-    public boolean isRellenoTelefonoExteriorFijo() {
-        return telefonoExteriorFijo != null && !telefonoExteriorFijo.isEmpty();
-    }
-
-    /**
-     * Esta relleno el telefono movil exterior
-     **/
-    public boolean isRellenoTelefonoExteriorMovil() {
-        return telefonoExteriorMovil != null && !telefonoExteriorMovil.isEmpty();
-    }
 
     @Override
     protected String getDefaultOrder() {

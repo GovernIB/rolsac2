@@ -6,18 +6,18 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:t="http://back.rolsac2.caib.es/tags">
 <!--
-Pàgina amb el llistat de personal d'una unitat administrativa.
+Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 -->
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
         <f:metadata>
             <!--<f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />-->
-            <f:viewAction action="#{viewPersonal.load}" />
+            <f:viewAction action="#{viewProcedimientos.load}" />
         </f:metadata>
     </ui:define>
 
     <ui:define name="pageTitle">
-        Sección
+        #{labels['viewProcedimientos.titulo']}
         <!-- <h:outputFormat value="#{labels.listProcediment_title}">
             <f:param value="#{unitatModel.value.nom}"/>
             <f:param value="#{unitatModel.value.codiDir3}"/>
@@ -26,14 +26,103 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                        action="#{sessionBean.cambiarUnidadAdministrativa(ua)}"
+                        update="migaPan"
+                        oncomplete="$('#form:actualizarBusqueda').click();" >
             </p:menuitem>
         </c:forEach>
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
-             View
+        <h:form id="form">
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
+            <f:facet name="header">
+                <div class="row">
+                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                        <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
+                        <p:inputText value="#{viewProcedimientos.filtro.texto}" styleClass="mr-2" ></p:inputText>
+                        <p:commandButton value="#{labels['dict.busqueda']}"
+                                         styleClass="mr-2"  icon="pi pi-search"
+                                         actionListener="#{viewProcedimientos.buscar()}"
+                                         update="messages dataTable"
+                                         process="@form"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                        <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2"  icon="pi pi-file-o" iconPos="top"  actionListener="#{viewProcedimientos.nuevoProcedimiento}" process="@this">
+                            <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages dataTable"/>
+                        </p:commandButton>
+                        <p:commandButton value="#{labels['dict.editar']}" styleClass="mr-2"  icon="pi pi-pencil" iconPos="top"  actionListener="#{viewProcedimientos.editarProcedimiento}" process="@form" update="messages dataTable">
+                            <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages "/>
+                        </p:commandButton>
+                        <p:commandButton value="#{labels['dict.borrar']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewProcedimientos.borrarProcedimiento}" process="@form" update="messages dataTable">
+                            <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
+                        </p:commandButton>
+                        <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"  action="#{viewProcedimientos.ayuda}" process="@this" update="messages dataTable" />
+                    </div>
+                </div>
+            </f:facet>
+            </p:panel>
+            <p:dataTable id="dataTable" value="#{viewProcedimientos.lazyModel}" var="procedimiento"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="procedimientoTable"
+                         rows="#{viewProcedimientos.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                         first="#{viewProcedimientos.filtro.paginaFirst}"
+                         paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                         paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         emptyMessage="#{labels['dict.noHayDatos']}"
+                         selectionMode="single" selection="#{viewProcedimientos.datoSeleccionado}" rowKey="#{procedimiento.codigo}"
+                         reflow="true"
+                         sortBy="#{viewProcedimientos.filtro.orderBy}"
+                         sortOrder="#{viewProcedimientos.filtro.order}"
+                         style="min-height: 300px;"
+            >
+            <p:ajax
+                    event="rowDblselect"
+                    oncomplete="triggerDblClick();"
+                    global="false" />
+            <f:facet name="{RowsPerPageLabel}">
+                #{labels.dataTable_rowsPerPage}
+            </f:facet>
+                <p:column sortBy="#{procedimiento.codigo}">
+                    <f:facet name="header">#{labels['dict.codigo']}</f:facet>
+                    <h:outputText value="#{procedimiento.codigo}"/>
+                </p:column>
+                <p:column sortBy="#{procedimiento.estadoSIA}">
+                    <f:facet name="header">#{labels['dict.nombre']}</f:facet>
+                    <!--<h:outputText value="#{procedimiento.nombreProcedimientoWorkFlow.getTraduccion(sessionBean.lang)}"/>-->
+                    <h:outputText value="#{procedimiento.nombre}"/>
+                </p:column><!--
+                <p:column sortBy="#{procedimiento.tipo}">
+                    <f:facet name="header">#{labels['dict.tipo']}</f:facet>
+                    <h:outputText value="#{procedimiento.tipo}"/>
+                </p:column> -->
+                <p:column sortBy="#{procedimiento.codigoSIA}">
+                    <f:facet name="header">#{labels['viewProcedimientos.codigoSIA']}</f:facet>
+                    <h:outputText value="#{procedimiento.codigoSIA}"/>
+                </p:column>
+                <p:column sortBy="#{procedimiento.codigoDir3SIA}">
+                    <f:facet name="header">#{labels['viewProcedimientos.codiDir3SIA']}</f:facet>
+                    <h:outputText value="#{procedimiento.codigoDir3SIA}"/>
+                </p:column>
+                <p:column sortBy="#{procedimiento.siaFecha}">
+                    <f:facet name="header">#{labels['viewProcedimientos.fecha']}</f:facet>
+                    <h:outputText value="#{procedimiento.siaFecha}"/>
+                </p:column>
+            </p:dataTable>
+
+            <h:outputScript >
+                function triggerDblClick() {
+                    $('#form\\:btnEditarHidden').click();
+                }
+            </h:outputScript>
+
+            <p:commandButton  id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
+                              actionListener="#{viewProcedimientos.editarProcedimiento()}" process="@this" update="messages"
+                              style="display: none">
+                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages dataTable"/>
+            </p:commandButton>
         </h:form>
     </ui:define>
 </ui:composition>

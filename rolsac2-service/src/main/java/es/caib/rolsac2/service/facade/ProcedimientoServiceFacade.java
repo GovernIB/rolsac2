@@ -1,10 +1,17 @@
 package es.caib.rolsac2.service.facade;
 
+import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
+import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
+
+import javax.annotation.security.RolesAllowed;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Servicio para los casos de uso de mantenimiento del personal.
@@ -16,12 +23,12 @@ public interface ProcedimientoServiceFacade {
     /**
      * Crea un nuevo fichas a la base de datos relacionada con la unidad indicada.
      *
-     * @param dto      datos del personal
+     * @param dto datos del personal
      * @param idUnitat identificador de la unidad
      * @return EL identificador del nuevo personal
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    Long create(ProcedimientoDTO dto, Long idUnitat) throws RecursoNoEncontradoException;
+    Long create(ProcedimientoDTO dto) throws RecursoNoEncontradoException;
 
     /**
      * Actualiza los datos de un fichas a la base de datos.
@@ -62,4 +69,15 @@ public interface ProcedimientoServiceFacade {
      * @return
      */
     int countByFiltro(ProcedimientoFiltro filtro);
+
+    Optional<ProcedimientoTramiteDTO> findProcedimientoTramiteById(Long id);
+
+    List<ProcedimientoTramiteDTO> findProcTramitesByProcedimientoId(Long id);
+
+    Long createProcedimientoTramite(ProcedimientoTramiteDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException;
+
+    void updateProcedimientoTramite(ProcedimientoTramiteDTO dto) throws RecursoNoEncontradoException;
+
+    void deleteProcedimientoTramite(Long id) throws RecursoNoEncontradoException;
+
 }

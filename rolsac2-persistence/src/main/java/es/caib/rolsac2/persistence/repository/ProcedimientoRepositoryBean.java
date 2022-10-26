@@ -1,7 +1,11 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.model.JProcedimiento;
+import es.caib.rolsac2.persistence.model.*;
+import es.caib.rolsac2.persistence.model.pk.JProcedimientoMateriaSIAPK;
+import es.caib.rolsac2.persistence.model.pk.JProcedimientoPublicoObjectivoPK;
 import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
+import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
+import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 
 import javax.ejb.Local;
@@ -10,6 +14,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +26,7 @@ import java.util.Optional;
  */
 @Stateless
 @Local(ProcedimientoRepository.class)
-@TransactionAttribute(TransactionAttributeType.MANDATORY)
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedimiento, Long>
         implements ProcedimientoRepository {
 
@@ -41,10 +46,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             for (Object[] jproc : jprocs) {
                 ProcedimientoGridDTO procedimientoGridDTO = new ProcedimientoGridDTO();
                 procedimientoGridDTO.setCodigo((Long) jproc[0]);
-                //personalGrid.setIdentificador((String) jficha[1]);
-                //personalGrid.setNombre((String) jficha[2]);
-                //personalGrid.setEmail((String) jficha[3]);
-
+                procedimientoGridDTO.setTipo((String) jproc[1]);
+                procedimientoGridDTO.setCodigoSIA((Integer) jproc[2]);
+                procedimientoGridDTO.setEstadoSIA((Boolean) jproc[3]);
+                procedimientoGridDTO.setSiaFecha((LocalDate) jproc[4]);
+                procedimientoGridDTO.setCodigoDir3SIA((String) jproc[5]);
+                procedimientoGridDTO.setNombre((String) jproc[6]);
                 procs.add(procedimientoGridDTO);
             }
         }
@@ -56,104 +63,268 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return (long) getQuery(true, filtro).getSingleResult();
     }
 
+    @Override
+    public JProcedimientoWorkflow getWF(Long id, boolean procedimientoEnmodificacion) {
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoWorkflow j where j.workflow = :workflow AND j.procedimiento.codigo = :codigoProc ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("workflow", procedimientoEnmodificacion);
+        query.setParameter("codigoProc", id);
+        JProcedimientoWorkflow jproc = null;
+
+        List<JProcedimientoWorkflow> jprocs = query.getResultList();
+        if (jprocs != null && !jprocs.isEmpty()) {
+            jproc = jprocs.get(0);
+        }
+        return jproc;
+    }
+
+    @Override
+    public void createWF(JProcedimientoWorkflow jProcWF) {
+        entityManager.persist(jProcWF);
+    }
+
+    @Override
+    public List<TipoMateriaSIAGridDTO> getMateriaGridSIAByWF(Long codigoWF) {
+        List<TipoMateriaSIAGridDTO> lista = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoProcWF", codigoWF);
+        List<JProcedimientoMateriaSIA> jlista = query.getResultList();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoMateriaSIA elemento : jlista) {
+                lista.add(elemento.getTipoMateriaSIA().toModel());
+            }
+        }
+        return lista;
+    }
+
+    @Override
+    public void mergeMateriaSIAProcWF(Long codigoWF, List<TipoMateriaSIAGridDTO> listaNuevos) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoProcWF", codigoWF);
+        List<JProcedimientoMateriaSIA> jlista = query.getResultList();
+
+        List<JProcedimientoMateriaSIA> borrar = new ArrayList<>();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoMateriaSIA jelemento : jlista) {
+                boolean encontrado = false;
+                if (listaNuevos != null) {
+                    for (TipoMateriaSIAGridDTO elemento : listaNuevos) {
+                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getTipoMateriaSIA().getCodigo()) == 0) {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!encontrado) {
+                    borrar.add(jelemento);
+                }
+            }
+        }
+
+        if (!borrar.isEmpty()) {
+            for (JProcedimientoMateriaSIA jelemento : borrar) {
+                entityManager.remove(jelemento);
+            }
+            jlista.removeAll(borrar);
+        }
+
+
+        if (listaNuevos != null && !listaNuevos.isEmpty()) {
+            JProcedimientoWorkflow jprocWF = entityManager.find(JProcedimientoWorkflow.class, codigoWF);
+            for (TipoMateriaSIAGridDTO elemento : listaNuevos) {
+                boolean encontrado = false;
+                if (!jlista.isEmpty()) {
+                    for (JProcedimientoMateriaSIA jelemento : jlista) {
+                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getTipoMateriaSIA().getCodigo()) == 0) {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!encontrado) {
+                    JProcedimientoMateriaSIA nuevo = new JProcedimientoMateriaSIA();
+                    nuevo.setProcedimientoWF(jprocWF);
+                    JTipoMateriaSIA jTipoMateriaSIA = entityManager.find(JTipoMateriaSIA.class, elemento.getCodigo());
+                    nuevo.setTipoMateriaSIA(jTipoMateriaSIA);
+                    JProcedimientoMateriaSIAPK id = new JProcedimientoMateriaSIAPK();
+                    id.setTipoMateriaSIA(elemento.getCodigo());
+                    id.setProcedimento(codigoWF);
+                    nuevo.setCodigo(id);
+                    entityManager.persist(nuevo);
+                    entityManager.flush();
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public List<TipoPublicoObjetivoEntidadGridDTO> getTipoPubObjEntByWF(Long codigoWF) {
+        List<TipoPublicoObjetivoEntidadGridDTO> lista = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoProcWF", codigoWF);
+        List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoPublicoObjectivo elemento : jlista) {
+                lista.add(elemento.toModel());
+            }
+        }
+        return lista;
+    }
+
+    @Override
+    public void deleteWF(Long codigoProc, boolean enmodificacion) {
+        JProcedimientoWorkflow jprocWF = this.getWF(codigoProc, enmodificacion);
+        if (jprocWF == null) {
+            return;
+        }
+
+        StringBuilder sql = new StringBuilder(
+                "SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoProcWF", jprocWF.getCodigo());
+        List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
+        if (jlista != null) {
+            for (JProcedimientoPublicoObjectivo jelemento : jlista) {
+                entityManager.remove(jelemento);
+            }
+        }
+
+        StringBuilder sqlSIA = new StringBuilder(
+                "SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
+        Query querySIA = entityManager.createQuery(sqlSIA.toString());
+        querySIA.setParameter("codigoProcWF", jprocWF.getCodigo());
+        List<JProcedimientoMateriaSIA> jlistaSIA = querySIA.getResultList();
+        if (jlistaSIA != null) {
+            for (JProcedimientoMateriaSIA jelementoSIA : jlistaSIA) {
+                entityManager.remove(jelementoSIA);
+            }
+        }
+
+        entityManager.remove(jprocWF);
+    }
+
+
+    @Override
+    public void mergePublicoObjetivoProcWF(Long codigoWF, List<TipoPublicoObjetivoEntidadGridDTO> listaNuevos) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoProcWF", codigoWF);
+        List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
+
+        List<JProcedimientoPublicoObjectivo> borrar = new ArrayList<>();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoPublicoObjectivo jelemento : jlista) {
+                boolean encontrado = false;
+                if (listaNuevos != null) {
+                    for (TipoPublicoObjetivoEntidadGridDTO elemento : listaNuevos) {
+                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getTipoPublicoObjetivo().getCodigo()) == 0) {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!encontrado) {
+                    borrar.add(jelemento);
+                }
+            }
+        }
+
+        if (!borrar.isEmpty()) {
+            for (JProcedimientoPublicoObjectivo jelemento : borrar) {
+                entityManager.remove(jelemento);
+            }
+            jlista.removeAll(borrar);
+        }
+
+
+        if (listaNuevos != null && !listaNuevos.isEmpty()) {
+            JProcedimientoWorkflow jprocWF = entityManager.find(JProcedimientoWorkflow.class, codigoWF);
+            for (TipoPublicoObjetivoEntidadGridDTO elemento : listaNuevos) {
+                boolean encontrado = false;
+                if (!jlista.isEmpty()) {
+                    for (JProcedimientoPublicoObjectivo jelemento : jlista) {
+                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getTipoPublicoObjetivo().getCodigo()) == 0) {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!encontrado) {
+                    JProcedimientoPublicoObjectivo nuevo = new JProcedimientoPublicoObjectivo();
+                    nuevo.setProcedimiento(jprocWF);
+                    JTipoPublicoObjetivoEntidad jtipoPublicoObjetivo = entityManager.find(JTipoPublicoObjetivoEntidad.class, elemento.getCodigo());
+                    nuevo.setTipoPublicoObjetivo(jtipoPublicoObjetivo);
+                    JProcedimientoPublicoObjectivoPK id = new JProcedimientoPublicoObjectivoPK();
+                    id.setTipoPublicoObjetivo(elemento.getCodigo());
+                    id.setProcedimiento(codigoWF);
+                    nuevo.setCodigo(id);
+                    entityManager.persist(nuevo);
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void updateWF(JProcedimientoWorkflow jProcWF) {
+        entityManager.merge(jProcWF);
+    }
+
     private Query getQuery(boolean isTotal, ProcedimientoFiltro filtro) {
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder("SELECT count(j) FROM JPersonal j where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = true LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder("SELECT j.codigo, j.identificador, j.nombre,  j.email FROM JProcedimiento j where 1 = 1 ");
+            sql = new StringBuilder(
+                    "SELECT j.codigo, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, j.codigoDir3SIA, t.nombre FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = true LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma where 1 = 1 ");
         }
-        if (filtro.isRellenoIdUA()) {
-            sql.append(" and j.unidadAdministrativa = :ua");
-        }
+
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.nombre) LIKE :filtro  OR LOWER(j.identificador) LIKE :filtro  OR LOWER(j.email) LIKE :filtro  )");
-        }
-        if (filtro.isRellenoNombre()) {
-            sql.append(" and LOWER(j.nombre) like :nombre");
-        }
-        if (filtro.isRellenoIdentificador()) {
-            sql.append(" and LOWER(j.identificador) like :identificador ");
-        }
-        if (filtro.isRellenoCargo()) {
-            sql.append(" and LOWER(j.cargo) like :cargo ");
-        }
-        if (filtro.isRellenoFunciones()) {
-            sql.append(" and LOWER(j.funciones) like :funciones ");
-        }
-        if (filtro.isRellenoUnidadAdministrativa()) {
-            sql.append(" and LOWER(j.unidadAdministrativa) like :ua ");
-        }
-        if (filtro.isRellenoEmail()) {
-            sql.append(" and LOWER(j.email) like :email ");
-        }
-        if (filtro.isRellenoTelefonoFijo()) {
-            sql.append(" and j.telefonoFijo like :telefonoFijo ");
-        }
-        if (filtro.isRellenoTelefonoMovil()) {
-            sql.append(" and j.telefonoMovil like :telefonoMovil ");
-        }
-        if (filtro.isRellenoTelefonoExteriorFijo()) {
-            sql.append(" and j.telefonoExteriorFijo like :telefonoExteriorFijo ");
-        }
-        if (filtro.isRellenoTelefonoExteriorMovil()) {
-            sql.append(" and j.telefonoExteriorMovil like :telefonoExteriorMovil ");
-        }
-        if (filtro.getOrderBy() != null) {
-            sql.append(" order by " + getOrden(filtro.getOrderBy()));
-            sql.append(filtro.isAscendente() ? " asc " : " desc ");
+            sql.append(" and ( LOWER(cast(j.codigo as string)) like :filtro "
+                    + "OR LOWER(j.tipo) LIKE :filtro  OR LOWER(cast(j.codigoSIA as string)) LIKE :filtro"
+                    + " OR LOWER(cast(j.estadoSIA as string)) LIKE :filtro OR LOWER(cast(j.codigoDir3SIA as string)) LIKE :filtro )");
         }
 
         Query query = entityManager.createQuery(sql.toString());
-        if (filtro.isRellenoIdUA()) {
-            query.setParameter("ua", filtro.getIdUA());
-        }
+        query.setParameter("idioma", filtro.getIdioma());
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
-        if (filtro.isRellenoNombre()) {
-            query.setParameter("nombre", "%" + filtro.getNombre().toLowerCase() + "%");
-        }
-        if (filtro.isRellenoIdentificador()) {
-            query.setParameter("identificador", "%" + filtro.getIdentificador().toLowerCase() + "%");
-        }
-        if (filtro.isRellenoCargo()) {
-            query.setParameter("cargo", "%" + filtro.getCargo().toLowerCase() + "%");
-        }
-        if (filtro.isRellenoFunciones()) {
-            query.setParameter("funciones", "%" + filtro.getFunciones().toLowerCase() + "%");
-        }
-        if (filtro.isRellenoUnidadAdministrativa()) {
-            query.setParameter("ua", filtro.getUnidadAdministrativa());
-        }
-        if (filtro.isRellenoEmail()) {
-            query.setParameter("email", "%" + filtro.getEmail().toLowerCase() + "%");
-        }
-        if (filtro.isRellenoTelefonoFijo()) {
-            query.setParameter("telefonoFijo", "%" + filtro.getTelefonoFijo() + "%");
-        }
-        if (filtro.isRellenoTelefonoMovil()) {
-            query.setParameter("telefonoMovil", "%" + filtro.getTelefonoMovil() + "%");
-        }
-        if (filtro.isRellenoTelefonoExteriorFijo()) {
-            query.setParameter("telefonoExteriorFijo", "%" + filtro.getTelefonoExteriorFijo() + "%");
-        }
-        if (filtro.isRellenoTelefonoExteriorMovil()) {
-            query.setParameter("telefonoExteriorMovil", "%" + filtro.getTelefonoExteriorMovil() + "%");
-        }
+        /*
+         * if (filtro.isRellenoCodigoSIA()) { query.setParameter("tipo", "%" + filtro.getTipo().toLowerCase() + "%"); }
+         * if (filtro.isRellenoCodigoSIA()) { query.setParameter("codigoSIA", "%" + filtro.getCodigoSIA().toLowerCase()
+         * + "%"); } if (filtro.isRellenoEstadoSIA()) { query.setParameter("estadoSIA", "%" +
+         * filtro.getEstadoSIA().toLowerCase() + "%"); } if (filtro.isRellenoSiaFecha()) {
+         * query.setParameter("siaFecha", "%" + filtro.getSiaFecha().toLowerCase() + "%"); } if
+         * (filtro.isRellenoCodigoDir3SIA()) { query.setParameter("codigoDir3SIA)", filtro.getCodigoDir3SIA()); }
+         */
+
         return query;
     }
 
     private String getOrden(String order) {
-        //Se puede hacer un switch/if pero en este caso, con j.+order sobra
+        // Se puede hacer un switch/if pero en este caso, con j.+order sobra
         return "j." + order;
     }
 
     @Override
     public Optional<JProcedimiento> findById(String id) {
-        TypedQuery<JProcedimiento> query = entityManager.createNamedQuery(JProcedimiento.FIND_BY_ID, JProcedimiento.class);
-        query.setParameter("id", id);
+        TypedQuery<JProcedimiento> query =
+                entityManager.createNamedQuery(JProcedimiento.FIND_BY_ID, JProcedimiento.class);
+        query.setParameter("codigo", id);
         List<JProcedimiento> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }

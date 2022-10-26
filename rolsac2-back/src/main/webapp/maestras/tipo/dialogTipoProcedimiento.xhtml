@@ -1,0 +1,107 @@
+<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns="http://www.w3.org/1999/xhtml"
+>
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTipoProcedimiento.modoAcceso}"/>
+      <f:viewParam id="ID" name="ID" value="#{dialogTipoProcedimiento.id}"/>
+      <f:viewAction action="#{dialogTipoProcedimiento.load}"/>
+    </f:metadata>
+  </ui:define>
+
+  <ui:define name="pageTitleDialog">
+    <h:outputFormat value="#{labels['dialogTipoProcedimiento.consulta']}"
+                    rendered="#{dialogTipoProcedimiento.isModoConsulta()}"/>
+    <h:outputFormat value="#{labels['dialogTipoProcedimiento.detalle']}"
+                    rendered="#{dialogTipoProcedimiento.isModoEdicion()}"/>
+    <h:outputFormat value="#{labels['dialogTipoProcedimiento.nuevo']}"
+                    rendered="#{dialogTipoProcedimiento.isModoAlta()}"/>
+  </ui:define>
+  <ui:define name="contentIdioma">
+
+    <span class="pi pi-tag" style="margin-top:5px"/>
+    <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+    <p:selectOneButton id="opcionIdioma" value="#{dialogTipoProcedimiento.idioma}" styleClass="botoneraRed">
+      <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                     itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+      <p:ajax update="inputDescripcion" process="@this"/>
+    </p:selectOneButton>
+    <p:commandButton action="#{dialogTipoProcedimiento.traducir}"
+                     icon="pi pi-compass" iconPos="top"
+                     value="#{labels['dict.traducir']}"
+                     style="margin-left:10px"
+                     update="messagesDialog"
+                     process="@this" />
+  </ui:define>
+
+
+  <ui:define name="contentDialog">
+    <p:panel>
+      <p:growl id="messagesDialog"
+               globalOnly="false"
+               showDetail="true"
+               life="5000"
+               escape="false"/>
+
+      <div class="row">
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+        </div>
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
+          <p:inputText id="txtCodigo" value="#{dialogTipoProcedimiento.data.codigo}"
+                       styleClass="w95" disabled="true" maxlength="50"/>
+        </div>
+
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <p:outputLabel value="#{labels['dialogTipoProcedimiento.identificador']}:" for="txtIdentificador"/>
+        </div>
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
+          <p:inputText id="txtIdentificador" value="#{dialogTipoProcedimiento.data.identificador}"
+                       styleClass="w95" onblur="this.value = this.value.toUpperCase();"
+                       required="true" disabled="#{dialogTipoProcedimiento.isModoConsulta()}" maxlength="50">
+            <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+            <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+          </p:inputText>
+        </div>
+
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+        </div>
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
+          <my:literalComponent id="inputDescripcion"
+                               literal="#{dialogTipoProcedimiento.data.descripcion}"
+                               idioma="#{dialogTipoProcedimiento.idioma}"
+                               required="true"
+                               idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                               idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                               nombreLiteral="#{labels['dict.descripcion']}"
+                               soloLecture="#{dialogTipoProcedimiento.isModoConsulta()}"/>
+        </div>
+      </div>
+    </p:panel>
+  </ui:define>
+
+  <ui:define name="contentFooterDialogRight">
+    <p:commandButton action="#{dialogTipoProcedimiento.ayuda}"
+                     icon="pi pi-info-circle" iconPos="top"
+                     value="#{labels['dict.ayuda']}"
+                     process="@this"/>
+    <p:commandButton action="#{dialogTipoProcedimiento.guardar}"
+                     value="#{labels['dict.guardar']}" update="messagesDialog"
+                     process="@all"/>
+    <p:commandButton action="#{dialogTipoProcedimiento.cerrar}"
+                     value="#{labels['dict.cerrar']}"
+                     process="@this"/>
+
+  </ui:define>
+
+</ui:composition>
+</html>

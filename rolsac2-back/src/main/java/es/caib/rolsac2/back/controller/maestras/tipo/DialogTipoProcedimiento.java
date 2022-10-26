@@ -6,7 +6,7 @@ import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoSexoDTO;
+import es.caib.rolsac2.service.model.TipoProcedimientoDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.event.SelectEvent;
@@ -24,16 +24,16 @@ import java.util.Objects;
 
 @Named
 @ViewScoped
-public class DialogTipoSexo extends AbstractController implements Serializable {
-    private static final Logger LOG = LoggerFactory.getLogger(DialogTipoSexo.class);
+public class DialogTipoProcedimiento extends AbstractController implements Serializable {
+    private static final Logger LOG = LoggerFactory.getLogger(DialogTipoProcedimiento.class);
     private static final long serialVersionUID = -978862425481233306L;
 
     private String id;
 
     @EJB
-    MaestrasSupServiceFacade tipoSexoService;
+    MaestrasSupServiceFacade tipoProcedimientoService;
 
-    private TipoSexoDTO data;
+    private TipoProcedimientoDTO data;
     private String identificadorAntiguo;
     private Literal descripcion;
 
@@ -43,11 +43,11 @@ public class DialogTipoSexo extends AbstractController implements Serializable {
         // Inicializamos combos/desplegables/inputs
         // De momento, no tenemos desplegables.
 
-        data = new TipoSexoDTO();
+        data = new TipoProcedimientoDTO();
         if (this.isModoAlta()) {
-            // data.setUnidadAdministrativa(sessionBean.getUnidadActiva().getId());
+            data.setEntidad(sessionBean.getEntidad());
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = tipoSexoService.findTipoSexoById(Long.valueOf(id));
+            data = tipoProcedimientoService.findTipoProcedimientoById(Long.valueOf(id));
             identificadorAntiguo = data.getIdentificador();
         }
 
@@ -62,7 +62,7 @@ public class DialogTipoSexo extends AbstractController implements Serializable {
 
     public void abrirDlg() {
         final Map<String, String> params = new HashMap<>();
-        UtilJSF.openDialog("dialogTipoSexo", TypeModoAcceso.ALTA, params, true, 1050, 550);
+        UtilJSF.openDialog("dialogTipoProcedimiento", TypeModoAcceso.ALTA, params, true, 1050, 550);
     }
 
     public void guardar() {
@@ -72,9 +72,9 @@ public class DialogTipoSexo extends AbstractController implements Serializable {
         }
 
         if (this.data.getCodigo() == null) {
-            tipoSexoService.create(this.data);
+            tipoProcedimientoService.create(this.data);
         } else {
-            tipoSexoService.update(this.data);
+            tipoProcedimientoService.update(this.data);
         }
 
         // Retornamos resultado
@@ -90,19 +90,19 @@ public class DialogTipoSexo extends AbstractController implements Serializable {
     }
 
     private boolean verificarGuardar() {
-        if (Objects.isNull(this.data.getCodigo()) && tipoSexoService.existeIdentificadorTipoSexo(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo()) && tipoProcedimientoService.existeIdentificadorTipoProcedimiento(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
 
         if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equals(this.data.getIdentificador())
-                && tipoSexoService.existeIdentificadorTipoSexo(this.data.getIdentificador())) {
+                && tipoProcedimientoService.existeIdentificadorTipoProcedimiento(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
 
         List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
-        if(!idiomasPendientesDescripcion.isEmpty()) {
+        if (!idiomasPendientesDescripcion.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }
@@ -130,11 +130,11 @@ public class DialogTipoSexo extends AbstractController implements Serializable {
         this.id = id;
     }
 
-    public TipoSexoDTO getData() {
+    public TipoProcedimientoDTO getData() {
         return data;
     }
 
-    public void setData(TipoSexoDTO data) {
+    public void setData(TipoProcedimientoDTO data) {
         this.data = data;
     }
 
