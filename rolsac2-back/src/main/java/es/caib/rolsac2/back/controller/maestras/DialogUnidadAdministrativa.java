@@ -8,14 +8,9 @@ import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.TipoUnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
-import es.caib.rolsac2.service.model.EntidadDTO;
-import es.caib.rolsac2.service.model.TipoSexoDTO;
-import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-
-import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +19,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,10 +42,21 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
     private String identificadorOld;
 
-    private String modoAccesoAux;
+    private List<UsuarioDTO> usuarios;
 
-    @Inject
-    private SessionBean sessionBean;
+    private UsuarioDTO usuarioSeleccionado;
+
+    private List<TipoMateriaSIADTO> materiasSIA;
+
+    private TipoMateriaSIADTO materiaSeleccionada;
+
+    private List<SeccionDTO> secciones;
+
+    private SeccionDTO seccionSeleccionada;
+
+    private List<EdificioDTO> edificios;
+
+    private EdificioDTO edificioSeleccionado;
 
     @EJB
     private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
@@ -61,14 +68,10 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
     private TipoUnidadAdministrativaServiceFacade tipoUnidadAdministrativaServiceFacade;
 
     public void load() {
-        LOG.debug("init");
+        LOG.debug("init1");
 
         this.setearIdioma();
         data = new UnidadAdministrativaDTO();
-
-        if(this.getModoAcceso()==null && modoAccesoAux !=null) {
-        	this.setModoAcceso(modoAccesoAux);
-        }
 
         tiposSexo = unidadAdministrativaServiceFacade.findTipoSexo();
         entidadesActivas = administracionSupServiceFacade.findEntidadActivas();
@@ -78,10 +81,145 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             data = new UnidadAdministrativaDTO();
             data.setEntidad(sessionBean.getEntidad());
             data.setPadre(sessionBean.getUnidadActiva());
+            data.setNombre(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            data.setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            data.setPresentacion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            data.setResponsable(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
         }
+
+        usuarios = new ArrayList<>();
+
+        final UsuarioDTO usu1 = new UsuarioDTO();
+        usu1.setCodigo(1L);
+        usu1.setIdentificador("Usuario 1_Apellido1_Apellido2");
+
+        final UsuarioDTO usu2 = new UsuarioDTO();
+        usu2.setCodigo(2L);
+        usu2.setIdentificador("Usuario 2");
+
+        final UsuarioDTO usu3 = new UsuarioDTO();
+        usu3.setCodigo(3L);
+        usu3.setIdentificador("Usuario 3");
+
+        final UsuarioDTO usu4 = new UsuarioDTO();
+        usu4.setCodigo(4L);
+        usu4.setIdentificador("Usuario 4");
+
+        final UsuarioDTO usu5 = new UsuarioDTO();
+        usu5.setCodigo(5L);
+        usu5.setIdentificador("Usuario 5");
+
+        final UsuarioDTO usu6 = new UsuarioDTO();
+        usu6.setCodigo(6L);
+        usu6.setIdentificador("Usuario 6");
+
+        final UsuarioDTO usuN = new UsuarioDTO();
+        usuN.setCodigo(7L);
+        usuN.setIdentificador("Usuario N");
+
+        usuarios.add(usu1);
+        usuarios.add(usu2);
+        usuarios.add(usu3);
+        usuarios.add(usu4);
+        usuarios.add(usu5);
+        usuarios.add(usu6);
+        usuarios.add(usuN);
+
+        materiasSIA = new ArrayList<>();
+
+        final TipoMateriaSIADTO mat1 = new TipoMateriaSIADTO();
+        final Literal l1= new Literal();
+        final List<Traduccion> traducciones = new ArrayList<>();
+        final Traduccion t1 = new Traduccion();
+        t1.setLiteral("Descripción del tipo de materia SIA.");
+        t1.setIdioma("es");
+
+        final Traduccion t2 = new Traduccion();
+        t1.setLiteral("Descripción del tipo de materia SIA.");
+        t1.setIdioma("ca");
+
+        traducciones.add(t1);
+        traducciones.add(t2);
+
+        l1.setTraducciones(traducciones);
+        mat1.setCodigo(1L);
+        mat1.setIdentificador("Materia SIA 1");
+        mat1.setDescripcion(l1);
+
+        final TipoMateriaSIADTO mat2 = new TipoMateriaSIADTO();
+        mat2.setCodigo(2L);
+        mat2.setIdentificador("Materia SIA 2");
+        mat2.setDescripcion(l1);
+
+        final TipoMateriaSIADTO mat3 = new TipoMateriaSIADTO();
+        mat3.setCodigo(3L);
+        mat3.setIdentificador("Materia SIA 2");
+        mat3.setDescripcion(l1);
+
+        final TipoMateriaSIADTO mat4 = new TipoMateriaSIADTO();
+        mat4.setCodigo(4L);
+        mat4.setIdentificador("Materia SIA N");
+        mat4.setDescripcion(l1);
+
+        materiasSIA.add(mat1);
+        materiasSIA.add(mat2);
+        materiasSIA.add(mat3);
+        materiasSIA.add(mat4);
+
+        secciones = new ArrayList<>();
+
+        final SeccionDTO sec1 = new SeccionDTO();
+        sec1.setCodigo(1L);
+        sec1.setIdentificador("Portada Home");
+
+        final SeccionDTO sec2 = new SeccionDTO();
+        sec2.setCodigo(2L);
+        sec2.setIdentificador("Portada UA");
+
+        SeccionDTO sec3 = new SeccionDTO();
+        sec3.setCodigo(3L);
+        sec3.setIdentificador("Portada actualidad");
+
+        SeccionDTO sec4 = new SeccionDTO();
+        sec4.setCodigo(4L);
+        sec4.setIdentificador("Portada administración");
+
+        secciones.add(sec1);
+        secciones.add(sec2);
+        secciones.add(sec3);
+        secciones.add(sec4);
+
+
+        edificios = new ArrayList<>();
+
+        final EdificioDTO e1 = new EdificioDTO();
+        e1.setCodigo(1L);
+        e1.setDireccion("C/ de Palma, 15");
+
+        final EdificioDTO e2 = new EdificioDTO();
+        e2.setCodigo(2L);
+        e2.setDireccion("C/ Balmes, 20");
+
+        final EdificioDTO e3 = new EdificioDTO();
+        e3.setCodigo(3L);
+        e3.setDireccion("C/ Serrano, 5");
+
+        final EdificioDTO e4 = new EdificioDTO();
+        e4.setCodigo(4L);
+        e4.setDireccion("C/ de Valencia, 30");
+
+        final EdificioDTO e5 = new EdificioDTO();
+        e5.setCodigo(5L);
+        e5.setDireccion("C/ de Alexandre Rosselló, 2");
+
+        edificios.add(e1);
+        edificios.add(e2);
+        edificios.add(e3);
+        edificios.add(e4);
+        edificios.add(e5);
 
     }
 
@@ -125,11 +263,11 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             return false;
         }
 
-        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
+        /*if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
                 && unidadAdministrativaServiceFacade.checkIdentificador(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
-        }
+        }*/
         if (Objects.nonNull(this.data.getEmail()) && !ValidacionTipoUtils.esEmailValido(this.data.getEmail())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.email.novalido"), true);
             return false;
@@ -143,9 +281,17 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.fax.novalido"), true);
             return false;
         }
+        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getNombre(), sessionBean.getIdiomasObligatoriosList());
+        if(!idiomasPendientesDescripcion.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dict.nombre", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
+            return false;
+        }
+
+
 
         return true;
     }
+
 
     public String getId() {
         return id;
@@ -195,12 +341,67 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         this.tiposSexo = tiposSexo;
     }
 
-	public String getModoAccesoAux() {
-		return modoAccesoAux;
-	}
+    public List<UsuarioDTO> getUsuarios() {
+        return usuarios;
+    }
 
-	public void setModoAccesoAux(String modoAccesoAux) {
-		this.modoAccesoAux = modoAccesoAux;
-	}
+    public void setUsuarios(List<UsuarioDTO> usuarios) {
+        this.usuarios = usuarios;
+    }
 
+    public UsuarioDTO getUsuarioSeleccionado() {
+        return usuarioSeleccionado;
+    }
+
+    public void setUsuarioSeleccionado(UsuarioDTO usuarioSeleccionado) {
+        this.usuarioSeleccionado = usuarioSeleccionado;
+    }
+
+    public List<TipoMateriaSIADTO> getMateriasSIA() {
+        return materiasSIA;
+    }
+
+    public void setMateriasSIA(List<TipoMateriaSIADTO> materiasSIA) {
+        this.materiasSIA = materiasSIA;
+    }
+
+    public TipoMateriaSIADTO getMateriaSeleccionada() {
+        return materiaSeleccionada;
+    }
+
+    public void setMateriaSeleccionada(TipoMateriaSIADTO materiaSeleccionada) {
+        this.materiaSeleccionada = materiaSeleccionada;
+    }
+
+    public List<SeccionDTO> getSecciones() {
+        return secciones;
+    }
+
+    public void setSecciones(List<SeccionDTO> secciones) {
+        this.secciones = secciones;
+    }
+
+    public SeccionDTO getSeccionSeleccionada() {
+        return seccionSeleccionada;
+    }
+
+    public void setSeccionSeleccionada(SeccionDTO seccionSeleccionada) {
+        this.seccionSeleccionada = seccionSeleccionada;
+    }
+
+    public List<EdificioDTO> getEdificios() {
+        return edificios;
+    }
+
+    public void setEdificios(List<EdificioDTO> edificios) {
+        this.edificios = edificios;
+    }
+
+    public EdificioDTO getEdificioSeleccionado() {
+        return edificioSeleccionado;
+    }
+
+    public void setEdificioSeleccionado(EdificioDTO edificioSeleccionado) {
+        this.edificioSeleccionado = edificioSeleccionado;
+    }
 }

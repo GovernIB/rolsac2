@@ -8,326 +8,430 @@
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
         <f:metadata>
-            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogUnidadAdministrativa.modoAccesoAux}"/>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogUnidadAdministrativa.modoAcceso}"/>
             <f:viewParam id="ID" name="ID" value="#{dialogUnidadAdministrativa.id}"/>
             <f:viewAction action="#{dialogUnidadAdministrativa.load}"/>
         </f:metadata>
     </ui:define>
-	 <ui:define name="icerik">
-	 	  <style>
-	 	  	.show {
-				display: block;
-			}
-
-			.hide {
-				display: none !important;
-			}
-
-			.contenido{
-				display:inline !important;
-			}
-
-			.footer{
-				display:inline !important;
-			}
-	 	  </style>
-	 	  <script src="../tinymce/js/tinymce/tinymce.min.js" type="text/javascript"></script>
-    	  <script type="text/javascript">
-    	  	window.onload = function(){
-    	  		let idioma = "#{dialogUnidadAdministrativa.idioma}";
-    	  		renderIdioma(idioma);
-    	  	}
-
-    	  	tinyMCE.init({
-    	 		   // General options
-    	 		    mode : "textareas",
-    	 		    height: 300,
-    	 		    plugins: "code image link lists paste textcolor",
-    	 		    toolbar: "bold italic | forecolor backcolor | link image | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat #{dialogLiteralHTML.sourceCode}" ,
-    	 		    menubar: "",
-    	 		    paste_as_text : false,
-    	 		    readonly: #{dialogUnidadAdministrativa.isModoConsulta()},
-    	 		   setup : function(ed) {
-    	 		        ed.on("keyup", function(){
-    	 		        	console.log(ed);
-    	 		        	tinyMCE.triggerSave(true,true);
-							miComando();
-    	 		        });
-    	 		   }
-    	 		 });
-
-    	  	function recargarTiny(strEs, strCa){
- 	  			let editor = tinymce.get('formDialog:tabs:txtPresentacion:textoESA');
- 	  			editor.setContent(strEs);
- 	  			let editor2 = tinymce.get('formDialog:tabs:txtPresentacion:textoCAA');
- 	  			editor2.setContent(strCa);
-    	  	}
-
-      		function rerenderTiny(el){
-				let idioma = el.value;
-				renderIdioma(idioma);
-      		}
-
-      		function renderIdioma(idioma){
-      			if(idioma == "es"){
-					  var element = document.getElementById("formDialog:tabs:txtPresentacion:tmcES");
-					  element.classList.remove("hide");
-					  element.classList.add("show");
-					  document.getElementById("formDialog:tabs:txtPresentacion:tmcCA").classList.add("hide");
-				}else{
-					var element = document.getElementById("formDialog:tabs:txtPresentacion:tmcCA");
-					element.classList.add("show");
-					element.classList.remove("hide");
-					document.getElementById("formDialog:tabs:txtPresentacion:tmcES").classList.add("hide");
-
-				}
-      		}
-        </script>
-    </ui:define>
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dict.detalle']} "
+        <h:outputFormat value="#{labels['dialogUnidadAdministrativa.detalle']} "
                         rendered="#{!dialogUnidadAdministrativa.isModoAlta()}"/>
-        <h:outputFormat value="#{labels['dict.nuevo']} "
+        <h:outputFormat value="#{labels['dialogUnidadAdministrativa.nuevo']} "
                         rendered="#{dialogUnidadAdministrativa.isModoAlta()}"/>
+    </ui:define>
+    <ui:define name="contentIdioma">
+
+        <span class="pi pi-tag mt-1"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogUnidadAdministrativa.idioma}"
+                           styleClass="botoneraRed"
+                           disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50">
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+            <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogUnidadAdministrativa.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog "
+                         process="@this"/>
     </ui:define>
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
-        <p:tabView id="tabs">
-            <p:tab title="#{labels['dict.info']}" onload="isConsulta()">
-                <div class="row">
 
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
-                </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:inputText id="txtCodigo" value="#{dialogUnidadAdministrativa.data.codigo}"
-                                 styleClass="w95" disabled="true"/>
-                </div>
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <p:outputLabel value="#{labels['dict.nombre']}:" for="txtNombre"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <my:literalComponent id="txtNombre" styleClass="w95"
-                                             value="#{dialogUnidadAdministrativa.data.nombre}"
-                                             disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
-                                             required="true"
-                                             idioma="#{dialogUnidadAdministrativa.idioma}"/>
-                    </div>
-
-<!--
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dict.entidad']}:" for="selectEntidad"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:selectOneMenu id="selectEntidad" value="#{dialogUnidadAdministrativa.data.entidad}"
+        <div class="row" style="margin-right: 0px;">
+            <div class="ui-g-12 ui-md-9 pl-4 panel-container">
+                <p:panel header="#{labels['dialogUnidadAdministrativa.datos']}">
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <p class="mb-1">
+                                <h:outputText styleClass="mr-2 mb-1" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                            </p>
+                            <p:inputText id="txtCodigo" value="#{dialogUnidadAdministrativa.data.codigo}"
+                                         styleClass="w95" disabled="true"/>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <p class="mb-1">
+                                <h:outputText styleClass="mr-2 mb-1"
+                                              value="#{labels['dialogUnidadAdministrativa.codigo.dir3']}:"
+                                              for="txtCodigoDIR3"/>
+                            </p>
+                            <p:inputText id="txtCodigoDIR3" value="#{dialogUnidadAdministrativa.data.codigoDIR3}"
+                                         styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <p:outputLabel value="#{labels['dialogUnidadAdministrativa.orden']}:" for="txtOrden"
+                                           styleClass="mb-1 pt-0"/>
+                            <p>
+                                <p:inputNumber id="txtOrden" value="#{dialogUnidadAdministrativa.data.orden}"
+                                               styleClass="w95" required="true"
+                                               disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                               decimalPlaces="0"/>
+                            </p>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"
+                                           styleClass="mb-1 pt-0"/>
+                            <p:inputText id="txtIdentificador" value="#{dialogUnidadAdministrativa.data.identificador}"
                                          styleClass="w95" required="true"
-                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
-                                         converter="#{entidadConverter}">
-                            <f:selectItem itemLabel="#{labels['dict.selecciona.entidad']}" itemValue="#{null}"/>
-                            <f:selectItems value="#{dialogUnidadAdministrativa.entidadesActivas}" var="entidad"
-                                           itemLabel="#{entidad.dir3}" itemValue="#{entidad}"/>
-                        </p:selectOneMenu>
-                    </div> -->
-
-
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.padre']}:" for="txtPadre"/>
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                        </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.nombre']}:"
+                                           for="txtNombre"/>
+                            <p>
+                                <my:literalComponent id="txtNombre"
+                                                     literal="#{dialogUnidadAdministrativa.data.nombre}"
+                                                     disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                                     required="true"
+                                                     idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                     idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                     idioma="#{dialogUnidadAdministrativa.idioma}"
+                                                     nombreLiteral="#{labels['dict.nombre']}"/>
+                            </p>
 
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <my:unidadAdministrativaComponent id="txtPadre" value="#{dialogUnidadAdministrativa.data.padre}"
-                                                          idioma="#{dialogUnidadAdministrativa.idioma}" ocultarTexto="false" esCabecera="false"
-                                                          soloLecture="#{dialogUnidadAdministrativa.isModoEdicion() || dialogUnidadAdministrativa.isModoConsulta()}"
-                                                          />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <p class="mb-1">
+                                <h:outputText styleClass="mr-2 mb-1"
+                                              value="#{labels['dialogUnidadAdministrativa.abreviatura']}:"
+                                              for="txtAbreviatura"/>
+                            </p>
+                            <p:inputText id="txtAbreviatura" value="#{dialogUnidadAdministrativa.data.abreviatura}"
+                                         styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+
+                        </div>
+                        <div class="form-group col-md-3">
+                            <p class="mb-1">
+                                <h:outputText value="#{labels['dialogUnidadAdministrativa.tipo']}:" for="txtTipo"/>
+                            </p>
+                            <p:selectOneMenu id="txtTipo" value="#{dialogUnidadAdministrativa.data.tipo}"
+                                             styleClass="w95"
+                                             disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                             converter="#{tipoUnidadAdministrativaConverter}">
+                                <f:selectItem itemLabel="#{labels['dialogUnidadAdministrativa.selecciona.tipo']}"
+                                              itemValue="#{null}"/>
+                                <f:selectItems value="#{dialogUnidadAdministrativa.tipos}" var="tipo"
+                                               itemLabel="#{tipo.identificador}" itemValue="#{tipo}"/>
+                            </p:selectOneMenu>
+                        </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <p class="mb-1">
+                                <h:outputText styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.url']}:"
+                                              for="txtUrl"/>
+                            </p>
+                            <p>
+                                <my:literalComponent id="txtUrl"
+                                                     literal="#{dialogUnidadAdministrativa.data.url}"
+                                                     idioma="#{dialogUnidadAdministrativa.idioma}"
+                                                     idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                     idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                     nombreLiteral="#{labels['dialogUnidadAdministrativa.url']}"/>
+                            </p>
 
+                        </div>
+                        <div class="form-group col-md-8">
+                            <p class="mb-1">
+                                <h:outputText styleClass="mr-2 mb-1"
+                                              value="#{labels['dialogUnidadAdministrativa.presentacion']}:"
+                                              for="txtPresentacion"/>
+                            </p>
+                            <p>
+                                <my:literalComponent id="txtPresentacion"
+                                                     literal="#{dialogUnidadAdministrativa.data.presentacion}"
+                                                     disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                                     idioma="#{dialogUnidadAdministrativa.idioma}"
+                                                     idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                     idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                     tipo="html"
+                                                     nombreLiteral="#{labels['dialogUnidadAdministrativa.presentacion']}"/>
+                            </p>
 
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.codigo.dir3']}:" for="txtCodigoDIR3"/>
+                        </div>
                     </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:inputText id="txtCodigoDIR3" value="#{dialogUnidadAdministrativa.data.codigoDIR3}"
-                                     styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
-                    </div>
+                </p:panel>
+                <p:panel id="panel-ro" header="#{labels['dialogUnidadAdministrativa.rel.organica']}">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <p class="mb-1">
+                                <h:outputText styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.padre']}:"
+                                              for="txtPadre"/>
+                            </p>
+                            <p>
+                                <my:unidadAdministrativaComponent id="txtPadre"
+                                                                  value="#{dialogUnidadAdministrativa.data.padre}"
+                                                                  idioma="#{dialogUnidadAdministrativa.idioma}"
+                                                                  ocultarTexto="false" esCabecera="false"
+                                                                  soloLecture="#{dialogUnidadAdministrativa.isModoEdicion() || dialogUnidadAdministrativa.isModoConsulta()}"
+                                />
+                            </p>
 
-
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.tipo']}:" for="txtTipo"/>
+                        </div>
                     </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:selectOneMenu id="txtTipo" value="#{dialogUnidadAdministrativa.data.tipo}"
+                </p:panel>
+                <p:panel header="#{labels['dialogUnidadAdministrativa.responsable']}">
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <p class="mb-1">
+                                <h:outputText value="#{labels['dialogUnidadAdministrativa.responsableNombre']}:"
+                                              for="txtResponsableNombre"/>
+                            </p>
+                            <p:inputText id="txtResponsableNombre"
+                                         value="#{dialogUnidadAdministrativa.data.responsableNombre}"
                                          styleClass="w95"
-                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
-                                         converter="#{tipoUnidadAdministrativaConverter}">
-                            <f:selectItem itemLabel="#{labels['dialogUnidadAdministrativa.selecciona.tipo']}"
-                                          itemValue="#{null}"/>
-                            <f:selectItems value="#{dialogUnidadAdministrativa.tipos}" var="tipo"
-                                           itemLabel="#{tipo.identificador}" itemValue="#{tipo}"/>
-                        </p:selectOneMenu>
-                    </div>
-
-
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:inputText id="txtIdentificador" value="#{dialogUnidadAdministrativa.data.identificador}"
-                                     styleClass="w95" required="true"
-                                     disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
-                    </div>
-
-
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <p:outputLabel value="#{labels['dialogUnidadAdministrativa.orden']}:" for="txtOrden"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:inputNumber id="txtOrden" value="#{dialogUnidadAdministrativa.data.orden}"
-                                       styleClass="w95" required="true"
-                                       disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
-                                       decimalPlaces="0"/>
-                    </div>
-
-
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.presentacion']}:"
-                                      for="txtPresentacion"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <my:literalComponent id="txtPresentacion" styleClass="w95"
-                                             value="#{dialogUnidadAdministrativa.data.presentacion}"
-                                             tipo="html"
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <p:outputLabel styleClass=" mb-1 pt-0"
+                                           value="#{labels['dialogUnidadAdministrativa.tipoSexo']}:"
+                                           for="txtTipoSexo"/>
+                            <p:selectOneMenu id="txtTipoSexo"
+                                             value="#{dialogUnidadAdministrativa.data.responsableSexo}"
+                                             styleClass="w95" required="true"
                                              disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
-                                             idioma="#{dialogUnidadAdministrativa.idioma}"/>
-
-
+                                             converter="#{tipoSexoConverter}">
+                                <f:selectItem
+                                        itemLabel="#{labels['dialogUnidadAdministrativa.seleccionado.tipoSexo']}"
+                                        itemValue="#{null}"/>
+                                <f:selectItems value="#{dialogUnidadAdministrativa.tiposSexo}" var="responsableSexo"
+                                               itemLabel="#{responsableSexo.identificador}"
+                                               itemValue="#{responsableSexo}"/>
+                            </p:selectOneMenu>
+                        </div>
                     </div>
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.url']}:" for="txtUrl"/>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <p class="mb-1">
+                                <h:outputText value="#{labels['dialogUnidadAdministrativa.responsableEmail']}:"
+                                              for="txtResponsableEmail"/>
+                            </p>
+                            <p:inputText id="txtResponsableEmail"
+                                         value="#{dialogUnidadAdministrativa.data.responsableEmail}"
+                                         styleClass="w95"
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <p class="mb-1">
+                                <h:outputText value="#{labels['dialogUnidadAdminsitrativa.responsableCV']}:"
+                                              for="txtResponsable"/>
+                            </p>
+                            <p>
+                                <my:literalComponent id="txtResponsable"
+                                                     literal="#{dialogUnidadAdministrativa.data.responsable}"
+                                                     idioma="#{dialogUnidadAdministrativa.idioma}"
+                                                     idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                     idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                     tipo="html"
+                                                     nombreLiteral="#{labels['dialogUnidadAdminsitrativa.responsableCV']}"/>
+                            </p>
+                        </div>
                     </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <my:literalComponent id="txtUrl" styleClass="w95"
-                                             value="#{dialogUnidadAdministrativa.data.url}"
-                                             idioma="#{dialogUnidadAdministrativa.idioma}"
-                                             disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                </p:panel>
 
+                <p:panel header="#{labels['dialogUnidadAdministrativa.contacto']}">
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <p class="mb-1">
+                                <h:outputText value="#{labels['dialogUnidadAdministrativa.telefono']}:"
+                                              for="txtTelefono"/>
+                            </p>
+                            <p:inputText id="txtTelefono" value="#{dialogUnidadAdministrativa.data.telefono}"
+                                         styleClass="w95"
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <p class="mb-1">
+                                <h:outputText value="#{labels['dialogUnidadAdministrativa.fax']}:" for="txtFax"/>
+                            </p>
+                            <p:inputText id="txtFax" value="#{dialogUnidadAdministrativa.data.fax}" styleClass="w95"
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <p class="mb-1">
+                                <h:outputText value="#{labels['dialogUnidadAdministrativa.email']}:" for="txtEmail"/>
+                            </p>
+                            <p:inputText id="txtEmail" value="#{dialogUnidadAdministrativa.data.email}"
+                                         styleClass="w95"
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <p class="mb-1">
+                                <h:outputText value="#{labels['dialogUnidadAdministrativa.dominio']}:"
+                                              for="txtDominio"/>
+                            </p>
+                            <p:inputText id="txtDominio" value="#{dialogUnidadAdministrativa.data.dominio}"
+                                         styleClass="w95"
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                        </div>
                     </div>
+                </p:panel>
 
+            </div>
+            <div class="ui-g-12 ui-md-3 pr-1">
+
+                <div class="row left-container mx-0 mb-2">
+                    <div class="col-12 left-container-header text-center">
+                        <p class="left-container-tit mt-2 mb-1">MATERIAS</p>
+                    </div>
+                    <div class="col-10 p-1">
+                        <p:dataTable id="dataTableMaterias" var="td" value="#{dialogUnidadAdministrativa.materiasSIA}"
+                                     emptyMessage="La tabla está vacía" scrollable="true" scrollHeight="120"
+                                     paginator="false" selectionMode="single"
+                                     selection="#{dialogUnidadAdministrativa.materiaSeleccionada}"
+                                     rowKey="#{td.codigo}" styleClass="noHeader">
+
+                            <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                            <p:ajax event="rowSelect" global="false"/>
+                            <p:ajax event="rowUnselect"/>
+                            <p:ajax event="rowDblselect"
+                                    oncomplete="rcEditarPropiedad();"
+                            />
+
+                            <p:column headerText="DESCRIPCIÓN" styleClass="text-center w75">
+                                <h:outputText value="#{td.identificador}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </div>
+                    <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                        <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
+                        <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
+                        <p:button title="Consultar" icon="pi pi-eye"></p:button>
+                    </div>
                 </div>
-            </p:tab>
-            <p:tab title="#{labels['dialogUnidadAdministrativa.datos']}">
+                <div class="row left-container mx-0 mb-2">
+                    <div class="col-12 left-container-header text-center">
+                        <p class="left-container-tit mt-2 mb-1">EDIFICIOS</p>
+                    </div>
+                    <div class="col-10 p-1">
+                        <p:dataTable id="dataTableEdificios" var="td" value="#{dialogUnidadAdministrativa.edificios}"
+                                     emptyMessage="La tabla está vacía" scrollable="true" scrollHeight="120"
+                                     paginator="false" selectionMode="single"
+                                     selection="#{dialogUnidadAdministrativa.edificioSeleccionado}"
+                                     rowKey="#{td.codigo}" styleClass="noHeader">
 
-                <div class="row">
+                            <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                            <p:ajax event="rowSelect" global="false"/>
+                            <p:ajax event="rowUnselect"/>
+                            <p:ajax event="rowDblselect"
+                                    oncomplete="rcEditarPropiedad();"
+                            />
 
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <p:outputLabel value="#{labels['dialogUnidadAdministrativa.tipoSexo']}:" for="txtTipoSexo"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:selectOneMenu id="txtTipoSexo" value="#{dialogUnidadAdministrativa.data.responsableSexo}"
-                                         styleClass="w95" required="true"
-                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
-                                         converter="#{tipoSexoConverter}">
-                            <f:selectItem itemLabel="#{labels['dialogUnidadAdministrativa.seleccionado.tipoSexo']}"
-                                          itemValue="#{null}"/>
-                            <f:selectItems value="#{dialogUnidadAdministrativa.tiposSexo}" var="responsableSexo"
-                                           itemLabel="#{responsableSexo.identificador}" itemValue="#{responsableSexo}"/>
-                        </p:selectOneMenu>
-                    </div>
+                            <!--<p:column headerText="CÓDIGO" styleClass="text-center w-25">
+                                <h:outputText value="#{td.codigo}"/>
+                            </p:column>-->
 
+                            <p:column headerText="DIRECCIÓN" styleClass="text-center w75">
+                                <h:outputText value="#{td.direccion}"/>
+                            </p:column>
 
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.responsableNombre']}:"
-                                      for="txtResponsableNombre"/>
+                        </p:dataTable>
                     </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:inputText id="txtResponsableNombre"
-                                     value="#{dialogUnidadAdministrativa.data.responsableNombre}" styleClass="w95"
-                                     disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                    <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                        <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
+                        <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
+                        <p:button title="Consultar" icon="pi pi-eye"></p:button>
                     </div>
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.responsableEmail']}:"
-                                      for="txtResponsableEmail"/>
+                </div>
+                <div class="row left-container mx-0 mb-2">
+                    <div class="col-12 left-container-header text-center">
+                        <p class="left-container-tit mt-2 mb-1">SECCIONES</p>
                     </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:inputText id="txtResponsableEmail"
-                                     value="#{dialogUnidadAdministrativa.data.responsableEmail}" styleClass="w95"
-                                     disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
-                    </div>
+                    <div class="col-10 p-1">
+                        <p:dataTable id="dataTableSecciones" var="td" value="#{dialogUnidadAdministrativa.secciones}"
+                                     emptyMessage="La tabla está vacía" scrollable="true" scrollHeight="120"
+                                     paginator="false" selectionMode="single"
+                                     selection="#{dialogUnidadAdministrativa.seccionSeleccionada}"
+                                     rowKey="#{td.codigo}" styleClass="noHeader">
 
+                            <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                            <p:ajax event="rowSelect" global="false"/>
+                            <p:ajax event="rowUnselect"/>
+                            <p:ajax event="rowDblselect"
+                                    oncomplete="rcEditarPropiedad();"
+                            />
 
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdminsitrativa.responsable']}:"
-                                      for="txtResponsable"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <my:literalComponent id="txtResponsable" styleClass="w95"
-                                             value="#{dialogUnidadAdministrativa.data.responsable}"
-                                             idioma="#{dialogUnidadAdministrativa.idioma}"
-                                             disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                            <!--<p:column headerText="CÓDIGO" styleClass="text-center w-25">
+                                <h:outputText value="#{td.codigo}"/>
+                            </p:column>-->
 
-                    </div>
+                            <p:column headerText="SECCIONES" styleClass="text-center w75">
+                                <h:outputText value="#{td.identificador}"/>
+                            </p:column>
 
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.telefono']}:" for="txtTelefono"/>
+                        </p:dataTable>
                     </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:inputText id="txtTelefono" value="#{dialogUnidadAdministrativa.data.telefono}"
-                                     styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                    <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                        <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
+                        <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
+                        <p:button title="Consultar" icon="pi pi-eye"></p:button>
                     </div>
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.fax']}:" for="txtFax"/>
+                </div>
+                <div class="row left-container mx-0">
+                    <div class="col-12 left-container-header text-center">
+                        <p class="left-container-tit mt-2 mb-1">USUARIOS</p>
                     </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:inputText id="txtFax" value="#{dialogUnidadAdministrativa.data.fax}" styleClass="w95"
-                                     disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.email']}:" for="txtEmail"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:inputText id="txtEmail" value="#{dialogUnidadAdministrativa.data.email}" styleClass="w95"
-                                     disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.dominio']}:" for="txtDominio"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:inputText id="txtDominio" value="#{dialogUnidadAdministrativa.data.dominio}" styleClass="w95"
-                                     disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dialogUnidadAdministrativa.abreviatura']}:"
-                                      for="txtAbreviatura"/>
-                    </div>
-                    <div class="ui-g-12 ui-md-9 ui-lg-4">
-                        <p:inputText id="txtAbreviatura" value="#{dialogUnidadAdministrativa.data.abreviatura}"
-                                     styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
-                    </div>
+                    <div class="col-10 p-1">
+                        <p:dataTable id="dataTablePropiedades" var="td" value="#{dialogUnidadAdministrativa.usuarios}"
+                                     emptyMessage="La tabla está vacía" scrollable="true" scrollHeight="120"
+                                     paginator="false" selectionMode="single"
+                                     selection="#{dialogUnidadAdministrativa.usuarioSeleccionado}"
+                                     rowKey="#{td.codigo}" styleClass="noHeader">
 
+                            <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                            <p:ajax event="rowSelect" global="false"/>
+                            <p:ajax event="rowUnselect"/>
+                            <p:ajax event="rowDblselect"
+                                    oncomplete="rcEditarPropiedad();"
+                            />
+
+                            <!--<p:column headerText="CÓDIGO" styleClass="text-center w-25">
+                                <h:outputText value="#{td.codigo}"/>
+                            </p:column>-->
+
+                            <p:column headerText="USUARIOS" styleClass="text-center w75">
+                                <h:outputText value="#{td.identificador}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </div>
+                    <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                        <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
+                        <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
+                        <p:button title="Consultar" icon="pi pi-eye"></p:button>
+                    </div>
                 </div>
 
-            </p:tab>
-        </p:tabView>
+                <h:outputScript>
+                    function rcEditarPropiedad() {
+                        document.getElementById("dialogPlugin:btnEditarPropiedad").click();
+                    }
+
+                    function rcBorrarPropiedad() {
+                        document.getElementById("dialogPlugin:btnEliminarPropiedad").click();
+                    }
+                </h:outputScript>
+            </div>
+        </div>
+
+
     </ui:define>
-    <ui:define name="contentFooterDialogLeft">
-        <span class="pi pi-tag" style="margin-top:5px"/>
-        <h:outputText value="Literal:" style="margin-right:4px;margin-top:5px;"/>
-        <p:selectOneMenu id="opcionIdioma" value="#{dialogUnidadAdministrativa.idioma}" onchange="rerenderTiny(this)">
-            <f:selectItem itemLabel="#{labels['dict.catalan']}" itemValue="ca"/>
-            <f:selectItem itemLabel="#{labels['dict.castellano']}" itemValue="es"/>
-            <p:ajax update="@form:tabs:txtNombre @form:tabs:txtUrl @form:tabs:txtResponsable" process="@this"/>
-        </p:selectOneMenu>
-    </ui:define>
+
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogUnidadAdministrativa.ayuda}"
                          icon="pi pi-info-circle" iconPos="top"
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
-        <p:commandButton onclick="tinyMCE.triggerSave(true,true);"
-        				 action="#{dialogUnidadAdministrativa.guardar}"
+        <p:commandButton action="#{dialogUnidadAdministrativa.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}"
                          process="@all"/>

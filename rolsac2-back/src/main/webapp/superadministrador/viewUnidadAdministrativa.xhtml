@@ -14,8 +14,7 @@
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitle">
-        <!--<h:outputFormat value="#{labels['viewTipoUnidadAdministrativa.titulo.pagina']}"/>-->
-        <h:outputFormat value="Pagina"/>
+        <h:outputFormat value="#{labels['viewUnidadAdministrativa.titulo']}"/>
     </ui:define>
     <ui:define name="breadcrumbBoton">
         <p:ajax event="eventoUpdate"   oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}" update="form:dataTable"  />
@@ -45,7 +44,7 @@
                 <f:facet name="right">
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewUnidadAdministrativa.nuevaUnidadAdministrativa}"
-                                     process="@this">
+                                     process="@this" rendered="#{!viewUnidadAdministrativa.isAdmContenidos()}">
                         <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
