@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
+import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoPublicoObjetivoFiltro;
 
@@ -21,4 +22,6 @@ public interface TipoPublicoObjetivoRepository extends CrudRepository<JTipoPubli
     long countByFiltro(TipoPublicoObjetivoFiltro filtro);
 
     Boolean checkIdentificador(String identificador);
+
+    List<TipoPublicoObjetivoDTO> findAll();
 }

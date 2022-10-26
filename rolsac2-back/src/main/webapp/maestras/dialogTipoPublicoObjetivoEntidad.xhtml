@@ -1,0 +1,102 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+>
+<!--
+Página con el detalle de un TipoPublicoObjetivoEntidad
+-->
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTipoPublicoObjetivoEntidad.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogTipoPublicoObjetivoEntidad.id}"/>
+            <f:viewAction action="#{dialogTipoPublicoObjetivoEntidad.load}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogPublicoObjetivoEntidad.consulta']}"
+                        rendered="#{dialogTipoMateriaSIA.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogPublicoObjetivoEntidad.detalle']}"
+                        rendered="#{dialogTipoMateriaSIA.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogPublicoObjetivoEntidad.nuevo']}"
+                        rendered="#{dialogTipoMateriaSIA.isModoAlta()}"/>
+    </ui:define>
+
+    <ui:define name="contentIdioma">
+
+        <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoMateriaSIA.idioma}" styleClass="botoneraRed">
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+            <p:ajax update="inputDescripcion" process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogTipoMateriaSIA.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this"/>
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:panel>
+            <p:growl id="messagesDialog"
+                     globalOnly="false"
+                     showDetail="true"
+                     life="5000"
+                     escape="false"/>
+            <div class="row">
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.identificador']}" for="ident"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="ident" value="#{dialogTipoPublicoObjetivoEntidad.data.identificador}"
+                                 styleClass="w95"
+                                 required="false" disabled="#{dialogTipoPublicoObjetivoEntidad.modoConsultaCheck()}"/>
+
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <h:outputText value="#{labels['dialogPublicoObjetivoEntidad.tipoPublicoObjetivo']}:" for="tipoPubObjetivo"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:selectOneMenu id="tipoPubObjetivo" value="#{dialogTipoPublicoObjetivoEntidad.data.tipo}"
+                                     styleClass="w95" required="true"
+                                     disabled="#{dialogNormativa.isModoConsulta()}"
+                                     converter="#{tipoPublicoObjetivoConverter}">
+                        <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.boletinOficial']}" itemValue="#{null}"/>
+                        <f:selectItems value="#{dialogNormativa.boletinOficial}" var="boletinOficial"
+                                       itemLabel="#{boletinOficial.nombre}" itemValue="#{boletinOficial}"/>
+                    </p:selectOneMenu>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <p class="mb-1">
+
+                    </p>
+
+                </div>
+            </div>
+        </p:panel>
+    </ui:define>
+
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         process="@all"/>
+        <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
+
+    </ui:define>
+
+</ui:composition>
+</html>

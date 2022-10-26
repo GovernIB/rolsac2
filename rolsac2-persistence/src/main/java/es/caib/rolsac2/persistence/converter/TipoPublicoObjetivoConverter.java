@@ -8,7 +8,9 @@ import es.caib.rolsac2.service.model.Traduccion;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,11 +41,36 @@ public interface TipoPublicoObjetivoConverter extends Converter<JTipoPublicoObje
 
     default List<JTipoPublicoObjetivoTraduccion> convierteLiteralToTraduccion(JTipoPublicoObjetivo jTipoPublicoObjetivo, Literal descripcion) {
 
+        //Iteramos sobre el literal para ver que idiomas se han rellenado
+        List<String> idiomasRellenos = new ArrayList<>();
+        for(String idioma : descripcion.getIdiomas()) {
+            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+                idiomasRellenos.add(idioma);
+            }
+        }
+        //Comprobamos si aún no se ha creado la entidad
         if (jTipoPublicoObjetivo.getDescripcion() == null || jTipoPublicoObjetivo.getDescripcion().isEmpty()) {
-            jTipoPublicoObjetivo.setDescripcion(JTipoPublicoObjetivoTraduccion.createInstance());
+            jTipoPublicoObjetivo.setDescripcion(JTipoPublicoObjetivoTraduccion.createInstance(idiomasRellenos));
             for (JTipoPublicoObjetivoTraduccion jtrad : jTipoPublicoObjetivo.getDescripcion()) {
                 jtrad.setTipoPublicoObjetivo(jTipoPublicoObjetivo);
             }
+        } else if(idiomasRellenos.size() >  jTipoPublicoObjetivo.getDescripcion().size()) {
+            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+            List<JTipoPublicoObjetivoTraduccion> tradsAux = jTipoPublicoObjetivo.getDescripcion();
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+
+            for (JTipoPublicoObjetivoTraduccion traduccion : jTipoPublicoObjetivo.getDescripcion()) {
+                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                    idiomasNuevos.remove(traduccion.getIdioma());
+                }
+            }
+            for (String idioma : idiomasNuevos) {
+                JTipoPublicoObjetivoTraduccion trad = new JTipoPublicoObjetivoTraduccion();
+                trad.setIdioma(idioma);
+                trad.setTipoPublicoObjetivo(jTipoPublicoObjetivo);
+                tradsAux.add(trad);
+            }
+            jTipoPublicoObjetivo.setDescripcion(tradsAux);
         }
         for (JTipoPublicoObjetivoTraduccion traduccion : jTipoPublicoObjetivo.getDescripcion()) {
             if (descripcion != null) {
@@ -69,5 +96,14 @@ public interface TipoPublicoObjetivoConverter extends Converter<JTipoPublicoObje
         }
 
         return resultado;
+    }
+
+    @Named("createTipPubDTOs")
+    default List<TipoPublicoObjetivoDTO> createTipPubDTOs(List<JTipoPublicoObjetivo> entities) {
+        List<TipoPublicoObjetivoDTO> dtos = new ArrayList<>();
+        if (entities != null) {
+            entities.forEach(e -> dtos.add(createDTO(e)));
+        }
+        return dtos;
     }
 }
