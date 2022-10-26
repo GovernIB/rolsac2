@@ -40,7 +40,7 @@
                                        action="#{sessionBean.reloadPerfil()}"
                                        value="#{labels['TypePerfiles.' += perfil.toString()]}"
                         >
-                            <p:ajax listener="#{sessionBean.setPerfil(perfil)}" />
+                            <p:ajax update=":imgLogo" listener="#{sessionBean.setPerfil(perfil)}" />
                         </p:commandLink>
                     </p:repeat>
                 </div>

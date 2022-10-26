@@ -8,10 +8,24 @@
     <!-- Logo i nom aplicació -->
     <div class="navbar-brand menuGovern">
         <div class="logoGovern">
-            <p:link styleClass="mr-auto" outcome="/index">
-                <h:graphicImage name="img/STT_logo2.png" styleClass="imatgeGovern"
-                                alt="Govern de les Illes Balears" />
-            </p:link>
+            <p:panelGrid id="panelLogo">
+                <!--<p:link styleClass="mr-auto" outcome="/index">
+                    <c:choose>
+                        <c:when test="#{sessionBean.checkLogo()}">
+                            <p:graphicImage styleClass="imatgeGovern" value="#{sessionBean.getLogoEntidad()}"></p:graphicImage>
+                        </c:when>
+                        <c:otherwise>
+                            <h:graphicImage name="img/STT_logo2.png" styleClass="imatgeGovern"
+                                            alt="Govern de les Illes Balears"/>
+                        </c:otherwise>
+                    </c:choose>
+                </p:link>-->
+                <p:link styleClass="mr-auto" outcome="/index">
+                    <p:graphicImage id="imgLogo" styleClass="imatgeGovern" value="#{sessionBean.getLogoEntidad()}" rendered="#{sessionBean.checkLogo()}"></p:graphicImage>
+                    <h:graphicImage name="img/STT_logo2.png" styleClass="imatgeGovern"
+                                    alt="Govern de les Illes Balears"/>
+                </p:link>
+            </p:panelGrid>
         </div>
         <div>
             <h1 class="titol">#{version.projectName}</h1>

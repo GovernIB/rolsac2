@@ -10,11 +10,6 @@
         <div class="d-flex flex-column">
             <div class="d-flex flex-row align-content-center">
                 <div style="margin-top: 5px">
-                    <!--
-                    <my:unidadAdministrativaComponent id="uaGeneral"
-                                                      value="#{sessionBean.unidadActiva}" idioma="#{sessionBean.lang}"
-                                                      ocultarTexto="true" esCabecera="true">
-                    </my:unidadAdministrativaComponent> -->
                     <div style="margin-top: 5px">
                         <my:unidadAdministrativaComponent id="uaGeneral"
                                                           value="#{sessionBean.unidadActiva}"
@@ -153,7 +148,8 @@
                             <c:when
                                     test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD }">
                                 <li class="nav-item mt-3 mb-1 opcion-menu">
-                                    <p:link styleClass=" #{sessionBean.isActive('viewConfiguracionEntidad.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
+                                    <p:link
+                                            styleClass=" #{sessionBean.isActive('viewConfiguracionEntidad.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
                                             outcome="/entidades/viewConfiguracionEntidad.xhtml"
                                             title="#{labels['viewCuadroControl.titulo']}"
                                             onclick="commandSetearOpcion([{name: 'opcion', value: 'viewConfiguracionEntidad.titulo'}]); return true;">
@@ -236,13 +232,27 @@
                                                 onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoTramitacion.titulo'}]); return true;">
                                             <span class="mb-0 float-right">#{labels['viewTipoTramitacion.titulo']}</span>
                                         </p:link>
-                                        <p:link styleClass="pb-5 dropdown-item mobil"
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/maestras/tipo/viewTipoProcedimiento.xhtml"
+                                                title="#{labels['viewTipoProcedimiento.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTipoProcedimiento.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewTipoProcedimiento.titulo']}</span>
+                                        </p:link>
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
                                                 outcome="/superadministrador/viewTema.xhtml"
                                                 title="#{labels['viewTema.titulo']}"
                                                 onclick="commandSetearOpcion([{name: 'opcion', value: 'viewTema.titulo'}]); return true;">
 									        <span class="mb-0 float-right ">
 										        #{labels['viewTema.titulo']}</span>
                                         </p:link>
+                                        <p:link styleClass="pb-5 dropdown-item mobil"
+                                                outcome="/maestras/viewPublicoObjetivoEntidad.xhtml"
+                                                title="#{labels['viewPublicoObjetivoEntidad.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewPublicoObjetivoEntidad.titulo'}]); return true;">
+									        <span class="mb-0 float-right ">
+										        #{labels['viewPublicoObjetivoEntidad.titulo']}</span>
+                                        </p:link>
+
                                         <p:outputLabel
                                                 styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
                                                 value="#{labels['menu.label.pers.entidad.fichas']}"></p:outputLabel>
@@ -313,6 +323,13 @@
                                             <span class="mb-0 float-right ">#{labels['viewContenidos.titulo']}</span>
                                         </p:link>
 
+                                        <p:link styleClass="pb-4 dropdown-item mobil"
+                                                outcome="/superadministrador/viewUnidadAdministrativa.xhtml"
+                                                title="#{labels['viewUnidadAdministrativa.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewUnidadAdministrativa.titulo'}]); return true;">
+									            <span class="mb-0 float-right ">#{labels['viewUnidadAdministrativa.titulo']}</span>
+                                        </p:link>
+
                                     </div>
                                 </li>
 
@@ -353,6 +370,14 @@
                                             onclick="commandSetearOpcion([{name: 'opcion', value: 'viewUnidadAdministrativa.titulo'}]); return true;">
 									<span class="mb-0 float-right ">
 										#{labels['viewUnidadAdministrativa.titulo']}</span>
+                                    </p:link></li>
+                                <li class="nav-item mt-3 mb-1 opcion-menu">
+                                    <p:link styleClass="#{sessionBean.isActive('viewSeccion.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
+                                            outcome="/superadministrador/viewSeccion.xhtml"
+                                            title="#{labels['viewSeccion.titulo']}"
+                                            onclick="commandSetearOpcion([{name: 'opcion', value: 'viewSeccion.titulo'}]); return true;">
+									<span class="mb-0 float-right ">
+										#{labels['viewSeccion.titulo']}</span>
                                     </p:link></li>
                                 <li class="nav-item mt-3 mb-1 opcion-menu">
                                     <p:link styleClass="#{sessionBean.isActive('viewPersonal.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
