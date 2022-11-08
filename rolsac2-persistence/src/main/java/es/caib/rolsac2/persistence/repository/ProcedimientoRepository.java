@@ -2,6 +2,7 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JProcedimiento;
 import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
+import es.caib.rolsac2.service.model.NormativaGridDTO;
 import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
 import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
@@ -18,6 +19,8 @@ import java.util.Optional;
 public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, Long> {
 
     void mergePublicoObjetivoProcWF(Long codigoWF, List<TipoPublicoObjetivoEntidadGridDTO> listaNuevos);
+
+    void mergeNormativaProcWF(Long codigoWF, List<NormativaGridDTO> listaNuevos);
 
     void updateWF(JProcedimientoWorkflow jProcWF);
 
@@ -38,4 +41,6 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
     List<TipoPublicoObjetivoEntidadGridDTO> getTipoPubObjEntByWF(Long codigoWF);
 
     void deleteWF(Long codigoProc, boolean enmodificacion);
+
+    List<NormativaGridDTO> getNormativasByWF(Long codigoWF);
 }

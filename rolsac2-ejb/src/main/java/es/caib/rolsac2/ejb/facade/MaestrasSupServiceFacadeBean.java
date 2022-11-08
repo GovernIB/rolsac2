@@ -1042,7 +1042,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(TipoPublicoObjetivoEntidadDTO dto) throws RecursoNoEncontradoException {
         JTipoPublicoObjetivoEntidad jTipoPublicoObjetivoEntidad = tipoPublicoObjetivoEntidadRepository.findById(dto.getCodigo());
+        JTipoPublicoObjetivo jTipoPublicoObjetivo = dto.getTipo() != null ? tipoPublicoObjetivoRepository.getReference(dto.getTipo().getCodigo()) : null;
         tipoPublicoObjetivoEntidadConverter.mergeEntity(jTipoPublicoObjetivoEntidad, dto);
+        jTipoPublicoObjetivoEntidad.setTipo(jTipoPublicoObjetivo);
         tipoPublicoObjetivoEntidadRepository.update(jTipoPublicoObjetivoEntidad);
 
     }

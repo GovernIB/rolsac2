@@ -43,8 +43,8 @@ public interface DocumentoNormativaConverter extends Converter<JDocumentoNormati
 
         //Iteramos sobre el literal para ver que idiomas se han rellenado
         List<String> idiomasRellenos = new ArrayList<>();
-        for(String idioma : documentoNormativaDTO.getDocumentos().getIdiomas()) {
-            if(documentoNormativaDTO.getDocumentos().getTraduccion(idioma) != null ) {
+        for(String idioma : documentoNormativaDTO.getTitulo().getIdiomas()) {
+            if(documentoNormativaDTO.getTitulo().getTraduccion(idioma) != null && !documentoNormativaDTO.getTitulo().getTraduccion(idioma).equals("") ) {
                 idiomasRellenos.add(idioma);
             }
         }

@@ -42,6 +42,8 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
     private String id = "";
 
+    private Literal nombreProcedimiento;
+
     private List<String> idiomasPermitidos = new ArrayList<>();
 
     private List<String> idiomasObligatorios = new ArrayList<>();
@@ -49,8 +51,6 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     private List<PlatTramitElectronicaDTO> platTramitElectronica;
 
     private List<String> canalesSeleccionados;
-
-    private Literal nombreProcedimiento;
 
     private List<TipoTramitacionDTO> plantillasTipoTramitacion;
 
@@ -76,7 +76,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         if (this.isModoEdicion() || this.isModoConsulta()) {
             data = (ProcedimientoTramiteDTO) UtilJSF.getValorMochilaByKey("tramiteSel");
             if (data != null && data.getProcedimiento() != null) {
-                nombreProcedimiento = data.getProcedimiento().getNombre();
+                //nombreProcedimiento = data.getProcedimiento().getNombre();
             }
 
             if (data != null && data.getTipoTramitacion() != null) {
@@ -92,6 +92,8 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             // if (data != null && data.getTipoTramitacion() != null && data.getTipoTramitacion().isTramitElectronica())
             // canalesSeleccionados.add("TFN");
 
+        } else {
+            data.setCodigo(Long.parseLong(id));
         }
 
         platTramitElectronica = platTramitElectronicaServiceFacade.findAll();

@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.util.Objects;
+
 /**
  * Dades d'un TipoPublicoObjetivo.
  *
@@ -77,5 +79,18 @@ public class TipoPublicoObjetivoDTO extends ModelApi {
                 ", identificador=" + identificador +
                 ", descripcion=" + descripcion.toString() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TipoPublicoObjetivoDTO that = (TipoPublicoObjetivoDTO) o;
+        return Objects.equals(codigo, that.codigo) && Objects.equals(identificador, that.identificador) && Objects.equals(descripcion, that.descripcion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo, identificador, descripcion);
     }
 }

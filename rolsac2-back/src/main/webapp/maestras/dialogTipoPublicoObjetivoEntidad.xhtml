@@ -3,6 +3,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
 >
 <!--
 Página con el detalle de un TipoPublicoObjetivoEntidad
@@ -18,18 +19,18 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
 
     <ui:define name="pageTitleDialog">
         <h:outputFormat value="#{labels['dialogPublicoObjetivoEntidad.consulta']}"
-                        rendered="#{dialogTipoMateriaSIA.isModoConsulta()}"/>
+                        rendered="#{dialogTipoPublicoObjetivoEntidad.isModoConsulta()}"/>
         <h:outputFormat value="#{labels['dialogPublicoObjetivoEntidad.detalle']}"
-                        rendered="#{dialogTipoMateriaSIA.isModoEdicion()}"/>
+                        rendered="#{dialogTipoPublicoObjetivoEntidad.isModoEdicion()}"/>
         <h:outputFormat value="#{labels['dialogPublicoObjetivoEntidad.nuevo']}"
-                        rendered="#{dialogTipoMateriaSIA.isModoAlta()}"/>
+                        rendered="#{dialogTipoPublicoObjetivoEntidad.isModoAlta()}"/>
     </ui:define>
 
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:5px"/>
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
-        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoMateriaSIA.idioma}" styleClass="botoneraRed">
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoPublicoObjetivoEntidad.idioma}" styleClass="botoneraRed">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="inputDescripcion" process="@this"/>
@@ -64,21 +65,31 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                     <h:outputText value="#{labels['dialogPublicoObjetivoEntidad.tipoPublicoObjetivo']}:" for="tipoPubObjetivo"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:selectOneMenu id="tipoPubObjetivo" value="#{dialogTipoPublicoObjetivoEntidad.data.tipo}"
+                    <p:selectOneMenu id="tipoPubObjetivo"
+                                     value="#{dialogTipoPublicoObjetivoEntidad.data.tipo}"
                                      styleClass="w95" required="true"
-                                     disabled="#{dialogNormativa.isModoConsulta()}"
+                                     disabled="#{dialogTipoPublicoObjetivoEntidad.isModoConsulta()}"
                                      converter="#{tipoPublicoObjetivoConverter}">
-                        <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.boletinOficial']}" itemValue="#{null}"/>
-                        <f:selectItems value="#{dialogNormativa.boletinOficial}" var="boletinOficial"
-                                       itemLabel="#{boletinOficial.nombre}" itemValue="#{boletinOficial}"/>
+                        <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
+                        <f:selectItems value="#{dialogTipoPublicoObjetivoEntidad.listaTipos}"
+                                       var="tipoPublicoObj"
+                                       itemLabel="#{tipoPublicoObj.descripcion.getTraduccion(dialogTipoPublicoObjetivoEntidad.idioma)}"
+                                       itemValue="#{tipoPublicoObj}"/>
                     </p:selectOneMenu>
                 </div>
 
-                <div class="form-group col-md-4">
-                    <p class="mb-1">
-
-                    </p>
-
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <my:literalComponent id="inputDescripcion"
+                                         literal="#{dialogTipoPublicoObjetivoEntidad.data.descripcion}"
+                                         idioma="#{dialogTipoPublicoObjetivoEntidad.idioma}"
+                                         required="true"
+                                         soloLecture="#{dialogTipoPublicoObjetivoEntidad.isModoConsulta()}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['dict.descripcion']}"/>
                 </div>
             </div>
         </p:panel>

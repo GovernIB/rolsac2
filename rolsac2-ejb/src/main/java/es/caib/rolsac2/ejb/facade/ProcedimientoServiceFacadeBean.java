@@ -107,7 +107,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         procedimientoRepository.mergeMateriaSIAProcWF(jProcWF.getCodigo(), dto.getMateriasGridSIA());
         procedimientoRepository.mergePublicoObjetivoProcWF(jProcWF.getCodigo(), dto.getTiposPubObjEntGrid());
-
+        procedimientoRepository.mergeNormativaProcWF(jProcWF.getCodigo(), dto.getNormativas());
         return jProcedimiento.getCodigo();
     }
 
@@ -127,10 +127,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     private void mergear(JProcedimientoWorkflow jProcWF, ProcedimientoDTO dto) {
-        jProcWF.setWorkflow(TypeProcedimientoWorfklow.MODIFICACION.getValor());
+        jProcWF.setWorkflow(dto.getWorkflow().getValor());
         jProcWF.setFechaCaducidad(dto.getFechaCaducidad());
         jProcWF.setFechaPublicacion(dto.getFechaPublicacion());
-        jProcWF.setEstado(TypeProcedimientoEstado.MODIFICACION.toString());
+        jProcWF.setEstado(dto.getEstado().toString());
         jProcWF.setInterno(dto.isInterno());
         jProcWF.setDatosPersonalesActivo(dto.isDatosPersonalesActivo());
         jProcWF.setResponsableEmail(dto.getDirElectronica());
@@ -155,7 +155,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         procedimientoRepository.updateWF(jProcWF);
         procedimientoRepository.mergeMateriaSIAProcWF(jProcWF.getCodigo(), dto.getMateriasGridSIA());
         procedimientoRepository.mergePublicoObjetivoProcWF(jProcWF.getCodigo(), dto.getTiposPubObjEntGrid());
-
+        procedimientoRepository.mergeNormativaProcWF(jProcWF.getCodigo(), dto.getNormativas());
     }
 
     private void mergearTraducciones(JProcedimientoWorkflow jProcWF, ProcedimientoDTO dto) {
@@ -242,6 +242,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setRequisitos(requisitos);
         proc.setMateriasGridSIA(procedimientoRepository.getMateriaGridSIAByWF(proc.getCodigoWF()));
         proc.setTiposPubObjEntGrid(procedimientoRepository.getTipoPubObjEntByWF(proc.getCodigoWF()));
+        proc.setNormativas(procedimientoRepository.getNormativasByWF(proc.getCodigoWF()));
         return proc;
     }
 

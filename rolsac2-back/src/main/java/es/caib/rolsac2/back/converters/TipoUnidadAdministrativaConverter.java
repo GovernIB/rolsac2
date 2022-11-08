@@ -23,7 +23,7 @@ public class TipoUnidadAdministrativaConverter implements Converter, Serializabl
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
         // Workaround para que salte la validación de que hay que seleccionar un valor
-        if (s != null && (s.contains("Seleccioni un") || s.contains("Seleccione un"))) {
+        if (s != null && (s.contains("Seleccioni un") || s.contains("Seleccione un") || s.equals("Selecciona una opción") || s.equals("Tria una opció"))) {
             s = null;
         }
 

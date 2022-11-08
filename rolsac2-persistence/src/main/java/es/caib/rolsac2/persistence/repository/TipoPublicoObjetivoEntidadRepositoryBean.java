@@ -45,9 +45,11 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
             for (Object[] jTipoPublicoObjetivoEntidad : jTiposPublicoObjetivoEntidad) {
                 TipoPublicoObjetivoEntidadGridDTO tipoPOGridDTO = new TipoPublicoObjetivoEntidadGridDTO();
                 tipoPOGridDTO.setCodigo((Long) jTipoPublicoObjetivoEntidad[0]);
-                tipoPOGridDTO.setEntidad(((String) jTipoPublicoObjetivoEntidad[1]));
-                tipoPOGridDTO.setTipo(((String) jTipoPublicoObjetivoEntidad[2]));
-                tipoPOGridDTO.setIdentificador((String) jTipoPublicoObjetivoEntidad[3]);
+                tipoPOGridDTO.setIdentificador((String) jTipoPublicoObjetivoEntidad[1]);
+                tipoPOGridDTO.setEntidad((String) jTipoPublicoObjetivoEntidad[2]);
+                tipoPOGridDTO.setTipo(((String) jTipoPublicoObjetivoEntidad[3]));
+                tipoPOGridDTO.setDescripcion(((String) jTipoPublicoObjetivoEntidad[4]));
+
 
                 tipoPOEntidad.add(tipoPOGridDTO);
             }
@@ -71,18 +73,17 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder("SELECT count(j) FROM JTipoPublicoObjetivoEntidad j "
-                            + " LEFT OUTER JOIN j.tipo tp " + " LEFT OUTER JOIN j.entidad e "
-                            + " LEFT OUTER JOIN tp.descripcion tt ON tt.idioma=:idioma "
-                            + " LEFT OUTER JOIN e.descripcion te ON te.idioma=:idioma "
-                            + " where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JTipoPublicoObjetivoEntidad j  " +
+                    "LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder(
-                            "SELECT j.codigo, te.descripcion, tt.descripcion, j.identificador FROM JTipoPublicoObjetivoEntidad j "
-                                            + " LEFT OUTER JOIN j.tipo tp " + " LEFT OUTER JOIN j.entidad e "
-                                            + " LEFT OUTER JOIN tp.descripcion tt ON tt.idioma=:idioma "
-                                            + " LEFT OUTER JOIN e.descripcion te ON te.idioma=:idioma "
-                                            + " where 1 = 1");
+                    "SELECT j.codigo, j.identificador, ts.descripcion, tt.descripcion, tp.descripcion FROM JTipoPublicoObjetivoEntidad j" +
+                            " LEFT OUTER JOIN j.entidad e" +
+                            " LEFT OUTER JOIN e.descripcion ts ON ts.idioma=:idioma" +
+                            " LEFT OUTER JOIN j.tipo te" +
+                            " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma" +
+                            " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma" +
+                            " WHERE tp.idioma=:idioma and tt.idioma=:idioma");
         }
 
         if (filtro.isRellenoTexto()) {

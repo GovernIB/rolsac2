@@ -14,6 +14,8 @@ public class TipoPublicoObjetivoEntidadDTO extends ModelApi {
     private TipoPublicoObjetivoDTO tipo;
     private String identificador;
 
+    private Literal descripcion;
+
 
     public TipoPublicoObjetivoEntidadDTO() {}
 
@@ -78,6 +80,13 @@ public class TipoPublicoObjetivoEntidadDTO extends ModelApi {
         this.identificador = identificador;
     }
 
+    public Literal getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(Literal descripcion) {
+        this.descripcion = descripcion;
+    }
 
     @Override
     public String toString() {

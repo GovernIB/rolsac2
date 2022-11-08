@@ -373,37 +373,34 @@
                     <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.normativaProc']}</p>
                 </div>
                 <div class="col-10 p-1">
-                    <!--<p:dataTable id="dataNormativaProcedimiento" var="td"
-                                 value="#{dialogProcedimiento.data.normativas}"
-                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true" scrollHeight="120"
-                                 paginator="false" selectionMode="single"
-                                 selection="#{dialogProcedimiento.normativaSeleccionada}"
-                                 rowKey="#{td.codigo}" styleClass="noHeader">-->
                     <p:dataTable id="dataNormativaProcedimiento" var="td"
-                                 value="#{null}"
-                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true" scrollHeight="120"
-                                 paginator="false" selectionMode="single"
-                                 selection="#{dialogProcedimiento.normativaSeleccionada}"
-                                 rowKey="#{td.codigo}" styleClass="noHeader">
-
+                      value="#{dialogProcedimiento.data.normativas}"
+                      emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true" scrollHeight="120"
+                      paginator="false" selectionMode="single"
+                      selection="#{dialogProcedimiento.normativaGridSeleccionada}"
+                      rowKey="#{td.codigo}" styleClass="noHeader">
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect"
-                                oncomplete="rcEditarPropiedad();"
-                        />
-
-                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w75">
-                            <h:outputText value="#{td.tipoNormativa.identificador}"/>
+                        <p:ajax event="rowDblselect" oncomplete="rcEditarPropiedad();"/>
+                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
+                              styleClass="text-center w75">
+                            <h:outputText value="#{td.titulo.getTraduccion(sessionBean.lang)}"/>
                         </p:column>
-
-                    </p:dataTable>
-                </div>
+                    </p:dataTable></div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"/>
-                    <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"/>
-                    <p:button title="Consultar" icon="pi pi-eye"/>
+                    <p:commandButton title="Nuevo" icon="pi pi-plus" styleClass="text-success"
+                                     process="@this" actionListener="#{dialogProcedimiento.nuevaNormativa()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogNormativa}" process="@this"
+                                update="dataNormativaProcedimiento"/>
+                    </p:commandButton>
+                    <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
+                                     action="#{dialogProcedimiento.borrarNormativa}"
+                                     process="@this" update="dataNormativaProcedimiento messagesDialog"/>
+                    <p:commandButton title="Consultar" icon="pi pi-eye"
+                                     action="#{dialogProcedimiento.consultarNormativa}"
+                                     process="@this" update="dataNormativaProcedimiento messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -411,7 +408,7 @@
                     <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.tramites']}</p>
                 </div>
                 <div class="col-10 p-1">
-                    <p:dataTable id="dataTableTramite" var="td" value="#{dialogProcedimiento.tramites}"
+                    <p:dataTable id="dataTableTramite" var="td" value="#{dialogProcedimiento.data.tramites}"
                                  emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true" scrollHeight="120"
                                  paginator="false" selectionMode="single"
                                  selection="#{dialogProcedimiento.tramiteSeleccionado}"
@@ -420,10 +417,9 @@
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
-                        <!--<p:ajax event="rowDblselect"
-                                oncomplete="triggerDblClick();"
-                                global="false"/>-->
-                        <!--oncomplete="rcEditarPropiedad();"-->
+                        <p:ajax event="rowDblselect"
+                                oncomplete="rcEditarPropiedad();"
+                        />
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
                             <h:outputText value="#{td.nombre.getTraduccion(sessionBean.lang)}"/>
                         </p:column>

@@ -1,17 +1,13 @@
 package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
-import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.service.model.*;
 
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Named
 @ViewScoped
@@ -63,7 +59,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         n1.setCodigo(1L);
         n1.setTipoNormativa(tn1);
         normativas.add(n1);
-        data.setNormativas(normativas);
+        // data.setNormativas(normativas);
 
         final List<TipoPublicoObjetivoDTO> publicos = new ArrayList<>();
 
@@ -92,7 +88,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
 
         final TipoMateriaSIADTO mat1 = new TipoMateriaSIADTO();
-        final Literal l1= new Literal();
+        final Literal l1 = new Literal();
         final List<Traduccion> traducciones = new ArrayList<>();
         final Traduccion t1 = new Traduccion();
         t1.setLiteral("Descripción del tipo de materia SIA.");

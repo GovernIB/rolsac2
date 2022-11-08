@@ -5,29 +5,22 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadDTO;
-import es.caib.rolsac2.service.model.TipoPublicoObjetivoGridDTO;
-import es.caib.rolsac2.service.model.filtro.TipoPublicoObjetivoFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.*;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
 /**
-
+ *
  */
 @Named
 @ViewScoped
@@ -57,6 +50,7 @@ public class DialogTipoPublicoObjetivoEntidad extends AbstractController impleme
         if (this.isModoAlta()) {
             data = new TipoPublicoObjetivoEntidadDTO();
             data.setEntidad(sessionBean.getEntidad());
+            //data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = serviceFacade.findTipoPublicoObjetivoEntidadById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
@@ -118,6 +112,14 @@ public class DialogTipoPublicoObjetivoEntidad extends AbstractController impleme
 
     public void setData(TipoPublicoObjetivoEntidadDTO data) {
         this.data = data;
+    }
+
+    public List<TipoPublicoObjetivoDTO> getListaTipos() {
+        return listaTipos;
+    }
+
+    public void setListaTipos(List<TipoPublicoObjetivoDTO> listaTipos) {
+        this.listaTipos = listaTipos;
     }
 
     /**
