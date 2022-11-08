@@ -16,15 +16,21 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Named
 @ViewScoped
 public class DialogProcedimiento extends AbstractController implements Serializable {
 
+
     private ProcedimientoDTO data;
 
     private String objeto;
+
+    private Long contadorProcMemoria = -1L;
 
     private String destinatarios;
 
@@ -40,6 +46,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private TipoMateriaSIAGridDTO materiaSIAGridSeleccionada;
 
     private NormativaDTO normativaSeleccionada;
+    private List<NormativaGridDTO> normativaGrid;
+
+    private NormativaGridDTO normativaGridSeleccionada;
 
     private ProcedimientoDocumentoDTO documentoSeleccionado;
 
@@ -74,6 +83,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         // Inicializamos combos/desplegables/inputs
         // De momento, no tenemos desplegables.
         this.setearIdioma();
+        tramites = new ArrayList<>();
 
         if (this.isModoAlta()) {
             data = ProcedimientoDTO.createInstance(sessionBean.getIdiomasPermitidosList());
@@ -122,58 +132,17 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 */
 
-    public void initAntiguo() {
-        tramites = new ArrayList<>();
-        this.setearIdioma();
+    public NormativaGridDTO getNormativaGridSeleccionada() {
+        return normativaGridSeleccionada;
+    }
 
-        data = new ProcedimientoDTO();
-        // data.setCodigo(1L);
-        final List<NormativaDTO> normativas = new ArrayList<>();
-        final NormativaDTO n1 = new NormativaDTO();
-        final TipoNormativaDTO tn1 = new TipoNormativaDTO();
-        tn1.setIdentificador("Real Decreto 128/75");
-        n1.setCodigo(1L);
-        n1.setTipoNormativa(tn1);
-        normativas.add(n1);
-        data.setNormativas(normativas);
-
-        // final TipoMateriaSIADTO mat1 = new TipoMateriaSIADTO();
-        final Literal l1 = new Literal();
-        final List<Traduccion> traducciones = new ArrayList<>();
-        final Traduccion t1 = new Traduccion();
-        t1.setLiteral("Descripción del tipo de materia SIA.");
-        t1.setIdioma("es");
-
-        final Traduccion t2 = new Traduccion();
-        t1.setLiteral("Descripción del tipo de materia SIA.");
-        t1.setIdioma("ca");
-
-        traducciones.add(t1);
-        traducciones.add(t2);
-
-        l1.setTraducciones(traducciones);
-
-        listTipoLegitimacion = new ArrayList<>();
-
-        data.setFechaSIA(GregorianCalendar.getInstance().getTime());
-        listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
-        listTipoSilencio = maestrasSupService.findAllTipoSilencio();
-        listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
-        data.setTipo("P");
-
-        if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = procedimientoServiceFacade.findById((Long.valueOf(id)));
-        }
-
-        //materiasGridSIA = new ArrayList<>();
-        //tiposPubObjEntGrid = new ArrayList<>();
-
+    public void setNormativaGridSeleccionada(NormativaGridDTO normativaGridSeleccionada) {
+        this.normativaGridSeleccionada = normativaGridSeleccionada;
     }
 
     public void traducir() {
         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
     }
-
 
     public void guardarFlujo() {
 
@@ -370,6 +339,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         this.tipoPubObjEntGridSeleccionado = tipoPubObjEntGridSeleccionado;
     }
 
+    //PUBLICO OBJETIVO
+
     public void returnDialogPubObjEnt(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
         // Verificamos si se ha modificado
@@ -417,6 +388,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", modoAcceso, params, true, 1040, 460);
         }
     }
+
+    //MATERIA SIA
 
     public void returnDialogMateria(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
@@ -471,8 +444,12 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         final DialogResult respuesta = (DialogResult) event.getObject();
         // Verificamos si se ha modificado
         ProcedimientoTramiteDTO procTramite = (ProcedimientoTramiteDTO) respuesta.getResult();
+
+        //TODO Cambiar ID negativo en service.
         if (procTramite != null) {
             tramites.add(procTramite);
+            data.setTramites(new ArrayList<>());
+            data.setTramites(tramites);
         }
     }
 
@@ -502,9 +479,65 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             final Map<String, String> params = new HashMap<>();
             if (TypeModoAcceso.EDICION.equals(modoAcceso)) {
                 UtilJSF.anyadirMochila("tramiteSel", tramiteSeleccionado);
+            } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+                params.put("ID", String.valueOf(contadorProcMemoria--));
             }
-            UtilJSF.anyadirMochila("nombreProcedimiento", data.getNombreProcedimiento());
-            UtilJSF.openDialog("dialogTramite", modoAcceso, params, true, 1040, 720);
+            UtilJSF.anyadirMochila("nombreProcedimiento", data.getNombreProcedimientoWorkFlow());
+            UtilJSF.openDialog("dialogTramite", modoAcceso, params, true, 1240, 600);
+        }
+    }
+
+    //NORMATIVA
+
+    public void returnDialogNormativa(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        // Verificamos si se ha modificado
+        List<NormativaGridDTO> normativaG = (List<NormativaGridDTO>) respuesta.getResult();
+        if (normativaG != null) {
+            if (data.getNormativasGrid() == null) {
+                data.setNormativasGrid(new ArrayList<>());
+            }
+            //normativas.addAll(normativaG);
+            data.setNormativasGrid(new ArrayList<>());
+            data.getNormativasGrid().addAll(normativaG);
+        }
+
+    }
+
+
+    public void abrirDialogNormativa(TypeModoAcceso modoAcceso) {
+        if (data == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+                final Map<String, String> params = new HashMap<>();
+                params.put("ID", normativaGridSeleccionada.getCodigo().toString());
+                UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true,
+                        (Integer.parseInt(sessionBean.getScreenWidth()) - 200),
+                        (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+            } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+                UtilJSF.anyadirMochila("normativasSeleccionadas", data.getNormativas());
+                final Map<String, String> params = new HashMap<>();
+                UtilJSF.openDialog("tipo/dialogSeleccionNormativa", modoAcceso, params, true, 1040, 460);
+            }
+        }
+    }
+
+    public void nuevaNormativa() {
+        abrirDialogNormativa(TypeModoAcceso.ALTA);
+    }
+
+    public void consultarNormativa() {
+        abrirDialogNormativa(TypeModoAcceso.CONSULTA);
+    }
+
+    public void borrarNormativa() {
+        if (normativaGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getNormativasGrid().remove(normativaGridSeleccionada);
+            normativaGridSeleccionada = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
         }
     }
 
@@ -514,5 +547,13 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void setListTipoProcedimiento(List<TipoProcedimientoDTO> listTipoProcedimiento) {
         this.listTipoProcedimiento = listTipoProcedimiento;
+    }
+
+    public List<NormativaGridDTO> getNormativaGrid() {
+        return normativaGrid;
+    }
+
+    public void setNormativaGrid(List<NormativaGridDTO> normativaGrid) {
+        this.normativaGrid = normativaGrid;
     }
 }

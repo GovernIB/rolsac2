@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Dades d'un Procedimiento.
@@ -35,7 +36,7 @@ public class ProcedimientoDTO extends ModelApi {
     private String signatura;
     private List<ProcedimientoTramiteDTO> tramites;
     private List<ProcedimientoDocumentoDTO> documentos;
-    private List<NormativaDTO> normativas;
+    private List<NormativaGridDTO> normativas;
     private Date fechaCaducidad;
     private Date fechaPublicacion;
     private Date fechaActualizacion;
@@ -87,10 +88,13 @@ public class ProcedimientoDTO extends ModelApi {
 
     private List<TipoPublicoObjetivoEntidadGridDTO> tiposPubObjEntGrid;
     private List<TipoMateriaSIAGridDTO> materiasGridSIA;
+    private List<NormativaGridDTO> normativasGrid;
 
 
     public static ProcedimientoDTO createInstance(List<String> idiomas) {
         ProcedimientoDTO proc = new ProcedimientoDTO();
+        proc.setWorkflow(TypeProcedimientoWorfklow.MODIFICACION);
+        proc.setEstado(TypeProcedimientoEstado.MODIFICACION);
         proc.setNombreProcedimientoWorkFlow(Literal.createInstance(idiomas));
         proc.setDatosPersonalesDestinatario(Literal.createInstance(idiomas));
         proc.setDatosPersonalesFinalidad(Literal.createInstance(idiomas));
@@ -194,11 +198,11 @@ public class ProcedimientoDTO extends ModelApi {
         this.documentos = documentos;
     }
 
-    public List<NormativaDTO> getNormativas() {
+    public List<NormativaGridDTO> getNormativas() {
         return normativas;
     }
 
-    public void setNormativas(List<NormativaDTO> normativas) {
+    public void setNormativas(List<NormativaGridDTO> normativas) {
         this.normativas = normativas;
     }
 
@@ -462,14 +466,15 @@ public class ProcedimientoDTO extends ModelApi {
         return estadoSIA;
     }
 
-    public TypeProcedimientoEstado getEstado() {
-        return estado;
-    }
+    /*
+        public TypeProcedimientoEstado getEstado() {
+            return estado;
+        }
 
-    public void setEstado(TypeProcedimientoEstado estado) {
-        this.estado = estado;
-    }
-
+        public void setEstado(TypeProcedimientoEstado estado) {
+            this.estado = estado;
+        }
+    */
     public boolean isInterno() {
         return interno;
     }
@@ -494,14 +499,15 @@ public class ProcedimientoDTO extends ModelApi {
         this.codigoWF = codigoWF;
     }
 
-    public TypeProcedimientoWorfklow getWorkflow() {
-        return workflow;
-    }
+    /*
+        public TypeProcedimientoWorfklow getWorkflow() {
+            return workflow;
+        }
 
-    public void setWorkflow(TypeProcedimientoWorfklow workflow) {
-        this.workflow = workflow;
-    }
-
+        public void setWorkflow(TypeProcedimientoWorfklow workflow) {
+            this.workflow = workflow;
+        }
+    */
     public UnidadAdministrativaDTO getUaResponsable() {
         return uaResponsable;
     }
@@ -542,11 +548,48 @@ public class ProcedimientoDTO extends ModelApi {
         this.tipoProcedimiento = tipoProcedimiento;
     }
 
+    public List<NormativaGridDTO> getNormativasGrid() {
+        return normativasGrid;
+    }
+
+    public void setNormativasGrid(List<NormativaGridDTO> normativasGrid) {
+        this.normativasGrid = normativasGrid;
+    }
+
+    public TypeProcedimientoWorfklow getWorkflow() {
+        return workflow;
+    }
+
+    public void setWorkflow(TypeProcedimientoWorfklow workflow) {
+        this.workflow = workflow;
+    }
+
+    public TypeProcedimientoEstado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(TypeProcedimientoEstado estado) {
+        this.estado = estado;
+    }
+
     @Override
     public String toString() {
         return "ProcedimientoDTO{" +
                 "id=" + codigo +
                 ", responsable='" + responsable + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProcedimientoDTO that = (ProcedimientoDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 }

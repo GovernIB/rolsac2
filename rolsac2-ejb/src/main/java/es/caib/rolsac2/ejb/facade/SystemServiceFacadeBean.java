@@ -18,7 +18,6 @@ import java.util.Properties;
 /**
  * EJB únic que s'executa a la inicialització.
  *
- * @author areus
  */
 @Singleton
 @Startup

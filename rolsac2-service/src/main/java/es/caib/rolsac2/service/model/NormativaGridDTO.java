@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.util.Objects;
+
 @Schema(name = "Normativa")
 public class NormativaGridDTO extends ModelApi {
 
@@ -13,7 +15,10 @@ public class NormativaGridDTO extends ModelApi {
     private String fechaAprobacion;
 
 
-    public NormativaGridDTO() {}
+
+    public NormativaGridDTO() {
+
+    }
 
     public String getIdString() {
         if (codigo == null) {
@@ -32,6 +37,19 @@ public class NormativaGridDTO extends ModelApi {
         } else {
             this.codigo = Long.valueOf(idString);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NormativaGridDTO that = (NormativaGridDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 
     public Long getCodigo() {

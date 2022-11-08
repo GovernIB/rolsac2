@@ -34,7 +34,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:selectOneButton id="opcionIdioma" value="#{dialogTipoPublicoObjetivo.idioma}" styleClass="botoneraRed">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-            <p:ajax update="inputDescripcion" process="@this"/>
+            <p:ajax update="formDialog:inputDescripcion" process="@this"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogTipoPublicoObjetivo.traducir}"
                          icon="pi pi-compass" iconPos="top"

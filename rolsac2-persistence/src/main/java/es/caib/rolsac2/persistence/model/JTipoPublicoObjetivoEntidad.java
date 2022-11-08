@@ -1,8 +1,11 @@
 package es.caib.rolsac2.persistence.model;
 
+import com.sun.mail.util.LineInputStream;
+import es.caib.rolsac2.persistence.model.traduccion.JTipoPublicoObjetivoEntidadTraduccion;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Representacion de un personal. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
@@ -48,6 +51,9 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     private String identificador;
 
 
+    @OneToMany(mappedBy = "tipoPublicoObjetivoEntidad", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JTipoPublicoObjetivoEntidadTraduccion> traducciones;
+
     public Long getCodigo() {
         return codigo;
     }
@@ -80,13 +86,22 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
         this.identificador = identificador;
     }
 
+    public List<JTipoPublicoObjetivoEntidadTraduccion> getTraducciones() {
+        return traducciones;
+    }
+
+    public void setTraducciones(List<JTipoPublicoObjetivoEntidadTraduccion> traducciones) {
+        this.traducciones = traducciones;
+    }
+
     @Override
     public String toString() {
         return "JTipoPublicoObjetivoEntidad{" +
-                "id=" + codigo +
-                "entidad=" + entidad +
-                "tipo=" + tipo +
-                "identificador=" + identificador +
+                "codigo=" + codigo +
+                ", entidad=" + entidad +
+                ", tipo=" + tipo +
+                ", identificador='" + identificador + '\'' +
+                ", traducciones=" + traducciones +
                 '}';
     }
 
@@ -103,5 +118,6 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
         }*/
         return tipo;
     }
+
 
 }

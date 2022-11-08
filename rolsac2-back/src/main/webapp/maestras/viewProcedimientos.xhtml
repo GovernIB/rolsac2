@@ -37,31 +37,103 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
     <ui:define name="content">
         <h:form id="form">
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
-            <f:facet name="header">
-                <div class="row">
-                    <div class="ui-g-12 ui-md-6 ui-lg-6">
-                        <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
-                        <p:inputText value="#{viewProcedimientos.filtro.texto}" styleClass="mr-2" ></p:inputText>
-                        <p:commandButton value="#{labels['dict.busqueda']}"
-                                         styleClass="mr-2"  icon="pi pi-search"
-                                         actionListener="#{viewProcedimientos.buscar()}"
-                                         update="messages dataTable"
-                                         process="@form"/>
+                <f:facet name="header">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
+                            <p:inputText value="#{viewProcedimientos.filtro.texto}" styleClass="mr-2" ></p:inputText>
+                            <p:commandButton value="#{labels['dict.busqueda']}"
+                                             styleClass="mr-2"  icon="pi pi-search"
+                                             actionListener="#{viewProcedimientos.buscar()}"
+                                             update="messages dataTable"
+                                             process="@form"/>
+                            <p:commandButton  value="+" onclick="PF('panel').toggle()" />
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                            <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2"  icon="pi pi-file-o" iconPos="top"  actionListener="#{viewProcedimientos.nuevoProcedimiento}" process="@this">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.editar']}" styleClass="mr-2"  icon="pi pi-pencil" iconPos="top"  actionListener="#{viewProcedimientos.editarProcedimiento}" process="@form" update="messages dataTable">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages "/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.borrar']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewProcedimientos.borrarProcedimiento}" process="@form" update="messages dataTable">
+                                <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"  action="#{viewProcedimientos.ayuda}" process="@this" update="messages dataTable" />
+                        </div>
                     </div>
-                    <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
-                        <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2"  icon="pi pi-file-o" iconPos="top"  actionListener="#{viewProcedimientos.nuevoProcedimiento}" process="@this">
-                            <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages dataTable"/>
-                        </p:commandButton>
-                        <p:commandButton value="#{labels['dict.editar']}" styleClass="mr-2"  icon="pi pi-pencil" iconPos="top"  actionListener="#{viewProcedimientos.editarProcedimiento}" process="@form" update="messages dataTable">
-                            <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages "/>
-                        </p:commandButton>
-                        <p:commandButton value="#{labels['dict.borrar']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewProcedimientos.borrarProcedimiento}" process="@form" update="messages dataTable">
-                            <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
-                        </p:commandButton>
-                        <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"  action="#{viewProcedimientos.ayuda}" process="@this" update="messages dataTable" />
+                </f:facet>
+
+                <p class="p-m-0">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.codigoSIA']}:" for="txtCodigoSIA" />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:inputText id="txtCodigoSIA" value="#{viewProcedimientos.filtro.codigoSIA}" styleClass="w95" onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"  />
+                        </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.volcadoSIA']}:"  for="txtVolcadoSIA"  />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:selectOneMenu id="txtVolcadoSIA" value="#{viewProcedimientos.filtro.volcadoSIA}"
+                                             styleClass="w95">
+                                     <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                     <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
+                                     <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.formaInicio']}:"  for="txtFormaInicio" />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:selectOneMenu id="txtFormaInicio" value="#{viewProcedimientos.filtro.formaInicio}"
+                                             styleClass="w95" converter="#{tipoFormaInicioConverter}">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItems value="#{viewProcedimientos.listTipoFormaInicio}" var="tipoFormaInicio"
+                                               itemLabel="#{tipoFormaInicio.identificador}" itemValue="#{tipoFormaInicio}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.silencioAdministrativo']}:" for="txtSilencioAdministrativo"  />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:selectOneMenu id="txtSilencioAdministrativo" value="#{viewProcedimientos.filtro.silencioAdministrativo}"
+                                             styleClass="w95" converter="#{tipoSilencioAdministrativoConverter}">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItems value="#{viewProcedimientos.listTipoSilencio}" var="tipoSilencio"
+                                               itemLabel="#{tipoSilencio.identificador}" itemValue="#{tipoSilencio}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.publicoObjetivo']}:" for="txtPublicoObjetivo" />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:selectOneMenu id="txtPublicoObjetivo" value="#{viewProcedimientos.filtro.publicoObjetivo}"
+                                             styleClass="w95"  converter="#{tipoPublicoObjetivoConverter}">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItems value="#{viewProcedimientos.listTipoPublicoObjetivo}" var="tipoPublicoObjetivo"
+                                               itemLabel="#{tipoPublicoObjetivo.identificador}" itemValue="#{tipoPublicoObjetivo}"/>
+                        </p:selectOneMenu>
+
+                        </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.tipoProcedimiento']}:"  for="txtTipoProcedimiento" />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:selectOneMenu id="txtTipoProcedimiento" value="#{viewProcedimientos.filtro.tipoProcedimiento}"
+                                             styleClass="w95" converter="#{tipoProcedimientoConverter}">
+                               <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItems value="#{viewProcedimientos.listTipoProcedimiento}" var="tipoProcedimiento"
+                                               itemLabel="#{tipoProcedimiento.identificador}" itemValue="#{tipoProcedimiento}"/>
+
+                            </p:selectOneMenu>
+
+                        </div>
                     </div>
-                </div>
-            </f:facet>
+                </p>
+
             </p:panel>
             <p:dataTable id="dataTable" value="#{viewProcedimientos.lazyModel}" var="procedimiento"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="procedimientoTable"

@@ -91,14 +91,15 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <f:facet name="header">#{labels['dict.identificador']}</f:facet>
                     <h:outputText value="#{pubobjent.identificador}"/>
                 </p:column>
+                <p:column sortBy="#{pubobjent.descripcion}">
+                    <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
+                    <h:outputText value="#{pubobjent.descripcion}"/>
+                </p:column>
                 <p:column sortBy="#{pubobjent.tipo}">
                     <f:facet name="header">#{labels['viewPublicoObjetivoEntidad.tipoPublicoObjetivo']}</f:facet>
                     <h:outputText value="#{pubobjent.tipo}"/>
                 </p:column>
-                <p:column sortBy="#{pubobjent.entidad}">
-                    <f:facet name="header">#{labels['viewPublicoObjetivoEntidad.entidad']}</f:facet>
-                    <h:outputText value="#{pubobjent.entidad}"/>
-                </p:column>
+
             </p:dataTable>
 
             <h:outputScript >

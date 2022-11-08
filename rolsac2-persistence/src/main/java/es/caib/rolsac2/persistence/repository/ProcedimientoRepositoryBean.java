@@ -2,7 +2,9 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoMateriaSIAPK;
+import es.caib.rolsac2.persistence.model.pk.JProcedimientoNormativaPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoPublicoObjectivoPK;
+import es.caib.rolsac2.service.model.NormativaGridDTO;
 import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
 import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
@@ -22,7 +24,7 @@ import java.util.Optional;
 /**
  * Implementación del repositorio de Personal.
  *
- * @author areus
+ * @author Indra
  */
 @Stateless
 @Local(ProcedimientoRepository.class)
@@ -181,6 +183,22 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
+    public List<NormativaGridDTO> getNormativasByWF(Long codigoWF) {
+        List<NormativaGridDTO> lista = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoProcWF", codigoWF);
+        List<JProcedimientoNormativa> jlista = query.getResultList();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoNormativa elemento : jlista) {
+                lista.add(elemento.toModelGrid());
+            }
+        }
+        return lista;
+    }
+
+    @Override
     public void deleteWF(Long codigoProc, boolean enmodificacion) {
         JProcedimientoWorkflow jprocWF = this.getWF(codigoProc, enmodificacion);
         if (jprocWF == null) {
@@ -278,6 +296,69 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
 
     @Override
+    public void mergeNormativaProcWF(Long codigoWF, List<NormativaGridDTO> listaNuevos) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoProcWF", codigoWF);
+        List<JProcedimientoNormativa> jlista = query.getResultList();
+
+        List<JProcedimientoNormativa> borrar = new ArrayList<>();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoNormativa jelemento : jlista) {
+                boolean encontrado = false;
+                if (listaNuevos != null) {
+                    for (NormativaGridDTO elemento : listaNuevos) {
+                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getNormativa().getCodigo()) == 0) {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!encontrado) {
+                    borrar.add(jelemento);
+                }
+            }
+        }
+
+        if (!borrar.isEmpty()) {
+            for (JProcedimientoNormativa jelemento : borrar) {
+                entityManager.remove(jelemento);
+            }
+            jlista.removeAll(borrar);
+        }
+
+
+        if (listaNuevos != null && !listaNuevos.isEmpty()) {
+            JProcedimientoWorkflow jprocWF = entityManager.find(JProcedimientoWorkflow.class, codigoWF);
+            for (NormativaGridDTO elemento : listaNuevos) {
+                boolean encontrado = false;
+                if (!jlista.isEmpty()) {
+                    for (JProcedimientoNormativa jelemento : jlista) {
+                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getNormativa().getCodigo()) == 0) {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!encontrado) {
+                    JProcedimientoNormativa nuevo = new JProcedimientoNormativa();
+                    nuevo.setProcedimiento(jprocWF);
+                    JNormativa jNormativa = entityManager.find(JNormativa.class, elemento.getCodigo());
+                    nuevo.setNormativa(jNormativa);
+                    JProcedimientoNormativaPK id = new JProcedimientoNormativaPK();
+                    id.setNormativa(elemento.getCodigo());
+                    id.setProcedimiento(codigoWF);
+                    nuevo.setCodigo(id);
+                    entityManager.persist(nuevo);
+                }
+            }
+        }
+    }
+
+    @Override
     public void updateWF(JProcedimientoWorkflow jProcWF) {
         entityManager.merge(jProcWF);
     }
@@ -297,11 +378,53 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     + "OR LOWER(j.tipo) LIKE :filtro  OR LOWER(cast(j.codigoSIA as string)) LIKE :filtro"
                     + " OR LOWER(cast(j.estadoSIA as string)) LIKE :filtro OR LOWER(cast(j.codigoDir3SIA as string)) LIKE :filtro )");
         }
+        if (filtro.isRellenoFormaInicio()) {
+            sql.append(" AND WF.formaInicio.codigo = :formaInicio ");
+        }
+        if (filtro.isRellenoPublicoObjetivo()) {
+            sql.append(" AND exists (select pubObj from JProcedimientoPublicoObjectivo pubObj where pubObj.tipoPublicoObjetivo = :tipoPublicoObjetivo and pubObj.procedimiento.codigo = WF.codigo ) ");
+        }
+        if (filtro.isRellenoTipoProcedimiento()) {
+            sql.append(" AND WF.tipoProcedimiento.codigo = :tipoProcedimiento ");
+        }
+        if (filtro.isRellenoSilencioAdministrativo()) {
+            sql.append(" AND WF.silencioAdministrativo.codigo = :tipoSilencio ");
+        }
+        if (filtro.isRellenoVolcadoSIA()) {
+            switch (filtro.getVolcadoSIA()) {
+                case "S":
+                    sql.append(" AND j.codigoSIA is not null ");
+                    break;
+                case "N":
+                    sql.append(" AND j.codigoSIA is null ");
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (filtro.isRellenoCodigoSIA()) {
+            sql.append(" AND j.codigoSIA = :codigoSIA ");
+        }
 
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("idioma", filtro.getIdioma());
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoFormaInicio()) {
+            query.setParameter("formaInicio", filtro.getFormaInicio().getCodigo());
+        }
+        if (filtro.isRellenoPublicoObjetivo()) {
+            query.setParameter("tipoPublicoObjetivo", filtro.getPublicoObjetivo().getCodigo());
+        }
+        if (filtro.isRellenoTipoProcedimiento()) {
+            query.setParameter("tipoProcedimiento", filtro.getTipoProcedimiento().getCodigo());
+        }
+        if (filtro.isRellenoSilencioAdministrativo()) {
+            query.setParameter("tipoSilencio", filtro.getSilencioAdministrativo().getCodigo());
+        }
+        if (filtro.isRellenoCodigoSIA()) {
+            query.setParameter("codigoSIA", filtro.getCodigoSIA());
         }
         /*
          * if (filtro.isRellenoCodigoSIA()) { query.setParameter("tipo", "%" + filtro.getTipo().toLowerCase() + "%"); }

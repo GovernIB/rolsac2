@@ -3,9 +3,9 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -33,33 +33,42 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     @EJB
     ProcedimientoServiceFacade procedimientoService;
+
+    @EJB
+    private MaestrasSupServiceFacade maestrasSupService;
     private ProcedimientoGridDTO datoSeleccionado;
-
     private ProcedimientoFiltro filtro;
-
     private LazyDataModel<ProcedimientoGridDTO> lazyModel;
 
+    private List<TipoProcedimientoDTO> listTipoProcedimiento;
+    private List<TipoSilencioAdministrativoDTO> listTipoSilencio;
+    private List<TipoPublicoObjetivoDTO> listTipoPublicoObjetivo;
+    private List<TipoFormaInicioDTO> listTipoFormaInicio;
+    private List<TipoLegitimacionDTO> listTipoLegitimacion;
 
     public LazyDataModel<ProcedimientoGridDTO> getLazyModel() {
         return lazyModel;
     }
 
     public void load() {
-        LOG.debug("load");
-
-        //this.tienePermisos(this.getClass().getName());
+        LOG.debug("load View Procedimientos");
 
         //Inicializamos combos/desplegables/inputs/filtro
         filtro = new ProcedimientoFiltro();
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
 
-        LOG.debug("Rol admin: " + this.isUserRoleRSCAdmin());
-        LOG.debug("Rol user: " + this.isUserRoleRSCUser());
-        LOG.debug("Rol user: " + this.isUserRoleRSCMentira());
-        LOG.debug("Username: " + this.getUserName());
-
+        cargarFiltros();
         buscar();
+    }
+
+    private void cargarFiltros() {
+        listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
+        listTipoSilencio = maestrasSupService.findAllTipoSilencio();
+        listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
+        listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
+        listTipoPublicoObjetivo = maestrasSupService.findAllTiposPublicoObjetivo();
     }
 
     public void nuevoProcedimiento() {
@@ -68,7 +77,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void editarProcedimiento() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
         } else {
             abrirVentana(TypeModoAcceso.EDICION);
         }
@@ -138,26 +147,6 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         };
     }
 
-    public void abrirVentanaProc() {
-        // Muestra dialogo
-        final Map<String, String> params = new HashMap<>();
-        Integer ancho = sessionBean.getScreenWidthInt();
-        if (ancho == null) {
-            ancho = 1433;
-        }
-        UtilJSF.openDialog("dialogProcedimiento", TypeModoAcceso.EDICION, params, true, ancho, 690);
-    }
-
-    public void abrirVentanaServ() {
-        // Muestra dialogo
-        final Map<String, String> params = new HashMap<>();
-        Integer ancho = sessionBean.getScreenWidthInt();
-        if (ancho == null) {
-            ancho = 1433;
-        }
-        UtilJSF.openDialog("dialogServicio", TypeModoAcceso.EDICION, params, true, ancho, 690);
-    }
-
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
@@ -183,4 +172,43 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         return datoSeleccionado;
     }
 
+    public List<TipoProcedimientoDTO> getListTipoProcedimiento() {
+        return listTipoProcedimiento;
+    }
+
+    public void setListTipoProcedimiento(List<TipoProcedimientoDTO> listTipoProcedimiento) {
+        this.listTipoProcedimiento = listTipoProcedimiento;
+    }
+
+    public List<TipoSilencioAdministrativoDTO> getListTipoSilencio() {
+        return listTipoSilencio;
+    }
+
+    public void setListTipoSilencio(List<TipoSilencioAdministrativoDTO> listTipoSilencio) {
+        this.listTipoSilencio = listTipoSilencio;
+    }
+
+    public List<TipoPublicoObjetivoDTO> getListTipoPublicoObjetivo() {
+        return listTipoPublicoObjetivo;
+    }
+
+    public void setListTipoPublicoObjetivo(List<TipoPublicoObjetivoDTO> listTipoPublicoObjetivo) {
+        this.listTipoPublicoObjetivo = listTipoPublicoObjetivo;
+    }
+
+    public List<TipoFormaInicioDTO> getListTipoFormaInicio() {
+        return listTipoFormaInicio;
+    }
+
+    public void setListTipoFormaInicio(List<TipoFormaInicioDTO> listTipoFormaInicio) {
+        this.listTipoFormaInicio = listTipoFormaInicio;
+    }
+
+    public List<TipoLegitimacionDTO> getListTipoLegitimacion() {
+        return listTipoLegitimacion;
+    }
+
+    public void setListTipoLegitimacion(List<TipoLegitimacionDTO> listTipoLegitimacion) {
+        this.listTipoLegitimacion = listTipoLegitimacion;
+    }
 }

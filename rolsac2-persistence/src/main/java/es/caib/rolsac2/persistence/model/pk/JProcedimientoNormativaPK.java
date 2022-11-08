@@ -9,24 +9,24 @@ import java.util.Objects;
 public class JProcedimientoNormativaPK implements Serializable {
     private static final long serialVersionUID = 5291147853866863505L;
     @Column(name = "PRWF_CODIGO", nullable = false)
-    private Integer procedimiento;
+    private Long procedimiento;
 
     @Column(name = "NORM_CODIGO", nullable = false)
-    private Integer normativa;
+    private Long normativa;
 
-    public Integer getProcedimiento() {
+    public Long getProcedimiento() {
         return procedimiento;
     }
 
-    public void setProcedimiento(Integer uaedCodedi) {
+    public void setProcedimiento(Long uaedCodedi) {
         this.procedimiento = uaedCodedi;
     }
 
-    public Integer getNormativa() {
+    public Long getNormativa() {
         return normativa;
     }
 
-    public void setNormativa(Integer uaedCodua) {
+    public void setNormativa(Long uaedCodua) {
         this.normativa = uaedCodua;
     }
 

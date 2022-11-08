@@ -11,9 +11,12 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 public class TipoPublicoObjetivoEntidadGridDTO extends ModelApi {
 
     private Long codigo;
-    private String entidad;
     private String tipo;
     private String identificador;
+
+    private String entidad;
+
+    private String descripcion;
 
     /**
      * Se utilizan la siguiente para el selector de procedimientos.
@@ -68,14 +71,6 @@ public class TipoPublicoObjetivoEntidadGridDTO extends ModelApi {
         this.tipo = tipo;
     }
 
-    public String getEntidad() {
-        return entidad;
-    }
-
-    public void setEntidad(String entidad) {
-        this.entidad = entidad;
-    }
-
     public String getIdentificador() {
         return identificador;
     }
@@ -84,17 +79,25 @@ public class TipoPublicoObjetivoEntidadGridDTO extends ModelApi {
         this.identificador = identificador;
     }
 
+    public String getEntidad() { return entidad; }
+
+    public void setEntidad(String entidad) { this.entidad = entidad; }
+
     public Long getCodigoProcWF() {
         return codigoProcWF;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public void setCodigoProcWF(Long codigoProcWF) {
         this.codigoProcWF = codigoProcWF;
     }
 
-    @Override
-    public String toString() {
-        return "TipoPublicoObjetivoEntidadGridDTO{" + "id=" + codigo + ", entidad=" + entidad + ", tipo=" + tipo
-                + ", identificador=" + identificador + "}";
-    }
+
 }
