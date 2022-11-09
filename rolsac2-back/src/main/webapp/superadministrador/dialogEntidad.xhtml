@@ -176,7 +176,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                        itemDisabled="true"/>
                         <f:selectItems value="#{idiomasOpcionales.values()}" var="idioma"
                                        itemValue="#{idioma.toString()}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-                        <p:ajax update="txtIdiomasObligatorios"></p:ajax>
+                        <p:ajax listener="#{dialogEntidad.revisarIdiomas()}" update="txtIdiomasObligatorios txtIdiomaDefecto"></p:ajax>
                     </p:selectManyButton>
                 </div>
             </div>
@@ -225,7 +225,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                     <p:fileUpload listener="#{dialogEntidad.handleLogoUpload}"
                                                   mode="advanced"
                                                   dragDropSupport="false"
-                                                  update="formDialog:logo" 
+                                                  update="formDialog:logo"
                                                   allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
                                                   validateContentType="true" accept=".gif,.jpg,.jpeg,.png"
                                                   onupload=""

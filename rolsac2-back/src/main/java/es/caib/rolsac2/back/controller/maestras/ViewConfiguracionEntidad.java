@@ -37,8 +37,8 @@ import java.util.Objects;
  */
 @Named
 @ViewScoped
-public class DialogEntidad extends AbstractController implements Serializable {
-    private static final Logger LOG = LoggerFactory.getLogger(DialogEntidad.class);
+public class ViewConfiguracionEntidad extends AbstractController implements Serializable {
+    private static final Logger LOG = LoggerFactory.getLogger(ViewConfiguracionEntidad.class);
 
     private String id;
 
@@ -58,21 +58,10 @@ public class DialogEntidad extends AbstractController implements Serializable {
     private StreamedContent file;
 
     public void load() {
-        LOG.debug("init");
-        // Inicializamos combos/desplegables/inputs
-        // De momento, no tenemos desplegables.
+        LOG.debug("init view configuracion entidad");
         this.setearIdioma();
 
-        data = new EntidadDTO();
-        if (this.isModoAlta()) {
-            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-        } else if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = administracionSupServiceFacade.findEntidadById(Long.valueOf(id));
-            identificadorAntiguo = data.getIdentificador();
-            /*if(data.getLogo() != null) {
-                file = obtenerFicheroDescarga(data.getLogo());
-            }*/
-        }
+        data = UtilJSF.getSessionBean().getEntidad();
 
         setIdiomas();
     }
@@ -84,14 +73,12 @@ public class DialogEntidad extends AbstractController implements Serializable {
         }
         adaptIdiomas();
 
-        if (this.data.getCodigo() == null) {
-            administracionSupServiceFacade.createEntidad(this.data, sessionBean.getUnidadActiva().getCodigo());
-        } else {
-            administracionSupServiceFacade.updateEntidad(this.data);
-        }
+        administracionSupServiceFacade.updateEntidad(this.data);
 
-        // Cerramos y retornamos resultado
-        cerrar();
+        UtilJSF.getSessionBean().setEntidad(this.data);
+
+        UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("viewConfiguracionEntidad.actualizado"));
+
     }
 
     private boolean checkObligatorio() {
@@ -111,11 +98,12 @@ public class DialogEntidad extends AbstractController implements Serializable {
             return false;
         }
 
+        /*
         if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equalsIgnoreCase(this.data.getIdentificador())
                 && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -167,39 +155,39 @@ public class DialogEntidad extends AbstractController implements Serializable {
 
     public void setIdiomas() {
 
-        if (this.isModoAlta()) {
+        /*if (this.isModoAlta()) {
             idiomasPermitidos = sessionBean.getIdiomasObligatoriosList();
 
             idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
-        } else if (this.isModoEdicion()) {
-            if (this.data.getIdiomasPermitidos() == null) {
-                idiomasPermitidos = sessionBean.getIdiomasObligatoriosList();
-            } else {
-                String[] idiomasPermitidosArr = this.data.getIdiomasPermitidos().split(";");
-                for (int i = 0; i < idiomasPermitidosArr.length; i++) {
-                    idiomasPermitidos.add(idiomasPermitidosArr[i]);
-                }
+        } else if (this.isModoEdicion()) {*/
+        if (this.data.getIdiomasPermitidos() == null) {
+            idiomasPermitidos = sessionBean.getIdiomasObligatoriosList();
+        } else {
+            String[] idiomasPermitidosArr = this.data.getIdiomasPermitidos().split(";");
+            for (int i = 0; i < idiomasPermitidosArr.length; i++) {
+                idiomasPermitidos.add(idiomasPermitidosArr[i]);
             }
-
-            if (this.data.getIdiomasObligatorios() == null) {
-                idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
-            } else {
-                String[] idiomasObligatoriosArr = this.data.getIdiomasObligatorios().split(";");
-                for (int i = 0; i < idiomasObligatoriosArr.length; i++) {
-                    idiomasObligatorios.add(idiomasObligatoriosArr[i]);
-                }
-            }
-
-
         }
+
+        if (this.data.getIdiomasObligatorios() == null) {
+            idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
+        } else {
+            String[] idiomasObligatoriosArr = this.data.getIdiomasObligatorios().split(";");
+            for (int i = 0; i < idiomasObligatoriosArr.length; i++) {
+                idiomasObligatorios.add(idiomasObligatoriosArr[i]);
+            }
+        }
+
+
+        // }
 
     }
 
     public void revisarIdiomas() {
         //Revisar si está en el listado de idiomas permitidos
         List<String> idiomasAux = new ArrayList<>(idiomasObligatorios);
-        for(String idioma: idiomasAux) {
-            if(!idiomasPermitidos.contains(idioma)) {
+        for (String idioma : idiomasAux) {
+            if (!idiomasPermitidos.contains(idioma)) {
                 idiomasObligatorios.remove(idioma);
             }
         }

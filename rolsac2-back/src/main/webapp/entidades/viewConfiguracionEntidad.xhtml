@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+      xmlns:t="http://back.rolsac2.caib.es/tags"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
 -->
@@ -12,7 +14,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="metadata">
         <f:metadata>
             <!--<f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />-->
-            <f:viewAction action="#{viewPersonal.load}" />
+            <f:viewAction action="#{viewConfiguracionEntidad.load}" />
         </f:metadata>
     </ui:define>
 
@@ -27,16 +29,255 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </c:forEach>
     </ui:define>
 
-            <ui:define name="content">
-            <h:form>
+
+
+ <ui:define name="content">
+     <h:outputStylesheet library="css">
+         .ui-panel-content  {
+            padding: 20px !important;
+         }
+
+         /*Botoneras multiboton*/
+         .botoneraRed.ui-selectonebutton {
+         border-color: white;
+         }
+
+         .botoneraRed.ui-selectonebutton .ui-button {
+         background-color: #cc073c !important;
+         color: black;
+         }
+
+         .botoneraRed.ui-selectonebutton .ui-button.ui-state-hover,
+         .botoneraRed.ui-selectonebutton .ui-state-hover {
+         background-color: #cc073c !important;
+         }
+
+         .botoneraRed.ui-selectonebutton .ui-state-active {
+         background-color: #cc073c !important;
+         color: white !important;
+         text-shadow: none;
+         }
+         /*Para p:selectManyButton multibotón y selección*/
+         .botoneraRed > .ui-button {
+         transition: 0.5s;
+         }
+
+         .botoneraRed > .ui-button.ui-state-active {
+         background-color: #cc073c !important;
+         color: white !important;
+         }
+
+         .botoneraRed >.ui-button:hover {
+         background-color: #cc073c !important;
+         color: white !important;
+         background-position-x: 0;
+         background-position-y: 100px;
+         }
+
+     </h:outputStylesheet>
+     <h:form id="form" >
+             <p:importConstants type="es.caib.rolsac2.service.model.types.TypeIdiomaFijo"
+                                var="idiomasFijos"></p:importConstants>
+             <p:importConstants type="es.caib.rolsac2.service.model.types.TypeIdiomaOpcional"
+                                var="idiomasOpcionales"></p:importConstants>
+             <p:importConstants type="es.caib.rolsac2.service.model.types.TypeFicheroExterno"
+                                var="tipoFichero" ></p:importConstants>
+
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewConfiguracionesGlobales.buscar}" update="dataTable"/>
 
-            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
-            <f:facet name="header">
-                <p style="margin:10px">VIEW CONFIGURACION ENTIDAD</p>
-            </f:facet>
-            </p:panel>
+                <p:panel id="panel" >
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText id="txtCodigo" value="#{viewConfiguracionEntidad.data.codigo}"
+                                         styleClass="w95" disabled="true"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText id="txtIdentificador" value="#{viewConfiguracionEntidad.data.identificador}"
+                                         styleClass="w95" disabled="true" maxlength="50">
+                                <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+                                <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+
+                    <!--
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <my:literalComponent id="inputDescripcion"
+                                                 literal="#{viewConfiguracionEntidad.data.descripcion}"
+                                                 soloLecture="#{viewConfiguracionEntidad.isModoConsulta()}"
+                                                 idioma="#{viewConfiguracionEntidad.idioma}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                 nombreLiteral="#{labels['dict.descripcion']}"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dialogEntidad.rol.admin']}:" for="txtRolAdmin"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText id="txtRolAdmin" value="#{viewConfiguracionEntidad.data.rolAdmin}"
+                                         styleClass="w95" required="true"
+                                         disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dialogEntidad.rol.adminContenido']}:" for="txtRolAdminContenido"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText id="txtRolAdminContenido" value="#{viewConfiguracionEntidad.data.rolAdminContenido}"
+                                         styleClass="w95" required="true"
+                                         disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dialogEntidad.rol.gestor']}:" for="txtRolGestor"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText id="txtRolGestor" value="#{viewConfiguracionEntidad.data.rolGestor}"
+                                         styleClass="w95" required="true"
+                                         disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dialogEntidad.rol.informador']}:" for="txtRolInformador"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:inputText id="txtRolInformador" value="#{viewConfiguracionEntidad.data.rolInformador}"
+                                         styleClass="w95" required="true"
+                                         disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogEntidad.activa']}:" for="txtActiva"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:selectBooleanCheckbox id="txtActiva" value="#{viewConfiguracionEntidad.data.activa}"
+                                                     styleClass="w95"
+                                                     disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50"/>
+                        </div>
+                    </div> -->
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogEntidad.idiomas.permitidos']}:" for="txtIdiomasPermitidos"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:selectManyButton id="txtIdiomasPermitidos" value="#{viewConfiguracionEntidad.idiomasPermitidos}"
+                                                styleClass="w95 botoneraRed" maxlength="50">
+                                <f:selectItems value="#{idiomasFijos.values()}" var="idioma"
+                                               itemValue="#{idioma.toString()}" itemLabel="#{labels['idiomas.' += idioma]}"
+                                               itemDisabled="true" />
+                                <f:selectItems value="#{idiomasOpcionales.values()}" var="idioma"
+                                               itemValue="#{idioma.toString()}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+                                <p:ajax listener="#{viewConfiguracionEntidad.revisarIdiomas()}" update="txtIdiomasObligatorios txtIdiomaDefecto"></p:ajax>
+                            </p:selectManyButton>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogEntidad.idiomas.obligatorios']}:"
+                                          for="txtIdiomasObligatorios"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:selectManyButton id="txtIdiomasObligatorios" value="#{viewConfiguracionEntidad.idiomasObligatorios}"
+                                                styleClass="w95 botoneraRed"  maxlength="50">
+                                <f:selectItems value="#{viewConfiguracionEntidad.idiomasPermitidos}" var="idioma"
+                                               itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"
+                                               itemDisabled="#{viewConfiguracionEntidad.isIdiomaDefecto(idioma.toString())}"/>
+                                <p:ajax update="txtIdiomaDefecto"></p:ajax>
+                            </p:selectManyButton>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                            <p:selectOneMenu id="txtIdiomaDefecto" value="#{viewConfiguracionEntidad.data.idiomaDefectoRest}"
+                                             styleClass="w95"
+                                             disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50">
+                                <f:selectItems value="#{viewConfiguracionEntidad.idiomasObligatorios}" var="idioma"
+                                               itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogEntidad.logo']}:" for=""/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-4" >
+                            <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
+                                <h:outputText value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
+                            </c:if>
+                            <c:if test="#{!dialogEntidad.isModoAlta()}">
+                                <p:panel id="logo" styleClass="logo-form w95">
+                                    <c:choose>
+                                        <c:when test="#{viewConfiguracionEntidad.data.logo == null}">
+                                            <p:fileUpload listener="#{viewConfiguracionEntidad.handleLogoUpload}"
+                                                          mode="advanced"
+                                                          dragDropSupport="false"
+                                                          update="form:logo"
+                                                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                                          validateContentType="true" accept=".gif,.jpg,.jpeg,.png"
+                                                          onupload=""
+                                                          label="Añadir"
+                                                          uploadLabel="Subir"
+                                                          cancelLabel="Cancelar"
+                                                          styleClass=""
+                                            />
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p:commandButton id="logoDescarga" value="#{viewConfiguracionEntidad.data.logo.filename}"
+                                                             ajax="false" process="@this"
+                                                             icon="pi pi-arrow-down">
+                                                <p:fileDownload value="#{viewConfiguracionEntidad.obtenerLogo()}" ></p:fileDownload>
+                                            </p:commandButton>
+                                            <p:commandButton actionListener="#{viewConfiguracionEntidad.eliminarLogo()}" icon="pi pi-times"
+                                                             update="form:logo"></p:commandButton>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </p:panel>
+ 
+                            </c:if>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                         <div class="ui-g-12 ui-md-12 ui-lg-6" style="text-align: end;padding-right: 27px;">
+
+                        <p:commandButton action="#{viewConfiguracionEntidad.ayuda}"
+                                         icon="pi pi-info-circle" iconPos="top"
+                                         value="#{labels['dict.ayuda']}"
+                                         process="@this"/>
+                        <p:commandButton action="#{viewConfiguracionEntidad.guardar}"
+                                         value="#{labels['dict.guardar']}" update="messages"
+                                         process="@all" />
+                         </div>
+                    </div>
+                </p:panel>
             </h:form>
             </ui:define>
 </ui:composition>
