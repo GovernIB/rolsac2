@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
@@ -50,7 +51,7 @@ public class DialogTipoPublicoObjetivoEntidad extends AbstractController impleme
         if (this.isModoAlta()) {
             data = new TipoPublicoObjetivoEntidadDTO();
             data.setEntidad(sessionBean.getEntidad());
-            //data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = serviceFacade.findTipoPublicoObjetivoEntidadById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
