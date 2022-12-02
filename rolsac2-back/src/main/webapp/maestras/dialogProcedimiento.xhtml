@@ -13,7 +13,10 @@
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogProcedimiento.nuevo']}"/>
+        <h:outputFormat value="#{labels['dialogProcedimiento.detalle']} - #{dialogProcedimiento.data.codigo} "
+                        rendered="#{!dialogProcedimiento.isModoAlta()}"/>
+        <h:outputFormat value="#{labels['dialogProcedimiento.nuevo']}"
+                        rendered="#{dialogProcedimiento.isModoAlta()}"/>
     </ui:define>
     <ui:define name="contentDialog">
         <p:panel header="Prueba">
@@ -40,11 +43,11 @@
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
-        <div class="ui-g-12 ui-md-9 pl-4 panel-container">
-            <p:panel header="#{labels['dialogProcedimiento.datos']}">
+        <div class="ui-g-12 ui-md-9 pl-4 panel-container" >
+            <p:panel header="#{labels['dialogProcedimiento.datos']}" id="formDatos">
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <p class="mb-1">
@@ -53,47 +56,21 @@
                         <p:inputText id="txtCodigo" value="#{dialogProcedimiento.data.codigo}"
                                      styleClass="w85" disabled="true"/>
                     </div>
-                    <div class="form-group col-md-2">
-                        <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dialogProcedimiento.codigo.sia']}:"
-                                          for="txtCodigoSIA"/>
-                            <p:inputText id="txtCodigoSIA" value="#{dialogProcedimiento.data.codigoSIA}"
-                                         styleClass="w95"
-                                         disabled="true"/>
-                        </p>
-                    </div>
-                    <div class="form-group col-md-2">
-                            <p:outputLabel value="#{labels['dialogProcedimiento.estado.sia']}:" for="txtEstadoSIA"
-                                       styleClass="mb-1 pt-0"/>
-
-                            <br />
-                            <p:selectBooleanCheckbox id="txtEstadoSIA" value="#{dialogProcedimiento.data.estadoSIA}" disabled="true" styleClass="mb-1 pt-0" />
-
-                    </div>
-                    <div class="form-group col-md-2">
-                        <p>
-                            <p:outputLabel value="#{labels['dialogProcedimiento.fecha.sia']}:" for="txtFechaSIA"
-                                           styleClass="mb-1 pt-0"/>
-                            <p:inputText id="txtFechaSIA" value="#{dialogProcedimiento.data.fechaSIA}"
-                                         styleClass="w95" required="false"
-                                         disabled="true"/>
-                        </p>
-                    </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-3">
                         <p:outputLabel value="#{labels['dialogProcedimiento.fecha.publicacion']}:" for="txtFechaPublicacion"
                                        styleClass="mb-1 pt-0"/>
                         <p>
                             <p:calendar id="txtFechaPublicacion" styleClass="fecha" disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                        value="#{dialogProcedimiento.data.fechaPublicacion}" pattern="dd/MM/yyyy"
-                                        required="false" showOn="button"/>
+                                        value="#{dialogProcedimiento.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
+                                        showOn="button"/>
                         </p>
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-3">
                         <p:outputLabel value="#{labels['dialogProcedimiento.fecha.caducidad']}:" for="txtFechaCaducidad"
                                        styleClass="mb-1 pt-0"/>
                         <p>
                             <p:calendar id="txtFechaCaducidad" styleClass="fecha" disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                        value="#{dialogProcedimiento.data.fechaCaducidad}" pattern="dd/MM/yyyy" showOn="button"/>
+                                        value="#{dialogProcedimiento.data.fechaCaducidad}" pattern="dd/MM/yyyy HH:mm" showOn="button"/>
                         </p>
                     </div>
                 </div>
@@ -105,11 +82,14 @@
                             <my:literalComponent id="txtNombre" styleClass="w95"
                                                  value="#{dialogProcedimiento.data.nombreProcedimientoWorkFlow}"
                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
-                                                 required="false"
+                                                 required="true"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimiento.idioma}"
-                                                 literal="#{dialogProcedimiento.data.nombreProcedimientoWorkFlow}"/>
+                                                 literal="#{dialogProcedimiento.data.nombreProcedimientoWorkFlow}"
+                                                 nombreLiteral="#{labels['dialogProcedimiento.nombre.procedimiento']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
                         </p>
 
                     </div>
@@ -117,10 +97,11 @@
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.formaInicio']}:"
-                                       for="txtFormaIni"/>
+                                       for="txtFormaIni" />
                         <p:selectOneMenu id="txtFormaIni" value="#{dialogProcedimiento.data.iniciacion}"
-                                         styleClass="w95" required="false"
+                                         styleClass="w95" required="true"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                         requiredMessage="#{labels['dict.obligatorio.tipoFormaInicio']}"
                                          converter="#{tipoFormaInicioConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
                             <f:selectItems value="#{dialogProcedimiento.listTipoFormaInicio}" var="tipoFormaInicio"
@@ -131,7 +112,8 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.silencioAdministrativo']}:"
                                        for="txtSilAdmin"/>
                         <p:selectOneMenu id="txtSilAdmin" value="#{dialogProcedimiento.data.silencio}"
-                                         styleClass="w95" required="false"
+                                         styleClass="w95" required="true"
+                                         requiredMessage="#{labels['dict.obligatorio.silencioAdm']}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          converter="#{tipoSilencioAdministrativoConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
@@ -145,6 +127,7 @@
                                        for="txtTipoProcedimiento"/>
                         <p:selectOneMenu id="txtTipoProcedimiento" value="#{dialogProcedimiento.data.tipoProcedimiento}"
                                          styleClass="w95" required="true"
+                                         requiredMessage="#{labels['dict.obligatorio.tipoProcedimiento']}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          converter="#{tipoProcedimientoConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
@@ -170,14 +153,46 @@
                             <my:unidadAdministrativaComponent id="txtOrgComp"
                                                               value="#{dialogProcedimiento.data.uaInstructor}"
                                                               idioma="#{dialogProcedimiento.idioma}"
+                                                              required="true"
+                                                              requiredMessage="#{labels['dict.obligatorio.uaInstructor']}"
                                                               ocultarTexto="false" esCabecera="false"
-                                                              required="false"
                             />
                         </p>
                     </div>
                 </div>
             </p:panel>
-            <p:panel header="#{labels['dialogProcedimiento.datos.contacto']}" styleClass="panel">
+            <p:panel header="#{labels['dialogProcedimiento.datosSIA']}" styleClass="panel" id="formDatosSIA">
+
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <p:outputLabel value="#{labels['dialogProcedimiento.estado.sia']}:" for="txtEstadoSIA"
+                                       styleClass="mb-1 pt-0"/>
+
+                        <br />
+                        <p:selectBooleanCheckbox id="txtEstadoSIA" value="#{dialogProcedimiento.data.estadoSIA}" disabled="true" styleClass="mb-1 pt-0" />
+
+                    </div>
+                    <div class="form-group col-md-2">
+                        <p class="mb-1">
+                            <h:outputText styleClass="mb-1" value="#{labels['dialogProcedimiento.codigo.sia']}:"
+                                          for="txtCodigoSIA"/>
+                            <p:inputText id="txtCodigoSIA" value="#{dialogProcedimiento.data.codigoSIA}"
+                                         styleClass="w95"
+                                         disabled="true"/>
+                        </p>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <p>
+                            <p:outputLabel value="#{labels['dialogProcedimiento.fecha.sia']}:" for="txtFechaSIA"
+                                           styleClass="mb-1 pt-0"/>
+                            <p:inputText id="txtFechaSIA" value="#{dialogProcedimiento.data.fechaSIA}"
+                                         styleClass="w95"
+                                         disabled="true"/>
+                        </p>
+                    </div>
+                </div>
+            </p:panel>
+            <p:panel header="#{labels['dialogProcedimiento.datos.contacto']}" styleClass="panel" id="formDatosContacto">
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.servicio']}:"
@@ -186,7 +201,7 @@
                             <my:unidadAdministrativaComponent id="txtServResp"
                                                               value="#{dialogProcedimiento.data.uaResponsable}"
                                                               idioma="#{dialogProcedimiento.idioma}"
-                                                              ocultarTexto="false" esCabecera="false" required="false"
+                                                              ocultarTexto="false" esCabecera="false"
                             />
                         </p>
                     </div>
@@ -197,15 +212,8 @@
                                        value="#{labels['dialogProcedimiento.nombreResponsable']}:"
                                        for="txtNombreResp"/>
                         <p>
-                            <!--<my:literalComponent id="txtNombreResp" styleClass="w95"
-                                                 value="#{dialogProcedimiento.data.responsable}"
-                                                 soloLecture="#{dialogProcedimiento.isModoConsulta()}"
-                                                 required="true"
-                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                 idioma="#{dialogProcedimiento.idioma}"
-                                                 literal="#{dialogProcedimiento.data.responsable}"/>-->
-                            <p:inputText id="txtNombreResp" value="#{dialogProcedimiento.data.responsable}" required="true"
+                            <p:inputText id="txtNombreResp" value="#{dialogProcedimiento.data.responsable}"
+                                         required="true" requiredMessage="#{labels['dict.obligatorio.responsable']}"
                                          styleClass="w95"/>
                         </p>
                     </div>
@@ -218,7 +226,7 @@
                     </div>
                 </div>
             </p:panel>
-            <p:panel header="#{labels['dialogProcedimiento.informacionProteccion']}" styleClass="panel">
+            <p:panel header="#{labels['dialogProcedimiento.informacionProteccion']}" styleClass="panel" id="formDatosLOPD">
                 <div class="form-row">
                     <div class="form-group col-md-9">
                         <p class="mb-1">
@@ -231,7 +239,7 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.legitimacion']}:"
                                        for="txtLegitimacion"/>
                         <p:selectOneMenu id="txtLegitimacion" value="#{dialogProcedimiento.data.datosPersonalesLegitimacion}"
-                                         styleClass="w95" required="false"
+                                         styleClass="w95"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          converter="#{tipoLegitimacionConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
@@ -246,15 +254,15 @@
                                        value="#{labels['dialogProcedimiento.finalidad']}:"
                                        for="txtLopdFinalidad"/>
                         <p>
-                            <my:literalComponent id="txtLopdFinalidad" styleClass="w95"
-                                                 value="#{dialogProcedimiento.data.datosPersonalesFinalidad}"
+                            <my:literalComponent id="txtLopdFinalidad"
+                                                 literal="#{dialogProcedimiento.data.lopdFinalidad}"
                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
-                                                 required="false"
+                                                 idioma="#{dialogProcedimiento.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                 idioma="#{dialogProcedimiento.idioma}"
-                                                 literal="#{dialogProcedimiento.data.datosPersonalesFinalidad}"/>
-
+                                                 nombreLiteral="#{labels['dialogProcedimiento.finalidad']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
                         </p>
                     </div>
                 </div>
@@ -264,14 +272,15 @@
                                        value="#{labels['dialogProcedimiento.destinatario']}:"
                                        for="txtLopdDestinatario"/>
                         <p>
-                            <my:literalComponent id="txtLopdDestinatario" styleClass="w95"
-                                                 value="#{dialogProcedimiento.data.datosPersonalesDestinatario}"
+                            <my:literalComponent id="txtLopdDestinatario"  styleClass="w95"
+                                                 literal="#{dialogProcedimiento.data.lopdDestinatario}"
                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
-                                                 required="false"
+                                                 idioma="#{dialogProcedimiento.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                 idioma="#{dialogProcedimiento.idioma}"
-                                                 literal="#{dialogProcedimiento.data.datosPersonalesDestinatario}"/>
+                                                 nombreLiteral="#{labels['dialogProcedimiento.finalidad']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
                         </p>
                     </div>
                 </div>
@@ -281,14 +290,15 @@
                                        value="#{labels['dialogProcedimiento.derechos']}:"
                                        for="txtLopdDerechos"/>
                         <p>
-                            <my:literalComponent id="txtLopdDerechos" styleClass="w95"
-                                                 value="#{dialogProcedimiento.data.requisitos}"
+                            <my:literalComponent id="txtLopdDerechos"  styleClass="w95"
+                                                 literal="#{dialogProcedimiento.data.lopdDerechos}"
                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
-                                                 required="false"
+                                                 idioma="#{dialogProcedimiento.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                 idioma="#{dialogProcedimiento.idioma}"
-                                                 literal="#{dialogProcedimiento.data.requisitos}"/>
+                                                 nombreLiteral="#{labels['dialogProcedimiento.derechos']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
                         </p>
                     </div>
                 </div>
@@ -310,6 +320,9 @@
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                 oncomplete="triggerDblClickPublico();"
+                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
                             <h:outputText value="#{td.identificador}"/>
@@ -318,15 +331,15 @@
                     </p:dataTable>
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:commandButton title="Nuevo" icon="pi pi-plus" styleClass="text-success"
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      process="@this" actionListener="#{dialogProcedimiento.nuevoPubObjEnt()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogPubObjEnt}" process="@this"
                                 update="dataTablePublico"/>
                     </p:commandButton>
-                    <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      action="#{dialogProcedimiento.borrarPubObjEnt}"
                                      process="@this" update="dataTablePublico messagesDialog"/>
-                    <p:commandButton title="Consultar" icon="pi pi-eye"
+                    <p:commandButton id="btnConsultarPublico" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogProcedimiento.consultarPubObjEnt}"
                                      process="@this" update="dataTablePublico messagesDialog"/>
                 </div>
@@ -344,26 +357,26 @@
 
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowUnselect"/>
-                        <!--<p:ajax event="rowDblselect"
-                                oncomplete="triggerDblClick();"
-                                global="false"/>-->
-                                <!--oncomplete="rcEditarPropiedad();"-->
+                        <p:ajax event="rowUnselect" />
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickMateria();"
+                                global="false"/>
+
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
                             <h:outputText value="#{td.descripcion.getTraduccion(sessionBean.lang)}"/>
                         </p:column>
                     </p:dataTable>
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:commandButton title="Nuevo" icon="pi pi-plus" styleClass="text-success"
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                     process="@this" actionListener="#{dialogProcedimiento.nuevaMateriaSIA()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogMateria}" process="@this"
                                 update="dataTableMaterias"/>
                     </p:commandButton>
-                    <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                               action="#{dialogProcedimiento.borrarMateriaSIA}"
                                      process="@this" update="dataTableMaterias messagesDialog"/>
-                    <p:commandButton title="Consultar" icon="pi pi-eye"
+                    <p:commandButton id="btnConsultarMateria" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogProcedimiento.consultarMateriaSIA}"
                                      process="@this" update="dataTableMaterias messagesDialog"/>
                 </div>
@@ -383,22 +396,25 @@
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect" oncomplete="rcEditarPropiedad();"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickNormativa();"
+                                global="false"/>
+
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                               styleClass="text-center w75">
                             <h:outputText value="#{td.titulo.getTraduccion(sessionBean.lang)}"/>
                         </p:column>
                     </p:dataTable></div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:commandButton title="Nuevo" icon="pi pi-plus" styleClass="text-success"
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      process="@this" actionListener="#{dialogProcedimiento.nuevaNormativa()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogNormativa}" process="@this"
                                 update="dataNormativaProcedimiento"/>
                     </p:commandButton>
-                    <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      action="#{dialogProcedimiento.borrarNormativa}"
                                      process="@this" update="dataNormativaProcedimiento messagesDialog"/>
-                    <p:commandButton title="Consultar" icon="pi pi-eye"
+                    <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogProcedimiento.consultarNormativa}"
                                      process="@this" update="dataNormativaProcedimiento messagesDialog"/>
                 </div>
@@ -412,29 +428,30 @@
                                  emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true" scrollHeight="120"
                                  paginator="false" selectionMode="single"
                                  selection="#{dialogProcedimiento.tramiteSeleccionado}"
-                                 rowKey="#{td.codigo}" styleClass="noHeader">
+                                 rowKey="#{td.codigoString}" styleClass="noHeader">
 
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
                         <p:ajax event="rowDblselect"
-                                oncomplete="rcEditarPropiedad();"
-                        />
+                                oncomplete="triggerDblClickTramite();"
+                                global="false"/>
+
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
                             <h:outputText value="#{td.nombre.getTraduccion(sessionBean.lang)}"/>
                         </p:column>
                     </p:dataTable>
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:commandButton title="Nuevo" icon="pi pi-plus" styleClass="text-success"
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      process="@this" actionListener="#{dialogProcedimiento.nuevoTramite()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogTramite}" process="@this"
                                 update="dataTableTramite"/>
                     </p:commandButton>
-                    <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      action="#{dialogProcedimiento.borrarTramite}"
                                      process="@this" update="dataTableTramite messagesDialog"/>
-                    <p:commandButton title="Consultar" icon="pi pi-pencil"
+                    <p:commandButton id="btnEditarTramite" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      action="#{dialogProcedimiento.editarTramite}"
                                      process="@this" update="dataTableTramite messagesDialog"/>
                 </div>
@@ -448,26 +465,33 @@
                                  emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true" scrollHeight="120"
                                  paginator="false" selectionMode="single"
                                  selection="#{dialogProcedimiento.documentoSeleccionado}"
-                                 rowKey="#{td.codigo}" styleClass="noHeader">
+                                 rowKey="#{td.codigoString}" styleClass="noHeader">
 
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                        <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowSelect" global="false" />
+                        <p:ajax event="rowSelect" global="false" />
+                        <p:ajax event="rowUnselect" />
                         <p:ajax event="rowDblselect"
-                                oncomplete="rcEditarPropiedad();"
-                        />
+                                oncomplete="triggerDblClickDoc();"
+                                global="false"/>
 
-                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w75">
-                            <h:outputText value="#{td.fichero}"/>
+                        <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}"/>
                         </p:column>
-
                     </p:dataTable>
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"/>
-                    <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"/>
-                    <p:button title="Consultar" icon="pi pi-eye"/>
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                     process="@this" actionListener="#{dialogProcedimiento.nuevoDocumento()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumento}" process="@this"
+                                update="dataDocumentosRelacionados"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                     action="#{dialogProcedimiento.borrarDocumento}"
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                    <p:commandButton id="btnEditarDoc" title="#{labels['dict.editar']}" icon="pi pi-pencil"
+                                     action="#{dialogProcedimiento.editarDocumento}"
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -475,54 +499,96 @@
                     <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.docInformacion']}</p>
                 </div>
                 <div class="col-10 p-1">
-                    <p:dataTable id="dataDocumentosLopd" var="td" value="#{dialogProcedimiento.data.documentos}"
+                    <p:dataTable id="dataDocumentosLopd" var="td" value="#{dialogProcedimiento.data.documentosLOPD}"
                                  emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true" scrollHeight="120"
                                  paginator="false" selectionMode="single"
-                                 selection="#{dialogProcedimiento.documentoSeleccionado}"
-                                 rowKey="#{td.codigo}" styleClass="noHeader">
+                                 selection="#{dialogProcedimiento.documentoLOPDSeleccionado}"
+                                 rowKey="#{td.codigoString}" styleClass="noHeader">
 
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
                         <p:ajax event="rowDblselect"
-                                oncomplete="rcEditarPropiedad();"
-                        />
+                                oncomplete="triggerDblClickDocLopd();"
+                                global="false"/>
 
-                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w75">
-                            <h:outputText value="#{td.fichero}"/>
+                        <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
+                            <h:outputText value="LOPD" />
                         </p:column>
 
                     </p:dataTable>
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"/>
-                    <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"/>
-                    <p:button title="Consultar" icon="pi pi-eye"/>
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                     process="@this" actionListener="#{dialogProcedimiento.nuevoDocumentoLOPD()}"
+                                     rendered="#{empty dialogProcedimiento.data.documentosLOPD}"
+                            >
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumentoLOPD}" process="@this"
+                                update="dataDocumentosLopd"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                     action="#{dialogProcedimiento.borrarDocumentoLOPD}"
+                                     process="@this" update="dataDocumentosLopd messagesDialog"/>
+                    <p:commandButton id="btnEditarDocLopd" title="#{labels['dict.editar']}" icon="pi pi-pencil"
+                                     action="#{dialogProcedimiento.editarDocumentoLOPD}"
+                                     process="@this" update="dataDocumentosLopd messagesDialog"
+                    />
                 </div>
             </div>
         </div>
         <h:outputScript>
-            function rcEditarPropiedad() {
-            document.getElementById("dialogPlugin:btnEditarPropiedad").click();
+            function triggerDblClickPublico() {
+                document.getElementById("formDialog:btnConsultarPublico").click();
+            }
+            function triggerDblClickMateria() {
+                 document.getElementById("formDialog:btnConsultarMateria").click();
+            }
+            function triggerDblClickNormativa() {
+                document.getElementById("formDialog:btnConsultarNormativa").click();
+            }
+            function triggerDblClickTramite() {
+                 document.getElementById("formDialog:btnEditarTramite").click();
+            }
+            function triggerDblClickDoc() {
+                document.getElementById("formDialog:btnEditarDoc").click();
+            }
+            function triggerDblClickDocLopd() {
+                document.getElementById("formDialog:btnEditarDocLopd").click();
             }
 
-            function rcBorrarPropiedad() {
-            document.getElementById("dialogPlugin:btnEliminarPropiedad").click();
-            }
         </h:outputScript>
+        <p:dialog modal="true" widgetVar="statusDialog2" header="#{labels['dict.guardandoDato']}"
+                  draggable="false" closable="false" resizable="False">
+            <div class="text-center">
+                <i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
+            </div>
+        </p:dialog>
     </ui:define>
     <ui:define name="contentFooterDialogLeft">
         <div class="d-flex flex-column flex-sm-row align-items-center mb-2 mb-sm-0" style="gap: 5px;">
             <h:outputText value="#{labels['dialogProcedimiento.estado']}:" for="txtWorkFlow"/>
-            <p:inputText id="txtWorkFlow" value="En modificación"
-                         styleClass="w95 " required="false"
-                         disabled=""/>
+            <p:inputText id="txtWorkFlow"
+                         value="#{labels['dialogProcedimiento.tipoEstado.' += dialogProcedimiento.data.estado.toString()]}"
+                         styleClass="w95 "
+                         disabled="true" />
             <p:commandButton value="#{labels['dialogProcedimiento.seguirFlujo']}"
                              icon="pi pi-arrow-right"
                              action="#{dialogProcedimiento.guardarFlujo}"
                              styleClass="btn-footer"
                              process="@all"
-                             update="messagesDialog"/>
+                             disabled="#{empty dialogProcedimiento.data.codigo or dialogProcedimiento.isModoConsulta()}"
+                             update="messagesDialog">
+                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this" />
+            </p:commandButton>
+            <p:commandButton value="#{labels['dict.mensajes']}"
+                             icon="pi pi-inbox"
+                             action="#{dialogProcedimiento.verMensajes}"
+                             styleClass="btn-footer"
+                             process="@all"
+                             disabled="#{empty dialogProcedimiento.data.codigo}"
+                             update="messagesDialog">
+                <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogMensajes}" process="@this" />
+            </p:commandButton>
         </div>
 
     </ui:define>
@@ -532,11 +598,11 @@
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogProcedimiento.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog formDatos formDatosSIA formDatosContacto formDatosLOPD"
                          rendered="#{!dialogProcedimiento.isModoConsulta()}"
                          process="@all"/>
         <p:commandButton action="#{dialogProcedimiento.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         value="#{labels['dict.cerrar']}"
                          process="@this"/>
 
     </ui:define>

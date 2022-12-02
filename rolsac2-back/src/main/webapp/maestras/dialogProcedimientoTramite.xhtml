@@ -1,0 +1,444 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+>
+
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogProcedimientoTramite.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogProcedimientoTramite.id}"/>
+            <f:viewParam id="OCULTAR_INICIACION" name="OCULTAR_INICIACION" value="#{dialogProcedimientoTramite.ocultarIniciacion}"/>
+            <f:viewAction action="#{dialogProcedimientoTramite.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="Nuevo Trámite "/>
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:panel header="Prueba">
+            <p>Prueba a ver si funciona correctamente el update</p>
+        </p:panel>
+    </ui:define>
+    <ui:define name="contentIdioma">
+
+         <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogProcedimientoTramite.idioma}" styleClass="botoneraRed">
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+            <p:ajax update="formDialog:txtNombre formDialog:txtRequisitos formDialog:txtDocum formDialog:txtTermMax formDialog:txtOrgInstr" process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogProcedimientoTramite.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this" />
+
+    </ui:define>
+
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+        <div class="ui-g-12 ui-md-9 pl-4 panel-container" >
+            <p:panel id="panelNombre" header="#{labels['dialogProcedimientoTramite.edicion']}" rendered="#{!empty dialogProcedimientoTramite.nombreProcedimiento.getTraduccion(sessionBean.lang)}">
+                <div class="form-row">
+                    <div class="form-group">
+                        <h6 id="txtTituloNombre" class="font-weight-bold mt-3">#{dialogProcedimientoTramite.nombreProcedimiento.getTraduccion(sessionBean.lang)}</h6>
+                    </div>
+                </div>
+            </p:panel>
+            <p:panel id="panelDatos" header="#{labels['dialogProcedimientoTramite.datos']}">
+                <div class="form-row">
+                    <div class="form-group col-md-1">
+                        <p class="mb-1">
+                            <h:outputText styleClass="mb-1" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                        </p>
+                        <p:inputText id="txtCodigo" value="#{dialogProcedimientoTramite.data.codigo}"
+                                     styleClass="w95" disabled="true"/>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaPublicacion']}:" for="txtFechaPublicacion"
+                                       styleClass="mb-1 pt-0"/>
+                        <p>
+                            <p:calendar id="txtFechaPublicacion" styleClass="fecha"
+                                        disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                        value="#{dialogProcedimientoTramite.data.fechaPublicacion}"
+                                        pattern="dd/MM/yyyy HH:mm"
+                                        required="true"
+                                        requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
+                                        showOn="button"/>
+                        </p>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaInicio']}:" for="txtFechaInicio"
+                                       styleClass="mb-1 pt-0"/>
+                        <p>
+                            <p:calendar id="txtFechaInicio" styleClass="fecha"
+                                        disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                        value="#{dialogProcedimientoTramite.data.fechaInicio}"
+                                        pattern="dd/MM/yyyy HH:mm" showOn="button"/>
+                        </p>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaCierre']}:" for="txtFechaCierre"
+                                       styleClass="mb-1 pt-0"/>
+                        <p>
+                            <p:calendar id="txtFechaCierre" styleClass="fecha"
+                                        disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                        value="#{dialogProcedimientoTramite.data.fechaCierre}"
+                                        pattern="dd/MM/yyyy HH:mm" showOn="button"/>
+                        </p>
+                    </div>
+                    <div class="form-group col-md-2">
+
+                        <p:outputLabel value="#{labels['viewTipoTramitacion.fasePro.titulo']}:" for="faseProc"
+                                       styleClass="mb-1 pt-0"/>
+                        <p:selectOneMenu id="faseProc"
+                                            required="true"
+                                            requiredMessage="#{labels['dict.obligatorio.fase']}"
+                                            value="#{dialogProcedimientoTramite.data.fase}"
+                                            styleClass="w35" disabled="#{dialogProcedimientoTramite.isModoConsulta()}">
+                                <f:selectItem itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}"
+                                              itemValue="#{null}" id="seleccione2"/>
+                                <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.iniciacion']}"
+                                              itemValue="1" rendered="#{dialogProcedimientoTramite.mostrarIniciacion}" />
+                                <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.instruccion']}"
+                                              itemValue="2"/>
+                                <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.finalizacion']}"
+                                              itemValue="3"/>
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.nombreTramite']}:"
+                                       for="txtNombre"/>
+                        <p>
+                            <my:literalComponent id="txtNombre" styleClass="w95"
+                                                 value="#{dialogProcedimientoTramite.data.nombre}"
+                                                 soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                 idioma="#{dialogProcedimientoTramite.idioma}"
+                                                 literal="#{dialogProcedimientoTramite.data.nombre}"
+                                                 nombreLiteral="#{labels['dialogProcedimientoTramite.nombreTramite']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
+                        </p>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.objeto']}:"
+                                       for="txtRequisitos"/>
+                        <p>
+                            <my:literalComponent id="txtRequisitos" styleClass="w95"
+                                                 value="#{dialogProcedimientoTramite.data.requisitos}"
+                                                 soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                 idioma="#{dialogProcedimientoTramite.idioma}"
+                                                 literal="#{dialogProcedimientoTramite.data.requisitos}"
+                                                 nombreLiteral="#{labels['dialogProcedimientoTramite.objeto']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.documentacion']}:"
+                                       for="txtDocum"/>
+                        <p>
+                            <my:literalComponent id="txtDocum" styleClass="w95"
+                                                 value="#{dialogProcedimientoTramite.data.documentacion}"
+                                                 soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                 idioma="#{dialogProcedimientoTramite.idioma}"
+                                                 literal="#{dialogProcedimientoTramite.data.documentacion}"
+                                                 nombreLiteral="#{labels['dialogProcedimientoTramite.documentacion']}">
+                                    <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
+
+                        </p>
+
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.terminoMaximo']}:"
+                                       for="txtTermMax"/>
+                        <p>
+                            <my:literalComponent id="txtTermMax" styleClass="w95"
+                                                 value="#{dialogProcedimientoTramite.data.terminoMaximo}"
+                                                 soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                 idioma="#{dialogProcedimientoTramite.idioma}"
+                                                 literal="#{dialogProcedimientoTramite.data.terminoMaximo}"
+                                                 nombreLiteral="#{labels['dialogProcedimientoTramite.terminoMaximo']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.organoCompetente']}:"
+                                       for="txtOrgInstr"/>
+                        <p>
+                            <my:unidadAdministrativaComponent id="txtOrgInstr"
+                                                              value="#{dialogProcedimientoTramite.data.unidadAdministrativa}"
+                                                              idioma="#{dialogProcedimientoTramite.idioma}"
+                                                              ocultarTexto="false" esCabecera="false"
+                                                              required="true"
+                                                              nombreLiteral="#{labels['dialogProcedimientoTramite.organoCompetente']}"
+                                                             >
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorUASelector"  />
+                            </my:unidadAdministrativaComponent>
+                        </p>
+                    </div>
+                </div>
+            </p:panel>
+            <p:panel id="panelCanales"  header="#{labels['dialogProcedimientoTramite.canales']}">
+                <div class="form-row align-items-center">
+                    <div class="form-group">
+                        <!--Aquí es mapear luego con los bools que tiene TipoTramitacionDTO para ello-->
+                        <p:selectManyCheckbox id="canalesTramitacion"
+                                              value="#{dialogProcedimientoTramite.canalesSeleccionados}">
+                            <f:selectItem itemLabel="Presencial" itemValue="PRE" />
+                            <f:selectItem itemLabel="Telemático" itemValue="TEL" />
+                            <!--<f:selectItem itemLabel="Telefónico" itemValue="TFN"  />-->
+                            <p:ajax update="txtTraPlantilla txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam"
+                                    event="change" listener="#{dialogProcedimientoTramite.cambiaTipo}"/>
+                        </p:selectManyCheckbox>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-5">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.seleccionPlantilla']}:"
+                                       for="txtTraPlantilla"/>
+
+                    <p:selectOneMenu id="txtTraPlantilla"
+                                     value="#{dialogProcedimientoTramite.data.plantillaSel}"
+                                     styleClass="w95"
+                                     disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                                        !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                     converter="#{tipoTramitacionConverter}"
+                    >
+                        <f:selectItem itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}"
+                                      itemValue="#{null}" id="seleccione3"/>
+                        <f:selectItems value="#{dialogProcedimientoTramite.plantillasTipoTramitacion}" var="plantilla"
+                                       itemLabel="#{plantilla.tramiteId}" itemValue="#{plantilla}"/>
+                        <p:ajax update="txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam" event="change" />
+                    </p:selectOneMenu>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-grup col-md-4">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.identificador']}:"
+                                   for="txtTraId"/>
+                    <p:inputText id="txtTraId"
+                                 disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                                    dialogProcedimientoTramite.data.plantillaSel != null ||
+                                                    !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                 value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteId}" styleClass="w95"
+                                 onblur="this.value = this.value.toUpperCase();"
+                                 requiredMessage="#{labels['dict.obligatorio.identificador']}"
+                                 required="true" maxlength="50">
+                        <p:keyFilter regEx="/[0-9_-a-zA-Z\.]/i" preventPaste="false"/>
+                        <f:validateRegex pattern="^[0-9_-a-zA-Z\.]{1,50}$" />
+                    </p:inputText>
+
+
+                    </div>
+                    <div class="form-grup col-md-2">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.version']}:"
+                                       for="txtTraVer"/>
+                        <p:inputNumber id="txtTraVer" decimalPlaces="0"
+                                       disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                                    dialogProcedimientoTramite.data.plantillaSel != null ||
+                                                    !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                       value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteVersion}"
+                                       required="true"
+                                       requiredMessage="#{labels['dict.obligatorio.version']}"
+                                       styleClass="w95"/>
+                    </div>
+
+            </div>
+                <div class="form-row">
+                    <div class="form-group col-md-7">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.plataforma']}:"
+                                       for="txtTraPlat"/>
+                        <p:selectOneMenu id="txtTraPlat"
+                                         value="#{dialogProcedimientoTramite.data.tipoTramitacion.codPlatTramitacion}"
+                                         styleClass="w95"
+                                         autoWidth="false"
+                                         required="true"
+                                         requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
+                                         disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                                            dialogProcedimientoTramite.data.plantillaSel != null ||
+                                                        !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                         converter="#{platTramitElectronicaConverter}">
+                            <f:selectItem itemLabel="#{labels['dialogUnidadAdministrativa.selecciona.tipo']}"
+                                          itemValue="#{null}"/>
+                            <f:selectItems value="#{dialogProcedimientoTramite.platTramitElectronica}" var="plataforma"
+                                           itemLabel="#{plataforma.identificador}" itemValue="#{plataforma}"/>
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.url']}:"
+                                   for="txtTraUrl"/>
+                    <my:literalComponent id="txtTraUrl" styleClass="w95"
+                                         value="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
+                                         soloLecture="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                                    dialogProcedimientoTramite.data.plantillaSel != null ||
+                                                    !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                         required="true"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         idioma="#{dialogProcedimientoTramite.idioma}"
+                                         literal="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
+                                         nombreLiteral="#{labels['dialogProcedimientoTramite.url']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                    </my:literalComponent>
+
+                </div>
+                <div class="form-grup col-md-6">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.parametros']}:"
+                                   for="txtTraParam"/>
+                    <p:inputText id="txtTraParam"
+                                 disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                                    dialogProcedimientoTramite.data.plantillaSel != null ||
+                                                    !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                 value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteParametros}"
+                                 requiredMessage="#{labels['dict.obligatorio.parametros']}"
+                                 required="true"
+                                 styleClass="w95"/>
+                </div>
+            </div>
+        </p:panel>
+    </div>
+        <div class="ui-g-12 ui-md-3 pr-1 ">
+            <div class="row left-container mx-0 mb-2">
+                <div class="col-12 left-container-header text-center">
+                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimientoTramite.documentosRelacionados']}</p>
+                </div>
+                <div class="col-10 p-1">
+                    <p:dataTable id="dataDocumentosRelacionados" var="td" value="#{dialogProcedimientoTramite.data.listaDocumentos}"
+                                 emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true" scrollHeight="120"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{dialogProcedimientoTramite.documentoSeleccionado}"
+                                 rowKey="#{td.codigoString}" styleClass="noHeader">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false" />
+                        <p:ajax event="rowSelect" global="false" />
+                        <p:ajax event="rowUnselect" />
+                        <p:ajax event="rowDblselect" oncomplete="rcEditarPropiedad();" />
+
+                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w75">
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}"/>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                     process="@this" actionListener="#{dialogProcedimientoTramite.nuevoDocumento()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogDocumento}" process="@this"
+                                update="dataDocumentosRelacionados"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                     action="#{dialogProcedimientoTramite.borrarDocumento}"
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                    <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-pencil"
+                                     action="#{dialogProcedimientoTramite.editarDocumento}"
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                </div>
+            </div>
+            <div class="row left-container mx-0 mb-2">
+                <div class="col-12 left-container-header text-center">
+                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimientoTramite.modelos']}</p>
+                </div>
+                <div class="col-10 p-1">
+                    <p:dataTable id="dataDocumentosModelo" var="td" value="#{dialogProcedimientoTramite.data.listaModelos}"
+                                 emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true" scrollHeight="120"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{dialogProcedimientoTramite.modeloSeleccionado}"
+                                 rowKey="#{td.codigoString}" styleClass="noHeader">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="rcEditarPropiedad();"
+                        />
+
+                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w75">
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                     process="@this" actionListener="#{dialogProcedimientoTramite.nuevoModelo()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}" process="@this"
+                                update="dataDocumentosModelo"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                     action="#{dialogProcedimientoTramite.borrarModelo}"
+                                     process="@this" update="dataDocumentosModelo messagesDialog"/>
+                    <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-pencil"
+                                     action="#{dialogProcedimientoTramite.editarModelo}"
+                                     process="@this" update="dataDocumentosModelo messagesDialog"/>
+                </div>
+            </div>
+        </div>
+
+            <h:outputScript>
+                function rcEditarPropiedad() {
+                    document.getElementById("dialogPlugin:btnEditarPropiedad").click();
+                }
+
+                function rcBorrarPropiedad() {
+                    document.getElementById("dialogPlugin:btnEliminarPropiedad").click();
+                }
+            </h:outputScript>
+        </ui:define>
+
+        <ui:define name="contentFooterDialogRight">
+            <p:commandButton action="#{dialogProcedimientoTramite.ayuda}"
+                             icon="pi pi-info-circle" iconPos="top"
+                             value="#{labels['dict.ayuda']}"
+                             process="@this"/>
+            <p:commandButton action="#{dialogProcedimientoTramite.guardar}"
+                             value="#{labels['dict.guardar']}" update="messagesDialog panelDatos panelCanales"
+                             rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
+                             process="@all"/>
+            <p:commandButton action="#{dialogProcedimientoTramite.cerrar}"
+                             value="#{labels['dict.cerrar']}" update="messagesDialog"
+                             process="@this"/>
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -72,20 +72,44 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     }
 
     public void nuevoProcedimiento() {
-        abrirVentana(TypeModoAcceso.ALTA);
+        abrirVentana(TypeModoAcceso.ALTA, null);
+    }
+
+    public void dblClickProcedimiento() {
+        if (datoSeleccionado != null) {
+            if (datoSeleccionado.getCodigoWFMod() != null) {
+                editarProcedimiento();
+            } else if (datoSeleccionado.getCodigoWFPub() != null) {
+                consultarProcedimiento();
+            }
+        }
     }
 
     public void editarProcedimiento() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
         } else {
-            abrirVentana(TypeModoAcceso.EDICION);
+            Long idProcMod = this.datoSeleccionado.getCodigoWFMod();//procedimientoService.getCodigoByWF(datoSeleccionado.getCodigo(), TypeProcedimientoWorfklow.MODIFICACION.getValor());
+            if (idProcMod == null) {
+                idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub());
+                this.datoSeleccionado.setCodigoWFMod(idProcMod);
+            }
+            ProcedimientoDTO proc = procedimientoService.findById(idProcMod);
+            abrirVentana(TypeModoAcceso.EDICION, proc);
+
         }
     }
 
     public void consultarProcedimiento() {
         if (datoSeleccionado != null) {
-            abrirVentana(TypeModoAcceso.CONSULTA);
+            Long idProcPub = datoSeleccionado.getCodigoWFPub();//procedimientoService.getCodigoByWF(datoSeleccionado.getCodigo(), TypeProcedimientoWorfklow.PUBLICADO.getValor());
+            if (idProcPub == null) {
+                // Mensaje --> No tiene publicado el dato
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewProcedimientos.error.procNoPublicado"), getLiteral("msg.seleccioneElemento"));
+            } else {
+                ProcedimientoDTO proc = procedimientoService.findById(idProcPub);
+                abrirVentana(TypeModoAcceso.CONSULTA, proc);
+            }
         }
     }
 
@@ -93,16 +117,81 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
-            procedimientoService.delete(datoSeleccionado.getCodigo());
-
+            Long idProcMod = datoSeleccionado.getCodigoWFMod();
+            Long idProcPub = datoSeleccionado.getCodigoWFPub();
+            if (idProcMod != null) {
+                //PrimeFaces.current().executeScript("PF('confirmDlgBorrarModificado').show();");
+                procedimientoService.deleteWF(idProcMod);
+                this.datoSeleccionado.setCodigoWFMod(null);
+                ProcedimientoGridDTO proc = this.datoSeleccionado;
+                this.buscar();
+                this.seleccionarPorId(proc);
+            } else if (idProcPub != null) {
+                //PrimeFaces.current().executeScript("PF('confirmDlgBorrarPublicado').show();");
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewProcedimientos.error.borrarPublicado"));
+            } else {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + ".");// UtilJSF.getLiteral("info.borrado.ok"));
+            }
         }
     }
 
-    private void abrirVentana(TypeModoAcceso modoAcceso) {
+    public void borrarProcedimentoMod() {
+        if (datoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+        } else {
+            Long idProcMod = datoSeleccionado.getCodigoWFMod();
+            if (idProcMod == null) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + " Modificacion");
+            } else {
+                procedimientoService.deleteWF(idProcMod);
+                ProcedimientoGridDTO proc = this.datoSeleccionado;
+                this.buscar();
+                this.seleccionarPorId(proc);
+            }
+        }
+    }
+
+
+    public void borrarProcedimentoPub() {
+        if (datoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+        } else {
+            Long idProcPub = datoSeleccionado.getCodigoWFPub();
+            if (idProcPub == null) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + " Modificacion");
+            } else {
+                procedimientoService.deleteWF(idProcPub);
+                ProcedimientoGridDTO proc = this.datoSeleccionado;
+                this.buscar();
+                this.seleccionarPorId(proc);
+            }
+        }
+    }
+
+    private void seleccionarPorId(ProcedimientoGridDTO idProcSeleccionado) {
+        if (idProcSeleccionado == null || this.lazyModel == null) {
+            return;
+        }
+
+        this.datoSeleccionado = idProcSeleccionado;
+        /*
+        Iterator<ProcedimientoGridDTO> it = this.lazyModel.iterator();
+
+        while (it != null && it.hasNext()) {
+            ProcedimientoGridDTO procGrid = it.next();
+            if (procGrid != null && procGrid.getCodigo().compareTo(idProcSeleccionado) == 0) {
+                this.datoSeleccionado = procGrid;
+                break;
+            }
+        }*/
+    }
+
+    private void abrirVentana(TypeModoAcceso modoAcceso, ProcedimientoDTO proc) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
-            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
+        if (proc != null) {
+            UtilJSF.anyadirMochila("PROC", proc);
+            params.put(TypeParametroVentana.ID.toString(), proc.getCodigo().toString());
         }
         Integer ancho = sessionBean.getScreenWidthInt();
         if (ancho == null) {
@@ -117,9 +206,11 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
             @Override
             public ProcedimientoGridDTO getRowData(String rowKey) {
-                for (ProcedimientoGridDTO proc : (List<ProcedimientoGridDTO>) getWrappedData()) {
-                    if (proc.getCodigo().toString().equals(rowKey))
-                        return proc;
+                if (getWrappedData() != null) {
+                    for (ProcedimientoGridDTO proc : (List<ProcedimientoGridDTO>) getWrappedData()) {
+                        if (proc.getCodigo().toString().equals(rowKey))
+                            return proc;
+                    }
                 }
                 return null;
             }
@@ -134,6 +225,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                                                    Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                    if (!sortField.equals("filtro.orderBy")) {
+                        filtro.setOrderBy(sortField);
+                    }
                     Pagina<ProcedimientoGridDTO> pagina = procedimientoService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
@@ -152,7 +246,10 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
         // Verificamos si se ha modificado
         if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            ProcedimientoGridDTO proc = this.datoSeleccionado;
             this.buscar();
+            this.seleccionarPorId(proc);
+
         }
     }
 

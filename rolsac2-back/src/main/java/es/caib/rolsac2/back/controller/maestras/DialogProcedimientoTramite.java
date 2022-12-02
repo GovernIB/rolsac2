@@ -6,22 +6,22 @@ import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
-import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
-import es.caib.rolsac2.service.model.TipoTramitacionDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Named
 @ViewScoped
@@ -54,67 +54,87 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
     private List<TipoTramitacionDTO> plantillasTipoTramitacion;
 
-    private PlatTramitElectronicaDTO platTramitElectronicaSel;
-
-    private TipoTramitacionDTO plantillaSel;
-
     private TipoTramitacionDTO canalPresentacion;
+
+    private ProcedimientoDocumentoDTO documentoSeleccionado;
+    private ProcedimientoDocumentoDTO modeloSeleccionado;
+
+    private boolean mostrarIniciacion = true;
+    private String ocultarIniciacion;
 
     public void load() {
         this.setearIdioma();
 
-        data = ProcedimientoTramiteDTO.createInstance();
-
         nombreProcedimiento = (Literal) UtilJSF.getValorMochilaByKey("nombreProcedimiento");
-
-        platTramitElectronicaSel = new PlatTramitElectronicaDTO();
-
-        plantillaSel = null;
-
         canalesSeleccionados = new ArrayList<>();
 
         if (this.isModoEdicion() || this.isModoConsulta()) {
             data = (ProcedimientoTramiteDTO) UtilJSF.getValorMochilaByKey("tramiteSel");
-            if (data != null && data.getProcedimiento() != null) {
-                //nombreProcedimiento = data.getProcedimiento().getNombre();
-            }
 
-            if (data != null && data.getTipoTramitacion() != null) {
-                canalPresentacion = new TipoTramitacionDTO(data.getTipoTramitacion());
-                platTramitElectronicaSel = canalPresentacion.getCodPlatTramitacion();
-
-            }
-
-            if (data != null && data.getTipoTramitacion() != null && data.getTipoTramitacion().isTramitPresencial())
+            if (data != null && data.getTipoTramitacion() != null && data.isTramitPresencial()) {
                 canalesSeleccionados.add("PRE");
-            if (data != null && data.getTipoTramitacion() != null && data.getTipoTramitacion().isTramitElectronica())
+            }
+            if (data != null && data.getTipoTramitacion() != null && data.isTramitElectronica()) {
                 canalesSeleccionados.add("TEL");
-            // if (data != null && data.getTipoTramitacion() != null && data.getTipoTramitacion().isTramitElectronica())
-            // canalesSeleccionados.add("TFN");
+            }
+            if (data != null && data.getTipoTramitacion() != null && data.isTramitTelefonica()) {
+                canalesSeleccionados.add("TFN");
+            }
 
+        } else if (this.isModoAlta()) {
+            data = ProcedimientoTramiteDTO.createInstance(sessionBean.getIdiomasPermitidosList());
+            data.setUnidadAdministrativa(sessionBean.getUnidadActiva());
+            data.getUnidadAdministrativa().setEntidad(sessionBean.getEntidad());
         } else {
-            data.setCodigo(Long.parseLong(id));
+            data = ProcedimientoTramiteDTO.createInstance(null);
         }
 
-        platTramitElectronica = platTramitElectronicaServiceFacade.findAll();
-        plantillasTipoTramitacion = maestrasSupServiceFacade.findPlantillasTiposTramitacion();
+        platTramitElectronica = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
+        plantillasTipoTramitacion = maestrasSupServiceFacade.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo());
 
+        if (this.data.getTipoTramitacion() == null) {
+            this.data.setTipoTramitacion(TipoTramitacionDTO.createInstance(sessionBean.getIdiomasPermitidosList()));
+            this.data.getTipoTramitacion().setEntidad(UtilJSF.getSessionBean().getEntidad());
+        }
+
+        if (ocultarIniciacion != null && "S".equals(ocultarIniciacion)) {
+            this.mostrarIniciacion = false;
+        }
     }
 
     private boolean verificarGuardar() {
+        if (this.data.getFechaPublicacion() != null && this.data.getFechaInicio() != null && data.getFechaInicio().before(this.data.getFechaPublicacion())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionInicio"));
+            return false;
+        }
+
+        if (this.data.getFechaPublicacion() != null && this.data.getFechaCierre() != null && data.getFechaCierre().before(this.data.getFechaPublicacion())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionCierre"));
+            return false;
+        }
+
+        if (this.data.getFechaInicio() != null && this.data.getFechaCierre() != null && data.getFechaCierre().before(this.data.getFechaInicio())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaInicioCierre"));
+            return false;
+        }
+
+        if (!this.data.isTramitElectronica() && !this.data.isTramitPresencial()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunCanalPresentacion"));
+            return false;
+        }
         return true;
     }
 
     public void guardar() {
+
+        this.data.setTramitPresencial(canalesSeleccionados.contains("PRE"));
+        this.data.setTramitElectronica(canalesSeleccionados.contains("TEL"));
+        this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
+
         if (!verificarGuardar()) {
             return;
         }
 
-        if (data.getTipoTramitacion() != null && data.getTipoTramitacion().getCodigo() != null) {
-            canalPresentacion.setCodigo(data.getTipoTramitacion().getCodigo());
-        }
-
-        data.setTipoTramitacion(canalPresentacion);
 
         final DialogResult result = new DialogResult();
         if (this.getModoAcceso() != null) {
@@ -135,6 +155,103 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);
+    }
+
+    //DOCUMENTO
+    public void returnDialogDocumento(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            // Verificamos si se ha modificado
+            ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
+            if (doc != null) {
+                if (data.getListaDocumentos() == null) {
+                    data.setListaDocumentos(new ArrayList<>());
+                }
+                data.agregarDocumento(doc);
+            }
+        }
+    }
+
+
+    public void abrirDialogDocumento(TypeModoAcceso modoAcceso) {
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
+        if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
+            UtilJSF.anyadirMochila("documento", this.documentoSeleccionado);
+        }
+        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
+                800, 350);
+    }
+
+    public void nuevoDocumento() {
+        abrirDialogDocumento(TypeModoAcceso.ALTA);
+    }
+
+    public void editarDocumento() {
+        abrirDialogDocumento(TypeModoAcceso.EDICION);
+    }
+
+    public void consultarDocumento() {
+        abrirDialogDocumento(TypeModoAcceso.CONSULTA);
+    }
+
+    public void borrarDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getListaDocumentos().remove(documentoSeleccionado);
+            documentoSeleccionado = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+
+    //DOCUMENTO
+    public void returnDialogModelo(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            // Verificamos si se ha modificado
+            ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
+            if (doc != null) {
+                if (data.getListaModelos() == null) {
+                    data.setListaModelos(new ArrayList<>());
+                }
+                data.agregarModelo(doc);
+            }
+        }
+    }
+
+
+    public void abrirDialogModelo(TypeModoAcceso modoAcceso) {
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
+        if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
+            UtilJSF.anyadirMochila("documento", this.modeloSeleccionado);
+        }
+        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
+                800, 350);
+    }
+
+    public void nuevoModelo() {
+        abrirDialogModelo(TypeModoAcceso.ALTA);
+    }
+
+    public void editarModelo() {
+        abrirDialogModelo(TypeModoAcceso.EDICION);
+    }
+
+    public void consultarModelo() {
+        abrirDialogModelo(TypeModoAcceso.CONSULTA);
+    }
+
+    public void borrarModelo() {
+        if (modeloSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getListaModelos().remove(modeloSeleccionado);
+            modeloSeleccionado = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
     }
 
     public String getId() {
@@ -206,25 +323,6 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         this.plantillasTipoTramitacion = plantillasTipoTramitacion;
     }
 
-    public PlatTramitElectronicaDTO getPlatTramitElectronicaSel() {
-        return platTramitElectronicaSel;
-    }
-
-    public void setPlatTramitElectronicaSel(PlatTramitElectronicaDTO platTramitElectronicaSel) {
-        this.platTramitElectronicaSel = platTramitElectronicaSel;
-    }
-
-    public TipoTramitacionDTO getPlantillaSel() {
-        return plantillaSel;
-    }
-
-    public void setTipoTramitacionSel(TipoTramitacionDTO plantillaSel) {
-        this.plantillaSel = plantillaSel;
-    }
-
-    public void setPlantillaSel(TipoTramitacionDTO plantillaSel) {
-        this.plantillaSel = plantillaSel;
-    }
 
     public TipoTramitacionDTO getCanalPresentacion() {
         return canalPresentacion;
@@ -238,33 +336,56 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
         if (canalesSeleccionados != null && !canalesSeleccionados.isEmpty()) {
 
-            if (plantillaSel == null && canalPresentacion == null) {
+            if (data.getPlantillaSel() == null && canalPresentacion == null) {
                 canalPresentacion = new TipoTramitacionDTO();
             }
 
             if (canalesSeleccionados.stream().noneMatch(c -> "TEL".equals(c))) {
-                plantillaSel = null;
+                data.setPlantillaSel(null);
             } else {
-                if (plantillaSel != null) {
-                    canalPresentacion = new TipoTramitacionDTO(plantillaSel);
+                if (data.getPlantillaSel() != null) {
+                    //canalPresentacion = new TipoTramitacionDTO(plantillaSel);
                 }
             }
-            canalPresentacion.setTramitPresencial(canalesSeleccionados.contains("PRE"));
-            canalPresentacion.setTramitElectronica(canalesSeleccionados.contains("TEL"));
+            //canalPresentacion.setTramitPresencial(canalesSeleccionados.contains("PRE"));
+            //canalPresentacion.setTramitElectronica(canalesSeleccionados.contains("TEL"));
 
             // data.getTipoTramitacion().setTramitTelefonico(Arrays.asList(canalesSeleccionados).contains("TFN"));
         } else {
             canalPresentacion = null;
-            plantillaSel = null;
+            data.setPlantillaSel(null);
         }
     }
 
-    public void testEvento() {
-        LOG.info("evento");
-        if (plantillaSel != null) {
-            canalPresentacion = new TipoTramitacionDTO(plantillaSel);
-        } else {
-            canalPresentacion = new TipoTramitacionDTO();
-        }
+    public ProcedimientoDocumentoDTO getDocumentoSeleccionado() {
+        return documentoSeleccionado;
+    }
+
+    public void setDocumentoSeleccionado(ProcedimientoDocumentoDTO documentoSeleccionado) {
+        this.documentoSeleccionado = documentoSeleccionado;
+    }
+
+    public ProcedimientoDocumentoDTO getModeloSeleccionado() {
+        return modeloSeleccionado;
+    }
+
+    public void setModeloSeleccionado(ProcedimientoDocumentoDTO modeloSeleccionado) {
+        this.modeloSeleccionado = modeloSeleccionado;
+    }
+
+    public boolean isMostrarIniciacion() {
+        return mostrarIniciacion;
+    }
+
+    public void setMostrarIniciacion(boolean mostrarIniciacion) {
+        this.mostrarIniciacion = mostrarIniciacion;
+    }
+
+    public String getOcultarIniciacion() {
+        return ocultarIniciacion;
+    }
+
+    public void setOcultarIniciacion(String ocultarIniciacion) {
+        this.ocultarIniciacion = ocultarIniciacion;
     }
 }
