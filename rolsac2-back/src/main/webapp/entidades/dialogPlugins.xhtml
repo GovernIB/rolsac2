@@ -23,11 +23,11 @@
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
 
-        <p:panel>
+        <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
@@ -38,10 +38,26 @@
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.tipo']}:" for="txtTipo"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:selectOneMenu id="txtTipo"  requiredMessage="#{labels['dict.obligatorio.tipo']}"
+                                     required="true" value="#{dialogPlugins.data.tipo}" disabled="#{dialogPlugins.isModoConsulta()}">
+                        <f:selectItem itemValue="" itemLabel="#{labels['dialogPlugins.sinPlugin']}" />
+                        <f:selectItem itemValue="TRA" itemLabel="#{labels['dialogPlugins.plugin.TRA']}" />
+                        <f:selectItem itemValue="BOL" itemLabel="#{labels['dialogPlugins.plugin.BOL']}" />
+                        <f:selectItem itemValue="DI3" itemLabel="#{labels['dialogPlugins.plugin.DI3']}" />
+                        <f:selectItem itemValue="IDX" itemLabel="#{labels['dialogPlugins.plugin.IDX']}" />
+                        <f:selectItem itemValue="SIA" itemLabel="#{labels['dialogPlugins.plugin.SIA']}" />
+                    </p:selectOneMenu>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['dialogPlugins.descripcion']}:" for="txtDescripcion"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtDescripcion" value="#{dialogPlugins.data.descripcion}"
+                                 requiredMessage="#{labels['dict.obligatorio.descripcion']}"
                                  styleClass="w95" required="true"
                                  disabled="#{dialogPlugins.isModoConsulta()}" maxlength="50"/>
                 </div>
@@ -66,8 +82,18 @@
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputTextarea id="txtClassname" value="#{dialogPlugins.data.classname}"
+                                     requiredMessage="#{labels['dict.obligatorio.classname']}"
                                      styleClass="w95" required="true" rows="3" autoResize="false"
                                      disabled="#{dialogPlugins.isModoConsulta()}" maxlength="1000"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dialogPlugins.prefijo']}:" for="txtPrefijo"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtPrefijo" value="#{dialogPlugins.data.prefijoPropiedades}"
+                                     styleClass="w95"
+                                     disabled="#{dialogPlugins.isModoConsulta()}" maxlength="100"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
@@ -153,7 +179,7 @@
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogPlugins.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>
         <p:commandButton action="#{dialogPlugins.cerrar}"
                          value="#{labels['dict.cerrar']}"

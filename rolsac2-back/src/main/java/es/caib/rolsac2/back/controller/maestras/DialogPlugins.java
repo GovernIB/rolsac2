@@ -5,7 +5,7 @@ import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
-import es.caib.rolsac2.service.model.PluginDto;
+import es.caib.rolsac2.service.model.PluginDTO;
 import es.caib.rolsac2.service.model.Propiedad;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -31,7 +31,7 @@ public class DialogPlugins extends AbstractController implements Serializable {
 
     private String id;
 
-    private PluginDto data;
+    private PluginDTO data;
 
     /**
      * Propiedad seleccionada.
@@ -50,9 +50,9 @@ public class DialogPlugins extends AbstractController implements Serializable {
         LOG.debug("init");
 
         this.setearIdioma();
-        data = new PluginDto();
+        data = new PluginDTO();
         if (this.isModoAlta()) {
-            data = new PluginDto();
+            data = new PluginDTO();
             data.setEntidad(sessionBean.getEntidad());
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = administracionEntService.findPluginById(Long.valueOf(id));
@@ -61,6 +61,12 @@ public class DialogPlugins extends AbstractController implements Serializable {
     }
 
     public void guardar() {
+
+        boolean existe = administracionEntService.existePluginTipo(this.data.getCodigo(), this.data.getTipo());
+        if (existe) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogPlugins.error.yaExisteTipo"), true);
+            return;
+        }
 
         if (this.data.getCodigo() == null) {
             administracionEntService.createPlugin(this.data);
@@ -256,11 +262,11 @@ public class DialogPlugins extends AbstractController implements Serializable {
         this.id = id;
     }
 
-    public PluginDto getData() {
+    public PluginDTO getData() {
         return data;
     }
 
-    public void setData(PluginDto data) {
+    public void setData(PluginDTO data) {
         this.data = data;
     }
 

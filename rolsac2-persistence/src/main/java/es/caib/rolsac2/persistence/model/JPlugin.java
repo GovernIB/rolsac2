@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "plugin-sequence", sequenceName = "RS2_PLUGIN_SEQ", allocationSize = 1)
@@ -31,7 +32,13 @@ public class JPlugin extends BaseEntity {
     private JEntidad entidad;
 
     /**
-     * Descripcion
+     * Tipo
+     **/
+    @Column(name = "PLUG_TIPO", nullable = true, length = 3, unique = true)
+    private String tipo;
+
+    /**
+     * Descripción
      **/
     @Column(name = "PLUG_DESC", nullable = false)
     private String descripcion;
@@ -42,6 +49,11 @@ public class JPlugin extends BaseEntity {
     @Column(name = "PLUG_CLASSNAME", nullable = false, length = 1000)
     private String classname;
 
+    /**
+     * PREFIJO DE LAS PROPIEDADES
+     */
+    @Column(name = "PLUG_PREPRO",length = 100)
+    private String prefijoPropiedades;
     /**
      * PROPIEDADES PLUGIN (JSON)
      */
@@ -88,4 +100,42 @@ public class JPlugin extends BaseEntity {
         this.propiedades = plugProps;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getPrefijoPropiedades() { return prefijoPropiedades; }
+
+    public void setPrefijoPropiedades(String prefijoPropiedades) { this.prefijoPropiedades = prefijoPropiedades; }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JPlugin jPlugin = (JPlugin) o;
+        return Objects.equals(codigo, jPlugin.codigo) && Objects.equals(entidad, jPlugin.entidad) && Objects.equals(tipo, jPlugin.tipo) && Objects.equals(descripcion, jPlugin.descripcion) && Objects.equals(classname, jPlugin.classname) && Objects.equals(prefijoPropiedades, jPlugin.prefijoPropiedades) && Objects.equals(propiedades, jPlugin.propiedades);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo, entidad, tipo, descripcion, classname, prefijoPropiedades, propiedades);
+    }
+
+    @Override
+    public String toString() {
+        return "JPlugin{" +
+                "codigo=" + codigo +
+                ", entidad=" + entidad +
+                ", tipo='" + tipo + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                ", classname='" + classname + '\'' +
+                ", prefijoPropiedades='" + prefijoPropiedades + '\'' +
+                ", propiedades='" + propiedades + '\'' +
+                '}';
+    }
 }

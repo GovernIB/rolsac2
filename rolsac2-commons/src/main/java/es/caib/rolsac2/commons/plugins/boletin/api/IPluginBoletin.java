@@ -21,6 +21,6 @@ public interface IPluginBoletin extends IPlugin {
     /**
      * Realiza busqueda en boletin.
      **/
-    List<Edicto> listar(final String numeroBoletin, final String fechaBoletin, final String numeroEdicto);
+    List<Edicto> listar(final String numeroBoletin, final String fechaBoletin, final String numeroEdicto) throws BoletinErrorException;
 
 }

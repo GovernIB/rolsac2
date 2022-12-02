@@ -21,6 +21,6 @@ public interface IPluginTraduccion extends IPlugin{
      * @param opciones Opciones traducción (depende del plugin)
      * @return Traducción
      */
-    public String traducir(final String tipoEntrada, final String textoEntrada, final String idiomaEntrada, final String idiomaSalida, final Map<String, String> opciones) throws IPluginTraduccionException;
+    public String traducir(final String tipoEntrada, final String textoEntrada, final Idioma idiomaEntrada, final Idioma idiomaSalida, final Map<String, String> opciones) throws IPluginTraduccionException;
 
 }

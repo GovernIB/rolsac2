@@ -1,6 +1,7 @@
 package es.caib.rolsac2.commons.plugins.boletin.api.model;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,6 +21,23 @@ public class Edicto {
     private Map<String, String> edictoTexto;
     /** Edicto: url (map <idioma, url>).*/
     private Map<String, String> edictoUrl;
+
+    public Edicto() {
+        this.edictoTexto = new HashMap<>();
+        this.edictoUrl = new HashMap<>();
+    }
+
+    @Override
+    public String toString() {
+        return "Edicto{" +
+                "boletinTipo='" + boletinTipo + '\'' +
+                ", boletinNumero='" + boletinNumero + '\'' +
+                ", boletinFecha=" + boletinFecha +
+                ", edictoNumero='" + edictoNumero + '\'' +
+                ", edictoTexto=" + edictoTexto.toString() +
+                ", edictoUrl=" + edictoUrl.toString() +
+                '}';
+    }
 
     public String getBoletinTipo() {
         return boletinTipo;
