@@ -1,0 +1,101 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+>
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogProcedimientoFlujo.modoAcceso}"/>
+            <!--<f:viewParam id="MENSAJE" name="MENSAJE" value="#{dialogProcedimientoFlujo.mensaje}"/>-->
+            <f:viewParam id="SOLO_MENSAJES" name="SOLO_MENSAJES" value="#{dialogProcedimientoFlujo.consultarSoloMensajes}"/>
+            <f:viewParam id="ESTADO" name="ESTADO" value="#{dialogProcedimientoFlujo.estadoActual}"/>
+            <f:viewAction action="#{dialogProcedimientoFlujo.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogProcedimientoFlujo.detalle']}" />
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+
+        <p:panel header="#{labels['dialogProcedimientoFlujo.datos']}" id="formDatos">
+            <div class="row">
+                <div class="ui-g-12 ui-md-1 ui-lg-1">
+                    <h:outputText value="#{labels['dict.estadoDestino']}:" for="datatableEstado"/>
+                </div>
+                <div class="ui-g-12 ui-md-5 ui-lg-5">
+                    <p:dataTable id="datatableEstado" var="td" value="#{dialogProcedimientoFlujo.estados}"
+                                 rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1;"
+                                 paginator="false" selectionMode="single"
+                                 required="true"
+                                 disabled="#{!dialogProcedimientoFlujo.mostrarEstados}"
+                                 selection="#{dialogProcedimientoFlujo.estadoSeleccionado}" rowKey="#{td.toString()}">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+
+                        <!-- Columnas -->
+                        <p:column class="ui-panelgrid-cell">
+                            <h:outputText value="#{labels['TypeProcedimientoEstado.' += td.toString()]}"/>
+                        </p:column>
+
+
+                    </p:dataTable>
+                </div>
+                <div class="ui-g-12 ui-md-1 ui-lg-1">
+                    <h:outputText value="#{labels['dict.mensaje']}:" for="datatableEstado"/>
+                </div>
+                <div class="ui-g-12 ui-md-5 ui-lg-5">
+                    <p:inputTextarea value="#{dialogProcedimientoFlujo.mensajeNuevo}" rows="5" cols="35"   autoResize="false">
+                        <p:keyFilter regEx="/[0-9_-a-zA-Z\u00C0-\u024F\. @,]/i" preventPaste="false"/>
+                    </p:inputTextarea>
+                </div>
+            </div>
+        </p:panel>
+        <p:panel header="#{labels['dialogProcedimientoFlujo.historial']}" id="formDatos2">
+            <div class="row">
+                <div class="ui-g-12 ui-md-12 ui-lg-12 d-flex w100">
+                    <p:dataTable id="datatableMensajes" var="td" value="#{dialogProcedimientoFlujo.mensajes}"
+                                 rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1;"
+                                 paginator="false">
+                        <!--selectionMode="single"> selection="#{dialogProcedimientoFlujo.mensajeSeleccionado}" rowKey="#{td.codigo}">-->
+                        <!-- Columnas -->
+                        <p:column headerText="#{labels['dialogProcedimientoFlujo.fecha']}" class="ui-panelgrid-cell" styleClass="w20">
+                            <h:outputText value="#{td.fecha}"/>
+                        </p:column>
+
+                        <p:column headerText="#{labels['dialogProcedimientoFlujo.usuario']}" class="ui-panelgrid-cell" styleClass="w20">
+                            <h:outputText value="#{td.usuario}"/>
+                        </p:column>
+
+                        <p:column headerText="#{labels['dialogProcedimientoFlujo.mensaje']}" class="ui-panelgrid-cell" styleClass="w60">
+                            <h:outputText value="#{td.mensaje}"/>
+
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+            </div>
+        </p:panel>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogProcedimientoFlujo.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogProcedimientoFlujo.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog formDatos datatableEstado"
+                         process="@all"/>
+        <p:commandButton action="#{dialogProcedimientoFlujo.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>
