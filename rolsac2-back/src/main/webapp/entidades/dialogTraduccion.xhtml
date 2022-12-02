@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+>
+<ui:composition template="/WEB-INF/templates/layoutDialogSeleccion.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewAction action="#{dialogTraduccion.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialogSelec">
+        <h:outputFormat value="Traduccion"/>
+    </ui:define>
+    <ui:define name="contentDialogSelec">
+        <p:growl id="messagesDialogSelec"
+                 globalOnly="false"
+                 showDetail="true"
+                 life="5000"
+                 escape="false"/>
+        <div class="ui-g-12 ui-md-9 pl-4 panel-container">
+            <p:panel header="Traduccion" styleClass="panel">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <p:selectOneMenu value="#{dialogTraduccion.idioma}"
+                                         styleClass="w95" required="false">
+                            <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{sessionBean.lang}"/>
+                            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                                           itemLabel="#{labels['idiomas.' += idioma]}" itemValue="#{idioma}"/>
+                        </p:selectOneMenu>
+                        <div class="col-5 p-1">
+                            <h:panelGroup id="literales">
+                                <h:form rendered="#{not empty dialogTraduccion.literales}">
+                                    <ui:repeat id="traduc" value="#{dialogTraduccion.literales}" varStatus="loop">
+                                        <p:inputText value="#{dialogTraduccion.literales[loop.index].getTraduccion(sessionBean.lang)}"
+                                        rendered="#{!dialogTraduccion.isEmptyLiterales()}"/>
+                                        <p:inputText value="#{dialogTraduccion.trad1[loop.index]}" rendered="#{dialogTraduccion.isEmptyLiterales()}"/>
+                                    </ui:repeat>
+                                </h:form>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <p:selectOneMenu value="#{dialogTraduccion.idiomaSeleccionado}"
+                                         styleClass="w95" required="false">
+                            <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{sessionBena.getIdiomasPermitidosList.get(1)}"/>
+                            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                                           itemLabel="#{labels['idiomas.' += idioma]}" itemValue="#{idioma}"/>
+                        </p:selectOneMenu>
+                        <div class="col-5 p-1">
+                            <h:panelGroup id="literales1">
+                                <h:form rendered="#{not empty dialogTraduccion.literales}">
+                                    <ui:repeat id="repTrad" value="#{dialogTraduccion.literales}" varStatus="loop">
+                                        <p:inputText id="txtTrad" value="#{dialogTraduccion.literales[loop.index].getTraduccion(dialogTraduccion.idiomaSeleccionado)}"
+                                        rendered="#{!dialogTraduccion.isEmptyLiterales()}"/>
+                                        <p:inputText value="#{dialogTraduccion.trad2[loop.index]}" rendered="#{dialogTraduccion.isEmptyLiterales()}"/>
+                                    </ui:repeat>
+                                </h:form>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <p:commandButton action="#{dialogTraduccion.traducirLiterales}"
+                                     value="#{labels['dict.traducir']}"
+                                     update="messagesDialogSelec formDialogSelec:literales1"
+                                     process="@this"/>
+                </div>
+            </p:panel>
+        </div>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogTraduccion.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialogSelec"
+                         process="@all"/>
+        <p:commandButton action="#{dialogTraduccion.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>
