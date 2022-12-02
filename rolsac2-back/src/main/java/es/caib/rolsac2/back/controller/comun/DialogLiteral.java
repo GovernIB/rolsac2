@@ -8,7 +8,6 @@ import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Controlador para seleccionar una UA/entidad.
+ * Controlador para seleccionar un literal.
  *
- * @author areus
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -121,10 +120,14 @@ public class DialogLiteral extends AbstractController implements Serializable {
             }
         }
         if (error) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogLiteral.validacion.idiomas") +  idiomasPendientes.toString(),
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogLiteral.validacion.idiomas") + idiomasPendientes.toString(),
                     true);
         }
         return error;
+    }
+
+    public boolean calcularRequired(String idioma) {
+        return sessionBean.getIdiomasObligatoriosList().contains(idioma);
     }
 
     public String getId() {
