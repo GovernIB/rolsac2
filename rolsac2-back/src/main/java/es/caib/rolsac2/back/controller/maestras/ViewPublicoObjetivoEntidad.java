@@ -4,7 +4,6 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoPublicoObjetivoEntidadFiltro;
@@ -22,10 +21,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -85,17 +81,16 @@ public class ViewPublicoObjetivoEntidad extends AbstractController implements Se
 
     public void borrarTPOE() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            maestrasSupService.deleteTipoPublicoObjetivoEntidad(datoSeleccionado.getCodigo());
-
+            boolean existen = maestrasSupService.existeProcedimientoConPublicoObjetivo(datoSeleccionado.getCodigo());
+            if (existen) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.error.relacionProcedimientos"));
+            } else {
+                maestrasSupService.deleteTipoPublicoObjetivoEntidad(datoSeleccionado.getCodigo());
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            }
         }
-    }
-
-    public void abrirVentanaPrueba() {
-        final Map<String, String> params = new HashMap<>();
-        UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", TypeModoAcceso.CONSULTA, params, true, 800, 410);
-
     }
 
 
@@ -105,7 +100,7 @@ public class ViewPublicoObjetivoEntidad extends AbstractController implements Se
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoPublicoObjetivoEntidad", modoAcceso, params, true, 800, 410);
+        UtilJSF.openDialog("dialogTipoPublicoObjetivoEntidad", modoAcceso, params, true, 800, 280);
     }
 
     public void buscar() {
@@ -173,5 +168,18 @@ public class ViewPublicoObjetivoEntidad extends AbstractController implements Se
 
         }
 
+    }
+
+    public void setFiltroTexto(String texto) {
+        if (Objects.nonNull(this.filtro)) {
+            this.filtro.setTexto(texto);
+        }
+    }
+
+    public String getFiltroTexto() {
+        if (Objects.nonNull(this.filtro)) {
+            return this.filtro.getTexto();
+        }
+        return "";
     }
 }

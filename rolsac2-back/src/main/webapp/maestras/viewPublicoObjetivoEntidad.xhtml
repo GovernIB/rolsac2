@@ -32,12 +32,15 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
     <ui:define name="content">
         <h:form>
+            <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
+                             style="display:none" ajax="false" action="#{viewPublicoObjetivoEntidad.buscar}"
+                             update="dataTable"/>
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
                 <f:facet name="header">
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
-                            <p:inputText value="#{viewPublicoObjetivoEntidad.filtro.texto}" styleClass="mr-2" ></p:inputText>
+                            <h:outputFormat value="#{labels['dict.filtro']}:"/>
+                            <p:inputText id="filtroBusqueda" value="#{viewPublicoObjetivoEntidad.filtroTexto}" />
                             <p:commandButton value="#{labels['dict.busqueda']}"
                                              styleClass="mr-2"  icon="pi pi-search"
                                              actionListener="#{viewPublicoObjetivoEntidad.buscar()}"
@@ -51,8 +54,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <p:commandButton value="#{labels['dict.editar']}" styleClass="mr-2"  icon="pi pi-pencil" iconPos="top"  actionListener="#{viewPublicoObjetivoEntidad.editarTPOE}" process="@all" update="messages dataTable">
                                 <p:ajax event="dialogReturn" listener="#{viewPublicoObjetivoEntidad.returnDialogo}" update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.borrar']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewPublicoObjetivoEntidad.borrarTPOE}" process="@all" update="messages dataTable">
-                                <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
+                            <p:commandButton value="#{labels['dict.borrar']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewPublicoObjetivoEntidad.borrarTPOE}" process="@form" update="messages dataTable">
+                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"  action="#{viewPublicoObjetivoEntidad.ayuda}" process="@this" update="messages" />
                         </div>
@@ -93,11 +96,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 </p:column>
                 <p:column sortBy="#{pubobjent.descripcion}">
                     <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
-                    <h:outputText value="#{pubobjent.descripcion}"/>
+                    <h:outputText value="#{pubobjent.descripcion.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
                 <p:column sortBy="#{pubobjent.tipo}">
                     <f:facet name="header">#{labels['viewPublicoObjetivoEntidad.tipoPublicoObjetivo']}</f:facet>
-                    <h:outputText value="#{pubobjent.tipo}"/>
+                    <h:outputText value="#{pubobjent.tipo.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
 
             </p:dataTable>
