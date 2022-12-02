@@ -1,0 +1,180 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogProceso.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogProceso.id}"/>
+            <f:viewAction action="#{dialogProceso.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogProceso.consulta']}"
+                        rendered="#{dialogProceso.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogProceso.detalle']}"
+                        rendered="#{dialogProceso.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogProceso.nuevo']}"
+                        rendered="#{dialogProceso.isModoAlta()}"/>
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+        <p:importConstants type="es.caib.rolsac2.service.model.types.TypeTipoProceso"
+                           var="tiposProceso"></p:importConstants>
+
+        <p:panel id="form">
+            <div class="row">
+                <c:choose>
+                    <c:when test="#{dialogProceso.isModoAlta()}">
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['dict.codigo']}:" for="txtOpcion"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-10 ui-lg-5">
+                            <p:selectOneMenu id="txtOpcion" value="#{dialogProceso.data.identificadorProceso}">
+                                <f:selectItems value="#{tiposProceso.values()}" var="tipo"
+                                               itemValue="#{tipo.toString()}" itemLabel="#{tipo.toString()}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-10 ui-lg-5">
+                            <p:inputText id="txtCodigo" value="#{dialogProceso.data.identificadorProceso}"
+                                         styleClass="w95" disabled="true" maxlength="50"/>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="txtDescripcion"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputTextarea id="txtDescripcion" value="#{dialogProceso.data.descripcion}"
+                                     requiredMessage="#{labels['dict.obligatorio.descripcion']}"
+                                     styleClass="w95" required="true" autoResize="false" rows="3"
+                                 disabled="#{dialogProceso.isModoConsulta()}" maxlength="1000"/>
+                </div>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['viewProcesos.cron']}:" for="txtClassname"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtClassname" value="#{dialogProceso.data.cron}"
+                                 requiredMessage="#{labels['dict.obligatorio.expresionActivacion']}"
+                                 styleClass="w95" required="true"
+                                     disabled="#{dialogProceso.isModoConsulta()}" maxlength="1000"/>
+                </div>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.activo']}:" for="txtActivo"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:selectBooleanCheckbox id="txtActivo" value="#{dialogProceso.data.activo}"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dialogProceso.parametrosInvocacion']}:" for="dataTablePropiedades"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5 d-flex w80">
+                    <p:dataTable id="dataTablePropiedades" var="td" value="#{dialogProceso.data.parametrosInvocacion}"
+                                 rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1;"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{dialogProceso.propiedadSeleccionada}" rowKey="#{td.codigo}">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="rcEditarPropiedad();"
+                                disabled="#{dialogProceso.modoAcceso=='TypeModoAcceso.CONSULTA'}"
+                        />
+
+                        <!-- Columnas -->
+                        <p:column headerText="#{labels['dialogPropiedades.codigo']}" class="ui-panelgrid-cell">
+                            <h:outputText value="#{td.codigo}"/>
+                        </p:column>
+
+                        <p:column headerText="#{labels['dialogPropiedades.valor']}" class="ui-panelgrid-cell">
+                            <h:outputText value="#{td.valor}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                    <div class="w5 ml-2 d-flex flex-column align-items-center g-5">
+                        <p:commandButton id="btnNuevaPropiedad" icon="fa fa-plus"
+                                         title="#{msg['botones.nuevo']}"
+                                         actionListener="#{dialogProceso.nuevaPropiedad()}" process="@this"
+                                         update="messagesDialog"
+                                         rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
+                                         styleClass="p-2">
+                            <p:ajax event="dialogReturn" listener="#{dialogProceso.returnDialogo}"
+                                    update="messagesDialog dataTablePropiedades"/>
+                        </p:commandButton>
+                        <p:commandButton id="btnEditarPropiedad" icon="fa fa-edit"
+                                         title="#{msg['botones.editar']}"
+                                         actionListener="#{dialogProceso.editarPropiedad()}" process="@this"
+                                         update="messagesDialog"
+                                         rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
+                                         styleClass="p-2">
+                            <p:ajax event="dialogReturn" listener="#{dialogProceso.returnDialogo}"
+                                    update="messagesDialog dataTablePropiedades"/>
+                        </p:commandButton>
+                        <p:commandButton id="btnEliminarPropiedad" icon="fa fa-minus"
+                                         title="#{msg['botones.eliminar']}"
+                                         actionListener="#{dialogProceso.quitarPropiedad()}" process="@this"
+                                         update="messagesDialog dataTablePropiedades"
+                                         rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
+                                         styleClass="p-2"/>
+                        <p:commandButton icon="fa fa-arrow-up" title="#{msg['botones.subir']}"
+                                         actionListener="#{dialogProceso.subirPropiedad()}" process="@this"
+                                         update="messagesDialog dataTablePropiedades"
+                                         rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
+                                         styleClass="p-2"/>
+                        <p:commandButton icon="fa fa-arrow-down" title="#{msg['botones.bajar']}"
+                                         actionListener="#{dialogProceso.bajarPropiedad()}" process="@this"
+                                         update="messagesDialog dataTablePropiedades"
+                                         rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
+                                         styleClass="p-2"/>
+
+                    </div>
+                </div>
+            </div>
+        </p:panel>
+        <h:outputScript rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}">
+            function rcEditarPropiedad() {
+                document.getElementById("formDialog:btnEditarPropiedad").click();
+            }
+
+            function rcBorrarPropiedad() {
+                document.getElementById("formDialog:btnEliminarPropiedad").click();
+            }
+        </h:outputScript>
+    </ui:define>
+    <ui:define name="contentFooterDialogLeft">
+        <c:if test="#{!dialogProceso.isModoAlta()}">
+            <p:commandButton value="#{labels['dialogProceso.procesadoManual']}"
+                             icon="pi pi-arrow-right"
+                             action="#{dialogProceso.procesadoManual()}"
+                             process="@all"
+                             update="messagesDialog"/>
+        </c:if>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogProceso.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogProceso.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog form  "
+                         process="@all"/>
+        <p:commandButton action="#{dialogProceso.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>
