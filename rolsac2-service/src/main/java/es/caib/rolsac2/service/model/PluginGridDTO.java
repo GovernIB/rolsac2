@@ -10,6 +10,9 @@ public class PluginGridDTO extends ModelApi {
     private String descripcion;
     private String classname;
     private String propiedades;
+    private String tipo;
+
+    private String prefijoPropiedades;
 
     public PluginGridDTO() {
     }
@@ -81,6 +84,14 @@ public class PluginGridDTO extends ModelApi {
     public void setPropiedades(String propiedades) {
         this.propiedades = propiedades;
     }
+
+    public String getTipo() { return tipo;  }
+
+    public void setTipo(String tipo) { this.tipo = tipo; }
+
+    public String getPrefijoPropiedades() { return prefijoPropiedades; }
+
+    public void setPrefijoPropiedades(String prefijoPropiedades) {  this.prefijoPropiedades = prefijoPropiedades; }
 
     @Override
     public String toString() {

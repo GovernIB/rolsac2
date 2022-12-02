@@ -10,6 +10,7 @@ public class PluginFiltro extends AbstractFiltro {
     private String descripcion;
     private String classname;
     private String propiedades;
+    private String tipo;
 
     public String getTexto() {
         return texto;
@@ -57,6 +58,14 @@ public class PluginFiltro extends AbstractFiltro {
 
     public void setPropiedades(String propiedades) {
         this.propiedades = propiedades;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public boolean isRellenoDescripcion() {

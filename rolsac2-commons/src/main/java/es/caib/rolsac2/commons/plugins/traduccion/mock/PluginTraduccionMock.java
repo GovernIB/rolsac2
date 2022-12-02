@@ -2,6 +2,7 @@ package es.caib.rolsac2.commons.plugins.traduccion.mock;
 
 import es.caib.rolsac2.commons.plugins.traduccion.api.IPluginTraduccion;
 import es.caib.rolsac2.commons.plugins.traduccion.api.IPluginTraduccionException;
+import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
 
 import java.util.Map;
@@ -25,7 +26,7 @@ public class PluginTraduccionMock extends AbstractPluginProperties implements IP
     }
 
     @Override
-    public String traducir(String tipoEntrada, String textoEntrada, String idiomaEntrada, String idiomaSalida, Map<String, String> opciones) throws IPluginTraduccionException {
+    public String traducir(String tipoEntrada, String textoEntrada, Idioma idiomaEntrada, Idioma idiomaSalida, Map<String, String> opciones) throws IPluginTraduccionException {
         // En mock realizamos echo de la entrada
         return textoEntrada;
     }
