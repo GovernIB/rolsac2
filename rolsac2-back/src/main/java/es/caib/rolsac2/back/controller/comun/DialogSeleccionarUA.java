@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Controlador para seleccionar una UA/entidad.
  *
- * @author areus
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -59,24 +59,24 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
         esCabecera = Boolean.parseBoolean((String) UtilJSF.getDialogParam("esCabecera"));
         root = new LazyLoadingTreeNode();
 
-        //
+        //Dependiendo de si se pasa la UA o no, se tiene que cargar el arbol de manera distinta.
         if (ua != null && ua.getCodigo() != null) {
-            ua = uaService.findById(ua.getCodigo());
+
+            ua = uaService.findUASimpleByID(ua.getCodigo(), sessionBean.getLang(), null);
             if (ua.getPadre() != null) {
                 construirArbolDesdeHoja(ua, (LazyLoadingTreeNode) root);
             } else {
                 UnidadAdministrativaDTO uaRoot =
-                        uaService.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+                        uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
                 LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
                 rootChildNode.setSelected(true);
                 addTreeNodeCargando(rootChildNode);
             }
         } else {
-            UnidadAdministrativaDTO uaRoot = uaService.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+            UnidadAdministrativaDTO uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
             LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
             addTreeNodeCargando(rootChildNode);
         }
-        ordenarArbol();
     }
 
     private void ordenarArbol() {
@@ -97,35 +97,44 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
         resultNodo.setType("UnidadAdministrativaDTO");
         resultNodo.setExpanded(true);
 
-        List<UnidadAdministrativaDTO> childs = uaService
-                .getHijos(((UnidadAdministrativaDTO) resultNodo.getData()).getCodigo(), sessionBean.getLang());
-
-        childs.removeIf(c -> ua.getPadre() != null && c.getCodigo().equals(ua.getPadre().getCodigo()));
-
-        if (((UnidadAdministrativaDTO) resultNodo.getData()).getCodigo().equals(ua.getCodigo())) {
-            resultNodo.setSelected(true);
-            resultNodo.setExpanded(false);
-
-            if (!childs.isEmpty()) {
-                resultNodo.getChildren().add(addTreeNodeCargando(resultNodo));
+        List<UnidadAdministrativaDTO> childs = ((UnidadAdministrativaDTO) resultNodo.getData()).getHijos();
+        if (childs == null) {
+            if (((UnidadAdministrativaDTO) resultNodo.getData()).getCodigo().equals(ua.getCodigo())) {
+                resultNodo.setSelected(true);
+                resultNodo.setExpanded(false);
+                selectedNode = resultNodo;
             }
-            selectedNode = resultNodo;
         } else {
-            if (!childs.isEmpty()) {
-                nodo.getChildren().clear();
-                childs.forEach(c -> {
-                    if (!c.getCodigo().equals(ua.getCodigo())) {
-                        LazyLoadingTreeNode grandChild = new LazyLoadingTreeNode(c, resultNodo);
-                        addTreeNodeCargando(grandChild);
+            childs.removeIf(c -> ua.getPadre() != null && c.getCodigo().equals(ua.getPadre().getCodigo()));
 
-                        resultNodo.getChildren().add(grandChild);
-                    }
-                });
+            if (((UnidadAdministrativaDTO) resultNodo.getData()).getCodigo().equals(ua.getCodigo())) {
+                resultNodo.setSelected(true);
+                resultNodo.setExpanded(false);
+
+                if (!childs.isEmpty()) {
+                    resultNodo.getChildren().add(addTreeNodeCargando(resultNodo));
+                }
+                selectedNode = resultNodo;
+            } else {
+                if (!childs.isEmpty()) {
+                    nodo.getChildren().clear();
+                    childs.forEach(c -> {
+                        if (!c.getCodigo().equals(ua.getCodigo())) {
+                            LazyLoadingTreeNode grandChild = new LazyLoadingTreeNode(c, resultNodo);
+                            addTreeNodeCargando(grandChild);
+
+                            resultNodo.getChildren().add(grandChild);
+                        }
+                    });
+                }
             }
         }
-        for (TreeNode nodo2 : resultNodo.getChildren()) {
-            if (!tieneHijos((UnidadAdministrativaDTO) nodo2.getData())) {
-                nodo2.getChildren().clear();
+
+        if (resultNodo.getChildren() != null) {
+            for (TreeNode nodo2 : resultNodo.getChildren()) {
+                if (!tieneHijos((UnidadAdministrativaDTO) nodo2.getData())) {
+                    nodo2.getChildren().clear();
+                }
             }
         }
         return resultNodo;
@@ -148,8 +157,8 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
     public void onNodeExpand(NodeExpandEvent event) {
         final TreeNode expandedTreeNode = event.getTreeNode();
 
-        List<UnidadAdministrativaDTO> childs = uaService.getHijos(
-                ((UnidadAdministrativaDTO) expandedTreeNode.getData()).getCodigo(), sessionBean.getLang());
+        List<UnidadAdministrativaDTO> childs = uaService.getHijosSimple(
+                ((UnidadAdministrativaDTO) expandedTreeNode.getData()).getCodigo(), sessionBean.getLang(), ((UnidadAdministrativaDTO) expandedTreeNode.getData()));
 
         if (!childs.isEmpty()) {
             expandedTreeNode.getChildren().clear();

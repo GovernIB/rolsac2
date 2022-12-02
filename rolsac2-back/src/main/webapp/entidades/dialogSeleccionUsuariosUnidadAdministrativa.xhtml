@@ -1,0 +1,145 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+>
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogSeleccionUsuariosUnidadAdministrativa.modoAcceso}"/>
+            <f:viewAction action="#{dialogSeleccionUsuariosUnidadAdministrativa.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['viewUsuario.titulo']}"/>
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+        <div class="ui-g-12 ui-md-8 pl-4 panel-container">
+            <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
+                             style="display:none" ajax="false"
+                             action="#{dialogSeleccionUsuariosUnidadAdministrativa.buscar}"
+                             update="dataTable messagesDialog"/>
+            <p:toolbar id="toolbar">
+                <f:facet name="left">
+                    <h:outputFormat value="#{labels['dict.filtro']}"/>:
+                    <p:inputText id="filtroBusqueda"
+                                 value="#{dialogSeleccionUsuariosUnidadAdministrativa.filtroTexto}"/>
+                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
+                                     update="dataTable messagesDialog"
+                                     actionListener="#{dialogSeleccionUsuariosUnidadAdministrativa.buscar()}"
+                                     process="@form"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
+                                     actionListener="#{dialogSeleccionUsuariosUnidadAdministrativa.anyadirUsuario()}"
+                                     update="messagesDialog dataTableUsuarios"
+                                     disabled="#{empty dialogSeleccionUsuariosUnidadAdministrativa.datoSeleccionado}"
+                                     icon="pi pi-plus"></p:commandButton>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable id="dataTable" value="#{dialogSeleccionUsuariosUnidadAdministrativa.lazyModel}" var="usuario"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="usuariosTable"
+                         rows="5" rowsPerPageTemplate="5,10,20,50,100"
+                         first="#{dialogSeleccionUsuariosUnidadAdministrativa.filtro.paginaFirst}"
+                         paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                         paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         emptyMessage="#{labels['dict.noHayDatos']}"
+                         selectionMode="single"
+                         selection="#{dialogSeleccionUsuariosUnidadAdministrativa.datoSeleccionado}"
+                         rowKey="#{usuario.codigo}"
+                         reflow="true"
+                         sortBy="#{dialogSeleccionUsuariosUnidadAdministrativa.filtro.orderBy}"
+                         sortOrder="#{dialogSeleccionUsuariosUnidadAdministrativa.filtro.order}">
+                <p:ajax event="rowUnselect" global="false"  update="@form:btnAnyadir"  process="@form" />
+                <p:ajax event="rowSelect" global="false"  update="@form:btnAnyadir"  process="@form" />
+                <p:ajax event="rowDblselect"
+                        oncomplete="triggerDblClickGrid();"
+                        global="false"/>
+
+                <f:facet name="{RowsPerPageLabel}">
+                    #{labels.dataTable_rowsPerPage}
+                </f:facet>
+                <p:column sortBy="#{usuario.identificador}">
+                    <f:facet name="header">#{labels['dict.identificador']}</f:facet>
+                    <h:outputText value="#{usuario.identificador}"/>
+                </p:column>
+                <p:column sortBy="#{usuario.nombre}">
+                    <f:facet name="header">#{labels['dict.nombre']}</f:facet>
+                    <h:outputText value="#{usuario.nombre}"/>
+                </p:column>
+                <p:column sortBy="#{usuario.email}">
+                    <f:facet name="header">#{labels['dict.email']}</f:facet>
+                    <h:outputText value="#{usuario.email}"/>
+                </p:column>
+            </p:dataTable>
+
+
+            <h:outputScript>
+                function triggerDblClickGrid() {
+                    $('#formDialog\\:btnAnyadir').click();
+                }
+            </h:outputScript>
+
+            <p:commandButton id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
+                             actionListener="#{dialogSeleccionUsuariosUnidadAdministrativa.anyadirUsuario()}"
+                             process="@this"
+                             update="messagesDialog dataTableUsuarios"
+                             style="display: none">
+                <!--<p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}" update="messages dataTable"/>-->
+            </p:commandButton>
+        </div>
+
+        <div class="ui-g-10 ui-md-3 left-container row p-0 mt-2 mx-3 ml-5 mb-2">
+            <div class="col-12 left-container-header text-center">
+                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.usuarios']}</p>
+            </div>
+            <div class="col-10 p-1">
+                <p:dataTable id="dataTableUsuarios" var="td"
+                             value="#{dialogSeleccionUsuariosUnidadAdministrativa.usuarioUASeleccionados}"
+                             emptyMessage="#{labels['msg.tablaVacia']}" scrollable="true"
+                             scrollHeight="120"
+                             paginator="false" selectionMode="single"
+                             selection="#{dialogSeleccionUsuariosUnidadAdministrativa.usuarioGridSeleccionada}"
+                             rowKey="#{td.codigo}" styleClass="noHeader">
+
+                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                    <p:ajax event="rowSelect" global="false"/>
+                    <p:ajax event="rowUnselect"/>
+                    <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center">
+                        <h:outputText value="#{td.identificador}"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
+                                 action="#{dialogSeleccionUsuariosUnidadAdministrativa.borrarUsuario()}"
+                                 process="@this" update="dataTableUsuarios messagesDialog"/>
+            </div>
+        </div>
+<!--
+        <div class="ui-g-12 px-4">
+            <p:commandButton value="#{labels['dict.anyadir']}"
+                             actionListener="#{dialogSeleccionUsuariosUnidadAdministrativa.anyadirUsuario()}"
+                             update="messagesDialog dataTableUsuarios"
+                             icon="pi pi-plus"></p:commandButton>
+        </div>-->
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogSeleccionUsuariosUnidadAdministrativa.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         rendered="#{!dialogSeleccionUsuariosUnidadAdministrativa.isModoConsulta()}"
+                         process="@all"/>
+        <p:commandButton action="#{dialogSeleccionUsuariosUnidadAdministrativa.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>
