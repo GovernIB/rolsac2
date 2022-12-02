@@ -7,18 +7,17 @@ import es.caib.rolsac2.persistence.model.JProcedimiento;
 import es.caib.rolsac2.persistence.model.JProcedimientoTramite;
 import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
-import es.caib.rolsac2.persistence.repository.ProcedimientoRepository;
-import es.caib.rolsac2.persistence.repository.ProcedimientoTramiteRepository;
-import es.caib.rolsac2.persistence.repository.ProcedimientoWorkflowRepository;
-import es.caib.rolsac2.persistence.repository.UnidadAdministrativaRepository;
+import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorfklow;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,13 +81,18 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Inject
     private ProcedimientoTramiteRepository procedimientoTramiteRepository;
 
+    @Inject
+    private SystemServiceFacade systemService;
+
+    @Inject
+    private FicheroExternoRepository ficheroExternoRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(ProcedimientoDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
         // Comprovam que el codigo no existeix ja
-        if (dto.getCodigo() != null) {
+        if (dto.getCodigoWF() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
 
@@ -97,7 +101,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         List<JProcedimientoWorkflowTraduccion> traducciones = crearTraducciones(dto, jProcWF);
 
 
-        JProcedimiento jProcedimiento = converter.createEntity(dto);
+        JProcedimiento jProcedimiento;
+        if (dto.getCodigo() == null) {
+            jProcedimiento = converter.createEntity(dto);
+        } else {
+            jProcedimiento = procedimientoRepository.findById(dto.getCodigo());
+        }
         jProcedimiento.setTipo(Constantes.PROCEDIMIENTO);
         procedimientoRepository.create(jProcedimiento);
 
@@ -108,6 +117,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         procedimientoRepository.mergeMateriaSIAProcWF(jProcWF.getCodigo(), dto.getMateriasGridSIA());
         procedimientoRepository.mergePublicoObjetivoProcWF(jProcWF.getCodigo(), dto.getTiposPubObjEntGrid());
         procedimientoRepository.mergeNormativaProcWF(jProcWF.getCodigo(), dto.getNormativas());
+        String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+        procedimientoRepository.mergeTramitesProcWF(jProcWF.getCodigo(), dto.getTramites(), ruta);
+        procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentos() == null ? null : jProcWF.getListaDocumentos().getCodigo(), false, dto.getDocumentos(), ruta);
+        procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentosLOPD() == null ? null : jProcWF.getListaDocumentosLOPD().getCodigo(), true, dto.getDocumentosLOPD(), ruta);
+
+        dto.setCodigoWF(jProcWF.getCodigo());
         return jProcedimiento.getCodigo();
     }
 
@@ -117,10 +132,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             JProcedimientoWorkflowTraduccion trad = new JProcedimientoWorkflowTraduccion();
             trad.setProcedimientoWorkflow(jProcWF);
             trad.setIdioma(idioma);
-            trad.setNombre(dto.getNombreProcedimientoWorkFlow().getTraduccion(idioma));
-            trad.setDatosPersonalesDestinatario(dto.getDatosPersonalesDestinatario().getTraduccion(idioma));
-            trad.setDatosPersonalesFinalidad(dto.getDatosPersonalesFinalidad().getTraduccion(idioma));
-            trad.setRequisitos(dto.getRequisitos().getTraduccion(idioma));
+            mergeTraduccion(trad, dto);
             traducciones.add(trad);
         }
         return traducciones;
@@ -150,22 +162,53 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(ProcedimientoDTO dto) throws RecursoNoEncontradoException {
         JProcedimientoWorkflow jProcWF = procedimientoRepository.getWF(dto.getCodigo(), dto.getWorkflow().getValor());
+        this.updateWF(dto, jProcWF);
+    }
+
+    private void updateWF(ProcedimientoDTO dto, JProcedimientoWorkflow jProcWF) throws RecursoNoEncontradoException {
         mergear(jProcWF, dto);
         mergearTraducciones(jProcWF, dto);
         procedimientoRepository.updateWF(jProcWF);
         procedimientoRepository.mergeMateriaSIAProcWF(jProcWF.getCodigo(), dto.getMateriasGridSIA());
         procedimientoRepository.mergePublicoObjetivoProcWF(jProcWF.getCodigo(), dto.getTiposPubObjEntGrid());
         procedimientoRepository.mergeNormativaProcWF(jProcWF.getCodigo(), dto.getNormativas());
+        String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+        procedimientoRepository.mergeTramitesProcWF(jProcWF.getCodigo(), dto.getTramites(), ruta);
+        procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentos() == null ? null : jProcWF.getListaDocumentos().getCodigo(), false, dto.getDocumentos(), ruta);
+        procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentosLOPD() == null ? null : jProcWF.getListaDocumentosLOPD().getCodigo(), true, dto.getDocumentosLOPD(), ruta);
+
+
     }
 
     private void mergearTraducciones(JProcedimientoWorkflow jProcWF, ProcedimientoDTO dto) {
         if (jProcWF.getTraducciones() != null) {
             for (JProcedimientoWorkflowTraduccion traduccion : jProcWF.getTraducciones()) {
-                traduccion.setNombre(dto.getNombreProcedimientoWorkFlow().getTraduccion(traduccion.getIdioma()));
-                traduccion.setDatosPersonalesDestinatario(dto.getDatosPersonalesDestinatario().getTraduccion(traduccion.getIdioma()));
-                traduccion.setDatosPersonalesFinalidad(dto.getDatosPersonalesFinalidad().getTraduccion(traduccion.getIdioma()));
-                traduccion.setRequisitos(dto.getDatosPersonalesDestinatario().getTraduccion(traduccion.getIdioma()));
+                mergeTraduccion(traduccion, dto);
             }
+        }
+    }
+
+    private void mergeTraduccion(JProcedimientoWorkflowTraduccion traduccion, ProcedimientoDTO dto) {
+        if (dto.getNombreProcedimientoWorkFlow() != null) {
+            traduccion.setNombre(dto.getNombreProcedimientoWorkFlow().getTraduccion(traduccion.getIdioma()));
+        }
+        if (dto.getDatosPersonalesDestinatario() != null) {
+            traduccion.setDatosPersonalesDestinatario(dto.getDatosPersonalesDestinatario().getTraduccion(traduccion.getIdioma()));
+        }
+        if (dto.getDatosPersonalesFinalidad() != null) {
+            traduccion.setDatosPersonalesFinalidad(dto.getDatosPersonalesFinalidad().getTraduccion(traduccion.getIdioma()));
+        }
+        if (dto.getRequisitos() != null) {
+            traduccion.setRequisitos(dto.getRequisitos().getTraduccion(traduccion.getIdioma()));
+        }
+        if (dto.getLopdDerechos() != null) {
+            traduccion.setLopdDerechos(dto.getLopdDerechos().getTraduccion(traduccion.getIdioma()));
+        }
+        if (dto.getLopdDestinatario() != null) {
+            traduccion.setLopdDestinatario(dto.getLopdDestinatario().getTraduccion(traduccion.getIdioma()));
+        }
+        if (dto.getLopdFinalidad() != null) {
+            traduccion.setLopdFinalidad(dto.getLopdFinalidad().getTraduccion(traduccion.getIdioma()));
         }
     }
 
@@ -177,11 +220,11 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         JProcedimiento jproc = procedimientoRepository.getReference(id);
         JProcedimientoWorkflow jprocMod = procedimientoRepository.getWF(id, true);
         if (jprocMod != null) {
-            procedimientoRepository.deleteWF(id, true);
+            procedimientoRepository.deleteWF(jprocMod.getCodigo());
         }
         JProcedimientoWorkflow jprocPub = procedimientoRepository.getWF(id, false);
-        if (jprocMod != null) {
-            procedimientoRepository.deleteWF(id, false);
+        if (jprocPub != null) {
+            procedimientoRepository.deleteWF(jprocPub.getCodigo());
         }
         procedimientoRepository.delete(jproc);
     }
@@ -189,18 +232,97 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public ProcedimientoDTO findById(Long id) {
-        JProcedimiento jproc = procedimientoRepository.getReference(id);
+    public void deleteWF(Long idWF) throws RecursoNoEncontradoException {
+        procedimientoRepository.deleteWF(idWF);
+    }
+
+
+    @Override
+    public Long generarModificacion(Long codigoWFPub) {
+        ProcedimientoDTO procPublicado = getProcedimientoDTOByCodigoWF(codigoWFPub);
+        ProcedimientoDTO procModificar = limpiar(procPublicado);
+        procModificar.setEstado(TypeProcedimientoEstado.MODIFICACION);
+        procModificar.setWorkflow(TypeProcedimientoWorfklow.MODIFICACION);
+        this.create(procModificar);
+        return procModificar.getCodigoWF();
+    }
+
+    /**
+     * Método para quitar los códigos de cualquier dato que tenga.
+     */
+    public ProcedimientoDTO limpiar(ProcedimientoDTO proc) {
+        proc.setCodigoWF(null);
+        String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+        //this.setCodigo(); El código del procedimiento se queda, no se altera
+        if (proc.getDocumentosLOPD() != null) {
+            for (ProcedimientoDocumentoDTO documento : proc.getDocumentosLOPD()) {
+                limpiarDocumento(documento, ruta);
+            }
+        }
+
+        if (proc.getDocumentos() != null) {
+            for (ProcedimientoDocumentoDTO documento : proc.getDocumentos()) {
+                limpiarDocumento(documento, ruta);
+            }
+        }
+
+        //Normativas y publico objetivo, no hace falta tocar nada
+        if (proc.getTramites() != null) {
+            for (ProcedimientoTramiteDTO tramite : proc.getTramites()) {
+                tramite.setCodigo(null);
+                if (tramite.getTipoTramitacion() != null) {
+                    tramite.getTipoTramitacion().setCodigo(null);
+                }
+                if (tramite.getListaDocumentos() != null) {
+                    for (ProcedimientoDocumentoDTO documento : tramite.getListaDocumentos()) {
+                        limpiarDocumento(documento, ruta);
+                    }
+                }
+
+                if (tramite.getListaModelos() != null) {
+                    for (ProcedimientoDocumentoDTO documento : tramite.getListaModelos()) {
+                        limpiarDocumento(documento, ruta);
+                    }
+                }
+            }
+        }
+        return proc;
+    }
+
+    private void limpiarDocumento(ProcedimientoDocumentoDTO documento, String ruta) {
+        documento.setCodigo(null);
+        if (documento.getDocumentos() != null && documento.getDocumentos().getTraducciones() != null) {
+            for (DocumentoTraduccion trad : documento.getDocumentos().getTraducciones()) {
+                if (trad.getFicheroDTO() != null && trad.getFicheroDTO().getCodigo() != null) {
+                    FicheroDTO ficheroDTO = ficheroExternoRepository.getContentById(trad.getFicheroDTO().getCodigo(), ruta);
+                    Long idFicheroNuevo = ficheroExternoRepository.createFicheroExterno(ficheroDTO.getContenido(), ficheroDTO.getFilename(), ficheroDTO.getTipo(), null, ruta);
+                    trad.getFicheroDTO().setCodigo(idFicheroNuevo);
+                }
+            }
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public ProcedimientoDTO findById(Long codigoWF) {
+        return getProcedimientoDTOByCodigoWF(codigoWF);
+    }
+
+    private ProcedimientoDTO getProcedimientoDTOByCodigoWF(Long codigoWF) {
+        JProcedimientoWorkflow jprocWF = procedimientoRepository.getWFByCodigoWF(codigoWF);
+        JProcedimiento jproc = jprocWF.getProcedimiento();
+
         ProcedimientoDTO proc = converter.createDTO(jproc);
 
-        JProcedimientoWorkflow jprocWF = procedimientoRepository.getWF(id, Constantes.PROCEDIMIENTO_ENMODIFICACION);
+        //JProcedimientoWorkflow jprocWF = procedimientoRepository.getWF(id, Constantes.PROCEDIMIENTO_ENMODIFICACION);
         proc.setCodigoWF(jprocWF.getCodigo());
         proc.setFechaPublicacion(jprocWF.getFechaPublicacion());
         proc.setFechaCaducidad(jprocWF.getFechaCaducidad());
         proc.setDirElectronica(jprocWF.getResponsableEmail());
         proc.setWorkflow(TypeProcedimientoWorfklow.fromBoolean(jprocWF.getWorkflow()));
         proc.setEstado(TypeProcedimientoEstado.fromString(jprocWF.getEstado()));
-        proc.setCodigoWF(jprocWF.getCodigo());
+        proc.setMensajes(jproc.getMensajes());
         proc.setTaxa(jprocWF.getTieneTasa());
         proc.setResponsable(jprocWF.getResponsableNombre());
         proc.setLopdResponsable(jprocWF.getLopdResponsable());
@@ -228,21 +350,39 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         Literal requisitos = new Literal();
         Literal datosPersonalesDestinatario = new Literal();
         Literal detDatosPersonalesFinalidad = new Literal();
+        //Literal objetos = new Literal();
+        //Literal terminos = new Literal();
+        Literal lopdFinalidad = new Literal();
+        Literal lopdDestinatario = new Literal();
+        Literal lopdDerechos = new Literal();
+        //Literal lopdInfoAdicional = new Literal();
+
         if (jprocWF.getTraducciones() != null) {
             for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
                 nombreProcedimientoWorkFlow.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
                 requisitos.add(new Traduccion(trad.getIdioma(), trad.getRequisitos()));
                 datosPersonalesDestinatario.add(new Traduccion(trad.getIdioma(), trad.getDatosPersonalesDestinatario()));
                 detDatosPersonalesFinalidad.add(new Traduccion(trad.getIdioma(), trad.getDatosPersonalesFinalidad()));
+                lopdFinalidad.add(new Traduccion(trad.getIdioma(), trad.getLopdFinalidad()));
+                lopdDestinatario.add(new Traduccion(trad.getIdioma(), trad.getLopdDestinatario()));
+                lopdDerechos.add(new Traduccion(trad.getIdioma(), trad.getLopdDerechos()));
+                //lopdInfoAdicional.add(new Traduccion(trad.getIdioma(), trad.getLopdInfoAdicional()));
             }
         }
         proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
         proc.setDatosPersonalesDestinatario(datosPersonalesDestinatario);
         proc.setDatosPersonalesFinalidad(detDatosPersonalesFinalidad);
         proc.setRequisitos(requisitos);
+        proc.setLopdFinalidad(lopdFinalidad);
+        proc.setLopdDestinatario(lopdDestinatario);
+        proc.setLopdDerechos(lopdDerechos);
+        //proc.setLopdInfoAdicional(lopdInfoAdicional);
         proc.setMateriasGridSIA(procedimientoRepository.getMateriaGridSIAByWF(proc.getCodigoWF()));
         proc.setTiposPubObjEntGrid(procedimientoRepository.getTipoPubObjEntByWF(proc.getCodigoWF()));
         proc.setNormativas(procedimientoRepository.getNormativasByWF(proc.getCodigoWF()));
+        proc.setDocumentos(procedimientoRepository.getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
+        proc.setDocumentosLOPD(procedimientoRepository.getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
+        proc.setTramites(procedimientoRepository.getTramitesByWF(proc.getCodigoWF()));
         return proc;
     }
 
@@ -310,5 +450,40 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         procedimientoTramiteRepository.delete(entidad);
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void guardarFlujo(ProcedimientoDTO data, TypeProcedimientoEstado estadoDestino, String mensajes) {
+
+        //Primero borramos el wf destino (si es de destinto wf)
+        if (TypeProcedimientoEstado.distintoWorkflow(data.getEstado(), estadoDestino)) {
+            //Borramos el wf destino
+            procedimientoRepository.deleteWF(data.getCodigo(), estadoDestino.getWorkflowSegunEstado().getValor());
+        }
+
+        //Segundo actualizamos el dato
+        JProcedimientoWorkflow jProcWF = procedimientoRepository.getWFByCodigoWF(data.getCodigoWF());
+        data.setEstado(estadoDestino);
+        data.setWorkflow(estadoDestino.getWorkflowSegunEstado());
+        this.updateWF(data, jProcWF);
+
+        //Actualizamos los mensajes de procedimientos
+        procedimientoRepository.actualizarMensajes(data.getCodigo(), mensajes);
+
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void actualizarMensajes(Long idProc, String mensajes) {
+        procedimientoRepository.actualizarMensajes(idProc, mensajes);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long getCodigoByWF(Long codigo, boolean valor) {
+        return procedimientoRepository.getCodigoByWF(codigo, valor);
+    }
 
 }

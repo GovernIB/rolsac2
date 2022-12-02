@@ -26,11 +26,10 @@ public class JProcedimientoTramiteTraduccion {
     @Column(name = "TRTA_IDIOMA", nullable = false, length = 2)
     private String idioma;
 
-    @Lob
     @Column(name = "TRTA_REQUISITOS")
     private String requisitos;
 
-    @Column(name = "TRTA_NOMBRE")
+    @Column(name = "TRTA_NOMBRE", length = 255)
     private String nombre;
 
     @Column(name = "TRTA_DOCUM", length = 4000)

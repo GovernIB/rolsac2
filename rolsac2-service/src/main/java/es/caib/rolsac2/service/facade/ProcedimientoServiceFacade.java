@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
 import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
@@ -23,7 +24,7 @@ public interface ProcedimientoServiceFacade {
     /**
      * Crea un nuevo fichas a la base de datos relacionada con la unidad indicada.
      *
-     * @param dto datos del personal
+     * @param dto      datos del personal
      * @param idUnitat identificador de la unidad
      * @return EL identificador del nuevo personal
      * @throws RecursoNoEncontradoException si la unidad no existe
@@ -45,6 +46,10 @@ public interface ProcedimientoServiceFacade {
      * @throws RecursoNoEncontradoException si el personal con el id no existe.
      */
     void delete(Long id) throws RecursoNoEncontradoException;
+
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    void deleteWF(Long idWF) throws RecursoNoEncontradoException;
 
     /**
      * Retorna un ficha amb el personal indicat per l'identificador.
@@ -80,4 +85,11 @@ public interface ProcedimientoServiceFacade {
 
     void deleteProcedimientoTramite(Long id) throws RecursoNoEncontradoException;
 
+    void guardarFlujo(ProcedimientoDTO data, TypeProcedimientoEstado estadoDestino, String mensajes);
+
+    void actualizarMensajes(Long idProc, String mensajes);
+
+    Long getCodigoByWF(Long codigo, boolean valor);
+
+    Long generarModificacion(Long codigoWFPub);
 }

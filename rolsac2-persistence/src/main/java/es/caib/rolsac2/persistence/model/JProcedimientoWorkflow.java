@@ -79,6 +79,10 @@ public class JProcedimientoWorkflow {
     @JoinColumn(name = "PRWF_LSTDOC")
     private JListaDocumentos listaDocumentos;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRWF_LSLOPD")
+    private JListaDocumentos listaDocumentosLOPD;
+
     /**
      * PARA PROC: CODIGO UA COMPETENTE
      **/
@@ -231,6 +235,14 @@ public class JProcedimientoWorkflow {
 
     public void setListaDocumentos(JListaDocumentos prwfLstdoc) {
         this.listaDocumentos = prwfLstdoc;
+    }
+
+    public JListaDocumentos getListaDocumentosLOPD() {
+        return listaDocumentosLOPD;
+    }
+
+    public void setListaDocumentosLOPD(JListaDocumentos listaDocumentosLOPD) {
+        this.listaDocumentosLOPD = listaDocumentosLOPD;
     }
 
     public JUnidadAdministrativa getUaCompetente() {

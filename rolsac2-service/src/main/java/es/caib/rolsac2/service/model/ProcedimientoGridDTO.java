@@ -12,13 +12,20 @@ import java.time.LocalDate;
 @Schema(name = "Procedimiento")
 public class ProcedimientoGridDTO extends ModelApi {
     private Long codigo;
+
+    private Long codigoWFMod;
+
+    private Long codigoWFPub;
     private String tipo;
+
+    private String estado;
     private Boolean estadoSIA;
     public LocalDate siaFecha;
     private String codigoDir3SIA;
     private Integer codigoSIA;
-
     private String nombre;
+
+    private LocalDate fecha;
 
     public Long getCodigo() {
         return codigo;
@@ -74,6 +81,49 @@ public class ProcedimientoGridDTO extends ModelApi {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getEstado() {
+        if (estado == null) {
+            return "";
+        }
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Long getCodigoWFMod() {
+        return codigoWFMod;
+    }
+
+    public void setCodigoWFMod(Long codigoWFMod) {
+        this.codigoWFMod = codigoWFMod;
+    }
+
+    public Long getCodigoWFPub() {
+        return codigoWFPub;
+    }
+
+    public void setCodigoWFPub(Long codigoWFPub) {
+        this.codigoWFPub = codigoWFPub;
+    }
+
+    public boolean tieneDatosPublicados() {
+        return this.codigoWFPub != null;
+    }
+
+    public boolean tieneDatosEnModificacion() {
+        return this.codigoWFMod != null;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
     }
 
     @Override

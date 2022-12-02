@@ -15,7 +15,7 @@ public class JProcedimientoDocumentoTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-doc-trad-sequence")
     @Column(name = "TRDP_CODIGO", nullable = false)
-    private Integer codigo;
+    private Long codigo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TRDP_CODDOPR", nullable = false)
@@ -31,13 +31,13 @@ public class JProcedimientoDocumentoTraduccion {
     private String descripcion;
 
     @Column(name = "TRDP_FICHER")
-    private Integer fichero;
+    private Long fichero;
 
-    public Integer getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Integer id) {
+    public void setCodigo(Long id) {
         this.codigo = id;
     }
 
@@ -45,8 +45,8 @@ public class JProcedimientoDocumentoTraduccion {
         return documento;
     }
 
-    public void setDocumento(JProcedimientoDocumento trdpCoddopr) {
-        this.documento = trdpCoddopr;
+    public void setDocumento(JProcedimientoDocumento documento) {
+        this.documento = documento;
     }
 
     public String getIdioma() {
@@ -73,12 +73,12 @@ public class JProcedimientoDocumentoTraduccion {
         this.descripcion = trdpDescri;
     }
 
-    public Integer getFichero() {
+    public Long getFichero() {
         return fichero;
     }
 
-    public void setFichero(Integer trdpFicher) {
-        this.fichero = trdpFicher;
+    public void setFichero(Long fichero) {
+        this.fichero = fichero;
     }
 
 }

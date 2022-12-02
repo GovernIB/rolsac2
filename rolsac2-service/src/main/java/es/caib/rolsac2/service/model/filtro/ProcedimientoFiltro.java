@@ -30,6 +30,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     private TipoPublicoObjetivoDTO publicoObjetivo;
 
+    private String estado;
 
     public String getTexto() {
         return texto;
@@ -119,6 +120,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.volcadoSIA = volcadoSIA;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     /**
      * Esta relleno el texto
      *
@@ -166,6 +175,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public boolean isRellenoVolcadoSIA() {
         return volcadoSIA != null && !volcadoSIA.isEmpty();
+    }
+
+    public boolean isRellenoEstado() {
+        return estado != null && !estado.isEmpty();
     }
 
     @Override

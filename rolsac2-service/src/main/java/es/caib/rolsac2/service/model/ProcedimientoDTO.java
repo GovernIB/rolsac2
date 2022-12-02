@@ -4,6 +4,7 @@ import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorfklow;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +37,7 @@ public class ProcedimientoDTO extends ModelApi {
     private String signatura;
     private List<ProcedimientoTramiteDTO> tramites;
     private List<ProcedimientoDocumentoDTO> documentos;
+    private List<ProcedimientoDocumentoDTO> documentosLOPD;
     private List<NormativaGridDTO> normativas;
     private Date fechaCaducidad;
     private Date fechaPublicacion;
@@ -77,19 +79,14 @@ public class ProcedimientoDTO extends ModelApi {
 
     // LOPD
     private String lopdResponsable;
-    //private LopdLegitimacion lopdLegitimacion;
-    /**
-     * Lopd Transient
-     **/
-    private String lopdFinalidad;
-    private String lopdDestinatario;
-    private String lopdDerechos;
-    private Long lopdInfoAdicional;
-
+    private Literal lopdFinalidad;
+    private Literal lopdDestinatario;
+    private Literal lopdDerechos;
+    private Literal lopdInfoAdicional;
     private List<TipoPublicoObjetivoEntidadGridDTO> tiposPubObjEntGrid;
     private List<TipoMateriaSIAGridDTO> materiasGridSIA;
-    private List<NormativaGridDTO> normativasGrid;
 
+    private String mensajes;
 
     public static ProcedimientoDTO createInstance(List<String> idiomas) {
         ProcedimientoDTO proc = new ProcedimientoDTO();
@@ -426,35 +423,35 @@ public class ProcedimientoDTO extends ModelApi {
         this.lopdResponsable = lopdResponsable;
     }
 
-    public String getLopdFinalidad() {
+    public Literal getLopdFinalidad() {
         return lopdFinalidad;
     }
 
-    public void setLopdFinalidad(String lopdFinalidad) {
+    public void setLopdFinalidad(Literal lopdFinalidad) {
         this.lopdFinalidad = lopdFinalidad;
     }
 
-    public String getLopdDestinatario() {
+    public Literal getLopdDestinatario() {
         return lopdDestinatario;
     }
 
-    public void setLopdDestinatario(String lopdDestinatario) {
+    public void setLopdDestinatario(Literal lopdDestinatario) {
         this.lopdDestinatario = lopdDestinatario;
     }
 
-    public String getLopdDerechos() {
+    public Literal getLopdDerechos() {
         return lopdDerechos;
     }
 
-    public void setLopdDerechos(String lopdDerechos) {
+    public void setLopdDerechos(Literal lopdDerechos) {
         this.lopdDerechos = lopdDerechos;
     }
 
-    public Long getLopdInfoAdicional() {
+    public Literal getLopdInfoAdicional() {
         return lopdInfoAdicional;
     }
 
-    public void setLopdInfoAdicional(Long lopdInfoAdicional) {
+    public void setLopdInfoAdicional(Literal lopdInfoAdicional) {
         this.lopdInfoAdicional = lopdInfoAdicional;
     }
 
@@ -499,15 +496,6 @@ public class ProcedimientoDTO extends ModelApi {
         this.codigoWF = codigoWF;
     }
 
-    /*
-        public TypeProcedimientoWorfklow getWorkflow() {
-            return workflow;
-        }
-
-        public void setWorkflow(TypeProcedimientoWorfklow workflow) {
-            this.workflow = workflow;
-        }
-    */
     public UnidadAdministrativaDTO getUaResponsable() {
         return uaResponsable;
     }
@@ -547,15 +535,7 @@ public class ProcedimientoDTO extends ModelApi {
     public void setTipoProcedimiento(TipoProcedimientoDTO tipoProcedimiento) {
         this.tipoProcedimiento = tipoProcedimiento;
     }
-
-    public List<NormativaGridDTO> getNormativasGrid() {
-        return normativasGrid;
-    }
-
-    public void setNormativasGrid(List<NormativaGridDTO> normativasGrid) {
-        this.normativasGrid = normativasGrid;
-    }
-
+ 
     public TypeProcedimientoWorfklow getWorkflow() {
         return workflow;
     }
@@ -570,6 +550,22 @@ public class ProcedimientoDTO extends ModelApi {
 
     public void setEstado(TypeProcedimientoEstado estado) {
         this.estado = estado;
+    }
+
+    public List<ProcedimientoDocumentoDTO> getDocumentosLOPD() {
+        return documentosLOPD;
+    }
+
+    public void setDocumentosLOPD(List<ProcedimientoDocumentoDTO> documentosLOPD) {
+        this.documentosLOPD = documentosLOPD;
+    }
+
+    public String getMensajes() {
+        return mensajes;
+    }
+
+    public void setMensajes(String mensajes) {
+        this.mensajes = mensajes;
     }
 
     @Override
@@ -592,4 +588,58 @@ public class ProcedimientoDTO extends ModelApi {
     public int hashCode() {
         return Objects.hash(codigo);
     }
+
+    public void addtramite(ProcedimientoTramiteDTO procTramite) {
+        //Método que recorre los datos y, en caso de no haber sido ya agregado, lo añade
+        //TODO
+        this.getTramites().add(procTramite);
+    }
+
+    public void agregarDocumento(ProcedimientoDocumentoDTO doc) {
+        if (documentos == null) {
+            this.setDocumentos(new ArrayList<>());
+        }
+        boolean encontrado = false;
+        for (int i = 0; i < this.getDocumentos().size(); i++) {
+            ProcedimientoDocumentoDTO documento = this.getDocumentos().get(i);
+            if (doc.getCodigo() == null && documento.getCodigo() == null && doc.getCodigoString() != null && doc.getCodigoString().equalsIgnoreCase(documento.getCodigoString())) {
+                encontrado = true;
+                this.getDocumentos().set(i, doc);
+                break;
+            } else if (doc.getCodigo() != null && documento.getCodigo() != null && doc.getCodigo().compareTo(documento.getCodigo()) == 0) {
+                encontrado = true;
+                this.getDocumentos().set(i, doc);
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            this.getDocumentos().add(doc);
+        }
+    }
+
+    public void agregarDocumentoLOPD(ProcedimientoDocumentoDTO doc) {
+        if (documentosLOPD == null) {
+            this.setDocumentosLOPD(new ArrayList<>());
+        }
+        boolean encontrado = false;
+        for (int i = 0; i < this.getDocumentosLOPD().size(); i++) {
+            ProcedimientoDocumentoDTO documento = this.getDocumentosLOPD().get(i);
+            if (doc.getCodigo() == null && documento.getCodigo() == null && doc.getCodigoString() != null && doc.getCodigoString().equalsIgnoreCase(documento.getCodigoString())) {
+                encontrado = true;
+                this.getDocumentosLOPD().set(i, doc);
+                break;
+            } else if (doc.getCodigo() != null && documento.getCodigo() != null && doc.getCodigo().compareTo(documento.getCodigo()) == 0) {
+                encontrado = true;
+                this.getDocumentosLOPD().set(i, doc);
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            this.getDocumentosLOPD().add(doc);
+        }
+    }
+
+
 }

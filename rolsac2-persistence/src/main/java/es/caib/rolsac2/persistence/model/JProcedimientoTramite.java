@@ -1,11 +1,12 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoTramiteTraduccion;
-
-import java.util.Date;
-import java.util.List;
+import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @SequenceGenerator(name = "procedimiento-tram-sequence", sequenceName = "RS2_PRCTRM_SEQ", allocationSize = 1)
@@ -24,6 +25,9 @@ public class JProcedimientoTramite {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-tram-sequence")
     @Column(name = "PRTA_CODIGO", nullable = false)
     private Long codigo;
+
+    @Column(name = "PRTA_FASE")
+    private Integer fase;
 
     /**
      * Unidad administrativa competente
@@ -61,10 +65,27 @@ public class JProcedimientoTramite {
     private Date fechaCierre;
 
     /**
+     * Tramitación presencial
+     */
+    @Column(name = "PRTA_TRPRES", nullable = false, precision = 1, scale = 0)
+    private boolean tramitPresencial;
+
+    /**
+     * Tramitación electrónica
+     */
+    @Column(name = "PRTA_TRELEC", nullable = false, precision = 1, scale = 0)
+    private boolean tramitElectronica;
+
+    /**
+     * Tramitacion telefonica
+     */
+    @Column(name = "PRTA_TRTEL", nullable = false, precision = 1, scale = 0)
+    private boolean tramitTelefonica;
+
+    /**
      * Traducciones
      */
-    @OneToMany(mappedBy = "procedimientoTramite", fetch = FetchType.EAGER, cascade = CascadeType.ALL,
-                    orphanRemoval = true)
+    @OneToMany(mappedBy = "procedimientoTramite", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JProcedimientoTramiteTraduccion> traducciones;
 
     public Long getCodigo() {
@@ -151,11 +172,84 @@ public class JProcedimientoTramite {
         return traducciones;
     }
 
+    public Integer getFase() {
+        return fase;
+    }
+
+    public void setFase(Integer fase) {
+        this.fase = fase;
+    }
+
+    public boolean isTramitPresencial() {
+        return tramitPresencial;
+    }
+
+    public void setTramitPresencial(boolean tramitPresencial) {
+        this.tramitPresencial = tramitPresencial;
+    }
+
+    public boolean isTramitElectronica() {
+        return tramitElectronica;
+    }
+
+    public void setTramitElectronica(boolean tramitElectronica) {
+        this.tramitElectronica = tramitElectronica;
+    }
+
+    public boolean isTramitTelefonica() {
+        return tramitTelefonica;
+    }
+
+    public void setTramitTelefonica(boolean tramitTelefonica) {
+        this.tramitTelefonica = tramitTelefonica;
+    }
+
     public void setTraducciones(List<JProcedimientoTramiteTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {
             this.traducciones = traducciones;
         } else {
             this.traducciones.addAll(traducciones);
+        }
+    }
+
+    public void merge(ProcedimientoTramiteDTO elemento, JTipoTramitacion jTipoTramitacion) {
+        this.setTramitPresencial(elemento.isTramitPresencial());
+        this.setTramitElectronica(elemento.isTramitElectronica());
+        this.setTramitTelefonica(elemento.isTramitTelefonica());
+        this.setFechaCierre(elemento.getFechaCierre());
+        this.setFechaInicio(elemento.getFechaInicio());
+        this.setFechaPublicacion(elemento.getFechaPublicacion());
+        this.setTasaAsociada(elemento.getTasaAsociada());
+        this.setTipoTramitacion(jTipoTramitacion);
+        this.setFase(elemento.getFase());
+        if (this.getTraducciones() == null || this.getTraducciones().isEmpty()) {
+            List<JProcedimientoTramiteTraduccion> traduccionesNew = new ArrayList<>();
+            List<String> idiomasPermitidos = List.of(elemento.getUnidadAdministrativa().getEntidad().getIdiomasPermitidos().split(";"));
+            for (String idioma : idiomasPermitidos) {
+                JProcedimientoTramiteTraduccion trad = new JProcedimientoTramiteTraduccion();
+                trad.setIdioma(idioma);
+                trad.setProcedimientoTramite(this);
+                traduccionesNew.add(trad);
+            }
+            this.setTraducciones(traduccionesNew);
+        }
+
+        for (JProcedimientoTramiteTraduccion traduccion : this.getTraducciones()) {
+            if (elemento.getNombre() != null) {
+                traduccion.setNombre(elemento.getNombre().getTraduccion(traduccion.getIdioma()));
+            }
+            if (elemento.getDocumentacion() != null) {
+                traduccion.setDocumentacion(elemento.getDocumentacion().getTraduccion(traduccion.getIdioma()));
+            }
+            if (elemento.getObservacion() != null) {
+                traduccion.setObservacion(elemento.getObservacion().getTraduccion(traduccion.getIdioma()));
+            }
+            if (elemento.getTerminoMaximo() != null) {
+                traduccion.setTerminoMaximo(elemento.getTerminoMaximo().getTraduccion(traduccion.getIdioma()));
+            }
+            if (elemento.getRequisitos() != null) {
+                traduccion.setRequisitos(elemento.getRequisitos().getTraduccion(traduccion.getIdioma()));
+            }
         }
     }
 }

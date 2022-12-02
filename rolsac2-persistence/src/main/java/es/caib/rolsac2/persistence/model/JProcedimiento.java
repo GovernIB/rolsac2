@@ -42,6 +42,9 @@ public class JProcedimiento extends BaseEntity {
     @Column(name = "PROC_SIADIR3", length = 20)
     private String codigoDir3SIA;
 
+    @Column(name = "PROC_MENSA")
+    private String mensajes;
+
     @OneToMany(mappedBy = "procedimiento", fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     private List<JProcedimientoWorkflow> procedimientoWF;
 
@@ -93,6 +96,22 @@ public class JProcedimiento extends BaseEntity {
         this.codigoDir3SIA = procSiadir3;
     }
 
+    public String getMensajes() {
+        return mensajes;
+    }
+
+    public void setMensajes(String mensajes) {
+        this.mensajes = mensajes;
+    }
+
+    public List<JProcedimientoWorkflow> getProcedimientoWF() {
+        return procedimientoWF;
+    }
+
+    public void setProcedimientoWF(List<JProcedimientoWorkflow> procedimientoWF) {
+        this.procedimientoWF = procedimientoWF;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -104,14 +123,6 @@ public class JProcedimiento extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(codigo);
-    }
-
-    public List<JProcedimientoWorkflow> getProcedimientoWF() {
-        return procedimientoWF;
-    }
-
-    public void setProcedimientoWF(List<JProcedimientoWorkflow> procedimientoWF) {
-        this.procedimientoWF = procedimientoWF;
     }
 
     @Override

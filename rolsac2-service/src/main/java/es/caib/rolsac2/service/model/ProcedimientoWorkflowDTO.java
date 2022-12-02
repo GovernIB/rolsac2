@@ -14,7 +14,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
 
     private ProcedimientoDTO procedimiento;
     private Boolean workflow = false;
-    private Integer estado;
+    private String estado;
     private boolean isInterna;
     private String usuario;
     private UnidadAdministrativaDTO uaResponsable;
@@ -99,11 +99,11 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
         this.workflow = workflow;
     }
 
-    public Integer getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(Integer estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 

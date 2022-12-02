@@ -1,13 +1,10 @@
 package es.caib.rolsac2.persistence.converter;
 
 import es.caib.rolsac2.persistence.model.JProcedimientoTramite;
-import es.caib.rolsac2.persistence.model.JSeccion;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoTramiteTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
-import es.caib.rolsac2.service.model.SeccionDTO;
 import es.caib.rolsac2.service.model.Traduccion;
-
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,24 +19,28 @@ import java.util.Objects;
  * MapStruct
  */
 @Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-                uses = {UnidadAdministrativaConverter.class, ProcedimientoWorkflowConverter.class,
-                                TipoTramitacionConverter.class})
+        uses = {UnidadAdministrativaConverter.class, ProcedimientoWorkflowConverter.class,
+                TipoTramitacionConverter.class})
 public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoTramite, ProcedimientoTramiteDTO> {
 
     @Override
     @Mapping(target = "requisitos",
-                    expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"requisitos\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"requisitos\"))")
     @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
     @Mapping(target = "documentacion",
-                    expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"documentacion\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"documentacion\"))")
     @Mapping(target = "observacion",
-                    expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observacion\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observacion\"))")
     @Mapping(target = "terminoMaximo",
-                    expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"terminoMaximo\"))")
+            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"terminoMaximo\"))")
+    @Mapping(target = "listaDocumentos", ignore = true)
+    @Mapping(target = "listaModelos", ignore = true)
     ProcedimientoTramiteDTO createDTO(JProcedimientoTramite entity);
 
     @Override
     @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(jProcedimientoTramite, dto))")
+    @Mapping(target = "listaDocumentos", ignore = true)
+    @Mapping(target = "listaModelos", ignore = true)
     JProcedimientoTramite createEntity(ProcedimientoTramiteDTO dto);
 
     default List<ProcedimientoTramiteDTO> createDTOs(List<JProcedimientoTramite> entities) {
@@ -52,14 +53,16 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
 
     @Override
     @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(entity,dto))")
+    @Mapping(target = "listaDocumentos", ignore = true)
+    @Mapping(target = "listaModelos", ignore = true)
     void mergeEntity(@MappingTarget JProcedimientoTramite entity, ProcedimientoTramiteDTO dto);
 
 
     default List<JProcedimientoTramiteTraduccion> convierteLiteralToTraduccion(
-                    JProcedimientoTramite jProcedimientoTramite, ProcedimientoTramiteDTO dto) {
+            JProcedimientoTramite jProcedimientoTramite, ProcedimientoTramiteDTO dto) {
 
         List<String> idiomasPermitidos =
-                        List.of(dto.getUnidadAdministrativa().getEntidad().getIdiomasPermitidos().split(";"));
+                List.of(dto.getUnidadAdministrativa().getEntidad().getIdiomasPermitidos().split(";"));
 
         if (jProcedimientoTramite.getTraducciones() == null || jProcedimientoTramite.getTraducciones().isEmpty()) {
             jProcedimientoTramite.setTraducciones(JProcedimientoTramiteTraduccion.createInstance(idiomasPermitidos));
@@ -108,13 +111,13 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
     }
 
     default Literal convierteTraduccionToLiteral(List<JProcedimientoTramiteTraduccion> traducciones,
-                    String nombreLiteral) {
+                                                 String nombreLiteral) {
         Literal resultado = null;
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
             resultado.setCodigo(traducciones.stream().map(t -> t.getProcedimientoTramite().getCodigo()).findFirst()
-                            .orElse(null));
+                    .orElse(null));
             for (JProcedimientoTramiteTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
                 trad.setCodigo(traduccion.getCodigo());

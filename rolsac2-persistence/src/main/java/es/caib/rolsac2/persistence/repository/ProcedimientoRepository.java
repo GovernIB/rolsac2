@@ -1,11 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.model.JListaDocumentos;
 import es.caib.rolsac2.persistence.model.JProcedimiento;
 import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
-import es.caib.rolsac2.service.model.NormativaGridDTO;
-import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
-import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
-import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 
 import java.util.List;
@@ -22,6 +20,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     void mergeNormativaProcWF(Long codigoWF, List<NormativaGridDTO> listaNuevos);
 
+    void mergeTramitesProcWF(Long codigoWF, List<ProcedimientoTramiteDTO> lista, String ruta);
+
     void updateWF(JProcedimientoWorkflow jProcWF);
 
     Optional<JProcedimiento> findById(String id);
@@ -34,13 +34,49 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     void createWF(JProcedimientoWorkflow jProcWF);
 
+    boolean existeProcedimientoConMateria(Long materiaSIA);
+
     List<TipoMateriaSIAGridDTO> getMateriaGridSIAByWF(Long codigoWF);
 
     void mergeMateriaSIAProcWF(Long codigoWF, List<TipoMateriaSIAGridDTO> listaNuevos);
 
+    boolean existeProcedimientoConPublicoObjetivo(Long codigoPub);
+
     List<TipoPublicoObjetivoEntidadGridDTO> getTipoPubObjEntByWF(Long codigoWF);
 
-    void deleteWF(Long codigoProc, boolean enmodificacion);
+    void mergeDocumentosTramite(Long codigoWF, Long codigoTramite, Long idListaDocumentos, boolean isModelo, List<ProcedimientoDocumentoDTO> docs, String ruta);
+
+    void deleteWF(Long codigo, boolean wf);
+
+    void deleteWF(Long codigoWF);
+
+    boolean existeProcedimientoConFormaInicio(Long codigoForIni);
+
+    boolean existeProcedimientoConLegitimacion(Long codigoLegi);
+
+    boolean existeProcedimientoConSilencio(Long codigoSilen);
+
+    boolean existeProcedimientosConNormativas(Long codigoNor);
+
+    boolean existeTramitesConTipoTramitacionPlantilla(Long codigoNor);
 
     List<NormativaGridDTO> getNormativasByWF(Long codigoWF);
+
+    void mergeDocumentos(Long codigo, Long idListaDocumentos, boolean isLopd, List<ProcedimientoDocumentoDTO> docs, String ruta);
+
+    List<ProcedimientoDocumentoDTO> getDocumentosByListaDocumentos(JListaDocumentos listaDocumentos);
+
+    List<ProcedimientoTramiteDTO> getTramitesByWF(Long codigoWF);
+
+    /**
+     * Actualiza los mensajes
+     *
+     * @param codigo
+     * @param mensajes
+     */
+    void actualizarMensajes(Long codigo, String mensajes);
+
+    Long getCodigoByWF(Long codigo, boolean valor);
+
+    JProcedimientoWorkflow getWFByCodigoWF(Long codigoWF);
 }
