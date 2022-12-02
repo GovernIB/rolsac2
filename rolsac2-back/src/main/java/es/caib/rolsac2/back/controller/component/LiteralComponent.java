@@ -1,6 +1,5 @@
 package es.caib.rolsac2.back.controller.component;
 
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
@@ -15,7 +14,10 @@ import org.primefaces.component.inputtext.InputText;
 import org.primefaces.component.inputtextarea.InputTextarea;
 import org.primefaces.event.SelectEvent;
 
-import javax.faces.component.*;
+import javax.faces.component.FacesComponent;
+import javax.faces.component.NamingContainer;
+import javax.faces.component.UIInput;
+import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
 import javax.inject.Inject;
@@ -28,7 +30,8 @@ import java.util.Map;
 @FacesComponent(createTag = true, tagName = "literalComponent", namespace = "http://back.rolsac2.caib.es/tags")
 public class LiteralComponent extends UIInput implements NamingContainer {
 
-    // Fields -------------------------------------------------------------------------------------
+    // Fields
+    // -------------------------------------------------------------------------------------
     @Inject
     protected SessionBean sessionBean;
 
@@ -47,14 +50,30 @@ public class LiteralComponent extends UIInput implements NamingContainer {
     private TypeModoAcceso modoAcceso;
 
     private String tipo;
+    private String height;
+    private String width;
+    private String idCompuesto;
+    private UIInput textoHTML;
 
     private String textoValor;
+    private Boolean toolbar;
 
-    // Actions ------------------------------------------------------------------------------------
+    public static String ICONO_ROJO = "iconoRojo";
+    public static String ICONO_AMARILLO = "iconoAmarillo";
+    public static String ICONO_VERDE = "iconoVerde";
 
     /**
-     * Returns the component family of {@link UINamingContainer}.
-     * (that's just required by composite component)
+     * Texto utilizado principalmente para cuando es required a true y no rellenas
+     * los valores, el poner el borde rojo
+     **/
+    private String estiloInput;
+
+    // Actions
+    // ------------------------------------------------------------------------------------
+
+    /**
+     * Returns the component family of {@link UINamingContainer}. (that's just
+     * required by composite component)
      */
     @Override
     public String getFamily() {
@@ -81,7 +100,8 @@ public class LiteralComponent extends UIInput implements NamingContainer {
     private boolean obligatorio;
 
     /**
-     * Set the selected and available values of the day, month and year fields based on the model.
+     * Set the selected and available values of the day, month and year fields based
+     * on the model.
      */
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
@@ -89,7 +109,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         final String inicializado = (String) textoInicializado.getValue();
         if (inicializado == null || inicializado.isEmpty()) {
             tipo = (String) getAttributes().get("tipo");
-            textoInicializado.setValue("true"); //Lo marcamos como ya inicializado
+            textoInicializado.setValue("true"); // Lo marcamos como ya inicializado
             literal = (Literal) getAttributes().get("literal");
             idioma = (String) getAttributes().get("idioma");
             Boolean iModoAcceso = (Boolean) getAttributes().get("disabled");
@@ -109,6 +129,9 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             }
         } else {
             literal = (Literal) getAttributes().get("literal");
+            if (literal == null) {
+                literal = Literal.createInstance();
+            }
             idioma = (String) getAttributes().get("idioma");
             textoIdioma.setValue(idioma);
             getAttributes().put("literal", literal);
@@ -138,64 +161,43 @@ public class LiteralComponent extends UIInput implements NamingContainer {
      */
     @Override
     public Object getSubmittedValue() {
-        //return texto == null ? Literal.createInstance() : texto.getValue();
+        // return texto == null ? Literal.createInstance() : texto.getValue();
         Literal literal = (Literal) getAttributes().get("literal");
         return literal;
     }
 
-    /*private Literal getCalcularLiteral() {
-        Long codigoAux = null;
-        Literal literal = Literal.createInstance();
-        if (tipo == null || !tipo.equals("html")) {
-            if (textoES.getValue() != null && !((String) textoES.getValue()).isBlank()) {
-                literal.add(new Traduccion("es", textoES.getValue().toString()));
-            }
-            if (textoCA.getValue() != null && !((String) textoCA.getValue()).isBlank()) {
-                literal.add(new Traduccion("ca", textoCA.getValue().toString()));
-            }
+    /*
+     * private Literal getCalcularLiteral() { Long codigoAux = null; Literal literal
+     * = Literal.createInstance(); if (tipo == null || !tipo.equals("html")) { if
+     * (textoES.getValue() != null && !((String) textoES.getValue()).isBlank()) {
+     * literal.add(new Traduccion("es", textoES.getValue().toString())); } if
+     * (textoCA.getValue() != null && !((String) textoCA.getValue()).isBlank()) {
+     * literal.add(new Traduccion("ca", textoCA.getValue().toString())); }
+     *
+     * if (textoID.getValue() instanceof String) { codigoAux =
+     * Long.parseLong((String) textoID.getValue()); } else if (textoID.getValue()
+     * instanceof Long) { codigoAux = (Long) textoID.getValue(); } } else { if
+     * (textoESA.getValue() != null && !((String) textoESA.getValue()).isBlank()) {
+     * literal.add(new Traduccion("es", textoESA.getValue().toString())); } if
+     * (textoCAA.getValue() != null && !((String) textoCAA.getValue()).isBlank()) {
+     * literal.add(new Traduccion("ca", textoCAA.getValue().toString())); }
+     *
+     * if (textoID.getValue() instanceof String) { codigoAux =
+     * Long.parseLong((String) textoID.getValue()); } else if (textoID.getValue()
+     * instanceof Long) { codigoAux = (Long) textoID.getValue(); } }
+     * literal.setCodigo(codigoAux); return literal; }
+     */
 
-            if (textoID.getValue() instanceof String) {
-                codigoAux = Long.parseLong((String) textoID.getValue());
-            } else if (textoID.getValue() instanceof Long) {
-                codigoAux = (Long) textoID.getValue();
-            }
-        } else {
-            if (textoESA.getValue() != null && !((String) textoESA.getValue()).isBlank()) {
-                literal.add(new Traduccion("es", textoESA.getValue().toString()));
-            }
-            if (textoCAA.getValue() != null && !((String) textoCAA.getValue()).isBlank()) {
-                literal.add(new Traduccion("ca", textoCAA.getValue().toString()));
-            }
-
-            if (textoID.getValue() instanceof String) {
-                codigoAux = Long.parseLong((String) textoID.getValue());
-            } else if (textoID.getValue() instanceof Long) {
-                codigoAux = (Long) textoID.getValue();
-            }
-        }
-        literal.setCodigo(codigoAux);
-        return literal;
-    }*/
-
-    /*public void actualizarLiteral(AjaxBehaviorEvent event) {
-
-        String nuevoValor = (String) ((UIInput) event.getComponent()).getValue();
-        String elidioma = (String) textoIdioma.getValue();
-        if ("ca".equals(elidioma)) {
-            if (tipo == null || !tipo.equals("html")) {
-                textoCA.setValue(nuevoValor);
-            } else {
-                textoCAA.setValue(nuevoValor);
-            }
-        } else {
-            if (tipo == null || !tipo.equals("html")) {
-                textoES.setValue(nuevoValor);
-            } else {
-                textoESA.setValue(nuevoValor);
-            }
-        }
-        marcarActualizadoComponente();
-    }*/
+    /*
+     * public void actualizarLiteral(AjaxBehaviorEvent event) {
+     *
+     * String nuevoValor = (String) ((UIInput) event.getComponent()).getValue();
+     * String elidioma = (String) textoIdioma.getValue(); if ("ca".equals(elidioma))
+     * { if (tipo == null || !tipo.equals("html")) { textoCA.setValue(nuevoValor); }
+     * else { textoCAA.setValue(nuevoValor); } } else { if (tipo == null ||
+     * !tipo.equals("html")) { textoES.setValue(nuevoValor); } else {
+     * textoESA.setValue(nuevoValor); } } marcarActualizadoComponente(); }
+     */
 
     public void actualizarLiteral() {
 
@@ -209,24 +211,27 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         String prueba = textoValor;
 
         Traduccion trad = new Traduccion();
-        trad.setLiteral((String) texto.getValue());
+        if (tipo != null && tipo.equals("html")) {
+            trad.setLiteral((String) textoHTML.getValue());
+        } else {
+            trad.setLiteral((String) texto.getValue());
+        }
         trad.setIdioma(idioma);
         literal.add(trad);
         getAttributes().put("literal", literal);
-
 
         marcarActualizadoComponente();
     }
 
     /**
-     * Cuando se produce un cambio, se avisa al abstractController que ha habido cambios.
+     * Cuando se produce un cambio, se avisa al abstractController que ha habido
+     * cambios.
      */
     private void marcarActualizadoComponente() {
         if (getAttributes().get("vista") != null && getAttributes().get("vista") instanceof AbstractController) {
             ((AbstractController) getAttributes().get("vista")).actualizadoComponente();
         }
     }
-
 
     /**
      * Converts the submitted value to concrete {@link Date} instance.
@@ -239,8 +244,6 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             throw new ConverterException(e); // This is not to be expected in normal circumstances.
         }
     }
-
-
 
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
@@ -257,7 +260,9 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             } else {
                 textoIdioma.getValue();
                 marcarActualizadoComponente();
-                //PrimeFaces.current().executeScript("recargarTiny(\"" + this.getTextoESA().getValue() + "\",\"" + this.getTextoCAA().getValue() + "\")");
+                // PrimeFaces.current().executeScript("recargarTiny(\"" +
+                // this.getTextoESA().getValue() + "\",\"" + this.getTextoCAA().getValue() +
+                // "\")");
             }
 
             PrimeFaces.current().ajax().update("formDialog:tabs:txtNombre:btnAbrir");
@@ -269,10 +274,12 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         modoAcceso = (iModoAcceso != null && iModoAcceso) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
         if (tipo == null || tipo.equals("literal") || tipo.isBlank()) {
             final Map<String, String> params = new HashMap<>();
-	        /*
-	        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
-	            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getId().toString());
-	        }*/
+            /*
+             * if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION ||
+             * modoAcceso == TypeModoAcceso.CONSULTA)) {
+             * params.put(TypeParametroVentana.ID.toString(),
+             * this.datoSeleccionado.getId().toString()); }
+             */
             params.put(TypeParametroVentana.MODO_ACCESO.toString(), this.modoAcceso.toString());
             String direccion = "/comun/dialogLiteral";
             Literal literal = (Literal) getAttributes().get("literal");
@@ -281,14 +288,16 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             String nombreLiteral = (String) getAttributes().get("nombreLiteral");
             UtilJSF.anyadirMochila("nombreLiteral", nombreLiteral);
             Integer valores = ((String) getAttributes().get("idiomasPermitidos")).split(";").length;
-            Integer height = (valores >= 4 ) ? 750 : valores*200;
+            Integer height = (valores >= 4) ? 750 : valores * 200;
             UtilJSF.openDialog(direccion, modoAcceso, params, true, 1050, height);
         } else if (tipo.equals("html")) {
             final Map<String, String> params = new HashMap<>();
- 	        /*
- 	        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
- 	            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getId().toString());
- 	        }*/
+            /*
+             * if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION ||
+             * modoAcceso == TypeModoAcceso.CONSULTA)) {
+             * params.put(TypeParametroVentana.ID.toString(),
+             * this.datoSeleccionado.getId().toString()); }
+             */
             params.put(TypeParametroVentana.MODO_ACCESO.toString(), this.modoAcceso.toString());
             params.put("idioma", (String) getAttributes().get("idioma"));
             String direccion = "/comun/dialogLiteralHTML";
@@ -298,10 +307,10 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         }
     }
 
-
-    // Getters/setters ----------------------------------------------------------------------------
+    // Getters/setters
+    // ----------------------------------------------------------------------------
     public String getEstiloBoton() {
-        //if (isObligatorio() && !isCompleto()) {
+        // if (isObligatorio() && !isCompleto()) {
         return comprobarEstado();
     }
 
@@ -311,54 +320,59 @@ public class LiteralComponent extends UIInput implements NamingContainer {
      * @return
      */
     private boolean isCompleto() {
-        return this.literal != null && this.literal.getTraduccion(Constantes.IDIOMA_CATALAN) != null && !this.literal.getTraduccion(Constantes.IDIOMA_CATALAN).trim().isEmpty()
-                && this.literal.getTraduccion(Constantes.IDIOMA_ESPANYOL) != null && !this.literal.getTraduccion(Constantes.IDIOMA_ESPANYOL).trim().isEmpty();
+        return this.literal != null && this.literal.getTraduccion(Constantes.IDIOMA_CATALAN) != null
+                && !this.literal.getTraduccion(Constantes.IDIOMA_CATALAN).trim().isEmpty()
+                && this.literal.getTraduccion(Constantes.IDIOMA_ESPANYOL) != null
+                && !this.literal.getTraduccion(Constantes.IDIOMA_ESPANYOL).trim().isEmpty();
     }
 
-    private String comprobarEstado() {
+    public String comprobarEstado() {
         if (getAttributes().get("idiomasPermitidos") != null && getAttributes().get("idiomasObligatorios") != null) {
             List<String> idiomasPermitidos = List.of(((String) getAttributes().get("idiomasPermitidos")).split(";"));
-            List<String> idiomasObligatorios = List.of(((String) getAttributes().get("idiomasObligatorios")).split(";"));
+            List<String> idiomasObligatorios = List
+                    .of(((String) getAttributes().get("idiomasObligatorios")).split(";"));
             Literal literal = (Literal) getAttributes().get("literal");
             boolean faltaCampo = false;
 
             if (idiomasPermitidos.size() > literal.getIdiomas().size()) {
 
-                if(idiomasObligatorios.size() > literal.getIdiomas().size()) {
-                    return "iconoRojo";
+                if (idiomasObligatorios.size() > literal.getIdiomas().size()) {
+                    return ICONO_ROJO;
                 }
-                //Verificamos si hay algún idioma obligatorio nuevo
+                // Verificamos si hay algún idioma obligatorio nuevo
                 for (String idioma : literal.getIdiomas()) {
                     if (!idiomasObligatorios.contains(idioma)) {
-                        return "iconoRojo";
+                        return ICONO_ROJO;
                     }
                 }
 
-                //Verificamos que los campos obligatorios estén todos
+                // Verificamos que los campos obligatorios estén todos
                 for (Traduccion traduccion : literal.getTraducciones()) {
-                    if ((traduccion.getLiteral() == null || traduccion.getLiteral().trim().isEmpty()) && idiomasPermitidos.contains(traduccion.getIdioma())) {
+                    if ((traduccion.getLiteral() == null || traduccion.getLiteral().trim().isEmpty())
+                            && idiomasPermitidos.contains(traduccion.getIdioma())) {
                         if (idiomasObligatorios.contains(traduccion.getIdioma())) {
-                            return "iconoRojo";
+                            return ICONO_ROJO;
                         }
                     }
                 }
 
-                //Como no hay restricciones de rojo, lo que faltan son idiomasOpcionales nuevos
-                return "iconoAmarillo";
+                // Como no hay restricciones de rojo, lo que faltan son idiomasOpcionales nuevos
+                return ICONO_AMARILLO;
             }
             for (Traduccion traduccion : literal.getTraducciones()) {
-                if ((traduccion.getLiteral() == null || traduccion.getLiteral().trim().isEmpty()) && idiomasPermitidos.contains(traduccion.getIdioma())) {
+                if ((traduccion.getLiteral() == null || traduccion.getLiteral().trim().isEmpty())
+                        && idiomasPermitidos.contains(traduccion.getIdioma())) {
                     if (idiomasObligatorios.contains(traduccion.getIdioma())) {
-                        return "iconoRojo";
+                        return ICONO_ROJO;
                     }
                     faltaCampo = true;
                 }
             }
 
             if (faltaCampo) {
-                return "iconoAmarillo";
+                return ICONO_AMARILLO;
             } else {
-                return "iconoVerde";
+                return ICONO_VERDE;
             }
         } else {
             return "";
@@ -398,7 +412,6 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         this.modoAcceso = modoAcceso;
     }
 
-
     public SessionBean getSessionBean() {
         return sessionBean;
     }
@@ -423,21 +436,15 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         this.literal = literal;
     }
 
-/*    public UIInput getTextoES() {
-        return textoES;
-    }
-
-    public void setTextoES(UIInput textoES) {
-        this.textoES = textoES;
-    }
-
-    public UIInput getTextoCA() {
-        return textoCA;
-    }
-
-    public void setTextoCA(UIInput textoCA) {
-        this.textoCA = textoCA;
-    }*/
+    /*
+     * public UIInput getTextoES() { return textoES; }
+     *
+     * public void setTextoES(UIInput textoES) { this.textoES = textoES; }
+     *
+     * public UIInput getTextoCA() { return textoCA; }
+     *
+     * public void setTextoCA(UIInput textoCA) { this.textoCA = textoCA; }
+     */
 
     public UIInput getTextoID() {
         return textoID;
@@ -491,21 +498,15 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         this.textoA = textoA;
     }
 
- /*   public InputTextarea getTextoESA() {
-        return textoESA;
-    }
-
-    public void setTextoESA(InputTextarea textoESA) {
-        this.textoESA = textoESA;
-    }
-
-    public InputTextarea getTextoCAA() {
-        return textoCAA;
-    }
-
-    public void setTextoCAA(InputTextarea textoCAA) {
-        this.textoCAA = textoCAA;
-    }*/
+    /*
+     * public InputTextarea getTextoESA() { return textoESA; }
+     *
+     * public void setTextoESA(InputTextarea textoESA) { this.textoESA = textoESA; }
+     *
+     * public InputTextarea getTextoCAA() { return textoCAA; }
+     *
+     * public void setTextoCAA(InputTextarea textoCAA) { this.textoCAA = textoCAA; }
+     */
 
     public InputTextarea getTextoIDA() {
         return textoIDA;
@@ -530,4 +531,67 @@ public class LiteralComponent extends UIInput implements NamingContainer {
     public void setTextoInicializadoA(InputTextarea textoInicializadoA) {
         this.textoInicializadoA = textoInicializadoA;
     }
+
+    public String getEstiloInput() {
+        return estiloInput;
+    }
+
+    public void setEstiloInput(String estiloInput) {
+        this.estiloInput = estiloInput;
+    }
+
+    public void setObligatorio(boolean obligatorio) {
+        this.obligatorio = obligatorio;
+    }
+
+    public final String getHeight() {
+        return height;
+    }
+
+    public final void setHeight(String height) {
+        this.height = height;
+    }
+
+    public final String getWidth() {
+        return width;
+    }
+
+    public final void setWidth(String width) {
+        this.width = width;
+    }
+
+    public final String getIdCompuesto() {
+        return idCompuesto;
+    }
+
+    public final void setIdCompuesto(String idCompuesto) {
+        this.idCompuesto = idCompuesto;
+    }
+
+    public final UIInput getTextoHTML() {
+        return textoHTML;
+    }
+
+    public final void setTextoHTML(UIInput textoHTML) {
+        this.textoHTML = textoHTML;
+    }
+
+    /**
+     * @return the toolbar
+     */
+    public final Boolean getToolbar() {
+        if (toolbar != null) {
+            return toolbar;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * @param toolbar the toolbar to set
+     */
+    public final void setToolbar(Boolean toolbar) {
+        this.toolbar = toolbar;
+    }
+
 }

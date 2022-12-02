@@ -5,21 +5,30 @@
         xmlns:p="http://primefaces.org/ui"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:cc="http://java.sun.com/jsf/composite"
+        xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
 >
     <cc:interface componentType="literalComponent">
         <cc:attribute name="value" type="es.caib.rolsac2.service.model.Literal" shortDescription="El literal."/>
+        <cc:attribute name="idCompuesto" type="String"
+                      shortDescription="Id utilizado para asignar altura y ancho"/>
         <cc:attribute name="ocultarTexto" type="boolean"
                       shortDescription="Indica si hay que ocultar el texto o no. Valores posibles: true, false o null"/>
         <cc:attribute name="tipo" type="String"
-                      shortDescription="Indica si hay que ocultar el texto o no. Valores posibles: true, false o null"/>
+                      shortDescription="Indica si hay que incluir tiny"/>
         <cc:attribute name="required" type="boolean"
                       shortDescription="Indica si es obligatorio que esté relleno. Si es obligatorio y no está relleno, se verá como en rojo"/>
         <cc:attribute name="soloLecture" type="String"
                       shortDescription="Indica si es solo lectura. Valores posibles: true, false o null"/>
         <cc:attribute name="idioma" type="String"
                       shortDescription="Idioma actual de la pantalla."/>
+        <cc:attribute name="width" type="String"
+                      shortDescription="Ancho del div."/>
+        <cc:attribute name="height" type="String"
+                      shortDescription="Altura del div."/>
         <cc:attribute name="literal" type="es.caib.rolsac2.service.model.Literal"
                       shortDescription="El literal."></cc:attribute>
+        <cc:attribute name="toolbar" type="Boolean"
+                      shortDescription="Activar o no toolbar."></cc:attribute>
         <cc:attribute name="idiomasPermitidos" type="String" shortDescription="Idiomas permitidos"></cc:attribute>
         <cc:attribute name="idiomasObligatorios" type="String" shortDescription="Idiomas obligatorios"></cc:attribute>
         <cc:attribute name="nombreLiteral" type="String"
@@ -27,15 +36,14 @@
 
     </cc:interface>
     <cc:implementation>
-        <span id="#{cc.clientId}" style="white-space:nowrap">
-            <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1"
+        <span id="#{cc.clientId}" style="white-space:nowrap; display:flex;">
+        	<c:choose>
+				<c:when test="#{cc.tipo == null || !cc.tipo.equals('html')}">
+					<p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1  #{cc.estiloInput}"
                          disabled="#{cc.isModoConsulta()}">
-                <p:ajax event="keyup" listener="#{cc.actualizarLiteral}" update="btnAbrir"/>
-            </p:inputText>
-            <p:inputText id="textoID" binding="#{cc.textoID}" style="display:none"/>
-            <p:inputText id="textoIdioma" binding="#{cc.textoIdioma}" style="display:none"/>
-            <p:inputText id="textoInicializado" binding="#{cc.textoInicializado}" style="display:none"/>
-            <p:commandButton id="btnAbrir"
+		                <p:ajax event="change" listener="#{cc.actualizarLiteral}" update="btnAbrir"/>
+		            </p:inputText>
+		             <p:commandButton id="btnAbrir"
                              action="#{cc.abrirVentana()}"
                              icon="pi pi-tag"
                              value=" "
@@ -46,6 +54,98 @@
                      <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
                              update="texto btnAbrir"/>
             </p:commandButton>
+				</c:when>
+				<c:otherwise>
+					<script src="../tinymce/js/tinymce/tinymce.min.js" type="text/javascript"></script>
+					<h:outputScript>
+						tinyMCE.init({
+				 		   // General options
+				 		    mode : "textareas",
+				 		    plugins: "code image link lists paste textcolor",
+				 		    menubar: "",
+				 		    statusbar: false,
+				 		    paste_as_text : false,
+				 		    content_css : "/rolsac2back/javax.faces.resource/css/tinymce_style_editor.css.xhtml",
+				 		   	readonly: #{cc.isModoConsulta()},
+				 		   	setup: function (editor) {
+					            editor.on('keyup', function (e) {
+					                document.getElementById(editor.id+'HTML').value=editor.getContent();
+					                document.getElementById(editor.id+'HTMLprocess').click();
+					            });
+					        }
+
+				 		 }).then(function(editors) {
+							  ponerEstilos();
+							});
+
+							var el = document.getElementById("#{cc.idCompuesto}");
+
+
+				 		 	if(arrEl == null){
+				 		 		var arrEl = [];
+				 		 	}
+				 		 	if(arrH == null){
+				 		 		var arrH = [];
+				 		 	}
+				 		 	if(arrW == null){
+				 		 		var arrW = [];
+				 		 	}
+				 		 	if(arrT == null){
+				 		 		var arrT = [];
+				 		 	}
+
+							arrEl.push(el);
+							arrH.push("#{cc.height}");
+							arrW.push("#{cc.width}");
+							arrT.push("#{cc.toolbar}");
+
+
+	 		 				function ponerEstilos(){
+	 		 					for(i = 0; i &lt; arrEl.length; i++){
+	 		 						let elAux = arrEl[i];
+	 		 						var txtA = elAux.getElementsByClassName("tox")[0];
+	 		 						txtA.style.height = arrH[i];
+	 		 						txtA.style.width = arrW[i];
+	 		 						var txtT = elAux.getElementsByClassName("tox-toolbar")[0];
+	 		 						if(arrT[i] == 'false'){
+	 		 							txtT.style.display = "none";
+                                    }
+ 		 						}
+	 		 				}
+
+
+					</h:outputScript>
+					<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1"
+                         disabled="#{cc.isModoConsulta()}" style="white-space:nowrap;">
+		            </p:inputTextarea>
+		             <p:commandButton id="textoHTMLprocess"
+		             		 action="#{cc.actualizarLiteral()}"
+                             process="@this textoHTML"
+                             update="btnAbrir" style="display:none;">
+		            </p:commandButton>
+
+		             <p:commandButton id="btnAbrir"
+                             action="#{cc.abrirVentana()}"
+                             icon="pi pi-tag"
+                             value=" "
+                             styleClass="w35px h25px #{cc.getEstiloBoton()}"
+                             disabled="#{cc.isModoConsulta()}"
+                             process="@this"
+                             style="margin-left:4px;"
+
+		            >
+		                     <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
+		                             update="@form btnAbrir"/>
+		            </p:commandButton>
+				</c:otherwise>
+			</c:choose>
+
+            <p:inputText id="textoID" binding="#{cc.textoID}" style="display:none"/>
+            <p:inputText id="textoHTML" binding="#{cc.textoHTML}" style="display:none"/>
+
+            <p:inputText id="textoIdioma" binding="#{cc.textoIdioma}" style="display:none"/>
+            <p:inputText id="textoInicializado" binding="#{cc.textoInicializado}" style="display:none"/>
+
         </span>
     </cc:implementation>
 </ui:component>
