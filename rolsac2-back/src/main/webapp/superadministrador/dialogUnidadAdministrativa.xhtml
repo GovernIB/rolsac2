@@ -123,7 +123,7 @@
                             </p:selectOneMenu>
                         </div>
                     </div>
-                    <div class="form-row">
+                    <div class="form-row" style="height:auto;">
                         <div class="form-group col-md-4">
                             <p class="mb-1">
                                 <h:outputText styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.url']}:"
@@ -135,11 +135,12 @@
                                                      idioma="#{dialogUnidadAdministrativa.idioma}"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                     nombreLiteral="#{labels['dialogUnidadAdministrativa.url']}"/>
+                                                     nombreLiteral="#{labels['dialogUnidadAdministrativa.url']}"
+                                                     disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                             </p>
 
                         </div>
-                        <div class="form-group col-md-8">
+                        <div class="form-group col-md-8" >
                             <p class="mb-1">
                                 <h:outputText styleClass="mr-2 mb-1"
                                               value="#{labels['dialogUnidadAdministrativa.presentacion']}:"
@@ -153,6 +154,10 @@
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      tipo="html"
+                                                     height="100px"
+                                                     width="600px"
+                                                     toolbar="true"
+                                                     idCompuesto="formDialog\:txtPresentacion"
                                                      nombreLiteral="#{labels['dialogUnidadAdministrativa.presentacion']}"/>
                             </p>
 
@@ -208,7 +213,7 @@
                             </p:selectOneMenu>
                         </div>
                     </div>
-                    <div class="form-row">
+                    <div class="form-row"  style="height:auto;">
                         <div class="form-group col-md-4">
                             <p class="mb-1">
                                 <h:outputText value="#{labels['dialogUnidadAdministrativa.responsableEmail']}:"
@@ -231,6 +236,9 @@
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      tipo="html"
+                                                     height="100px"
+                                                     width="700px"
+                                                     idCompuesto="formDialog\:txtResponsable"
                                                      nombreLiteral="#{labels['dialogUnidadAdminsitrativa.responsableCV']}"/>
                             </p>
                         </div>
@@ -280,7 +288,7 @@
 
                 <div class="row left-container mx-0 mb-2">
                     <div class="col-12 left-container-header text-center">
-                        <p class="left-container-tit mt-2 mb-1">MATERIAS</p>
+                        <p class="left-container-tit mt-2 mb-1">MATERIAS (MOCK)</p>
                     </div>
                     <div class="col-10 p-1">
                         <p:dataTable id="dataTableMaterias" var="td" value="#{dialogUnidadAdministrativa.materiasSIA}"
@@ -308,9 +316,9 @@
                         <p:button title="Consultar" icon="pi pi-eye"></p:button>
                     </div>
                 </div>
-                <div class="row left-container mx-0 mb-2">
+                <!--<div class="row left-container mx-0 mb-2">
                     <div class="col-12 left-container-header text-center">
-                        <p class="left-container-tit mt-2 mb-1">EDIFICIOS</p>
+                        <p class="left-container-tit mt-2 mb-1">EDIFICIOS (MOCK)</p>
                     </div>
                     <div class="col-10 p-1">
                         <p:dataTable id="dataTableEdificios" var="td" value="#{dialogUnidadAdministrativa.edificios}"
@@ -319,16 +327,16 @@
                                      selection="#{dialogUnidadAdministrativa.edificioSeleccionado}"
                                      rowKey="#{td.codigo}" styleClass="noHeader">
 
-                            <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                            &lt;!&ndash; Necesario para actualizar en controlador la fila seleccionada &ndash;&gt;
                             <p:ajax event="rowSelect" global="false"/>
                             <p:ajax event="rowUnselect"/>
                             <p:ajax event="rowDblselect"
                                     oncomplete="rcEditarPropiedad();"
                             />
 
-                            <!--<p:column headerText="CÓDIGO" styleClass="text-center w-25">
+                            &lt;!&ndash;<p:column headerText="CÓDIGO" styleClass="text-center w-25">
                                 <h:outputText value="#{td.codigo}"/>
-                            </p:column>-->
+                            </p:column>&ndash;&gt;
 
                             <p:column headerText="DIRECCIÓN" styleClass="text-center w75">
                                 <h:outputText value="#{td.direccion}"/>
@@ -341,10 +349,10 @@
                         <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
                         <p:button title="Consultar" icon="pi pi-eye"></p:button>
                     </div>
-                </div>
-                <div class="row left-container mx-0 mb-2">
+                </div>-->
+               <!-- <div class="row left-container mx-0 mb-2">
                     <div class="col-12 left-container-header text-center">
-                        <p class="left-container-tit mt-2 mb-1">SECCIONES</p>
+                        <p class="left-container-tit mt-2 mb-1">SECCIONES (MOCK)</p>
                     </div>
                     <div class="col-10 p-1">
                         <p:dataTable id="dataTableSecciones" var="td" value="#{dialogUnidadAdministrativa.secciones}"
@@ -353,16 +361,16 @@
                                      selection="#{dialogUnidadAdministrativa.seccionSeleccionada}"
                                      rowKey="#{td.codigo}" styleClass="noHeader">
 
-                            <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                            &lt;!&ndash; Necesario para actualizar en controlador la fila seleccionada &ndash;&gt;
                             <p:ajax event="rowSelect" global="false"/>
                             <p:ajax event="rowUnselect"/>
                             <p:ajax event="rowDblselect"
                                     oncomplete="rcEditarPropiedad();"
                             />
 
-                            <!--<p:column headerText="CÓDIGO" styleClass="text-center w-25">
+                            &lt;!&ndash;<p:column headerText="CÓDIGO" styleClass="text-center w-25">
                                 <h:outputText value="#{td.codigo}"/>
-                            </p:column>-->
+                            </p:column>&ndash;&gt;
 
                             <p:column headerText="SECCIONES" styleClass="text-center w75">
                                 <h:outputText value="#{td.identificador}"/>
@@ -375,14 +383,14 @@
                         <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
                         <p:button title="Consultar" icon="pi pi-eye"></p:button>
                     </div>
-                </div>
+                </div>-->
                 <div class="row left-container mx-0">
                     <div class="col-12 left-container-header text-center">
-                        <p class="left-container-tit mt-2 mb-1">USUARIOS</p>
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.usuarios']}</p>
                     </div>
                     <div class="col-10 p-1">
-                        <p:dataTable id="dataTablePropiedades" var="td" value="#{dialogUnidadAdministrativa.usuarios}"
-                                     emptyMessage="La tabla está vacía" scrollable="true" scrollHeight="120"
+                        <p:dataTable id="dataTableUsuarios" var="td" value="#{dialogUnidadAdministrativa.data.usuariosUnidadAdministrativa}"
+                                     emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
                                      paginator="false" selectionMode="single"
                                      selection="#{dialogUnidadAdministrativa.usuarioSeleccionado}"
                                      rowKey="#{td.codigo}" styleClass="noHeader">
@@ -390,24 +398,28 @@
                             <!-- Necesario para actualizar en controlador la fila seleccionada -->
                             <p:ajax event="rowSelect" global="false"/>
                             <p:ajax event="rowUnselect"/>
-                            <p:ajax event="rowDblselect"
-                                    oncomplete="rcEditarPropiedad();"
-                            />
 
-                            <!--<p:column headerText="CÓDIGO" styleClass="text-center w-25">
-                                <h:outputText value="#{td.codigo}"/>
-                            </p:column>-->
 
-                            <p:column headerText="USUARIOS" styleClass="text-center w75">
+                            <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
                                 <h:outputText value="#{td.identificador}"/>
                             </p:column>
 
                         </p:dataTable>
                     </div>
                     <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                        <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
-                        <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
-                        <p:button title="Consultar" icon="pi pi-eye"></p:button>
+                        <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                         process="@this" actionListener="#{dialogUnidadAdministrativa.anyadirUsuarios()}"
+                                         rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}">
+                            <p:ajax event="dialogReturn"  process="@this"
+                                    update="messagesDialog dataTableUsuarios"/>
+                        </p:commandButton>
+                        <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                         action="#{dialogUnidadAdministrativa.borrarUsuario()}"
+                                         process="@this" update="dataTableUsuarios messagesDialog"
+                                         rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}"/>
+                        <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                         action="#{dialogUnidadAdministrativa.consultarUsuario()}"
+                                         process="@this" update="dataTableUsuarios messagesDialog"/>
                     </div>
                 </div>
 

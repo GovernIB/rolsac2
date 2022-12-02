@@ -11,6 +11,7 @@ import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,9 +20,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -44,8 +43,6 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
     private List<UsuarioDTO> usuarios;
 
-    private UsuarioDTO usuarioSeleccionado;
-
     private List<TipoMateriaSIADTO> materiasSIA;
 
     private TipoMateriaSIADTO materiaSeleccionada;
@@ -57,6 +54,8 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
     private List<EdificioDTO> edificios;
 
     private EdificioDTO edificioSeleccionado;
+
+    private UsuarioGridDTO usuarioSeleccionado;
 
     @EJB
     private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
@@ -85,53 +84,16 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             data.setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setPresentacion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setResponsable(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            data.setUsuariosUnidadAdministrativa(new ArrayList<>());
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
         }
 
-        usuarios = new ArrayList<>();
-
-        final UsuarioDTO usu1 = new UsuarioDTO();
-        usu1.setCodigo(1L);
-        usu1.setIdentificador("Usuario 1_Apellido1_Apellido2");
-
-        final UsuarioDTO usu2 = new UsuarioDTO();
-        usu2.setCodigo(2L);
-        usu2.setIdentificador("Usuario 2");
-
-        final UsuarioDTO usu3 = new UsuarioDTO();
-        usu3.setCodigo(3L);
-        usu3.setIdentificador("Usuario 3");
-
-        final UsuarioDTO usu4 = new UsuarioDTO();
-        usu4.setCodigo(4L);
-        usu4.setIdentificador("Usuario 4");
-
-        final UsuarioDTO usu5 = new UsuarioDTO();
-        usu5.setCodigo(5L);
-        usu5.setIdentificador("Usuario 5");
-
-        final UsuarioDTO usu6 = new UsuarioDTO();
-        usu6.setCodigo(6L);
-        usu6.setIdentificador("Usuario 6");
-
-        final UsuarioDTO usuN = new UsuarioDTO();
-        usuN.setCodigo(7L);
-        usuN.setIdentificador("Usuario N");
-
-        usuarios.add(usu1);
-        usuarios.add(usu2);
-        usuarios.add(usu3);
-        usuarios.add(usu4);
-        usuarios.add(usu5);
-        usuarios.add(usu6);
-        usuarios.add(usuN);
-
         materiasSIA = new ArrayList<>();
 
         final TipoMateriaSIADTO mat1 = new TipoMateriaSIADTO();
-        final Literal l1= new Literal();
+        final Literal l1 = new Literal();
         final List<Traduccion> traducciones = new ArrayList<>();
         final Traduccion t1 = new Traduccion();
         t1.setLiteral("Descripción del tipo de materia SIA.");
@@ -171,7 +133,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
         secciones = new ArrayList<>();
 
-        final SeccionDTO sec1 = new SeccionDTO();
+        /*final SeccionDTO sec1 = new SeccionDTO();
         sec1.setCodigo(1L);
         sec1.setIdentificador("Portada Home");
 
@@ -219,7 +181,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         edificios.add(e2);
         edificios.add(e3);
         edificios.add(e4);
-        edificios.add(e5);
+        edificios.add(e5);*/
 
     }
 
@@ -282,14 +244,81 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             return false;
         }
         List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getNombre(), sessionBean.getIdiomasObligatoriosList());
-        if(!idiomasPendientesDescripcion.isEmpty()) {
+        if (!idiomasPendientesDescripcion.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dict.nombre", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }
 
 
-
         return true;
+    }
+
+    /**
+     * Abrir dialogo de Selección de Usuarios
+     */
+    public void abrirDialogUsuarios(TypeModoAcceso modoAcceso) {
+
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", usuarioSeleccionado.getCodigo().toString());
+            UtilJSF.openDialog("/entidades/dialogUsuario", modoAcceso, params, true, 700, 300);
+        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+            UtilJSF.anyadirMochila("usuariosUnidadAdministrativa", data.getUsuariosUnidadAdministrativa());
+            UtilJSF.anyadirMochila("unidadAdministrativa", data);
+            final Map<String, String> params = new HashMap<>();
+            UtilJSF.openDialog("/entidades/dialogSeleccionUsuariosUnidadAdministrativa", modoAcceso, params, true, 1040, 460);
+        }
+    }
+
+    /**
+     * Método que asigna los usuarios a la UA al volver del dialog de selección de usuarios.
+     *
+     * @param event
+     */
+    public void returnDialogo(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        // Verificamos si se ha modificado
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            List<UsuarioGridDTO> usuariosUAseleccionados = (List<UsuarioGridDTO>) respuesta.getResult();
+            if (usuariosUAseleccionados != null) {
+                if (data.getUsuariosUnidadAdministrativa() == null) {
+                    data.setUsuariosUnidadAdministrativa(new ArrayList<>());
+                }
+                this.data.getUsuariosUnidadAdministrativa().clear();
+                this.data.getUsuariosUnidadAdministrativa().addAll(usuariosUAseleccionados);
+            }
+        }
+    }
+
+    /**
+     * Método para dar de alta usuarios en una UA
+     */
+    public void anyadirUsuarios() {
+        abrirDialogUsuarios(TypeModoAcceso.ALTA);
+    }
+
+    /**
+     * Método para consultar el detalle de un usuario en una UA
+     */
+    public void consultarUsuario() {
+        if (usuarioSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogUsuarios(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    /**
+     * Método para borrar un usuario en una UA
+     */
+    public void borrarUsuario() {
+        if (usuarioSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getUsuariosUnidadAdministrativa().remove(usuarioSeleccionado);
+            usuarioSeleccionado = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
     }
 
 
@@ -349,14 +378,6 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         this.usuarios = usuarios;
     }
 
-    public UsuarioDTO getUsuarioSeleccionado() {
-        return usuarioSeleccionado;
-    }
-
-    public void setUsuarioSeleccionado(UsuarioDTO usuarioSeleccionado) {
-        this.usuarioSeleccionado = usuarioSeleccionado;
-    }
-
     public List<TipoMateriaSIADTO> getMateriasSIA() {
         return materiasSIA;
     }
@@ -403,5 +424,13 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
     public void setEdificioSeleccionado(EdificioDTO edificioSeleccionado) {
         this.edificioSeleccionado = edificioSeleccionado;
+    }
+
+    public UsuarioGridDTO getUsuarioSeleccionado() {
+        return usuarioSeleccionado;
+    }
+
+    public void setUsuarioSeleccionado(UsuarioGridDTO usuarioSeleccionado) {
+        this.usuarioSeleccionado = usuarioSeleccionado;
     }
 }
