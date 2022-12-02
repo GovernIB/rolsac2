@@ -33,12 +33,15 @@
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this" update="formDialog:txturlAcceso formDialog:txtDescripcion"/>
         </p:selectOneButton>
-        <p:commandButton action="#{dialogPlatTramitElectronica.traducir}"
+        <p:commandButton actionListener="#{dialogPlatTramitElectronica.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this"/>
+                         process="@this">
+            <p:ajax event="dialogReturn" listener="#{dialogPlatTramitElectronica.returnDialogTraducir}" process="@this"
+                    update="formDialog:txturlAcceso formDialog:txtDescripcion"/>
+        </p:commandButton>
     </ui:define>
 
     <ui:define name="contentDialog">
