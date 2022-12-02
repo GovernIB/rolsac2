@@ -1,18 +1,16 @@
 package es.caib.rolsac2.back.controller.maestras;
+
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-
+import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.FicheroServiceFacade;
-
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceBean;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
-
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -22,12 +20,12 @@ import org.slf4j.LoggerFactory;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URLConnection;
+import java.util.List;
 
 
 @Named
@@ -45,7 +43,7 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
     private FicheroServiceFacade ficheroServiceFacade;
 
     @Inject
-    private SystemServiceBean systemServiceBean;
+    private SystemServiceFacade systemServiceBean;
 
     private TypeFicheroExterno tipo = TypeFicheroExterno.NORMATIVA_DOCUMENTO;
 
@@ -95,6 +93,12 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
 
     public boolean verificarGuardar() {
 
+        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getTitulo(), sessionBean.getIdiomasObligatoriosList());
+        if(!idiomasPendientesDescripcion.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dict.titulo", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
+            return false;
+        }
+
         return true;
     }
 
@@ -115,7 +119,7 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
 
 
     public boolean hasDocument(String idioma) {
-        if(this.data.getDocumentos().getTraduccion(idioma) != null) {
+        if (this.data.getDocumentos().getTraduccion(idioma) != null) {
             return true;
         }
         return false;

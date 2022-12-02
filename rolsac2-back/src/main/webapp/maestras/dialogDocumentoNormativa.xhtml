@@ -20,7 +20,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogDocumentoNormativa.detalle']} - #{dialogDocumentoNormativa.data.codigo} "
+        <h:outputFormat value="#{labels['dialogDocumentoNormativa.detalle']} - #{dialogDocumentoNormativa.data.titulo.getTraduccion(dialogDocumentoNormativa.idioma)} "
                         rendered="#{!dialogDocumentoNormativa.isModoAlta()}"/>
         <h:outputFormat value="#{labels['dialogDocumentoNormativa.nuevo.documentoNormativa']}"
                         rendered="#{dialogDocumentoNormativa.isModoAlta()}"/>
@@ -46,7 +46,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
 
