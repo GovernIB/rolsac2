@@ -9,7 +9,7 @@ import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceBean;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -31,7 +31,7 @@ import java.util.List;
 @Stateless
 @Local(NormativaServiceFacade.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-public class NormativaServiceFacadeBean implements NormativaServiceFacade{
+public class NormativaServiceFacadeBean implements NormativaServiceFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(NormativaServiceFacadeBean.class);
 
@@ -66,7 +66,10 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade{
     FicheroExternoRepository ficheroExternoRepository;
 
     @Inject
-    private SystemServiceBean systemServiceBean;
+    private SystemServiceFacade systemServiceBean;
+
+    @Inject
+    private ProcedimientoRepository procedimientoRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -117,10 +120,10 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade{
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public NormativaDTO findById(Long id) {
-        NormativaDTO normativaDTO= converter.createDTO(normativaRepository.findById(id));
+        NormativaDTO normativaDTO = converter.createDTO(normativaRepository.findById(id));
         List<JDocumentoNormativa> jDocumentosNormativas = documentoNormativaRepository.findDocumentosRelacionados(id);
         List<DocumentoNormativaDTO> documentosRelacionados = new ArrayList<>();
-        for(JDocumentoNormativa doc : jDocumentosNormativas) {
+        for (JDocumentoNormativa doc : jDocumentosNormativas) {
             documentosRelacionados.add(documentoNormativaConverter.createDTO(doc));
         }
         normativaDTO.setDocumentosNormativa(documentosRelacionados);
@@ -164,6 +167,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade{
             return new ArrayList<>();
         }
     }
+
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -189,9 +193,9 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade{
 
         documentoNormativaRepository.create(jDocumentoNormativa);
 
-        if(dto.getDocumentos() != null) {
-            for(String idioma: dto.getDocumentos().getIdiomas()) {
-                if(dto.getDocumentos().getTraduccion(idioma) != null) {
+        if (dto.getDocumentos() != null) {
+            for (String idioma : dto.getDocumentos().getIdiomas()) {
+                if (dto.getDocumentos().getTraduccion(idioma) != null) {
                     ficheroExternoRepository.persistFicheroExterno(dto.getNormativa().getCodigo(), dto.getNormativa().getCodigo(),
                             systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
                 }
@@ -240,10 +244,31 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade{
     public List<DocumentoNormativaDTO> findDocumentosNormativa(Long idNormativa) {
         List<JDocumentoNormativa> jDocumentosNormativas = documentoNormativaRepository.findDocumentosRelacionados(idNormativa);
         List<DocumentoNormativaDTO> documentosRelacionados = new ArrayList<>();
-        for(JDocumentoNormativa doc : jDocumentosNormativas) {
+        for (JDocumentoNormativa doc : jDocumentosNormativas) {
             documentosRelacionados.add(documentoNormativaConverter.createDTO(doc));
         }
         return documentosRelacionados;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeProcedimientoConNormativa(Long codigo) {
+        return procedimientoRepository.existeProcedimientosConNormativas(codigo);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeTipoNormativa(Long codigoTipoNor) {
+        return normativaRepository.existeTipoNormativa(codigoTipoNor);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeBoletin(Long codigoBol) {
+        return normativaRepository.existeBoletin(codigoBol);
     }
 
 }

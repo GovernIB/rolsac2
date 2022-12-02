@@ -13,4 +13,8 @@ public interface NormativaRepository extends CrudRepository<JNormativa, Long> {
     List<NormativaGridDTO> findPagedByFiltro(NormativaFiltro filtro);
 
     long countByFiltro(NormativaFiltro filtro);
+
+    boolean existeTipoNormativa(Long codigoTipoNor);
+
+    boolean existeBoletin(Long codigoBol);
 }

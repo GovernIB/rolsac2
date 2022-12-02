@@ -144,6 +144,12 @@ public class DialogNormativa extends AbstractController implements Serializable 
             return false;
         }
 
+        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getNombre(), sessionBean.getIdiomasObligatoriosList());
+        if(!idiomasPendientesDescripcion.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogNormativa.titulo", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
+            return false;
+        }
+
         return true;
     }
 

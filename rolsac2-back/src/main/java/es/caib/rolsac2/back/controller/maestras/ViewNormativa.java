@@ -133,7 +133,12 @@ public class ViewNormativa extends AbstractController implements Serializable {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            normativaServiceFacade.delete(datoSeleccionado.getCodigo());
+            boolean existen = normativaServiceFacade.existeProcedimientoConNormativa(datoSeleccionado.getCodigo());
+            if (existen) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.error.relacionProcedimientos"));
+            } else {
+                normativaServiceFacade.delete(datoSeleccionado.getCodigo());
+            }
         }
     }
 
@@ -153,7 +158,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200) , (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+        UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
     }
 
     public NormativaGridDTO getDatoSeleccionado() {

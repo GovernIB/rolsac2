@@ -39,11 +39,11 @@
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
         <div class="ui-g-12 ui-md-9 pl-4 panel-container">
-            <p:panel header="DATOS">
+            <p:panel id="formDatos" header="#{labels['dialogNormativa.datos']}">
                 <div class="form-row">
                     <div class="form-group col-md-10">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.titulo']}:"
@@ -55,7 +55,9 @@
                                              idioma="#{dialogNormativa.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                             nombreLiteral="#{labels['dict.descripcion']}"/>
+                                             nombreLiteral="#{labels['dict.descripcion']}">
+                            <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                        </my:literalComponent>
                     </div>
                     <div class="form-group col-md-2">
                         <p class="mb-1">
@@ -67,12 +69,11 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                        <p class="mb-1">
-                            <h:outputText value="#{labels['dialogNormativa.tipoNormativa']}:"
-                                          for="selectTipoNormativa"/>
-                        </p>
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.tipoNormativa']}:"
+                                       for="selectTipoNormativa"/>
                         <p:selectOneMenu id="selectTipoNormativa" value="#{dialogNormativa.data.tipoNormativa}"
                                          styleClass="w95" required="true"
+                                         requiredMessage="#{labels['dict.obligatorio.tipoNormativa']}"
                                          disabled="#{dialogNormativa.isModoConsulta()}"
                                          converter="#{tipoNormativaConverter}">
                             <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.tipoNormativa']}"
@@ -86,28 +87,33 @@
                             <h:outputText value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
                         </p>
                         <p:inputText id="txtNumero" value="#{dialogNormativa.data.numero}"
-                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
+                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"
+                                     placeholder="NNNNN/YYYY"/>
                     </div>
                     <div class="form-group col-md-4">
-                        <p class="mb-1">
-                            <h:outputText value="#{labels['dialogNormativa.fechaAprobacion']}:"
-                                          for="txtFechaAprobacion"/>
+                        <p class="mb-0">
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                                           value="#{labels['dialogNormativa.fechaAprobacion']}:"
+                                           for="txtFechaAprobacion"/>
                         </p>
                         <p:calendar id="txtFechaAprobacion" disabled="#{dialogNormativa.isModoConsulta()}"
+                                    requiredMessage="#{labels['dict.obligatorio.fechaAprobacion']}"
                                     required="true" showOn="button"
                                     value="#{dialogNormativa.data.fechaAprobacion}" pattern="dd/MM/yyyy"/>
                     </div>
                 </div>
             </p:panel>
-            <p:panel header="DATOS DE PUBLICACIÓN">
+            <p:panel id="formPublicacion" header="#{labels['dialogNormativa.datosPublicacion']}">
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                        <p class="mb-1">
-                            <h:outputText value="#{labels['dialogNormativa.boletinOficial']}:"
-                                          for="selectBoletinOficial"/>
-                        </p>
+
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                                       value="#{labels['dialogNormativa.boletinOficial']}:"
+                                       for="selectBoletinOficial"/>
+
                         <p:selectOneMenu id="selectBoletinOficial" value="#{dialogNormativa.data.boletinOficial}"
                                          styleClass="w95" required="true"
+                                         requiredMessage="#{labels['dict.obligatorio.boletinOficial']}"
                                          disabled="#{dialogNormativa.isModoConsulta()}"
                                          converter="#{boletinOficialConverter}">
                             <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.boletinOficial']}"
@@ -134,12 +140,14 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p class="mb-1">
-                            <h:outputText value="#{labels['dialogNormativa.urlBoletin']}:" for="txtUrlBoletin"/>
-                        </p>
+
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.urlBoletin']}:"
+                                       for="txtUrlBoletin"/>
+
                         <p:inputText id="txtUrlBoletin" value="#{dialogNormativa.data.urlBoletin}"
                                      required="true"
-                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
+                                     requiredMessage="#{labels['dict.obligatorio.enlaceNorma']}"
+                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="500"/>
                     </div>
                 </div>
                 <div class="form-row">
@@ -149,7 +157,7 @@
                                           for="txtNombreResponsable"/>
                         </p>
                         <p:inputText id="txtNombreResponsable" value="#{dialogNormativa.data.nombreResponsable}"
-                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
+                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="255"/>
                     </div>
                 </div>
             </p:panel>
@@ -157,7 +165,7 @@
         <div class="ui-g-12 ui-md-3 pr-1">
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">DOCUMENTOS RELACIONADOS</p>
+                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.documentos']}</p>
                 </div>
                 <div class="col-10 p-1">
                     <p:dataTable id="dataDocumentosRelacionados"
@@ -215,7 +223,7 @@
             </div>
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">UAs RELACIONADAS</p>
+                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.uaRelacionadas']}</p>
                 </div>
                 <div class="col-10 p-1">
                     <p:dataTable id="dataUAsRelacionadas" var="td" value="#{dialogNormativa.uaRelacionadas}"
@@ -244,7 +252,7 @@
             </div>
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">PROCEDIMIENTOS RELACIONADOS</p>
+                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.procedimientos']}</p>
                 </div>
                 <div class="col-10 p-1">
                     <p:dataTable id="dataProcedimientosRelacionados" var="td"
@@ -270,7 +278,7 @@
             </div>
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">SERVICIOS RELACIONADOS</p>
+                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.servicios']}</p>
                 </div>
                 <div class="col-10 p-1">
                     <p:dataTable id="dataServiciosRelacionados" var="td"
@@ -296,7 +304,7 @@
             </div>
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">AFECTACIONES RELACIONADAS</p>
+                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.afectaciones']}</p>
                 </div>
                 <div class="col-10 p-1">
                     <p:dataTable id="dataAfectacionesRelacionadas" var="td" value="#{dialogNormativa.afectacion}"
@@ -344,7 +352,8 @@
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogNormativa.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog formPublicacion formDatos"
+                         rendered="#{!dialogNormativa.isModoConsulta()}"
                          process="@all"/>
         <p:commandButton action="#{dialogNormativa.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"

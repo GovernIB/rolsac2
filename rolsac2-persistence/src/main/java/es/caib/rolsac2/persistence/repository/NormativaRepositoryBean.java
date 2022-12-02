@@ -110,6 +110,26 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         return (long) getQuery(true, filtro).getSingleResult();
     }
 
+    @Override
+    public boolean existeTipoNormativa(Long codigoTipoNor) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT count(j) FROM JNormativa j where j.tipoNormativa.codigo = :codigoTipoNor ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoTipoNor", codigoTipoNor);
+        Long resultado = (Long) query.getSingleResult();
+        return resultado > 0;
+    }
+
+    @Override
+    public boolean existeBoletin(Long codigoBol) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT count(j) FROM JNormativa j where j.boletinOficial.codigo = :codigoBol ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoBol", codigoBol);
+        Long resultado = (Long) query.getSingleResult();
+        return resultado > 0;
+    }
+
     private String getOrden(String order) {
         // return "j." + order;
         switch (order) {

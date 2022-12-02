@@ -98,7 +98,7 @@ public interface NormativaServiceFacade {
      *
      * @return Lista de todos los objectos en Boletin Oficial
      */
-     DocumentoNormativaDTO findDocumentoNormativa(Long id);
+    DocumentoNormativaDTO findDocumentoNormativa(Long id);
 
 
     /**
@@ -108,5 +108,27 @@ public interface NormativaServiceFacade {
      */
     List<DocumentoNormativaDTO> findDocumentosNormativa(Long idNormativa);
 
+    /**
+     * Comprueba si existen procedimientos con dicha normativa
+     *
+     * @param codigo
+     * @return
+     */
+    boolean existeProcedimientoConNormativa(Long codigo);
 
+    /**
+     * Comprueba si existe el tipo normativa asociado a alguna normativa
+     *
+     * @param codigoTipoNor
+     * @return
+     */
+    boolean existeTipoNormativa(Long codigoTipoNor);
+
+    /**
+     * Comprueba si existe el boletín asociado a alguna normativa
+     *
+     * @param codigoBol
+     * @return
+     */
+    boolean existeBoletin(Long codigoBol);
 }
