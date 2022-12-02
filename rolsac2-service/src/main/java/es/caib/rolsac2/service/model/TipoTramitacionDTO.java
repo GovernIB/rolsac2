@@ -5,6 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -24,6 +25,26 @@ public class TipoTramitacionDTO extends ModelApi {
      * Tramitación electrónica
      */
     private boolean tramitElectronica;
+
+    /**
+     * Tramitacion telefonica
+     */
+    private boolean tramitTelefonica;
+
+    /**
+     * Descripcion
+     */
+    private Literal descripcion;
+
+    /**
+     * Descripcion
+     */
+    private Literal url;
+
+    /**
+     * Fase procedimiento
+     */
+    private Integer faseProc;
 
     /**
      * URL tramitación
@@ -72,11 +93,21 @@ public class TipoTramitacionDTO extends ModelApi {
      * Constructor
      **/
     public TipoTramitacionDTO() {
-        //Vacio
+        // Vacio
     }
 
     public TipoTramitacionDTO(Long id) {
         this.codigo = id;
+    }
+
+    public static TipoTramitacionDTO createInstance(List<String> idiomasPermitidosList) {
+        TipoTramitacionDTO tipoTramitacion = new TipoTramitacionDTO();
+        tipoTramitacion.setTramitPresencial(false);
+        tipoTramitacion.setTramitElectronica(false);
+        tipoTramitacion.setTramitTelefonica(false);
+        tipoTramitacion.setDescripcion(Literal.createInstance(idiomasPermitidosList));
+        tipoTramitacion.setUrl(Literal.createInstance(idiomasPermitidosList));
+        return tipoTramitacion;
     }
 
     public Long getCodigo() {
@@ -159,18 +190,53 @@ public class TipoTramitacionDTO extends ModelApi {
         this.entidad = entidad;
     }
 
+    public Literal getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(Literal descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Literal getUrl() {
+        return url;
+    }
+
+    public void setUrl(Literal url) {
+        this.url = url;
+    }
+
+    public final Integer getFaseProc() {
+        return faseProc;
+    }
+
+    public final void setFaseProc(Integer faseProc) {
+        this.faseProc = faseProc;
+    }
+
+    public boolean isTramitTelefonica() {
+        return tramitTelefonica;
+    }
+
+    public void setTramitTelefonica(boolean tramitTelefonica) {
+        this.tramitTelefonica = tramitTelefonica;
+    }
+
     @Override
     public String toString() {
-        return "TipoTramitacionDTO{" + "id=" + codigo + ", tramitPresencial=" + tramitPresencial + ", plantilla=" + plantilla
-                + ", tramitElectronica=" + tramitElectronica + ", urlTramitacion='" + urlTramitacion + '\''
-                + ", codPlatTramitacion=" + codPlatTramitacion + ", tramiteId='" + tramiteId + '\''
-                + ", tramiteVersion=" + tramiteVersion + ", tramiteParametros='" + tramiteParametros + '\'' + '}';
+        return "TipoTramitacionDTO{" + "id=" + codigo + ", tramitPresencial="
+                + tramitPresencial + ", plantilla=" + plantilla + ", tramitElectronica=" + tramitElectronica
+                + ", urlTramitacion='" + urlTramitacion + '\'' + ", codPlatTramitacion=" + codPlatTramitacion
+                + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion + ", tramiteParametros='"
+                + tramiteParametros + '\'' + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         TipoTramitacionDTO that = (TipoTramitacionDTO) o;
         if (codigo != null && that.codigo != null) {
             return codigo.equals(that.codigo);
@@ -186,6 +252,7 @@ public class TipoTramitacionDTO extends ModelApi {
     public TipoTramitacionDTO(TipoTramitacionDTO otro) {
         if (otro != null) {
             this.codigo = otro.codigo;
+            this.descripcion = otro.descripcion;
             this.tramitPresencial = otro.tramitPresencial;
             this.tramitElectronica = otro.tramitElectronica;
             this.urlTramitacion = otro.urlTramitacion;

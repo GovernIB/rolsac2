@@ -71,7 +71,7 @@ public class TipoMediaFichaRepositoryBean extends AbstractCrudRepository<JTipoMe
                     "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoMediaFicha j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where t.idioma = :idioma");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro )");
+            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro )");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -93,6 +93,9 @@ public class TipoMediaFichaRepositoryBean extends AbstractCrudRepository<JTipoMe
 
     private String getOrden(String order) {
         //Se puede hacer un switch/if pero en este caso, con j.+order sobra
+        if ("descripcion".equals(order)) {
+            return "t." + order;
+        }
         return "j." + order;
     }
 

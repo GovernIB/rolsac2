@@ -101,6 +101,9 @@ public class ViewTipoMediaFicha extends AbstractController implements Serializab
                     Map<String, FilterMeta> filterBy
             ) {
                 try {
+                    if (!sortField.equals("filtro.orderBy")) {
+                        filtro.setOrderBy(sortField);
+                    }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<TipoMediaFichaGridDTO> pagina = pagina = tipoMediaFichaService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
@@ -151,7 +154,7 @@ public class ViewTipoMediaFicha extends AbstractController implements Serializab
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoMediaFicha", modoAcceso, params, true, 800, 265);
+        UtilJSF.openDialog("dialogTipoMediaFicha", modoAcceso, params, true, 800, 285);
 
 
     }

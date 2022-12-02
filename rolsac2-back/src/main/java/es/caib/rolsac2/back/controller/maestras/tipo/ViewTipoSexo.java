@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoSexoGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoSexoFiltro;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,6 +43,9 @@ public class ViewTipoSexo extends AbstractController implements Serializable {
 
     @EJB
     MaestrasSupServiceFacade tipoSexoService;
+
+    @EJB
+    private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
     /**
      * Dato seleccionado
@@ -155,17 +160,22 @@ public class ViewTipoSexo extends AbstractController implements Serializable {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoSexo", modoAcceso, params, true, 800, 265);
+        UtilJSF.openDialog("dialogTipoSexo", modoAcceso, params, true, 800, 290);
 
 
     }
 
     public void borrarTipoSexo() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
         } else {
-            tipoSexoService.deleteTipoSexo(datoSeleccionado.getCodigo());
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            if(unidadAdministrativaServiceFacade.existeTipoSexo(datoSeleccionado.getCodigo())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoSexo.existeRelacion"));
+            } else {
+                tipoSexoService.deleteTipoSexo(datoSeleccionado.getCodigo());
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            }
+
         }
     }
 

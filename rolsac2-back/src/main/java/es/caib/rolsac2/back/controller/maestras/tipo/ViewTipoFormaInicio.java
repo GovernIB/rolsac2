@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoFormaInicioGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoFormaInicioFiltro;
@@ -154,16 +155,20 @@ public class ViewTipoFormaInicio extends AbstractController implements Serializa
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoFormaInicio", modoAcceso, params, true, 780, 265);
+        UtilJSF.openDialog("dialogTipoFormaInicio", modoAcceso, params, true, 780, 290);
     }
 
 
     public void borrarTipoFormaInicio() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
         } else {
-            maestrasSupService.deleteTipoFormaInicio(datoSeleccionado.getCodigo());
-            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+            if(maestrasSupService.existeProcedimientoConFormaInicio(datoSeleccionado.getCodigo())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoFormaInicio.existeRelacion"));
+            } else {
+                maestrasSupService.deleteTipoFormaInicio(datoSeleccionado.getCodigo());
+                addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+            }
         }
     }
 

@@ -29,12 +29,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
   <ui:define name="contentDialog">
     <p:growl id="messagesDialog"
              globalOnly="false"
-             showDetail="true"
+             showDetail="false"
              life="5000"
              escape="false"/>
 
 
-    <p:panel>
+    <p:panel  id="form">
       <div class="row">
 
         <div class="ui-g-12 ui-md-2 ui-lg-1">
@@ -46,10 +46,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </div>
 
         <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <p:outputLabel value="#{labels['dialogTipoBoletin.identificador']}:" for="txtIdentificador"/>
+          <p:outputLabel value="#{labels['dialogTipoBoletin.identificador']}:"
+                         for="txtIdentificador"
+          />
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
           <p:inputText id="txtIdentificador" value="#{dialogTipoBoletin.data.identificador}" styleClass="w95"
+                       requiredMessage="#{labels['dict.obligatorio.identificador']}"
                        required="true" disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"
                        onblur="this.value = this.value.toUpperCase();">
             <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
@@ -58,18 +61,24 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </div>
 
         <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <p:outputLabel value="#{labels['dialogTipoBoletin.nombre']}:" for="txtNombre"/>
+          <p:outputLabel value="#{labels['dialogTipoBoletin.nombre']}:"
+                         for="txtNombre"
+          />
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
           <p:inputText id="txtNombre" value="#{dialogTipoBoletin.data.nombre}" styleClass="w95" required="true"
+                       requiredMessage="#{labels['dict.obligatorio.boletin']}"
                        disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"/>
         </div>
 
         <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <p:outputLabel value="#{labels['dialogTipoBoletin.url']}:" for="txtUrl"/>
+          <p:outputLabel value="#{labels['dialogTipoBoletin.url']}:"
+                         for="txtUrl"
+          />
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
           <p:inputText id="txtUrl" value="#{dialogTipoBoletin.data.url}" styleClass="w95" required="true"
+                       requiredMessage="#{labels['dict.obligatorio.url']}"
                        disabled="#{dialogTipoBoletin.isModoConsulta()}" maxlength="50"/>
         </div>
       </div>
@@ -80,9 +89,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <p:commandButton action="#{dialogTipoBoletin.ayuda}"
                      icon="pi pi-info-circle" iconPos="top"
                      value="#{labels['dict.ayuda']}"
-                     process="@this"/>
+                     process="@this" update="messagesDialog"/>
     <p:commandButton action="#{dialogTipoBoletin.guardar}"
-                     value="#{labels['dict.guardar']}" update="messagesDialog"
+                     value="#{labels['dict.guardar']}" update="messagesDialog form"
                      rendered="#{!dialogTipoBoletin.isModoConsulta()}"
                      process="@all"/>
     <p:commandButton action="#{dialogTipoBoletin.cerrar}"

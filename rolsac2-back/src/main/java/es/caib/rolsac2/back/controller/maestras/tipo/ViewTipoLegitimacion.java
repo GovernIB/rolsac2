@@ -157,7 +157,7 @@ public class ViewTipoLegitimacion extends AbstractController implements Serializ
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoLegitimacion", modoAcceso, params, true, 800, 265);
+        UtilJSF.openDialog("dialogTipoLegitimacion", modoAcceso, params, true, 800, 290);
 
 
     }
@@ -165,10 +165,15 @@ public class ViewTipoLegitimacion extends AbstractController implements Serializ
     public void borrarTipoLegitimacion() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO,
-                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+                    getLiteral("msg.noBorrado.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
-            tipoLegitimacionService.deleteTipoLegitimacion(datoSeleccionado.getCodigo());
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            if(tipoLegitimacionService.existeProcedimientoConLegitimacion(datoSeleccionado.getCodigo())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO,
+                        getLiteral("viewTipoLegitimacion.existeRelacion"));
+            } else {
+                tipoLegitimacionService.deleteTipoLegitimacion(datoSeleccionado.getCodigo());
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            }
         }
     }
 

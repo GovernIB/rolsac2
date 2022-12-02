@@ -1,12 +1,10 @@
 package es.caib.rolsac2.persistence.converter;
 
+import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUsuario;
 import es.caib.rolsac2.persistence.model.JUsuario;
 import es.caib.rolsac2.persistence.model.traduccion.JUsuarioTraduccion;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.UsuarioDTO;
+import es.caib.rolsac2.service.model.*;
 
 import org.mapstruct.*;
 
@@ -15,27 +13,27 @@ import java.util.List;
 import java.util.Objects;
 
 @Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-                uses = {EntidadConverter.class, UsuarioUnidadAdministrativaConverter.class})
+                uses = {EntidadConverter.class, UnidadAdministrativaConverter.class})
 public interface UsuarioConverter extends Converter<JUsuario, UsuarioDTO> {
 
     @Override
-    @Mapping(target = "usuarioUnidadAdministrativa", qualifiedByName = "createDTOs")
     @Mapping(target = "observaciones", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observaciones\"))")
+    @Mapping(target = "unidadesAdministrativas", ignore = true)
     UsuarioDTO createDTO(JUsuario entity);
 
-    @Mapping(target = "usuarioUnidadAdministrativa", ignore = true)
     @Named("createDTOSinUsuarioUnidadAdministrativa")
+    @Mapping(target = "unidadesAdministrativas", ignore = true)
     @Mapping(target ="observaciones", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observaciones\"))" )
     UsuarioDTO createDTOSinUsuarioUnidadAdministrativa(JUsuario entity);
 
     @Override
-    @Mapping(target = "usuarioUnidadAdministrativa", ignore = true)
     @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(jUsuario, dto))")
+    @Mapping(target = "unidadesAdministrativas", ignore = true)
     JUsuario createEntity(UsuarioDTO dto);
 
     @Override
-    @Mapping(target = "usuarioUnidadAdministrativa", ignore = true)
     @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(entity, dto))")
+    @Mapping(target = "unidadesAdministrativas", ignore = true)
     void mergeEntity(@MappingTarget JUsuario entity, UsuarioDTO dto);
 
     default List<JUsuarioTraduccion> convierteLiteralToTraduccion(JUsuario jUsuario, UsuarioDTO usuarioDTO) {
@@ -102,4 +100,5 @@ public interface UsuarioConverter extends Converter<JUsuario, UsuarioDTO> {
         }
         return resultado;
     }
+
 }

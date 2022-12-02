@@ -42,9 +42,6 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                                                                                      value="#{viewEntidades.filtroTexto}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
                                      actionListener="#{viewEntidades.buscar()}" process="@form"/>
-                    <p:commandButton value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus" iconPos="top"
-                                     update="messages dataTable" actionListener="#{viewEntidades.ayuda}"
-                                     process="@form"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"

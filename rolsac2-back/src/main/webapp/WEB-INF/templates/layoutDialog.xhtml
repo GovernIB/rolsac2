@@ -4,11 +4,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      lang="#{userLocale.current.toLanguageTag()}">
+      lang="#{sessionBean.current.toLanguageTag()}">
 <!--
 Plantilla.
 -->
-<f:view locale="#{userLocale.current}">
+<f:view locale="#{sessionBean.current}">
     <!-- Espai perquè les pàgines que emprin el template defineixin els seus viewParam i viewAction -->
     <ui:insert name="metadata"/>
     <h:head class="bg-aplicacio x">

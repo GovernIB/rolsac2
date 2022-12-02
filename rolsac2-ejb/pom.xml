@@ -74,6 +74,13 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+
+        <!--Dependencia de Jakarta para incluir modelos utilizados para el cálculor de CronTriggers-->
+        <dependency>
+            <groupId>jakarta.enterprise.concurrent</groupId>
+            <artifactId>jakarta.enterprise.concurrent-api</artifactId>
+            <version>${jakarta.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

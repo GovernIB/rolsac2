@@ -1,19 +1,23 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
+import es.caib.rolsac2.service.model.TipoTramitacionDTO;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * Representacion de un tipo de tramitación. A nivel de clase, definimos la secuencia que utilizaremos y sus claves
- * unicas.
+ * Representacion de un tipo de tramitación. A nivel de clase, definimos la
+ * secuencia que utilizaremos y sus claves unicas.
  *
  * @author Indra
  */
 @Entity
 @SequenceGenerator(name = "tipo-tramitacion-sequence", sequenceName = "RS2_TRMPRE_SEQ", allocationSize = 1)
-@Table(name = "RS2_TRMPRE", indexes = {@Index(name = "RS2_TRMPRE_PK", columnList = "PRES_CODIGO")})
-@NamedQueries({@NamedQuery(name = JTipoTramitacion.FIND_BY_ID,
-        query = "select p from JTipoTramitacion p where p.codigo = :id")})
+@Table(name = "RS2_TRMPRE", indexes = {@Index(name = "RS2_TRMPRE_PK_I", columnList = "PRES_CODIGO")})
+@NamedQueries({
+        @NamedQuery(name = JTipoTramitacion.FIND_BY_ID, query = "select p from JTipoTramitacion p where p.codigo = :id")})
 public class JTipoTramitacion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -26,6 +30,11 @@ public class JTipoTramitacion extends BaseEntity {
     private Long codigo;
 
     /**
+     * Traducciones
+     */
+    @OneToMany(mappedBy = "tipoTramitacion", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JTipoTramitacionTraduccion> traducciones;
+    /**
      * Tramitación presencial
      */
     @Column(name = "PRES_TRPRES", nullable = false, precision = 1, scale = 0)
@@ -36,6 +45,13 @@ public class JTipoTramitacion extends BaseEntity {
      */
     @Column(name = "PRES_TRELEC", nullable = false, precision = 1, scale = 0)
     private boolean tramitElectronica;
+
+    /**
+     * Tramitacion telefonica
+     */
+    @Column(name = "PRES_TRTEL", nullable = false, precision = 1, scale = 0)
+    private boolean tramitTelefonica;
+
 
     /**
      * URL tramitación
@@ -57,6 +73,12 @@ public class JTipoTramitacion extends BaseEntity {
     private String tramiteId;
 
     /**
+     * Fase Procedimiento
+     */
+    @Column(name = "PRES_FASEPROC")
+    private Integer faseProc;
+
+    /**
      * Trámite Versión
      */
     @Column(name = "PRES_INTTVE", nullable = false, precision = 3, scale = 0)
@@ -74,20 +96,21 @@ public class JTipoTramitacion extends BaseEntity {
     @Column(name = "PRES_PLANTI", nullable = false, precision = 1, scale = 0)
     private boolean plantilla;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRES_CODENTI")
     private JEntidad entidad;
+
 
     public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Long id) {
-        this.codigo = id;
-    }
-
     public boolean isTramitPresencial() {
         return tramitPresencial;
+    }
+
+    public void setCodigo(Long id) {
+        this.codigo = id;
     }
 
     public void setTramitPresencial(boolean tramitPresencial) {
@@ -120,6 +143,14 @@ public class JTipoTramitacion extends BaseEntity {
 
     public String getTramiteId() {
         return tramiteId;
+    }
+
+    public boolean isTramitTelefonica() {
+        return tramitTelefonica;
+    }
+
+    public void setTramitTelefonica(boolean tramitTelefonica) {
+        this.tramitTelefonica = tramitTelefonica;
     }
 
     public void setTramiteId(String tramiteId) {
@@ -158,6 +189,26 @@ public class JTipoTramitacion extends BaseEntity {
         this.entidad = entidad;
     }
 
+    public Integer getFaseProc() {
+        return faseProc;
+    }
+
+    public void setFaseProc(Integer faseProc) {
+        this.faseProc = faseProc;
+    }
+
+    public List<JTipoTramitacionTraduccion> getTraducciones() {
+        return traducciones;
+    }
+
+    public void setTraducciones(List<JTipoTramitacionTraduccion> traducciones) {
+        if (this.traducciones == null || this.traducciones.isEmpty()) {
+            this.traducciones = traducciones;
+        } else {
+            this.traducciones.addAll(traducciones);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -175,9 +226,35 @@ public class JTipoTramitacion extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JTipoTramitacion{" + "id=" + codigo + ", tramitPresencial=" + tramitPresencial + ", plantilla=" + plantilla
-                + ", tramitElectronica=" + tramitElectronica + ", urlTramitacion='" + urlTramitacion + '\'' + ", codPlatTramitacion="
-                + codPlatTramitacion + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion
-                + ", tramiteParametros='" + tramiteParametros + '\'' + '}';
+        return "JTipoTramitacion{" + "id=" + codigo + ", tramitPresencial="
+                + tramitPresencial + ", plantilla=" + plantilla + ", tramitElectronica=" + tramitElectronica
+                + ", urlTramitacion='" + urlTramitacion + '\'' + ", codPlatTramitacion=" + codPlatTramitacion
+                + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion + ", tramiteParametros='"
+                + tramiteParametros + '\'' + '}';
+    }
+
+    public void merge(TipoTramitacionDTO tipoTramitacion) {
+        this.setTramitElectronica(tipoTramitacion.isTramitElectronica());
+        //this.setCodPlatTramitacion(tipoTramitacion.getCodPlatTramitacion());
+        this.setFaseProc(tipoTramitacion.getFaseProc());
+        this.setTramiteId(tipoTramitacion.getTramiteId());
+        this.setTramiteVersion(tipoTramitacion.getTramiteVersion());
+        this.setTramiteParametros(tipoTramitacion.getTramiteParametros());
+        this.setUrlTramitacion(tipoTramitacion.getUrlTramitacion());
+        this.setTramitPresencial(tipoTramitacion.isTramitPresencial());
+        this.setTramitElectronica(tipoTramitacion.isTramitElectronica());
+    }
+
+    public JTipoTramitacionTraduccion getTraduccion(String idioma) {
+        JTipoTramitacionTraduccion retorno = null;
+        if (this.traducciones != null && idioma != null) {
+            for (JTipoTramitacionTraduccion trad : this.getTraducciones()) {
+                if (idioma.equals(trad.getIdioma())) {
+                    retorno = trad;
+                    break;
+                }
+            }
+        }
+        return retorno;
     }
 }

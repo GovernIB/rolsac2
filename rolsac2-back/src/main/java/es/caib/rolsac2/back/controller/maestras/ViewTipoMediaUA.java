@@ -101,6 +101,9 @@ public class ViewTipoMediaUA extends AbstractController implements Serializable 
                     Map<String, FilterMeta> filterBy
             ) {
                 try {
+                    if (!sortField.equals("filtro.orderBy")) {
+                        filtro.setOrderBy(sortField);
+                    }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<TipoMediaUAGridDTO> pagina = pagina = tipoMediaUAService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
@@ -151,7 +154,7 @@ public class ViewTipoMediaUA extends AbstractController implements Serializable 
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoMediaUA", modoAcceso, params, true, 800, 265);
+        UtilJSF.openDialog("dialogTipoMediaUA", modoAcceso, params, true, 800, 285);
 
 
     }

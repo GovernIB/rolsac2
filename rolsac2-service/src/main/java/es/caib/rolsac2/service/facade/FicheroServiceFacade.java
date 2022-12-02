@@ -6,7 +6,7 @@ import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 /**
  * Servicio para los casos de uso de mantenimiento de la entidad y la configuración global.
  *
- * @author jsegovia
+ * @author Indra
  */
 public interface FicheroServiceFacade {
 
@@ -18,6 +18,14 @@ public interface FicheroServiceFacade {
      * @return
      */
     FicheroDTO getContentById(Long idFichero);
+
+    /**
+     * Devuelve el ficheroDTO sin el contenido
+     *
+     * @param idFichero
+     * @return
+     */
+    FicheroDTO getFicheroDTOById(Long idFichero);
 
 
     /**

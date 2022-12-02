@@ -91,7 +91,7 @@ public class DialogTipoSexo extends AbstractController implements Serializable {
 
     private boolean verificarGuardar() {
         if (Objects.isNull(this.data.getCodigo()) && tipoSexoService.existeIdentificadorTipoSexo(this.data.getIdentificador())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.campoVacio"), true);
             return false;
         }
 

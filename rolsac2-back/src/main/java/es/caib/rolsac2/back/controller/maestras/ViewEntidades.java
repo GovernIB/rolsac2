@@ -21,8 +21,6 @@ import org.slf4j.LoggerFactory;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolationException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -31,7 +29,7 @@ import java.util.*;
  * nivell de request es reconstruiria per cada petició AJAX, com ara amb els errors de validació. Amb view es manté
  * mentre no es canvii de vista.
  *
- * @author jrodrigof
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -164,18 +162,18 @@ public class ViewEntidades extends AbstractController implements Serializable {
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogEntidad", modoAcceso, params, true, 780, 650);
+        UtilJSF.openDialog("dialogEntidad", modoAcceso, params, true, 780, 515);
     }
 
     public void borrarEntidad() {
-        try{
+        try {
             if (datoSeleccionado == null) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
             } else {
                 administracionSupServiceFacade.deleteEntidad(datoSeleccionado.getCodigo());
                 addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
             }
-        }catch(ServiceException e){
+        } catch (ServiceException e) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.ua.relacionadas"));
         }
 

@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.NormativaServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoNormativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoNormativaFiltro;
@@ -28,7 +29,7 @@ import java.util.*;
  * a nivell de request es reconstruiria per cada petició AJAX, com ara amb els errors de validació.
  * Amb view es manté mentre no es canvii de vista.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -47,6 +48,9 @@ public class ViewTipoNormativa extends AbstractController implements Serializabl
     @EJB
     MaestrasSupServiceFacade maestrasSupService;
 
+
+    @EJB
+    private NormativaServiceFacade normativaServiceFacade;
 
     /**
      * Dato seleccionado
@@ -162,15 +166,21 @@ public class ViewTipoNormativa extends AbstractController implements Serializabl
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoNormativa", modoAcceso, params, true, 850, 265);
+        UtilJSF.openDialog("dialogTipoNormativa", modoAcceso, params, true, 850, 290);
     }
 
 
     public void borrarTipoNormativa() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
         } else {
-            maestrasSupService.deleteTipoNormativa(datoSeleccionado.getCodigo());
+            if (normativaServiceFacade.existeTipoNormativa(datoSeleccionado.getCodigo())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoNormativa.existeRelacion"));
+            } else {
+                maestrasSupService.deleteTipoNormativa(datoSeleccionado.getCodigo());
+                addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+            }
+
         }
     }
 

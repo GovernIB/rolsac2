@@ -5,6 +5,7 @@ import es.caib.rolsac2.persistence.model.traduccion.JUsuarioTraduccion;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @SequenceGenerator(name = "usuario-sequence", sequenceName = "RS2_USER_SEQ", allocationSize = 1)
@@ -42,8 +43,15 @@ public class JUsuario extends BaseEntity {
     private List<JUsuarioTraduccion> traducciones;
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
-    private List<JUsuarioUnidadAdministrativa> usuarioUnidadAdministrativa;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "RS2_USERUA",
+            joinColumns = {
+                    @JoinColumn(name = "UAUS_CODUSER")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "UAUS_CODUA")
+            })
+    private Set<JUnidadAdministrativa> unidadesAdministrativas;
 
     public Long getCodigo() {
         return codigo;
@@ -83,12 +91,12 @@ public class JUsuario extends BaseEntity {
         this.traducciones = traducciones;
     }
 
-    public List<JUsuarioUnidadAdministrativa> getUsuarioUnidadAdministrativa() {
-        return usuarioUnidadAdministrativa;
+    public Set<JUnidadAdministrativa> getUnidadesAdministrativas() {
+        return unidadesAdministrativas;
     }
 
-    public void setUsuarioUnidadAdministrativa(List<JUsuarioUnidadAdministrativa> usuarioUnidadAdministrativa) {
-        this.usuarioUnidadAdministrativa = usuarioUnidadAdministrativa;
+    public void setUnidadesAdministrativas(Set<JUnidadAdministrativa> unidadesAdministrativas) {
+        this.unidadesAdministrativas = unidadesAdministrativas;
     }
 
     @Override
@@ -115,7 +123,7 @@ public class JUsuario extends BaseEntity {
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
                 ", traducciones=" + traducciones +
-                ", usuarioUnidadAdministrativa=" + usuarioUnidadAdministrativa +
+                ", usuarioUnidadAdministrativa=" + unidadesAdministrativas +
                 '}';
     }
 }

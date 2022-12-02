@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.util.Objects;
+
 @Schema(name = "UsuarioGrid")
 public class UsuarioGridDTO extends ModelApi {
 
@@ -87,5 +89,18 @@ public class UsuarioGridDTO extends ModelApi {
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UsuarioGridDTO that = (UsuarioGridDTO) o;
+        return Objects.equals(codigo, that.codigo) && Objects.equals(identificador, that.identificador) && Objects.equals(entidad, that.entidad) && Objects.equals(nombre, that.nombre) && Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo, identificador, entidad, nombre, email);
     }
 }

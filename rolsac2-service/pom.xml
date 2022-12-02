@@ -13,6 +13,13 @@
     <description>Mòdul amb la interfície de serveis de rolsac2</description>
 
     <dependencies>
+
+        <!--Importamos librería de commons-->
+        <dependency>
+            <groupId>es.caib.rolsac2</groupId>
+            <artifactId>rolsac2-commons</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!-- Especificacions i llibreries proporcionades per JBoss -->
         <dependency>
             <groupId>org.jboss.spec</groupId>
@@ -38,6 +45,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!--Para la interfaz IPlugin-->
+        <dependency>
+            <groupId>org.fundaciobit.pluginsib.core</groupId>
+            <artifactId>pluginsib-core</artifactId>
         </dependency>
     </dependencies>
 

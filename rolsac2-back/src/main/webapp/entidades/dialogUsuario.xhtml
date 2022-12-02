@@ -42,74 +42,107 @@
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
 
-        <p:panel>
+        <p:panel id="form">
             <div class="row">
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputText id="txtCodigo" value="#{dialogUsuario.data.codigo}"
-                                 styleClass="w95" disabled="true" maxlength="50"/>
-                </div>
+                <div class="ui-g-12 ui-md-8 pl-4 panel-container">
+                    <div class="ui-g-12 ui-md-2 ui-lg-1">
+                        <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-10 ui-lg-5">
+                        <p:inputText id="txtCodigo" value="#{dialogUsuario.data.codigo}"
+                                     styleClass="w95" disabled="true" maxlength="50"/>
+                    </div>
 
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputText id="txtIdentificador" value="#{dialogUsuario.data.identificador}"
-                                 styleClass="w95" required="true"
-                                 disabled="#{dialogUsuario.isModoConsulta()}" maxlength="50"/>
-                </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['viewUsuario.nombre']}:" for="txtNombre"/>
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputText id="txtNombre" value="#{dialogUsuario.data.nombre}"
-                                 styleClass="w95" required="true"
-                                 disabled="#{dialogUsuario.isModoConsulta()}" maxlength="50"/>
-                </div>
-
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.email']}:" for="txtEmail"/>
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputText id="txtEmail" value="#{dialogUsuario.data.email}"
-                                 styleClass="w95"
-                                 disabled="#{dialogUsuario.isModoConsulta()}" maxlength="50"/>
-                </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogUsuario.observaciones']}:" for="txtObservaciones"/>
-                </div>
-
-                <div class="ui-g-12 ui-md-10 ui-lg-4">
-                    <my:literalComponent id="txtObservaciones"
-                                         literal="#{dialogUsuario.data.observaciones}"
-                                         soloLecture="#{dialogUsuario.isModoConsulta()}"
-                                         idioma="#{dialogUsuario.idioma}"
-                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dialogUsuario.observaciones']}"/>
-                </div>
-
-
-                <!--
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dialogUsuario.entidad']}:" for="selectEntidad"/>
-                </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:selectOneMenu id="selectEntidad" value="#{dialogUsuario.data.entidad}"
+                    <div class="ui-g-12 ui-md-2 ui-lg-1">
+                        <p:outputLabel styleClass="d-inline" value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-10 ui-lg-5">
+                        <p:inputText id="txtIdentificador" value="#{dialogUsuario.data.identificador}"
                                      styleClass="w95" required="true"
-                                     disabled="#{dialogUsuario.isModoConsulta()}"
-                                     converter="#{entidadConverter}">
-                        <f:selectItem itemLabel="#{labels['dict.selecciona.entidad']}" itemValue="#{null}"/>
-                        <f:selectItems value="#{dialogUsuario.entidadesActivas}" var="entidad"
-                                       itemLabel="#{entidad.dir3}" itemValue="#{entidad}"/>
-                    </p:selectOneMenu>
-                </div> -->
+                                     requiredMessage="#{labels['dict.obligatorio.identificador']}"
+                                     disabled="#{dialogUsuario.isModoConsulta()}" maxlength="50"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-2 ui-lg-1">
+                        <p:outputLabel styleClass="d-inline" value="#{labels['viewUsuario.nombre']}:" for="txtNombre"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-10 ui-lg-5">
+                        <p:inputText id="txtNombre" value="#{dialogUsuario.data.nombre}"
+                                     styleClass="w95" required="true"
+                                     requiredMessage="#{labels['dict.obligatorio.nombre']}"
+                                     disabled="#{dialogUsuario.isModoConsulta()}" maxlength="50"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-2 ui-lg-1">
+                        <p:outputLabel styleClass="d-inline" value="#{labels['dict.email']}:" for="txtEmail"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-10 ui-lg-5">
+                        <p:inputText id="txtEmail" value="#{dialogUsuario.data.email}"
+                                     styleClass="w95"
+                                     disabled="#{dialogUsuario.isModoConsulta()}" maxlength="50">
+                            <f:validateRegex
+                                    pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
+                        </p:inputText>
+                    </div>
+                    <div class="ui-g-12 ui-md-2 ui-lg-2">
+                        <p:outputLabel styleClass="d-inline" value="#{labels['dialogUsuario.observaciones']}:" for="txtObservaciones"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-10 ui-lg-4">
+                        <my:literalComponent id="txtObservaciones"
+                                             literal="#{dialogUsuario.data.observaciones}"
+                                             soloLecture="#{dialogUsuario.isModoConsulta()}"
+                                             idioma="#{dialogUsuario.idioma}"
+                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             nombreLiteral="#{labels['dialogUsuario.observaciones']}"
+                                             disabled="#{dialogUsuario.isModoConsulta()}"/>
+                    </div>
+                </div>
+                <div class="ui-g-12 ui-md-4 pr-1">
+                    <div class="row left-container mx-0">
+                        <div class="col-12 left-container-header text-center">
+                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogUsuario.uaRelacionadas']}</p>
+                        </div>
+                        <div class="col-10 p-1">
+                            <p:dataTable id="dataTableUAs" var="td" value="#{dialogUsuario.data.unidadesAdministrativas}"
+                                         emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
+                                         paginator="false" selectionMode="single"
+                                         selection="#{dialogUsuario.uaSeleccionada}"
+                                         rowKey="#{td.codigo}" styleClass="noHeader">
+
+                                <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                                <p:ajax event="rowSelect" global="false"/>
+                                <p:ajax event="rowUnselect"/>
+
+
+                                <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
+                                    <h:outputText value="#{td.nombre.getTraduccion(dialogUsuario.idioma)}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+                        <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                            <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                             process="@this" actionListener="#{dialogUsuario.anyadirUAs()}"
+                                             rendered="#{!dialogUsuario.isModoConsulta()}">
+                                <p:ajax event="dialogReturn" listener="#{dialogUsuario.returnDialogo}" process="@this"
+                                        update="messagesDialog dataTableUAs"/>
+                            </p:commandButton>
+                            <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                             action="#{dialogUsuario.borrarUA()}"
+                                             process="@this" update="dataTableUAs messagesDialog"
+                                             rendered="#{!dialogUsuario.isModoConsulta()}"/>
+                            <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                             action="#{dialogUsuario.consultarUA()}"
+                                             process="@this" update="dataTableUAs messagesDialog"/>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </p:panel>
     </ui:define>
@@ -119,8 +152,8 @@
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogUsuario.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
-                         process="@all"/>
+                         value="#{labels['dict.guardar']}" update="messagesDialog form"
+                         process="@all" rendered="#{!dialogUsuario.isModoConsulta()}"/>
         <p:commandButton action="#{dialogUsuario.cerrar}"
                          value="#{labels['dict.cerrar']}"
                          process="@this"/>

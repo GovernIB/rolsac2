@@ -71,7 +71,7 @@ public class TipoViaRepositoryBean extends AbstractCrudRepository<JTipoVia, Long
                     "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoVia j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where t.idioma = :idioma");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro )");
+            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro)");
         }
 
         if (filtro.getOrderBy() != null) {

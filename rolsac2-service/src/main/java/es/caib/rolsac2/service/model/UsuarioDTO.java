@@ -13,7 +13,7 @@ public class UsuarioDTO extends ModelApi {
 
     private EntidadDTO entidad;
 
-    private List<UsuarioUnidadAdministrativaDTO> usuarioUnidadAdministrativa;
+    private List<UnidadAdministrativaGridDTO> unidadesAdministrativas;
 
     private String nombre;
 
@@ -48,8 +48,8 @@ public class UsuarioDTO extends ModelApi {
         this.entidad = entidad;
     }
 
-    public List<UsuarioUnidadAdministrativaDTO> getUsuarioUnidadAdministrativa() {
-        return usuarioUnidadAdministrativa;
+    public List<UnidadAdministrativaGridDTO> getUnidadesAdministrativas() {
+        return unidadesAdministrativas;
     }
 
     public String getNombre() { return nombre; }
@@ -64,8 +64,8 @@ public class UsuarioDTO extends ModelApi {
 
     public void setObservaciones(Literal observaciones) { this.observaciones = observaciones; }
 
-    public void setUsuarioUnidadAdministrativa(List<UsuarioUnidadAdministrativaDTO> usuarioUnidadAdministrativa) {
-        this.usuarioUnidadAdministrativa = usuarioUnidadAdministrativa;
+    public void setUnidadesAdministrativas(List<UnidadAdministrativaGridDTO> unidadesAdministrativas) {
+        this.unidadesAdministrativas = unidadesAdministrativas;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class UsuarioDTO extends ModelApi {
                 "codigo=" + codigo +
                 ", identificador='" + identificador + '\'' +
                 ", entidad=" + entidad +
-                ", usuarioUnidadAdministrativa=" + usuarioUnidadAdministrativa +
+                ", usuarioUnidadAdministrativa=" + unidadesAdministrativas +
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
                 ", observaciones=" + observaciones +

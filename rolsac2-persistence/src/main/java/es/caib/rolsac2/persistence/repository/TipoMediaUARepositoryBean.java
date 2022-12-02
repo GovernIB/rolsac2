@@ -74,8 +74,7 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
                     "SELECT j.codigo, j.entidad, j.identificador, t.descripcion FROM JTipoMediaUA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where t.idioma = :idioma");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(
-                    " and ( cast(j.id as string) like :filtro OR LOWER(j.entidad) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(j.descripcion) LIKE :filtro)");
+            sql.append(" and ( cast(j.codigo as string) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro  OR LOWER(t.descripcion) LIKE :filtro)");
         }
         if (filtro.isRellenoEntidad()) {
             sql.append(
@@ -104,6 +103,9 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
 
     private String getOrden(String order) {
         //Se puede hacer un switch/if pero en este caso, con j.+order sobra
+        if ("descripcion".equals(order)) {
+            return "t." + order;
+        }
         return "j." + order;
     }
 

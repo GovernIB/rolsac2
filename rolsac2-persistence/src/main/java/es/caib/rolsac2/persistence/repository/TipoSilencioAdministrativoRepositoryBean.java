@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Implementación del repositorio de Personal.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Stateless
 @Local(TipoSilencioAdministrativoRepository.class)
@@ -73,22 +73,22 @@ public class TipoSilencioAdministrativoRepositoryBean extends AbstractCrudReposi
         } else {
             sql = new StringBuilder("SELECT j.codigo, j.identificador, t.descripcion FROM JTipoSilencioAdministrativo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
         }
-//        if (filtro.isRellenoIdUA()) {
-//            sql.append(" and j.unidadAdministrativa = :ua");
-//        }
+        //        if (filtro.isRellenoIdUA()) {
+        //            sql.append(" and j.unidadAdministrativa = :ua");
+        //        }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro )");
+            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro)");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
         }
         Query query = entityManager.createQuery(sql.toString());
-//        if (filtro.isRellenoIdUA()) {
-//            query.setParameter("ua", filtro.getIdUA());
-//        }
+        //        if (filtro.isRellenoIdUA()) {
+        //            query.setParameter("ua", filtro.getIdUA());
+        //        }
         if (filtro.isRellenoTexto()) {
-            query.setParameter("filtro", "%" + filtro.getTexto() + "%");
+            query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
 
         if (filtro.isRellenoIdioma()) {
@@ -124,7 +124,7 @@ public class TipoSilencioAdministrativoRepositoryBean extends AbstractCrudReposi
     }
 
     @Override
-    public List<TipoSilencioAdministrativoDTO> findAllTipoSilencio(){
+    public List<TipoSilencioAdministrativoDTO> findAllTipoSilencio() {
         TypedQuery query =
                 entityManager.createQuery("SELECT j FROM JTipoSilencioAdministrativo j", JTipoSilencioAdministrativo.class);
         List<JTipoSilencioAdministrativo> jTipoSilencioAdministrativos = query.getResultList();

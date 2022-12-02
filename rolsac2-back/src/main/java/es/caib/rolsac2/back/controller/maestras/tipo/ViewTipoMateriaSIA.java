@@ -155,16 +155,21 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoMateriaSIA", modoAcceso, params, true, 780, 265);
+        UtilJSF.openDialog("dialogTipoMateriaSIA", modoAcceso, params, true, 780, 290);
     }
 
 
     public void borrarTipoMateriaSIA() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
         } else {
-            maestrasSupService.deleteTipoMateriaSIA(datoSeleccionado.getCodigo());
-            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+            boolean existen = maestrasSupService.existeProcedimientoConTipoMateriaSIA(datoSeleccionado.getCodigo());
+            if (existen) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.error.relacionProcedimientos"));
+            } else {
+                maestrasSupService.deleteTipoMateriaSIA(datoSeleccionado.getCodigo());
+                addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+            }
         }
     }
 

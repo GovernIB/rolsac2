@@ -4,15 +4,10 @@ import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.EdificioConverter;
 import es.caib.rolsac2.persistence.converter.PluginConverter;
+import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
 import es.caib.rolsac2.persistence.converter.UsuarioConverter;
-import es.caib.rolsac2.persistence.model.JEdificio;
-import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.persistence.model.JPlugin;
-import es.caib.rolsac2.persistence.model.JUsuario;
-import es.caib.rolsac2.persistence.repository.EdificioRepository;
-import es.caib.rolsac2.persistence.repository.EntidadRepository;
-import es.caib.rolsac2.persistence.repository.PluginRepository;
-import es.caib.rolsac2.persistence.repository.UsuarioRepository;
+import es.caib.rolsac2.persistence.model.*;
+import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
@@ -31,7 +26,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Logged
 @ExceptionTranslate
@@ -63,6 +60,12 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
     @Inject
     private PluginConverter pluginConverter;
+
+    @Inject
+    private UnidadAdministrativaConverter uaConverter;
+
+    @Inject
+    private UnidadAdministrativaRepository unidadAdministrativaRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -127,6 +130,16 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
             throw new DatoDuplicadoException(dto.getCodigo());
         }
         JUsuario jUsuario = converter.createEntity(dto);
+
+        Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
+        if (dto.getUnidadesAdministrativas() != null) {
+            JUnidadAdministrativa jUnidadAdministrativa;
+            for (UnidadAdministrativaGridDTO ua : dto.getUnidadesAdministrativas()) {
+                jUnidadAdministrativa = unidadAdministrativaRepository.getReference(ua.getCodigo());
+                unidadesAdministrativas.add(jUnidadAdministrativa);
+            }
+        }
+        jUsuario.setUnidadesAdministrativas(unidadesAdministrativas);
         usuarioRepository.create(jUsuario);
         return jUsuario.getCodigo();
     }
@@ -137,6 +150,20 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         JUsuario jUsuario = usuarioRepository.getReference(dto.getCodigo());
         JEntidad jEntidad = entidadRepository.getReference(dto.getEntidad().getCodigo());
         jUsuario.setEntidad(jEntidad);
+
+        //Actualizamos usuarios
+        Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
+        if (dto.getUnidadesAdministrativas() != null) {
+            JUnidadAdministrativa jUnidadAdministrativa;
+            for (UnidadAdministrativaGridDTO ua : dto.getUnidadesAdministrativas()) {
+                jUnidadAdministrativa = unidadAdministrativaRepository.getReference(ua.getCodigo());
+                unidadesAdministrativas.add(jUnidadAdministrativa);
+            }
+        }
+
+        jUsuario.getUnidadesAdministrativas().clear();
+        jUsuario.getUnidadesAdministrativas().addAll(unidadesAdministrativas);
+
         converter.mergeEntity(jUsuario, dto);
         usuarioRepository.update(jUsuario);
     }
@@ -145,6 +172,11 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void deleteUsuario(Long id) throws RecursoNoEncontradoException {
         JUsuario jUsuario = usuarioRepository.getReference(id);
+        List<JUnidadAdministrativa> jUnidadesAdministrativas = unidadAdministrativaRepository.getUnidadesAdministrativaByUsuario(id);
+        for (JUnidadAdministrativa jUnidadAdministrativa : jUnidadesAdministrativas) {
+            jUnidadAdministrativa.getUsuarios().remove(jUsuario);
+            unidadAdministrativaRepository.update(jUnidadAdministrativa);
+        }
         usuarioRepository.delete(jUsuario);
     }
 
@@ -153,6 +185,14 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     public UsuarioDTO findUsuarioById(Long id) {
         JUsuario jUsuario = usuarioRepository.getReference(id);
         UsuarioDTO usuarioDTO = converter.createDTO(jUsuario);
+        List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
+        if (jUsuario.getUnidadesAdministrativas() != null) {
+            for (JUnidadAdministrativa jUnidadAdministrativa : jUsuario.getUnidadesAdministrativas()) {
+                UnidadAdministrativaGridDTO unidadAdministrativa = unidadAdministrativaRepository.modelToGridDTO(jUnidadAdministrativa);
+                unidadesAdministrativas.add(unidadAdministrativa);
+            }
+        }
+        usuarioDTO.setUnidadesAdministrativas(unidadesAdministrativas);
         return usuarioDTO;
     }
 
@@ -182,7 +222,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long createPlugin(PluginDto dto) throws RecursoNoEncontradoException {
+    public Long createPlugin(PluginDTO dto) throws RecursoNoEncontradoException {
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
@@ -193,7 +233,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void updatePlugin(PluginDto dto) throws RecursoNoEncontradoException {
+    public void updatePlugin(PluginDTO dto) throws RecursoNoEncontradoException {
         JEntidad jEntidad = entidadRepository.getReference(dto.getEntidad().getCodigo());
         JPlugin jPlugin = pluginRepository.getReference(dto.getCodigo());
         jPlugin.setEntidad(jEntidad);
@@ -210,9 +250,9 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public PluginDto findPluginById(Long id) {
+    public PluginDTO findPluginById(Long id) {
         JPlugin jPlugin = pluginRepository.getReference(id);
-        PluginDto pluginDto = pluginConverter.createDTO(jPlugin);
+        PluginDTO pluginDto = pluginConverter.createDTO(jPlugin);
         return pluginDto;
     }
 
@@ -230,5 +270,18 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
             long total = items.size();
             return new Pagina<>(items, total);
         }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<PluginDTO> listPluginsByEntidad(Long idEntidad) {
+        List<JPlugin> jPlugins = pluginRepository.listPluginsByEntidad(idEntidad);
+        return pluginConverter.createDTOs(jPlugins);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existePluginTipo(Long codigoPlugin, String tipo) {
+        return pluginRepository.existePluginTipo(codigoPlugin, tipo);
     }
 }

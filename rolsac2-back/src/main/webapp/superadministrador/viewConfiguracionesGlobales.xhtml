@@ -17,7 +17,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
 
     <ui:define name="pageTitle">
-        <h:outputFormat value="#{labels['viewEntidades.gestion']}"/>
+        <h:outputFormat value="#{labels['viewConfigGlobales.titulo']}"/>
     </ui:define>
 
     <ui:define name="breadcrumb">
@@ -41,9 +41,6 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                                                                                      value="#{viewConfiguracionesGlobales.filtroTexto}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
                                      actionListener="#{viewConfiguracionesGlobales.buscar()}" process="@form"/>
-                    <p:commandButton value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus" iconPos="top"
-                                     update="messages dataTable" actionListener="#{viewConfiguracionesGlobales.ayuda}"
-                                     process="@form"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"

@@ -82,7 +82,7 @@ public class DialogTipoVia extends AbstractController implements Serializable {
 
     private boolean verificarGuardar() {
         if (Objects.isNull(this.data.getCodigo()) && tipoViaService.existeIdentificadorTipoVia(this.data.getIdentificador())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.campoVacio"), true);
             return false;
         }
 

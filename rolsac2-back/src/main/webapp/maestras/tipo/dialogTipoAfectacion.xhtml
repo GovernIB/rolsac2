@@ -19,7 +19,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogTipoAfectacion.titulo']}"/>
+        <h:outputFormat value="#{labels['dialogTipoAfectacion.consulta']}"
+                        rendered="#{dialogTipoAfectacion.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogTipoAfectacion.edicion']}"
+                        rendered="#{dialogTipoAfectacion.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogTipoAfectacion.nuevo']}"
+                        rendered="#{dialogTipoAfectacion.isModoAlta()}"/>
     </ui:define>
 
     <ui:define name="contentIdioma">
@@ -43,10 +48,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
         <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
-        <p:panel>
+        <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
@@ -56,18 +61,24 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                  styleClass="w95" disabled="true" maxlength="50"/>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                    <p:outputLabel value="#{labels['dict.identificador']}:"
+                                   for="txtIdentificador"
+
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogTipoAfectacion.data.identificador}"
-                                 styleClass="w95"  onblur="this.value = this.value.toUpperCase();"
+                                styleClass="w95"  onblur="this.value = this.value.toUpperCase();"
+                                 requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  required="true" disabled="#{dialogTipoAfectacion.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
                     </p:inputText>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}:"
+                                   for="inputDescripcion"
+                    />
                 </div>
 
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
@@ -77,7 +88,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogTipoAfectacion.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.descripcion']}"/>
+                                         nombreLiteral="#{labels['dict.descripcion']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                    </my:literalComponent>
                 </div>
             </div>
         </p:panel>
@@ -87,9 +100,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogTipoAfectacion.ayuda}"
                          icon="pi pi-info-circle" iconPos="top"
                          value="#{labels['dict.ayuda']}"
-                         process="@this"/>
+                         process="@this"
+                         update="messagesDialog"/>
         <p:commandButton action="#{dialogTipoAfectacion.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>
         <p:commandButton action="#{dialogTipoAfectacion.cerrar}"
                          value="#{labels['dict.cerrar']}"

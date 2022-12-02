@@ -1,10 +1,12 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.commons.utils.GeneradorId;
 import es.caib.rolsac2.persistence.model.JFicheroExterno;
 import es.caib.rolsac2.service.exception.FicheroExternoException;
 import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,7 @@ import java.util.List;
 /**
  * Implementación del repositorio de Personal.
  *
- * @author areus
+ * @author Indra
  */
 @Stateless
 @Local(FicheroExternoRepository.class)
@@ -47,8 +49,8 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         }
 
         // Obtiene path fichero
-        String pathFile = pathAlmacenamientoFicheros + "\\"
-                + fic.getReferencia() + fic.getFilename();
+        String pathFile = pathAlmacenamientoFicheros + "/"
+                + fic.getReferencia();
 
         // Obtiene contenido fichero
         try {
@@ -72,7 +74,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
 
     @Override
     public Long createFicheroExterno(byte[] content, String fileName, TypeFicheroExterno tipoFicheroExterno, Long elementoFicheroExterno, String pathAlmacenamientoFicheros) {
-        if (tipoFicheroExterno == null || content == null || fileName == null || elementoFicheroExterno == null) {
+        if (tipoFicheroExterno == null || content == null || fileName == null) {
             throw new FicheroExternoException("Ningún parámetro puede ser nulo");
         }
 
@@ -83,12 +85,18 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         jFicheroExterno.setFilename(fileName);
         jFicheroExterno.setTemporal(true);
         jFicheroExterno.setTipo(tipoFicheroExterno.getTipo());
-        jFicheroExterno.setReferencia(elementoFicheroExterno + tipoFicheroExterno.getRuta());
+        if (elementoFicheroExterno == null) {
+            jFicheroExterno.setReferencia("temp/" + GeneradorId.generarId() + "."
+                    + FilenameUtils.getExtension(fileName));
+        } else {
+            jFicheroExterno.setReferencia(tipoFicheroExterno.getRuta() + elementoFicheroExterno + "/" + GeneradorId.generarId() + "."
+                    + FilenameUtils.getExtension(fileName));
+        }
         entityManager.persist(jFicheroExterno);
 
         // Almacena fichero
         final String pathAbsolutoFichero = pathAlmacenamientoFicheros + "/"
-                + jFicheroExterno.getReferencia() + jFicheroExterno.getFilename();
+                + jFicheroExterno.getReferencia();
         try {
             // FileUtils de apache.
             final ByteArrayInputStream bis = new ByteArrayInputStream(content);
@@ -116,6 +124,25 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         JFicheroExterno jFicheroExterno = entityManager.find(JFicheroExterno.class, codigoFichero);
         if (!jFicheroExterno.isBorrar() && jFicheroExterno.isTemporal()) {
             jFicheroExterno.setTemporal(false);
+            if (jFicheroExterno.getReferencia().startsWith("temp/")) {
+
+                //Está en un sitio temporal, obtenemos la referenciaActual (en temp) y la movemos a la nueva
+                TypeFicheroExterno tipoFicheroExterno = TypeFicheroExterno.fromString(jFicheroExterno.getTipo());
+                String referenciaAntigua = jFicheroExterno.getReferencia();
+                String referenciaNueva;
+                referenciaNueva = tipoFicheroExterno.getRuta() + codigoFichero + "/" + GeneradorId.generarId() + "."
+                        + FilenameUtils.getExtension(jFicheroExterno.getFilename());
+
+                //La movemos
+                try {
+                    FileUtils.moveFile(new File(pathAlmacenamientoFicheros + "/" + referenciaAntigua), new File(pathAlmacenamientoFicheros + "/" + referenciaNueva));
+                } catch (IOException e) {
+                    throw new FicheroExternoException("Error copiando el fichero " + codigoFichero + " de la referencia antigua:" + referenciaAntigua + " a la nueva:" + referenciaNueva, e);
+                }
+
+                //Actualizamos la referencia
+                jFicheroExterno.setReferencia(referenciaNueva);
+            }
             entityManager.merge(jFicheroExterno);
         }
     }

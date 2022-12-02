@@ -9,7 +9,25 @@ public enum TypeProcedimientoEstado {
     /**
      * <P>ESTADO MODIFICACON</P>
      **/
-    MODIFICACION("M");
+    MODIFICACION("M"),
+
+    /**
+     * <P>ESTADO MODIFICACIÓN PENDIENTE SUBIR</P>
+     */
+    MODIFICACION_PENDIENTE_SUBIR("S"),
+    /**
+     * <P>PUBLICADO</P>
+     */
+    PUBLICADO("P"),
+    /**
+     * <P>BORRADO</P>
+     */
+    BORRADO("B"),
+
+    /**
+     * <P>RESERVA</P>
+     */
+    RESERVA("R");
 
     String perfil;
 
@@ -28,7 +46,63 @@ public enum TypeProcedimientoEstado {
         return tipo;
     }
 
+    public static TypeProcedimientoWorfklow getWorkflowSegunEstado(TypeProcedimientoEstado estado) {
+        if (estado == null) {
+            return null;
+        }
+
+        switch (estado) {
+            case MODIFICACION:
+            case MODIFICACION_PENDIENTE_SUBIR:
+                return TypeProcedimientoWorfklow.MODIFICACION;
+            case BORRADO:
+            case PUBLICADO:
+            case RESERVA:
+                return TypeProcedimientoWorfklow.PUBLICADO;
+            default:
+                return null;
+        }
+    }
+
+
+    public TypeProcedimientoWorfklow getWorkflowSegunEstado() {
+
+        switch (this) {
+            case MODIFICACION:
+            case MODIFICACION_PENDIENTE_SUBIR:
+                return TypeProcedimientoWorfklow.MODIFICACION;
+            case BORRADO:
+            case PUBLICADO:
+            case RESERVA:
+                return TypeProcedimientoWorfklow.PUBLICADO;
+            default:
+                return null;
+        }
+    }
+
+    public boolean mismoWorkflow(TypeProcedimientoEstado estado1, TypeProcedimientoEstado estado2) {
+        if (estado1 == null || estado2 == null) {
+            return false;
+        }
+
+        TypeProcedimientoWorfklow wf1 = estado1.getWorkflowSegunEstado();
+        TypeProcedimientoWorfklow wf2 = estado2.getWorkflowSegunEstado();
+        return wf1 == wf2;
+    }
+
+    public static boolean distintoWorkflow(TypeProcedimientoEstado estado1, TypeProcedimientoEstado estado2) {
+        if (estado1 == null || estado2 == null) {
+            return true;
+        }
+
+        TypeProcedimientoWorfklow wf1 = estado1.getWorkflowSegunEstado();
+        TypeProcedimientoWorfklow wf2 = estado2.getWorkflowSegunEstado();
+        return wf1 != wf2;
+    }
+
     public String toString() {
         return perfil;
     }
+
+
 }

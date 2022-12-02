@@ -1163,8 +1163,8 @@ a.iconoXarxes {
 
 /* Específics per primefaces */
 .ui-growl {
-    top: 100px;
-    left: 20px;
+    top: 85%;
+    right: 10px;
 }
 
 .ui-outputlabel {

@@ -25,7 +25,7 @@
         <h:outputFormat value="#{labels['viewPlugins.titulo']}" />
     </ui:define>
     <ui:define name="content">
-        <h:form>
+        <h:form id="formDialog">
             <p:commandButton value="#{labels['viewPlugins.actualizar']}" id="actualizarBusqueda"  style="display:none" ajax="false" action="#{viewPlugins.buscar}" update="dataTable" />
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
                 <f:facet name="header">
@@ -41,7 +41,7 @@
                                              actionListener="#{viewPlugins.nuevoPlugin}" process="@this">
                                 <p:ajax event="dialogReturn" listener="#{viewPlugins.returnDialogo}" update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                              actionListener="#{viewPlugins.editarPlugin}" process="@form" update="messages">
                                 <p:ajax event="dialogReturn" listener="#{viewPlugins.returnDialogo}" update="messages dataTable"/>
                             </p:commandButton>
@@ -70,10 +70,11 @@
                              sortOrder="#{viewPlugins.filtro.order}"
                              style="min-height: 300px;"
                 >
-                    <p:ajax
-                            event="rowDblselect"
+
+
+                    <p:ajax event="rowDblselect"
                             oncomplete="triggerDblClick();"
-                            global="false" />
+                            global="false"/>
                     <f:facet name="{RowsPerPageLabel}">
                         #{labels.dataTable_rowsPerPage}
                     </f:facet>
@@ -81,10 +82,11 @@
                         <f:facet name="header"/>
                         <h:outputText value="#{plugin.codigo}"/>
                     </p:column>
-                    <!--<p:column sortBy="#{plugin.entidad}" headerText="#{labels['dict.entidad']}">
+
+                    <p:column sortBy="#{plugin.tipo}" headerText="#{labels['dict.tipo']}">
                         <f:facet name="header"/>
-                        <h:outputText value="#{plugin.entidad}"/>
-                    </p:column> -->
+                        <h:outputText value="#{labels['dialogPlugins.plugin.' += plugin.tipo.toString()]}" />
+                    </p:column>
                     <p:column sortBy="#{plugin.descripcion}" headerText="#{labels['viewPlugins.descripcion']}">
                         <f:facet name="header"/>
                         <h:outputText value="#{plugin.descripcion}"/>
@@ -97,11 +99,11 @@
                         <f:facet name="header"/>
                         <h:outputText value="#{plugin.propiedades}"/>
                     </p:column>
+
                 </p:dataTable>
                 <h:outputScript >
                     function triggerDblClick() {
-                    myDoubleClickCommand();
-                    /*$('#form\\:btnConsultaHidden').click();*/
+                            document.getElementById("formDialog:btnEditar").click();
                     }
                 </h:outputScript>
             <p:remoteCommand name="myDoubleClickCommand"
@@ -112,6 +114,10 @@
                              process="@this" />
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewPlugins.consultarPlugin}" process="@this" update="messages" style="display: none">
+                <p:ajax event="dialogReturn" listener="#{viewPlugins.returnDialogo}" update="messages dataTable"/>
+            </p:commandButton>
+            <p:commandButton id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
+                             actionListener="#{viewPlugins.editarPlugin}" process="@this" update="messages" style="display: none">
                 <p:ajax event="dialogReturn" listener="#{viewPlugins.returnDialogo}" update="messages dataTable"/>
             </p:commandButton>
         </h:form>

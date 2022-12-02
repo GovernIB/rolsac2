@@ -4,13 +4,14 @@ import es.caib.rolsac2.back.security.Security;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceBean;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
 import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.Application;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,7 +51,7 @@ public class SessionBean implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(SessionBean.class);
 
     @Inject
-    SystemServiceBean systemServiceBean;
+    SystemServiceFacade systemServiceBean;
 
     @Inject
     private Security seguridad;
@@ -177,7 +179,7 @@ public class SessionBean implements Serializable {
             }
         }
 
-        if (usuario.getUsuarioUnidadAdministrativa() != null) {
+        /*if (usuario.getUsuarioUnidadAdministrativa() != null) {
             unidades = new ArrayList<>();
 
             for (UsuarioUnidadAdministrativaDTO usuarioUnidadAdministrativa : usuario
@@ -187,6 +189,10 @@ public class SessionBean implements Serializable {
                     unidades.add(usuarioUnidadAdministrativa.getUnidadAdministrativa());
                 }
             }
+        }*/
+
+        if (usuario.getUnidadesAdministrativas() != null) {
+            unidades = uaservice.getUnidadesAdministrativasByUsuario(usuario.getCodigo());
         }
 
 
@@ -208,7 +214,7 @@ public class SessionBean implements Serializable {
         UtilJSF.redirectJsfDefaultPagePerfil(perfil);
         switch (this.perfil) {
             case ADMINISTRADOR_CONTENIDOS:
-                opcion = "viewPersonal.titulo";
+                opcion = "viewUnidadAdministrativa.titulo";
                 break;
             case ADMINISTRADOR_ENTIDAD:
                 opcion = "viewConfiguracionEntidad.titulo";
@@ -417,9 +423,9 @@ public class SessionBean implements Serializable {
         String rolsac2back = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
         switch (this.perfil) {
             case ADMINISTRADOR_CONTENIDOS:
-                opcion = "viewPersonal.titulo";
+                opcion = "viewUnidadAdministrativa.titulo";
                 context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace('" + rolsac2back + "/maestras/viewPersonal.xhtml')");
+                        .add("location.replace('" + rolsac2back + "/superadministrador/viewUnidadAdministrativa.xhtml')");
                 reloadEntidad();
                 break;
             case ADMINISTRADOR_ENTIDAD:
@@ -445,6 +451,19 @@ public class SessionBean implements Serializable {
 
     }
 
+    public void updateLogo() {
+        UIComponent imgLogo = UtilJSF.findComponent("imgLogo");
+        UIComponent imgDefecto = UtilJSF.findComponent("imgDefecto");
+        if(checkLogo()) {
+            imgDefecto.getAttributes().put("style", "display: none");
+            imgLogo.getAttributes().put("style", "");
+        } else {
+            imgLogo.getAttributes().put("style", "display: none");
+            imgDefecto.getAttributes().put("style", "");
+        }
+
+    }
+
     public String getPathAbsoluto() {
         return systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
     }
@@ -462,20 +481,29 @@ public class SessionBean implements Serializable {
      */
 
     public boolean isTipoActivo() {
-        if (this.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR) {
-            boolean resultado = this.opcion.equals("viewTipoAfectacion.titulo") || this.opcion.equals("viewTipoMateriaSIA.titulo") || this.opcion.equals("viewTipoFormaInicio.titulo") ||
-                    this.opcion.equals("viewTipoNormativa.titulo") || this.opcion.equals("viewTipoSexo.titulo") || this.opcion.equals("viewTipoBoletin.titulo") ||
-                    this.opcion.equals("viewTipoVia.titulo") || this.opcion.equals("viewTipoPublicoObjetivo.titulo") || this.opcion.equals("viewTipoSilencioAdministrativo.titulo") ||
-                    this.opcion.equals("viewTipoLegitimacion.titulo");
-            return resultado;
-        } else {
-            return false;
-        }
+        List<String> tiposViewIds = new ArrayList<>();
+        tiposViewIds.add("/maestras/tipo/viewTipoAfectacion.xhtml");
+        tiposViewIds.add("/maestras/tipo/viewTipoMateriaSIA.xhtml");
+        tiposViewIds.add("/maestras/tipo/viewTipoFormaInicio.xhtml");
+        tiposViewIds.add("/maestras/tipo/viewTipoNormativa.xhtml");
+        tiposViewIds.add("/maestras/tipo/viewTipoSexo.xhtml");
+        tiposViewIds.add("/maestras/tipo/viewTipoBoletin.xhtml");
+        tiposViewIds.add("/maestras/tipo/viewTipoVia.xhtml");
+        tiposViewIds.add("/maestras/tipo/viewTipoPublicoObjetivo.xhtml");
+        tiposViewIds.add("/maestras/tipo/viewTipoSilencioAdministrativo.xhtml");
+        tiposViewIds.add("/maestras/tipo/viewTipoLegitimacion.xhtml");
+
+        String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+        return tiposViewIds.contains(viewId);
     }
 
     public boolean isAdminUsuariosActivo() {
         if (this.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD) {
-            return this.opcion.equals("viewUsuario.titulo") || this.opcion.equals("viewRoles.titulo");
+            List<String> tiposViewIds = new ArrayList<>();
+            tiposViewIds.add("/entidades/viewUsuario.xhtml");
+            tiposViewIds.add("/entidades/viewRoles.xhtml");
+            String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+            return tiposViewIds.contains(viewId);
         } else {
             return false;
         }
@@ -483,11 +511,17 @@ public class SessionBean implements Serializable {
 
     public boolean isPersonalizacionActivo() {
         if (this.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD) {
-            return this.opcion.equals("viewTipoUnidadAdministrativa.titulo") || this.opcion.equals("viewTipoMediaUA.titulo")
-                    || this.opcion.equals("viewEdificios.titulo") || this.opcion.equals("viewTipoMediaEdificio.titulo")
-                    || this.opcion.equals("viewTipoMediaEdificio.titulo") || this.opcion.equals("viewPlatTramitElectronica.titulo")
-                    || this.opcion.equals("viewTipoTramitacion.titulo") || this.opcion.equals("viewTipoMediaFicha.titulo")
-                    || this.opcion.equals("viewTema.titulo");
+            List<String> tiposViewIds = new ArrayList<>();
+            tiposViewIds.add("/maestras/tipo/viewTipoUnidadAdministrativa.xhtml");
+            tiposViewIds.add("/entidades/viewTipoMediaUA.xhtml");
+            tiposViewIds.add("/entidades/viewPlatTramitElectronica.xhtml");
+            tiposViewIds.add("/maestras/tipo/viewTipoTramitacion.xhtml");
+            tiposViewIds.add("/maestras/tipo/viewTipoProcedimiento.xhtml");
+            tiposViewIds.add("/superadministrador/viewTema.xhtml");
+            tiposViewIds.add("/maestras/viewPublicoObjetivoEntidad.xhtml");
+            tiposViewIds.add("/entidades/viewTipoMediaFicha.xhtml");
+            String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+            return tiposViewIds.contains(viewId);
         } else {
             return false;
         }
@@ -495,9 +529,14 @@ public class SessionBean implements Serializable {
 
     public boolean isMonitorizacionActivo() {
         if (this.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD) {
-            return this.opcion.equals("viewAlertas.titulo") || this.opcion.equals("viewGestionProcesosIndex.titulo")
-                    || this.opcion.equals("viewGestionProcesosSIA.titulo") || this.opcion.equals("viewEventosPlat.titulo")
-                    || this.opcion.equals("viewCuadroControl.titulo");
+            List<String> tiposViewIds = new ArrayList<>();
+            tiposViewIds.add("/monitorizacion/viewAlertas.xhtml");
+            tiposViewIds.add("/monitorizacion/viewCuadroControl.xhtml");
+            tiposViewIds.add("/monitorizacion/viewEventosPlat.xhtml");
+            tiposViewIds.add("/monitorizacion/viewProcesos.xhtml");
+            tiposViewIds.add("/monitorizacion/viewProcesosLog.xhtml");
+            String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+            return tiposViewIds.contains(viewId);
         } else {
             return false;
         }
@@ -505,7 +544,12 @@ public class SessionBean implements Serializable {
 
     public boolean isGestionOrganigramaActivo() {
         if (this.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD) {
-            return this.opcion.equals("viewEvolucion.titulo") || this.opcion.equals("viewContenidos.titulo");
+            List<String> tiposViewIds = new ArrayList<>();
+            tiposViewIds.add("/entidades/viewEvolucion.xhtml");
+            tiposViewIds.add("/entidades/viewContenidos.xhtml");
+            tiposViewIds.add("/superadministrador/viewUnidadAdministrativa.xhtml");
+            String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+            return tiposViewIds.contains(viewId);
         } else {
             return false;
         }
@@ -593,15 +637,20 @@ public class SessionBean implements Serializable {
     }
 
     public StreamedContent getLogoEntidad() {
-        FicheroDTO logo = entidadservice.getLogoEntidad(this.entidad.getLogo().getCodigo());
-        String mimeType = URLConnection.guessContentTypeFromName(logo.getFilename());
-        InputStream fis = new ByteArrayInputStream(logo.getContenido());
-        StreamedContent file = DefaultStreamedContent.builder()
-                .name(logo.getFilename())
-                .contentType(mimeType)
-                .stream(() -> fis)
-                .build();
-        return file;
+        try {
+            FicheroDTO logo = entidadservice.getLogoEntidad(this.entidad.getLogo().getCodigo());
+            String mimeType = URLConnection.guessContentTypeFromName(logo.getFilename());
+            InputStream fis = new ByteArrayInputStream(logo.getContenido());
+            StreamedContent file = DefaultStreamedContent.builder()
+                    .name(logo.getFilename())
+                    .contentType(mimeType)
+                    .stream(() -> fis)
+                    .build();
+            return file;
+        } catch (Exception e) {
+            LOG.error("Error obtiendo el logo ", e);
+            return null;
+        }
     }
 
 
@@ -678,8 +727,16 @@ public class SessionBean implements Serializable {
         this.opcion = opcion;
     }
 
-    public void setearOpcion() {
-        this.opcion = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("opcion");
+    public void setearOpcion(String opcion) {
+        UIComponent opcionAnterior = UtilJSF.findComponent(this.opcion);
+        if(opcionAnterior != null && opcionAnterior.getAttributes().get("style") != null) {
+            opcionAnterior.getAttributes().put("style", "");
+        }
+        this.opcion = opcion;
+        UIComponent opcionActualizada = UtilJSF.findComponent(this.opcion);
+        if(opcionActualizada != null && opcionActualizada.getAttributes().get("style") != null) {
+            opcionActualizada.getAttributes().put("style", "font-weight: bold");
+        }
     }
 
     public void setearMigaPan() {

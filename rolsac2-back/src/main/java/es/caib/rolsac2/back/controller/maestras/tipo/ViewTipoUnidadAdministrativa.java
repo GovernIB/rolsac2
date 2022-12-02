@@ -28,7 +28,7 @@ import java.util.*;
  * nivell de request es reconstruiria per cada petició AJAX, com ara amb els errors de validació. Amb view es manté
  * mentre no es canvii de vista.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -158,7 +158,7 @@ public class ViewTipoUnidadAdministrativa extends AbstractController implements 
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoUnidadAdministrativa", modoAcceso, params, true, 850, 435);
+        UtilJSF.openDialog("dialogTipoUnidadAdministrativa", modoAcceso, params, true, 850, 445);
     }
 
 

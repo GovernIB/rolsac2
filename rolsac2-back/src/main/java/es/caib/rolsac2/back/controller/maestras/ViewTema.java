@@ -134,7 +134,7 @@ public class ViewTema extends AbstractController implements Serializable {
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTema", modoAcceso, params, true, 850, 310);
+        UtilJSF.openDialog("dialogTema", modoAcceso, params, true, 850, 320);
     }
 
     public void borrarTema() {

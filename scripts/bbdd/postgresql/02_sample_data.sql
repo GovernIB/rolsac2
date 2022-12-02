@@ -16,3 +16,13 @@ Insert into ROLSAC2.RS2_TRAUNAD (TRUA_CODIGO,TRUA_CODUNAD,TRUA_IDIOMA,TRUA_NOMBR
 Insert into ROLSAC2.RS2_TRAUNAD (TRUA_CODIGO,TRUA_CODUNAD,TRUA_IDIOMA,TRUA_NOMBRE,TRUA_PRESEN,TRUA_URLWEB,TRUA_RSPCV) values (RS2_TRAUNAD_SEQ.NEXTVAL,RS2_UNIADM_SEQ.CURRVAL,'ca','nombreua ca',null,null, EMPTY_CLOB());
 
 Insert into ROLSAC2.RS2_USERUA (UAUS_CODUSER,UAUS_CODUA) values (RS2_USER_SEQ.CURRVAL,RS2_UNIADM_SEQ.CURRVAL);
+
+Insert into ROLSAC2.RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
+VALUES (RS2_PLUGIN_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'Plugin de boletín', 'es.caib.rolsac2.commons.plugins.boletin.eboib.EboibPlugin',
+        '[{"codigo":"eboibUrlHack","valor":"false","orden":null},{"codigo":"eboibUrl","valor":"https://www.caib.es/eboibfront/","orden":null}]',
+        'pluginsib.boletin.eboib.', 'BOL');
+
+Insert into ROLSAC2.RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
+VALUES (RS2_PLUGIN_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'Plugin de traducción', 'es.caib.rolsac2.commons.plugins.traduccion.translatorib.TranslatorIBPlugin',
+        '[{"codigo":"url","valor":"https://dev.caib.es/translatorib/api/services/traduccion/v1","orden":null},{"codigo":"usr","valor":"api-tib","orden":null},{"codigo":"pwd","valor":"XXXXXX","orden":null}]',
+        'pluginsib.traduccion.translatorib.', 'TRA');

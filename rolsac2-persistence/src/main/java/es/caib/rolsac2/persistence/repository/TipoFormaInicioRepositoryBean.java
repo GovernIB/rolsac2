@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Implementación del repositorio de tipo de forma de inicio.
  *
- * @author jrodrigof
+ * @author Indra
  */
 @Stateless
 @Local(TipoFormaInicioRepository.class)
@@ -95,7 +95,7 @@ public class TipoFormaInicioRepositoryBean extends AbstractCrudRepository<JTipoF
         }
         Query query = entityManager.createQuery(sql.toString());
         if (filtro.isRellenoTexto()) {
-            query.setParameter("filtro", "%" + filtro.getTexto() + "%");
+            query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
 
         if (filtro.isRellenoIdioma()) {

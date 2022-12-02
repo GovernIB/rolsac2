@@ -92,11 +92,10 @@ ViewUsuario extends AbstractController implements Serializable {
             public List<UsuarioGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
                                              Map<String, FilterMeta> filterBy) {
                 try {
-                    /*
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")){
+                    if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
-                    }*/
+                    }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<UsuarioGridDTO> pagina = administracionEntService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());

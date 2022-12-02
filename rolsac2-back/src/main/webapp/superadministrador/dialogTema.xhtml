@@ -43,7 +43,7 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
-        <p:panel>
+        <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
@@ -58,6 +58,7 @@
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtIdentificador" value="#{dialogTema.data.identificador}"
+                                 requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  styleClass="w95"
                                  required="true" disabled="#{dialogTema.isModoConsulta()}" maxlength="50">
                     </p:inputText>
@@ -96,7 +97,7 @@
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogTema.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>
         <p:commandButton action="#{dialogTema.cerrar}"
                          value="#{labels['dict.cerrar']}"

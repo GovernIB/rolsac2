@@ -8,7 +8,6 @@
     <!-- Logo i nom aplicació -->
     <div class="navbar-brand menuGovern">
         <div class="logoGovern">
-            <p:panelGrid id="panelLogo">
                 <!--<p:link styleClass="mr-auto" outcome="/index">
                     <c:choose>
                         <c:when test="#{sessionBean.checkLogo()}">
@@ -20,17 +19,20 @@
                         </c:otherwise>
                     </c:choose>
                 </p:link>-->
-                <p:link styleClass="mr-auto" outcome="/index">
-                    <p:graphicImage id="imgLogo" styleClass="imatgeGovern" value="#{sessionBean.getLogoEntidad()}" rendered="#{sessionBean.checkLogo()}"></p:graphicImage>
-                    <h:graphicImage name="img/STT_logo2.png" styleClass="imatgeGovern"
-                                    alt="Govern de les Illes Balears"/>
+                <p:link id="imgLogo" styleClass="mr-auto" outcome="/index" style="" >
+                    <p:graphicImage styleClass="imatgeGovern"
+                                    value="#{sessionBean.getLogoEntidad()}"
+                                     cache="false" rendered="#{sessionBean.checkLogo()}"></p:graphicImage>
                 </p:link>
-            </p:panelGrid>
+                <p:link id="imgDefecto" styleClass="mr-auto" outcome="/index" style="" >
+                    <h:graphicImage name="img/STT_logo2.png" styleClass="imatgeGovern"
+                                    alt="Govern de les Illes Balears" rendered="#{!sessionBean.checkLogo()}"/>
+                </p:link>
         </div>
-        <div>
+        <div class="ml-4">
             <h1 class="titol">#{version.projectName}</h1>
         </div>
-        <div>
+        <div class="ml-4">
             <div>
                 <strong class="subtitol llevarMobil">#{labels['dict.usuario']}: </strong>
                 <span class="subtitolMay">

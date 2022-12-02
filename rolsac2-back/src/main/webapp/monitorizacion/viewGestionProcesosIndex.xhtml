@@ -23,6 +23,10 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
         <h:outputFormat value="#{labels['viewGestionProcesosIndex.titulo.pagina']}" />
     </ui:define>
     <ui:define name="content">
+        <h:form>
+            <p:commandButton actionListener="#{viewGestionProcesosIndex.process()}" value="Procesar"></p:commandButton>
+        </h:form>
+
     </ui:define>
 </ui:composition>
 

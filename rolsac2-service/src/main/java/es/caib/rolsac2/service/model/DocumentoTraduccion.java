@@ -88,7 +88,9 @@ public class DocumentoTraduccion {
      *
      * @return el valor de ficheroDTO
      */
-    public FicheroDTO getFicheroDTO() { return ficheroDTO; }
+    public FicheroDTO getFicheroDTO() {
+        return ficheroDTO;
+    }
 
     /**
      * Establece el valor de ficheroDTO.
@@ -111,4 +113,5 @@ public class DocumentoTraduccion {
     public int hashCode() {
         return Objects.hash(codigo, idioma, ficheroDTO);
     }
+
 }

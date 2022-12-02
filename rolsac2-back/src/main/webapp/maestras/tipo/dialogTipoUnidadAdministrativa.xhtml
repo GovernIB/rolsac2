@@ -46,11 +46,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
 
-        <p:panel>
+        <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
@@ -65,6 +65,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogTipoUnidadAdministrativa.data.identificador}"
+                                 requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  styleClass="w95" required="true" onblur="this.value = this.value.toUpperCase();"
                                  disabled="#{dialogTipoUnidadAdministrativa.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
@@ -83,7 +84,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          required="true"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.descripcion']}"/>
+                                         nombreLiteral="#{labels['dict.descripcion']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                    </my:literalComponent>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
@@ -149,7 +152,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogTipoUnidadAdministrativa.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogTipoUnidadAdministrativa.isModoConsulta()}"
                          process="@all"/>
         <p:commandButton action="#{dialogTipoUnidadAdministrativa.cerrar}"

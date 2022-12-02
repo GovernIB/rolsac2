@@ -19,7 +19,7 @@ import java.util.Optional;
 /**
  * Implementación del repositorio de Personal.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Stateless
 @Local(EntidadRepository.class)
@@ -90,14 +90,16 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
             sql = new StringBuilder("SELECT count(j) FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder("SELECT j.codigo, j.identificador, j.activa, j.rolAdmin, j.rolAdminContenido, "
-                    + " j.rolGestor, j.rolInformador, t.descripcion FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma   where 1 = 1 ");
+                    + " j.rolGestor, j.rolInformador, t.descripcion FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma WHERE t.idioma=:idioma");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) like :filtro  "
-                    + " OR LOWER(t.descripcion) LIKE :filtro OR cast(j.id as string) like :filtro "
-                    + " OR LOWER(cast(j.activa as string)) LIKE :filtro OR LOWER(j.rolAdmin) LIKE :filtro "
+            sql.append(" and ( cast(j.id as string) LIKE :filtro "
+                    + " OR LOWER(t.descripcion) LIKE :filtro "
+                    + " OR LOWER(j.rolAdmin) LIKE :filtro "
                     + " OR LOWER(j.rolAdminContenido) LIKE :filtro OR LOWER(j.rolGestor) LIKE :filtro "
                     + " OR LOWER(j.rolInformador) LIKE :filtro)");
+
+
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
@@ -106,13 +108,17 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("idioma", filtro.getIdioma());
         if (filtro.isRellenoTexto()) {
-            query.setParameter("filtro", "%" + filtro.getTexto() + "%");
+            query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
         return query;
     }
 
     private String getOrden(String order) {
-        return "j." + order;
+        if (order.equals("descripcion")) {
+            return "t.descripcion";
+        } else {
+            return "j." + order;
+        }
     }
 
     @Override

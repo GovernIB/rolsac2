@@ -31,5 +31,10 @@ public enum TypeParametroVentana {
     /**
      * PLANTILLA (TIPO TRAMITACION)
      */
-    PLANTILLA;
+    PLANTILLA,
+
+    /**
+     * OCULTAR FASE INCIACION
+     */
+    OCULTAR_INICIACION;
 }

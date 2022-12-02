@@ -2,10 +2,11 @@ package es.caib.rolsac2.ejb.facade;
 
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
+import es.caib.rolsac2.persistence.model.JFicheroExterno;
 import es.caib.rolsac2.persistence.repository.FicheroExternoRepository;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.FicheroServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceBean;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -42,7 +43,7 @@ public class FicheroServiceFacadeBean implements FicheroServiceFacade {
     private FicheroExternoRepository ficheroExternoRepository;
 
     @Inject
-    private SystemServiceBean systemServiceBean;
+    private SystemServiceFacade systemServiceBean;
 
 
     @Override
@@ -51,6 +52,19 @@ public class FicheroServiceFacadeBean implements FicheroServiceFacade {
     public FicheroDTO getContentById(Long idFichero) {
         return ficheroExternoRepository.getContentById(idFichero,
                 systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
+    }
+
+    @Override
+    public FicheroDTO getFicheroDTOById(Long idFichero) {
+        JFicheroExterno jfichero = ficheroExternoRepository.findById(idFichero);
+        FicheroDTO ficheroDTO = null;
+        if (jfichero != null) {
+            ficheroDTO = new FicheroDTO();
+            ficheroDTO.setFilename(jfichero.getFilename());
+            ficheroDTO.setCodigo(jfichero.getCodigo());
+            ficheroDTO.setTipo(TypeFicheroExterno.fromString(jfichero.getTipo()));
+        }
+        return ficheroDTO;
     }
 
 

@@ -48,8 +48,8 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
                 if (jUsuario[2] != null) {
                     usuarioGridDTO.setEntidad(((JEntidad) jUsuario[2]).getDescripcion(filtro.getIdioma()));
                 }
-                usuarioGridDTO.setNombre((String)jUsuario[3]);
-                if(jUsuario[4] != null) {
+                usuarioGridDTO.setNombre((String) jUsuario[3]);
+                if (jUsuario[4] != null) {
                     usuarioGridDTO.setEmail((String) jUsuario[4]);
                 }
                 usuario.add(usuarioGridDTO);
@@ -73,8 +73,7 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
             sql = new StringBuilder("SELECT j.codigo, j.identificador, j.entidad, j.nombre, j.email FROM JUsuario j where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro " +
-                    " OR LOWER(j.entidad.dir3) LIKE :filtro ) ");
+            sql.append(" and LOWER(j.nombre) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(j.email) LIKE :filtro");
         }
         if (filtro.isRellenoId()) {
             sql.append(" and LOWER(j.id) like :id ");

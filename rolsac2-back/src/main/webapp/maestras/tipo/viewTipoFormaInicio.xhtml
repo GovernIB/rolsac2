@@ -37,12 +37,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <p:toolbar id="toolbar">
                 <f:facet name=""/>
                 <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText
-                        value="#{viewTipoFormaInicio.filtro.texto}"/>
+                    <h:outputFormat value="#{labels['dict.filtro']}"/>:
+                    <p:inputText value="#{viewTipoFormaInicio.filtro.texto}" styleClass="mr-2"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
                                      actionListener="#{viewTipoFormaInicio.buscar}" process="@form"/>
-                    <p:commandButton type="button" value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus"
-                                     iconPos="top"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"

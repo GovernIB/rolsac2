@@ -6,6 +6,7 @@ import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representacion de un personal. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
@@ -47,7 +48,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     @JoinColumn(name = "TPSP_CODTPPO", nullable = false)
     private JTipoPublicoObjetivo tipo;
 
-    @Column(name = "TPSP_IDENTI", nullable = false, length = 10)
+    @Column(name = "TPSP_IDENTI", nullable = false, length = 50)
     private String identificador;
 
 
@@ -91,7 +92,11 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     }
 
     public void setTraducciones(List<JTipoPublicoObjetivoEntidadTraduccion> traducciones) {
-        this.traducciones = traducciones;
+        if (this.traducciones == null || this.traducciones.isEmpty()) {
+            this.traducciones = traducciones;
+        } else {
+            this.traducciones.addAll(traducciones);
+        }
     }
 
     @Override
@@ -119,5 +124,16 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
         return tipo;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JTipoPublicoObjetivoEntidad that = (JTipoPublicoObjetivoEntidad) o;
+        return codigo.equals(that.codigo);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
 }

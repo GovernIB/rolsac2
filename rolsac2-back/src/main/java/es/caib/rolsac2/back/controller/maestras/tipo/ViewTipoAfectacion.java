@@ -153,13 +153,13 @@ public class ViewTipoAfectacion extends AbstractController implements Serializab
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoAfectacion", modoAcceso, params, true, 780, 265);
+        UtilJSF.openDialog("dialogTipoAfectacion", modoAcceso, params, true, 780, 295);
     }
 
 
     public void borrarTipoAfectacion() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
         } else {
             maestrasSupService.deleteTipoAfectacion(datoSeleccionado.getCodigo());
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));

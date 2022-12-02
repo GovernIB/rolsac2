@@ -185,8 +185,11 @@ public class DialogSeleccionMateriaSIA extends AbstractController implements Ser
     }
 
     public void anadirMateriaLista() {
-        if (materiasSeleccionadas != null && materiasSeleccionadas.contains(this.datoSeleccionado)) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "Ya está en la lista");
+        if (datoSeleccionado == null) {
+            return;
+        }
+        if (materiasSeleccionadas != null && contains(this.datoSeleccionado)) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.yaEstaEnLaLista"));
         } else {
             if (materiasSeleccionadas == null) {
                 materiasSeleccionadas = new ArrayList<>();
@@ -195,6 +198,19 @@ public class DialogSeleccionMateriaSIA extends AbstractController implements Ser
         }
     }
 
-
+    private boolean contains(TipoMateriaSIAGridDTO dat) {
+        boolean contiene = false;
+        if (dat != null) {
+            if (materiasSeleccionadas != null && !materiasSeleccionadas.isEmpty()) {
+                for (TipoMateriaSIAGridDTO tipo : materiasSeleccionadas) {
+                    if (tipo.getCodigo().compareTo(dat.getCodigo()) == 0) {
+                        contiene = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return contiene;
+    }
 
 }

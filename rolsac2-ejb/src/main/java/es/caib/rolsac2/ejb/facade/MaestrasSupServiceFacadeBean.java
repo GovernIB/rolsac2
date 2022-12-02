@@ -25,11 +25,13 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Implementación de los casos de uso de mantenimiento de tipo de afectación. Es responsabilidad de esta capa definir el
- * limite de las transacciones y la seguridad.
+ * Implementación de los casos de uso de mantenimiento de tipo de afectación. Es
+ * responsabilidad de esta capa definir el limite de las transacciones y la
+ * seguridad.
  * <p>
- * Les excepcions específiques es llancen mitjançant l'{@link ExceptionTranslate} que transforma els errors JPA amb les
- * excepcions de servei com la {@link RecursoNoEncontradoException}
+ * Les excepcions específiques es llancen mitjançant
+ * l'{@link ExceptionTranslate} que transforma els errors JPA amb les excepcions
+ * de servei com la {@link RecursoNoEncontradoException}
  *
  * @author Indra
  */
@@ -63,7 +65,6 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @Inject
     private TipoFormaInicioConverter tipoFormaInicioConverter;
 
-
     @Inject
     private TipoLegitimacionRepository tipoLegitimacionRepository;
 
@@ -88,13 +89,11 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @Inject
     private TipoPublicoObjetivoConverter tipoPublicoObjetivoConverter;
 
-
     @Inject
     private TipoSilencioAdministrativoRepository tipoSilencioAdministrativoRepository;
 
     @Inject
     private TipoSilencioAdministrativoConverter tipoSilencioAdministrativoConverter;
-
 
     @Inject
     private TipoTramitacionRepository tipoTramitacionRepository;
@@ -120,6 +119,8 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @Inject
     private TipoPublicoObjetivoEntidadRepository tipoPublicoObjetivoEntidadRepository;
 
+    @Inject
+    private ProcedimientoRepository procedimientoRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -181,10 +182,10 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         return tipoAfectacionRepository.existeIdentificador(identificador);
     }
 
-
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(TipoBoletinDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
 
         if (dto.getCodigo() != null) {
@@ -197,21 +198,24 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(TipoBoletinDTO dto) throws RecursoNoEncontradoException {
         JTipoBoletin jTipoBoletin = tipoBoletinRepository.getReference(dto.getCodigo());
         tipoBoletinConverter.mergeEntity(jTipoBoletin, dto);
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void deleteTipoBoletin(Long id) throws RecursoNoEncontradoException {
         JTipoBoletin TipoBoletin = tipoBoletinRepository.getReference(id);
         tipoBoletinRepository.delete(TipoBoletin);
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoBoletinDTO findTipoBoletinById(Long id) {
 
         JTipoBoletin TipoBoletin = tipoBoletinRepository.findById(id);
@@ -220,7 +224,8 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoBoletinDTO> findBoletines() {
         try {
             List<TipoBoletinDTO> items = tipoBoletinRepository.findAll();
@@ -232,7 +237,8 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<TipoBoletinGridDTO> findByFiltro(TipoBoletinFiltro filtro) {
         try {
             List<TipoBoletinGridDTO> items = tipoBoletinRepository.findPagedByFiltro(filtro);
@@ -247,7 +253,8 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoBoletinDTO> findAll() {
         try {
             List<TipoBoletinDTO> items = tipoBoletinRepository.findAll();
@@ -257,7 +264,6 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             return new ArrayList<>();
         }
     }
-
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -331,7 +337,6 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     public boolean existeIdentificadorTipoFormaInicio(String identificador) {
         return tipoFormaInicioRepository.existeIdentificador(identificador);
     }
-
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -470,11 +475,13 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(TipoNormativaDTO dto, Long idUnitat) throws RecursoNoEncontradoException, DatoDuplicadoException {
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long create(TipoNormativaDTO dto, Long idUnitat)
+            throws RecursoNoEncontradoException, DatoDuplicadoException {
         // Comprovam que el codiSia no existeix ja (
-        if (dto.getCodigo() != null) { //.isPresent()) {
+        if (dto.getCodigo() != null) { // .isPresent()) {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
 
@@ -484,8 +491,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(TipoNormativaDTO dto) throws RecursoNoEncontradoException {
         JTipoNormativa jTipoNormativa = tipoNormativaRepository.getReference(dto.getCodigo());
         tipoNormativaConverter.mergeEntity(jTipoNormativa, dto);
@@ -493,16 +501,18 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void deleteTipoNormativa(Long id) throws RecursoNoEncontradoException {
         JTipoNormativa jTipoNormativa = tipoNormativaRepository.getReference(id);
         tipoNormativaRepository.delete(jTipoNormativa);
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoNormativaDTO findTipoNormativaById(Long id) {
         JTipoNormativa jTipoNormativa = tipoNormativaRepository.getReference(id);
         TipoNormativaDTO tipoNormativaDTO = tipoNormativaConverter.createDTO(jTipoNormativa);
@@ -510,8 +520,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<TipoNormativaGridDTO> findByFiltro(TipoNormativaFiltro filtro) {
         try {
             List<TipoNormativaGridDTO> items = tipoNormativaRepository.findPagedByFiltro(filtro);
@@ -525,10 +536,10 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         }
     }
 
-
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Boolean checkIdentificadorTipoNormativa(String identificador) {
         try {
             return tipoNormativaRepository.checkIdentificador(identificador);
@@ -539,7 +550,8 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoNormativaDTO> findTipoNormativa() {
         try {
             List<TipoNormativaDTO> items = tipoNormativaRepository.findAll();
@@ -551,11 +563,13 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(TipoPublicoObjetivoDTO dto, Long idUnitat) throws RecursoNoEncontradoException, DatoDuplicadoException {
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long create(TipoPublicoObjetivoDTO dto, Long idUnitat)
+            throws RecursoNoEncontradoException, DatoDuplicadoException {
         // Comprovam que el codiSia no existeix ja (
-        if (dto.getCodigo() != null) { //.isPresent()) {
+        if (dto.getCodigo() != null) { // .isPresent()) {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
 
@@ -565,8 +579,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(TipoPublicoObjetivoDTO dto) throws RecursoNoEncontradoException {
         JTipoPublicoObjetivo jTipoPublicoObjetivo = tipoPublicoObjetivoRepository.getReference(dto.getCodigo());
         tipoPublicoObjetivoConverter.mergeEntity(jTipoPublicoObjetivo, dto);
@@ -574,16 +589,18 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void deleteTipoPublicoObjetivo(Long id) throws RecursoNoEncontradoException {
         JTipoPublicoObjetivo jTipoPublicoObjetivo = tipoPublicoObjetivoRepository.getReference(id);
         tipoPublicoObjetivoRepository.delete(jTipoPublicoObjetivo);
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoPublicoObjetivoDTO findTipoPublicoObjetivoById(Long id) {
         JTipoPublicoObjetivo jTipoPublicoObjetivo = tipoPublicoObjetivoRepository.getReference(id);
         TipoPublicoObjetivoDTO tipoNormativaDTO = tipoPublicoObjetivoConverter.createDTO(jTipoPublicoObjetivo);
@@ -591,8 +608,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<TipoPublicoObjetivoGridDTO> findByFiltro(TipoPublicoObjetivoFiltro filtro) {
         try {
             List<TipoPublicoObjetivoGridDTO> items = tipoPublicoObjetivoRepository.findPagedByFiltro(filtro);
@@ -607,8 +625,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Boolean checkIdentificadorTipoPublicoObjetivo(String identificador) {
         try {
             return tipoPublicoObjetivoRepository.checkIdentificador(identificador);
@@ -629,7 +648,6 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             return new ArrayList<>();
         }
     }
-
 
     @Inject
     private TipoSexoRepository tipoSexoRepository;
@@ -785,13 +803,14 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         return tipoProcedimientoRepository.existeIdentificador(identificador);
     }
 
-
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(TipoSilencioAdministrativoDTO dto, Long idUnitat) throws RecursoNoEncontradoException, DatoDuplicadoException {
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long create(TipoSilencioAdministrativoDTO dto, Long idUnitat)
+            throws RecursoNoEncontradoException, DatoDuplicadoException {
         // Comprovam que el codiSia no existeix ja (
-        if (dto.getCodigo() != null) { //.isPresent()) {
+        if (dto.getCodigo() != null) { // .isPresent()) {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
 
@@ -801,36 +820,43 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(TipoSilencioAdministrativoDTO dto) throws RecursoNoEncontradoException {
-        JTipoSilencioAdministrativo jTipoSilencioAdministrativo = tipoSilencioAdministrativoRepository.getReference(dto.getCodigo());
+        JTipoSilencioAdministrativo jTipoSilencioAdministrativo = tipoSilencioAdministrativoRepository
+                .getReference(dto.getCodigo());
         tipoSilencioAdministrativoConverter.mergeEntity(jTipoSilencioAdministrativo, dto);
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void deleteTipoSilencioAdministrativo(Long id) throws RecursoNoEncontradoException {
         JTipoSilencioAdministrativo jTipoSilencioAdministrativo = tipoSilencioAdministrativoRepository.getReference(id);
         tipoSilencioAdministrativoRepository.delete(jTipoSilencioAdministrativo);
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoSilencioAdministrativoDTO findTipoSilencioAdministrativoById(Long id) {
         JTipoSilencioAdministrativo jTipoSilencioAdministrativo = tipoSilencioAdministrativoRepository.getReference(id);
-        TipoSilencioAdministrativoDTO tipoSilencioAdministrativoDTO = tipoSilencioAdministrativoConverter.createDTO(jTipoSilencioAdministrativo);
+        TipoSilencioAdministrativoDTO tipoSilencioAdministrativoDTO = tipoSilencioAdministrativoConverter
+                .createDTO(jTipoSilencioAdministrativo);
         return tipoSilencioAdministrativoDTO;
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<TipoSilencioAdministrativoGridDTO> findByFiltro(TipoSilencioAdministrativoFiltro filtro) {
         try {
-            List<TipoSilencioAdministrativoGridDTO> items = tipoSilencioAdministrativoRepository.findPagedByFiltro(filtro);
+            List<TipoSilencioAdministrativoGridDTO> items = tipoSilencioAdministrativoRepository
+                    .findPagedByFiltro(filtro);
             long total = tipoSilencioAdministrativoRepository.countByFiltro(filtro);
             return new Pagina<>(items, total);
         } catch (Exception e) {
@@ -842,8 +868,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Boolean checkIdentificadorTipoSilencioAdministrativo(String identificador) {
         try {
             return tipoSilencioAdministrativoRepository.checkIdentificador(identificador);
@@ -854,7 +881,8 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoSilencioAdministrativoDTO> findAllTipoSilencio() {
         try {
             List<TipoSilencioAdministrativoDTO> items = tipoSilencioAdministrativoRepository.findAllTipoSilencio();
@@ -887,10 +915,11 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(TipoTramitacionDTO dto) throws RecursoNoEncontradoException {
-        JTipoTramitacion jTipoTramitacion = tipoTramitacionRepository.getReference(dto.getCodigo());
+        JTipoTramitacion jTipoTramitacion = tipoTramitacionRepository.findById(dto.getCodigo());
 
         if (Objects.nonNull(dto.getCodPlatTramitacion()) && Objects.nonNull(dto.getCodPlatTramitacion().getCodigo())) {
-            JPlatTramitElectronica jPlatTramitElectronica = platTramitElectronicaRepository.getReference(dto.getCodPlatTramitacion().getCodigo());
+            JPlatTramitElectronica jPlatTramitElectronica = platTramitElectronicaRepository
+                    .getReference(dto.getCodPlatTramitacion().getCodigo());
             jTipoTramitacion.setCodPlatTramitacion(jPlatTramitElectronica);
         }
 
@@ -909,7 +938,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoTramitacionDTO findTipoTramitacionById(Long id) {
-        JTipoTramitacion jTipoTramitacion = tipoTramitacionRepository.getReference(id);
+        JTipoTramitacion jTipoTramitacion = tipoTramitacionRepository.findById(id);
         TipoTramitacionDTO tipoTramitacionDTO = tipoTramitacionConverter.createDTO(jTipoTramitacion);
         return tipoTramitacionDTO;
     }
@@ -945,9 +974,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<TipoTramitacionDTO> findPlantillasTiposTramitacion() {
+    public List<TipoTramitacionDTO> findPlantillasTiposTramitacion(Long idEntidad) {
         try {
-            return tipoTramitacionRepository.findPlantillas();
+            return tipoTramitacionRepository.findPlantillas(idEntidad);
         } catch (Exception e) {
             LOG.error("Error: ", e);
             return new ArrayList<>();
@@ -1041,8 +1070,11 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(TipoPublicoObjetivoEntidadDTO dto) throws RecursoNoEncontradoException {
-        JTipoPublicoObjetivoEntidad jTipoPublicoObjetivoEntidad = tipoPublicoObjetivoEntidadRepository.findById(dto.getCodigo());
-        JTipoPublicoObjetivo jTipoPublicoObjetivo = dto.getTipo() != null ? tipoPublicoObjetivoRepository.getReference(dto.getTipo().getCodigo()) : null;
+        JTipoPublicoObjetivoEntidad jTipoPublicoObjetivoEntidad = tipoPublicoObjetivoEntidadRepository
+                .findById(dto.getCodigo());
+        JTipoPublicoObjetivo jTipoPublicoObjetivo = dto.getTipo() != null
+                ? tipoPublicoObjetivoRepository.getReference(dto.getTipo().getCodigo())
+                : null;
         tipoPublicoObjetivoEntidadConverter.mergeEntity(jTipoPublicoObjetivoEntidad, dto);
         jTipoPublicoObjetivoEntidad.setTipo(jTipoPublicoObjetivo);
         tipoPublicoObjetivoEntidadRepository.update(jTipoPublicoObjetivoEntidad);
@@ -1065,13 +1097,20 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         return tipoPublicoObjetivoEntidadConverter.createDTO(jTipoPublicoObjetivoEntidad);
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existePublicoObjetivo(Long codigoPO) {
+        return tipoPublicoObjetivoEntidadRepository.existePublicoObjetivo(codigoPO);
+    }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<TipoPublicoObjetivoEntidadGridDTO> findByFiltro(TipoPublicoObjetivoEntidadFiltro filtro) {
         try {
-            List<TipoPublicoObjetivoEntidadGridDTO> items = tipoPublicoObjetivoEntidadRepository.findPagedByFiltro(filtro);
+            List<TipoPublicoObjetivoEntidadGridDTO> items = tipoPublicoObjetivoEntidadRepository
+                    .findPagedByFiltro(filtro);
             long total = tipoPublicoObjetivoEntidadRepository.countByFiltro(filtro);
             return new Pagina<>(items, total);
         } catch (Exception e) {
@@ -1087,4 +1126,41 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         return tipoPublicoObjetivoEntidadRepository.existeIdentificador(identificador);
 
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeProcedimientoConPublicoObjetivo(Long codigo) {
+        return procedimientoRepository.existeProcedimientoConPublicoObjetivo(codigo);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeProcedimientoConTipoMateriaSIA(Long codigo) {
+        return procedimientoRepository.existeProcedimientoConMateria(codigo);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeProcedimientoConSilencio(Long codigoSilen) {
+        return procedimientoRepository.existeProcedimientoConSilencio(codigoSilen);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeProcedimientoConFormaInicio(Long codigoForIni) {
+        return procedimientoRepository.existeProcedimientoConFormaInicio(codigoForIni);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeProcedimientoConLegitimacion(Long codigoLegi) {
+        return procedimientoRepository.existeProcedimientoConLegitimacion(codigoLegi);
+    }
+
+
 }

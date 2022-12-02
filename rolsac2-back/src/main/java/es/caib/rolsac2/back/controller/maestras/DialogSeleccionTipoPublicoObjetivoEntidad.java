@@ -190,11 +190,30 @@ public class DialogSeleccionTipoPublicoObjetivoEntidad extends AbstractControlle
     }
 
     public void anadirPubObjEntLista() {
-        if (tipoPublicoObjEntSeleccionadas != null && tipoPublicoObjEntSeleccionadas.contains(this.datoSeleccionado)) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "Ya está en la lista");
+        if (this.datoSeleccionado == null) {
+            return;
+        }
+
+        if (tipoPublicoObjEntSeleccionadas != null && contains(this.datoSeleccionado)) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.yaEstaEnLaLista"));
         } else {
             tipoPublicoObjEntSeleccionadas.add(datoSeleccionado);
         }
+    }
+
+    private boolean contains(TipoPublicoObjetivoEntidadGridDTO dat) {
+        boolean contiene = false;
+        if (dat != null) {
+            if (tipoPublicoObjEntSeleccionadas != null && !tipoPublicoObjEntSeleccionadas.isEmpty()) {
+                for (TipoPublicoObjetivoEntidadGridDTO tipo : tipoPublicoObjEntSeleccionadas) {
+                    if (tipo.getCodigo().compareTo(dat.getCodigo()) == 0) {
+                        contiene = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return contiene;
     }
 
 

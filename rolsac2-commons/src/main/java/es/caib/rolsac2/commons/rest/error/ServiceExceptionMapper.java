@@ -1,4 +1,5 @@
-package es.caib.rolsac2.commons.rest.error;
+/*package es.caib.rolsac2.commons.rest.error;
+
 
 import es.caib.rolsac2.commons.rest.RestConstants;
 import es.caib.rolsac2.service.exception.ServiceException;
@@ -12,13 +13,15 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import java.util.Locale;
 
-/**
+
+*//**
  * Permet mapejar a una resposta comuna a les excepcions de tipus ServiceException.
  * Són bàsicament excepcions a la lògica de l'aplicació, i per tant enviarem un error
  * 400 al client.
  *
- * @author areus
- */
+ * @author Indra
+ *//*
+
 @Provider
 public class ServiceExceptionMapper implements ExceptionMapper<ServiceException> {
 
@@ -37,4 +40,5 @@ public class ServiceExceptionMapper implements ExceptionMapper<ServiceException>
                 .entity(ErrorBean.errorAplicacio(message))
                 .build();
     }
-}
+}*/
+

@@ -107,11 +107,11 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                     <f:facet name="header"/>
                     <h:outputText value="#{usuario.entidad}"/>
                 </p:column>
-                <p:column sortBy="#{usuario.entidad}" headerText="#{labels['viewUsuario.nombre']}">
+                <p:column sortBy="#{usuario.nombre}" headerText="#{labels['viewUsuario.nombre']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{usuario.nombre}"/>
                 </p:column>
-                <p:column sortBy="#{usuario.entidad}" headerText="#{labels['dict.email']}">
+                <p:column sortBy="#{usuario.email}" headerText="#{labels['dict.email']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{usuario.email}"/>
                 </p:column>

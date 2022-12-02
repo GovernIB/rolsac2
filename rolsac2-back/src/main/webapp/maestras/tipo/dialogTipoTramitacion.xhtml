@@ -3,6 +3,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
 >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -26,13 +27,30 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         rendered="#{dialogTipoTramitacion.isModoAlta()}"/>
     </ui:define>
 
+	 <ui:define name="contentIdioma">
+
+        <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoTramitacion.idioma}" styleClass="botoneraRed">
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+            <p:ajax update="inputDescripcion" process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogTipoTramitacion.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this"/>
+    </ui:define>
+
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
-        <p:panel>
+        <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
@@ -43,48 +61,86 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <my:literalComponent id="inputDescripcion" styleClass="w95"
+                                         value="#{dialogTipoTramitacion.data.descripcion}"
+                                         soloLecture="#{dialogTipoTramitacion.isModoConsulta()}"
+                                         required="true"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         idioma="#{dialogTipoTramitacion.idioma}"
+                                         literal="#{dialogTipoTramitacion.data.descripcion}"
+                                         nombreLiteral="#{labels['dict.descripcion']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                    </my:literalComponent>
+                </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dict.identificador']}:" for="txtTramiteId"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtTramiteId" value="#{dialogTipoTramitacion.data.tramiteId}" styleClass="w95"
                                  onblur="this.value = this.value.toUpperCase();"
+                                 requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="50">
-                        <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
-                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+                        <p:keyFilter regEx="/[0-9_-a-zA-Z\.]/i" preventPaste="false"/>
+                        <f:validateRegex pattern="^[0-9_-a-zA-Z\.]{1,50}$" />
                     </p:inputText>
                 </div>
-
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['viewTipoTramitacion.tramiteVersion']}:" for="txtTramiteVersion"/>
                 </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                <div class="ui-g-12 ui-md-3 ui-lg-4">
                     <p:inputNumber id="txtTramiteVersion" value="#{dialogTipoTramitacion.data.tramiteVersion}"
                                    styleClass="w95"
+                                   requiredMessage="#{labels['dict.obligatorio.version']}"
                                    required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" minValue="0"
                                    maxValue="999" decimalPlaces="0"/>
                 </div>
-
+                 <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.platTramitacion']}:"/>
+                </div>
+                <div class="ui-g-12 ui-md-3 ui-lg-4">
+                    <p:selectOneMenu id="txtCodPlatTramitacion" required="true"
+                                     requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
+                                     value="#{dialogTipoTramitacion.data.codPlatTramitacion}"
+                                     converter="#{platTramitElectronicaConverter}"
+                                     styleClass="w85" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
+                        <f:selectItem itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}"
+                                      itemValue="#{null}" id="seleccione"/>
+                        <f:selectItems value="#{dialogTipoTramitacion.plataformasTramiteList}" var="plataforma"
+                                       itemLabel="#{plataforma.identificador}" itemValue="#{plataforma}"/>
+                    </p:selectOneMenu>
+                </div>
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.fasePro.titulo']}:"/>
+                </div>
+                <div class="ui-g-12 ui-md-8 ui-lg-4">
+                    <p:selectOneMenu id="faseProc" required="true"
+                                     requiredMessage="#{labels['dict.obligatorio.fase']}"
+                                     value="#{dialogTipoTramitacion.data.faseProc}"
+                                     styleClass="w35" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
+                        <f:selectItem itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}"
+                                      itemValue="#{null}" id="seleccione2"/>
+                       	<f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.iniciacion']}"
+                                      itemValue="1"/>
+                        <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.instruccion']}"
+                                      itemValue="2"/>
+                        <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.finalizacion']}"
+                                      itemValue="3"/>
+                    </p:selectOneMenu>
+                </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['viewTipoTramitacion.tramiteParametros']}:"
                                   for="txtTramiteParametros"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtTramiteParametros" value="#{dialogTipoTramitacion.data.tramiteParametros}"
+                                 requiredMessage="#{labels['dict.obligatorio.parametros']}"
                                  styleClass="w95"
                                  required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="500"/>
-                </div>
-
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['viewTipoTramitacion.urlTramitacion']}:" for="txtTramitacionUrl"/>
-                </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:inputText id="txtTramitacionUrl" value="#{dialogTipoTramitacion.data.urlTramitacion}"
-                                 styleClass="w95"
-                                 required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="500"
-                                 validatorMessage="#{labels['viewTipoTramitacion.urlTramitacion.validation.message']}">
-                        <f:validateRegex
-                                pattern="^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$"/>
-                    </p:inputText>
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
@@ -99,22 +155,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                              itemLabel="#{labels['viewTipoTramitacion.tramitPresencial']}"
                                              disabled="#{dialogTipoTramitacion.isModoConsulta()}"/>
                 </div>
-
-
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.platTramitacion']}:"/>
-                </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:selectOneMenu id="txtCodPlatTramitacion" required="true"
-                                     value="#{dialogTipoTramitacion.data.codPlatTramitacion}"
-                                     converter="#{platTramitElectronicaConverter}"
-                                     styleClass="w95" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
-                        <f:selectItem itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}"
-                                      itemValue="#{null}" id="seleccione"/>
-                        <f:selectItems value="#{dialogTipoTramitacion.plataformasTramiteList}" var="plataforma"
-                                       itemLabel="#{plataforma.identificador}" itemValue="#{plataforma}"/>
-                    </p:selectOneMenu>
-                </div>
             </div>
         </p:panel>
     </ui:define>
@@ -126,7 +166,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogTipoTramitacion.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>
         <p:commandButton action="#{dialogTipoTramitacion.cerrar}"
                          value="#{labels['dict.cerrar']}"

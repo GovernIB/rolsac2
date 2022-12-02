@@ -15,6 +15,7 @@
     </scm>
     <properties>
         <!-- Propietats que afecten els plugins -->
+        <java.version>11</java.version>
         <maven.compiler.release>11</maven.compiler.release>
         <maven.properties.version>1.0.0</maven.properties.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,6 +46,10 @@
         <webXml.loginConfig.authMethod>KEYCLOAK</webXml.loginConfig.authMethod>
         <webXml.loginConfig.realmName>Govern de les Illes Balears</webXml.loginConfig.realmName>
         <commons-io.version>2.6</commons-io.version>
+        <jakarta.version>3.0.2</jakarta.version>
+        <!--Versión de Jena para RDF-->
+        <jena.version>2.6.4</jena.version>
+        <rome.version>1.18.0</rome.version>
        
     </properties>
     <dependencyManagement>
@@ -232,7 +237,12 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
-
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <compilerVersion>${java.version}</compilerVersion>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>

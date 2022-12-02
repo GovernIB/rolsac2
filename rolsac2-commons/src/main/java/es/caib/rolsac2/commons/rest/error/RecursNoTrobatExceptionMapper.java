@@ -1,4 +1,4 @@
-package es.caib.rolsac2.commons.rest.error;
+/*package es.caib.rolsac2.commons.rest.error;
 
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import org.slf4j.Logger;
@@ -8,12 +8,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-/**
+*//**
  * Cas particular d'una subclasse de ServiceException que indica que no s'ha trobat un recurs.
  * En aquest cas, retornam un error 404.
  *
- * @author areus
- */
+ * @author Indra
+ *//*
 @Provider
 public class RecursNoTrobatExceptionMapper implements ExceptionMapper<RecursoNoEncontradoException> {
 
@@ -24,4 +24,4 @@ public class RecursNoTrobatExceptionMapper implements ExceptionMapper<RecursoNoE
         LOG.error("Rebut un error de RecursNoTrobatException");
         return Response.status(Response.Status.NOT_FOUND).build();
     }
-}
+}*/

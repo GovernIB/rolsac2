@@ -1,18 +1,17 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.BaseEntity;
-import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivoEntidad;
-import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representacion de un personal. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Entity
 @SequenceGenerator(name = "tipo-publicoobjenttra-sequence", sequenceName = "RS2_TRATPSP_SEQ", allocationSize = 1)
@@ -99,4 +98,16 @@ public class JTipoPublicoObjetivoEntidadTraduccion extends BaseEntity {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JTipoPublicoObjetivoEntidadTraduccion that = (JTipoPublicoObjetivoEntidadTraduccion) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
 }

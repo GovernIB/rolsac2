@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
 >
-<ui:composition template="/WEB-INF/templates/layoutDialogSeleccion.xhtml">
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
         <f:metadata>
             <f:viewAction action="#{dialogSeleccionMateriaSIA.load}"/>
@@ -13,18 +13,30 @@
     <ui:define name="pageTitleDialogSelec">
         <h:outputFormat value="#{labels['viewTipoMateriaSIA.titulo']}"/>
     </ui:define>
-    <ui:define name="contentDialogSelec">
-            <div class="ui-g-12 ui-md-9 pl-4 panel-container">
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+            <div class="ui-g-12 ui-md-8 pl-4 panel-container">
                 <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                                  style="display:none" ajax="false" action="#{dialogSeleccionMateriaSIA.buscar}"
-                                 update="dataTable messagesDialogSelec"/>
+                                 update="dataTable messagesDialog"/>
                 <p:toolbar id="toolbar">
                     <f:facet name="left">
                         <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
                                                                                          value="#{dialogSeleccionMateriaSIA.filtroTexto}"/>
                         <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
-                                         update="dataTable messagesDialogSelec"
+                                         update="dataTable messagesDialog"
                                          actionListener="#{dialogSeleccionMateriaSIA.buscar()}" process="@form"/>
+                    </f:facet>
+                    <f:facet name="right">
+                        <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
+                                         actionListener="#{dialogSeleccionMateriaSIA.anadirMateriaLista()}"
+                                         update="messagesDialog dataTableMaterias"
+                                         disabled="#{empty dialogSeleccionMateriaSIA.datoSeleccionado}"
+                                         icon="pi pi-plus"></p:commandButton>
                     </f:facet>
                 </p:toolbar>
                 <p:dataTable id="dataTable" value="#{dialogSeleccionMateriaSIA.lazyModel}" var="materiaSIA"
@@ -42,6 +54,8 @@
                              sortBy="#{dialogSeleccionMateriaSIA.filtro.orderBy}"
                              sortOrder="#{dialogSeleccionMateriaSIA.filtro.order}"
                              style="min-height: 350px;">
+                    <p:ajax event="rowUnselect" global="false"  update="@form:btnAnyadir"  process="@form" />
+                    <p:ajax event="rowSelect" global="false"  update="@form:btnAnyadir"  process="@form" />
                     <p:ajax
                             event="rowDblselect"
                             oncomplete="triggerDblClickGrid();"
@@ -50,14 +64,6 @@
                     <f:facet name="{RowsPerPageLabel}">
                         #{labels.dataTable_rowsPerPage}
                     </f:facet>
-                    <p:column sortBy="#{materiaSIA.codigo}" headerText="#{labels['dict.codigo']}">
-                        <f:facet name="header"/>
-                        <h:outputText value="#{materiaSIA.codigo}"/>
-                    </p:column>
-                    <p:column sortBy="#{materiaSIA.identificador}" headerText="#{labels['dict.identificador']}">
-                        <f:facet name="header"/>
-                        <h:outputText value="#{materiaSIA.identificador}"/>
-                    </p:column>
                     <p:column sortBy="#{materiaSIA.descripcion}" headerText="#{labels['dict.descripcion']}">
                         <f:facet name="header"/>
                         <h:outputText value="#{materiaSIA.descripcion.getTraduccion(sessionBean.lang)}"/>
@@ -67,20 +73,20 @@
 
                 <h:outputScript>
                     function triggerDblClickGrid() {
-                        $('#formDialogSelec\\:btnEditarHidden').click();
+                        $('#formDialog\\:btnAnyadir').click();
                     }
                 </h:outputScript>
 
                 <p:commandButton  id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
                                   actionListener="#{dialogSeleccionMateriaSIA.anadirMateriaLista()}" process="@this"
-                                  update="messagesDialogSelec dataTableMaterias"
+                                  update="messagesDialog dataTableMaterias"
                                   style="display: none">
                     <!--<p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}" update="messages dataTable"/>-->
                 </p:commandButton>
 
             </div>
 
-        <div class="row left-container mx-0 mb-2">
+        <div class="ui-g-10 ui-md-3 left-container row p-0 mt-2 mx-3 ml-5 mb-2">
             <div class="col-12 left-container-header text-center">
                 <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.materiasRelacionadas']}</p>
             </div>
@@ -102,17 +108,17 @@
             <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                 <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
                                  action="#{dialogSeleccionMateriaSIA.borrarMateriaSIA}"
-                                 process="@this" update="dataTableMaterias messagesDialogSelec"/>
+                                 process="@this" update="dataTableMaterias messagesDialog"/>
             </div>
         </div>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogSeleccionMateriaSIA.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialogSelec"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
                          rendered="#{!dialogProcedimiento.isModoConsulta()}"
                          process="@all"/>
         <p:commandButton action="#{dialogSeleccionMateriaSIA.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialogSelec"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
                          process="@this"/>
     </ui:define>
 </ui:composition>

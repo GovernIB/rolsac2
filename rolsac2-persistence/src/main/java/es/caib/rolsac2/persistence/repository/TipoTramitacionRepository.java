@@ -1,12 +1,12 @@
 package es.caib.rolsac2.persistence.repository;
 
-import java.util.List;
-import java.util.Optional;
-
 import es.caib.rolsac2.persistence.model.JTipoTramitacion;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface de las operaciones básicas sobre tipo de tramitación
@@ -15,13 +15,13 @@ import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
  */
 public interface TipoTramitacionRepository extends CrudRepository<JTipoTramitacion, Long> {
 
-  Optional<JTipoTramitacion> findById(String id);
+    Optional<JTipoTramitacion> findById(String id);
 
-  List<TipoTramitacionGridDTO> findPagedByFiltro(TipoTramitacionFiltro filtro);
+    List<TipoTramitacionGridDTO> findPagedByFiltro(TipoTramitacionFiltro filtro);
 
-  long countByFiltro(TipoTramitacionFiltro filtro);
+    long countByFiltro(TipoTramitacionFiltro filtro);
 
-  List<TipoTramitacionDTO> findAll();
+    List<TipoTramitacionDTO> findAll();
 
-  List<TipoTramitacionDTO> findPlantillas();
+    List<TipoTramitacionDTO> findPlantillas(Long idEntidad);
 }

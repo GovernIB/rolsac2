@@ -28,7 +28,7 @@ import java.util.*;
  * nivell de request es reconstruiria per cada petició AJAX, com ara amb els errors de validació. Amb view es manté
  * mentre no es canvii de vista.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -162,14 +162,20 @@ public class ViewTipoSilencioAdministrativo extends AbstractController implement
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoSilencioAdministrativo", modoAcceso, params, true, 850, 265);
+        UtilJSF.openDialog("dialogTipoSilencioAdministrativo", modoAcceso, params, true, 850, 290);
     }
 
     public void borrarTipoSilencioAdministrativo() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
         } else {
-            tipoSilencioAdministrativoService.deleteTipoSilencioAdministrativo(datoSeleccionado.getCodigo());
+            if (tipoSilencioAdministrativoService.existeProcedimientoConSilencio(datoSeleccionado.getCodigo())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoSilencioAdministrativo.existeRelacion"));
+            } else {
+                tipoSilencioAdministrativoService.deleteTipoSilencioAdministrativo(datoSeleccionado.getCodigo());
+                addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+            }
+
         }
     }
 

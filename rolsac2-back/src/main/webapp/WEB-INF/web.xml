@@ -21,6 +21,16 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
+    <!-- Servlet para inicializar timer -->
+    <servlet>
+        <servlet-name>Ejecutor Servlet</servlet-name>
+        <servlet-class>es.caib.rolsac2.back.procesos.EjecutorProcesos</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <run-as>
+            <role-name>RS2_SUP</role-name>
+        </run-as>
+    </servlet>
+
     <!-- Per la llista completa de paràmetres de JSF veure 11.1.3 de l'especificació JSF -->
     <!-- State saving method: 'client' o 'server' (=default). Veure 2.5.2  de l'especifiació JSF -->
     <context-param>

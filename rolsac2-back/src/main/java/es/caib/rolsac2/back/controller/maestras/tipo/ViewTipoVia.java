@@ -158,7 +158,7 @@ public class ViewTipoVia extends AbstractController implements Serializable {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoVia", modoAcceso, params, true, 800, 265);
+        UtilJSF.openDialog("dialogTipoVia", modoAcceso, params, true, 800, 290);
 
 
     }
@@ -166,7 +166,7 @@ public class ViewTipoVia extends AbstractController implements Serializable {
     public void borrarTipoVia() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO,
-                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+                    getLiteral("msg.noBorrado.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
             tipoViaService.deleteTipoVia(datoSeleccionado.getCodigo());
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));

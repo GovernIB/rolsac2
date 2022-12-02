@@ -19,7 +19,7 @@ import java.util.Optional;
 /**
  * Implementación del repositorio de tipo de materia SIA.
  *
- * @author areus
+ * @author Indra
  */
 @Stateless
 @Local(TipoMateriaSIARepository.class)
@@ -88,7 +88,7 @@ public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMa
         Query query = entityManager.createQuery(sql.toString());
 
         if (filtro.isRellenoTexto()) {
-            query.setParameter("filtro", "%" + filtro.getTexto() + "%");
+            query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
 
         if (filtro.isRellenoIdioma()) {

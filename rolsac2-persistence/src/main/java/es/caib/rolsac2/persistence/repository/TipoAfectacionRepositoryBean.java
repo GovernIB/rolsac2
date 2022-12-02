@@ -19,7 +19,7 @@ import java.util.Optional;
 /**
  * Implementación del repositorio de tipo de afectación.
  *
- * @author jrodrigof
+ * @author Indra
  */
 @Stateless
 @Local(TipoAfectacionRepository.class)
@@ -85,7 +85,7 @@ public class TipoAfectacionRepositoryBean extends AbstractCrudRepository<JTipoAf
         Query query = entityManager.createQuery(sql.toString());
 
         if (filtro.isRellenoTexto()) {
-            query.setParameter("filtro", "%" + filtro.getTexto() + "%");
+            query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
 
         if (filtro.isRellenoIdioma()) {

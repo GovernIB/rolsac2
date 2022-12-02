@@ -656,7 +656,7 @@ public interface MaestrasSupServiceFacade {
      * @return lista de tipo tramitación que son plantillas
      */
 
-    List<TipoTramitacionDTO> findPlantillasTiposTramitacion();
+    List<TipoTramitacionDTO> findPlantillasTiposTramitacion(Long idEntidad);
 
     /**************************************************
      **************** TIPO VIA  ***********************
@@ -745,6 +745,11 @@ public interface MaestrasSupServiceFacade {
     TipoPublicoObjetivoEntidadDTO findTipoPublicoObjetivoEntidadById(Long id);
 
     /**
+     * Retorna si el publico objetivo SIA está relacionado a algún tipo público objetivo por entidad.
+     */
+    boolean existePublicoObjetivo(Long codigoPO);
+
+    /**
      * Devuelve una página con el tipo de afectación relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
@@ -760,5 +765,44 @@ public interface MaestrasSupServiceFacade {
      */
     boolean existeIdentificadorTipoPublicoObjetivoEntidad(String identificador);
 
+    /**
+     * Indica si ya existen procedimientos con el publico objetivo
+     *
+     * @param codigo
+     * @return
+     */
+    boolean existeProcedimientoConPublicoObjetivo(Long codigo);
+
+    /**
+     * Indica si ya existen procedimiento con la materia SIA
+     *
+     * @param codigo
+     * @return
+     */
+    boolean existeProcedimientoConTipoMateriaSIA(Long codigo);
+
+    /**
+     * Indica si ya existen procedimiento con el silencio administrativo
+     *
+     * @param codigoSilen
+     * @return
+     */
+    boolean existeProcedimientoConSilencio(Long codigoSilen);
+
+    /**
+     * Indica si ya existen procedimiento con la forma de inicio
+     *
+     * @param codigoForIni
+     * @return
+     */
+    boolean existeProcedimientoConFormaInicio(Long codigoForIni);
+
+    /**
+     * Indica si ya existen procedimiento con la legitimación
+     *
+     * @param codigoLegi
+     * @return
+     */
+    boolean existeProcedimientoConLegitimacion(Long codigoLegi);
 
 }

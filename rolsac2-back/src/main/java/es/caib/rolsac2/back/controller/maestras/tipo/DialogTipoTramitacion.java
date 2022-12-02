@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
@@ -22,7 +23,7 @@ import java.util.Objects;
 /**
  * Controlador para editar un tipo de tramitación.
  *
- * @author jrodrigof
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -49,6 +50,7 @@ public class DialogTipoTramitacion extends AbstractController implements Seriali
         LOG.debug("init");
         // Inicializamos combos/desplegables/inputs
         // De momento, no tenemos desplegables.
+        this.setearIdioma();
 
         if (this.isModoAlta()) {
             data = new TipoTramitacionDTO();
@@ -60,7 +62,15 @@ public class DialogTipoTramitacion extends AbstractController implements Seriali
             data = maestrasSupService.findTipoTramitacionById(Long.valueOf(id));
         }
 
-        plataformasTramiteList = platTramitElectronicaService.findAll();
+        if (data.getDescripcion() == null) {
+            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+        }
+
+        if (data.getUrl() == null) {
+            data.setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+        }
+
+        plataformasTramiteList = platTramitElectronicaService.findAll(sessionBean.getEntidad().getCodigo());
     }
 
     public void traducir() {
@@ -97,7 +107,6 @@ public class DialogTipoTramitacion extends AbstractController implements Seriali
         result.setCanceled(true);
         UtilJSF.closeDialog(result);
     }
-
 
     public String getId() {
         return id;

@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.NormativaServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoBoletinGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoBoletinFiltro;
@@ -35,6 +36,9 @@ public class ViewTipoBoletin extends AbstractController implements Serializable 
     private static final Logger LOG = LoggerFactory.getLogger(ViewTipoBoletin.class);
     @EJB
     MaestrasSupServiceFacade TipoBoletinService;
+
+    @EJB
+    private NormativaServiceFacade normativaServiceFacade;
     /**
      * Model de dades emprat pel compoment dataTable de primefaces.
      */
@@ -127,8 +131,7 @@ public class ViewTipoBoletin extends AbstractController implements Serializable 
 
     public void editarTipoBoletin() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
             abrirVentana(TypeModoAcceso.EDICION);
         }
@@ -167,10 +170,15 @@ public class ViewTipoBoletin extends AbstractController implements Serializable 
     public void borrarTipoBoletin() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO,
-                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+                    getLiteral("msg.noBorrado.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
-            TipoBoletinService.deleteTipoBoletin(datoSeleccionado.getCodigo());
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            if(normativaServiceFacade.existeBoletin(datoSeleccionado.getCodigo())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO,
+                        getLiteral("viewTipoBoletin.existeRelacion"));
+            } else {
+                TipoBoletinService.deleteTipoBoletin(datoSeleccionado.getCodigo());
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            }
         }
     }
 

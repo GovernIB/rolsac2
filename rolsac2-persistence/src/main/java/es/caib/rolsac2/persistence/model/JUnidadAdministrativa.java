@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @SequenceGenerator(name = "ua-sequence", sequenceName = "RS2_UNIADM_SEQ", allocationSize = 1)
@@ -43,7 +44,6 @@ public class JUnidadAdministrativa extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UNAD_UNADPADRE")
     private JUnidadAdministrativa padre;
-
     @Column(name = "UNAD_DIR3", length = 20)
     private String codigoDIR3;
 
@@ -80,6 +80,16 @@ public class JUnidadAdministrativa extends BaseEntity {
 
     @OneToMany(mappedBy = "unidadAdministrativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JUnidadAdministrativaTraduccion> traducciones;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "RS2_USERUA",
+                joinColumns = {
+            @JoinColumn(name = "UAUS_CODUA")
+                },
+            inverseJoinColumns = {
+            @JoinColumn(name = "UAUS_CODUSER")
+            })
+    private Set<JUsuario> usuarios;
 
     public Long getCodigo() {
         return codigo;
@@ -204,6 +214,10 @@ public class JUnidadAdministrativa extends BaseEntity {
     public List<JUnidadAdministrativaTraduccion> getTraducciones() {
         return traducciones;
     }
+
+    public Set<JUsuario> getUsuarios() { return usuarios; }
+
+    public void setUsuarios(Set<JUsuario> usuarios) { this.usuarios = usuarios; }
 
     public void setTraducciones(List<JUnidadAdministrativaTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {

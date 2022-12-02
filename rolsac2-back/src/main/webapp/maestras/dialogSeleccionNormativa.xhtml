@@ -26,6 +26,13 @@
                                      update="dataTable messagesDialogSelec"
                                      actionListener="#{dialogSeleccionNormativa.buscar()}" process="@form"/>
                 </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
+                                     actionListener="#{dialogSeleccionNormativa.anadirPubObjEntLista()}"
+                                     update="messagesDialog dataTable"
+                                     disabled="#{empty dialogSeleccionNormativa.datoSeleccionado}"
+                                     icon="pi pi-plus"></p:commandButton>
+                </f:facet>
             </p:toolbar>
             <p:dataTable id="dataTable" value="#{dialogSeleccionNormativa.lazyModel}" var="pubobjent"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="pubobjentTable"
@@ -42,6 +49,8 @@
                          sortBy="#{dialogSeleccionNormativa.filtro.orderBy}"
                          sortOrder="#{dialogSeleccionNormativa.filtro.order}"
                          style="min-height: 350px;">
+                <p:ajax event="rowUnselect" global="false"  update="@form:btnAnyadir"  process="@form" />
+                <p:ajax event="rowSelect" global="false"  update="@form:btnAnyadir"  process="@form" />
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClickGrid();"
@@ -50,10 +59,11 @@
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
+                <!--
                 <p:column sortBy="#{pubobjent.codigo}">
                     <f:facet name="header">#{labels['dict.codigo']}</f:facet>
                     <h:outputText value="#{pubobjent.codigo}"/>
-                </p:column>
+                </p:column> -->
                 <p:column sortBy="#{pubobjent.identificador}">
                     <f:facet name="header">#{labels['dict.identificador']}</f:facet>
                     <h:outputText value="#{pubobjent.identificador}"/>
@@ -71,7 +81,7 @@
 
             <h:outputScript>
                 function triggerDblClickGrid() {
-                    $('#formDialogSelec\\:btnEditarHidden').click();
+                    $('#formDialog\\:btnAnyadir').click();
                 }
             </h:outputScript>
 

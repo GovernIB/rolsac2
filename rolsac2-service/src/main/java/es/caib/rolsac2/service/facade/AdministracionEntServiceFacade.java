@@ -6,6 +6,8 @@ import es.caib.rolsac2.service.model.filtro.EdificioFiltro;
 import es.caib.rolsac2.service.model.filtro.PluginFiltro;
 import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
 
+import java.util.List;
+
 public interface AdministracionEntServiceFacade {
 
     /**************************************************
@@ -116,7 +118,7 @@ public interface AdministracionEntServiceFacade {
      * @return EL identificador del nuevo plugin
      * @throws RecursoNoEncontradoException si el plugin no existe
      */
-    Long createPlugin(PluginDto dto) throws RecursoNoEncontradoException;
+    Long createPlugin(PluginDTO dto) throws RecursoNoEncontradoException;
 
     /**
      * Actualiza los datos de un plugin a la base de datos.
@@ -124,7 +126,7 @@ public interface AdministracionEntServiceFacade {
      * @param dto nuevos datos del plugin
      * @throws RecursoNoEncontradoException si el plugin con el id no existe.
      */
-    void updatePlugin(PluginDto dto) throws RecursoNoEncontradoException;
+    void updatePlugin(PluginDTO dto) throws RecursoNoEncontradoException;
 
     /**
      * Borra un plugin de la bbdd
@@ -140,7 +142,7 @@ public interface AdministracionEntServiceFacade {
      * @param id identificador del plugin a buscar
      * @return un opcional con los datos del plugin indicado o vacío si no existe
      */
-    PluginDto findPluginById(Long id);
+    PluginDTO findPluginById(Long id);
 
     /**
      * Devuelve una página con el plugin relacionado con los parámetros del filtro
@@ -150,4 +152,20 @@ public interface AdministracionEntServiceFacade {
      */
     Pagina<PluginGridDTO> findByFiltro(PluginFiltro filtro);
 
+    /**
+     * Devuelve el listado de plugins que están creados en una entidad
+     *
+     * @param idEntidad identificador de la entidad
+     * @return listado de plugins en una entidad
+     */
+    List<PluginDTO> listPluginsByEntidad(Long idEntidad);
+
+    /**
+     * Comprueba si ya existe un plugin creado con el tipo y el codigoPlugin.
+     *
+     * @param codigoPlugin
+     * @param tipo
+     * @return
+     */
+    boolean existePluginTipo(Long codigoPlugin, String tipo);
 }

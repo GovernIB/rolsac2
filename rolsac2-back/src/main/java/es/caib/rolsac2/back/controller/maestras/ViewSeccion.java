@@ -3,8 +3,10 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.commons.plugins.boletin.api.model.Edicto;
 import es.caib.rolsac2.service.exception.ServiceException;
 import es.caib.rolsac2.service.facade.SeccionServiceFacade;
+import es.caib.rolsac2.service.facade.integracion.BoletinServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.SeccionGridDTO;
 import es.caib.rolsac2.service.model.filtro.SeccionFiltro;
@@ -39,6 +41,11 @@ public class ViewSeccion extends AbstractController implements Serializable {
     private SeccionGridDTO datoSeleccionado;
 
     private SeccionFiltro filtro;
+
+    private List<Edicto> listaEdictos;
+
+    @EJB
+    private BoletinServiceFacade boletinServiceFacade;
 
     public LazyDataModel<SeccionGridDTO> getLazyModel() {
         return lazyModel;
@@ -151,7 +158,17 @@ public class ViewSeccion extends AbstractController implements Serializable {
         UtilJSF.openDialog("dialogSeccion", modoAcceso, params, true, 850, 435);
     }
 
+    public void listarEdictos() {
+        listaEdictos = boletinServiceFacade.listar("042/2022", "", "", sessionBean.getEntidad().getCodigo());
+    }
 
+    public List<Edicto> getListaEdictos() {
+        return listaEdictos;
+    }
+
+    public void setListaEdictos(List<Edicto> listaEdictos) {
+        this.listaEdictos = listaEdictos;
+    }
 
     public SeccionGridDTO getDatoSeleccionado() {
         return datoSeleccionado;

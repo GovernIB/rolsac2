@@ -16,7 +16,7 @@ import es.caib.rolsac2.persistence.repository.UnidadAdministrativaRepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceBean;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ConfiguracionGlobalFiltro;
 import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
@@ -41,7 +41,7 @@ import java.util.List;
  * Les excepcions específiques es llancen mitjançant l'{@link ExceptionTranslate} que transforma els errors JPA amb les
  * excepcions de servei com la {@link RecursoNoEncontradoException}
  *
- * @author jsegovia
+ * @author Indra
  */
 @Logged
 @ExceptionTranslate
@@ -73,7 +73,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
     private UnidadAdministrativaConverter unidadAdministrativaConverter;
 
     @Inject
-    private SystemServiceBean systemServiceBean;
+    private SystemServiceFacade systemServiceBean;
 
     @Inject
     private FicheroExternoRepository ficheroExternoRepository;
