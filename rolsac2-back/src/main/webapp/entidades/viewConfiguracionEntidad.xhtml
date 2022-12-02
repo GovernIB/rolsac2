@@ -273,8 +273,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          value="#{labels['dict.ayuda']}"
                                          process="@this"/>
                         <p:commandButton action="#{viewConfiguracionEntidad.guardar}"
-                                         value="#{labels['dict.guardar']}" update="messages"
-                                         process="@all" />
+                                         value="#{labels['dict.guardar']}"
+                                         process="@all">
+                            <f:ajax event="click" listener="#{sessionBean.updateLogo()}" render=":imgLogo :imgDefecto"></f:ajax>
+                        </p:commandButton>
                          </div>
                     </div>
                 </p:panel>
