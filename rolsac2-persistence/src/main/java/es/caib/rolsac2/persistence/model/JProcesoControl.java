@@ -1,0 +1,90 @@
+package es.caib.rolsac2.persistence.model;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
+
+/**
+ * The persistent class for the "RS2_PROCEX database table.
+ *
+ */
+
+@Entity
+@Table(name = "RS2_PROCEX",
+        indexes = {
+            @Index(name="RS2_PROCEX_PK_I", columnList = "PROCEX_CODIGO")
+        }
+)
+public class JProcesoControl implements Serializable {
+
+  /** Serial version UID. **/
+  private static final long serialVersionUID = 1L;
+
+  @Id
+  @Column(name = "PROCEX_CODIGO", unique = true, nullable = false)
+  private String identificador;
+
+  @Column(name = "PROCEX_INSTAN", length = 50)
+  private String instancia;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "PROCEX_FECHA")
+  private Date fecha;
+
+  /**
+   * Obtiene identificador.
+   *
+   * @return identificador
+   */
+  public String getIdentificador() {
+    return identificador;
+  }
+
+  /**
+   * Establece identificador.
+   *
+   * @param identificador identificador a establecer
+   */
+  public void setIdentificador(final String identificador) {
+    this.identificador = identificador;
+  }
+
+  /**
+   * Obtiene instancia.
+   *
+   * @return instancia
+   */
+  public String getInstancia() {
+    return instancia;
+  }
+
+  /**
+   * Establece instancia.
+   *
+   * @param instancia instancia a establecer
+   */
+  public void setInstancia(final String instancia) {
+    this.instancia = instancia;
+  }
+
+  /**
+   * Obtiene fecha.
+   *
+   * @return fecha
+   */
+  public Date getFecha() {
+    return fecha;
+  }
+
+  /**
+   * Establece fecha.
+   *
+   * @param fecha fecha a establecer
+   */
+  public void setFecha(final Date fecha) {
+    this.fecha = fecha;
+  }
+
+
+}

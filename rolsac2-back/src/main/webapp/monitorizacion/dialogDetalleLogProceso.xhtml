@@ -1,0 +1,115 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogDetalleLogProceso.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogDetalleLogProceso.id}"/>
+            <f:viewParam id="ESTADO" name="ESTADO" value="#{dialogDetalleLogProceso.estado}"/>
+            <f:viewAction action="#{dialogDetalleLogProceso.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogDetalleLogProceso.titulo']}"
+        />
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+
+        <p:panel>
+            <div class="row">
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtCodigo" value="#{dialogDetalleLogProceso.data.proceso.identificadorProceso}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="txtDescripcion"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputTextarea id="txtDescripcion" value="#{dialogDetalleLogProceso.data.proceso.descripcion}"
+                                     styleClass="w95" autoResize="false" rows="3"
+                                     disabled="true"/>
+                </div>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['viewProcesosLog.fechaIni']}:" for="txtFecIni"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtFecIni" value="#{dialogDetalleLogProceso.data.fechaInicio}"
+                                 styleClass="w95"
+                                 disabled="true"/>
+                </div>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['viewProcesosLog.fechaFin']}:" for="txtFecFin"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtFecFin" value="#{dialogDetalleLogProceso.data.fechaFin}"
+                                 styleClass="w95"
+                                 disabled="true"/>
+                </div>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['viewProcesosLog.estado']}:" for="txtEstado"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtEstado" value="#{dialogDetalleLogProceso.data.estadoTexto}"
+                                 styleClass="w95"
+                                 disabled="true"/>
+                </div>
+
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dialogDetalleLogProceso.infoAdicional']}:"
+                                   for="dataTablePropiedades"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5 d-flex w80">
+                    <p:dataTable id="dataTablePropiedades" var="td"
+                                 value="#{dialogDetalleLogProceso.data.listaPropiedades.propiedades}"
+                                 rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1;"
+                                 paginator="false">
+
+                        <!-- Columnas -->
+                        <p:column headerText="#{labels['dialogPropiedades.codigo']}" class="ui-panelgrid-cell">
+                            <h:outputText value="#{td.key}"/>
+                        </p:column>
+
+                        <p:column headerText="#{labels['dialogPropiedades.valor']}" class="ui-panelgrid-cell">
+                            <h:outputText value="#{td.value}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+
+                <div class="ui-g-12">
+                    <p:fieldset legend="#{labels['dialogDetalleLogProceso.verTraza']}" collapsed="true" toggleable="true" toggleSpeed="500" rendered="#{dialogDetalleLogProceso.data.mensajeError != null}">
+                        <p:ajax event="toggle"/>
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputText value="#{dialogDetalleLogProceso.data.mensajeError}">
+                            </h:outputText>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </div>
+            </div>
+        </p:panel>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogDetalleLogProceso.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogDetalleLogProceso.cerrar()}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>
