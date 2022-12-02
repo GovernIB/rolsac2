@@ -82,6 +82,9 @@ public class ViewPlatTramitElectronica extends AbstractController implements Ser
             public List<PlatTramitElectronicaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
                                                            Map<String, FilterMeta> filterBy) {
                 try {
+                    if (!sortField.equals("filtro.orderBy")) {
+                        filtro.setOrderBy(sortField);
+                    }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<PlatTramitElectronicaGridDTO> pagina = serviceFacade.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
@@ -137,7 +140,7 @@ public class ViewPlatTramitElectronica extends AbstractController implements Ser
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogPlatTramitElectronica", modoAcceso, params, true, 850, 450);
+        UtilJSF.openDialog("dialogPlatTramitElectronica", modoAcceso, params, true, 850, 350);
     }
 
     public PlatTramitElectronicaFiltro getFiltro() {

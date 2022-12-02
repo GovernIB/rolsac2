@@ -99,15 +99,15 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<PlatTramitElectronicaDTO> findAll() {
-        List<JPlatTramitElectronica> listaEntidades = platTramitElectronicaRepository.findAll();
+    public List<PlatTramitElectronicaDTO> findAll(Long idEntidad) {
+        List<JPlatTramitElectronica> listaEntidades = platTramitElectronicaRepository.findAll(idEntidad);
         List<PlatTramitElectronicaDTO> listaDTOs = converter.toDTOs(listaEntidades);
         return listaDTOs;
     }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-    TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<PlatTramitElectronicaGridDTO> findByFiltro(PlatTramitElectronicaFiltro filtro) {
         try {
             List<PlatTramitElectronicaGridDTO> items = platTramitElectronicaRepository.findPagedByFiltro(filtro);
