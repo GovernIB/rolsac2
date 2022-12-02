@@ -4,11 +4,13 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,8 +84,24 @@ public class DialogTipoPublicoObjetivoEntidad extends AbstractController impleme
         result.setResult(data);
         UtilJSF.closeDialog(result);
     }
-
+//organizacion de trabajo caib - teletrabajo/horario
     private boolean verificarGuardar() {
+        if (Objects.isNull(this.data.getCodigo())
+                && serviceFacade.existeIdentificadorTipoPublicoObjetivoEntidad(this.data.getIdentificador())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            return false;
+        }
+
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
+                && serviceFacade.existeIdentificadorTipoPublicoObjetivoEntidad(this.data.getIdentificador())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            return false;
+        }
+        List<String> idiomasPendientesUrl = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
+        if(!idiomasPendientesUrl.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dict.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesUrl), true);
+            return false;
+        }
         return true;
     }
 

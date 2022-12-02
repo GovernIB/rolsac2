@@ -38,13 +38,11 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
             <p:toolbar id="toolbar">
                 <f:facet name=""></f:facet>
                 <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
-                                                                                     value="#{viewTipoPublicoObjetivo.filtroTexto}"/>
+                    <h:outputFormat value="#{labels['dict.filtro']}"/>:
+                    <p:inputText id="filtroBusqueda" value="#{viewTipoPublicoObjetivo.filtroTexto}"
+                                styleClass="mr-2"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
                                      actionListener="#{viewTipoPublicoObjetivo.buscar()}" process="@form"/>
-                    <p:commandButton value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus" iconPos="top"
-                                     update="messages dataTable" actionListener="#{viewTipoPublicoObjetivo.ayuda}"
-                                     process="@form"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"

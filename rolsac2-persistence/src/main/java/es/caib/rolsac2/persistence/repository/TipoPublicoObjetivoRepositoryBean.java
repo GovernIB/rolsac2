@@ -2,16 +2,11 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.TipoPublicoObjetivoConverter;
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
-import es.caib.rolsac2.persistence.model.JTipoTramitacion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.TipoPublicoObjetivoFiltro;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -20,17 +15,20 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementación del repositorio de Personal.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Stateless
 @Local(TipoPublicoObjetivoRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JTipoPublicoObjetivo, Long>
-                implements TipoPublicoObjetivoRepository {
+        implements TipoPublicoObjetivoRepository {
 
     @Inject
     private TipoPublicoObjetivoConverter converter;
@@ -72,16 +70,16 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder(
-                            "SELECT count(j) FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
+                    "SELECT count(j) FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
         } else {
             sql = new StringBuilder(
-                            "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  where 1 = 1  ");
+                    "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  where 1 = 1  ");
         }
         // if (filtro.isRellenoIdUA()) {
         // sql.append(" and j.unidadAdministrativa = :ua");
         // }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro )");
+            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro)");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
@@ -92,7 +90,7 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
         // query.setParameter("ua", filtro.getIdUA());
         // }
         if (filtro.isRellenoTexto()) {
-            query.setParameter("filtro", "%" + filtro.getTexto() + "%");
+            query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
 
         if (filtro.isRellenoIdioma()) {
@@ -115,7 +113,7 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
     @Override
     public Optional<JTipoPublicoObjetivo> findById(String id) {
         TypedQuery<JTipoPublicoObjetivo> query =
-                        entityManager.createNamedQuery(JTipoPublicoObjetivo.FIND_BY_ID, JTipoPublicoObjetivo.class);
+                entityManager.createNamedQuery(JTipoPublicoObjetivo.FIND_BY_ID, JTipoPublicoObjetivo.class);
         query.setParameter("id", id);
         List<JTipoPublicoObjetivo> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
@@ -124,7 +122,7 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
     @Override
     public Boolean checkIdentificador(String identificador) {
         TypedQuery<Long> query =
-                        entityManager.createNamedQuery(JTipoPublicoObjetivo.COUNT_BY_IDENTIFICADOR, Long.class);
+                entityManager.createNamedQuery(JTipoPublicoObjetivo.COUNT_BY_IDENTIFICADOR, Long.class);
         query.setParameter("identificador", identificador);
         return query.getSingleResult().longValue() >= 1L;
     }
@@ -132,7 +130,7 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
     @Override
     public List<TipoPublicoObjetivoDTO> findAll() {
         TypedQuery<JTipoPublicoObjetivo> query =
-                        entityManager.createQuery("SELECT j FROM JTipoPublicoObjetivo j", JTipoPublicoObjetivo.class);
+                entityManager.createQuery("SELECT j FROM JTipoPublicoObjetivo j", JTipoPublicoObjetivo.class);
         return converter.createTipPubDTOs(query.getResultList());
     }
 }

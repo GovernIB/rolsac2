@@ -28,7 +28,7 @@ import java.util.*;
  * nivell de request es reconstruiria per cada petició AJAX, com ara amb els errors de validació. Amb view es manté
  * mentre no es canvii de vista.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -161,14 +161,18 @@ public class ViewTipoPublicoObjetivo extends AbstractController implements Seria
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoPublicoObjetivo", modoAcceso, params, true, 850, 265);
+        UtilJSF.openDialog("dialogTipoPublicoObjetivo", modoAcceso, params, true, 850, 290);
     }
 
     public void borrarTipoPublicoObjetivo() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
-            maestrasSupService.deleteTipoPublicoObjetivo(datoSeleccionado.getCodigo());
+            if (maestrasSupService.existePublicoObjetivo(datoSeleccionado.getCodigo())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoPublicoObjetivo.relacionEntidad"));
+            } else {
+                maestrasSupService.deleteTipoPublicoObjetivo(datoSeleccionado.getCodigo());
+            }
         }
     }
 

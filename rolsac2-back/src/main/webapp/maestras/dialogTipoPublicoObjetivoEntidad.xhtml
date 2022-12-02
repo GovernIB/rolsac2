@@ -43,26 +43,31 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                          process="@this"/>
     </ui:define>
     <ui:define name="contentDialog">
-        <p:panel>
+        <p:panel id="form">
             <p:growl id="messagesDialog"
                      globalOnly="false"
-                     showDetail="true"
+                     showDetail="false"
                      life="5000"
                      escape="false"/>
             <div class="row">
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.identificador']}" for="ident"/>
+                    <p:outputLabel value="#{labels['dict.identificador']}"
+                                   for="ident"
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="ident" value="#{dialogTipoPublicoObjetivoEntidad.data.identificador}"
-                                 styleClass="w95"
-                                 required="false" disabled="#{dialogTipoPublicoObjetivoEntidad.modoConsultaCheck()}"/>
+                                 requiredMessage="#{labels['dict.obligatorio.identificador']}"
+                                 styleClass="w95" maxlength="50"
+                                 required="true" disabled="#{dialogTipoPublicoObjetivoEntidad.modoConsultaCheck()}"/>
 
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogPublicoObjetivoEntidad.tipoPublicoObjetivo']}:" for="tipoPubObjetivo"/>
+                    <h:outputText value="#{labels['dialogPublicoObjetivoEntidad.tipoPublicoObjetivo']}:"
+                                  for="tipoPubObjetivo"
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:selectOneMenu id="tipoPubObjetivo"
@@ -79,7 +84,9 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}:"
+                                   for="inputDescripcion"
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputDescripcion"
@@ -89,7 +96,9 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                                          soloLecture="#{dialogTipoPublicoObjetivoEntidad.isModoConsulta()}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.descripcion']}"/>
+                                         nombreLiteral="#{labels['dict.descripcion']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                    </my:literalComponent>
                 </div>
             </div>
         </p:panel>
@@ -101,7 +110,8 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog form"
+                         rendered="#{!dialogTipoPublicoObjetivoEntidad.isModoConsulta()}"
                          process="@all"/>
         <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.cerrar}"
                          value="#{labels['dict.cerrar']}"

@@ -22,4 +22,6 @@ public interface TipoPublicoObjetivoEntidadRepository extends CrudRepository<JTi
     long countByFiltro(TipoPublicoObjetivoEntidadFiltro filtro);
 
     boolean existeIdentificador(String identificador);
+
+    boolean existePublicoObjetivo(Long codigoPO);
 }

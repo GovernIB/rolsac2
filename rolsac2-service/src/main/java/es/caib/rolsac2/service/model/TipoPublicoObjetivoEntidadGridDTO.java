@@ -5,18 +5,16 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 /**
  * Dades d'un Tipo Publico Objetivo.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Schema(name = "TipoPublicoObjetivoEntidadGrid")
 public class TipoPublicoObjetivoEntidadGridDTO extends ModelApi {
 
     private Long codigo;
-    private String tipo;
+    private Literal tipo;
     private String identificador;
 
-    private String entidad;
-
-    private String descripcion;
+    private Literal descripcion;
 
     /**
      * Se utilizan la siguiente para el selector de procedimientos.
@@ -63,11 +61,11 @@ public class TipoPublicoObjetivoEntidadGridDTO extends ModelApi {
         this.codigo = codigo;
     }
 
-    public String getTipo() {
+    public Literal getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(Literal tipo) {
         this.tipo = tipo;
     }
 
@@ -79,19 +77,15 @@ public class TipoPublicoObjetivoEntidadGridDTO extends ModelApi {
         this.identificador = identificador;
     }
 
-    public String getEntidad() { return entidad; }
-
-    public void setEntidad(String entidad) { this.entidad = entidad; }
-
     public Long getCodigoProcWF() {
         return codigoProcWF;
     }
 
-    public String getDescripcion() {
+    public Literal getDescripcion() {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
+    public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }
 

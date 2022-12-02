@@ -7,9 +7,9 @@ public class TipoPublicoObjetivoEntidadFiltro extends AbstractFiltro {
 
     private String texto;
     private Long codigo;
-    private Long codigoEntidad;
     private Long codigoTipo;
     private String identificador;
+    private String traducciones;
 
     public TipoPublicoObjetivoEntidadFiltro() {
     }
@@ -28,15 +28,6 @@ public class TipoPublicoObjetivoEntidadFiltro extends AbstractFiltro {
 
     public void setCodigo(Long cod) { this.codigo = cod; }
 
-
-    public Long getCodigoEntidad() {
-        return codigoEntidad;
-    }
-
-    public void setCodigoEntidad(Long codigoEntidad) {
-        this.codigoEntidad = codigoEntidad;
-    }
-
     public Long getCodigoTipo() {
         return codigoTipo;
     }
@@ -51,8 +42,27 @@ public class TipoPublicoObjetivoEntidadFiltro extends AbstractFiltro {
         this.identificador = identificador;
     }
 
+    public void setCodigoTipo(Long codigoTipo) {
+        this.codigoTipo = codigoTipo;
+    }
+
+    public String getTraducciones() {
+        return traducciones;
+    }
+
+    public void setTraducciones(String traducciones) {
+        this.traducciones = traducciones;
+    }
+
     public boolean isRellenoTexto() {
         return texto != null && !texto.isEmpty();
+    }
+
+    /**
+     * Esta relleno el identificador
+     **/
+    public boolean isRellenoIdentificador() {
+        return identificador != null && !identificador.isEmpty();
     }
 
     @Override
