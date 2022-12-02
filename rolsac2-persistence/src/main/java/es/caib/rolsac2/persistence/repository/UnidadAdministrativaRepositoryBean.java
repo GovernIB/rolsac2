@@ -1,7 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
+import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
@@ -12,6 +14,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -26,6 +29,139 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
 
     protected UnidadAdministrativaRepositoryBean() {
         super(JUnidadAdministrativa.class);
+    }
+
+    @Inject
+    UnidadAdministrativaConverter uaConverter;
+
+    @Override
+    public UnidadAdministrativaDTO findUASimpleByID(Long id, String idioma, Long idEntidadRoot) {
+        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.identificador, t.nombre, jp " //" jp.codigo, jp.identificador, pt.nombre "
+                + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma "
+                + " LEFT OUTER JOIN j.padre jp LEFT OUTER JOIN jp.traducciones pt ON pt.idioma = :idioma ");
+        sql.append(" WHERE 1 = 1  ");
+        if (idEntidadRoot != null) {
+            sql.append(" and j.padre.codigo IS NULL AND j.entidad.codigo = :entidadId ");
+        }
+        if (id != null) {
+            sql.append(" and j.codigo = :id ");
+        }
+
+        Query query = entityManager.createQuery(sql.toString());
+        if (id != null) {
+            query.setParameter("id", id);
+        }
+        query.setParameter("idioma", idioma);
+        if (idEntidadRoot != null) {
+            query.setParameter("entidadId", idEntidadRoot);
+        }
+        UnidadAdministrativaDTO uadto = null;
+        List<Object[]> result = query.getResultList();
+        if (result != null && !result.isEmpty()) {
+            Object[] jresultado = result.get(0);
+            uadto = new UnidadAdministrativaDTO();
+            uadto.setCodigo((Long) jresultado[0]);
+            uadto.setIdentificador((String) jresultado[1]);
+            Literal nombre = new Literal();
+            nombre.add(new Traduccion(idioma, (String) jresultado[2]));
+            if (jresultado[3] != null) {
+                UnidadAdministrativaDTO uaPadre = getPadre(idioma, (JUnidadAdministrativa) jresultado[3]);
+                List<UnidadAdministrativaDTO> hijos = getHijosSimple(uaPadre.getCodigo(), idioma, uaPadre);
+                uaPadre.setHijos(hijos);
+                uadto.setPadre(uaPadre);
+            }
+            uadto.setNombre(nombre);
+            List<UnidadAdministrativaDTO> hijos = getHijosSimple(uadto.getCodigo(), idioma, uadto);
+            uadto.setHijos(hijos);
+        }
+        return uadto;
+    }
+
+    private UnidadAdministrativaDTO getPadre(String idioma, JUnidadAdministrativa jUnidadAdministrativa) {
+        if (jUnidadAdministrativa.getPadre() == null) {
+            UnidadAdministrativaDTO uaPadre = jpaToDto(jUnidadAdministrativa, idioma);
+            List<UnidadAdministrativaDTO> hijos = getHijosSimple(jUnidadAdministrativa.getCodigo(), idioma, uaPadre);
+            uaPadre.setHijos(hijos);
+            return uaPadre;
+        } else {
+            UnidadAdministrativaDTO uaPadre = getPadre(idioma, jUnidadAdministrativa.getPadre());
+            UnidadAdministrativaDTO ua = jpaToDto(jUnidadAdministrativa, idioma);
+            ua.setPadre(uaPadre);
+            return ua;
+        }
+    }
+
+    private UnidadAdministrativaDTO jpaToDto(JUnidadAdministrativa jUnidadAdministrativa, String idioma) {
+        UnidadAdministrativaDTO uaPadre = new UnidadAdministrativaDTO();
+        uaPadre.setCodigo(jUnidadAdministrativa.getCodigo());
+        uaPadre.setIdentificador(jUnidadAdministrativa.getIdentificador());
+        Literal nombrePadre = new Literal();
+        if (jUnidadAdministrativa != null && jUnidadAdministrativa.getTraducciones() != null && !jUnidadAdministrativa.getTraducciones().isEmpty()) {
+            for (JUnidadAdministrativaTraduccion trad : jUnidadAdministrativa.getTraducciones()) {
+                if (trad != null && trad.getIdioma().equals(idioma)) {
+                    nombrePadre.add(new Traduccion(idioma, trad.getNombre()));
+                    break;
+                }
+            }
+        }
+        uaPadre.setNombre(nombrePadre);
+        return uaPadre;
+    }
+
+    @Override
+    public List<UnidadAdministrativaDTO> getHijosSimple(Long idPadre, String idioma, UnidadAdministrativaDTO padre) {
+
+        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.identificador, t.nombre "
+                + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma "
+                + " LEFT OUTER JOIN j.padre jp LEFT OUTER JOIN jp.traducciones pt ON pt.idioma = :idioma ");
+        sql.append(" WHERE j.padre.codigo = :idPadre ");
+
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("idPadre", idPadre);
+        query.setParameter("idioma", idioma);
+        UnidadAdministrativaDTO uadto = null;
+        List<Object[]> result = query.getResultList();
+        List<UnidadAdministrativaDTO> hijos = new ArrayList<>();
+        if (result != null && !result.isEmpty()) {
+            for (Object[] jresultado : result) {
+                uadto = new UnidadAdministrativaDTO();
+                uadto.setCodigo((Long) jresultado[0]);
+                uadto.setIdentificador((String) jresultado[1]);
+                Literal nombre = new Literal();
+                nombre.add(new Traduccion(idioma, (String) jresultado[2]));
+                uadto.setNombre(nombre);
+                uadto.setPadre(padre);
+                hijos.add(uadto);
+            }
+        }
+        return hijos;
+    }
+
+    @Override
+    public String obtenerPadreDir3(Long codigoUA, String idioma) {
+        return obtenerPadreDir3Recursivo(codigoUA, idioma);
+    }
+
+    public String obtenerPadreDir3Recursivo(Long codigoUA, String idioma) {
+        StringBuilder sql = new StringBuilder(" SELECT j.codigo, j.codigoDIR3, t.nombre, j.padre.codigo  FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma  ");
+        sql.append(" WHERE j.codigo = :codigoUA");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoUA", codigoUA);
+        query.setParameter("idioma", idioma);
+        List<Object[]> result = query.getResultList();
+        List<UnidadAdministrativaDTO> hijos = new ArrayList<>();
+        if (result != null && !result.isEmpty()) {
+            Object[] resultado = result.get(0);
+            if (resultado[1] != null && !resultado[1].toString().isEmpty()) {
+                return (String) resultado[2];
+            } else if (resultado[3] != null && ((Long) resultado[3]) != null) {
+                return obtenerPadreDir3Recursivo(((Long) resultado[3]), idioma);
+            } else {
+                return "";
+            }
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -140,7 +276,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
 
     @Override
     public List<JTipoUnidadAdministrativa> getTipo(Long idUnitat, String idioma) {
-        TypedQuery<JTipoUnidadAdministrativa> query = null;
+        Query query = null;
         String sql;
         if (idUnitat != null) {
             sql = "SELECT t FROM JUnidadAdministrativa j LEFT OUTER JOIN j.tipo t ON t.idioma=:idioma WHERE j.tipo.codigo=:idTipo ";
@@ -151,6 +287,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
 
         query.setParameter("idTipo", idUnitat);
         query.setParameter("idioma", idioma);
+
         return query.getResultList();
     }
 
@@ -161,20 +298,6 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         query.setParameter("identificador", identificador);
         Long resultado = query.getSingleResult();
         return resultado > 0;
-    }
-
-    @Override
-    public JUnidadAdministrativa getRoot(String idioma, Long entidadId) {
-        TypedQuery<JUnidadAdministrativa> query = null;
-
-        String sql = "SELECT ua FROM JUnidadAdministrativa ua "
-                + " LEFT OUTER JOIN ua.traducciones t ON t.idioma = :idioma "
-                + " WHERE ua.padre.codigo IS NULL AND ua.entidad.codigo = :entidadId ORDER BY ua.orden DESC";
-
-        query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
-        query.setParameter("idioma", idioma);
-        query.setParameter("entidadId", entidadId);
-        return query.getSingleResult();
     }
 
     @Override
@@ -206,6 +329,8 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             case "presentacion":
             case "url":
                 return "t." + order;
+            case "nombrePadre":
+                return "tpd.nombre ";
             default:
                 return "j." + order;
         }
@@ -225,4 +350,45 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         }
         return entityManager.find(JUnidadAdministrativa.class, ua.getCodigo());
     }
+
+    @Override
+    public List<JUnidadAdministrativa> getUnidadesAdministrativaByUsuario(Long usuarioId) {
+        TypedQuery<JUnidadAdministrativa> query = null;
+        String sql = "SELECT a FROM JUnidadAdministrativa a LEFT OUTER JOIN a.usuarios b WHERE b.codigo= :usuarioId";
+        query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
+        query.setParameter("usuarioId", usuarioId);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public UnidadAdministrativaGridDTO modelToGridDTO(JUnidadAdministrativa jUnidadAdministrativa) {
+        UnidadAdministrativaGridDTO unidadAdministrativa = new UnidadAdministrativaGridDTO();
+        unidadAdministrativa.setCodigo(jUnidadAdministrativa.getCodigo());
+        unidadAdministrativa.setNombre(uaConverter.convierteTraduccionToLiteral(jUnidadAdministrativa.getTraducciones(), "nombre"));
+        if (jUnidadAdministrativa.getTipo() != null) {
+            unidadAdministrativa.setTipo(jUnidadAdministrativa.getTipo().getIdentificador());
+        }
+        if (jUnidadAdministrativa.getOrden() != null) {
+            unidadAdministrativa.setOrden(jUnidadAdministrativa.getOrden());
+        }
+        if (jUnidadAdministrativa.getCodigoDIR3() != null) {
+            unidadAdministrativa.setCodigoDIR3(jUnidadAdministrativa.getCodigoDIR3());
+        }
+        if (jUnidadAdministrativa.getPadre() != null) {
+            unidadAdministrativa.setNombrePadre(uaConverter.convierteTraduccionToLiteral(jUnidadAdministrativa.getPadre().getTraducciones(), "nombre"));
+        }
+        return unidadAdministrativa;
+    }
+
+    @Override
+    public boolean existeTipoSexo(Long codigoSex) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT count(j) FROM JUnidadAdministrativa j where j.responsableSexo.codigo = :codigoSex ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoSex", codigoSex);
+        Long resultado = (Long) query.getSingleResult();
+        return resultado > 0;
+    }
+
 }

@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.util.Objects;
+
 @Schema(name = "UnidadAdministrativa")
 public class UnidadAdministrativaGridDTO extends ModelApi {
 
@@ -94,5 +96,18 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
 
     public void setCodigoDIR3(String codigoDIR3) {
         this.codigoDIR3 = codigoDIR3;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UnidadAdministrativaGridDTO that = (UnidadAdministrativaGridDTO) o;
+        return Objects.equals(codigo, that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo, codigoDIR3, nombrePadre, tipo, orden, nombre);
     }
 }

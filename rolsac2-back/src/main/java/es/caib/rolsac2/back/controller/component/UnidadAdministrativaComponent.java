@@ -44,6 +44,8 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
 
     private String updateElementos;
 
+    private String estiloInput;
+
 
     // Actions ------------------------------------------------------------------------------------
 
@@ -89,6 +91,9 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
         if (this.getValue() == null) {
             this.setValue(UnidadAdministrativaDTO.createInstance());
         }
+
+        String nombreLiteral = (String) getAttributes().get("nombreLiteral");
+        UtilJSF.anyadirMochila("nombreLiteral", nombreLiteral);
 
         if (idioma == null) {
             idioma = "es";
@@ -229,6 +234,14 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
 
     public void setTextoIdioma(UIInput textoIdioma) {
         this.textoIdioma = textoIdioma;
+    }
+
+    public String getEstiloInput() {
+        return estiloInput;
+    }
+
+    public void setEstiloInput(String estiloInput) {
+        this.estiloInput = estiloInput;
     }
 
     public String getUpdateElementos() {

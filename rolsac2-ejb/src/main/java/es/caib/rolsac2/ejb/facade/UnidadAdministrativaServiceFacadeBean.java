@@ -3,21 +3,13 @@ package es.caib.rolsac2.ejb.facade;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
-import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.persistence.model.JTipoSexo;
-import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
-import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
-import es.caib.rolsac2.persistence.repository.EntidadRepository;
-import es.caib.rolsac2.persistence.repository.TipoSexoRepository;
-import es.caib.rolsac2.persistence.repository.TipoUnidadAdministrativaRepository;
-import es.caib.rolsac2.persistence.repository.UnidadAdministrativaRepository;
+import es.caib.rolsac2.persistence.converter.UsuarioConverter;
+import es.caib.rolsac2.persistence.model.*;
+import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.TipoSexoDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
@@ -28,7 +20,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.*;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementación de los casos de uso de mantenimiento de personal. Es responsabilidad de esta caap definir el limite de
@@ -66,12 +60,10 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Inject
     private TipoSexoRepository tipoSexoRepository;
 
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public UnidadAdministrativaDTO getRoot(String idioma, Long entidadId) {
-        return converter.createDTO(unidadAdministrativaRepository.getRoot(idioma, entidadId));
-    }
+
+    @Inject
+    private UsuarioRepository usuarioRepository;
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -84,6 +76,28 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<UnidadAdministrativaDTO> getHijosSimple(Long idUnitat, String idioma, UnidadAdministrativaDTO padre) {
+        return unidadAdministrativaRepository.getHijosSimple(idUnitat, idioma, padre);
+
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public String obtenerPadreDir3(Long codigoUA, String idioma) {
+        return unidadAdministrativaRepository.obtenerPadreDir3(codigoUA, idioma);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeTipoSexo(Long codigoSex) {
+        return unidadAdministrativaRepository.existeTipoSexo(codigoSex);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(UnidadAdministrativaDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
@@ -91,10 +105,21 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         JUnidadAdministrativa jUnidadAdministrativa = converter.createEntity(dto);
 
         JUnidadAdministrativa jUnidadAdministrativaPadre =
-                (dto.getPadre() != null && dto.getPadre().getCodigo() != null)? unidadAdministrativaRepository.getReference(dto.getPadre().getCodigo())
+                (dto.getPadre() != null && dto.getPadre().getCodigo() != null) ? unidadAdministrativaRepository.getReference(dto.getPadre().getCodigo())
                         : null;
 
         jUnidadAdministrativa.setPadre(jUnidadAdministrativaPadre);
+
+        //Añadimos los usuarios
+        Set<JUsuario> usuarios = new HashSet<>();
+        if(dto.getUsuariosUnidadAdministrativa() != null) {
+            JUsuario jUsuario;
+            for(UsuarioGridDTO usuario : dto.getUsuariosUnidadAdministrativa()) {
+                jUsuario = usuarioRepository.getReference(usuario.getCodigo());
+                usuarios.add(jUsuario);
+            }
+        }
+        jUnidadAdministrativa.setUsuarios(usuarios);
 
         unidadAdministrativaRepository.create(jUnidadAdministrativa);
         return jUnidadAdministrativa.getCodigo();
@@ -119,10 +144,23 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         jUnidadAdministrativa.setResponsableSexo(jTipoSexo);
 
         JUnidadAdministrativa jUnidadAdministrativaPadre =
-                (dto.getPadre() != null && dto.getPadre().getCodigo() != null)? unidadAdministrativaRepository.getReference(dto.getPadre().getCodigo())
+                (dto.getPadre() != null && dto.getPadre().getCodigo() != null) ? unidadAdministrativaRepository.getReference(dto.getPadre().getCodigo())
                         : null;
 
         jUnidadAdministrativa.setPadre(jUnidadAdministrativaPadre);
+
+        //Actualizamos usuarios
+        Set<JUsuario> usuarios = new HashSet<>();
+        if(dto.getUsuariosUnidadAdministrativa() != null) {
+            JUsuario jUsuario;
+            for(UsuarioGridDTO usuario : dto.getUsuariosUnidadAdministrativa()) {
+                jUsuario = usuarioRepository.getReference(usuario.getCodigo());
+                usuarios.add(jUsuario);
+            }
+        }
+
+        jUnidadAdministrativa.getUsuarios().clear();
+        jUnidadAdministrativa.getUsuarios().addAll(usuarios);
 
         converter.mergeEntity(jUnidadAdministrativa, dto);
         unidadAdministrativaRepository.update(jUnidadAdministrativa);
@@ -141,6 +179,13 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public UnidadAdministrativaDTO findById(Long id) {
         return converter.createDTO(unidadAdministrativaRepository.findById(id));
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public UnidadAdministrativaDTO findUASimpleByID(Long id, String idioma, Long idEntidadRoot) {
+        return unidadAdministrativaRepository.findUASimpleByID(id, idioma, idEntidadRoot);
     }
 
     @Override
@@ -199,5 +244,19 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId) {
         return unidadAdministrativaRepository.getUnidadesAdministrativaByEntidadId(entidadId);
+    }
+
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<UnidadAdministrativaDTO> getUnidadesAdministrativasByUsuario(Long usuarioId) {
+        List<JUnidadAdministrativa> jUnidadesAdministrativas = unidadAdministrativaRepository.getUnidadesAdministrativaByUsuario(usuarioId);
+        List<UnidadAdministrativaDTO> unidadesAdministrativas = new ArrayList<>();
+        for(JUnidadAdministrativa ua : jUnidadesAdministrativas) {
+            UnidadAdministrativaDTO unidadAdministrativaDTO = converter.createDTO(ua);
+            unidadesAdministrativas.add(unidadAdministrativaDTO);
+        }
+        return unidadesAdministrativas;
     }
 }

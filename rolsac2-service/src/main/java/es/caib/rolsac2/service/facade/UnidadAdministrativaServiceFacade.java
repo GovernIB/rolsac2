@@ -1,7 +1,10 @@
 package es.caib.rolsac2.service.facade;
 
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
-import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.Pagina;
+import es.caib.rolsac2.service.model.TipoSexoDTO;
+import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 
 import java.util.List;
@@ -23,7 +26,15 @@ public interface UnidadAdministrativaServiceFacade {
     List<UnidadAdministrativaDTO> getHijos(Long idUnitat, String idioma);
 
 
-    UnidadAdministrativaDTO getRoot(String idioma, Long entidadId);
+    /**
+     * Devuelve la UA simple
+     *
+     * @param id
+     * @param idioma
+     * @param idEntidadRoot
+     * @return
+     */
+    UnidadAdministrativaDTO findUASimpleByID(Long id, String idioma, Long idEntidadRoot);
 
 
     /**
@@ -81,4 +92,36 @@ public interface UnidadAdministrativaServiceFacade {
     Boolean checkIdentificador(String identificador);
 
     List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId);
+
+    List<UnidadAdministrativaDTO> getHijosSimple(Long codigo, String idioma, UnidadAdministrativaDTO padre);
+
+    /**
+     * Devuelve un listado de UAs relacionadas a un usuario
+     *
+     * @param usuarioId
+     * @return listado de UAs
+     */
+
+    /**
+     * Retorna las UAs relacionadas a un usuario
+     * @param usuarioId
+     * @return
+     */
+    List<UnidadAdministrativaDTO> getUnidadesAdministrativasByUsuario(Long usuarioId);
+
+    /**
+     * Obtiene el padre DIR3 de una UA
+     * @param codigo
+     * @param idioma
+     * @return
+     */
+    String obtenerPadreDir3(Long codigo, String idioma);
+
+
+    /**
+     * Verifica si existe un tipo de Sexo en alguna UA.
+     * @param codigoSex
+     * @return
+     */
+    boolean existeTipoSexo(Long codigoSex);
 }

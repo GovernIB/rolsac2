@@ -10,13 +10,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAdministrativa, Long> {
+
+    UnidadAdministrativaDTO findUASimpleByID(Long id, String idioma, Long idEntidadRoot);
+
     Optional<JUnidadAdministrativa> findById(String id);
 
     List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro);
 
     List<JUnidadAdministrativa> getHijos(Long idUnitat, String idioma);
 
-    JUnidadAdministrativa getRoot(String idioma, Long entidadId);
 
     Long getCountHijos(Long parentId);
 
@@ -29,4 +31,14 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId);
 
     JUnidadAdministrativa findJUAById(UnidadAdministrativaDTO uaResponsable);
+
+    List<UnidadAdministrativaDTO> getHijosSimple(Long idUnitat, String idioma, UnidadAdministrativaDTO padre);
+
+    List<JUnidadAdministrativa> getUnidadesAdministrativaByUsuario(Long usuarioId);
+
+    UnidadAdministrativaGridDTO modelToGridDTO(JUnidadAdministrativa jUnidadAdministrativa);
+
+    String obtenerPadreDir3(Long codigoUA, String idioma);
+
+    boolean existeTipoSexo(Long codigoSex);
 }

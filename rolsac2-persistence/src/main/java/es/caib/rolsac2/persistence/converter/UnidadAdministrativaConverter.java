@@ -1,15 +1,18 @@
 package es.caib.rolsac2.persistence.converter;
 
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
+import es.caib.rolsac2.persistence.model.JUsuario;
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.UsuarioGridDTO;
 import org.mapstruct.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         uses = {EntidadConverter.class, TipoUnidadAdministrativaObjetivoConverter.class,
@@ -25,6 +28,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
             expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"url\"))")
     @Mapping(target = "responsable",
             expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"responsableCV\"))")
+    @Mapping(target = "usuariosUnidadAdministrativa", expression = "java(convertUsuariostoDTO(entity.getUsuarios()))")
     UnidadAdministrativaDTO createDTO(JUnidadAdministrativa entity);
 
     @Mapping(target = "nombre",
@@ -55,6 +59,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "traducciones",
             expression = "java(convierteLiteralToTraduccion(jUnidadAdministrativa,dto))")
     @Mapping(target = "padre", ignore = true)
+    @Mapping(target = "usuarios", ignore = true)
     JUnidadAdministrativa createEntity(UnidadAdministrativaDTO dto);
 
     @Override
@@ -64,6 +69,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "tipo", ignore = true)
     @Mapping(target = "traducciones",
             expression = "java(convierteLiteralToTraduccion(entity,dto))")
+    @Mapping(target = "usuarios", ignore = true)
     void mergeEntity(@MappingTarget JUnidadAdministrativa entity, UnidadAdministrativaDTO dto);
 
     default List<UnidadAdministrativaDTO> createDTOs(List<JUnidadAdministrativa> entities) {
@@ -172,4 +178,20 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
         return resultado;
     }
 
+    default List<UsuarioGridDTO> convertUsuariostoDTO(Set<JUsuario> usuarios) {
+        List<UsuarioGridDTO> usuariosUA = new ArrayList<>();
+        if(usuarios != null) {
+            for(JUsuario usuario : usuarios) {
+                UsuarioGridDTO usuarioGridDTO = new UsuarioGridDTO();
+                usuarioGridDTO.setCodigo(usuario.getCodigo());
+                usuarioGridDTO.setEntidad(usuario.getEntidad().getCodigo().toString());
+                usuarioGridDTO.setNombre(usuario.getNombre());
+                usuarioGridDTO.setIdentificador(usuario.getIdentificador());
+                usuarioGridDTO.setEmail(usuario.getEmail());
+                usuariosUA.add(usuarioGridDTO);
+            }
+        }
+
+        return usuariosUA;
+    }
 }

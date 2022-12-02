@@ -80,6 +80,8 @@ public class UnidadAdministrativaDTO extends ModelApi {
 
     private Literal responsable;
 
+    private List<UsuarioGridDTO> usuariosUnidadAdministrativa;
+
     public UnidadAdministrativaDTO() {
     }
 
@@ -101,6 +103,28 @@ public class UnidadAdministrativaDTO extends ModelApi {
         UnidadAdministrativaDTO ua = new UnidadAdministrativaDTO();
         ua.setNombre(Literal.createInstance());
         return ua;
+    }
+
+    /**
+     * Convertir UnidadAdministrativaDTO en UnidadAdministrativaaGridDTO
+     */
+    public UnidadAdministrativaGridDTO convertDTOtoGridDTO() {
+        UnidadAdministrativaGridDTO unidadAdministrativa = new UnidadAdministrativaGridDTO();
+        unidadAdministrativa.setCodigo(this.getCodigo());
+        unidadAdministrativa.setNombre(this.getNombre());
+        if(this.getTipo() != null) {
+            unidadAdministrativa.setTipo(this.getTipo().getIdentificador());
+        }
+        if(this.getOrden() != null) {
+            unidadAdministrativa.setOrden(this.getOrden());
+        }
+        if(this.getCodigoDIR3() != null) {
+            unidadAdministrativa.setCodigoDIR3(this.getCodigoDIR3());
+        }
+        if(this.getPadre() != null) {
+            unidadAdministrativa.setNombrePadre(this.getPadre().getNombre());
+        }
+        return unidadAdministrativa;
     }
 
     /**
@@ -286,6 +310,10 @@ public class UnidadAdministrativaDTO extends ModelApi {
     public void setCodigoDIR3(String codigoDIR3) {
         this.codigoDIR3 = codigoDIR3;
     }
+
+    public List<UsuarioGridDTO> getUsuariosUnidadAdministrativa() { return usuariosUnidadAdministrativa; }
+
+    public void setUsuariosUnidadAdministrativa(List<UsuarioGridDTO> usuariosUnidadAdministrativa) {  this.usuariosUnidadAdministrativa = usuariosUnidadAdministrativa; }
 
     @Override
     public boolean equals(Object o) {
