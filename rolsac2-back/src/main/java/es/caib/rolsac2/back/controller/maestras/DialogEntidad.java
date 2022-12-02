@@ -3,6 +3,7 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.FicheroServiceFacade;
 import es.caib.rolsac2.service.model.EntidadDTO;
@@ -33,7 +34,7 @@ import java.util.Objects;
 /**
  * Controlador para editar un DialogEntidad.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -95,19 +96,16 @@ public class DialogEntidad extends AbstractController implements Serializable {
     }
 
     private boolean checkObligatorio() {
-        if (this.data.getDescripcion() == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogEntidad.obligatorio.descripcion"));
-            return false;
-        }
 
-        if (!this.data.getDescripcion().checkObligatorio()) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogEntidad.obligatorio.descripcion"));
+        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
+        if (!idiomasPendientesDescripcion.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }
 
         if (Objects.isNull(this.data.getCodigo())
                 && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.campoVacio"), true);
             return false;
         }
 
@@ -198,8 +196,8 @@ public class DialogEntidad extends AbstractController implements Serializable {
     public void revisarIdiomas() {
         //Revisar si está en el listado de idiomas permitidos
         List<String> idiomasAux = new ArrayList<>(idiomasObligatorios);
-        for(String idioma: idiomasAux) {
-            if(!idiomasPermitidos.contains(idioma)) {
+        for (String idioma : idiomasAux) {
+            if (!idiomasPermitidos.contains(idioma)) {
                 idiomasObligatorios.remove(idioma);
             }
         }

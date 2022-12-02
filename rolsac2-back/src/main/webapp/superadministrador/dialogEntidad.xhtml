@@ -36,7 +36,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:selectOneButton id="opcionIdioma" value="#{dialogEntidad.idioma}" styleClass="botoneraRed">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-            <p:ajax process="@this" update="inputDescripcion txtIdiomaDefecto"/>
+            <p:ajax process="@this" update="inputDescripcion"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogEntidad.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -60,7 +60,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:importConstants type="es.caib.rolsac2.service.model.types.TypeFicheroExterno"
                            var="tipoFichero" ></p:importConstants>
 
-        <p:panel>
+        <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
@@ -73,11 +73,14 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                    <p:outputLabel value="#{labels['dict.identificador']}:"
+                                   for="txtIdentificador"
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtIdentificador" value="#{dialogEntidad.data.identificador}"
                                  styleClass="w95" onblur="this.value = this.value.toUpperCase();"
+                                 requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  required="true" disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
@@ -87,7 +90,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}:"
+                                   for="inputDescripcion"
+                    />
                 </div>
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -98,56 +103,59 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          required="true"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.descripcion']}"/>
+                                         nombreLiteral="#{labels['dict.descripcion']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                    </my:literalComponent>
                 </div>
             </div>
-            <!--
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dialogEntidad.dir3']}:" for="txtDir3"/>
-                </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:inputText id="txtDir3" value="#{dialogEntidad.data.dir3}"
-                                 styleClass="w95" required="true"
-                                 disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>
-                </div>
-            </div>-->
-            <div class="row">
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogEntidad.rol.admin']}:" for="txtRolAdmin"/>
+                    <p:outputLabel value="#{labels['dialogEntidad.rol.admin']}:"
+                                   for="txtRolAdmin"
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtRolAdmin" value="#{dialogEntidad.data.rolAdmin}"
+                                 requiredMessage="#{labels['dict.obligatorio.rolAdminEntidad']}"
                                  styleClass="w95" required="true"
                                  disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>
                 </div>
             </div>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogEntidad.rol.adminContenido']}:" for="txtRolAdminContenido"/>
+                    <p:outputLabel value="#{labels['dialogEntidad.rol.adminContenido']}:"
+                                   for="txtRolAdminContenido"
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtRolAdminContenido" value="#{dialogEntidad.data.rolAdminContenido}"
+                                 requiredMessage="#{labels['dict.obligatorio.rolAdminContenido']}"
                                  styleClass="w95" required="true"
                                  disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>
                 </div>
             </div>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogEntidad.rol.gestor']}:" for="txtRolGestor"/>
+                    <p:outputLabel value="#{labels['dialogEntidad.rol.gestor']}:"
+                                   for="txtRolGestor"
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtRolGestor" value="#{dialogEntidad.data.rolGestor}"
+                                 requiredMessage="#{labels['dict.obligatorio.rolGestor']}"
                                  styleClass="w95" required="true"
                                  disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>
                 </div>
             </div>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogEntidad.rol.informador']}:" for="txtRolInformador"/>
+                    <p:outputLabel value="#{labels['dialogEntidad.rol.informador']}:"
+                                   for="txtRolInformador"
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtRolInformador" value="#{dialogEntidad.data.rolInformador}"
+                                 requiredMessage="#{labels['dict.obligatorio.rolInformador']}"
                                  styleClass="w95" required="true"
                                  disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>
                 </div>
@@ -157,49 +165,18 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <h:outputText value="#{labels['dialogEntidad.activa']}:" for="txtActiva"/>
                 </div>
+
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:selectBooleanCheckbox id="txtActiva" value="#{dialogEntidad.data.activa}"
                                              styleClass="w95"
                                              disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>
                 </div>
             </div>
-            <div class="row">
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dialogEntidad.idiomas.permitidos']}:" for="txtIdiomasPermitidos"/>
-                </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:selectManyButton id="txtIdiomasPermitidos" value="#{dialogEntidad.idiomasPermitidos}"
-                                        styleClass="w95 botoneraRed"
-                                        disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50">
-                        <f:selectItems value="#{idiomasFijos.values()}" var="idioma"
-                                       itemValue="#{idioma.toString()}" itemLabel="#{labels['idiomas.' += idioma]}"
-                                       itemDisabled="true"/>
-                        <f:selectItems value="#{idiomasOpcionales.values()}" var="idioma"
-                                       itemValue="#{idioma.toString()}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-                        <p:ajax listener="#{dialogEntidad.revisarIdiomas()}" update="txtIdiomasObligatorios txtIdiomaDefecto"></p:ajax>
-                    </p:selectManyButton>
-                </div>
-            </div>
-            <div class="row">
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dialogEntidad.idiomas.obligatorios']}:"
-                                  for="txtIdiomasObligatorios"/>
-                </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:selectManyButton id="txtIdiomasObligatorios" value="#{dialogEntidad.idiomasObligatorios}"
-                                        styleClass="w95 botoneraRed"
-                                        disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50">
-                        <f:selectItems value="#{dialogEntidad.idiomasPermitidos}" var="idioma"
-                                       itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"
-                                       itemDisabled="#{dialogEntidad.isIdiomaDefecto(idioma.toString())}"/>
-                        <p:ajax update="txtIdiomaDefecto"></p:ajax>
-                    </p:selectManyButton>
-                </div>
-            </div>
-            <div class="row">
+
+
+            <!--<div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <h:outputText value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto"/>
-                </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:selectOneMenu id="txtIdiomaDefecto" value="#{dialogEntidad.data.idiomaDefectoRest}"
                                      styleClass="w95"
@@ -209,8 +186,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                     </p:selectOneMenu>
                 </div>
-            </div>
-            <div class="row">
+            </div>-->
+
+            <!--<div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <h:outputText value="#{labels['dialogEntidad.logo']}:" for=""/>
                 </div>
@@ -247,7 +225,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             </c:choose>
                         </p:panel>
 
-                        <!--
+                        &lt;!&ndash;
                         <my:ficheroComponent id="inputLogo"
                                          fichero="#{dialogEntidad.data.logo}"
                                              value="#{dialogEntidad.data.logo}"
@@ -259,11 +237,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                          nombreLiteral="#{labels['dict.descripcion']}"
-                        />-->
+                        />&ndash;&gt;
                     </c:if>
 
                 </div>
             </div>
+            </div>-->
         </p:panel>
     </ui:define>
 
@@ -271,9 +250,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogEntidad.ayuda}"
                          icon="pi pi-info-circle" iconPos="top"
                          value="#{labels['dict.ayuda']}"
-                         process="@this"/>
+                         process="@this" update="messagesDialog"/>
         <p:commandButton action="#{dialogEntidad.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>
         <p:commandButton action="#{dialogEntidad.cerrar}"
                          value="#{labels['dict.cerrar']}"
