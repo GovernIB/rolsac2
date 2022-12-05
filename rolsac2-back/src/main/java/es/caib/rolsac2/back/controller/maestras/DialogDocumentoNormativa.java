@@ -94,7 +94,7 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
     public boolean verificarGuardar() {
 
         List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getTitulo(), sessionBean.getIdiomasObligatoriosList());
-        if(!idiomasPendientesDescripcion.isEmpty()) {
+        if (!idiomasPendientesDescripcion.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dict.titulo", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }
@@ -119,7 +119,7 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
 
 
     public boolean hasDocument(String idioma) {
-        if (this.data.getDocumentos().getTraduccion(idioma) != null) {
+        if (this.data.getDocumentos().getTraduccion(idioma) != null && this.data.getDocumentos().getTraduccion(idioma).getCodigo() != null) {
             return true;
         }
         return false;

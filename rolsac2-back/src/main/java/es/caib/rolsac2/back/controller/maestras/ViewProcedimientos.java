@@ -200,7 +200,22 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         UtilJSF.openDialog("dialogProcedimiento", modoAcceso, params, true, ancho, 733);
     }
 
+    public void cambiarUAbuscarEvt(UnidadAdministrativaDTO ua) {
+        sessionBean.cambiarUnidadAdministrativa(ua);
+        buscarEvt();
+    }
+
+    /**
+     * El buscar desde el evento de seleccionar una UA.
+     */
+    public void buscarEvt() {
+        if (filtro.getIdUA() == null || filtro.getIdUA().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
+            buscar();
+        }
+    }
+
     public void buscar() {
+        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         lazyModel = new LazyDataModel<>() {
             private static final long serialVersionUID = 1L;
 

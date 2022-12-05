@@ -65,10 +65,16 @@ public class DialogDocumentoProcedimientoLOPD extends AbstractController impleme
             data.setCodigoString(String.valueOf(Calendar.getInstance().getTimeInMillis()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = (ProcedimientoDocumentoDTO) UtilJSF.getValorMochilaByKey("documento");
+            //Si los ficheros no tienen el filename, hay que recuperarlo, igual que tipo
+            if (data.getDocumentos() != null) {
+                for (DocumentoTraduccion documento : data.getDocumentos().getTraducciones()) {
+                    if (documento.getFicheroDTO() != null && documento.getFicheroDTO().getCodigo() != null && documento.getFicheroDTO().getFilename() == null) {
+                        documento.setFicheroDTO(ficheroServiceFacade.getFicheroDTOById(documento.getFicheroDTO().getCodigo()));
+                    }
+                }
+            }
             UtilJSF.vaciarMochila();
         }
-
-        //Hace falta?
 
     }
 
@@ -76,13 +82,6 @@ public class DialogDocumentoProcedimientoLOPD extends AbstractController impleme
         if (!verificarGuardar()) {
             return;
         }
-
-/*
-        if (this.data.getCodigo() == null) {
-            procedimientoService.createDocumentoNormativa(data);
-        } else {
-            procedimientoService.updateDocumentoNormativa(data);
-        }*/
 
         // Retornamos resultados
         final DialogResult result = new DialogResult();
@@ -123,7 +122,7 @@ public class DialogDocumentoProcedimientoLOPD extends AbstractController impleme
 
 
     public boolean hasDocument(String idioma) {
-        return this.data != null && this.data.getDocumentos() != null && this.getData().getDocumentos() != null && this.data.getDocumentos().getTraduccion(idioma) != null;
+        return this.data != null && this.data.getDocumentos() != null && this.getData().getDocumentos() != null && this.data.getDocumentos().getTraduccion(idioma) != null && this.data.getDocumentos().getTraduccion(idioma).getCodigo() != null;
     }
 
     public void handleDocUpload(FileUploadEvent event) {

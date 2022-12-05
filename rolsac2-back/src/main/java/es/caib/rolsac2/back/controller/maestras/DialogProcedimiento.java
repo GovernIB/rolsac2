@@ -348,8 +348,12 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void editarTramite() {
-        TypeModoAcceso modoAcceso = isModoConsulta() ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-        abrirDialogTramite(modoAcceso);
+        if (tramiteSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            TypeModoAcceso modoAcceso = isModoConsulta() ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            abrirDialogTramite(modoAcceso);
+        }
     }
 
     public void borrarTramite() {
@@ -368,8 +372,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
             final Map<String, String> params = new HashMap<>();
-            if (TypeModoAcceso.EDICION.equals(modoAcceso)) {
-                UtilJSF.anyadirMochila("tramiteSel", tramiteSeleccionado);
+            if (TypeModoAcceso.EDICION.equals(modoAcceso) || TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+                UtilJSF.anyadirMochila("tramiteSel", tramiteSeleccionado.clone());
                 if (tramiteSeleccionado.getFase() != FASE_INICIACION && yaExisteFaseIniciacion()) {
                     params.put(TypeParametroVentana.OCULTAR_INICIACION.toString(), "S");
                 }
@@ -416,21 +420,18 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
 
     public void abrirDialogNormativa(TypeModoAcceso modoAcceso) {
-        if (data == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-        } else {
-            if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
-                final Map<String, String> params = new HashMap<>();
-                params.put("ID", normativaGridSeleccionada.getCodigo().toString());
-                UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true,
-                        (Integer.parseInt(sessionBean.getScreenWidth()) - 200),
-                        (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
-            } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
-                UtilJSF.anyadirMochila("normativasSeleccionadas", data.getNormativas());
-                final Map<String, String> params = new HashMap<>();
-                UtilJSF.openDialog("tipo/dialogSeleccionNormativa", modoAcceso, params, true, 1040, 460);
-            }
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", normativaGridSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true,
+                    (Integer.parseInt(sessionBean.getScreenWidth()) - 200),
+                    (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+            UtilJSF.anyadirMochila("normativasSeleccionadas", data.getNormativas());
+            final Map<String, String> params = new HashMap<>();
+            UtilJSF.openDialog("tipo/dialogSeleccionNormativa", modoAcceso, params, true, 1040, 460);
         }
+
     }
 
     public void nuevaNormativa() {
@@ -438,7 +439,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void consultarNormativa() {
-        abrirDialogNormativa(TypeModoAcceso.CONSULTA);
+        if (normativaGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogNormativa(TypeModoAcceso.CONSULTA);
+        }
     }
 
     public void borrarNormativa() {
@@ -472,7 +477,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         final Map<String, String> params = new HashMap<>();
         params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
         if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
-            UtilJSF.anyadirMochila("documento", this.documentoSeleccionado);
+            UtilJSF.anyadirMochila("documento", this.documentoSeleccionado.clone());
         }
         UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
                 800, 350);
@@ -483,11 +488,19 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void editarDocumento() {
-        abrirDialogDocumento(TypeModoAcceso.EDICION);
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumento(TypeModoAcceso.EDICION);
+        }
     }
 
     public void consultarDocumento() {
-        abrirDialogDocumento(TypeModoAcceso.CONSULTA);
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumento(TypeModoAcceso.CONSULTA);
+        }
     }
 
     public void borrarDocumento() {
@@ -519,7 +532,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         final Map<String, String> params = new HashMap<>();
         params.put("ID", data.getCodigo() == null ? "" : data.getCodigo().toString());
         if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
-            UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado);
+            UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado.clone());
         }
         UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", modoAcceso, params, true,
                 800, 320);
@@ -530,11 +543,19 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void editarDocumentoLOPD() {
-        abrirDialogDocumentoLOPD(TypeModoAcceso.CONSULTA);
+        if (documentoLOPDSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumentoLOPD(TypeModoAcceso.EDICION);
+        }
     }
 
     public void consultarDocumentoLOPD() {
-        abrirDialogDocumentoLOPD(TypeModoAcceso.CONSULTA);
+        if (documentoLOPDSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumentoLOPD(TypeModoAcceso.CONSULTA);
+        }
     }
 
     public void borrarDocumentoLOPD() {

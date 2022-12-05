@@ -1,5 +1,8 @@
 package es.caib.rolsac2.service.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Objects;
 
 /**
@@ -8,7 +11,13 @@ import java.util.Objects;
  * @author indra
  */
 
-public class DocumentoTraduccion {
+public class DocumentoTraduccion extends ModelApi implements Cloneable {
+
+    /**
+     * LOGGERR
+     **/
+    private static final Logger LOG = LoggerFactory.getLogger(DocumentoTraduccion.class);
+
 
     /**
      * Serial version UID.
@@ -99,6 +108,20 @@ public class DocumentoTraduccion {
      */
     public void setFicheroDTO(final FicheroDTO ficheroDTO) {
         this.ficheroDTO = ficheroDTO;
+    }
+
+    public Object clone() {
+        DocumentoTraduccion obj = null;
+        try {
+            obj = (DocumentoTraduccion) super.clone();
+            if (this.ficheroDTO != null) {
+                obj.ficheroDTO = (FicheroDTO) this.ficheroDTO.clone();
+            }
+
+        } catch (CloneNotSupportedException ex) {
+            LOG.error(" no se puede duplicar", ex);
+        }
+        return obj;
     }
 
     @Override

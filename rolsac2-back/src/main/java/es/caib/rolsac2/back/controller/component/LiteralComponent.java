@@ -68,6 +68,8 @@ public class LiteralComponent extends UIInput implements NamingContainer {
      **/
     private String estiloInput;
 
+    private String soloLecture;
+
     // Actions
     // ------------------------------------------------------------------------------------
 
@@ -115,6 +117,9 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             Boolean iModoAcceso = (Boolean) getAttributes().get("disabled");
             if (modoAcceso == null) {
                 modoAcceso = (iModoAcceso != null && iModoAcceso) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            }
+            if (getAttributes().get("soloLecture") != null && "true".equals(getAttributes().get("soloLecture"))) {
+                modoAcceso = TypeModoAcceso.CONSULTA;
             }
             String ocultarTexto = (String) getAttributes().get("ocultarTexto");
             if (ocultarTexto != null && "true".equalsIgnoreCase(ocultarTexto)) {
@@ -340,8 +345,9 @@ public class LiteralComponent extends UIInput implements NamingContainer {
                     return ICONO_ROJO;
                 }
                 // Verificamos si hay algún idioma obligatorio nuevo
-                for (String idioma : literal.getIdiomas()) {
-                    if (!idiomasObligatorios.contains(idioma)) {
+                //                          no está en los literales
+                for (String idioma : idiomasObligatorios) {
+                    if (!literal.getIdiomas().contains(idioma)) {
                         return ICONO_ROJO;
                     }
                 }
@@ -594,4 +600,11 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         this.toolbar = toolbar;
     }
 
+    public String getSoloLecture() {
+        return soloLecture;
+    }
+
+    public void setSoloLecture(String soloLecture) {
+        this.soloLecture = soloLecture;
+    }
 }

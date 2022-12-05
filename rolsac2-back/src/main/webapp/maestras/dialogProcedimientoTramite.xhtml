@@ -3,6 +3,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:my="http://java.sun.com/jsf/composite/components"
 >
 
@@ -109,8 +110,10 @@
                                             styleClass="w35" disabled="#{dialogProcedimientoTramite.isModoConsulta()}">
                                 <f:selectItem itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}"
                                               itemValue="#{null}" id="seleccione2"/>
-                                <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.iniciacion']}"
-                                              itemValue="1" rendered="#{dialogProcedimientoTramite.mostrarIniciacion}" />
+                                <c:if test="#{dialogProcedimientoTramite.mostrarIniciacion}">
+                                    <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.iniciacion']}"
+                                              itemValue="1" disabled="#{!dialogProcedimientoTramite.mostrarIniciacion}" />
+                                </c:if>
                                 <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.instruccion']}"
                                               itemValue="2"/>
                                 <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.finalizacion']}"
@@ -363,11 +366,11 @@
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     process="@this" actionListener="#{dialogProcedimientoTramite.nuevoDocumento()}">
+                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"  process="@this" actionListener="#{dialogProcedimientoTramite.nuevoDocumento()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogDocumento}" process="@this"
                                 update="dataDocumentosRelacionados"/>
                     </p:commandButton>
-                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                    <p:commandButton disabled="#{dialogProcedimientoTramite.isModoConsulta()}"   title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      action="#{dialogProcedimientoTramite.borrarDocumento}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                     <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-pencil"
@@ -401,12 +404,12 @@
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     process="@this" actionListener="#{dialogProcedimientoTramite.nuevoModelo()}">
+                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"   process="@this" actionListener="#{dialogProcedimientoTramite.nuevoModelo()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}" process="@this"
                                 update="dataDocumentosModelo"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                                     action="#{dialogProcedimientoTramite.borrarModelo}"
+                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"   action="#{dialogProcedimientoTramite.borrarModelo}"
                                      process="@this" update="dataDocumentosModelo messagesDialog"/>
                     <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-pencil"
                                      action="#{dialogProcedimientoTramite.editarModelo}"
@@ -432,7 +435,7 @@
                              value="#{labels['dict.ayuda']}"
                              process="@this"/>
             <p:commandButton action="#{dialogProcedimientoTramite.guardar}"
-                             value="#{labels['dict.guardar']}" update="messagesDialog panelDatos panelCanales"
+                             value="#{labels['dict.aceptar']}" update="messagesDialog panelDatos panelCanales"
                              rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
                              process="@all"/>
             <p:commandButton action="#{dialogProcedimientoTramite.cerrar}"

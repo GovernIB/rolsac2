@@ -1,6 +1,8 @@
 package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -8,7 +10,12 @@ import java.util.*;
  * Dades d'un ProcedimientoTramite.
  */
 @Schema(name = "ProcedimientoTramite")
-public class ProcedimientoTramiteDTO extends ModelApi {
+public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
+
+    /**
+     * LOGGER
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoTramiteDTO.class);
 
     private Long codigo;
 
@@ -311,6 +318,50 @@ public class ProcedimientoTramiteDTO extends ModelApi {
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
     }
+
+
+    public Object clone() {
+        ProcedimientoTramiteDTO obj = null;
+        try {
+            obj = (ProcedimientoTramiteDTO) super.clone();
+            if (obj.tipoTramitacion != null) {
+                obj.tipoTramitacion = (TipoTramitacionDTO) this.tipoTramitacion.clone();
+            }
+            if (obj.nombre != null) {
+                obj.nombre = (Literal) this.nombre.clone();
+            }
+            if (obj.documentacion != null) {
+                obj.documentacion = (Literal) this.documentacion.clone();
+            }
+            if (obj.requisitos != null) {
+                obj.requisitos = (Literal) this.requisitos.clone();
+            }
+            if (obj.observacion != null) {
+                obj.observacion = (Literal) this.observacion.clone();
+            }
+            if (obj.terminoMaximo != null) {
+                obj.terminoMaximo = (Literal) this.terminoMaximo.clone();
+            }
+            if (listaDocumentos != null) {
+                List<ProcedimientoDocumentoDTO> lista = new ArrayList<>();
+                for (ProcedimientoDocumentoDTO doc : listaDocumentos) {
+                    lista.add((ProcedimientoDocumentoDTO) doc.clone());
+                }
+                obj.setListaDocumentos(lista);
+            }
+            if (listaModelos != null) {
+                List<ProcedimientoDocumentoDTO> lista = new ArrayList<>();
+                for (ProcedimientoDocumentoDTO doc : listaModelos) {
+                    lista.add((ProcedimientoDocumentoDTO) doc.clone());
+                }
+                obj.setListaModelos(lista);
+            }
+        } catch (CloneNotSupportedException ex) {
+            LOG.error(" no se puede duplicar", ex);
+        }
+        return obj;
+    }
+
 
     @Override
     public boolean equals(Object o) {

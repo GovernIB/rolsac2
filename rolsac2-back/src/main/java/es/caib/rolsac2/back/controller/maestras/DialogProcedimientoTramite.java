@@ -188,11 +188,19 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     }
 
     public void editarDocumento() {
-        abrirDialogDocumento(TypeModoAcceso.EDICION);
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumento(TypeModoAcceso.EDICION);
+        }
     }
 
     public void consultarDocumento() {
-        abrirDialogDocumento(TypeModoAcceso.CONSULTA);
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumento(TypeModoAcceso.CONSULTA);
+        }
     }
 
     public void borrarDocumento() {
@@ -237,11 +245,19 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     }
 
     public void editarModelo() {
-        abrirDialogModelo(TypeModoAcceso.EDICION);
+        if (modeloSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogModelo(TypeModoAcceso.EDICION);
+        }
     }
 
     public void consultarModelo() {
-        abrirDialogModelo(TypeModoAcceso.CONSULTA);
+        if (modeloSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogModelo(TypeModoAcceso.CONSULTA);
+        }
     }
 
     public void borrarModelo() {

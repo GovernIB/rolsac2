@@ -1,4 +1,5 @@
 package es.caib.rolsac2.service.model;
+
 import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
 import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * @author indra
  */
 
-public class DocumentoMultiIdioma {
+public class DocumentoMultiIdioma extends ModelApi implements Cloneable {
 
     /**
      * Serial version UID.
@@ -29,7 +30,6 @@ public class DocumentoMultiIdioma {
     private Long codigo;
 
 
-
     /**
      * Crea una nueva instancia de Traducciones.
      */
@@ -37,14 +37,28 @@ public class DocumentoMultiIdioma {
         super();
     }
 
+    public Object clone() {
+        DocumentoMultiIdioma obj = new DocumentoMultiIdioma();
+        obj.setCodigo(this.codigo);
+        List<DocumentoTraduccion> trads = new ArrayList<>();
+        if (traducciones != null) {
+            for (DocumentoTraduccion trad : traducciones) {
+                trads.add((DocumentoTraduccion) trad.clone());
+            }
+        }
+        obj.setTraducciones(trads);
+        return obj;
+
+    }
+
     public static DocumentoMultiIdioma createInstance() {
         DocumentoMultiIdioma docMulti = new DocumentoMultiIdioma();
         List<DocumentoTraduccion> trads = new ArrayList<>();
         List<String> idiomas = new ArrayList<>();
-        for(TypeIdiomaFijo i : TypeIdiomaFijo.values() ) {
+        for (TypeIdiomaFijo i : TypeIdiomaFijo.values()) {
             idiomas.add(i.toString());
         }
-        for(TypeIdiomaOpcional i : TypeIdiomaOpcional.values() ) {
+        for (TypeIdiomaOpcional i : TypeIdiomaOpcional.values()) {
             idiomas.add(i.toString());
         }
         for (String idioma : idiomas) {

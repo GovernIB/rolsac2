@@ -46,7 +46,7 @@
 
         <div class="row" style="margin-right: 0px;">
             <div class="ui-g-12 ui-md-9 pl-4 panel-container">
-                <p:panel header="#{labels['dialogUnidadAdministrativa.datos']}">
+                <p:panel header="#{labels['dialogUnidadAdministrativa.datos']}" id="formDatos">
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <p class="mb-1">
@@ -65,11 +65,12 @@
                                          styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
                         <div class="form-group col-md-2">
-                            <p:outputLabel value="#{labels['dialogUnidadAdministrativa.orden']}:" for="txtOrden"
+                           <p:outputLabel value="#{labels['dialogUnidadAdministrativa.orden']}:" for="txtOrden"
                                            styleClass="mb-1 pt-0"/>
                             <p>
                                 <p:inputNumber id="txtOrden" value="#{dialogUnidadAdministrativa.data.orden}"
-                                               styleClass="w95" required="true"
+                                               styleClass="w55" required="true"
+                                               requiredMessage="#{labels['dict.obligatorio.orden']}"
                                                disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                                decimalPlaces="0"/>
                             </p>
@@ -78,6 +79,7 @@
                             <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"
                                            styleClass="mb-1 pt-0"/>
                             <p:inputText id="txtIdentificador" value="#{dialogUnidadAdministrativa.data.identificador}"
+                                         requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                          styleClass="w95" required="true"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
@@ -90,11 +92,14 @@
                                 <my:literalComponent id="txtNombre"
                                                      literal="#{dialogUnidadAdministrativa.data.nombre}"
                                                      disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                                     soloLecture="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                                      required="true"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      idioma="#{dialogUnidadAdministrativa.idioma}"
-                                                     nombreLiteral="#{labels['dict.nombre']}"/>
+                                                     nombreLiteral="#{labels['dict.nombre']}">
+                                    <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                                </my:literalComponent>
                             </p>
 
                         </div>
@@ -183,7 +188,7 @@
                         </div>
                     </div>
                 </p:panel>
-                <p:panel header="#{labels['dialogUnidadAdministrativa.responsable']}">
+                <p:panel id="formResponsable" header="#{labels['dialogUnidadAdministrativa.responsable']}">
                     <div class="form-row">
                         <div class="form-group col-md-8">
                             <p class="mb-1">
@@ -202,6 +207,7 @@
                             <p:selectOneMenu id="txtTipoSexo"
                                              value="#{dialogUnidadAdministrativa.data.responsableSexo}"
                                              styleClass="w95" required="true"
+                                             requiredMessage="#{labels['dict.obligatorio.responsableSexo']}"
                                              disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                              converter="#{tipoSexoConverter}">
                                 <f:selectItem
@@ -245,7 +251,7 @@
                     </div>
                 </p:panel>
 
-                <p:panel header="#{labels['dialogUnidadAdministrativa.contacto']}">
+                <p:panel id="formContacto" header="#{labels['dialogUnidadAdministrativa.contacto']}">
                     <div class="form-row">
                         <div class="form-group col-md-2">
                             <p class="mb-1">
@@ -444,7 +450,7 @@
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogUnidadAdministrativa.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog formDatos panel-ro formResponsable formContacto "
                          rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}"
                          process="@all"/>
         <p:commandButton action="#{dialogUnidadAdministrativa.cerrar}"

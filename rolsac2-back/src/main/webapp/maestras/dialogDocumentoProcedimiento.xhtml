@@ -18,7 +18,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </f:metadata>
     </ui:define>
 
-
     <ui:define name="pageTitleDialog">
         <h:outputFormat value="#{labels['dialogDocumentoProcedimiento.detalle']} - #{dialogDocumentoProcedimiento.data.codigo} "
                         rendered="#{!dialogDocumentoProcedimiento.isModoAlta()}"/>
@@ -111,12 +110,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                                       fileLimit="3"
                                                       allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf|odt)$/"
                                                       onupload=""
-                                                      label="Añadir"
-                                                      uploadLabel="Subir"
-                                                      cancelLabel="Cancelar"
+                                                      label="#{labels['dict.anyadir']}"
+                                                      uploadLabel="#{labels['dict.subir']}"
+                                                      cancelLabel="#{labels['dict.cancelar']}"
                                                       styleClass=""
                                                       update="formDialog:#{labels['dialog.doc.txt.' += idioma]}"
                                         />
+                                        <!-- value="#{dialogDocumentoProcedimiento.getFichero(idioma)}"-->
                                     </c:when>
                                     <c:otherwise>
                                         <p:commandButton id="logoDescarga"
@@ -147,7 +147,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogDocumentoProcedimiento.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog form"
+                         value="#{labels['dict.aceptar']}" update="messagesDialog form"
                          process="@all"
                          disabled="#{dialogDocumentoProcedimiento.isModoConsulta()}"/>
         <p:commandButton action="#{dialogDocumentoProcedimiento.cerrar}"

@@ -2,11 +2,12 @@ package es.caib.rolsac2.service.model;
 
 import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
 import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * Literal.
@@ -14,7 +15,12 @@ import java.util.stream.Stream;
  * @author indra
  */
 
-public class Literal {
+public class Literal implements Cloneable {
+
+    /**
+     * LOGGER
+     **/
+    private static final Logger LOG = LoggerFactory.getLogger(Literal.class);
 
     /**
      * Serial version UID.
@@ -42,10 +48,10 @@ public class Literal {
         Literal literal = new Literal();
         List<Traduccion> trads = new ArrayList<>();
         List<String> idiomas = new ArrayList<>();
-        for(TypeIdiomaFijo i : TypeIdiomaFijo.values() ) {
+        for (TypeIdiomaFijo i : TypeIdiomaFijo.values()) {
             idiomas.add(i.toString());
         }
-        for(TypeIdiomaOpcional i : TypeIdiomaOpcional.values() ) {
+        for (TypeIdiomaOpcional i : TypeIdiomaOpcional.values()) {
             idiomas.add(i.toString());
         }
         for (String idioma : idiomas) {
@@ -63,6 +69,24 @@ public class Literal {
             trads.add(new Traduccion(idioma, ""));
         }
         literal.setTraducciones(trads);
+        return literal;
+    }
+
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    public Object clone() {
+        Literal literal = new Literal();
+        literal.setCodigo(this.codigo);
+        List<Traduccion> traducciones = new ArrayList<>();
+        if (trads != null) {
+            for (Traduccion trad : trads) {
+                traducciones.add((Traduccion) trad.clone());
+            }
+        }
+        literal.setTraducciones(traducciones);
         return literal;
     }
 

@@ -213,6 +213,7 @@
                                        for="txtNombreResp"/>
                         <p>
                             <p:inputText id="txtNombreResp" value="#{dialogProcedimiento.data.responsable}"
+                                         disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          required="true" requiredMessage="#{labels['dict.obligatorio.responsable']}"
                                          styleClass="w95"/>
                         </p>
@@ -222,7 +223,9 @@
                             <h:outputText styleClass="mb-1" value="#{labels['dialogProcedimiento.correoElectronico']}:" for="txtEmailResp"/>
                         </p>
                         <p:inputText id="txtEmailResp" value="#{dialogProcedimiento.data.dirElectronica}"
-                                     styleClass="w95"/>
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" styleClass="w95">
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
+                        </p:inputText>
                     </div>
                 </div>
             </p:panel>
@@ -332,12 +335,12 @@
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     process="@this" actionListener="#{dialogProcedimiento.nuevoPubObjEnt()}">
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this" actionListener="#{dialogProcedimiento.nuevoPubObjEnt()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogPubObjEnt}" process="@this"
                                 update="dataTablePublico"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                                     action="#{dialogProcedimiento.borrarPubObjEnt}"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" action="#{dialogProcedimiento.borrarPubObjEnt}"
                                      process="@this" update="dataTablePublico messagesDialog"/>
                     <p:commandButton id="btnConsultarPublico" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogProcedimiento.consultarPubObjEnt}"
@@ -369,12 +372,12 @@
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                    process="@this" actionListener="#{dialogProcedimiento.nuevaMateriaSIA()}">
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this" actionListener="#{dialogProcedimiento.nuevaMateriaSIA()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogMateria}" process="@this"
                                 update="dataTableMaterias"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                              action="#{dialogProcedimiento.borrarMateriaSIA}"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" action="#{dialogProcedimiento.borrarMateriaSIA}"
                                      process="@this" update="dataTableMaterias messagesDialog"/>
                     <p:commandButton id="btnConsultarMateria" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogProcedimiento.consultarMateriaSIA}"
@@ -407,12 +410,12 @@
                     </p:dataTable></div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     process="@this" actionListener="#{dialogProcedimiento.nuevaNormativa()}">
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this" actionListener="#{dialogProcedimiento.nuevaNormativa()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogNormativa}" process="@this"
                                 update="dataNormativaProcedimiento"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                                     action="#{dialogProcedimiento.borrarNormativa}"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" action="#{dialogProcedimiento.borrarNormativa}"
                                      process="@this" update="dataNormativaProcedimiento messagesDialog"/>
                     <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogProcedimiento.consultarNormativa}"
@@ -444,12 +447,12 @@
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     process="@this" actionListener="#{dialogProcedimiento.nuevoTramite()}">
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this" actionListener="#{dialogProcedimiento.nuevoTramite()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogTramite}" process="@this"
                                 update="dataTableTramite"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                                     action="#{dialogProcedimiento.borrarTramite}"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" action="#{dialogProcedimiento.borrarTramite}"
                                      process="@this" update="dataTableTramite messagesDialog"/>
                     <p:commandButton id="btnEditarTramite" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      action="#{dialogProcedimiento.editarTramite}"
@@ -482,12 +485,12 @@
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     process="@this" actionListener="#{dialogProcedimiento.nuevoDocumento()}">
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this" actionListener="#{dialogProcedimiento.nuevoDocumento()}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumento}" process="@this"
                                 update="dataDocumentosRelacionados"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                                     action="#{dialogProcedimiento.borrarDocumento}"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" action="#{dialogProcedimiento.borrarDocumento}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                     <p:commandButton id="btnEditarDoc" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      action="#{dialogProcedimiento.editarDocumento}"
@@ -520,14 +523,14 @@
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     process="@this" actionListener="#{dialogProcedimiento.nuevoDocumentoLOPD()}"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this" actionListener="#{dialogProcedimiento.nuevoDocumentoLOPD()}"
                                      rendered="#{empty dialogProcedimiento.data.documentosLOPD}"
                             >
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumentoLOPD}" process="@this"
                                 update="dataDocumentosLopd"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                                     action="#{dialogProcedimiento.borrarDocumentoLOPD}"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" action="#{dialogProcedimiento.borrarDocumentoLOPD}"
                                      process="@this" update="dataDocumentosLopd messagesDialog"/>
                     <p:commandButton id="btnEditarDocLopd" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      action="#{dialogProcedimiento.editarDocumentoLOPD}"

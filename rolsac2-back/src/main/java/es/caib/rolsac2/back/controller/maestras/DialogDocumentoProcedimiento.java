@@ -1,6 +1,7 @@
 package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
+import es.caib.rolsac2.back.controller.component.FicheroUpload;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.FicheroServiceFacade;
@@ -13,6 +14,7 @@ import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.file.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +120,7 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
 
 
     public boolean hasDocument(String idioma) {
-        if (this.data.getDocumentos().getTraduccion(idioma) != null) {
+        if (this.data.getDocumentos().getTraduccion(idioma) != null && this.data.getDocumentos().getTraduccion(idioma).getCodigo() != null) {
             return true;
         }
         return false;
@@ -144,6 +146,22 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public UploadedFile getFichero(String idioma) {
+        FicheroDTO trad = this.data.getDocumentos().getTraduccion(idioma);
+        FicheroUpload uploadedFile = null;
+        if (trad == null) {
+            return uploadedFile;
+        }
+        if (trad.getContenido() != null) {
+            uploadedFile = new FicheroUpload(trad.getContenido(), trad.getFilename(), "");
+
+        } else if (trad.getCodigo() != null) {
+            FicheroDTO fic = ficheroServiceFacade.getContentById(trad.getCodigo());
+            uploadedFile = new FicheroUpload(fic.getContenido(), fic.getFilename(), "");
+        }
+        return uploadedFile;
     }
 
     public String getFileName(String idioma) {

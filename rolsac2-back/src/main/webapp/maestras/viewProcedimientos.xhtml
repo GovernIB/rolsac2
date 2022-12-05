@@ -23,19 +23,29 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
             <f:param value="#{unitatModel.value.codiDir3}"/>
         </h:outputFormat> -->
     </ui:define>
-
+    <ui:define name="breadcrumbBoton">
+        <p:ajax event="eventoUpdate"   oncomplete="rc()" listener="#{viewProcedimientos.buscarEvt()}" update="form:dataTable"  />
+    </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
+
             <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}"
                         update="migaPan"
-                        oncomplete="$('#form:actualizarBusqueda').click();" >
-            </p:menuitem>
+                        oncomplete="$('#form\\:btnBuscar').click();"
+                         />
         </c:forEach>
     </ui:define>
 
     <ui:define name="content">
         <h:form id="form">
+
+            <p:remoteCommand name="rc" update="dataTable @form" process="@this"  />
+            <p:commandButton value="#{labels['viewUnidadAdministrativa.actualizar']}" id="actualizarBusqueda"
+                             widgetVar="actualizarBusqueda"
+                             oncomplete="$('#form\\:btnBuscar').click();"
+                             style="display:none" ajax="false" action="#{viewProcedimientos.buscar()}"
+                             update="dataTable"/>
             <p:importConstants type="es.caib.rolsac2.service.model.types.TypeProcedimientoEstado" var="typeEstados"></p:importConstants>
             <p:confirmDialog id="confirmDlgBorrarPublicado" varWidget="confirmDlgBorrarPublicado" widgetVar="confirmDlgBorrarPublicado" header="#{labels['msg.aviso']}PX" message="#{labels['msg.eliminarRegistro']}PX" global="true" showEffect="fade" hideEffect="fade" >
                 <p:commandButton value="#{labels['dict.si']}"
@@ -64,7 +74,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
                             <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
                             <p:inputText value="#{viewProcedimientos.filtro.texto}" styleClass="mr-2" ></p:inputText>
-                            <p:commandButton value="#{labels['dict.busqueda']}"
+                            <p:commandButton id="btnBuscar" value="#{labels['dict.busqueda']}"
                                              styleClass="mr-2"  icon="pi pi-search"
                                              actionListener="#{viewProcedimientos.buscar()}"
                                              update="messages dataTable"

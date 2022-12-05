@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.model;
 
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dades de un fichero.
@@ -9,7 +11,13 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
  * @author Indra
  */
 @Schema(name = "Fichero")
-public class FicheroDTO extends ModelApi {
+public class FicheroDTO extends ModelApi implements Cloneable {
+
+    /**
+     * LOGGERR
+     **/
+    private static final Logger LOG = LoggerFactory.getLogger(FicheroDTO.class);
+
     private Long codigo;
 
     private String filename;
@@ -49,6 +57,18 @@ public class FicheroDTO extends ModelApi {
 
     public void setTipo(TypeFicheroExterno tipo) {
         this.tipo = tipo;
+    }
+
+    public Object clone() {
+        FicheroDTO obj = null;
+        try {
+            obj = (FicheroDTO) super.clone();
+
+
+        } catch (CloneNotSupportedException ex) {
+            LOG.error(" no se puede duplicar", ex);
+        }
+        return obj;
     }
 
     @Override

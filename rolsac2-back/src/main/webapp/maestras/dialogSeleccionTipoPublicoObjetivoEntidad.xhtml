@@ -119,7 +119,7 @@
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogSeleccionTipoPublicoObjetivoEntidad.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         value="#{labels['dict.aceptar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionTipoPublicoObjetivoEntidad.isModoConsulta()}"
                          process="@all"/>
         <p:commandButton action="#{dialogSeleccionTipoPublicoObjetivoEntidad.cerrar}"

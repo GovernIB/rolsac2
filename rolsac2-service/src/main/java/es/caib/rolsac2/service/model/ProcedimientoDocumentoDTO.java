@@ -1,6 +1,8 @@
 package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,16 @@ import java.util.List;
  * @author Indra
  */
 @Schema(name = "ProcedimientoDocumento")
-public class ProcedimientoDocumentoDTO extends ModelApi {
+public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable {
+
+    /**
+     * LOGGERR
+     **/
+    private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoDocumentoDTO.class);
+
+    /**
+     * Codigo
+     **/
     private Long codigo;
 
     /**
@@ -94,6 +105,31 @@ public class ProcedimientoDocumentoDTO extends ModelApi {
 
     public void setCodigoString(String codigoString) {
         this.codigoString = codigoString;
+    }
+
+    public Object clone() {
+        ProcedimientoDocumentoDTO obj = null;
+        try {
+            obj = (ProcedimientoDocumentoDTO) super.clone();
+            if (this.titulo != null) {
+                obj.titulo = (Literal) this.titulo.clone();
+            }
+
+            if (this.url != null) {
+                obj.url = (Literal) this.url.clone();
+            }
+
+            if (this.descripcion != null) {
+                obj.descripcion = (Literal) this.descripcion.clone();
+            }
+
+            if (documentos != null) {
+                obj.documentos = (DocumentoMultiIdioma) documentos.clone();
+            }
+        } catch (CloneNotSupportedException ex) {
+            LOG.error(" no se puede duplicar", ex);
+        }
+        return obj;
     }
 
     @Override

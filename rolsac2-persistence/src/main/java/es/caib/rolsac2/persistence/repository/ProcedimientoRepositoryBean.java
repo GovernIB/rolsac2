@@ -822,12 +822,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                                 jTipoTramitacion.setPlantilla(false);
                                 if (elemento.getTipoTramitacion() != null && elemento.getTipoTramitacion().getUrl() != null) {
                                     mergeTraduccionTipoTramitacion(jTipoTramitacion, elemento.getTipoTramitacion());
-                                }/*
-                                if (jTipoTramitacion.getCodigo() == null) {
-                                    entityManager.persist(jTipoTramitacion);
-                                } else {
-                                    entityManager.merge(jTipoTramitacion);
-                                }*/
+                                }
                             }
 
                             jelemento.merge(elemento, jTipoTramitacion);

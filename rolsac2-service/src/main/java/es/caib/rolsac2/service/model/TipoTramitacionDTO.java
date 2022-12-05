@@ -1,6 +1,8 @@
 package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -12,8 +14,16 @@ import java.util.Objects;
  * @author Indra
  */
 @Schema(name = "TipoTramitacion")
-public class TipoTramitacionDTO extends ModelApi {
+public class TipoTramitacionDTO extends ModelApi implements Cloneable {
 
+    /**
+     * LOGGER
+     **/
+    private static final Logger LOG = LoggerFactory.getLogger(TipoTramitacionDTO.class);
+
+    /**
+     * Codigo
+     **/
     private Long codigo;
 
     /**
@@ -220,6 +230,24 @@ public class TipoTramitacionDTO extends ModelApi {
 
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
+    }
+
+    public Object clone() {
+        TipoTramitacionDTO obj = null;
+        try {
+            obj = (TipoTramitacionDTO) super.clone();
+
+            if (this.url != null) {
+                obj.url = (Literal) this.url.clone();
+            }
+            if (this.descripcion != null) {
+                obj.descripcion = (Literal) this.descripcion.clone();
+            }
+
+        } catch (CloneNotSupportedException ex) {
+            LOG.error(" no se puede duplicar", ex);
+        }
+        return obj;
     }
 
     @Override

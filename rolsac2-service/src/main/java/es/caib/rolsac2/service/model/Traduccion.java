@@ -1,5 +1,8 @@
 package es.caib.rolsac2.service.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Objects;
 
 /**
@@ -8,7 +11,7 @@ import java.util.Objects;
  * @author indra
  */
 
-public class Traduccion {
+public class Traduccion implements Cloneable {
 
     /**
      * Serial version UID.
@@ -101,6 +104,21 @@ public class Traduccion {
         this.literal = literal;
     }
 
+    private static final Logger LOG = LoggerFactory.getLogger(Traduccion.class);
+
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    public Object clone() {
+        Traduccion trad = new Traduccion();
+        trad.setLiteral(this.literal);
+        trad.setCodigo(this.codigo);
+        trad.setIdioma(this.idioma);
+        return trad;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -113,4 +131,6 @@ public class Traduccion {
     public int hashCode() {
         return Objects.hash(codigo, idioma, literal);
     }
+
+
 }

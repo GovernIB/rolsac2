@@ -186,8 +186,8 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
     }
 
     public Boolean tieneHijos(UnidadAdministrativaDTO ua) {
-        List<UnidadAdministrativaDTO> childs = uaService.getHijos(
-                ua.getCodigo(), sessionBean.getLang());
+        List<UnidadAdministrativaDTO> childs = uaService.getHijosSimple(
+                ua.getCodigo(), sessionBean.getLang(), ua);
         return (childs.size() >= 1);
     }
 
