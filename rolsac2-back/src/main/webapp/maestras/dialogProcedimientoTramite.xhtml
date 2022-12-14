@@ -29,10 +29,10 @@
 
          <span class="pi pi-tag" style="margin-top:5px"/>
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
-        <p:selectOneButton id="opcionIdioma" value="#{dialogProcedimientoTramite.idioma}" styleClass="botoneraRed">
+        <p:selectOneButton id="opcionIdioma" value="#{dialogProcedimientoTramite.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-            <p:ajax update="formDialog:txtNombre formDialog:txtRequisitos formDialog:txtDocum formDialog:txtTermMax formDialog:txtOrgInstr" process="@this"/>
+            <p:ajax update="formDialog:txtNombre formDialog:txtRequisitos formDialog:txtDocum formDialog:txtTermMax formDialog:txtOrgInstr formDialog:txtTraUrl" process="@this"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogProcedimientoTramite.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -228,7 +228,7 @@
                             <f:selectItem itemLabel="Presencial" itemValue="PRE" />
                             <f:selectItem itemLabel="Telemático" itemValue="TEL" />
                             <!--<f:selectItem itemLabel="Telefónico" itemValue="TFN"  />-->
-                            <p:ajax update="txtTraPlantilla txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam"
+                            <p:ajax update="txtTraPlantilla txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto"
                                     event="change" listener="#{dialogProcedimientoTramite.cambiaTipo}"/>
                         </p:selectManyCheckbox>
                     </div>
@@ -314,15 +314,20 @@
                     <my:literalComponent id="txtTraUrl" styleClass="w95"
                                          value="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
                                          soloLecture="#{dialogProcedimientoTramite.isModoConsulta() ||
-                                                    dialogProcedimientoTramite.data.plantillaSel != null ||
-                                                    !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                                            dialogProcedimientoTramite.data.plantillaSel != null ||
+                                                        !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                         disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                                            dialogProcedimientoTramite.data.plantillaSel != null ||
+                                                        !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                          required="true"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                          idioma="#{dialogProcedimientoTramite.idioma}"
                                          literal="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
                                          nombreLiteral="#{labels['dialogProcedimientoTramite.url']}">
-                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                                            dialogProcedimientoTramite.data.plantillaSel != null ||
+                                                        !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}" />
                     </my:literalComponent>
 
                 </div>
@@ -334,8 +339,6 @@
                                                     dialogProcedimientoTramite.data.plantillaSel != null ||
                                                     !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                  value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteParametros}"
-                                 requiredMessage="#{labels['dict.obligatorio.parametros']}"
-                                 required="true"
                                  styleClass="w95"/>
                 </div>
             </div>

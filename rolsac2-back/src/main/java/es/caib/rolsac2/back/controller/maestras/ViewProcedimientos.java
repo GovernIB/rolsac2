@@ -63,6 +63,13 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         buscar();
     }
 
+    public void limpiarFiltro() {
+        filtro = new ProcedimientoFiltro();
+        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+    }
+
     private void cargarFiltros() {
         listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
         listTipoSilencio = maestrasSupService.findAllTipoSilencio();
@@ -265,6 +272,70 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             this.buscar();
             this.seleccionarPorId(proc);
 
+        }
+    }
+
+    public void seleccionarMaterias() {
+        UtilJSF.anyadirMochila("materiasSeleccionadas", filtro.getMaterias());
+        UtilJSF.openDialog("tipo/dialogSeleccionMateriaSIA", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 460);
+    }
+
+    public void seleccionarNormativas() {
+        UtilJSF.anyadirMochila("normativasSeleccionadas", filtro.getNormativas());
+        UtilJSF.openDialog("tipo/dialogSeleccionNormativa", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 460);
+    }
+
+    public void seleccionarPubObjetivos() {
+        UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", filtro.getMaterias());
+        UtilJSF.openDialog("tipo/dialogSeleccionTipoPublicoObjetivoEntidad", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 460);
+    }
+
+    public void returnDialogMateria(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            List<TipoMateriaSIAGridDTO> materiasSeleccionadas = (List<TipoMateriaSIAGridDTO>) respuesta.getResult();
+            if (materiasSeleccionadas == null) {
+                filtro.setMaterias(new ArrayList<>());
+            } else {
+                if (filtro.getMaterias() == null) {
+                    filtro.setMaterias(new ArrayList<>());
+                }
+                filtro.setMaterias(new ArrayList<>());
+                filtro.getMaterias().addAll(materiasSeleccionadas);
+            }
+        }
+    }
+
+    public void returnDialogNormativa(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            List<NormativaGridDTO> normativaG = (List<NormativaGridDTO>) respuesta.getResult();
+
+            if (normativaG == null) {
+                filtro.setNormativas(new ArrayList<>());
+            } else {
+                if (filtro.getNormativas() == null) {
+                    filtro.setNormativas(new ArrayList<>());
+                }
+                filtro.setNormativas(new ArrayList<>());
+                filtro.getNormativas().addAll(normativaG);
+            }
+        }
+    }
+
+    public void returnDialogPubObjEnt(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            List<TipoPublicoObjetivoEntidadGridDTO> tipPubObjEntSeleccionadas = (List<TipoPublicoObjetivoEntidadGridDTO>) respuesta.getResult();
+            if (tipPubObjEntSeleccionadas == null) {
+                filtro.setPublicoObjetivos(new ArrayList<>());
+            } else {
+                if (filtro.getPublicoObjetivos() == null) {
+                    filtro.setPublicoObjetivos(new ArrayList<>());
+                }
+                filtro.setPublicoObjetivos(new ArrayList<>());
+                filtro.getPublicoObjetivos().addAll(tipPubObjEntSeleccionadas);
+            }
         }
     }
 

@@ -20,19 +20,24 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
     @Override
     @Mapping(target = "nombre",
             expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
+    @Mapping(target = "urlBoletin",
+            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"urlBoletin\"))")
     @Mapping(target = "documentosNormativa", ignore = true)
+    @Mapping(target = "unidadesAdministrativas", ignore = true)
     NormativaDTO createDTO(JNormativa entity);
 
     @Override
     @Mapping(target = "descripcion",
             expression = "java(convierteLiteralToTraduccion(jNormativa,dto))")
     @Mapping(target = "documentosNormativa", ignore = true)
+    @Mapping(target = "unidadesAdministrativas", ignore = true)
     JNormativa createEntity(NormativaDTO dto);
 
     @Override
     @Mapping(target = "descripcion",
             expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "documentosNormativa", ignore = true)
+    @Mapping(target = "unidadesAdministrativas", ignore = true)
     void mergeEntity(@MappingTarget JNormativa entity, NormativaDTO dto);
 
     default Literal convierteTraduccionToLiteral(List<JNormativaTraduccion> traducciones, String nombreLiteral){
@@ -51,6 +56,8 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
 
                 if ("nombre".equals(nombreLiteral)) {
                     literal = traduccion.getTitulo();
+                } else if("urlBoletin".equals(nombreLiteral)){
+                    literal = traduccion.getUrlBoletin();
                 } else {
                     literal = null;
                 }
@@ -96,6 +103,10 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
             if (normativaDTO.getNombre() != null) {
 
                 traduccion.setTitulo(normativaDTO.getNombre().getTraduccion(traduccion.getIdioma()));
+            }
+
+            if(normativaDTO.getUrlBoletin() != null) {
+                traduccion.setUrlBoletin(normativaDTO.getUrlBoletin().getTraduccion(traduccion.getIdioma()));
             }
         }
         return jNormativa.getDescripcion();

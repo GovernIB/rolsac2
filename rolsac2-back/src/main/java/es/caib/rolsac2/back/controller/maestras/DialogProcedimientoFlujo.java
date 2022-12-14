@@ -10,6 +10,7 @@ import es.caib.rolsac2.service.model.Mensaje;
 import es.caib.rolsac2.service.model.Propiedad;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.utils.UtilJSON;
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     private String estadoActual;
 
     private String consultarSoloMensajes;
+
 
     private RespuestaFlujo data;
 
@@ -80,20 +82,48 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         } else {
             if (estadoActual != null) {
                 TypeProcedimientoEstado typeEstado = TypeProcedimientoEstado.fromString(estadoActual);
-                if (typeEstado != null) {
+                if (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) {
+                    if (typeEstado != null) {
+                        estados = new ArrayList<>();
+                        switch (typeEstado) {
+                            case MODIFICACION:
+                                estados.add(TypeProcedimientoEstado.PUBLICADO);
+                                estados.add(TypeProcedimientoEstado.BORRADO);
+                                estados.add(TypeProcedimientoEstado.RESERVA);
+                                break;
+                            case PUBLICADO:
+                                estados.add(TypeProcedimientoEstado.BORRADO);
+                                estados.add(TypeProcedimientoEstado.RESERVA);
+                                break;
+                            case BORRADO:
+                                estados.add(TypeProcedimientoEstado.PUBLICADO);
+                                estados.add(TypeProcedimientoEstado.RESERVA);
+                                break;
+                            case RESERVA:
+                                estados.add(TypeProcedimientoEstado.BORRADO);
+                                estados.add(TypeProcedimientoEstado.PUBLICADO);
+                                break;
+                            case PENDIENTE_PUBLICAR:
+                                estados.add(TypeProcedimientoEstado.MODIFICACION);
+                                estados.add(TypeProcedimientoEstado.PUBLICADO);
+                                break;
+                            case PENDIENTE_RESERVAR:
+                                estados.add(TypeProcedimientoEstado.MODIFICACION);
+                                estados.add(TypeProcedimientoEstado.RESERVA);
+                                break;
+                            case PENDIENTE_BORRAR:
+                                estados.add(TypeProcedimientoEstado.MODIFICACION);
+                                estados.add(TypeProcedimientoEstado.BORRADO);
+                                break;
+                        }
+                    }
+                }
+                if (sessionBean.getPerfil() == TypePerfiles.GESTOR) {
                     estados = new ArrayList<>();
-                    switch (typeEstado) {
-                        case MODIFICACION:
-                            estados.add(TypeProcedimientoEstado.MODIFICACION_PENDIENTE_SUBIR);
-                        case MODIFICACION_PENDIENTE_SUBIR:
-                            estados.add(TypeProcedimientoEstado.PUBLICADO);
-                            estados.add(TypeProcedimientoEstado.BORRADO);
-                            estados.add(TypeProcedimientoEstado.RESERVA);
-                            break;
-                        case PUBLICADO:
-                            estados.add(TypeProcedimientoEstado.BORRADO);
-                            estados.add(TypeProcedimientoEstado.RESERVA);
-                            break;
+                    if (typeEstado != null && typeEstado == TypeProcedimientoEstado.MODIFICACION) {
+                        estados.add(TypeProcedimientoEstado.PENDIENTE_PUBLICAR);
+                        estados.add(TypeProcedimientoEstado.PENDIENTE_RESERVAR);
+                        estados.add(TypeProcedimientoEstado.PENDIENTE_BORRAR);
                     }
                 }
             }
@@ -242,4 +272,5 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     public void setMensajeNuevo(String mensajeNuevo) {
         this.mensajeNuevo = mensajeNuevo;
     }
+
 }

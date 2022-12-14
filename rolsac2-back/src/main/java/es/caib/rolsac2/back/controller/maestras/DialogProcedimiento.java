@@ -9,10 +9,7 @@ import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
+import es.caib.rolsac2.service.model.types.*;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +56,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private List<TipoLegitimacionDTO> listTipoLegitimacion;
 
     private List<TipoProcedimientoDTO> listTipoProcedimiento;
+    private List<TipoViaDTO> listTipoVia;
 
     private ProcedimientoTramiteDTO tramiteSeleccionado;
     private TipoPublicoObjetivoEntidadGridDTO tipoPubObjEntGridSeleccionado;
@@ -119,7 +117,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         listTipoSilencio = maestrasSupService.findAllTipoSilencio();
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
         listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
-
+        listTipoVia = maestrasSupService.findAllTipoVia();
     }
 
     public void traducir() {
@@ -131,6 +129,30 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         //params.put("SOLO_MENSAJES","N");
         params.put("ESTADO", data.getEstado().toString());
+
+        if (sessionBean.getPerfil() == TypePerfiles.GESTOR) {
+            boolean tiene = false;
+            if (data.getTramites() != null) {
+                for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
+                    if (tramite.getFase() == FASE_INICIACION) {
+                        tiene = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!tiene) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteFaseIniciacion"));
+                return;
+            }
+
+            if (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty()) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
+                return;
+            }
+
+
+        }
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }
 
@@ -372,6 +394,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
             final Map<String, String> params = new HashMap<>();
+            UtilJSF.anyadirMochila("fechaPublicacion", data.getFechaPublicacion());
             if (TypeModoAcceso.EDICION.equals(modoAcceso) || TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
                 UtilJSF.anyadirMochila("tramiteSel", tramiteSeleccionado.clone());
                 if (tramiteSeleccionado.getFase() != FASE_INICIACION && yaExisteFaseIniciacion()) {
@@ -728,6 +751,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void setDocumentoLOPDSeleccionado(ProcedimientoDocumentoDTO documentoLOPDSeleccionado) {
         this.documentoLOPDSeleccionado = documentoLOPDSeleccionado;
+    }
+
+    public List<TipoViaDTO> getListTipoVia() {
+        return listTipoVia;
+    }
+
+    public void setListTipoVia(List<TipoViaDTO> listTipoVia) {
+        this.listTipoVia = listTipoVia;
     }
 }
 

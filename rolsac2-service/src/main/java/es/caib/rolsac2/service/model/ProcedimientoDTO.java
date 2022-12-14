@@ -29,10 +29,7 @@ public class ProcedimientoDTO extends ModelApi {
     private String tipo;
 
     private Boolean estadoSIA;
-    private Literal nombreProcedimientoWorkFlow;
-    private Literal datosPersonalesFinalidad;
-    private Literal datosPersonalesDestinatario;
-    private Literal requisitos;
+
     private Date fechaSIA;
     private String signatura;
     private List<ProcedimientoTramiteDTO> tramites;
@@ -77,8 +74,20 @@ public class ProcedimientoDTO extends ModelApi {
     private String nombreFamilia;
     private String idioma;
 
+    private TipoViaDTO tipoVia;
+
     // LOPD
     private String lopdResponsable;
+
+    private Literal nombreProcedimientoWorkFlow;
+    private Literal datosPersonalesFinalidad;
+    private Literal datosPersonalesDestinatario;
+    private Literal requisitos;
+    private Literal objeto;
+    private Literal destinatarios;
+    private Literal terminoResolucion;
+    private Literal observaciones;
+
     private Literal lopdFinalidad;
     private Literal lopdDestinatario;
     private Literal lopdDerechos;
@@ -96,6 +105,10 @@ public class ProcedimientoDTO extends ModelApi {
         proc.setDatosPersonalesDestinatario(Literal.createInstance(idiomas));
         proc.setDatosPersonalesFinalidad(Literal.createInstance(idiomas));
         proc.setRequisitos(Literal.createInstance(idiomas));
+        proc.setObjeto(Literal.createInstance(idiomas));
+        proc.setDestinatarios(Literal.createInstance(idiomas));
+        proc.setTerminoResolucion(Literal.createInstance(idiomas));
+        proc.setObservaciones(Literal.createInstance(idiomas));
         return proc;
     }
 
@@ -535,7 +548,7 @@ public class ProcedimientoDTO extends ModelApi {
     public void setTipoProcedimiento(TipoProcedimientoDTO tipoProcedimiento) {
         this.tipoProcedimiento = tipoProcedimiento;
     }
- 
+
     public TypeProcedimientoWorfklow getWorkflow() {
         return workflow;
     }
@@ -568,6 +581,46 @@ public class ProcedimientoDTO extends ModelApi {
         this.mensajes = mensajes;
     }
 
+    public TipoViaDTO getTipoVia() {
+        return tipoVia;
+    }
+
+    public void setTipoVia(TipoViaDTO tipoVia) {
+        this.tipoVia = tipoVia;
+    }
+
+    public Literal getObjeto() {
+        return objeto;
+    }
+
+    public void setObjeto(Literal objeto) {
+        this.objeto = objeto;
+    }
+
+    public Literal getDestinatarios() {
+        return destinatarios;
+    }
+
+    public void setDestinatarios(Literal destinatarios) {
+        this.destinatarios = destinatarios;
+    }
+
+    public Literal getTerminoResolucion() {
+        return terminoResolucion;
+    }
+
+    public void setTerminoResolucion(Literal terminoResolucion) {
+        this.terminoResolucion = terminoResolucion;
+    }
+
+    public Literal getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(Literal observaciones) {
+        this.observaciones = observaciones;
+    }
+
     @Override
     public String toString() {
         return "ProcedimientoDTO{" +
@@ -590,9 +643,24 @@ public class ProcedimientoDTO extends ModelApi {
     }
 
     public void addtramite(ProcedimientoTramiteDTO procTramite) {
-        //Método que recorre los datos y, en caso de no haber sido ya agregado, lo añade
-        //TODO
-        this.getTramites().add(procTramite);
+        boolean encontrado = false;
+        for (int i = 0; i < this.getTramites().size(); i++) {
+            ProcedimientoTramiteDTO tramite = this.getTramites().get(i);
+            if (procTramite.getCodigo() == null && tramite.getCodigo() == null && procTramite.getCodigoString() != null && procTramite.getCodigoString().equals(tramite.getCodigoString())) {
+                encontrado = true;
+                this.getTramites().set(i, procTramite);
+                break;
+            } else if (procTramite.getCodigo() != null && tramite.getCodigo() != null && procTramite.getCodigo().compareTo(tramite.getCodigo()) == 0) {
+                encontrado = true;
+                this.getTramites().set(i, procTramite);
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            this.getTramites().add(procTramite);
+        }
+
     }
 
     public void agregarDocumento(ProcedimientoDocumentoDTO doc) {

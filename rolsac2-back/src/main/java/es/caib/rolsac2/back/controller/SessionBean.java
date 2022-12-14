@@ -11,7 +11,6 @@ import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
 import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
-import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
@@ -220,6 +219,7 @@ public class SessionBean implements Serializable {
                 opcion = "viewConfiguracionEntidad.titulo";
                 break;
             case GESTOR:
+                opcion = "viewUnidadAdministrativa.titulo";
                 break;
             case INFORMADOR:
                 break;
@@ -435,7 +435,9 @@ public class SessionBean implements Serializable {
                 reloadEntidad();
                 break;
             case GESTOR:
-                context.getPartialViewContext().getEvalScripts().add("location.replace(location)");
+                opcion = "viewUnidadAdministrativa.titulo";
+                context.getPartialViewContext().getEvalScripts()
+                        .add("location.replace('" + rolsac2back + "/superadministrador/viewUnidadAdministrativa.xhtml')");
                 reloadEntidad();
                 break;
             case INFORMADOR:
@@ -454,7 +456,7 @@ public class SessionBean implements Serializable {
     public void updateLogo() {
         UIComponent imgLogo = UtilJSF.findComponent("imgLogo");
         UIComponent imgDefecto = UtilJSF.findComponent("imgDefecto");
-        if(checkLogo()) {
+        if (checkLogo()) {
             imgDefecto.getAttributes().put("style", "display: none");
             imgLogo.getAttributes().put("style", "");
         } else {
@@ -729,12 +731,12 @@ public class SessionBean implements Serializable {
 
     public void setearOpcion(String opcion) {
         UIComponent opcionAnterior = UtilJSF.findComponent(this.opcion);
-        if(opcionAnterior != null && opcionAnterior.getAttributes().get("style") != null) {
+        if (opcionAnterior != null && opcionAnterior.getAttributes().get("style") != null) {
             opcionAnterior.getAttributes().put("style", "");
         }
         this.opcion = opcion;
         UIComponent opcionActualizada = UtilJSF.findComponent(this.opcion);
-        if(opcionActualizada != null && opcionActualizada.getAttributes().get("style") != null) {
+        if (opcionActualizada != null && opcionActualizada.getAttributes().get("style") != null) {
             opcionActualizada.getAttributes().put("style", "font-weight: bold");
         }
     }

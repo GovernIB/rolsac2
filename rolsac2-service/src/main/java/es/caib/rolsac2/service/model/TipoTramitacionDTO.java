@@ -4,9 +4,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,34 +56,26 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * URL tramitación
      */
-    @NotEmpty
-    @Size(max = 500)
     private String urlTramitacion;
 
     /**
      * Código plataforma tramitación
      */
-    @NotNull
     private PlatTramitElectronicaDTO codPlatTramitacion;
 
     /**
      * Trámite Id
      */
-    @NotEmpty
-    @Size(max = 50)
     private String tramiteId;
 
     /**
      * Trámite Versión
      */
-    @NotNull
     private Integer tramiteVersion;
 
     /**
      * Trámite parámetros
      */
-    @NotEmpty
-    @Size(max = 500)
     private String tramiteParametros;
 
     /**

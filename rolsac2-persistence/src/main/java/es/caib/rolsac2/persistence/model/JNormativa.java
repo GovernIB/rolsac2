@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @SequenceGenerator(name = "normativa-sequence", sequenceName = "RS2_NORMA_SEQ", allocationSize = 1)
@@ -52,9 +53,6 @@ public class JNormativa extends BaseEntity {
     @Column(name = "NORM_BOLENUM", length = 50)
     private String numeroBoletin;
 
-    @Column(name = "NORM_BOLEURL", length = 500)
-    private String urlBoletin;
-
     @Column(name = "NORM_RESPNOM")
     private String nombreResponsable;
 
@@ -66,6 +64,16 @@ public class JNormativa extends BaseEntity {
 
     @OneToMany(mappedBy = "normativa", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JDocumentoNormativa> documentosNormativa;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "RS2_UADNOR",
+            joinColumns = {
+                    @JoinColumn(name = "UANO_CODNORM")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "UANO_CODUNA")
+            })
+    private Set<JUnidadAdministrativa> unidadesAdministrativas;
 
     public Long getCodigo() {
         return codigo;
@@ -131,14 +139,6 @@ public class JNormativa extends BaseEntity {
         this.numeroBoletin = normBolenum;
     }
 
-    public String getUrlBoletin() {
-        return urlBoletin;
-    }
-
-    public void setUrlBoletin(String normBoleurl) {
-        this.urlBoletin = normBoleurl;
-    }
-
     public String getNombreResponsable() {
         return nombreResponsable;
     }
@@ -162,6 +162,14 @@ public class JNormativa extends BaseEntity {
             this.descripcion.addAll(descripcion);
         }
 
+    }
+
+    public Set<JUnidadAdministrativa> getUnidadesAdministrativas() {
+        return unidadesAdministrativas;
+    }
+
+    public void setUnidadesAdministrativas(Set<JUnidadAdministrativa> unidadesAdministrativas) {
+        this.unidadesAdministrativas = unidadesAdministrativas;
     }
 
     @Override
@@ -188,7 +196,6 @@ public class JNormativa extends BaseEntity {
                 ", boletinOficial=" + boletinOficial +
                 ", fechaBoletin=" + fechaBoletin +
                 ", numeroBoletin='" + numeroBoletin + '\'' +
-                ", urlBoletin='" + urlBoletin + '\'' +
                 ", nombreResponsable='" + nombreResponsable + '\'' +
                 ", descripcion=" + descripcion +
                 ", documentosNormativa=" + documentosNormativa +

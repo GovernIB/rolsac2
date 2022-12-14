@@ -30,6 +30,9 @@ public class JNormativaTraduccion {
     @Column(name = "TRNO_TITUL", length = 2000)
     private String titulo;
 
+    @Column(name = "TRNO_URL", length = 500)
+    private String urlBoletin;
+
     public static List<JNormativaTraduccion> createInstance(List<String> idiomas) {
         List<JNormativaTraduccion> traducciones = new ArrayList<>();
         for (String idioma : idiomas) {
@@ -72,6 +75,10 @@ public class JNormativaTraduccion {
         this.titulo = trnoTitul;
     }
 
+    public String getUrlBoletin() { return urlBoletin; }
+
+    public void setUrlBoletin(String urlBoletin) { this.urlBoletin = urlBoletin; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,8 +96,10 @@ public class JNormativaTraduccion {
     public String toString() {
         return "JNormativaTraduccion{" +
                 "codigo=" + codigo +
+                ", normativa=" + normativa +
                 ", idioma='" + idioma + '\'' +
                 ", titulo='" + titulo + '\'' +
+                ", urlBoletin='" + urlBoletin + '\'' +
                 '}';
     }
 }

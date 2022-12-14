@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URLConnection;
 import java.util.List;
+import java.util.UUID;
 
 
 @Named
@@ -48,19 +49,32 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
     private TypeFicheroExterno tipo = TypeFicheroExterno.NORMATIVA_DOCUMENTO;
 
 
+    private String modoAccesoNormativa;
+
+    private Long idNormativa;
+
+
     public void load() {
         this.setearIdioma();
-        String idNormativa = (String) UtilJSF.getDialogParam("idNormativa");
+        modoAccesoNormativa = (String) UtilJSF.getDialogParam("modoAccesoNormativa");
 
         if (this.isModoAlta()) {
             data = new DocumentoNormativaDTO();
-            data.setNormativa(normativaServiceFacade.findById(Long.valueOf(idNormativa)));
+            //En caso de que la normativa se esté dando de alta, no se puede crear el documento desde esta pantalla,
+            // sino que se creará al realizar el create de la normativa
+            if(modoAccesoNormativa!= null && !modoAccesoNormativa.equals(TypeModoAcceso.ALTA.toString())) {
+                data.setNormativa(normativaServiceFacade.findById(Long.valueOf(idNormativa)));
+            }
             data.setTitulo(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setDocumentos(DocumentoMultiIdioma.createInstance(sessionBean.getIdiomasPermitidosList()));
-        } else if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = normativaServiceFacade.findDocumentoNormativa(Long.valueOf(id));
+            data.setCodigoTabla(UUID.randomUUID().toString());
+        } else if (modoAccesoNormativa.equals(TypeModoAcceso.ALTA.toString()) && (this.isModoEdicion() || this.isModoConsulta())) {
+            data = (DocumentoNormativaDTO) UtilJSF.getValorMochilaByKey("documentoNormativa");
+        } else {
+            String idDocumento = (String) UtilJSF.getDialogParam("idDocumento");
+            data = normativaServiceFacade.findDocumentoNormativa(Long.valueOf(idDocumento));
         }
 
         UtilJSF.vaciarMochila();
@@ -74,9 +88,13 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
         if (!verificarGuardar()) {
             return;
         }
-        if (this.data.getCodigo() == null) {
+        //En caso de que la normativa se esté dando de alta, no se puede crear el documento desde esta pantalla,
+        // sino que se creará al realizar el create de la normativa
+        if (this.data.getCodigo() == null && modoAccesoNormativa!= null
+                && modoAccesoNormativa.equals(TypeModoAcceso.EDICION.toString()) && isModoAlta()) {
             normativaServiceFacade.createDocumentoNormativa(data);
-        } else {
+        } else if(this.data.getCodigo() != null && modoAccesoNormativa!= null
+                && modoAccesoNormativa.equals(TypeModoAcceso.EDICION.toString()) && isModoEdicion()){
             normativaServiceFacade.updateDocumentoNormativa(data);
         }
 
@@ -129,7 +147,7 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
         try {
             InputStream is = event.getFile().getInputStream();
             Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(),
-                    TypeFicheroExterno.NORMATIVA_DOCUMENTO, this.data.getNormativa().getCodigo());
+                    TypeFicheroExterno.NORMATIVA_DOCUMENTO, idNormativa);
 
             FicheroDTO ficheroDTO = new FicheroDTO();
             ficheroDTO.setFilename(event.getFile().getFileName());
@@ -205,5 +223,13 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
 
     public void setTipo(TypeFicheroExterno tipo) {
         this.tipo = tipo;
+    }
+
+    public Long getIdNormativa() {
+        return idNormativa;
+    }
+
+    public void setIdNormativa(Long idNormativa) {
+        this.idNormativa = idNormativa;
     }
 }

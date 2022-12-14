@@ -3,6 +3,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -24,37 +25,45 @@
                  life="5000"
                  escape="false"/>
 
+        <h:outputStylesheet>
+            .myTable thead {
+                display:none;
+            }
+        </h:outputStylesheet>
         <p:panel header="#{labels['dialogProcedimientoFlujo.datos']}" id="formDatos">
             <div class="row">
-                <div class="ui-g-12 ui-md-1 ui-lg-1">
-                    <h:outputText value="#{labels['dict.estadoDestino']}:" for="datatableEstado"/>
-                </div>
-                <div class="ui-g-12 ui-md-5 ui-lg-5">
-                    <p:dataTable id="datatableEstado" var="td" value="#{dialogProcedimientoFlujo.estados}"
-                                 rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1;"
-                                 paginator="false" selectionMode="single"
-                                 required="true"
-                                 disabled="#{!dialogProcedimientoFlujo.mostrarEstados}"
-                                 selection="#{dialogProcedimientoFlujo.estadoSeleccionado}" rowKey="#{td.toString()}">
+                <c:if test="#{!empty dialogProcedimientoFlujo.estados}">
+                    <div class="ui-g-12 ui-md-1 ui-lg-1">
+                        <p:outputLabel value="#{labels['dict.estadoDestino']}:" for="datatableEstado" rendered="#{!empty dialogProcedimientoFlujo.estados }"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-5 ui-lg-5">
+                        <p:dataTable id="datatableEstado" var="td" value="#{dialogProcedimientoFlujo.estados}"
+                                     rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1;" styleClass=".myTable"
+                                     paginator="false" selectionMode="single"
+                                     required="true"
+                                     rendered="#{!empty dialogProcedimientoFlujo.estados}"
+                                     disabled="#{!dialogProcedimientoFlujo.mostrarEstados}"
+                                     selection="#{dialogProcedimientoFlujo.estadoSeleccionado}" rowKey="#{td.toString()}">
 
-                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                        <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowUnselect"/>
+                            <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                            <p:ajax event="rowSelect" global="false"/>
+                            <p:ajax event="rowUnselect"/>
 
-                        <!-- Columnas -->
-                        <p:column class="ui-panelgrid-cell">
-                            <h:outputText value="#{labels['TypeProcedimientoEstado.' += td.toString()]}"/>
-                        </p:column>
+                            <!-- Columnas -->
+                            <p:column class="ui-panelgrid-cell">
+                                <h:outputText value="#{labels['TypeProcedimientoEstado.' += td.toString()]}"/>
+                            </p:column>
 
 
-                    </p:dataTable>
-                </div>
+                        </p:dataTable>
+                    </div>
+                </c:if>
                 <div class="ui-g-12 ui-md-1 ui-lg-1">
                     <h:outputText value="#{labels['dict.mensaje']}:" for="datatableEstado"/>
                 </div>
                 <div class="ui-g-12 ui-md-5 ui-lg-5">
                     <p:inputTextarea value="#{dialogProcedimientoFlujo.mensajeNuevo}" rows="5" cols="35"   autoResize="false">
-                        <p:keyFilter regEx="/[0-9_-a-zA-Z\u00C0-\u024F\. @,]/i" preventPaste="false"/>
+                        <p:keyFilter regEx="/[0-9_-a-zA-Z\u00C0-\u024F\. @!¡()¿?+-;:,]/i" preventPaste="false"/>
                     </p:inputTextarea>
                 </div>
             </div>
@@ -91,7 +100,7 @@
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogProcedimientoFlujo.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog formDatos datatableEstado"
+                         value="#{labels['dict.guardar']}" update="messagesDialog formDatos"
                          process="@all"/>
         <p:commandButton action="#{dialogProcedimientoFlujo.cerrar}"
                          value="#{labels['dict.cerrar']}"

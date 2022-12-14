@@ -2,8 +2,10 @@ package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoNormativaPK;
 import es.caib.rolsac2.persistence.model.traduccion.JNormativaTraduccion;
+import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.NormativaGridDTO;
+import es.caib.rolsac2.service.model.ProcedimientoNormativaDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
@@ -61,5 +63,16 @@ public class JProcedimientoNormativa {
         }
         normativa.setTitulo(titulo);
         return normativa;
+    }
+
+    public ProcedimientoNormativaDTO toModelProc() {
+        ProcedimientoNormativaDTO procedimiento = new ProcedimientoNormativaDTO();
+        procedimiento.setCodigo(this.getProcedimiento().getCodigo());
+        Literal nombre = new Literal();
+        for(JProcedimientoWorkflowTraduccion trad : this.getProcedimiento().getTraducciones()) {
+            nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+        }
+        procedimiento.setNombre(nombre);
+        return procedimiento;
     }
 }

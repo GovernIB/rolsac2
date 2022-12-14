@@ -114,13 +114,6 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             textoInicializado.setValue("true"); // Lo marcamos como ya inicializado
             literal = (Literal) getAttributes().get("literal");
             idioma = (String) getAttributes().get("idioma");
-            Boolean iModoAcceso = (Boolean) getAttributes().get("disabled");
-            if (modoAcceso == null) {
-                modoAcceso = (iModoAcceso != null && iModoAcceso) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-            }
-            if (getAttributes().get("soloLecture") != null && "true".equals(getAttributes().get("soloLecture"))) {
-                modoAcceso = TypeModoAcceso.CONSULTA;
-            }
             String ocultarTexto = (String) getAttributes().get("ocultarTexto");
             if (ocultarTexto != null && "true".equalsIgnoreCase(ocultarTexto)) {
                 ((InputText) texto).setStyle("display:none;");
@@ -132,6 +125,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             if (idioma == null) {
                 idioma = "es";
             }
+            comprobarLectura();
         } else {
             literal = (Literal) getAttributes().get("literal");
             if (literal == null) {
@@ -140,6 +134,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             idioma = (String) getAttributes().get("idioma");
             textoIdioma.setValue(idioma);
             getAttributes().put("literal", literal);
+            comprobarLectura();
         }
 
         textoValor = literal.getTraduccion(idioma);
@@ -158,6 +153,24 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             if (tipo == null || !tipo.equals("html")) {
                 ((InputText) texto).setStyle("opacity: .35; pointer-events:none;");
             }
+        }
+    }
+
+    private void comprobarLectura() {
+        Boolean iModoAcceso = (Boolean) getAttributes().get("disabled");
+        if (modoAcceso == null) {
+            modoAcceso = (iModoAcceso != null && iModoAcceso) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+        }
+        if (getAttributes().get("soloLecture") != null && "true".equals(getAttributes().get("soloLecture"))) {
+            modoAcceso = TypeModoAcceso.CONSULTA;
+        }
+
+        if (isModoConsulta()) {
+            if (tipo == null || !tipo.equals("html")) {
+                ((InputText) texto).setStyle("opacity: .35; pointer-events:none;");
+            }
+        } else {
+            ((InputText) texto).setStyle("");
         }
     }
 

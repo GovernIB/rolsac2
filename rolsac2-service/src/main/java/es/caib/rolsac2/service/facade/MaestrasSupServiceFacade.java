@@ -805,4 +805,10 @@ public interface MaestrasSupServiceFacade {
      */
     boolean existeProcedimientoConLegitimacion(Long codigoLegi);
 
+    /**
+     * Devuelve una lista de tipos de via.
+     *
+     * @return
+     */
+    List<TipoViaDTO> findAllTipoVia();
 }

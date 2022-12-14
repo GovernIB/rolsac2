@@ -18,10 +18,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -61,11 +58,13 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
     private boolean mostrarIniciacion = true;
     private String ocultarIniciacion;
+    private Date fechaPublicacion;
 
     public void load() {
         this.setearIdioma();
 
         nombreProcedimiento = (Literal) UtilJSF.getValorMochilaByKey("nombreProcedimiento");
+        fechaPublicacion = (Date) UtilJSF.getValorMochilaByKey("fechaPublicacion");
         canalesSeleccionados = new ArrayList<>();
 
         if (this.isModoEdicion() || this.isModoConsulta()) {
@@ -115,6 +114,21 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
         if (this.data.getFechaInicio() != null && this.data.getFechaCierre() != null && data.getFechaCierre().before(this.data.getFechaInicio())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaInicioCierre"));
+            return false;
+        }
+
+        if (fechaPublicacion != null && fechaPublicacion.before(this.data.getFechaPublicacion())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaPublicacion"));
+            return false;
+        }
+
+        if (fechaPublicacion != null && fechaPublicacion.before(this.data.getFechaCierre())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaCierre"));
+            return false;
+        }
+
+        if (fechaPublicacion != null && fechaPublicacion.before(this.data.getFechaInicio())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaInicio"));
             return false;
         }
 
@@ -350,6 +364,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
     public void cambiaTipo() {
 
+        /*
         if (canalesSeleccionados != null && !canalesSeleccionados.isEmpty()) {
 
             if (data.getPlantillaSel() == null && canalPresentacion == null) {
@@ -370,7 +385,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         } else {
             canalPresentacion = null;
             data.setPlantillaSel(null);
-        }
+        } */
     }
 
     public ProcedimientoDocumentoDTO getDocumentoSeleccionado() {

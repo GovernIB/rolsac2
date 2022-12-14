@@ -19,18 +19,18 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="pageTitle">
         <h:outputFormat value="#{labels['viewNormativas.titulo.pagina']}"/>
     </ui:define>
-
+    <ui:define name="breadcrumbBoton">
+        <p:ajax event="eventoUpdate"   oncomplete="rc()" listener="#{viewNormativa.buscarEvt()}" update="form:dataTable"  />
+    </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
             <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
-                        action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
-                        oncomplete="$('#form:actualizarBusqueda').click();">
+                        action="#{viewNormativa.cambiarUAbuscarEvt(ua)}" update="migaPan @form form:dataTable">
             </p:menuitem>
         </c:forEach>
     </ui:define>
-
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:remoteCommand name="rc" update="dataTable @form" process="@this"  />
             <p:commandButton value="#{labels['viewNormativas.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewNormativa.buscar}"

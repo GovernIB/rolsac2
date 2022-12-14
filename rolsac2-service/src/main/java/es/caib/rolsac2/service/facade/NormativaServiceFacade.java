@@ -131,4 +131,13 @@ public interface NormativaServiceFacade {
      * @return
      */
     boolean existeBoletin(Long codigoBol);
+
+
+    /**
+     * Devuelve el listado de procedimientos que tienen asociada la normativa
+     * @param idNormativa
+     * @return
+     */
+    List<ProcedimientoNormativaDTO> listarProcedimientosByNormativa(Long idNormativa);
+
 }

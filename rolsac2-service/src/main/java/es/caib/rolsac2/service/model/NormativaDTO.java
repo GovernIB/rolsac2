@@ -24,12 +24,14 @@ public class NormativaDTO extends ModelApi {
     //private TipoBoletinDTO tipoBoletin;
     private LocalDate fechaBoletin;
     private String numeroBoletin;
-    private String urlBoletin;
+    private Literal urlBoletin;
     private String nombreResponsable;
     private Literal nombre;
     private EntidadDTO entidad;
 
     private List<DocumentoNormativaDTO> documentosNormativa;
+
+    private List<UnidadAdministrativaGridDTO> unidadesAdministrativas;
 
     public Long getCodigo() {
         return codigo;
@@ -80,11 +82,11 @@ public class NormativaDTO extends ModelApi {
         this.numeroBoletin = numeroBoletin;
     }
 
-    public String getUrlBoletin() {
+    public Literal getUrlBoletin() {
         return urlBoletin;
     }
 
-    public void setUrlBoletin(String urlBoletin) {
+    public void setUrlBoletin(Literal urlBoletin) {
         this.urlBoletin = urlBoletin;
     }
 
@@ -123,6 +125,10 @@ public class NormativaDTO extends ModelApi {
     public List<DocumentoNormativaDTO> getDocumentosNormativa() { return documentosNormativa; }
 
     public void setDocumentosNormativa(List<DocumentoNormativaDTO> documentosNormativa) { this.documentosNormativa = documentosNormativa; }
+
+    public List<UnidadAdministrativaGridDTO> getUnidadesAdministrativas() { return unidadesAdministrativas; }
+
+    public void setUnidadesAdministrativas(List<UnidadAdministrativaGridDTO> unidadesAdministrativas) { this.unidadesAdministrativas = unidadesAdministrativas; }
 
     @Override
     public boolean equals(Object o) {

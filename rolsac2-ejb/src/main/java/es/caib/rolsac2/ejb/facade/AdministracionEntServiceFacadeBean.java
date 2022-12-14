@@ -131,6 +131,10 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         }
         JUsuario jUsuario = converter.createEntity(dto);
 
+        /**
+         * Asociación para UAs. En caso de que se hayan asignado UAs al usuario,
+         * se recuperan las UAs añadidas y se añaden al modelo de Usuario.
+         */
         Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
         if (dto.getUnidadesAdministrativas() != null) {
             JUnidadAdministrativa jUnidadAdministrativa;
@@ -151,7 +155,10 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         JEntidad jEntidad = entidadRepository.getReference(dto.getEntidad().getCodigo());
         jUsuario.setEntidad(jEntidad);
 
-        //Actualizamos usuarios
+        /**
+         * Asociación para UAs. En caso de que se hayan asignado UAs al usuario,
+         * se recuperan las UAs añadidas y se añaden al modelo de Usuario.
+         */
         Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
         if (dto.getUnidadesAdministrativas() != null) {
             JUnidadAdministrativa jUnidadAdministrativa;

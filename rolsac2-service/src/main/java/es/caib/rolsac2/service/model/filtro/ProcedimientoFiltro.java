@@ -1,9 +1,9 @@
 package es.caib.rolsac2.service.model.filtro;
 
-import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
-import es.caib.rolsac2.service.model.TipoProcedimientoDTO;
-import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
-import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
+import es.caib.rolsac2.service.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Filtro de procedimientos.
@@ -30,7 +30,12 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     private TipoPublicoObjetivoDTO publicoObjetivo;
 
+    private List<TipoPublicoObjetivoEntidadGridDTO> publicoObjetivos;
+    private List<TipoMateriaSIAGridDTO> materias;
+    private List<NormativaGridDTO> normativas;
     private String estado;
+    private boolean hijasActivas = false;
+    private boolean todasUbidadesOrganicas = false;
 
     public String getTexto() {
         return texto;
@@ -128,6 +133,90 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.estado = estado;
     }
 
+    public List<TipoPublicoObjetivoEntidadGridDTO> getPublicoObjetivos() {
+        return publicoObjetivos;
+    }
+
+    public String getPublicoObjetivos(String idioma) {
+        if (publicoObjetivos == null || publicoObjetivos.isEmpty()) {
+            return "";
+        } else {
+            StringBuilder texto = new StringBuilder();
+            for (TipoPublicoObjetivoEntidadGridDTO tipo : publicoObjetivos) {
+                texto.append(tipo.getDescripcion().getTraduccion(idioma) + ",");
+            }
+            return texto.toString().substring(0, texto.toString().length() - 1);
+        }
+    }
+
+    public void setPublicoObjetivos(List<TipoPublicoObjetivoEntidadGridDTO> publicoObjetivos) {
+        this.publicoObjetivos = publicoObjetivos;
+    }
+
+    public List<TipoMateriaSIAGridDTO> getMaterias() {
+        return materias;
+    }
+
+    public String getMaterias(String idioma) {
+        if (materias == null || materias.isEmpty()) {
+            return "";
+        } else {
+            StringBuilder texto = new StringBuilder();
+            for (TipoMateriaSIAGridDTO materia : materias) {
+                texto.append(materia.getDescripcion().getTraduccion(idioma) + ",");
+            }
+            return texto.toString().substring(0, texto.toString().length() - 1);
+        }
+    }
+
+    public void setMaterias(List<TipoMateriaSIAGridDTO> materias) {
+        this.materias = materias;
+    }
+
+    public List<NormativaGridDTO> getNormativas() {
+        return normativas;
+    }
+
+    public List<Long> getNormativasId() {
+        List<Long> idNormativas = new ArrayList<>();
+        for (NormativaGridDTO norm : normativas) {
+            idNormativas.add(norm.getCodigo());
+        }
+        return idNormativas;
+    }
+
+    public void setNormativas(List<NormativaGridDTO> normativas) {
+        this.normativas = normativas;
+    }
+
+    public String getNormativas(String idioma) {
+        if (normativas == null || normativas.isEmpty()) {
+            return "";
+        } else {
+            StringBuilder texto = new StringBuilder();
+            for (NormativaGridDTO normativa : normativas) {
+                texto.append(normativa.getTitulo().getTraduccion(idioma) + ",");
+            }
+            return texto.toString().substring(0, texto.toString().length() - 1);
+        }
+    }
+
+    public boolean isHijasActivas() {
+        return hijasActivas;
+    }
+
+    public void setHijasActivas(boolean hijasActivas) {
+        this.hijasActivas = hijasActivas;
+    }
+
+    public boolean isTodasUbidadesOrganicas() {
+        return todasUbidadesOrganicas;
+    }
+
+    public void setTodasUbidadesOrganicas(boolean todasUbidadesOrganicas) {
+        this.todasUbidadesOrganicas = todasUbidadesOrganicas;
+    }
+
     /**
      * Esta relleno el texto
      *
@@ -179,6 +268,26 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public boolean isRellenoEstado() {
         return estado != null && !estado.isEmpty();
+    }
+
+    public boolean isRellenoNormativas() {
+        return normativas != null && !normativas.isEmpty();
+    }
+
+    public boolean isRellenoPublicoObjetivos() {
+        return publicoObjetivos != null && !publicoObjetivos.isEmpty();
+    }
+
+    public boolean isRellenoMaterias() {
+        return materias != null && !materias.isEmpty();
+    }
+
+    public boolean isRellenoHijasActivas() {
+        return hijasActivas;
+    }
+
+    public boolean isRellenoTodasUbidadesOrganicas() {
+        return todasUbidadesOrganicas;
     }
 
     @Override

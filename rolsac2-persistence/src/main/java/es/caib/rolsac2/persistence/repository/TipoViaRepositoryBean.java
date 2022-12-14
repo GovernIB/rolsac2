@@ -1,7 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.TipoViaConverter;
 import es.caib.rolsac2.persistence.model.JTipoVia;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoViaDTO;
 import es.caib.rolsac2.service.model.TipoViaGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.TipoViaFiltro;
@@ -10,6 +12,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -20,6 +23,9 @@ import java.util.Optional;
 @Local(TipoViaRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class TipoViaRepositoryBean extends AbstractCrudRepository<JTipoVia, Long> implements TipoViaRepository {
+
+    @Inject
+    private TipoViaConverter converter;
 
     protected TipoViaRepositoryBean() {
         super(JTipoVia.class);
@@ -58,6 +64,20 @@ public class TipoViaRepositoryBean extends AbstractCrudRepository<JTipoVia, Long
         query.setParameter("identificador", identificador);
         Long resultado = query.getSingleResult();
         return resultado > 0;
+    }
+
+    @Override
+    public List<TipoViaDTO> findAll() {
+        TypedQuery<JTipoVia> query =
+                entityManager.createQuery("SELECT j FROM JTipoVia j", JTipoVia.class);
+        List<JTipoVia> jTipos = query.getResultList();
+        List<TipoViaDTO> tipos = new ArrayList<>();
+        if (jTipos != null) {
+            for (JTipoVia jtipoVia : jTipos) {
+                tipos.add(this.converter.createDTO(jtipoVia));
+            }
+        }
+        return tipos;
     }
 
     private Query getQuery(boolean isTotal, TipoViaFiltro filtro) {

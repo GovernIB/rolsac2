@@ -5,9 +5,7 @@ import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
-import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
-import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.facade.NormativaServiceFacade;
+import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -43,9 +41,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     private List<BoletinOficialDTO> boletinOficial;
 
-    private String identificadorOld;
-
-    private List<ProcedimientoDTO> procedimientosRelacionados;
+    private List<ProcedimientoNormativaDTO> procedimientosRelacionados;
 
     private List<String> documentosRelacionados;
 
@@ -63,8 +59,14 @@ public class DialogNormativa extends AbstractController implements Serializable 
     @EJB
     private MaestrasSupServiceFacade maestrasSupServiceFacade;
 
-    private DocumentoNormativaDTO datoSeleccionado;
+    @EJB
+    private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
+    private DocumentoNormativaDTO documentoRelacionadoSeleccionado;
+
+    private UnidadAdministrativaGridDTO uaSeleccionada;
+
+    private ProcedimientoNormativaDTO procSeleccionado;
 
 
     public void load() {
@@ -83,20 +85,26 @@ public class DialogNormativa extends AbstractController implements Serializable 
             data = new NormativaDTO();
             data.setEntidad(sessionBean.getEntidad());
             data.setNombre(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            data.setUrlBoletin(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
+            UnidadAdministrativaGridDTO uaActiva = sessionBean.getUnidadActiva().convertDTOtoGridDTO();
+            unidadesAdministrativas.add(uaActiva);
+            data.setUnidadesAdministrativas(unidadesAdministrativas);
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = normativaServiceFacade.findById(Long.valueOf(id));
+            findProcedimientosRelacionados();
+            if(data.getDocumentosNormativa() != null) {
+                for(DocumentoNormativaDTO documentoNormativaDTO : data.getDocumentosNormativa()) {
+                    documentoNormativaDTO.setCodigoTabla(UUID.randomUUID().toString());
+                }
+            }
         }
 
-
-        procedimientosRelacionados = new ArrayList<>();
-        final ProcedimientoDTO pr1= new ProcedimientoDTO();
-        pr1.setNombreProcedimiento("Instancia genérica 1");
-        procedimientosRelacionados.add(pr1);
-        documentosRelacionados=new ArrayList<>();
+        documentosRelacionados = new ArrayList<>();
 
         uaRelacionadas = new ArrayList<>();
         final UnidadAdministrativaDTO ua = new UnidadAdministrativaDTO();
-        final Literal l1= new Literal();
+        final Literal l1 = new Literal();
         final List<Traduccion> traducciones = new ArrayList<>();
         final Traduccion t1 = new Traduccion();
         t1.setLiteral("Descripción del tipo de materia SIA.");
@@ -131,10 +139,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
     }
 
     public boolean verificarGuardar() {
-        if (Objects.nonNull(this.data.getUrlBoletin()) && !ValidacionTipoUtils.esUrlValido(this.data.getUrlBoletin())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.url.novalido"), true);
-            return false;
-        }
+
         if (Objects.nonNull(this.data.getNumero()) && !ValidacionTipoUtils.esEntero(this.data.getNumero())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.numero.novalido"), true);
             return false;
@@ -145,7 +150,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
         }
 
         List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getNombre(), sessionBean.getIdiomasObligatoriosList());
-        if(!idiomasPendientesDescripcion.isEmpty()) {
+        if (!idiomasPendientesDescripcion.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogNormativa.titulo", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }
@@ -168,23 +173,39 @@ public class DialogNormativa extends AbstractController implements Serializable 
         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
     }
 
+    /********************************************************************************************************************************
+     * Funciones relativas al manejo de la relación de Documentos Relacionados
+     *********************************************************************************************************************************/
+
     public void abrirDialogDocumento(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.data.getCodigo() != null
-                && (modoAcceso.equals(TypeModoAcceso.CONSULTA)|| modoAcceso.equals(TypeModoAcceso.EDICION))) {
-            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
+        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
+        if(this.isModoAlta() && !modoAcceso.equals(TypeModoAcceso.ALTA)) {
+            UtilJSF.anyadirMochila("documentoNormativa", documentoRelacionadoSeleccionado);
         }
-        params.put("idNormativa", this.data.getCodigo().toString());
-
+        if(!this.isModoAlta() && !modoAcceso.equals(TypeModoAcceso.ALTA)) {
+            params.put("idDocumento", this.documentoRelacionadoSeleccionado.getCodigo().toString());
+        }
+        params.put("modoAccesoNormativa", this.getModoAcceso());
         UtilJSF.openDialog("dialogDocumentoNormativa", modoAcceso, params, true, 750, 450);
     }
 
-    public void returnDialogo(final SelectEvent event) {
+    public void returnDialogoDocumento(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
-        // Verificamos si se ha modificado
-        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+        //Si se da de alta la normativa, creamos el listado de documentos
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso()) && isModoAlta()) {
+            DocumentoNormativaDTO documento = (DocumentoNormativaDTO) respuesta.getResult();
+            if (this.data.getDocumentosNormativa() == null) {
+                this.data.setDocumentosNormativa(new ArrayList<>());
+            }
+            if (this.data.getDocumentosNormativa().contains(documento)) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.elementoRepetido"));
+            } else {
+                this.data.getDocumentosNormativa().add(documento);
+            }
+        } else if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             this.buscarDocumentos();
         }
     }
@@ -194,7 +215,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
     }
 
     public void editarDocumentoRelacionado() {
-        if (datoSeleccionado == null) {
+        if (documentoRelacionadoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
             abrirDialogDocumento(TypeModoAcceso.EDICION);
@@ -202,25 +223,136 @@ public class DialogNormativa extends AbstractController implements Serializable 
     }
 
     public void consultarDocumentoRelacionado() {
-        if (datoSeleccionado != null) {
+        if (documentoRelacionadoSeleccionado != null) {
             abrirDialogDocumento(TypeModoAcceso.CONSULTA);
         }
     }
 
     public void borrarDocumentoRelacionado() {
-        if (datoSeleccionado == null) {
+        if (documentoRelacionadoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else if(this.isModoAlta()) {
+            this.data.getDocumentosNormativa().remove(documentoRelacionadoSeleccionado);
         } else {
-            normativaServiceFacade.deleteDocumentoNormativa(datoSeleccionado.getCodigo());
+            normativaServiceFacade.deleteDocumentoNormativa(documentoRelacionadoSeleccionado.getCodigo());
             buscarDocumentos();
         }
     }
 
     public void buscarDocumentos() {
         List<DocumentoNormativaDTO> docs = normativaServiceFacade.findDocumentosNormativa(this.data.getCodigo());
+        if(docs != null) {
+            for(DocumentoNormativaDTO documentoNormativaDTO : docs) {
+                documentoNormativaDTO.setCodigoTabla(UUID.randomUUID().toString());
+            }
+        }
         this.data.setDocumentosNormativa(docs);
         PrimeFaces.current().ajax().update("formDialog:dataDocumentosRelacionados");
     }
+
+    /********************************************************************************************************************************
+     * Funciones relativas al manejo de la relación de UAs
+     *********************************************************************************************************************************/
+
+    /**
+     * Abrir dialogo de Selección de Unidades Administrativas
+     */
+    public void abrirDialogUAs(TypeModoAcceso modoAcceso) {
+
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", uaSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("/superadministrador/dialogUnidadAdministrativa", modoAcceso, params, true, 1530, 733);
+        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+            UtilJSF.anyadirMochila("unidadesAdministrativas", data.getUnidadesAdministrativas());
+            final Map<String, String> params = new HashMap<>();
+            params.put(TypeParametroVentana.MODO_ACCESO.toString(), TypeModoAcceso.ALTA.toString());
+            //params.put("esCabecera", "true");
+            String direccion = "/comun/dialogSeleccionarUA";
+            UtilJSF.openDialog(direccion, modoAcceso, params, true, 850, 575);
+        }
+    }
+
+    public void returnDialogoUAs(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        // Verificamos si se ha modificado
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
+            uaSeleccionada = unidadAdministrativaServiceFacade.findById(uaSeleccionada.getCodigo());
+            if (uaSeleccionada != null) {
+                UnidadAdministrativaGridDTO uaSeleccionadaGrid = uaSeleccionada.convertDTOtoGridDTO();
+                //verificamos qeu la UA no esté seleccionada ya, en caso de estarlo mostramos mensaje
+                if (this.data.getUnidadesAdministrativas() == null) {
+                    this.data.setUnidadesAdministrativas(new ArrayList<>());
+                }
+                if (this.data.getUnidadesAdministrativas().contains(uaSeleccionadaGrid)) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.elementoRepetido"));
+                } else {
+                    this.data.getUnidadesAdministrativas().add(uaSeleccionadaGrid);
+                }
+            }
+        }
+    }
+
+    /**
+     * Método para dar de alta UAs en un usuario
+     */
+    public void anyadirUAs() {
+        abrirDialogUAs(TypeModoAcceso.ALTA);
+    }
+
+    /**
+     * Método para consultar el detalle de una UA
+     */
+    public void consultarUA() {
+        if (uaSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogUAs(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    /**
+     * Método para borrar un usuario en una UA
+     */
+    public void borrarUA() {
+        if (uaSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else if(uaSeleccionada.getCodigo() == sessionBean.getUnidadActiva().getCodigo()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("ç"));
+        } else {
+
+            data.getUnidadesAdministrativas().remove(uaSeleccionada);
+            uaSeleccionada = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    /********************************************************************************************************************************
+     * Funciones relativas al manejo de la relación de Procedimientos
+     *********************************************************************************************************************************/
+
+    private void findProcedimientosRelacionados() {
+        procedimientosRelacionados = normativaServiceFacade.listarProcedimientosByNormativa(this.data.getCodigo());
+    }
+
+    public void consultarProcs() {
+        if (procSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", procSeleccionado.getCodigo().toString());
+            params.put(TypeParametroVentana.MODO_ACCESO.toString(), TypeModoAcceso.CONSULTA.toString());
+            Integer ancho = sessionBean.getScreenWidthInt();
+            if (ancho == null) {
+                ancho = 1433;
+            }
+            UtilJSF.openDialog("dialogProcedimiento", TypeModoAcceso.CONSULTA, params, true, ancho, 733);
+        }
+    }
+
+
 
     public String getId() {
         return id;
@@ -278,11 +410,11 @@ public class DialogNormativa extends AbstractController implements Serializable 
         this.boletinOficial = boletinOficial;
     }
 
-    public List<ProcedimientoDTO> getProcedimientosRelacionados() {
+    public List<ProcedimientoNormativaDTO> getProcedimientosRelacionados() {
         return procedimientosRelacionados;
     }
 
-    public void setProcedimientosRelacionados(List<ProcedimientoDTO> procedimientosRelacionados) {
+    public void setProcedimientosRelacionados(List<ProcedimientoNormativaDTO> procedimientosRelacionados) {
         this.procedimientosRelacionados = procedimientosRelacionados;
     }
 
@@ -302,11 +434,23 @@ public class DialogNormativa extends AbstractController implements Serializable 
         this.uaRelacionadas = uaRelacionadas;
     }
 
-    public DocumentoNormativaDTO getDatoSeleccionado() {
-        return datoSeleccionado;
+    public DocumentoNormativaDTO getDocumentoRelacionadoSeleccionado() {
+        return documentoRelacionadoSeleccionado;
     }
 
-    public void setDatoSeleccionado(DocumentoNormativaDTO datoSeleccionado) {
-        this.datoSeleccionado = datoSeleccionado;
+    public void setDocumentoRelacionadoSeleccionado(DocumentoNormativaDTO documentoRelacionadoSeleccionado) {
+        this.documentoRelacionadoSeleccionado = documentoRelacionadoSeleccionado;
+    }
+
+    public UnidadAdministrativaGridDTO getUaSeleccionada() { return uaSeleccionada; }
+
+    public void setUaSeleccionada(UnidadAdministrativaGridDTO uaSeleccionada) { this.uaSeleccionada = uaSeleccionada; }
+
+    public ProcedimientoNormativaDTO getProcSeleccionado() {
+        return procSeleccionado;
+    }
+
+    public void setProcSeleccionado(ProcedimientoNormativaDTO procSeleccionado) {
+        this.procSeleccionado = procSeleccionado;
     }
 }

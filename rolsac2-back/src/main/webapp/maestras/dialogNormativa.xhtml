@@ -27,7 +27,8 @@
         <p:selectOneButton id="opcionIdioma" value="#{dialogNormativa.idioma}" styleClass="botoneraRed">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-            <p:ajax update="formDialog:txtNombre formDialog:dataDocumentosRelacionados" process="@this"/>
+            <p:ajax update="formDialog:txtNombre formDialog:dataDocumentosRelacionados formDialog:txtUrlBoletin
+            formDialog:dataTableUAs formDialog:dataProcedimientosRelacionados" process="@this"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogNormativa.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -144,10 +145,16 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.urlBoletin']}:"
                                        for="txtUrlBoletin"/>
 
-                        <p:inputText id="txtUrlBoletin" value="#{dialogNormativa.data.urlBoletin}"
-                                     required="true"
-                                     requiredMessage="#{labels['dict.obligatorio.enlaceNorma']}"
-                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="500"/>
+                        <my:literalComponent id="txtUrlBoletin"
+                                             literal="#{dialogNormativa.data.urlBoletin}"
+                                             soloLecture="#{dialogNormativa.isModoConsulta()}"
+                                             required="true"
+                                             idioma="#{dialogNormativa.idioma}"
+                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             nombreLiteral="#{labels['dialogNormativa.urlBoletin']}">
+                            <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                        </my:literalComponent>
                     </div>
                 </div>
                 <div class="form-row">
@@ -176,14 +183,13 @@
                                  paginator="false"
                                  styleClass="noHeader text-center"
                                  selectionMode="single"
-                                 selection="#{dialogNormativa.datoSeleccionado}"
-                                 rowKey="#{doc.codigo}"
-                                 rendered="#{!dialogNormativa.isModoAlta()}">
+                                 selection="#{dialogNormativa.documentoRelacionadoSeleccionado}"
+                                 rowKey="#{doc.codigoTabla}">
 
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax
                                 event="rowDblselect"
-                                oncomplete="triggerDblClick();"
+                                oncomplete="triggerDblClickDoc();"
                                 global="false"/>
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowSelect" global="false"/>
@@ -199,23 +205,25 @@
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" process="@this"
                                      actionListener="#{dialogNormativa.abrirDocumentoRelacionado()}" icon="pi pi-plus"
-                                     styleClass="text-success"
-                                     rendered="#{!dialogNormativa.isModoAlta()}">
+                                     styleClass="text-success" rendered="#{!dialogNormativa.isModoConsulta()}">
                         <!--Ajax para coger el return del dialog-->
-                        <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogo}"
+                        <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoDocumento}"
                                 update="formDialog:dataDocumentosRelacionados"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" process="@this"
                                      actionListener="#{dialogNormativa.borrarDocumentoRelacionado()}" icon="pi pi-minus"
-                                     styleClass="text-danger"
-                                     rendered="#{!dialogNormativa.isModoAlta()}">
-                        <p:ajax update="formDialog:dataDocumentosRelacionados"/>
+                                     styleClass="text-danger" rendered="#{!dialogNormativa.isModoConsulta()}" update="formDialog:dataDocumentosRelacionados">
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.consultar']}" process="@this"
                                      actionListener="#{dialogNormativa.consultarDocumentoRelacionado()}"
-                                     icon="pi pi-eye"
-                                     rendered="#{!dialogNormativa.isModoAlta()}">
-                        <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogo}"
+                                     icon="pi pi-eye" rendered="#{dialogNormativa.isModoConsulta()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoDocumento}"
+                                update="formDialog:dataDocumentosRelacionados"/>
+                    </p:commandButton>
+                    <p:commandButton id="btnEditarDoc" title="#{labels['dict.editar']}" process="@this"
+                                     actionListener="#{dialogNormativa.editarDocumentoRelacionado()}"
+                                     icon="pi pi-pencil" rendered="#{!dialogNormativa.isModoConsulta()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoDocumento}"
                                 update="formDialog:dataDocumentosRelacionados"/>
                     </p:commandButton>
 
@@ -226,28 +234,41 @@
                     <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.uaRelacionadas']}</p>
                 </div>
                 <div class="col-10 p-1">
-                    <p:dataTable id="dataUAsRelacionadas" var="td" value="#{dialogNormativa.uaRelacionadas}"
-                                 emptyMessage="No hay UAs relacionadas" scrollable="true" scrollHeight="120"
-                                 paginator="false" styleClass="noHeader text-center">
+                    <p:dataTable id="dataTableUAs" var="td" value="#{dialogNormativa.data.unidadesAdministrativas}"
+                                 emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{dialogNormativa.uaSeleccionada}"
+                                 rowKey="#{td.codigo}" styleClass="noHeader">
 
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect"
-                                oncomplete="rcEditarPropiedad();"
-                        />
+                        <p:ajax
+                                event="rowDblselect"
+                                oncomplete="triggerDblClickUA();"
+                                global="false"/>
 
-                        <p:column headerText="DESCRIPCIÓN" styleClass="w75">
-                            <h:outputText value="#{td.nombre.getTraduccion()}"/>
+
+                        <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
+                            <h:outputText value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
 
                     </p:dataTable>
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
-                    <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
-                    <p:button title="Consultar" icon="pi pi-eye"></p:button>
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                     process="@this" actionListener="#{dialogNormativa.anyadirUAs()}"
+                                     rendered="#{!dialogNormativa.isModoConsulta()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoUAs}" process="@this"
+                                update="messagesDialog dataTableUAs"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                     action="#{dialogNormativa.borrarUA()}"
+                                     process="@this" update="dataTableUAs messagesDialog"
+                                     rendered="#{!dialogNormativa.isModoConsulta()}"/>
+                    <p:commandButton id="btnConsultarUA" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     action="#{dialogNormativa.consultarUA()}"
+                                     process="@this" update="dataTableUAs messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -257,23 +278,31 @@
                 <div class="col-10 p-1">
                     <p:dataTable id="dataProcedimientosRelacionados" var="td"
                                  value="#{dialogNormativa.procedimientosRelacionados}"
-                                 emptyMessage="No hay documentos relacionados" scrollable="true" scrollHeight="120"
-                                 paginator="false"
+                                 emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{dialogNormativa.procSeleccionado}"
+                                 rowKey="#{td.codigo}"
                                  styleClass="noHeader text-center">
 
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax
+                                event="rowDblselect"
+                                oncomplete="triggerDblClickProc();"
+                                global="false"/>
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect"
-                                oncomplete="rcEditarPropiedad();"
-                        />
 
-                        <p:column headerText="DESCRIPCIÓN" styleClass="w75">
-                            <h:outputText value="#{td.nombreProcedimiento}"/>
+
+                        <p:column headerText="#{labels['dict.nombre']}" styleClass="w75">
+                            <h:outputText value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
 
                     </p:dataTable>
+                </div>
+                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <p:commandButton id="btnConsultarProc" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     action="#{dialogNormativa.consultarProcs()}"
+                                     process="@this" update="dataProcedimientosRelacionados messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -283,7 +312,7 @@
                 <div class="col-10 p-1">
                     <p:dataTable id="dataServiciosRelacionados" var="td"
                                  value="#{dialogNormativa.procedimientosRelacionados}"
-                                 emptyMessage="No hay documentos relacionados" scrollable="true" scrollHeight="120"
+                                 emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
                                  paginator="false"
                                  styleClass="noHeader text-center">
 
@@ -296,7 +325,7 @@
                         />
 
                         <p:column headerText="DESCRIPCIÓN" styleClass="w75">
-                            <h:outputText value="#{td.nombreProcedimiento}"/>
+                            <h:outputText value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
 
                     </p:dataTable>
@@ -334,9 +363,14 @@
         </div>
 
         <h:outputScript>
-            function triggerDblClick() {
-                myDoubleClickCommand();
-                /*$('#form\\:btnConsultaHidden').click();*/
+            function triggerDblClickDoc() {
+                document.getElementById("formDialog:btnEditarDoc").click();
+            }
+            function triggerDblClickUA() {
+                document.getElementById("formDialog:btnConsultarUA").click();
+            }
+            function triggerDblClickProc() {
+                document.getElementById("formDialog:btnConsultarProc").click();
             }
         </h:outputScript>
         <p:remoteCommand name="myDoubleClickCommand"

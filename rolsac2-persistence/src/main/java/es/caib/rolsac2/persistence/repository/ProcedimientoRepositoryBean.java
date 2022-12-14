@@ -322,6 +322,23 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
+    public List<ProcedimientoNormativaDTO> getProcedimientosByNormativa(Long idNormativa) {
+        List<ProcedimientoNormativaDTO> lista = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoNormativa j where j.normativa.codigo = :idNormativa ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("idNormativa", idNormativa);
+        List<JProcedimientoNormativa> jLista = query.getResultList();
+        if (jLista != null && !jLista.isEmpty()) {
+            for (JProcedimientoNormativa elemento : jLista) {
+                lista.add(elemento.toModelProc());
+            }
+        }
+        return lista;
+
+    }
+
+
+    @Override
     public void mergeDocumentos(Long codigoWF, Long idListaDocumentos, boolean isLopd, List<ProcedimientoDocumentoDTO> docs, String ruta) {
         entityManager.flush();
         JListaDocumentos jListaDocumentos;
@@ -1042,7 +1059,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoIdUA()) {
             sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA) ");
-        }
+        }/*
+        if (filtro.isRellenoNormativas()) {
+            sql.append(" AND EXISTS ( SELECT procNorm FROM JProcedimientoNormativa procNorm WHERE (procNorm.codigo.procedimiento = WF.codigo OR procNorm.codigo.procedimiento = WF2.codigo) AND procNorm.codigo.normativa IN (:normativas) ) ");
+        }*/
         if (filtro.isRellenoVolcadoSIA()) {
             switch (filtro.getVolcadoSIA()) {
                 case "S":
@@ -1092,7 +1112,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoIdUA()) {
             query.setParameter("idUA", filtro.getIdUA());
         }
-
+        if (filtro.isRellenoNormativas()) {
+            query.setParameter("normativas", filtro.getNormativasId());
+        }
         return query;
     }
 

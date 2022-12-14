@@ -73,6 +73,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
     }
 
     public void buscar() {
+
         lazyModel = new LazyDataModel<NormativaGridDTO>() {
             @Override
             public NormativaGridDTO getRowData(String rowKey) {
@@ -92,6 +93,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
             public List<NormativaGridDTO> load(int first, int pageSize, String sortField,
                                                SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
+                    filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
                     filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);

@@ -36,9 +36,13 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     List<JUnidadAdministrativa> getUnidadesAdministrativaByUsuario(Long usuarioId);
 
+    List<JUnidadAdministrativa> getUnidadesAdministrativaByNormativa(Long normativaId);
+
     UnidadAdministrativaGridDTO modelToGridDTO(JUnidadAdministrativa jUnidadAdministrativa);
 
     String obtenerPadreDir3(Long codigoUA, String idioma);
 
     boolean existeTipoSexo(Long codigoSex);
+
+    List<Long> getHijosRecursivo(Long codigoUA);
 }

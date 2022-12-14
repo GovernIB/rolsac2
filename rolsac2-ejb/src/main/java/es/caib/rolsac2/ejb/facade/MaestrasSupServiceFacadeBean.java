@@ -1162,5 +1162,17 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         return procedimientoRepository.existeProcedimientoConLegitimacion(codigoLegi);
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoViaDTO> findAllTipoVia() {
+        try {
+            return tipoViaRepository.findAll();
+        } catch (Exception e) {
+            LOG.error("Error: ", e);
+            return new ArrayList<>();
+        }
+    }
+
 
 }

@@ -14,7 +14,15 @@ public enum TypeProcedimientoEstado {
     /**
      * <P>ESTADO MODIFICACIÓN PENDIENTE SUBIR</P>
      */
-    MODIFICACION_PENDIENTE_SUBIR("S"),
+    PENDIENTE_PUBLICAR("S"),
+    /**
+     * <P>PENDIENTE RESERVAR</P>
+     */
+    PENDIENTE_RESERVAR("T"),
+    /**
+     * <P>PENDIENTE RESERVAR</P>
+     */
+    PENDIENTE_BORRAR("U"),
     /**
      * <P>PUBLICADO</P>
      */
@@ -53,7 +61,7 @@ public enum TypeProcedimientoEstado {
 
         switch (estado) {
             case MODIFICACION:
-            case MODIFICACION_PENDIENTE_SUBIR:
+            case PENDIENTE_PUBLICAR:
                 return TypeProcedimientoWorfklow.MODIFICACION;
             case BORRADO:
             case PUBLICADO:
@@ -69,7 +77,7 @@ public enum TypeProcedimientoEstado {
 
         switch (this) {
             case MODIFICACION:
-            case MODIFICACION_PENDIENTE_SUBIR:
+            case PENDIENTE_PUBLICAR:
                 return TypeProcedimientoWorfklow.MODIFICACION;
             case BORRADO:
             case PUBLICADO:

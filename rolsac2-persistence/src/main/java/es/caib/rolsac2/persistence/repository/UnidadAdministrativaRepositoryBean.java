@@ -362,6 +362,16 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
+    public List<JUnidadAdministrativa> getUnidadesAdministrativaByNormativa(Long normativaId) {
+        TypedQuery<JUnidadAdministrativa> query = null;
+        String sql = "SELECT a FROM JUnidadAdministrativa a LEFT OUTER JOIN a.normativas b WHERE b.codigo= :normativaId";
+        query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
+        query.setParameter("normativaId", normativaId);
+
+        return query.getResultList();
+    }
+
+    @Override
     public UnidadAdministrativaGridDTO modelToGridDTO(JUnidadAdministrativa jUnidadAdministrativa) {
         UnidadAdministrativaGridDTO unidadAdministrativa = new UnidadAdministrativaGridDTO();
         unidadAdministrativa.setCodigo(jUnidadAdministrativa.getCodigo());
@@ -391,4 +401,16 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         return resultado > 0;
     }
 
+    @Override
+    public List<Long> getHijosRecursivo(Long codigoUA) {
+        StringBuilder sql = new StringBuilder(
+                "               SELECT t1.UNAD_CODIGO " +
+                        "       FROM rs2_uniadm t1 " +
+                        "  LEFT JOIN rs2_uniadm t2 ON t2.UNAD_CODIGO = t1.UNAD_UNADPADRE " +
+                        " START WITH t1.UNAD_CODIGO = :codigoUA" +
+                        " CONNECT BY PRIOR t1.UNAD_CODIGO = t1.UNAD_UNADPADRE");
+        Query query = entityManager.createNativeQuery(sql.toString());
+        query.setParameter("codigoUA", codigoUA);
+        return query.getResultList();
+    }
 }

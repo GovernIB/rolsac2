@@ -75,6 +75,10 @@ public class JProcedimientoWorkflow {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_TIPPRO", nullable = false)
     private JTipoProcedimiento tipoProcedimiento;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRWF_TIPVIA", nullable = false)
+    private JTipoVia tipoVia;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_LSTDOC")
     private JListaDocumentos listaDocumentos;
@@ -343,6 +347,14 @@ public class JProcedimientoWorkflow {
 
     public void setTipoProcedimiento(JTipoProcedimiento tipoProcedimiento) {
         this.tipoProcedimiento = tipoProcedimiento;
+    }
+
+    public JTipoVia getTipoVia() {
+        return tipoVia;
+    }
+
+    public void setTipoVia(JTipoVia tipoVia) {
+        this.tipoVia = tipoVia;
     }
 
     public void setTraducciones(List<JProcedimientoWorkflowTraduccion> traducciones) {

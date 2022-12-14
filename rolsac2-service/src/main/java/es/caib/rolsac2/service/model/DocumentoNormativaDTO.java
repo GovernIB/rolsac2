@@ -4,6 +4,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Objects;
 
+
 /**
  * DTO para los documentos de una entidad.
  */
@@ -12,6 +13,9 @@ public class DocumentoNormativaDTO extends ModelApi {
 
     /* Código del documento*/
     private Long codigo;
+
+    /*Código que se utiliza para seleccionar los docs en la tabla de normativa*/
+    private String codigoTabla;
 
     /*Normativa asociada al documento*/
     private NormativaDTO normativa;
@@ -77,6 +81,14 @@ public class DocumentoNormativaDTO extends ModelApi {
 
     public void setDocumentos(DocumentoMultiIdioma documentos) {
         this.documentos = documentos;
+    }
+
+    public String getCodigoTabla() {
+        return codigoTabla;
+    }
+
+    public void setCodigoTabla(String codigoTabla) {
+        this.codigoTabla = codigoTabla;
     }
 
     @Override

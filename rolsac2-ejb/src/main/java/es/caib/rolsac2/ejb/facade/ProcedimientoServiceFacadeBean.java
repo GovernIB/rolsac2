@@ -69,7 +69,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Inject
     private TipoProcedimientoConverter tipoProcedimientoConverter;
-
+    @Inject
+    private TipoViaConverter tipoViaConverter;
     @Inject
     private TipoLegitimacionConverter tipoLegitimacionConverter;
     @Inject
@@ -153,6 +154,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         jProcWF.setFormaInicio(tipoFormaInicioConverter.createEntity(dto.getIniciacion()));
         jProcWF.setSilencioAdministrativo(tipoSilencioAdministrativoConverter.createEntity(dto.getSilencio()));
         jProcWF.setTipoProcedimiento(tipoProcedimientoConverter.createEntity(dto.getTipoProcedimiento()));
+        jProcWF.setTipoVia(tipoViaConverter.createEntity(dto.getTipoVia()));
         jProcWF.setDatosPersonalesLegitimacion(tipoLegitimacionConverter.createEntity(dto.getDatosPersonalesLegitimacion()));
         jProcWF.setLopdResponsable(dto.getLopdResponsable());
     }
@@ -210,6 +212,18 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         if (dto.getLopdFinalidad() != null) {
             traduccion.setLopdFinalidad(dto.getLopdFinalidad().getTraduccion(traduccion.getIdioma()));
         }
+        if (dto.getObjeto() != null) {
+            traduccion.setObjeto(dto.getObjeto().getTraduccion(traduccion.getIdioma()));
+        }
+        if (dto.getDestinatarios() != null) {
+            traduccion.setDestinatarios(dto.getDestinatarios().getTraduccion(traduccion.getIdioma()));
+        }
+        if (dto.getTerminoResolucion() != null) {
+            traduccion.setTerminoResolucion(dto.getTerminoResolucion().getTraduccion(traduccion.getIdioma()));
+        }
+        if (dto.getObservaciones() != null) {
+            traduccion.setObservaciones(dto.getObservaciones().getTraduccion(traduccion.getIdioma()));
+        }
     }
 
 
@@ -238,6 +252,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long generarModificacion(Long codigoWFPub) {
         ProcedimientoDTO procPublicado = getProcedimientoDTOByCodigoWF(codigoWFPub);
         ProcedimientoDTO procModificar = limpiar(procPublicado);
@@ -341,6 +357,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         if (jprocWF.getTipoProcedimiento() != null) {
             proc.setTipoProcedimiento(tipoProcedimientoConverter.createDTO(jprocWF.getTipoProcedimiento()));
         }
+        if (jprocWF.getTipoVia() != null) {
+            proc.setTipoVia(tipoViaConverter.createDTO(jprocWF.getTipoVia()));
+        }
         if (jprocWF.getDatosPersonalesLegitimacion() != null) {
             proc.setDatosPersonalesLegitimacion(tipoLegitimacionConverter.createDTO(jprocWF.getDatosPersonalesLegitimacion()));
         }
@@ -350,12 +369,13 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         Literal requisitos = new Literal();
         Literal datosPersonalesDestinatario = new Literal();
         Literal detDatosPersonalesFinalidad = new Literal();
-        //Literal objetos = new Literal();
-        //Literal terminos = new Literal();
         Literal lopdFinalidad = new Literal();
         Literal lopdDestinatario = new Literal();
         Literal lopdDerechos = new Literal();
-        //Literal lopdInfoAdicional = new Literal();
+        Literal objeto = new Literal();
+        Literal destinatarios = new Literal();
+        Literal terminoResolucion = new Literal();
+        Literal observaciones = new Literal();
 
         if (jprocWF.getTraducciones() != null) {
             for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
@@ -366,7 +386,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                 lopdFinalidad.add(new Traduccion(trad.getIdioma(), trad.getLopdFinalidad()));
                 lopdDestinatario.add(new Traduccion(trad.getIdioma(), trad.getLopdDestinatario()));
                 lopdDerechos.add(new Traduccion(trad.getIdioma(), trad.getLopdDerechos()));
-                //lopdInfoAdicional.add(new Traduccion(trad.getIdioma(), trad.getLopdInfoAdicional()));
+                objeto.add(new Traduccion(trad.getIdioma(), trad.getObjeto()));
+                destinatarios.add(new Traduccion(trad.getIdioma(), trad.getDestinatarios()));
+                terminoResolucion.add(new Traduccion(trad.getIdioma(), trad.getTerminoResolucion()));
+                observaciones.add(new Traduccion(trad.getIdioma(), trad.getObservaciones()));
             }
         }
         proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
@@ -376,6 +399,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setLopdFinalidad(lopdFinalidad);
         proc.setLopdDestinatario(lopdDestinatario);
         proc.setLopdDerechos(lopdDerechos);
+        proc.setObjeto(objeto);
+        proc.setDestinatarios(destinatarios);
+        proc.setTerminoResolucion(terminoResolucion);
+        proc.setObservaciones(observaciones);
         //proc.setLopdInfoAdicional(lopdInfoAdicional);
         proc.setMateriasGridSIA(procedimientoRepository.getMateriaGridSIAByWF(proc.getCodigoWF()));
         proc.setTiposPubObjEntGrid(procedimientoRepository.getTipoPubObjEntByWF(proc.getCodigoWF()));

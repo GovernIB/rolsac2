@@ -73,7 +73,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
                             <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
-                            <p:inputText value="#{viewProcedimientos.filtro.texto}" styleClass="mr-2" ></p:inputText>
+                            <p:inputText id="filtro" value="#{viewProcedimientos.filtro.texto}" styleClass="mr-2" ></p:inputText>
                             <p:commandButton id="btnBuscar" value="#{labels['dict.busqueda']}"
                                              styleClass="mr-2"  icon="pi pi-search"
                                              actionListener="#{viewProcedimientos.buscar()}"
@@ -163,8 +163,53 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                itemValue="#{estado.toString()}" itemLabel="#{labels['TypeProcedimientoEstado.' += estado]}" />
 
                             </p:selectOneMenu>
-
                         </div>
+                        <!--
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.publicoObjetivos']}:" for="txtPublicoObjetivo" />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:inputText id="txtPublicoObjetivo" value="#{viewProcedimientos.filtro.getPublicoObjetivos(sessionBean.lang)}" styleClass="w70" disabled="true"  />
+                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye" styleClass="text-success"
+                                             process="@this" actionListener="#{viewProcedimientos.seleccionarPubObjetivos()}">
+                                    <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogPubObjEnt}" process="@this" update="txtPublicoObjetivo"/>
+                            </p:commandButton>
+                        </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.materias']}:" for="txtMaterias" />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:inputText id="txtMaterias" value="#{viewProcedimientos.filtro.getMaterias(sessionBean.lang)}" styleClass="w70" disabled="true"  />
+                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye" styleClass="text-success"
+                                             process="@this" actionListener="#{viewProcedimientos.seleccionarMaterias()}">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogMateria}" process="@this"  update="txtMaterias"/>
+                            </p:commandButton>
+                        </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.normativas']}:" for="txtNormativa" />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:inputText id="txtNormativa" value="#{viewProcedimientos.filtro.getNormativas(sessionBean.lang)}" styleClass="w70" disabled="true"  />
+                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye" styleClass="text-success"
+                                             process="@this" actionListener="#{viewProcedimientos.seleccionarNormativas()}">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogNormativa}" process="@this"  update="txtNormativa"/>
+                            </p:commandButton>
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['viewProcedimientos.uaHijas']}:" for="txtUAHijas" />
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:selectBooleanCheckbox id="txtUAHijas" value="#{viewProcedimientos.filtro.hijasActivas}"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['viewProcedimientos.ubidadesOrganicas']}:" for="txtUbidadesOrganicas" />
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:selectBooleanCheckbox id="txtUbidadesOrganicas" value="#{viewProcedimientos.filtro.todasUbidadesOrganicas}"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewProcedimientos.limpiarFiltro()}" process="@form" update="panel"  />
+                        </div> -->
                     </div>
                 </p>
 

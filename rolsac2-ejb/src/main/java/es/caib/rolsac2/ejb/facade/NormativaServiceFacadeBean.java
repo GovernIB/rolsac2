@@ -24,7 +24,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Logged
 @ExceptionTranslate
@@ -71,6 +73,9 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     @Inject
     private ProcedimientoRepository procedimientoRepository;
 
+    @Inject
+    private UnidadAdministrativaRepository unidadAdministrativaRepository;
+
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -79,11 +84,39 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
         JNormativa jNormativa = converter.createEntity(dto);
-        /*Añadimos lógica para los documentos*/
-        List<JDocumentoNormativa> jDocumentosNormativas = documentoNormativaRepository.findDocumentosRelacionados(dto.getCodigo());
-        jNormativa.setDocumentosNormativa(jDocumentosNormativas);
+
+        /**
+         * Asociación para UAs. En caso de que se hayan asignado UAs a la normativa,
+         * se recuperan las UAs añadidas y se añaden al modelo de Normativa.
+         */
+        Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
+        if (dto.getUnidadesAdministrativas() != null) {
+            JUnidadAdministrativa jUnidadAdministrativa;
+            for (UnidadAdministrativaGridDTO ua : dto.getUnidadesAdministrativas()) {
+                jUnidadAdministrativa = unidadAdministrativaRepository.getReference(ua.getCodigo());
+                unidadesAdministrativas.add(jUnidadAdministrativa);
+            }
+        }
+        jNormativa.setUnidadesAdministrativas(unidadesAdministrativas);
 
         normativaRepository.create(jNormativa);
+        dto.setCodigo(jNormativa.getCodigo());
+
+        /**
+         * Como se pueden dar de alta documentos al crearse la normativa,
+         * revisamos si se han dado de alta algunos y, en caso afirmativo,
+         * persistimos los documentos creados y actualizamos la entidad Normativa.
+         */
+        if(dto.getDocumentosNormativa() != null) {
+            List<JDocumentoNormativa> documentosNormativa = new ArrayList<>();
+            for(DocumentoNormativaDTO documentoNormativaDTO : dto.getDocumentosNormativa()) {
+                documentoNormativaDTO.setNormativa(dto);
+                Long id = createDocumentoNormativa(documentoNormativaDTO);
+                documentosNormativa.add(documentoNormativaRepository.findById(id));
+            }
+            jNormativa.setDocumentosNormativa(documentosNormativa);
+            normativaRepository.update(jNormativa);
+        }
         return jNormativa.getCodigo();
     }
 
@@ -99,6 +132,22 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         jNormativa.setTipoNormativa(jTipoNormativa);
         jNormativa.setEntidad(jEntidad);
 
+        /**
+         * Asociación para UAs. En caso de que se hayan asignado UAs a la normativa,
+         * se recuperan las UAs añadidas y se añaden al modelo de Normativa.
+         */
+        Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
+        if (dto.getUnidadesAdministrativas() != null) {
+            JUnidadAdministrativa jUnidadAdministrativa;
+            for (UnidadAdministrativaGridDTO ua : dto.getUnidadesAdministrativas()) {
+                jUnidadAdministrativa = unidadAdministrativaRepository.getReference(ua.getCodigo());
+                unidadesAdministrativas.add(jUnidadAdministrativa);
+            }
+        }
+
+        jNormativa.getUnidadesAdministrativas().clear();
+        jNormativa.getUnidadesAdministrativas().addAll(unidadesAdministrativas);
+
 
         converter.mergeEntity(jNormativa, dto);
 
@@ -113,6 +162,11 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void delete(Long id) throws RecursoNoEncontradoException {
         JNormativa jNormativa = normativaRepository.getReference(id);
+        List<JUnidadAdministrativa> jUnidadesAdministrativas = unidadAdministrativaRepository.getUnidadesAdministrativaByNormativa(id);
+        for (JUnidadAdministrativa jUnidadAdministrativa : jUnidadesAdministrativas) {
+            jUnidadAdministrativa.getUsuarios().remove(jNormativa);
+            unidadAdministrativaRepository.update(jUnidadAdministrativa);
+        }
         normativaRepository.delete(jNormativa);
     }
 
@@ -120,18 +174,27 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public NormativaDTO findById(Long id) {
-        NormativaDTO normativaDTO = converter.createDTO(normativaRepository.findById(id));
+        JNormativa jNormativa = normativaRepository.findById(id);
+        NormativaDTO normativaDTO = converter.createDTO(jNormativa);
         List<JDocumentoNormativa> jDocumentosNormativas = documentoNormativaRepository.findDocumentosRelacionados(id);
         List<DocumentoNormativaDTO> documentosRelacionados = new ArrayList<>();
         for (JDocumentoNormativa doc : jDocumentosNormativas) {
             documentosRelacionados.add(documentoNormativaConverter.createDTO(doc));
         }
         normativaDTO.setDocumentosNormativa(documentosRelacionados);
+
+        List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
+        if (jNormativa.getUnidadesAdministrativas() != null) {
+            for (JUnidadAdministrativa jUnidadAdministrativa : jNormativa.getUnidadesAdministrativas()) {
+                UnidadAdministrativaGridDTO unidadAdministrativa = unidadAdministrativaRepository.modelToGridDTO(jUnidadAdministrativa);
+                unidadesAdministrativas.add(unidadAdministrativa);
+            }
+        }
+        normativaDTO.setUnidadesAdministrativas(unidadesAdministrativas);
         return normativaDTO;
     }
 
 
-    //TODO: Falta revisar este método para ver si se ha de adaptar.
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -270,5 +333,18 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     public boolean existeBoletin(Long codigoBol) {
         return normativaRepository.existeBoletin(codigoBol);
     }
+
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<ProcedimientoNormativaDTO> listarProcedimientosByNormativa(Long idNormativa) {
+        return procedimientoRepository.getProcedimientosByNormativa(idNormativa);
+    }
+
+
+    /*******************************************************************************************************************
+     * Funciones privadas del servicio
+     *******************************************************************************************************************/
 
 }

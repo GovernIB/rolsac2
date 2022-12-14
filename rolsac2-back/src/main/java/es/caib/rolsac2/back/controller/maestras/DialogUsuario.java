@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
+import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
@@ -44,7 +45,10 @@ public class DialogUsuario extends AbstractController implements Serializable {
     private SessionBean sessionBean;
 
     @EJB
-    AdministracionEntServiceFacade administracionEntService;
+    private AdministracionEntServiceFacade administracionEntService;
+
+    @EJB
+    private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
     public void load() {
         LOG.debug("init");
@@ -127,7 +131,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
             UtilJSF.anyadirMochila("unidadesAdministrativas", data.getUnidadesAdministrativas());
             final Map<String, String> params = new HashMap<>();
             params.put(TypeParametroVentana.MODO_ACCESO.toString(), TypeModoAcceso.ALTA.toString());
-            params.put("esCabecera", "true");
+            //params.put("esCabecera", "true");
             String direccion = "/comun/dialogSeleccionarUA";
             UtilJSF.openDialog(direccion, modoAcceso, params, true, 850, 575);
         }
@@ -139,6 +143,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
         // Verificamos si se ha modificado
         if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
+            uaSeleccionada = unidadAdministrativaServiceFacade.findById(uaSeleccionada.getCodigo());
             if (uaSeleccionada != null) {
                 UnidadAdministrativaGridDTO uaSeleccionadaGrid = uaSeleccionada.convertDTOtoGridDTO();
                 //verificamos qeu la UA no esté seleccionada ya, en caso de estarlo mostramos mensaje

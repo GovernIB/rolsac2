@@ -36,16 +36,22 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         if (isTotal) {
             sql = new StringBuilder(
                     "select count(j) from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
+                            + " LEFT OUTER JOIN j.unidadesAdministrativas u"
                             + " where 1 = 1 ");
         } else {
             sql = new StringBuilder(
-                    "SELECT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion " +
-                            "FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma WHERE 1 = 1 ");
+                    "SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion " +
+                            "FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " +
+                            "LEFT OUTER JOIN j.unidadesAdministrativas u WHERE 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and (LOWER(t.titulo) LIKE :filtro OR LOWER(j.tipoNormativa.identificador) LIKE :filtro " +
                     " OR LOWER(cast(j.numero as string)) LIKE :filtro OR LOWER(j.boletinOficial.nombre) LIKE :filtro " +
                     " OR LOWER(cast (j.fechaAprobacion as string)) LIKE :filtro ) ");
+        }
+
+        if (filtro.isRellenoIdUA()) {
+            sql.append(" and ( u.codigo = :idUA OR u.padre.codigo = :idUA) ");
         }
        
         if (filtro.getOrderBy() != null) {
@@ -60,6 +66,10 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         }
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
+        }
+
+        if (filtro.isRellenoIdUA()) {
+            query.setParameter("idUA", filtro.getIdUA());
         }
 
         return query;
