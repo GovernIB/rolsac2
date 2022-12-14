@@ -405,6 +405,34 @@
                                         </p:link></li>
 
                                 </c:when>
+                                <c:when
+                                        test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR}">
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link id="viewUnidadAdministrativaCont"
+                                                style=""
+                                                outcome="/superadministrador/viewUnidadAdministrativa.xhtml"
+                                                title="#{labels['viewUnidadAdministrativa.titulo']}">
+									<span class="mb-0 float-right #{view.viewId eq '/superadministrador/viewUnidadAdministrativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+										#{labels['viewUnidadAdministrativa.titulo']}</span>
+                                        </p:link></li>
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link id="viewNormativas"
+                                                outcome="/maestras/viewNormativa.xhtml"
+                                                title="#{labels['viewNormativas.titulo.pagina']}">
+                                            <span class="mb-0 float-right #{view.viewId eq '/maestras/viewNormativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+                                                #{labels['viewNormativas.titulo.pagina']}
+                                            </span>
+                                        </p:link></li>
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link id="viewProcedimientos"
+                                                outcome="/maestras/viewProcedimientos.xhtml"
+                                                title="#{labels['viewProcedimientos.titulo']}">
+                                            <span class="mb-0 float-right #{view.viewId eq '/maestras/viewProcedimientos.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+                                                #{labels['viewProcedimientos.titulo']}
+                                            </span>
+                                        </p:link></li>
+
+                                </c:when>
                             </c:choose>
                         </p:panelGrid>
 

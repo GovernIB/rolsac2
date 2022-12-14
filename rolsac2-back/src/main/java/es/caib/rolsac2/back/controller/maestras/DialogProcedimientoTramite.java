@@ -117,17 +117,17 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             return false;
         }
 
-        if (fechaPublicacion != null && fechaPublicacion.before(this.data.getFechaPublicacion())) {
+        if (fechaPublicacion != null && this.data.getFechaPublicacion() != null && this.data.getFechaPublicacion().before(fechaPublicacion)) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaPublicacion"));
             return false;
         }
 
-        if (fechaPublicacion != null && fechaPublicacion.before(this.data.getFechaCierre())) {
+        if (fechaPublicacion != null && this.data.getFechaCierre() != null && this.data.getFechaCierre().before(fechaPublicacion)) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaCierre"));
             return false;
         }
 
-        if (fechaPublicacion != null && fechaPublicacion.before(this.data.getFechaInicio())) {
+        if (fechaPublicacion != null && this.data.getFechaInicio() != null && this.data.getFechaInicio().before(fechaPublicacion)) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaInicio"));
             return false;
         }
