@@ -1,5 +1,6 @@
 package es.caib.rolsac2.persistence.converter;
 
+import es.caib.rolsac2.persistence.model.JAfectacion;
 import es.caib.rolsac2.persistence.model.JNormativa;
 import es.caib.rolsac2.persistence.model.traduccion.JNormativaTraduccion;
 import es.caib.rolsac2.service.model.*;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 
 @Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-        uses = {EntidadConverter.class, BoletinOficialMapper.class, TipoNormativaConverter.class, DocumentoNormativaConverter.class})
+        uses = {EntidadConverter.class, TipoBoletinConverter.class, TipoNormativaConverter.class, DocumentoNormativaConverter.class})
 public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
 
     @Override
@@ -24,13 +25,21 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
             expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"urlBoletin\"))")
     @Mapping(target = "documentosNormativa", ignore = true)
     @Mapping(target = "unidadesAdministrativas", ignore = true)
+    @Mapping(target = "afectaciones", ignore = true)
     NormativaDTO createDTO(JNormativa entity);
+
+    @Mapping(target = "titulo",
+            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
+    @Mapping(target = "tipoNormativa", source = "tipoNormativa.identificador")
+    @Mapping(target = "boletinOficial", source = "boletinOficial.nombre")
+    NormativaGridDTO createGridDTO(JNormativa entity);
 
     @Override
     @Mapping(target = "descripcion",
             expression = "java(convierteLiteralToTraduccion(jNormativa,dto))")
     @Mapping(target = "documentosNormativa", ignore = true)
     @Mapping(target = "unidadesAdministrativas", ignore = true)
+    @Mapping(target = "afectaciones", ignore = true)
     JNormativa createEntity(NormativaDTO dto);
 
     @Override
@@ -38,6 +47,7 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
             expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "documentosNormativa", ignore = true)
     @Mapping(target = "unidadesAdministrativas", ignore = true)
+    @Mapping(target = "afectaciones", ignore = true)
     void mergeEntity(@MappingTarget JNormativa entity, NormativaDTO dto);
 
     default Literal convierteTraduccionToLiteral(List<JNormativaTraduccion> traducciones, String nombreLiteral){
@@ -111,4 +121,5 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
         }
         return jNormativa.getDescripcion();
     }
+
 }

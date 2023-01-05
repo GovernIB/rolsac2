@@ -56,19 +56,13 @@ public interface NormativaServiceFacade {
      */
     int countByFiltro(NormativaFiltro filtro);
 
-    /**
-     * Devuelve una lista con todos los objetos boletinOficial de la bbdd.
-     *
-     * @return Lista de todos los objectos en Boletin Oficial
-     */
-    List<BoletinOficialDTO> findBoletinOficial();
 
     /**
-     * Devuelve una lista con todos los objetos de afectacion de la bbdd.
-     *
-     * @return Lista de todos los objectos en afectacion
+     * Muestra las afectaciones relacioandas a una normativa.
+     * @param idNormativa
+     * @return
      */
-    List<AfectacionDTO> findAfectacion();
+    List<AfectacionDTO> findAfectacionesByNormativa(Long idNormativa);
 
     /**
      * Crea un documento de normativa asociado a ésta.
@@ -139,5 +133,14 @@ public interface NormativaServiceFacade {
      * @return
      */
     List<ProcedimientoNormativaDTO> listarProcedimientosByNormativa(Long idNormativa);
+
+
+    Long createAfectacion(AfectacionDTO afectacionDTO);
+
+    void updateAfectacion(AfectacionDTO afectacionDTO);
+
+    void deleteAfectacion(Long idAfectacion);
+
+
 
 }

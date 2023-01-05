@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.facade.NormativaServiceFacade;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ import java.util.Objects;
 public class NormativaDTO extends ModelApi {
     private Long codigo;
 
-    private BoletinOficialDTO boletinOficial;
+    private TipoBoletinDTO boletinOficial;
 
     //private AfectacionDTO afectacion;
     private TipoNormativaDTO tipoNormativa;
@@ -32,6 +33,8 @@ public class NormativaDTO extends ModelApi {
     private List<DocumentoNormativaDTO> documentosNormativa;
 
     private List<UnidadAdministrativaGridDTO> unidadesAdministrativas;
+
+    private List<AfectacionDTO> afectaciones;
 
     public Long getCodigo() {
         return codigo;
@@ -98,11 +101,11 @@ public class NormativaDTO extends ModelApi {
         this.nombreResponsable = nombreResponsable;
     }
 
-    public BoletinOficialDTO getBoletinOficial() {
+    public TipoBoletinDTO getBoletinOficial() {
         return boletinOficial;
     }
 
-    public void setBoletinOficial(BoletinOficialDTO boletin) {
+    public void setBoletinOficial(TipoBoletinDTO boletin) {
         this.boletinOficial = boletin;
     }
 
@@ -130,6 +133,10 @@ public class NormativaDTO extends ModelApi {
 
     public void setUnidadesAdministrativas(List<UnidadAdministrativaGridDTO> unidadesAdministrativas) { this.unidadesAdministrativas = unidadesAdministrativas; }
 
+    public List<AfectacionDTO> getAfectaciones() { return afectaciones; }
+
+    public void setAfectaciones(List<AfectacionDTO> afectaciones) { this.afectaciones = afectaciones; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -149,5 +156,17 @@ public class NormativaDTO extends ModelApi {
                 "id=" + codigo +
                 ", numero='" + numero + '\'' +
                 '}';
+    }
+
+    public NormativaGridDTO convertDTOtoGridDTO() {
+        NormativaGridDTO normativaGridDTO = new NormativaGridDTO();
+        normativaGridDTO.setCodigo(this.codigo);
+        normativaGridDTO.setTipoNormativa(this.tipoNormativa == null ? null : this.tipoNormativa.getIdentificador());
+        normativaGridDTO.setNumero(this.numero);
+        normativaGridDTO.setBoletinOficial(this.boletinOficial == null ? null : this.boletinOficial.getIdentificador());
+        normativaGridDTO.setFechaAprobacion(this.fechaAprobacion == null ? null : this.fechaAprobacion.toString());
+        normativaGridDTO.setTitulo(this.nombre);
+        return normativaGridDTO;
+
     }
 }

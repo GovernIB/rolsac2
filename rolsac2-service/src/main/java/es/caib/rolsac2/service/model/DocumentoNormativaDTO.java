@@ -32,53 +32,116 @@ public class DocumentoNormativaDTO extends ModelApi {
     /*Fichero asociado al documento*/
     private DocumentoMultiIdioma documentos;
 
+    /**
+     * Instantiates a new Documento normativa dto.
+     */
     public DocumentoNormativaDTO() {
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return el codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Sets codigo.
+     *
+     * @param codigo el codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene normativa.
+     *
+     * @return la normativa
+     */
     public NormativaDTO getNormativa() {
         return normativa;
     }
 
+    /**
+     * Sets normativa.
+     *
+     * @param normativa la normativa
+     */
     public void setNormativa(NormativaDTO normativa) {
         this.normativa = normativa;
     }
 
+    /**
+     * Obtiene titulo.
+     *
+     * @return el titulo
+     */
     public Literal getTitulo() {
         return titulo;
     }
 
+    /**
+     * Sets titulo.
+     *
+     * @param titulo el titulo
+     */
     public void setTitulo(Literal titulo) {
         this.titulo = titulo;
     }
 
+    /**
+     * Obtiene url.
+     *
+     * @return la url
+     */
     public Literal getUrl() {
         return url;
     }
 
+    /**
+     * Sets url.
+     *
+     * @param url la url
+     */
     public void setUrl(Literal url) {
         this.url = url;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return la descripcion
+     */
     public Literal getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Sets descripcion.
+     *
+     * @param descripcion la descripcion
+     */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }
 
+    /**
+     * Obtiene documentos.
+     *
+     * @return los documentos
+     */
     public DocumentoMultiIdioma getDocumentos() {
         return documentos;
     }
 
+    /**
+     * Establece documentos.
+     *
+     * @param documentos los documentos
+     */
     public void setDocumentos(DocumentoMultiIdioma documentos) {
         this.documentos = documentos;
     }

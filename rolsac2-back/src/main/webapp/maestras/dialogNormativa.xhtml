@@ -24,18 +24,22 @@
 
         <span class="pi pi-tag mt-1"/>
         <h:outputText value="#{labels['dict.idioma']}:" styleClass="mr-1 mt-1"/>
-        <p:selectOneButton id="opcionIdioma" value="#{dialogNormativa.idioma}" styleClass="botoneraRed">
+        <p:selectOneButton id="opcionIdioma" value="#{dialogNormativa.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="formDialog:txtNombre formDialog:dataDocumentosRelacionados formDialog:txtUrlBoletin
-            formDialog:dataTableUAs formDialog:dataProcedimientosRelacionados" process="@this"/>
+            formDialog:dataTableUAs formDialog:dataProcedimientosRelacionados formDialog:dataAfectacionesRelacionadas"
+                    process="@this"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogNormativa.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this"/>
+                         process="@this">
+            <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogTraducir}" process="@this"
+                    update="formDialog:txtNombre formDialog:txtUrlBoletin"/>
+        </p:commandButton>
     </ui:define>
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
@@ -43,7 +47,7 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
-        <div class="ui-g-12 ui-md-9 pl-4 panel-container">
+        <div class="ui-g-12 ui-md-8 pl-4 panel-container">
             <p:panel id="formDatos" header="#{labels['dialogNormativa.datos']}">
                 <div class="form-row">
                     <div class="form-group col-md-10">
@@ -57,7 +61,7 @@
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                              nombreLiteral="#{labels['dict.descripcion']}">
-                            <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                         </my:literalComponent>
                     </div>
                     <div class="form-group col-md-2">
@@ -80,7 +84,8 @@
                             <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.tipoNormativa']}"
                                           itemValue="#{null}"/>
                             <f:selectItems value="#{dialogNormativa.tipoNormativa}" var="tipoNormativa"
-                                           itemLabel="#{tipoNormativa.identificador}" itemValue="#{tipoNormativa}"/>
+                                           itemLabel="#{tipoNormativa.descripcion.getTraduccion(dialogNormativa.idioma)}" itemValue="#{tipoNormativa}"/>
+                            <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
                     </div>
                     <div class="form-group col-md-4">
@@ -119,7 +124,7 @@
                                          converter="#{boletinOficialConverter}">
                             <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.boletinOficial']}"
                                           itemValue="#{null}"/>
-                            <f:selectItems value="#{dialogNormativa.boletinOficial}" var="boletinOficial"
+                            <f:selectItems value="#{dialogNormativa.tipoBoletin}" var="boletinOficial"
                                            itemLabel="#{boletinOficial.nombre}" itemValue="#{boletinOficial}"/>
                         </p:selectOneMenu>
                     </div>
@@ -153,7 +158,7 @@
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                              nombreLiteral="#{labels['dialogNormativa.urlBoletin']}">
-                            <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                         </my:literalComponent>
                     </div>
                 </div>
@@ -169,7 +174,7 @@
                 </div>
             </p:panel>
         </div>
-        <div class="ui-g-12 ui-md-3 pr-1">
+        <div class="ui-g-12 ui-md-4 pr-1">
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
                     <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.documentos']}</p>
@@ -212,7 +217,8 @@
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" process="@this"
                                      actionListener="#{dialogNormativa.borrarDocumentoRelacionado()}" icon="pi pi-minus"
-                                     styleClass="text-danger" rendered="#{!dialogNormativa.isModoConsulta()}" update="formDialog:dataDocumentosRelacionados">
+                                     styleClass="text-danger" rendered="#{!dialogNormativa.isModoConsulta()}"
+                                     update="formDialog:dataDocumentosRelacionados">
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.consultar']}" process="@this"
                                      actionListener="#{dialogNormativa.consultarDocumentoRelacionado()}"
@@ -336,28 +342,46 @@
                     <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.afectaciones']}</p>
                 </div>
                 <div class="col-10 p-1">
-                    <p:dataTable id="dataAfectacionesRelacionadas" var="td" value="#{dialogNormativa.afectacion}"
+                    <p:dataTable id="dataAfectacionesRelacionadas" var="td" value="#{dialogNormativa.data.afectaciones}"
                                  emptyMessage="No hay afectaciones relacionadas" scrollable="true" scrollHeight="120"
-                                 paginator="false" styleClass="noHeader text-center">
+                                 paginator="false" styleClass="text-center" selectionMode="single"
+                                 selection="#{dialogNormativa.afectacionSeleccionada}"
+                                 rowKey="#{td.codigoTabla}">
 
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
                         <p:ajax event="rowDblselect"
-                                oncomplete="rcEditarPropiedad();"
+                                oncomplete="rcEditarPropiedadAfect();"
                         />
 
-                        <p:column headerText="DESCRIPCIÓN" styleClass="w75">
-                            <h:outputText value="#{td.tipo.identificador}"/>
+                        <p:column headerText="#{labels['dialogNormativa.tipoAfectacion']}" styleClass="w75">
+                            <h:outputText value="#{td.tipo.descripcion.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
+                        <p:column headerText="#{labels['dialogNormativa.normativaOrigen']}" styleClass="w75">
+                            <h:outputText value="#{td.normativaOrigen.titulo.getTraduccion(dialogNormativa.idioma)}"/>
+                        </p:column>
+
 
                     </p:dataTable>
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
-                    <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
-                    <p:button title="Consultar" icon="pi pi-eye"></p:button>
+                    <p:commandButton id="btnAbrirAfect" title="#{labels['dict.nuevo']}" icon="pi pi-plus"
+                                     styleClass="text-success"
+                                     process="@this" actionListener="#{dialogNormativa.abrirAfectacion}"
+                                     rendered="#{!dialogNormativa.isModoConsulta()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoAfectacion}"
+                                process="@this"
+                                update="messagesDialog dataAfectacionesRelacionadas"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                     action="#{dialogNormativa.borrarAfectacion()}"
+                                     process="@this" update="dataAfectacionesRelacionadas messagesDialog"
+                                     rendered="#{!dialogNormativa.isModoConsulta()}"/>
+                    <p:commandButton id="btnConsultarAfect" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     action="#{dialogNormativa.consultarAfectacion()}"
+                                     process="@this" update="dataAfectacionesRelacionadas messagesDialog"/>
                 </div>
             </div>
         </div>
@@ -366,11 +390,17 @@
             function triggerDblClickDoc() {
                 document.getElementById("formDialog:btnEditarDoc").click();
             }
+
             function triggerDblClickUA() {
                 document.getElementById("formDialog:btnConsultarUA").click();
             }
+
             function triggerDblClickProc() {
                 document.getElementById("formDialog:btnConsultarProc").click();
+            }
+
+            function triggerDblClickProc() {
+                document.getElementById("formDialog:btnAbrirAfect").click();
             }
         </h:outputScript>
         <p:remoteCommand name="myDoubleClickCommand"

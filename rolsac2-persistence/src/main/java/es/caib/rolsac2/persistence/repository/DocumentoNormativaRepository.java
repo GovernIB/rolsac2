@@ -12,7 +12,6 @@ import java.util.List;
  */
 public interface DocumentoNormativaRepository extends CrudRepository<JDocumentoNormativa, Long> {
 
-  //TODO: Revisar cuales son las consultas necesarias de BBDD
     List<JDocumentoNormativa> findDocumentosRelacionados(Long idNormativa);
 
 }

@@ -45,7 +45,7 @@ public class JNormativa extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "NORM_BOLECOD", nullable = false)
-    private JBoletinOficial boletinOficial;
+    private JTipoBoletin boletinOficial;
 
     @Column(name = "NORM_BOLEFEC")
     private LocalDate fechaBoletin;
@@ -64,6 +64,18 @@ public class JNormativa extends BaseEntity {
 
     @OneToMany(mappedBy = "normativa", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JDocumentoNormativa> documentosNormativa;
+
+    /**
+     * Listado de afectaciones de las cuales esta normativa es la afectada.
+     */
+    @OneToMany(mappedBy = "normativaAfectada", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JAfectacion> afectaciones;
+
+    /**
+     * Afectaciones de las cuales esta normativa es origen
+     */
+    @OneToMany(mappedBy = "normativaOrigen", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JAfectacion> afectacionesOrigen;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "RS2_UADNOR",
@@ -115,11 +127,11 @@ public class JNormativa extends BaseEntity {
         this.fechaAprobacion = normFcapro;
     }
 
-    public JBoletinOficial getBoletinOficial() {
+    public JTipoBoletin getBoletinOficial() {
         return boletinOficial;
     }
 
-    public void setBoletinOficial(JBoletinOficial normBolecod) {
+    public void setBoletinOficial(JTipoBoletin normBolecod) {
         this.boletinOficial = normBolecod;
     }
 
@@ -154,6 +166,22 @@ public class JNormativa extends BaseEntity {
     public List<JDocumentoNormativa> getDocumentosNormativa() { return documentosNormativa; }
 
     public void setDocumentosNormativa(List<JDocumentoNormativa> documentosNormativa) { this.documentosNormativa = documentosNormativa; }
+
+    public List<JAfectacion> getAfectaciones() {
+        return afectaciones;
+    }
+
+    public void setAfectaciones(List<JAfectacion> afectaciones) {
+        this.afectaciones = afectaciones;
+    }
+
+    public List<JAfectacion> getAfectacionesOrigen() {
+        return afectacionesOrigen;
+    }
+
+    public void setAfectacionesOrigen(List<JAfectacion> afectacionesOrigen) {
+        this.afectacionesOrigen = afectacionesOrigen;
+    }
 
     public void setDescripcion(List<JNormativaTraduccion> descripcion) {
         if (this.descripcion == null || this.descripcion.isEmpty()) {

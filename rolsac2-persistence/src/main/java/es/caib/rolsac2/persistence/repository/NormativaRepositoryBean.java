@@ -1,7 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.model.JBoletinOficial;
 import es.caib.rolsac2.persistence.model.JNormativa;
+import es.caib.rolsac2.persistence.model.JTipoBoletin;
 import es.caib.rolsac2.persistence.model.JTipoNormativa;
 import es.caib.rolsac2.persistence.util.Utils;
 import es.caib.rolsac2.service.model.Literal;
@@ -36,8 +36,8 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         if (isTotal) {
             sql = new StringBuilder(
                     "select count(j) from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
-                            + " LEFT OUTER JOIN j.unidadesAdministrativas u"
-                            + " where 1 = 1 ");
+                    + " LEFT OUTER JOIN j.unidadesAdministrativas u"
+                    + " where 1 = 1 ");
         } else {
             sql = new StringBuilder(
                     "SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion " +
@@ -50,10 +50,30 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
                     " OR LOWER(cast (j.fechaAprobacion as string)) LIKE :filtro ) ");
         }
 
-        if (filtro.isRellenoIdUA()) {
-            sql.append(" and ( u.codigo = :idUA OR u.padre.codigo = :idUA) ");
+        if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUnidadesOrganicas()) {
+            sql.append(" AND (u.codigo in (:idUAs) ) ");
+        } else if (filtro.isRellenoIdUA()) {
+            sql.append(" and ( u.codigo = :idUA) ");
         }
-       
+
+
+
+        if(filtro.isRellenoTipoNormativa()) {
+            sql.append(" and (j.tipoNormativa.codigo = :tipoNormativa) ");
+        }
+
+        if(filtro.isRellenoTipoBoletin()) {
+            sql.append(" and (j.boletinOficial.codigo = :boletinOficial)");
+        }
+
+        if(filtro.isRellenoFechaAprobacion()) {
+            sql.append(" and (j.fechaAprobacion = :fechaAprobacion) ");
+        }
+
+        if(filtro.isRellenoFechaBoletin()) {
+            sql.append(" and (j.fechaBoletin = :fechaBoletin) ");
+        }
+
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -68,8 +88,31 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             query.setParameter("idioma", filtro.getIdioma());
         }
 
-        if (filtro.isRellenoIdUA()) {
+        if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUnidadesOrganicas()) {
+            query.setParameter("idUAs", filtro.getIdUAsHijas());
+        } else if (filtro.isRellenoIdUA()) {
             query.setParameter("idUA", filtro.getIdUA());
+        }
+
+        if(filtro.isRellenoTipoNormativa()) {
+            query.setParameter("tipoNormativa", filtro.getTipoNormativa().getCodigo());
+        }
+
+        if(filtro.isRellenoTipoBoletin()) {
+            query.setParameter("boletinOficial", filtro.getTipoBoletin().getCodigo());
+        }
+
+        if(filtro.isRellenoFechaAprobacion()) {
+            query.setParameter("fechaAprobacion", filtro.getFechaAprobacion());
+        }
+
+        if(filtro.isRellenoFechaBoletin()) {
+            query.setParameter("fechaBoletin", filtro.getFechaBoletin());
+        }
+
+        if (filtro.getOrderBy() != null) {
+            sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
+            sql.append(filtro.isAscendente() ? " asc " : " desc ");
         }
 
         return query;
@@ -99,7 +142,7 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
                 normativaGridDTO.setTitulo(createLiteral((String) jNormativa[1], filtro.getIdioma()));
                 normativaGridDTO.setTipoNormativa(((JTipoNormativa) jNormativa[2]).getIdentificador());
                 normativaGridDTO.setNumero((String) jNormativa[3]);
-                normativaGridDTO.setBoletinOficial(((JBoletinOficial) jNormativa[4]).getNombre());
+                normativaGridDTO.setBoletinOficial(((JTipoBoletin) jNormativa[4]).getNombre());
                 normativaGridDTO.setFechaAprobacion(Utils.dateToString((LocalDate) jNormativa[5]));
 
                 normativa.add(normativaGridDTO);

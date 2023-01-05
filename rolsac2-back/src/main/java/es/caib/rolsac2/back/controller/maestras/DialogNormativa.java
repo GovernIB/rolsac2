@@ -1,11 +1,13 @@
 package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
-import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
-import es.caib.rolsac2.service.facade.*;
+import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.NormativaServiceFacade;
+import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -17,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.*;
@@ -31,24 +32,17 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     private NormativaDTO data;
 
-    private List<EntidadDTO> entidadesActivas;
-
     private List<AfectacionDTO> afectacion;
 
     private List<TipoNormativaDTO> tipoNormativa;
 
     private List<TipoBoletinDTO> tipoBoletin;
 
-    private List<BoletinOficialDTO> boletinOficial;
-
     private List<ProcedimientoNormativaDTO> procedimientosRelacionados;
 
     private List<String> documentosRelacionados;
 
     private List<UnidadAdministrativaDTO> uaRelacionadas;
-
-    @Inject
-    private SessionBean sessionBean;
 
     @EJB
     private NormativaServiceFacade normativaServiceFacade;
@@ -68,52 +62,51 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     private ProcedimientoNormativaDTO procSeleccionado;
 
+    private AfectacionDTO afectacionSeleccionada;
+
 
     public void load() {
         LOG.debug("init");
-
         this.setearIdioma();
-        data = new NormativaDTO();
 
         tipoNormativa = maestrasSupServiceFacade.findTipoNormativa();
         tipoBoletin = maestrasSupServiceFacade.findBoletines();
-        entidadesActivas = administracionSupServiceFacade.findEntidadActivas();
-        afectacion = normativaServiceFacade.findAfectacion();
-        boletinOficial = normativaServiceFacade.findBoletinOficial();
+        boolean isTraspaso = false;
+        String traspaso = (String) UtilJSF.getDialogParam("isTraspaso");
+        if (traspaso != null) {
+            isTraspaso = traspaso.equals("true");
+        }
 
-        if (this.isModoAlta()) {
-            data = new NormativaDTO();
-            data.setEntidad(sessionBean.getEntidad());
-            data.setNombre(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-            data.setUrlBoletin(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-            List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
-            UnidadAdministrativaGridDTO uaActiva = sessionBean.getUnidadActiva().convertDTOtoGridDTO();
-            unidadesAdministrativas.add(uaActiva);
-            data.setUnidadesAdministrativas(unidadesAdministrativas);
-        } else if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = normativaServiceFacade.findById(Long.valueOf(id));
-            findProcedimientosRelacionados();
-            if(data.getDocumentosNormativa() != null) {
-                for(DocumentoNormativaDTO documentoNormativaDTO : data.getDocumentosNormativa()) {
-                    documentoNormativaDTO.setCodigoTabla(UUID.randomUUID().toString());
+        if (isTraspaso) {
+            data = (NormativaDTO) UtilJSF.getValorMochilaByKey("normativaBOIB");
+        } else {
+            if (this.isModoAlta()) {
+                data = new NormativaDTO();
+                data.setEntidad(sessionBean.getEntidad());
+                data.setNombre(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+                data.setUrlBoletin(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+                List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
+                UnidadAdministrativaGridDTO uaActiva = unidadAdministrativaServiceFacade.findById(sessionBean.getUnidadActiva().getCodigo()).convertDTOtoGridDTO();
+                unidadesAdministrativas.add(uaActiva);
+                data.setUnidadesAdministrativas(unidadesAdministrativas);
+            } else if (this.isModoEdicion() || this.isModoConsulta()) {
+                data = normativaServiceFacade.findById(Long.valueOf(id));
+                findProcedimientosRelacionados();
+                data.setAfectaciones(findAfectaciones());
+                if (data.getDocumentosNormativa() != null) {
+                    for (DocumentoNormativaDTO documentoNormativaDTO : data.getDocumentosNormativa()) {
+                        documentoNormativaDTO.setCodigoTabla(UUID.randomUUID().toString());
+                    }
+                }
+                if (data.getAfectaciones() != null) {
+                    for (AfectacionDTO afectacionDTO : data.getAfectaciones()) {
+                        afectacionDTO.setCodigoTabla(UUID.randomUUID().toString());
+                    }
                 }
             }
         }
 
-        documentosRelacionados = new ArrayList<>();
-
-        uaRelacionadas = new ArrayList<>();
-        final UnidadAdministrativaDTO ua = new UnidadAdministrativaDTO();
-        final Literal l1 = new Literal();
-        final List<Traduccion> traducciones = new ArrayList<>();
-        final Traduccion t1 = new Traduccion();
-        t1.setLiteral("Descripción del tipo de materia SIA.");
-        t1.setIdioma("es");
-        traducciones.add(t1);
-        l1.setTraducciones(traducciones);
-        ua.setNombre(l1);
-        uaRelacionadas.add(ua);
-
+        UtilJSF.vaciarMochila();
 
     }
 
@@ -144,10 +137,6 @@ public class DialogNormativa extends AbstractController implements Serializable 
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.numero.novalido"), true);
             return false;
         }
-        if (Objects.nonNull(this.data.getNumeroBoletin()) && !ValidacionTipoUtils.esEntero(this.data.getNumero())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.numero.novalido"), true);
-            return false;
-        }
 
         List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getNombre(), sessionBean.getIdiomasObligatoriosList());
         if (!idiomasPendientesDescripcion.isEmpty()) {
@@ -170,7 +159,21 @@ public class DialogNormativa extends AbstractController implements Serializable 
     }
 
     public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        NormativaDTO datoDTO = (NormativaDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setNombre(datoDTO.getNombre());
+            data.setUrlBoletin(datoDTO.getUrlBoletin());
+        }
     }
 
     /********************************************************************************************************************************
@@ -181,10 +184,10 @@ public class DialogNormativa extends AbstractController implements Serializable 
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
         params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
-        if(this.isModoAlta() && !modoAcceso.equals(TypeModoAcceso.ALTA)) {
+        if (this.isModoAlta() && !modoAcceso.equals(TypeModoAcceso.ALTA)) {
             UtilJSF.anyadirMochila("documentoNormativa", documentoRelacionadoSeleccionado);
         }
-        if(!this.isModoAlta() && !modoAcceso.equals(TypeModoAcceso.ALTA)) {
+        if (!this.isModoAlta() && !modoAcceso.equals(TypeModoAcceso.ALTA)) {
             params.put("idDocumento", this.documentoRelacionadoSeleccionado.getCodigo().toString());
         }
         params.put("modoAccesoNormativa", this.getModoAcceso());
@@ -231,7 +234,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
     public void borrarDocumentoRelacionado() {
         if (documentoRelacionadoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-        } else if(this.isModoAlta()) {
+        } else if (this.isModoAlta()) {
             this.data.getDocumentosNormativa().remove(documentoRelacionadoSeleccionado);
         } else {
             normativaServiceFacade.deleteDocumentoNormativa(documentoRelacionadoSeleccionado.getCodigo());
@@ -241,8 +244,8 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     public void buscarDocumentos() {
         List<DocumentoNormativaDTO> docs = normativaServiceFacade.findDocumentosNormativa(this.data.getCodigo());
-        if(docs != null) {
-            for(DocumentoNormativaDTO documentoNormativaDTO : docs) {
+        if (docs != null) {
+            for (DocumentoNormativaDTO documentoNormativaDTO : docs) {
                 documentoNormativaDTO.setCodigoTabla(UUID.randomUUID().toString());
             }
         }
@@ -319,7 +322,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
     public void borrarUA() {
         if (uaSeleccionada == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-        } else if(uaSeleccionada.getCodigo() == sessionBean.getUnidadActiva().getCodigo()) {
+        } else if (uaSeleccionada.getCodigo() == sessionBean.getUnidadActiva().getCodigo()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("ç"));
         } else {
 
@@ -335,6 +338,10 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     private void findProcedimientosRelacionados() {
         procedimientosRelacionados = normativaServiceFacade.listarProcedimientosByNormativa(this.data.getCodigo());
+    }
+
+    private List<AfectacionDTO> findAfectaciones() {
+        return normativaServiceFacade.findAfectacionesByNormativa(this.data.getCodigo());
     }
 
     public void consultarProcs() {
@@ -353,6 +360,85 @@ public class DialogNormativa extends AbstractController implements Serializable 
     }
 
 
+    /********************************************************************************************************************************
+     * Funciones relativas al manejo de la relación de Afectaciones
+     *********************************************************************************************************************************/
+
+    public void abrirDialogAfectacion(TypeModoAcceso modoAcceso) {
+        // Muestra dialogo
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", afectacionSeleccionada.getNormativaOrigen().getCodigo().toString());
+            UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true, 1530, 733);
+            return;
+        }
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
+        if (this.data.getAfectaciones() != null) {
+            UtilJSF.anyadirMochila("afectacionesNormativa", this.data.getAfectaciones());
+        }
+        params.put("modoAccesoNormativa", this.getModoAcceso());
+        UtilJSF.openDialog("dialogSeleccionNormativaAfectacion", modoAcceso, params, true, 1000, 733);
+    }
+
+    public void returnDialogoAfectacion(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        //Si se da de alta la normativa, creamos el listado de documentos
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso()) && isModoAlta()) {
+            List<AfectacionDTO> afectaciones = (List<AfectacionDTO>) respuesta.getResult();
+            if (afectaciones == null) {
+                data.setAfectaciones(new ArrayList<>());
+            } else {
+                if (data.getAfectaciones() == null) {
+                    data.setAfectaciones(new ArrayList<>());
+                }
+                data.setAfectaciones(new ArrayList<>());
+                data.getAfectaciones().addAll(afectaciones);
+            }
+        } else if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            this.buscarAfectaciones();
+        }
+    }
+
+    public void abrirAfectacion() {
+        abrirDialogAfectacion(TypeModoAcceso.ALTA);
+    }
+
+    public void consultarAfectacion() {
+        if (afectacionSeleccionada != null) {
+            abrirDialogAfectacion(TypeModoAcceso.CONSULTA);
+        } else {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        }
+    }
+
+    public void borrarAfectacion() {
+        if (afectacionSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else if (this.isModoAlta()) {
+            this.data.getAfectaciones().remove(afectacionSeleccionada);
+            afectacionSeleccionada = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        } else {
+            normativaServiceFacade.deleteAfectacion(afectacionSeleccionada.getCodigo());
+            afectacionSeleccionada = null;
+            buscarAfectaciones();
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    public void buscarAfectaciones() {
+        List<AfectacionDTO> afectaciones = normativaServiceFacade.findAfectacionesByNormativa(this.data.getCodigo());
+        if (afectaciones != null) {
+            for (AfectacionDTO afectacionDTO : afectaciones) {
+                afectacionDTO.setCodigoTabla(UUID.randomUUID().toString());
+            }
+        }
+        this.data.setAfectaciones(afectaciones);
+        PrimeFaces.current().ajax().update("formDialog:dataDocumentosRelacionados");
+    }
+
 
     public String getId() {
         return id;
@@ -368,14 +454,6 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     public void setData(NormativaDTO data) {
         this.data = data;
-    }
-
-    public List<EntidadDTO> getEntidadesActivas() {
-        return entidadesActivas;
-    }
-
-    public void setEntidadesActivas(List<EntidadDTO> entidadesActivas) {
-        this.entidadesActivas = entidadesActivas;
     }
 
     public List<AfectacionDTO> getAfectacion() {
@@ -400,14 +478,6 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     public void setTipoBoletin(List<TipoBoletinDTO> tipoBoletin) {
         this.tipoBoletin = tipoBoletin;
-    }
-
-    public List<BoletinOficialDTO> getBoletinOficial() {
-        return boletinOficial;
-    }
-
-    public void setBoletinOficial(List<BoletinOficialDTO> boletinOficial) {
-        this.boletinOficial = boletinOficial;
     }
 
     public List<ProcedimientoNormativaDTO> getProcedimientosRelacionados() {
@@ -442,9 +512,13 @@ public class DialogNormativa extends AbstractController implements Serializable 
         this.documentoRelacionadoSeleccionado = documentoRelacionadoSeleccionado;
     }
 
-    public UnidadAdministrativaGridDTO getUaSeleccionada() { return uaSeleccionada; }
+    public UnidadAdministrativaGridDTO getUaSeleccionada() {
+        return uaSeleccionada;
+    }
 
-    public void setUaSeleccionada(UnidadAdministrativaGridDTO uaSeleccionada) { this.uaSeleccionada = uaSeleccionada; }
+    public void setUaSeleccionada(UnidadAdministrativaGridDTO uaSeleccionada) {
+        this.uaSeleccionada = uaSeleccionada;
+    }
 
     public ProcedimientoNormativaDTO getProcSeleccionado() {
         return procSeleccionado;
@@ -452,5 +526,13 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     public void setProcSeleccionado(ProcedimientoNormativaDTO procSeleccionado) {
         this.procSeleccionado = procSeleccionado;
+    }
+
+    public AfectacionDTO getAfectacionSeleccionada() {
+        return afectacionSeleccionada;
+    }
+
+    public void setAfectacionSeleccionada(AfectacionDTO afectacionSeleccionada) {
+        this.afectacionSeleccionada = afectacionSeleccionada;
     }
 }

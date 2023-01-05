@@ -3,14 +3,16 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
-import es.caib.rolsac2.service.model.NormativaGridDTO;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
+import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -22,6 +24,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.*;
 
 @Named
@@ -34,11 +37,23 @@ public class ViewNormativa extends AbstractController implements Serializable {
     @EJB
     private NormativaServiceFacade normativaServiceFacade;
 
+    @EJB
+    private MaestrasSupServiceFacade maestrasSupServiceFacade;
+
+    @EJB
+    private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
+
     private LazyDataModel<NormativaGridDTO> lazyModel;
 
     private NormativaGridDTO datoSeleccionado;
 
     private NormativaFiltro filtro;
+
+    private List<TipoNormativaDTO> listTipoNormativa;
+
+    private List<TipoBoletinDTO> listTipoBoletin;
+
+    private Boolean isTraspaso = false;
 
     public LazyDataModel<NormativaGridDTO> getLazyModel() {
         return lazyModel;
@@ -50,6 +65,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
         filtro = new NormativaFiltro();
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
+        cargarFiltros();
         // Generamos una búsqueda
         buscar();
     }
@@ -61,6 +77,44 @@ public class ViewNormativa extends AbstractController implements Serializable {
     public void cambiarUAbuscarEvt(UnidadAdministrativaDTO ua) {
         sessionBean.cambiarUnidadAdministrativa(ua);
         buscarEvt();
+    }
+
+    public void filtroHijasActivasChange() {
+        if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
+            filtro.setIdUAsHijas(unidadAdministrativaServiceFacade.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
+        } else if(filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
+            List<Long> ids = new ArrayList<>();
+            for (UnidadAdministrativaDTO ua : sessionBean.getUnidadesAdministrativasActivas()) {
+                List<Long> idsUa = unidadAdministrativaServiceFacade.getListaHijosRecursivo(ua.getCodigo());
+                ids.addAll(idsUa);
+            }
+            filtro.setIdUAsHijas(ids);
+        }
+    }
+
+    public void filtroUnidadOrganicasChange() {
+        if (filtro.isTodasUnidadesOrganicas() && filtro.isHijasActivas()) {
+            List<Long> ids = new ArrayList<>();
+            for (UnidadAdministrativaDTO ua : sessionBean.getUnidadesAdministrativasActivas()) {
+                List<Long> idsUa = unidadAdministrativaServiceFacade.getListaHijosRecursivo(ua.getCodigo());
+                ids.addAll(idsUa);
+            }
+            filtro.setIdUAsHijas(ids);
+        } else if(filtro.isRellenoTodasUnidadesOrganicas() && !filtro.isHijasActivas()) {
+            List<Long> ids = new ArrayList<>();
+            for (UnidadAdministrativaDTO ua : sessionBean.getUnidadesAdministrativasActivas()) {
+                ids.add(ua.getCodigo());
+            }
+            filtro.setIdUAsHijas(ids);
+        }
+    }
+
+    public void limpiarFiltro() {
+        filtro = new NormativaFiltro();
+        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        this.buscar();
     }
 
     /**
@@ -146,7 +200,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
 
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
-
+        isTraspaso = false;
         // Verificamos si se ha modificado
         if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             this.buscar();
@@ -160,7 +214,30 @@ public class ViewNormativa extends AbstractController implements Serializable {
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
+        if(modoAcceso == TypeModoAcceso.ALTA && isTraspaso == true) {
+            params.put("isTraspaso", isTraspaso.toString());
+        }
         UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+    }
+
+    public void abrirTraspaso() {
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.openDialog("dialogTraspasoBOIB", TypeModoAcceso.ALTA, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+    }
+
+    public void returnDialogoTraspaso(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if(!respuesta.isCanceled()) {
+            NormativaDTO normativaDTO = (NormativaDTO) respuesta.getResult();
+            UtilJSF.anyadirMochila("normativaBOIB", normativaDTO);
+            isTraspaso = true;
+            PrimeFaces.current().executeScript("triggerNuevaNormativa()");
+        }
+    }
+
+    private void cargarFiltros() {
+        listTipoBoletin = maestrasSupServiceFacade.findBoletines();
+        listTipoNormativa = maestrasSupServiceFacade.findTipoNormativa();
     }
 
     public NormativaGridDTO getDatoSeleccionado() {
@@ -190,5 +267,29 @@ public class ViewNormativa extends AbstractController implements Serializable {
             return this.filtro.getTexto();
         }
         return "";
+    }
+
+    public Boolean isTraspaso() {
+        return isTraspaso;
+    }
+
+    public void setTraspaso(Boolean traspaso) {
+        isTraspaso = traspaso;
+    }
+
+    public List<TipoNormativaDTO> getListTipoNormativa() {
+        return listTipoNormativa;
+    }
+
+    public void setListTipoNormativa(List<TipoNormativaDTO> listTipoNormativa) {
+        this.listTipoNormativa = listTipoNormativa;
+    }
+
+    public List<TipoBoletinDTO> getListTipoBoletin() {
+        return listTipoBoletin;
+    }
+
+    public void setListTipoBoletin(List<TipoBoletinDTO> listTipoBoletin) {
+        this.listTipoBoletin = listTipoBoletin;
     }
 }
