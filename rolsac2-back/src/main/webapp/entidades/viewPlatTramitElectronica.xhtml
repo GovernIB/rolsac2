@@ -29,7 +29,7 @@
                                              actionListener="#{viewPlatTramitElectronica.nuevoTramiteElectronico}" process="@this">
                                 <p:ajax event="dialogReturn" listener="#{viewPlatTramitElectronica.returnDialogo}" update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                              actionListener="#{viewPlatTramitElectronica.editarTramiteElectronico}" process="@form" update="messages">
                                 <p:ajax event="dialogReturn" listener="#{viewPlatTramitElectronica.returnDialogo}" update="messages dataTable"/>
                             </p:commandButton>
@@ -87,17 +87,9 @@
             </p:dataTable>
             <h:outputScript >
                 function triggerDblClick() {
-                myDoubleClickCommand();
-                /*$('#form\\:btnConsultaHidden').click();*/
+                    $('#form\\:btnEditar').click();
                 }
             </h:outputScript>
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewPlatTramitElectronica.editarTramiteElectronico()}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this">
-            </p:remoteCommand>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewPlatTramitElectronica.consultarTramiteElectronico}" process="@this" update="messages" style="display: none">
                 <p:ajax event="dialogReturn" listener="#{viewPlatTramitElectronica.returnDialogo}" update="messages dataTable"/>

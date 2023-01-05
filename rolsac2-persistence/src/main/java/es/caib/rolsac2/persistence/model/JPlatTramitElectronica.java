@@ -26,11 +26,23 @@ public class JPlatTramitElectronica extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * La consulta FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "PlatTramitElectronica.FIND_BY_ID";
+    /**
+     * La consulta FIND_ALL.
+     */
     public static final String FIND_ALL = "PlatTramitElectronica.FIND_ALL";
+    /**
+     * La consulta COUNT_BY_IDENTIFICADOR.
+     */
     public static final String COUNT_BY_IDENTIFICADOR = "PlatTramitElectronica.COUNT_BY_IDENTIFICADOR";
 
 
+    /**
+     * Codigo
+     **/
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "plat-tramit-electronica-sequence")
     @Column(name = "PTTR_CODIGO", nullable = false, length = 10)
@@ -57,32 +69,72 @@ public class JPlatTramitElectronica extends BaseEntity {
     private List<JPlatTramitElectronicaTraduccion> traducciones;
 
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene cod entidad.
+     *
+     * @return  cod entidad
+     */
     public JEntidad getCodEntidad() {
         return codEntidad;
     }
 
+    /**
+     * Establece cod entidad.
+     *
+     * @param codEntidad  cod entidad
+     */
     public void setCodEntidad(JEntidad codEntidad) {
         this.codEntidad = codEntidad;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador  identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene traducciones.
+     *
+     * @return  traducciones
+     */
     public List<JPlatTramitElectronicaTraduccion> getTraducciones()  {return this.traducciones;  }
 
+    /**
+     * Establece traducciones.
+     *
+     * @param traducciones  traducciones
+     */
     public void setTraducciones(List<JPlatTramitElectronicaTraduccion> traducciones) { this.traducciones = traducciones; }
 
 

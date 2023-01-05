@@ -27,8 +27,7 @@
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
 
         <p:selectOneButton id="opcionIdioma" value="#{dialogPlatTramitElectronica.idioma}"
-                            styleClass="botoneraRed"
-                            disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50" >
+                            styleClass="botoneraRed"  unselectable="false"  maxlength="50" >
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this" update="formDialog:txturlAcceso formDialog:txtDescripcion"/>
