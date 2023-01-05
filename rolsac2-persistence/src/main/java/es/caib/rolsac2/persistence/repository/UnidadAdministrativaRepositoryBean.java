@@ -17,9 +17,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 @Local(UnidadAdministrativaRepository.class)
@@ -402,7 +404,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public List<Long> getHijosRecursivo(Long codigoUA) {
+    public List<Long> getListaHijosRecursivo(Long codigoUA) {
         StringBuilder sql = new StringBuilder(
                 "               SELECT t1.UNAD_CODIGO " +
                         "       FROM rs2_uniadm t1 " +
@@ -411,6 +413,8 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
                         " CONNECT BY PRIOR t1.UNAD_CODIGO = t1.UNAD_UNADPADRE");
         Query query = entityManager.createNativeQuery(sql.toString());
         query.setParameter("codigoUA", codigoUA);
-        return query.getResultList();
+        List<BigDecimal> resultados = query.getResultList();
+        List<Long> resultList = resultados.stream().map(i -> i.longValue()).collect(Collectors.toList());
+        return resultList;
     }
 }

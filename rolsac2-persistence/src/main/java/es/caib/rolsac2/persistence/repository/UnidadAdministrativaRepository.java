@@ -44,5 +44,5 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     boolean existeTipoSexo(Long codigoSex);
 
-    List<Long> getHijosRecursivo(Long codigoUA);
+    List<Long> getListaHijosRecursivo(Long codigoUA);
 }

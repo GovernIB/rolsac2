@@ -15,7 +15,7 @@ import java.util.Objects;
 public class UnidadAdministrativaDTO extends ModelApi {
 
     /**
-     * ID
+     * Codigo
      */
     private Long codigo;
 
@@ -72,19 +72,44 @@ public class UnidadAdministrativaDTO extends ModelApi {
      **/
     private Integer orden;
 
+    /**
+     * Nombre
+     */
     private Literal nombre;
 
+    /**
+     * Presentacion
+     */
     private Literal presentacion;
 
+    /**
+     * Url
+     */
     private Literal url;
 
+    /**
+     * Responsable
+     */
     private Literal responsable;
 
+    /**
+     * Usuarios de la unidad administrativa
+     */
     private List<UsuarioGridDTO> usuariosUnidadAdministrativa;
 
+    /**
+     * Instancia una nueva Unidad administrativa dto.
+     */
     public UnidadAdministrativaDTO() {
     }
 
+    /**
+     * Instancia una nueva Unidad administrativa dto.
+     *
+     * @param iId       id
+     * @param nombreCa  nombre ca
+     * @param nombreEs  nombre es
+     */
     public UnidadAdministrativaDTO(Long iId, String nombreCa, String nombreEs) {
         // TODO Borrar
         this.codigo = iId;
@@ -95,10 +120,20 @@ public class UnidadAdministrativaDTO extends ModelApi {
         this.nombre.setTraducciones(traducciones);
     }
 
+    /**
+     * Instantiates a new Unidad administrativa dto.
+     *
+     * @param id  id
+     */
     public UnidadAdministrativaDTO(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Create instance unidad administrativa dto.
+     *
+     * @return  unidad administrativa dto
+     */
     public static UnidadAdministrativaDTO createInstance() {
         UnidadAdministrativaDTO ua = new UnidadAdministrativaDTO();
         ua.setNombre(Literal.createInstance());
@@ -107,6 +142,8 @@ public class UnidadAdministrativaDTO extends ModelApi {
 
     /**
      * Convertir UnidadAdministrativaDTO en UnidadAdministrativaaGridDTO
+     *
+     * @return  unidad administrativa grid dto
      */
     public UnidadAdministrativaGridDTO convertDTOtoGridDTO() {
         UnidadAdministrativaGridDTO unidadAdministrativa = new UnidadAdministrativaGridDTO();
@@ -130,7 +167,7 @@ public class UnidadAdministrativaDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return the codigo
+     * @return  codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -141,7 +178,9 @@ public class UnidadAdministrativaDTO extends ModelApi {
     }
 
     /**
-     * @param idString the codigo to set
+     * Establece id string.
+     *
+     * @param idString  codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -151,168 +190,378 @@ public class UnidadAdministrativaDTO extends ModelApi {
         }
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene nombre.
+     *
+     * @return  nombre
+     */
     public Literal getNombre() {
         return nombre;
     }
 
+    /**
+     * Obtiene padre.
+     *
+     * @return  padre
+     */
     public UnidadAdministrativaDTO getPadre() {
         return padre;
     }
 
+    /**
+     * Establece padre.
+     *
+     * @param padre  padre
+     */
     public void setPadre(UnidadAdministrativaDTO padre) {
         this.padre = padre;
     }
 
+    /**
+     * Obtiene hijos.
+     *
+     * @return  hijos
+     */
     public List<UnidadAdministrativaDTO> getHijos() {
         return hijos;
     }
 
+    /**
+     * Establece hijos.
+     *
+     * @param hijos  hijos
+     */
     public void setHijos(List<UnidadAdministrativaDTO> hijos) {
         this.hijos = hijos;
     }
 
+    /**
+     * Obtiene orden.
+     *
+     * @return  orden
+     */
     public Integer getOrden() {
         return orden;
     }
 
+    /**
+     * Establece orden.
+     *
+     * @param orden  orden
+     */
     public void setOrden(Integer orden) {
         this.orden = orden;
     }
 
+    /**
+     * Establece nombre.
+     *
+     * @param nombre  nombre
+     */
     public void setNombre(Literal nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     * Obtiene entidad.
+     *
+     * @return  entidad
+     */
     public EntidadDTO getEntidad() {
         return entidad;
     }
 
+    /**
+     * Establece entidad.
+     *
+     * @param entidad  entidad
+     */
     public void setEntidad(EntidadDTO entidad) {
         this.entidad = entidad;
     }
 
+    /**
+     * Obtiene tipo.
+     *
+     * @return  tipo
+     */
     public TipoUnidadAdministrativaDTO getTipo() {
         return tipo;
     }
 
+    /**
+     * Establece tipo.
+     *
+     * @param tipo  tipo
+     */
     public void setTipo(TipoUnidadAdministrativaDTO tipo) {
         this.tipo = tipo;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador  identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene abreviatura.
+     *
+     * @return  abreviatura
+     */
     public String getAbreviatura() {
         return abreviatura;
     }
 
+    /**
+     * Establece abreviatura.
+     *
+     * @param abreviatura  abreviatura
+     */
     public void setAbreviatura(String abreviatura) {
         this.abreviatura = abreviatura;
     }
 
+    /**
+     * Obtiene telefono.
+     *
+     * @return  telefono
+     */
     public String getTelefono() {
         return telefono;
     }
 
+    /**
+     * Establece telefono.
+     *
+     * @param telefono  telefono
+     */
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
+    /**
+     * Obtiene fax.
+     *
+     * @return  fax
+     */
     public String getFax() {
         return fax;
     }
 
+    /**
+     * Establece fax.
+     *
+     * @param fax  fax
+     */
     public void setFax(String fax) {
         this.fax = fax;
     }
 
+    /**
+     * Obtiene email.
+     *
+     * @return  email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Establece email.
+     *
+     * @param email  email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Obtiene dominio.
+     *
+     * @return  dominio
+     */
     public String getDominio() {
         return dominio;
     }
 
+    /**
+     * Establece dominio.
+     *
+     * @param dominio  dominio
+     */
     public void setDominio(String dominio) {
         this.dominio = dominio;
     }
 
+    /**
+     * Obtiene responsable nombre.
+     *
+     * @return  responsable nombre
+     */
     public String getResponsableNombre() {
         return responsableNombre;
     }
 
+    /**
+     * Establece responsable nombre.
+     *
+     * @param responsableNombre  responsable nombre
+     */
     public void setResponsableNombre(String responsableNombre) {
         this.responsableNombre = responsableNombre;
     }
 
+    /**
+     * Obtiene responsable sexo.
+     *
+     * @return  responsable sexo
+     */
     public TipoSexoDTO getResponsableSexo() {
         return responsableSexo;
     }
 
+    /**
+     * Establece responsable sexo.
+     *
+     * @param responsableSexo  responsable sexo
+     */
     public void setResponsableSexo(TipoSexoDTO responsableSexo) {
         this.responsableSexo = responsableSexo;
     }
 
+    /**
+     * Obtiene responsable email.
+     *
+     * @return  responsable email
+     */
     public String getResponsableEmail() {
         return responsableEmail;
     }
 
+    /**
+     * Establece responsable email.
+     *
+     * @param responsableEmail  responsable email
+     */
     public void setResponsableEmail(String responsableEmail) {
         this.responsableEmail = responsableEmail;
     }
 
+    /**
+     * Obtiene presentacion.
+     *
+     * @return  presentacion
+     */
     public Literal getPresentacion() {
         return presentacion;
     }
 
+    /**
+     * Establece presentacion.
+     *
+     * @param presentacion  presentacion
+     */
     public void setPresentacion(Literal presentacion) {
         this.presentacion = presentacion;
     }
 
+    /**
+     * Obtiene url.
+     *
+     * @return  url
+     */
     public Literal getUrl() {
         return url;
     }
 
+    /**
+     * Establece url.
+     *
+     * @param url  url
+     */
     public void setUrl(Literal url) {
         this.url = url;
     }
 
+    /**
+     * Obtiene responsable.
+     *
+     * @return  responsable
+     */
     public Literal getResponsable() {
         return responsable;
     }
 
+    /**
+     * Establece responsable.
+     *
+     * @param responsable  responsable
+     */
     public void setResponsable(Literal responsable) {
         this.responsable = responsable;
     }
 
+    /**
+     * Obtiene codigo dir 3.
+     *
+     * @return  codigo dir 3
+     */
     public String getCodigoDIR3() {
         return codigoDIR3;
     }
 
+    /**
+     * Establece codigo dir 3.
+     *
+     * @param codigoDIR3  codigo dir 3
+     */
     public void setCodigoDIR3(String codigoDIR3) {
         this.codigoDIR3 = codigoDIR3;
     }
 
+    /**
+     * Obtiene usuarios unidad administrativa.
+     *
+     * @return  usuarios unidad administrativa
+     */
     public List<UsuarioGridDTO> getUsuariosUnidadAdministrativa() { return usuariosUnidadAdministrativa; }
 
+    /**
+     * Establece usuarios unidad administrativa.
+     *
+     * @param usuariosUnidadAdministrativa  usuarios unidad administrativa
+     */
     public void setUsuariosUnidadAdministrativa(List<UsuarioGridDTO> usuariosUnidadAdministrativa) {  this.usuariosUnidadAdministrativa = usuariosUnidadAdministrativa; }
 
     @Override
@@ -335,6 +584,12 @@ public class UnidadAdministrativaDTO extends ModelApi {
                 '}';
     }
 
+    /**
+     * Compare to int.
+     *
+     * @param ua  ua
+     * @return  int
+     */
     public int compareTo(final UnidadAdministrativaDTO ua) {
         if (ua == null)
             throw new NullPointerException("ua");

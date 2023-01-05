@@ -102,6 +102,22 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
         textoIdioma.setValue(idioma);
         setearTextos((UnidadAdministrativaDTO) this.getValue());
         super.encodeBegin(context);
+
+        Boolean ocultarTodo = (Boolean) getAttributes().get("ocultar");
+        if (ocultarTodo != null && ocultarTodo) {
+            ocultar(true);
+        } else {
+            ocultar(false);
+        }
+    }
+
+    private void ocultar(boolean ocultar) {
+        if (texto != null) {
+            texto.setRendered(!ocultar);
+        }
+        if (boton != null) {
+            this.boton.setRendered(!ocultar);
+        }
     }
 
     private void setearTextos(UnidadAdministrativaDTO ua) {

@@ -3,7 +3,6 @@ package es.caib.rolsac2.ejb.facade;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
-import es.caib.rolsac2.persistence.converter.UsuarioConverter;
 import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
@@ -98,6 +97,13 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<Long> getListaHijosRecursivo(Long codigoUA) {
+        return unidadAdministrativaRepository.getListaHijosRecursivo(codigoUA);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(UnidadAdministrativaDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
@@ -112,9 +118,9 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
         //Añadimos los usuarios
         Set<JUsuario> usuarios = new HashSet<>();
-        if(dto.getUsuariosUnidadAdministrativa() != null) {
+        if (dto.getUsuariosUnidadAdministrativa() != null) {
             JUsuario jUsuario;
-            for(UsuarioGridDTO usuario : dto.getUsuariosUnidadAdministrativa()) {
+            for (UsuarioGridDTO usuario : dto.getUsuariosUnidadAdministrativa()) {
                 jUsuario = usuarioRepository.getReference(usuario.getCodigo());
                 usuarios.add(jUsuario);
             }
@@ -151,9 +157,9 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
         //Actualizamos usuarios
         Set<JUsuario> usuarios = new HashSet<>();
-        if(dto.getUsuariosUnidadAdministrativa() != null) {
+        if (dto.getUsuariosUnidadAdministrativa() != null) {
             JUsuario jUsuario;
-            for(UsuarioGridDTO usuario : dto.getUsuariosUnidadAdministrativa()) {
+            for (UsuarioGridDTO usuario : dto.getUsuariosUnidadAdministrativa()) {
                 jUsuario = usuarioRepository.getReference(usuario.getCodigo());
                 usuarios.add(jUsuario);
             }
@@ -253,7 +259,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     public List<UnidadAdministrativaDTO> getUnidadesAdministrativasByUsuario(Long usuarioId) {
         List<JUnidadAdministrativa> jUnidadesAdministrativas = unidadAdministrativaRepository.getUnidadesAdministrativaByUsuario(usuarioId);
         List<UnidadAdministrativaDTO> unidadesAdministrativas = new ArrayList<>();
-        for(JUnidadAdministrativa ua : jUnidadesAdministrativas) {
+        for (JUnidadAdministrativa ua : jUnidadesAdministrativas) {
             UnidadAdministrativaDTO unidadAdministrativaDTO = converter.createDTO(ua);
             unidadesAdministrativas.add(unidadAdministrativaDTO);
         }

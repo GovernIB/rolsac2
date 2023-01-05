@@ -104,6 +104,7 @@ public interface UnidadAdministrativaServiceFacade {
 
     /**
      * Retorna las UAs relacionadas a un usuario
+     *
      * @param usuarioId
      * @return
      */
@@ -111,6 +112,7 @@ public interface UnidadAdministrativaServiceFacade {
 
     /**
      * Obtiene el padre DIR3 de una UA
+     *
      * @param codigo
      * @param idioma
      * @return
@@ -120,8 +122,17 @@ public interface UnidadAdministrativaServiceFacade {
 
     /**
      * Verifica si existe un tipo de Sexo en alguna UA.
+     *
      * @param codigoSex
      * @return
      */
     boolean existeTipoSexo(Long codigoSex);
+
+    /**
+     * Devuelve una lista recursiva de los hijos segun un codigo UA
+     *
+     * @param codigoUA
+     * @return
+     */
+    List<Long> getListaHijosRecursivo(Long codigoUA);
 }
