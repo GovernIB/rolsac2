@@ -207,6 +207,7 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
             logo.setCodigo(this.data.getCodigo());
             logo.setCodigo(idFichero);
             this.data.setLogo(logo);
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewConfiguracionEntidad.logoAnyadido") , false);
 
         } catch (IOException e) {
             e.printStackTrace();
