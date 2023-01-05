@@ -10,6 +10,7 @@ import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.PrimeFaces;
+import org.primefaces.component.commandbutton.CommandButton;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.component.inputtextarea.InputTextarea;
 import org.primefaces.event.SelectEvent;
@@ -42,6 +43,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
     private UIInput textoIdioma;
     private InputTextarea textoIdiomaA;
     private UIInput boton;
+    private CommandButton btnAbrir;
 
     private UIInput textoInicializado;
     private InputTextarea textoInicializadoA;
@@ -151,9 +153,36 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         super.encodeBegin(context);
         if (isModoConsulta()) {
             if (tipo == null || !tipo.equals("html")) {
-                ((InputText) texto).setStyle("opacity: .35; pointer-events:none;");
+                if (texto instanceof InputText) {
+                    ((InputText) texto).setStyle("opacity: .35; pointer-events:none;");
+                }
+                if (texto instanceof InputTextarea) {
+                    ((InputTextarea) texto).setStyle("opacity: .35; pointer-events:none;");
+                }
+
             }
         }
+
+        /*Boolean ocultar = (Boolean) getAttributes().get("ocultar");
+        if (ocultar == null || !ocultarTexto) {
+            //ocultar(false);
+        } else {
+            //ocultar(true);
+        }*/
+
+    }
+
+    private void ocultar(boolean ocultar) {
+        if (texto instanceof InputText) {
+            ((InputText) texto).setRendered(!ocultar);
+        }
+        if (texto instanceof InputTextarea) {
+            ((InputTextarea) texto).setRendered(!ocultar);
+        }
+        if (btnAbrir != null) {
+            btnAbrir.setRendered(ocultar);
+        }
+
     }
 
     private void comprobarLectura() {
@@ -170,7 +199,12 @@ public class LiteralComponent extends UIInput implements NamingContainer {
                 ((InputText) texto).setStyle("opacity: .35; pointer-events:none;");
             }
         } else {
-            ((InputText) texto).setStyle("");
+            if (texto instanceof InputText) {
+                ((InputText) texto).setStyle("");
+            }
+            if (texto instanceof InputTextarea) {
+                ((InputTextarea) texto).setStyle("");
+            }
         }
     }
 
@@ -619,5 +653,13 @@ public class LiteralComponent extends UIInput implements NamingContainer {
 
     public void setSoloLecture(String soloLecture) {
         this.soloLecture = soloLecture;
+    }
+
+    public CommandButton getBtnAbrir() {
+        return btnAbrir;
+    }
+
+    public void setBtnAbrir(CommandButton btnAbrir) {
+        this.btnAbrir = btnAbrir;
     }
 }
