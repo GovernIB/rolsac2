@@ -12,10 +12,29 @@ import java.util.Objects;
 @Schema(name = "TipoPublicoObjetivo")
 public class TipoPublicoObjetivoDTO extends ModelApi {
 
+    /**
+     * Codigo
+     */
     private Long codigo;
+
+    /**
+     * Identificador
+     */
     private String identificador;
+
+    /**
+     * Descripcion
+     */
     private Literal descripcion;
 
+    /**
+     * Empleado publico
+     */
+    private boolean empleadoPublico;
+
+    /**
+     * Instancia un nuevo Tipo publico objetivo dto.
+     */
     public TipoPublicoObjetivoDTO() {
     }
 
@@ -23,7 +42,7 @@ public class TipoPublicoObjetivoDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return the codigo
+     * @return codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -34,7 +53,9 @@ public class TipoPublicoObjetivoDTO extends ModelApi {
     }
 
     /**
-     * @param idString the codigo to set
+     * Establece id string.
+     *
+     * @param idString codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -44,40 +65,84 @@ public class TipoPublicoObjetivoDTO extends ModelApi {
         }
     }
 
+    /**
+     * Instantiates a new Tipo publico objetivo dto.
+     *
+     * @param id id
+     */
     public TipoPublicoObjetivoDTO(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return descripcion
+     */
     public Literal getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion descripcion
+     */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }
 
+    public boolean isEmpleadoPublico() {
+        return empleadoPublico;
+    }
+
+    public void setEmpleadoPublico(boolean empleadoPublico) {
+        this.empleadoPublico = empleadoPublico;
+    }
+
     @Override
     public String toString() {
-        return "TipoNormativaDTO{" +
+        return "TipoPublicoObjetivoDTO{" +
                 "id=" + codigo +
                 ", identificador=" + identificador +
                 ", descripcion=" + descripcion.toString() +
+                ", empleadoPublico=" + empleadoPublico +
                 '}';
     }
 
@@ -91,6 +156,6 @@ public class TipoPublicoObjetivoDTO extends ModelApi {
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo, identificador, descripcion);
+        return Objects.hash(codigo, identificador, descripcion, empleadoPublico);
     }
 }

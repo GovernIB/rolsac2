@@ -19,7 +19,9 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -84,7 +86,24 @@ public class DialogTipoPublicoObjetivoEntidad extends AbstractController impleme
         result.setResult(data);
         UtilJSF.closeDialog(result);
     }
-//organizacion de trabajo caib - teletrabajo/horario
+
+    public void traducir() {
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        TipoPublicoObjetivoEntidadDTO datoDTO = (TipoPublicoObjetivoEntidadDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setDescripcion(datoDTO.getDescripcion());
+        }
+    }
+
     private boolean verificarGuardar() {
         if (Objects.isNull(this.data.getCodigo())
                 && serviceFacade.existeIdentificadorTipoPublicoObjetivoEntidad(this.data.getIdentificador())) {
@@ -98,7 +117,7 @@ public class DialogTipoPublicoObjetivoEntidad extends AbstractController impleme
             return false;
         }
         List<String> idiomasPendientesUrl = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
-        if(!idiomasPendientesUrl.isEmpty()) {
+        if (!idiomasPendientesUrl.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dict.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesUrl), true);
             return false;
         }

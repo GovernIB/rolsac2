@@ -194,10 +194,33 @@ public class DialogSeleccionTipoPublicoObjetivoEntidad extends AbstractControlle
             return;
         }
 
+        borrarDistintoTipo(this.datoSeleccionado.isEmpleadoPublico());
+
         if (tipoPublicoObjEntSeleccionadas != null && contains(this.datoSeleccionado)) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.yaEstaEnLaLista"));
         } else {
             tipoPublicoObjEntSeleccionadas.add(datoSeleccionado);
+        }
+    }
+
+    /**
+     * Borra los tipos asignados que no sean del mismo tipo de empleado publico.
+     *
+     * @param empleadoPublico
+     */
+    private void borrarDistintoTipo(boolean empleadoPublico) {
+        if (tipoPublicoObjEntSeleccionadas == null || tipoPublicoObjEntSeleccionadas.isEmpty()) {
+            return;
+        }
+
+        List<TipoPublicoObjetivoEntidadGridDTO> borrar = new ArrayList<>();
+        for (TipoPublicoObjetivoEntidadGridDTO tipo : tipoPublicoObjEntSeleccionadas) {
+            if (tipo.isEmpleadoPublico() != empleadoPublico) {
+                borrar.add(tipo);
+            }
+        }
+        if (!borrar.isEmpty()) {
+            this.tipoPublicoObjEntSeleccionadas.removeAll(borrar);
         }
     }
 

@@ -30,67 +30,136 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * La consulta FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "JTipoPublicoObjetivoEntidad.FIND_BY_ID";
 
+    /**
+     * La consulta COUNT_BY_IDENTIFICADOR.
+     */
     public static final String COUNT_BY_IDENTIFICADOR = "JTipoPublicoObjetivoEntidad.COUNT_BY_IDENTIFICADOR";
 
-
+    /**
+     * Codigo
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-publicoobj-ent-sequence")
     @Column(name = "TPSP_CODIGO", nullable = false, length = 10)
     private Long codigo;
 
+    /**
+     * Entidad
+     */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TPSP_CODENTI", nullable = false)
     private JEntidad entidad;
 
+    /**
+     * Tipo
+     */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TPSP_CODTPPO", nullable = false)
     private JTipoPublicoObjetivo tipo;
 
+    /**
+     * Identificador
+     */
     @Column(name = "TPSP_IDENTI", nullable = false, length = 50)
     private String identificador;
 
-
+    /**
+     * Traducciones
+     */
     @OneToMany(mappedBy = "tipoPublicoObjetivoEntidad", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoPublicoObjetivoEntidadTraduccion> traducciones;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene entidad.
+     *
+     * @return  entidad
+     */
     public JEntidad getEntidad() {
         return entidad;
     }
 
+    /**
+     * Establece entidad.
+     *
+     * @param entidad  entidad
+     */
     public void setEntidad(JEntidad entidad) {
         this.entidad = entidad;
     }
 
+    /**
+     * Obtiene tipo.
+     *
+     * @return  tipo
+     */
     public JTipoPublicoObjetivo getTipo() {
         return tipo;
     }
 
+    /**
+     * Establece tipo.
+     *
+     * @param tipo  tipo
+     */
     public void setTipo(JTipoPublicoObjetivo tipo) {
         this.tipo = tipo;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador  identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene traducciones.
+     *
+     * @return  traducciones
+     */
     public List<JTipoPublicoObjetivoEntidadTraduccion> getTraducciones() {
         return traducciones;
     }
 
+    /**
+     * Establece traducciones.
+     *
+     * @param traducciones  traducciones
+     */
     public void setTraducciones(List<JTipoPublicoObjetivoEntidadTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {
             this.traducciones = traducciones;
@@ -110,6 +179,11 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
                 '}';
     }
 
+    /**
+     * To model tipo publico objetivo entidad grid dto.
+     *
+     * @return  tipo publico objetivo entidad grid dto
+     */
     public TipoPublicoObjetivoEntidadGridDTO toModel() {
         TipoPublicoObjetivoEntidadGridDTO tipo = new TipoPublicoObjetivoEntidadGridDTO();
         tipo.setCodigo(this.getCodigo());

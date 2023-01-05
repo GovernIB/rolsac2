@@ -31,7 +31,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
         <span class="pi pi-tag" style="margin-top:5px"/>
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
-        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoPublicoObjetivo.idioma}" styleClass="botoneraRed">
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoPublicoObjetivo.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="formDialog:inputDescripcion" process="@this"/>
@@ -41,7 +41,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this" />
+                         process="@this" >
+            <p:ajax event="dialogReturn" listener="#{dialogTipoPublicoObjetivo.returnDialogTraducir}" process="@this"
+                    update="formDialog:inputDescripcion"/>
+        </p:commandButton>
     </ui:define>
 
     <ui:define name="contentDialog">
@@ -91,6 +94,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          nombreLiteral="#{labels['dict.descripcion']}">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                     </my:literalComponent>
+                </div>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <h:outputText value="#{labels['dict.esEmpleadoPublico']}:" for="txtEmpleadoPublico" />
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:selectBooleanCheckbox id="txtEmpleadoPublico" value="#{dialogTipoPublicoObjetivo.data.empleadoPublico}" disabled="#{dialogTipoPublicoObjetivo.isModoConsulta()}" />
                 </div>
             </div>
         </p:panel>

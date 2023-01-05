@@ -48,6 +48,7 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
                 tipoPOGridDTO.setIdentificador((String) jTipoPublicoObjetivoEntidad[1]);
                 tipoPOGridDTO.setTipo(createLiteral((String) jTipoPublicoObjetivoEntidad[2], filtro.getIdioma()));
                 tipoPOGridDTO.setDescripcion(createLiteral((String) jTipoPublicoObjetivoEntidad[3], filtro.getIdioma()));
+                tipoPOGridDTO.setEmpleadoPublico((boolean) jTipoPublicoObjetivoEntidad[4]);
 
                 tipoPOEntidad.add(tipoPOGridDTO);
             }
@@ -78,7 +79,7 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
                     " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
         } else {
             sql = new StringBuilder(
-                    "SELECT j.codigo, j.identificador, tt.descripcion, tp.descripcion FROM JTipoPublicoObjetivoEntidad j" +
+                    "SELECT j.codigo, j.identificador, tt.descripcion, tp.descripcion, te.empleadoPublico FROM JTipoPublicoObjetivoEntidad j" +
                             " LEFT OUTER JOIN j.tipo te" +
                             " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma" +
                             " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma" +

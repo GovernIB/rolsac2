@@ -64,21 +64,29 @@
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
 
-                <p:column sortBy="#{pubobjent.codigo}">
+                <!--<p:column sortBy="#{pubobjent.codigo}">
                     <f:facet name="header">#{labels['dict.codigo']}</f:facet>
                     <h:outputText value="#{pubobjent.codigo}"/>
                 </p:column>
                 <p:column sortBy="#{pubobjent.identificador}">
                     <f:facet name="header">#{labels['dict.identificador']}</f:facet>
                     <h:outputText value="#{pubobjent.identificador}"/>
-                </p:column>
+                </p:column>-->
                 <p:column sortBy="#{pubobjent.tipo}">
                     <f:facet name="header">#{labels['viewPublicoObjetivoEntidad.tipoPublicoObjetivo']}</f:facet>
                     <h:outputText value="#{pubobjent.tipo.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
                 </p:column>
+                <p:column sortBy="#{pubobjent.identificador}">
+                    <f:facet name="header">#{labels['dict.identificador']}</f:facet>
+                    <h:outputText value="#{pubobjent.identificador}"/>
+                </p:column>
                 <p:column sortBy="#{pubobjent.descripcion}">
                     <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
                     <h:outputText value="#{pubobjent.descripcion.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
+                </p:column>
+                <p:column sortBy="#{pubobjent.empleadoPublico}">
+                    <f:facet name="header">#{labels['dict.esEmpleadoPublico']}</f:facet>
+                    <p:selectBooleanCheckbox value="#{pubobjent.empleadoPublico}" disabled="true"  />
                 </p:column>
             </p:dataTable>
 
@@ -106,7 +114,7 @@
                     <p:ajax event="rowSelect" global="false"/>
                     <p:ajax event="rowUnselect"/>
                     <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                        <h:outputText value="#{td.identificador}"/>
+                        <h:outputText value="#{td.descripcion.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
                     </p:column>
                 </p:dataTable>
             </div>
@@ -115,6 +123,7 @@
                                  action="#{dialogSeleccionTipoPublicoObjetivoEntidad.borrarTipoPubObjEnt}"
                                  process="@this" update="dataTablePubObjEnt messagesDialog"/>
             </div>
+            <label style="color:red;margin:5px">#{labels['dialogSeleccionTipoPublicoObjetivoEntidad.mensaje.empleadoPublico']}</label>
         </div>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
