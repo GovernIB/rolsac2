@@ -1,0 +1,143 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTraspasoBOIB.modoAcceso}"/>
+            <f:viewAction action="#{dialogTraspasoBOIB.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogTraspasoBOIB.titulo']}"/>
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+        <div class="ui-g-12 ui-md-12 px-4 panel-container">
+            <p:panel id="panelBusqueda" header="#{labels['dialogTraspasoBOIB.panelBusqueda']}" styleClass="panel-boib">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <p class="mb-0">
+                            <p:outputLabel for="filtroNumBoletin" value="#{labels['dialogTraspasoBOIB.numBoletin']}"/>:
+                        </p>
+                        <p:inputText id="filtroNumBoletin" styleClass="mr-2 w90"
+                                     value="#{dialogTraspasoBOIB.filtroNumBoletin}"
+                                 placeholder="XXX/YYYY" validatorMessage="#{labels['dialogTraspasoBOIB.errorNumBoletin']}">
+                            <f:validateRegex pattern="^[0-9]{3}/[0-9]{4}+$"/>
+                        </p:inputText>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <p class="mb-0">
+                            <p:outputLabel value="#{labels['dialogTraspasoBOIB.fechaBoletin']}"/>:
+                        </p>
+                        <p:calendar id="filtroFechaBoletin" styleClass="fecha mr-2 w90"
+                                    value="#{dialogTraspasoBOIB.filtroFechaBoletin}" pattern="dd/MM/yyyy"
+                                    showOn="button"/>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <p class="mb-0">
+                            <p:outputLabel for="filtroNumRegistro" value="#{labels['dialogTraspasoBOIB.numRegistro']}"/>:
+                        </p>
+                        <p:inputText id="filtroNumRegistro" styleClass="mr-2 w90"
+                                     value="#{dialogTraspasoBOIB.filtroNumRegistro}"
+                                     placeholder="XXXXXX" validatorMessage="#{labels['dialogTraspasoBOIB.errorNumRegistro']}">
+                            <f:validateRegex pattern="^[0-9]{6}+$"/>
+                        </p:inputText>
+                    </div>
+                    <div class="form-group col-md-2 justify-content-center">
+                        <p:commandButton id="btnBusqueda" value="#{labels['dict.busqueda']}" icon="pi pi-search"
+                                         update="dataTable messagesDialog panelCrear panelBusqueda panelNormas" styleClass="mt-4 btn-busqueda"
+                                         actionListener="#{dialogTraspasoBOIB.buscar()}"
+                                         process="@form"/>
+                    </div>
+                </div>
+                <h:panelGroup id="panelNormas">
+                    <p:dataTable id="dataTable" value="#{dialogTraspasoBOIB.data}" var="edicto"
+                                 paginator="true" filterDelay="300" widgetVar="edictoTable"
+                                 rows="#{dialogTraspasoBOIB.filtro.paginaTamanyo}"
+                                 rowsPerPageTemplate="10,20,50"
+                                 paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                                 paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}"
+                                 currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                                 emptyMessage="#{labels['dict.noHayDatos']}"
+                                 selectionMode="single" selection="#{dialogTraspasoBOIB.datoSeleccionado}"
+                                 rowKey="#{edicto.codigoTabla}"
+                                 reflow="true"
+                                 style="min-height: 300px;"
+                                 styleClass="mt-3"
+                                 rendered="#{dialogTraspasoBOIB.mostrarResultados}">
+                        <p:ajax event="rowUnselect" global="false" update="@form:btnCrear" process="@this @form"/>
+                        <p:ajax event="rowSelect" global="false" update="@form:btnCrear" process="@this @form"/>
+                        <p:ajax
+                                event="rowDblselect"
+                                oncomplete="triggerDblClick();"
+                                global="false"/>
+                        <f:facet name="{RowsPerPageLabel}">
+                            #{labels.dataTable_rowsPerPage}
+                        </f:facet>
+                        <p:column sortBy="#{edicto.titulo.getTraduccion(dialogTraspasoBOIB.idioma)}"
+                                  headerText="#{labels['dict.titulo']}" styleClass="w40">
+                            <f:facet name="header"/>
+                            <h:outputText value="#{edicto.titulo.getTraduccion(dialogTraspasoBOIB.idioma)}"/>
+                        </p:column>
+                        <p:column sortBy="#{edicto.numeroRegistro}"
+                                  headerText="#{labels['dialogTraspasoBOIB.numRegistro']}">
+                            <f:facet name="header"/>
+                            <h:outputText
+                                    value="#{edicto.numeroRegistro}"/>
+                        </p:column>
+                        <p:column sortBy="#{edicto.numeroBoletin}" headerText="#{labels['dialogTraspasoBOIB.numBoletin']}">
+                            <f:facet name="header"/>
+                            <h:outputText value="#{edicto.numeroBoletin}"/>
+                        </p:column>
+                        <p:column sortBy="#{edicto.fechaBoletin}" headerText="#{labels['dialogTraspasoBOIB.fechaBoletin']}">
+                            <f:facet name="header"/>
+                            <h:outputText value="#{edicto.fechaBoletin}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+
+
+
+                <h:outputScript>
+                    function triggerDblClick() {
+                        document.getElementById("formDialog:btnCrear").click();
+                    }
+                </h:outputScript>
+
+                <p:blockUI block="panelBusqueda" trigger="btnBusqueda" widgetVar="timeSpinner" styleClass="">
+                    <div class="spinner-border text-light spinner-large" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </p:blockUI>
+
+
+                <p:commandButton id="btnCrear" value="#{labels['dict.crear']}"
+                                 actionListener="#{dialogTraspasoBOIB.crearNormativa()}"
+                                 update="messagesDialog dataTable"
+                                 icon="pi pi-plus" style="display:none"></p:commandButton>
+            </p:panel>
+
+        </div>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <h:panelGroup id="panelCrear">
+            <p:commandButton action="#{dialogTraspasoBOIB.crearNormativa}"
+                             value="#{labels['dialogTraspasoBOIB.crearNormativa']}" update="messagesDialog"
+                             process="@this" rendered="#{dialogTraspasoBOIB.mostrarResultados}"/>
+        </h:panelGroup>
+        <p:commandButton action="#{dialogTraspasoBOIB.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>

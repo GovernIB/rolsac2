@@ -1,7 +1,7 @@
 package es.caib.rolsac2.back.converters;
 
-import es.caib.rolsac2.service.facade.BoletinOficialServiceFacade;
-import es.caib.rolsac2.service.model.BoletinOficialDTO;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.model.TipoBoletinDTO;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -18,7 +18,7 @@ public class BoletinOficialConverter implements Converter, Serializable {
     private static final long serialVersionUID = -8972013394803135445L;
 
     @Inject
-    private BoletinOficialServiceFacade boletinOficialServiceFacade;
+    private MaestrasSupServiceFacade boletinOficialServiceFacade;
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
@@ -29,7 +29,7 @@ public class BoletinOficialConverter implements Converter, Serializable {
 
         if (s != null && s.trim().length() > 0) {
             try {
-                return boletinOficialServiceFacade.findBoletinOficialByCodigo(Long.parseLong(s));
+                return boletinOficialServiceFacade.findTipoBoletinById(Long.parseLong(s));
             } catch (Exception e) {
                 return null;
             }
@@ -42,7 +42,7 @@ public class BoletinOficialConverter implements Converter, Serializable {
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object o) {
         if (o != null) {
-            return String.valueOf(((BoletinOficialDTO) o).getCodigo());
+            return String.valueOf(((TipoBoletinDTO) o).getCodigo());
         } else {
             return null;
         }

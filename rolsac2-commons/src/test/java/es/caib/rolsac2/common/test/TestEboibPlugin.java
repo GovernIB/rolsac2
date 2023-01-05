@@ -14,6 +14,7 @@ public class TestEboibPlugin {
     public static void main(final String[] args) throws Exception {
         Properties prop = new Properties();
         prop.put("es.caib.rolsac2.pluginsib.boletin.eboib.eboibUrl", "https://www.caib.es/eboibfront/");
+        prop.put("es.caib.rolsac2.pluginsib.boletin.eboib.eboibUrlHack", "true");
         IPlugin plg = (IPlugin) PluginsManager.instancePluginByClassName("es.caib.rolsac2.commons.plugins.boletin.eboib.EboibPlugin",
                 "es.caib.rolsac2.pluginsib.boletin.eboib.", prop);
         if (plg == null) {

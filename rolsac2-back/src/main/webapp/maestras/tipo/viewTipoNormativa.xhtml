@@ -30,7 +30,7 @@ Pàgina amb el llistat de Tipo de Normativa.
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewTipoNormativa.buscar}" update="dataTable"/>
 
@@ -49,7 +49,7 @@ Pàgina amb el llistat de Tipo de Normativa.
                         <p:ajax event="dialogReturn" listener="#{viewTipoNormativa.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
-                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                      actionListener="#{viewTipoNormativa.editarTipoNormativa}" process="@form"
                                      update="messages">
                         <p:ajax event="dialogReturn" listener="#{viewTipoNormativa.returnDialogo}"
@@ -107,17 +107,10 @@ Pàgina amb el llistat de Tipo de Normativa.
 
             <h:outputScript>
                 function triggerDblClick() {
-                    myDoubleClickCommand();
-                    /*$('#form\\:btnConsultaHidden').click();*/
+                    $('#form\\:btnEditar').click();
                 }
             </h:outputScript>
 
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewTipoNormativa.editarTipoNormativa()}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewTipoNormativa.consultarTipoNormativa}" process="@this"
                              update="messages" style="display: none">

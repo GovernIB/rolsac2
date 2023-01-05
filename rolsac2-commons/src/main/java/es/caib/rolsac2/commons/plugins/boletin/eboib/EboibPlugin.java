@@ -424,8 +424,8 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
     private Edicto crearEdicto(Normativa normativa) {
         Edicto edicto = new Edicto();
         edicto.setBoletinFecha(normativa.getFechaBoletin());
-        edicto.setBoletinTipo(normativa.getIdTipo());
-        edicto.setBoletinNumero(normativa.getNombreBoletin());
+        edicto.setBoletinTipo(normativa.getNombreBoletin());
+        edicto.setBoletinNumero(normativa.getNumeroBoib());
         edicto.setEdictoNumero(normativa.getValorRegistro());
         edicto.setEdictoTexto(normativa.getTitulos());
         edicto.setEdictoUrl(normativa.getEnlaces());

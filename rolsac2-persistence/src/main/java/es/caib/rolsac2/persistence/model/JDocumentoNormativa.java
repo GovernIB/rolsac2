@@ -5,6 +5,9 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * La clase documento normativa.
+ */
 @Entity
 @SequenceGenerator(name = "documento-normativa-sequence", sequenceName = "RS2_DOCNORM_SEQ", allocationSize = 1)
 @Table(name = "RS2_DOCNORM")
@@ -17,7 +20,13 @@ import java.util.Objects;
 })
 public class JDocumentoNormativa extends BaseEntity {
 
+    /**
+     * Consulta FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "documentoNormativa.FIND_BY_ID";
+    /**
+     * Consulta FIND_BY_NORMATIVA.
+     */
     public static final String FIND_BY_NORMATIVA = "documentoNormativa.FIND_BY_NORMATIVA";
 
     @Id
@@ -33,27 +42,57 @@ public class JDocumentoNormativa extends BaseEntity {
     private List<JDocumentoNormativaTraduccion> traducciones;
 
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
 
+    /**
+     * Obtiene normativa.
+     *
+     * @return  normativa
+     */
     public JNormativa getNormativa() {
         return normativa;
     }
 
+    /**
+     * Establece normativa.
+     *
+     * @param normativa  normativa
+     */
     public void setNormativa(JNormativa normativa) {
         this.normativa = normativa;
     }
 
+    /**
+     * Obtiene traducciones.
+     *
+     * @return  traducciones
+     */
     public List<JDocumentoNormativaTraduccion> getTraducciones() {
         return traducciones;
     }
 
+    /**
+     * Establece traducciones.
+     *
+     * @param traducciones  traducciones
+     */
     public void setTraducciones(List<JDocumentoNormativaTraduccion> traducciones) {
         this.traducciones = traducciones;
     }

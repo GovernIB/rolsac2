@@ -64,10 +64,10 @@
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{normativa.codigo}" headerText="#{labels['dict.codigo']}">
+                <!--<p:column sortBy="#{normativa.codigo}" headerText="#{labels['dict.codigo']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.codigo}"/>
-                </p:column>
+                </p:column>-->
                 <p:column sortBy="#{normativa.titulo}" headerText="#{labels['dict.titulo']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.titulo.getTraduccion(sessionBean.lang)}"/>
