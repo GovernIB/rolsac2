@@ -4,21 +4,50 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Objects;
 
+/**
+ * El tipo Usuario grid dto.
+ */
 @Schema(name = "UsuarioGrid")
 public class UsuarioGridDTO extends ModelApi {
 
+    /**
+     * Codigo
+     */
     private Long codigo;
+
+    /**
+     * Identificador
+     */
     private String identificador;
+
+    /**
+     * Entidad
+     */
     private String entidad;
 
+    /**
+     * Nombre
+     */
     private String nombre;
 
+    /**
+     * Email
+     */
     private String email;
 
+    /**
+     * Instancia un nuevo Usuario grid dto.
+     */
     public UsuarioGridDTO() {
 
     }
 
+    /**
+     * Instancia un nuevo Usuario grid dto.
+     *
+     * @param id             id
+     * @param identificador  identificador
+     */
     public UsuarioGridDTO(Long id, String identificador) {
         this.codigo = id;
         this.identificador = identificador;
@@ -27,7 +56,7 @@ public class UsuarioGridDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return the codigo
+     * @return  codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -38,7 +67,9 @@ public class UsuarioGridDTO extends ModelApi {
     }
 
     /**
-     * @param idString the codigo to set
+     * Establece id string.
+     *
+     * @param idString  codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -48,36 +79,86 @@ public class UsuarioGridDTO extends ModelApi {
         }
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador  identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene entidad.
+     *
+     * @return  entidad
+     */
     public String getEntidad() {
         return entidad;
     }
 
+    /**
+     * Establece entidad.
+     *
+     * @param entidad  entidad
+     */
     public void setEntidad(String entidad) {
         this.entidad = entidad;
     }
 
+    /**
+     * Obtiene nombre.
+     *
+     * @return  nombre
+     */
     public String getNombre() { return nombre; }
 
+    /**
+     * Establece nombre.
+     *
+     * @param nombre  nombre
+     */
     public void setNombre(String nombre) { this.nombre = nombre; }
 
+    /**
+     * Obtiene email.
+     *
+     * @return  email
+     */
     public String getEmail() { return email; }
 
+    /**
+     * Establece email.
+     *
+     * @param email  email
+     */
     public void setEmail(String email) { this.email = email; }
 
     @Override

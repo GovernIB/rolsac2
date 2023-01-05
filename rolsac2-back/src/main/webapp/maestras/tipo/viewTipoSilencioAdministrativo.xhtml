@@ -30,7 +30,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:commandButton value="#{labels['viewTipoSilencioAdministrativo.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewTipoSilencioAdministrativo.buscar}"
                              update="dataTable"/>
@@ -51,7 +51,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                         <p:ajax event="dialogReturn" listener="#{viewTipoSilencioAdministrativo.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
-                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                      actionListener="#{viewTipoSilencioAdministrativo.editarTipoSilencioAdministrativo}"
                                      process="@form" update="messages">
                         <p:ajax event="dialogReturn" listener="#{viewTipoSilencioAdministrativo.returnDialogo}"
@@ -113,17 +113,10 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
 
             <h:outputScript>
                 function triggerDblClick() {
-                    myDoubleClickCommand();
-                    /*$('#form\\:btnConsultaHidden').click();*/
+                    $('#form\\:btnEditar').click();
                 }
             </h:outputScript>
 
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewTipoSilencioAdministrativo.editarTipoSilencioAdministrativo()}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewTipoSilencioAdministrativo.consultarTipoSilencioAdministrativo}"
                              process="@this" update="messages" style="display: none">

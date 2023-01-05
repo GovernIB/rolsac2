@@ -29,41 +29,87 @@ public class JTipoNormativa extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * La consulta FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "TipoNormativa.FIND_BY_ID";
 
+    /**
+     * La consulta COUNT_BY_IDENTIFICADOR.
+     */
     public static final String COUNT_BY_IDENTIFICADOR = "TipoNormativa.COUNT_BY_IDENTIFICADOR";
 
+    /**
+     * Codigo
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-normativa-sequence")
     @Column(name = "TPNO_CODIGO", nullable = false, length = 10)
     private Long codigo;
 
+    /**
+     * Identificador
+     */
     @Column(name = "TPNO_IDENTI", length = 50)
     private String identificador;
 
+    /**
+     * Descripcion
+     */
     @OneToMany(mappedBy = "tipoNormativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoNormativaTraduccion> descripcion;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador  identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return  descripcion
+     */
     public List<JTipoNormativaTraduccion> getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @param idioma  idioma
+     * @return  descripcion
+     */
     public String getDescripcion(String idioma) {
         if (descripcion == null || descripcion.isEmpty()) {
             return "";
@@ -76,6 +122,11 @@ public class JTipoNormativa extends BaseEntity {
         return "";
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion  descripcion
+     */
     public void setDescripcion(List<JTipoNormativaTraduccion> descripcion) {
         if (this.descripcion == null || this.descripcion.isEmpty()) {
             this.descripcion = descripcion;

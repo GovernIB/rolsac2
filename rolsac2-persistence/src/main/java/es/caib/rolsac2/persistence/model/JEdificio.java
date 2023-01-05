@@ -17,8 +17,13 @@ import java.util.Objects;
 @NamedQueries(@NamedQuery(name = JEdificio.FIND_BY_ID, query = "select p from JEdificio p where p.codigo = :id"))
 public class JEdificio extends BaseEntity {
 
+    /**
+     * Consulta FIND_BY_ID
+     */
     public static final String FIND_BY_ID = "Edificio.FIND_BY_ID";
-
+    /**
+     * Codigo
+     **/
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "edificio-sequence")
     @Column(name = "EDIF_CODIGO", nullable = false)
@@ -78,82 +83,182 @@ public class JEdificio extends BaseEntity {
     @OneToMany(mappedBy = "edificio", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JEdificioTraduccion> descripcion;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene direccion.
+     *
+     * @return  direccion
+     */
     public String getDireccion() {
         return direccion;
     }
 
+    /**
+     * Establece direccion.
+     *
+     * @param edifDirec  edif direc
+     */
     public void setDireccion(String edifDirec) {
         this.direccion = edifDirec;
     }
 
+    /**
+     * Obtiene poblacion.
+     *
+     * @return  poblacion
+     */
     public String getPoblacion() {
         return poblacion;
     }
 
+    /**
+     * Establece poblacion.
+     *
+     * @param edifPoblac  edif poblac
+     */
     public void setPoblacion(String edifPoblac) {
         this.poblacion = edifPoblac;
     }
 
+    /**
+     * Obtiene cp.
+     *
+     * @return  cp
+     */
     public String getCp() {
         return cp;
     }
 
+    /**
+     * Establece cp.
+     *
+     * @param edifCp  edif cp
+     */
     public void setCp(String edifCp) {
         this.cp = edifCp;
     }
 
+    /**
+     * Obtiene latitud.
+     *
+     * @return  latitud
+     */
     public String getLatitud() {
         return latitud;
     }
 
+    /**
+     * Establece latitud.
+     *
+     * @param edifLati  edif lati
+     */
     public void setLatitud(String edifLati) {
         this.latitud = edifLati;
     }
 
+    /**
+     * Obtiene longitud.
+     *
+     * @return  longitud
+     */
     public String getLongitud() {
         return longitud;
     }
 
+    /**
+     * Establece longitud.
+     *
+     * @param edifLong  edif long
+     */
     public void setLongitud(String edifLong) {
         this.longitud = edifLong;
     }
 
+    /**
+     * Obtiene telefono.
+     *
+     * @return  telefono
+     */
     public String getTelefono() {
         return telefono;
     }
 
+    /**
+     * Establece telefono.
+     *
+     * @param edifTfno  edif tfno
+     */
     public void setTelefono(String edifTfno) {
         this.telefono = edifTfno;
     }
 
+    /**
+     * Obtiene fax.
+     *
+     * @return  fax
+     */
     public String getFax() {
         return fax;
     }
 
+    /**
+     * Establece fax.
+     *
+     * @param edifFax  edif fax
+     */
     public void setFax(String edifFax) {
         this.fax = edifFax;
     }
 
+    /**
+     * Obtiene email.
+     *
+     * @return  email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Establece email.
+     *
+     * @param edifEmail  edif email
+     */
     public void setEmail(String edifEmail) {
         this.email = edifEmail;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return  descripcion
+     */
     public List<JEdificioTraduccion> getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion  descripcion
+     */
     public void setDescripcion(List<JEdificioTraduccion> descripcion) {
         this.descripcion = descripcion;
     }

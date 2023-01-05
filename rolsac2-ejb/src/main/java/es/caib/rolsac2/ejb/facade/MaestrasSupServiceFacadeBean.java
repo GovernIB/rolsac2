@@ -178,6 +178,19 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoAfectacionDTO> findTipoAfectaciones() {
+        List<JTipoAfectacion> jAfectaciones = tipoAfectacionRepository.listTipoAfectaciones();
+        List<TipoAfectacionDTO> afectaciones = new ArrayList<>();
+        for (JTipoAfectacion jTipoAfectacion : jAfectaciones) {
+            TipoAfectacionDTO afectacion = tipoAfectacionConverter.createDTO(jTipoAfectacion);
+            afectaciones.add(afectacion);
+        }
+        return afectaciones;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public boolean existeIdentificadorTipoAfectacion(String identificador) {
         return tipoAfectacionRepository.existeIdentificador(identificador);
     }
@@ -574,6 +587,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         }
 
         JTipoPublicoObjetivo jTipoPublicoObjetivo = tipoPublicoObjetivoConverter.createEntity(dto);
+        jTipoPublicoObjetivo.setEmpleadoPublico(dto.isEmpleadoPublico());
         tipoPublicoObjetivoRepository.create(jTipoPublicoObjetivo);
         return jTipoPublicoObjetivo.getCodigo();
     }
@@ -585,6 +599,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     public void update(TipoPublicoObjetivoDTO dto) throws RecursoNoEncontradoException {
         JTipoPublicoObjetivo jTipoPublicoObjetivo = tipoPublicoObjetivoRepository.getReference(dto.getCodigo());
         tipoPublicoObjetivoConverter.mergeEntity(jTipoPublicoObjetivo, dto);
+        jTipoPublicoObjetivo.setEmpleadoPublico(dto.isEmpleadoPublico());
         tipoPublicoObjetivoRepository.update(jTipoPublicoObjetivo);
     }
 
@@ -603,8 +618,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoPublicoObjetivoDTO findTipoPublicoObjetivoById(Long id) {
         JTipoPublicoObjetivo jTipoPublicoObjetivo = tipoPublicoObjetivoRepository.getReference(id);
-        TipoPublicoObjetivoDTO tipoNormativaDTO = tipoPublicoObjetivoConverter.createDTO(jTipoPublicoObjetivo);
-        return tipoNormativaDTO;
+        TipoPublicoObjetivoDTO tipoPublicoObjetivoDTO = tipoPublicoObjetivoConverter.createDTO(jTipoPublicoObjetivo);
+        tipoPublicoObjetivoDTO.setEmpleadoPublico(jTipoPublicoObjetivo.isEmpleadoPublico());
+        return tipoPublicoObjetivoDTO;
     }
 
     @Override

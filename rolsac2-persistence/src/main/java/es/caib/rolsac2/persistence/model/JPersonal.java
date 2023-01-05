@@ -17,8 +17,14 @@ public class JPersonal extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * La consulta FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "Personal.FIND_BY_ID";
 
+    /**
+     * Codigo
+     **/
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personal-sequence")
     @Column(name = "PERS_CODIGO", nullable = false, length = 10)
@@ -32,7 +38,9 @@ public class JPersonal extends BaseEntity {
     // @Pattern(regexp = "[0-9]{6,8}", message = "{codiSia.Pattern.message}")
     private String identificador;
 
-
+    /**
+     * Nombre
+     **/
     @Column(name = "PERS_NOMBRE", length = 50)
     private String nombre;
 
@@ -44,6 +52,9 @@ public class JPersonal extends BaseEntity {
     @Size(max = 500)
     private String cargo;
 
+    /**
+     * Funciones
+     **/
     @Column(name = "PERS_FUNC", /* nullable = false, */ length = 4000)
     // @NotEmpty
     @Size(max = 4000)
@@ -91,90 +102,200 @@ public class JPersonal extends BaseEntity {
     @Size(max = 9)
     private String telefonoExteriorMovil;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificacion  identificacion
+     */
     public void setIdentificador(String identificacion) {
         this.identificador = identificacion;
     }
 
+    /**
+     * Obtiene cargo.
+     *
+     * @return  cargo
+     */
     public String getCargo() {
         return cargo;
     }
 
+    /**
+     * Establece cargo.
+     *
+     * @param cargo  cargo
+     */
     public void setCargo(String cargo) {
         this.cargo = cargo;
     }
 
+    /**
+     * Obtiene unidad administrativa.
+     *
+     * @return  unidad administrativa
+     */
     public JUnidadAdministrativa getUnidadAdministrativa() {
         return unidadAdministrativa;
     }
 
+    /**
+     * Establece unidad administrativa.
+     *
+     * @param unidadAdministrativa  unidad administrativa
+     */
     public void setUnidadAdministrativa(JUnidadAdministrativa unidadAdministrativa) {
         this.unidadAdministrativa = unidadAdministrativa;
     }
 
+    /**
+     * Obtiene email.
+     *
+     * @return  email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Establece email.
+     *
+     * @param email  email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Obtiene telefono fijo.
+     *
+     * @return  telefono fijo
+     */
     public String getTelefonoFijo() {
         return telefonoFijo;
     }
 
+    /**
+     * Establece telefono fijo.
+     *
+     * @param telefonoFijo  telefono fijo
+     */
     public void setTelefonoFijo(String telefonoFijo) {
         this.telefonoFijo = telefonoFijo;
     }
 
+    /**
+     * Obtiene telefono movil.
+     *
+     * @return  telefono movil
+     */
     public String getTelefonoMovil() {
         return telefonoMovil;
     }
 
+    /**
+     * Establece telefono movil.
+     *
+     * @param telefonoMovil  telefono movil
+     */
     public void setTelefonoMovil(String telefonoMovil) {
         this.telefonoMovil = telefonoMovil;
     }
 
+    /**
+     * Obtiene telefono exterior fijo.
+     *
+     * @return  telefono exterior fijo
+     */
     public String getTelefonoExteriorFijo() {
         return telefonoExteriorFijo;
     }
 
+    /**
+     * Establece telefono exterior fijo.
+     *
+     * @param telefonoExteriorFijo  telefono exterior fijo
+     */
     public void setTelefonoExteriorFijo(String telefonoExteriorFijo) {
         this.telefonoExteriorFijo = telefonoExteriorFijo;
     }
 
+    /**
+     * Obtiene telefono exterior movil.
+     *
+     * @return  telefono exterior movil
+     */
     public String getTelefonoExteriorMovil() {
         return telefonoExteriorMovil;
     }
 
+    /**
+     * Obtiene funciones.
+     *
+     * @return  funciones
+     */
     public String getFunciones() {
         return funciones;
     }
 
+    /**
+     * Establece funciones.
+     *
+     * @param funciones  funciones
+     */
     public void setFunciones(String funciones) {
         this.funciones = funciones;
     }
 
+    /**
+     * Establece telefono exterior movil.
+     *
+     * @param telefonoExteriorMovil  telefono exterior movil
+     */
     public void setTelefonoExteriorMovil(String telefonoExteriorMovil) {
         this.telefonoExteriorMovil = telefonoExteriorMovil;
     }
 
+    /**
+     * Obtiene nombre.
+     *
+     * @return  nombre
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * Establece nombre.
+     *
+     * @param nombre  nombre
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }

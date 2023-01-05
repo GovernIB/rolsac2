@@ -30,7 +30,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:commandButton value="#{labels['viewTipoPublicoObjetivo.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewTipoPublicoObjetivo.buscar}"
                              update="dataTable"/>
@@ -51,7 +51,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                         <p:ajax event="dialogReturn" listener="#{viewTipoPublicoObjetivo.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
-                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                      actionListener="#{viewTipoPublicoObjetivo.editarTipoPublicoObjetivo}"
                                      process="@form" update="messages">
                         <p:ajax event="dialogReturn" listener="#{viewTipoPublicoObjetivo.returnDialogo}"
@@ -105,21 +105,19 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                     <h:outputText
                             value="#{tipoPublicoObjetivo.descripcion.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
+                <p:column sortBy="#{tipoPublicoObjetivo.empleadoPublico}" styleClass="overflow-datagrid-cell"
+                          headerText="#{labels['dict.esEmpleadoPublico']}">
+                    <f:facet name="header"/>
+                    <p:selectBooleanCheckbox value="#{tipoPublicoObjetivo.empleadoPublico}" disabled="true"  />
+                </p:column>
             </p:dataTable>
 
             <h:outputScript>
                 function triggerDblClick() {
-                    myDoubleClickCommand();
-                    /*$('#form\\:btnConsultaHidden').click();*/
+                    $('#form\\:btnEditar').click();
                 }
             </h:outputScript>
 
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewTipoPublicoObjetivo.editarTipoPublicoObjetivo()}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewTipoPublicoObjetivo.consultarTipoPublicoObjetivo}" process="@this"
                              update="messages" style="display: none">

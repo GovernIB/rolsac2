@@ -18,43 +18,95 @@ public class FicheroDTO extends ModelApi implements Cloneable {
      **/
     private static final Logger LOG = LoggerFactory.getLogger(FicheroDTO.class);
 
+    /**
+     * Codigo
+     */
     private Long codigo;
 
+    /**
+     * Nombre del archivo
+     */
     private String filename;
 
+    /**
+     * Contenido
+     */
     private byte[] contenido;
 
+    /**
+     * Tipo del fichero externo
+     */
     private TypeFicheroExterno tipo;
 
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene filename.
+     *
+     * @return  filename
+     */
     public String getFilename() {
         return filename;
     }
 
+    /**
+     * Establece filename.
+     *
+     * @param filename  filename
+     */
     public void setFilename(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Get contenido byte [ ].
+     *
+     * @return  byte [ ]
+     */
     public byte[] getContenido() {
         return contenido;
     }
 
+    /**
+     * Establece contenido.
+     *
+     * @param contenido  contenido
+     */
     public void setContenido(byte[] contenido) {
         this.contenido = contenido;
     }
 
+    /**
+     * Obtiene tipo.
+     *
+     * @return  tipo
+     */
     public TypeFicheroExterno getTipo() {
         return tipo;
     }
 
+    /**
+     * Establece tipo.
+     *
+     * @param tipo  tipo
+     */
     public void setTipo(TypeFicheroExterno tipo) {
         this.tipo = tipo;
     }

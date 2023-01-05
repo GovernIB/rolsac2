@@ -66,7 +66,20 @@ public class DialogUsuario extends AbstractController implements Serializable {
     }
 
     public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        UsuarioDTO datoDTO = (UsuarioDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setObservaciones(datoDTO.getObservaciones());
+        }
     }
 
     public void guardar() {

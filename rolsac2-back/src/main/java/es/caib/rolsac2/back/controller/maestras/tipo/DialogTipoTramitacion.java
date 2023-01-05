@@ -9,7 +9,7 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,9 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -74,7 +76,20 @@ public class DialogTipoTramitacion extends AbstractController implements Seriali
     }
 
     public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        TipoTramitacionDTO datoDTO = (TipoTramitacionDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setDescripcion(datoDTO.getDescripcion());
+        }
     }
 
     public void guardar() {

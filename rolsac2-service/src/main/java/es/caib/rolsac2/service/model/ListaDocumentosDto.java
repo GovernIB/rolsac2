@@ -3,13 +3,29 @@ package es.caib.rolsac2.service.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * El tipo Lista documentos dto.
+ */
 public class ListaDocumentosDto implements Serializable {
+    /**
+     * Codigo
+     */
     private final Integer codigo;
 
+    /**
+     * Instancia una nueva Lista documentos dto.
+     *
+     * @param id the id
+     */
     public ListaDocumentosDto(Integer id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return the codigo
+     */
     public Integer getCodigo() {
         return codigo;
     }

@@ -57,6 +57,10 @@
             <!--<artifactId>bootstrap</artifactId>-->
             <artifactId>all-themes</artifactId>
         </dependency>
+        <!--<dependency>
+            <groupId>es.caib.rolsac2</groupId>
+            <artifactId>rolsac2-persistence</artifactId>
+        </dependency>-->
     </dependencies>
 
     <build>

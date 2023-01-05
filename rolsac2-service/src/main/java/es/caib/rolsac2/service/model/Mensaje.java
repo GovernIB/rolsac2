@@ -5,7 +5,6 @@ package es.caib.rolsac2.service.model;
  *
  * @author Indra
  */
-
 public final class Mensaje extends ModelApi {
 
     /**
@@ -23,26 +22,56 @@ public final class Mensaje extends ModelApi {
      */
     private String mensaje;
 
+    /**
+     * Obtiene usuario.
+     *
+     * @return  usuario
+     */
     public String getUsuario() {
         return usuario;
     }
 
+    /**
+     * Establece usuario.
+     *
+     * @param usuario  usuario
+     */
     public void setUsuario(String usuario) {
         this.usuario = usuario;
     }
 
+    /**
+     * Obtiene fecha.
+     *
+     * @return  fecha
+     */
     public String getFecha() {
         return fecha;
     }
 
+    /**
+     * Establece fecha.
+     *
+     * @param fecha  fecha
+     */
     public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
+    /**
+     * Obtiene mensaje.
+     *
+     * @return  mensaje
+     */
     public String getMensaje() {
         return mensaje;
     }
 
+    /**
+     * Establece mensaje.
+     *
+     * @param mensaje  mensaje
+     */
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
     }

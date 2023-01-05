@@ -46,9 +46,6 @@ public class DialogTipoBoletin extends AbstractController implements Serializabl
 
     }
 
-    public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
-    }
 
     public void abrirDlg() {
         final Map<String, String> params = new HashMap<>();

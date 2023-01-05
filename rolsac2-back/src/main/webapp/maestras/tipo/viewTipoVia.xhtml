@@ -30,7 +30,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
   </ui:define>
 
   <ui:define name="content">
-    <h:form>
+    <h:form id="form">
       <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                        action="#{viewTipoVia.buscar}" update="dataTable"/>
 
@@ -51,7 +51,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                actionListener="#{viewTipoVia.nuevoTipoVia()}" process="@this">
                 <p:ajax event="dialogReturn" listener="#{viewTipoVia.returnDialogo}" update="messages dataTable"/>
               </p:commandButton>
-              <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2" iconPos="top"
+              <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2" iconPos="top"
                                actionListener="#{viewTipoVia.editarTipoVia}" process="@form" update="messages">
                 <p:ajax event="dialogReturn" listener="#{viewTipoVia.returnDialogo}" update="messages dataTable"/>
               </p:commandButton>
@@ -105,17 +105,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
       <h:outputScript>
         function triggerDblClick() {
-        myDoubleClickCommand();
-        /*$('#form\\:btnConsultaHidden').click();*/
+            $('#form\\:btnEditar').click();
         }
       </h:outputScript>
 
-      <p:remoteCommand name="myDoubleClickCommand"
-                       widgetVar="myDoubleClickCommand"
-                       action="#{viewTipoVia.editarTipoVia()}"
-                       autoRun="false"
-                       partialSubmit="true"
-                       process="@this"/>
       <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                        actionListener="#{viewTipoVia.consultarTipoVia}" process="@this" update="messages"
                        style="display: none">

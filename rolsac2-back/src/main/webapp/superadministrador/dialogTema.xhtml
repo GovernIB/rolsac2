@@ -25,7 +25,7 @@
 
         <span class="pi pi-tag" style="margin-top:5px"/>
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
-        <p:selectOneButton id="opcionIdioma" value="#{dialogTema.idioma}" styleClass="botoneraRed">
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTema.idioma}" styleClass="botoneraRed"  unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="inputDescripcion" process="@this"/>
@@ -35,7 +35,10 @@
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this"/>
+                         process="@this">
+            <p:ajax event="dialogReturn" listener="#{dialogTema.returnDialogTraducir}" process="@this"
+                    update="formDialog:inputDescripcion"/>
+        </p:commandButton>
     </ui:define>
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"

@@ -9,6 +9,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -31,46 +32,51 @@ public class TranslatorIBPlugin extends AbstractPluginProperties implements IPlu
 
     }
 
-    public static void setUp() {
+    public void setUp() {
         // Construïm un client amb autenticació
 
-        client = ClientBuilder.newClient();
+        client = ClientBuilder.newClient().register(new BasicAuthenticator(getProperty(USER), getProperty(PASSWORD)));
         //client.register(new BasicAuthenticator(getProperty(USER), getProperty(PASSWORD)));
     }
 
     @Override
     public String traducir(String tipoEntrada, String textoEntrada, Idioma idiomaEntrada, Idioma idiomaSalida, Map<String, String> opciones) throws IPluginTraduccionException {
         String textoSalida = "";
-        client = ClientBuilder.newClient().register(new BasicAuthenticator(getProperty(USER), getProperty(PASSWORD)));
+//        client = ClientBuilder.newClient().register(new BasicAuthenticator(getProperty(USER), getProperty(PASSWORD)));
 
         // En mock realizamos echo de la entrada
         if (tipoEntrada.equals(TipoEntrada.TEXTO_PLANO.toString())) {
-            textoSalida = traducirString(textoEntrada, idiomaEntrada, idiomaSalida, TipoEntrada.TEXTO_PLANO.fromString(tipoEntrada));
+            textoSalida = traducirString(textoEntrada, idiomaEntrada, idiomaSalida, TipoEntrada.TEXTO_PLANO);
         }
         return textoSalida;
     }
 
-    public String traducirString(String texto, Idioma entrada, Idioma salida, TipoEntrada te) {
+    public String traducirString(String texto, Idioma entrada, Idioma salida, TipoEntrada te) throws IPluginTraduccionException{
         String res = "";
-        final ParametrosTraduccionTexto parametros = new ParametrosTraduccionTexto();
+        ParametrosTraduccionTexto parametros = new ParametrosTraduccionTexto();
         parametros.setTextoEntrada(texto);
         parametros.setTipoEntrada(te);
 
         parametros.setIdiomaEntrada(entrada);
         parametros.setIdiomaSalida(salida);
-        parametros.setOpciones(new Opciones());
+        //parametros.setOpciones(new Opciones());
+        try{
+            final Response response = client.target(getProperty(BASE_URL) + "/texto").request().post(Entity.json(parametros));
 
-        final Response response = client.target(getProperty(BASE_URL) + "/texto").request().post(Entity.json(parametros));
+            final ResultadoTraduccionTexto respuesta = response.readEntity(ResultadoTraduccionTexto.class);
 
-        final ResultadoTraduccionTexto respuesta = response.readEntity(ResultadoTraduccionTexto.class);
+            if (respuesta != null && !respuesta.isError()) {
+                res = respuesta.getTextoTraducido();
+            } else {
+                res = "XX ERROR XX";
+            }
 
-        if (respuesta != null && !respuesta.isError()) {
-            res = respuesta.getTextoTraducido();
-        } else {
-            res = "XX ERROR XX";
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IPluginTraduccionException("Ha habido un error en la comunicación con el plugin de traducción. " + e.getMessage());
         }
-        return res;
 
+        return res;
     }
 
     public void test() {

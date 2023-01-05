@@ -57,7 +57,20 @@ public class DialogTipoVia extends AbstractController implements Serializable {
     }
 
     public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        TipoViaDTO datoDTO = (TipoViaDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setDescripcion(datoDTO.getDescripcion());
+        }
     }
 
     public void abrirDlg() {
@@ -93,7 +106,7 @@ public class DialogTipoVia extends AbstractController implements Serializable {
         }
 
         List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
-        if(!idiomasPendientesDescripcion.isEmpty()) {
+        if (!idiomasPendientesDescripcion.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }

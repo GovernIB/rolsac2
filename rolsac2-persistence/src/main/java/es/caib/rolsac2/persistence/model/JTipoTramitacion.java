@@ -22,8 +22,14 @@ public class JTipoTramitacion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * La constante FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "JTipoTramitacion.FIND_BY_ID";
 
+    /**
+     * Codigo
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-tramitacion-sequence")
     @Column(name = "PRES_CODIGO", nullable = false, length = 10)
@@ -101,106 +107,236 @@ public class JTipoTramitacion extends BaseEntity {
     private JEntidad entidad;
 
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Is tramit presencial boolean.
+     *
+     * @return  boolean
+     */
     public boolean isTramitPresencial() {
         return tramitPresencial;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Establece tramit presencial.
+     *
+     * @param tramitPresencial  tramit presencial
+     */
     public void setTramitPresencial(boolean tramitPresencial) {
         this.tramitPresencial = tramitPresencial;
     }
 
+    /**
+     * Is tramit electronica boolean.
+     *
+     * @return  boolean
+     */
     public boolean isTramitElectronica() {
         return tramitElectronica;
     }
 
+    /**
+     * Establece tramit electronica.
+     *
+     * @param tramitElectronica  tramit electronica
+     */
     public void setTramitElectronica(boolean tramitElectronica) {
         this.tramitElectronica = tramitElectronica;
     }
 
+    /**
+     * Obtiene url tramitacion.
+     *
+     * @return  url tramitacion
+     */
     public String getUrlTramitacion() {
         return urlTramitacion;
     }
 
+    /**
+     * Establece url tramitacion.
+     *
+     * @param urlTramitacion  url tramitacion
+     */
     public void setUrlTramitacion(String urlTramitacion) {
         this.urlTramitacion = urlTramitacion;
     }
 
+    /**
+     * Obtiene cod plat tramitacion.
+     *
+     * @return  cod plat tramitacion
+     */
     public JPlatTramitElectronica getCodPlatTramitacion() {
         return codPlatTramitacion;
     }
 
+    /**
+     * Establece cod plat tramitacion.
+     *
+     * @param codPlatTramitacion  cod plat tramitacion
+     */
     public void setCodPlatTramitacion(JPlatTramitElectronica codPlatTramitacion) {
         this.codPlatTramitacion = codPlatTramitacion;
     }
 
+    /**
+     * Obtiene tramite id.
+     *
+     * @return  tramite id
+     */
     public String getTramiteId() {
         return tramiteId;
     }
 
+    /**
+     * Is tramit telefonica boolean.
+     *
+     * @return  boolean
+     */
     public boolean isTramitTelefonica() {
         return tramitTelefonica;
     }
 
+    /**
+     * Establece tramit telefonica.
+     *
+     * @param tramitTelefonica  tramit telefonica
+     */
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
     }
 
+    /**
+     * Establece tramite id.
+     *
+     * @param tramiteId  tramite id
+     */
     public void setTramiteId(String tramiteId) {
         this.tramiteId = tramiteId;
     }
 
+    /**
+     * Obtiene tramite version.
+     *
+     * @return  tramite version
+     */
     public Integer getTramiteVersion() {
         return tramiteVersion;
     }
 
+    /**
+     * Establece tramite version.
+     *
+     * @param tramiteVersion  tramite version
+     */
     public void setTramiteVersion(Integer tramiteVersion) {
         this.tramiteVersion = tramiteVersion;
     }
 
+    /**
+     * Obtiene tramite parametros.
+     *
+     * @return  tramite parametros
+     */
     public String getTramiteParametros() {
         return tramiteParametros;
     }
 
+    /**
+     * Establece tramite parametros.
+     *
+     * @param tramiteParametros  tramite parametros
+     */
     public void setTramiteParametros(String tramiteParametros) {
         this.tramiteParametros = tramiteParametros;
     }
 
+    /**
+     * Is plantilla boolean.
+     *
+     * @return  boolean
+     */
     public boolean isPlantilla() {
         return plantilla;
     }
 
+    /**
+     * Establece plantilla.
+     *
+     * @param plantilla  plantilla
+     */
     public void setPlantilla(boolean plantilla) {
         this.plantilla = plantilla;
     }
 
+    /**
+     * Obtiene entidad.
+     *
+     * @return  entidad
+     */
     public JEntidad getEntidad() {
         return entidad;
     }
 
+    /**
+     * Establece entidad.
+     *
+     * @param entidad  entidad
+     */
     public void setEntidad(JEntidad entidad) {
         this.entidad = entidad;
     }
 
+    /**
+     * Obtiene fase proc.
+     *
+     * @return  fase proc
+     */
     public Integer getFaseProc() {
         return faseProc;
     }
 
+    /**
+     * Establece fase proc.
+     *
+     * @param faseProc  fase proc
+     */
     public void setFaseProc(Integer faseProc) {
         this.faseProc = faseProc;
     }
 
+    /**
+     * Obtiene traducciones.
+     *
+     * @return  traducciones
+     */
     public List<JTipoTramitacionTraduccion> getTraducciones() {
         return traducciones;
     }
 
+    /**
+     * Establece traducciones.
+     *
+     * @param traducciones  traducciones
+     */
     public void setTraducciones(List<JTipoTramitacionTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {
             this.traducciones = traducciones;
@@ -233,6 +369,11 @@ public class JTipoTramitacion extends BaseEntity {
                 + tramiteParametros + '\'' + '}';
     }
 
+    /**
+     * Merge.
+     *
+     * @param tipoTramitacion  tipo tramitacion
+     */
     public void merge(TipoTramitacionDTO tipoTramitacion) {
         this.setTramitElectronica(tipoTramitacion.isTramitElectronica());
         //this.setCodPlatTramitacion(tipoTramitacion.getCodPlatTramitacion());
@@ -245,6 +386,12 @@ public class JTipoTramitacion extends BaseEntity {
         this.setTramitElectronica(tipoTramitacion.isTramitElectronica());
     }
 
+    /**
+     * Obtiene traduccion.
+     *
+     * @param idioma  idioma
+     * @return  traduccion
+     */
     public JTipoTramitacionTraduccion getTraduccion(String idioma) {
         JTipoTramitacionTraduccion retorno = null;
         if (this.traducciones != null && idioma != null) {

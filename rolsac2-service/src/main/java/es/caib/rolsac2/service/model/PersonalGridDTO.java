@@ -13,13 +13,31 @@ import javax.validation.constraints.Size;
 @Schema(name = "PersonalGrid")
 public class PersonalGridDTO extends ModelApi {
 
+    /**
+     * Codigo
+     */
     private Long codigo;
+
+    /**
+     * Nombre
+     */
     @NotEmpty
     @Size(max = 50)
     private String nombre;
+
+    /**
+     * Identificador
+     */
     private String identificador;
+
+    /**
+     * Email
+     */
     private String email;
 
+    /**
+     * Instantiates a new Personal grid dto.
+     */
     public PersonalGridDTO() {
     }
 
@@ -27,7 +45,7 @@ public class PersonalGridDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return the codigo
+     * @return  codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -38,7 +56,9 @@ public class PersonalGridDTO extends ModelApi {
     }
 
     /**
-     * @param idString the codigo to set
+     * Establece id string.
+     *
+     * @param idString  codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -48,39 +68,85 @@ public class PersonalGridDTO extends ModelApi {
         }
     }
 
+    /**
+     * Instancia un nuevo Personal grid dto.
+     *
+     * @param id      id
+     * @param nombre  nombre
+     */
     public PersonalGridDTO(Long id, String nombre) {
         this.codigo = id;
         this.nombre = nombre;
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene nombre.
+     *
+     * @return  nombre
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * Establece nombre.
+     *
+     * @param nombre  nombre
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador  identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene email.
+     *
+     * @return  email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Establece email.
+     *
+     * @param email  email
+     */
     public void setEmail(String email) {
         this.email = email;
     }

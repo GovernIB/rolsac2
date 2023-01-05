@@ -1,7 +1,6 @@
 package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
-import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
@@ -17,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.*;
@@ -133,56 +131,26 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
         secciones = new ArrayList<>();
 
-        /*final SeccionDTO sec1 = new SeccionDTO();
-        sec1.setCodigo(1L);
-        sec1.setIdentificador("Portada Home");
+    }
 
-        final SeccionDTO sec2 = new SeccionDTO();
-        sec2.setCodigo(2L);
-        sec2.setIdentificador("Portada UA");
+    public void traducir() {
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
 
-        SeccionDTO sec3 = new SeccionDTO();
-        sec3.setCodigo(3L);
-        sec3.setIdentificador("Portada actualidad");
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
 
-        SeccionDTO sec4 = new SeccionDTO();
-        sec4.setCodigo(4L);
-        sec4.setIdentificador("Portada administración");
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        UnidadAdministrativaDTO datoDTO = (UnidadAdministrativaDTO) respuesta.getResult();
 
-        secciones.add(sec1);
-        secciones.add(sec2);
-        secciones.add(sec3);
-        secciones.add(sec4);
-
-
-        edificios = new ArrayList<>();
-
-        final EdificioDTO e1 = new EdificioDTO();
-        e1.setCodigo(1L);
-        e1.setDireccion("C/ de Palma, 15");
-
-        final EdificioDTO e2 = new EdificioDTO();
-        e2.setCodigo(2L);
-        e2.setDireccion("C/ Balmes, 20");
-
-        final EdificioDTO e3 = new EdificioDTO();
-        e3.setCodigo(3L);
-        e3.setDireccion("C/ Serrano, 5");
-
-        final EdificioDTO e4 = new EdificioDTO();
-        e4.setCodigo(4L);
-        e4.setDireccion("C/ de Valencia, 30");
-
-        final EdificioDTO e5 = new EdificioDTO();
-        e5.setCodigo(5L);
-        e5.setDireccion("C/ de Alexandre Rosselló, 2");
-
-        edificios.add(e1);
-        edificios.add(e2);
-        edificios.add(e3);
-        edificios.add(e4);
-        edificios.add(e5);*/
-
+        if (datoDTO != null) {
+            data.setNombre(datoDTO.getNombre());
+            data.setPresentacion(datoDTO.getPresentacion());
+            data.setUrl(datoDTO.getUrl());
+            data.setResponsable(datoDTO.getResponsable());
+        }
     }
 
     public void guardar() {
@@ -252,6 +220,10 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
         return true;
     }
+
+    /********************************************************************************************************************************
+     * Funciones relativas al manejo de la relación de Usuarios
+     *********************************************************************************************************************************/
 
     /**
      * Abrir dialogo de Selección de Usuarios

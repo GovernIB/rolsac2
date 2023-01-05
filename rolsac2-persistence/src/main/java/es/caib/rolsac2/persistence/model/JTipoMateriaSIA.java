@@ -25,9 +25,18 @@ public class JTipoMateriaSIA extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * La consulta FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "TipoMateriaSIA.FIND_BY_ID";
+    /**
+     * La consulta COUNT_BY_IDENTIFICADOR.
+     */
     public static final String COUNT_BY_IDENTIFICADOR = "TipoMateriaSIA.COUNT_BY_IDENTIFICADOR";
 
+    /**
+     * Instancia un nuevo J tipo materia sia.
+     */
     public JTipoMateriaSIA() {
         super();
     }
@@ -49,26 +58,56 @@ public class JTipoMateriaSIA extends BaseEntity {
     @OneToMany(mappedBy = "tipoMateriaSIA", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoMateriaSIATraduccion> descripcion;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificacion  identificacion
+     */
     public void setIdentificador(String identificacion) {
         this.identificador = identificacion;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return  descripcion
+     */
     public List<JTipoMateriaSIATraduccion> getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion  descripcion
+     */
     public void setDescripcion(List<JTipoMateriaSIATraduccion> descripcion) {
         this.descripcion = descripcion;
     }
@@ -93,6 +132,11 @@ public class JTipoMateriaSIA extends BaseEntity {
         return "JTipoMateriaSIA{" + "id=" + codigo + "identificador=" + identificador + '}';
     }
 
+    /**
+     * To model tipo materia sia grid dto.
+     *
+     * @return  tipo materia sia grid dto
+     */
     public TipoMateriaSIAGridDTO toModel() {
         TipoMateriaSIAGridDTO tipo = new TipoMateriaSIAGridDTO();
         tipo.setCodigo(this.getCodigo());

@@ -4,25 +4,56 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Objects;
 
+/**
+ * El tipo Tema dto.
+ */
 @Schema(name = "Tema")
 public class TemaDTO extends ModelApi {
 
+    /**
+     * Codigo
+     */
     private Long codigo;
 
+    /**
+     * Entidad
+     */
     private EntidadDTO entidad;
 
+    /**
+     * Identificador
+     */
     private String identificador;
 
+    /**
+     * Tema padre
+     */
     private TemaDTO temaPadre;
 
+    /**
+     * Descripcion
+     */
     private Literal descripcion;
 
+    /**
+     * Instancia un nuevo Tema dto.
+     */
     public TemaDTO(){}
 
+    /**
+     * Instancia un nuevo Tema dto.
+     *
+     * @param codigo  codigo
+     */
     public TemaDTO(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Create instance tema dto.
+     *
+     * @return  tema dto
+     */
     public static TemaDTO createInstance() {
         TemaDTO tema = new TemaDTO();
         tema.setDescripcion(Literal.createInstance());
@@ -32,7 +63,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return the codigo
+     * @return  codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -43,7 +74,9 @@ public class TemaDTO extends ModelApi {
     }
 
     /**
-     * @param idString the codigo to set
+     * Establece id string.
+     *
+     * @param idString  codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -53,42 +86,92 @@ public class TemaDTO extends ModelApi {
         }
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador  identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene entidad.
+     *
+     * @return  entidad
+     */
     public EntidadDTO getEntidad() {
         return entidad;
     }
 
+    /**
+     * Establece entidad.
+     *
+     * @param entidad  entidad
+     */
     public void setEntidad(EntidadDTO entidad) {
         this.entidad = entidad;
     }
 
+    /**
+     * Obtiene tema padre.
+     *
+     * @return  tema padre
+     */
     public TemaDTO getTemaPadre() {
         return temaPadre;
     }
 
+    /**
+     * Establece tema padre.
+     *
+     * @param temaPadre  tema padre
+     */
     public void setTemaPadre(TemaDTO temaPadre) {
         this.temaPadre = temaPadre;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return  descripcion
+     */
     public Literal getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion  descripcion
+     */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }
@@ -116,6 +199,12 @@ public class TemaDTO extends ModelApi {
                 '}';
     }
 
+    /**
+     * Compare to int.
+     *
+     * @param tema  tema
+     * @return  int
+     */
     public int compareTo(final TemaDTO tema) {
         if (tema == null)
             throw new NullPointerException("tema");

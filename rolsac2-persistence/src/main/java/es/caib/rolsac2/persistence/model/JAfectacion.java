@@ -12,7 +12,20 @@ import java.util.Objects;
         indexes = {
                 @Index(name = "RS2_AFECTA_PK_I", columnList = "AFNO_CODIGO")
         })
+@NamedQueries({
+        @NamedQuery(name = JAfectacion.FIND_BY_ID,
+                query = "select p from JAfectacion p where p.codigo = :codigo"),
+        @NamedQuery(name = JAfectacion.FIND_BY_NORMATIVA_AFECTADA,
+                query="select p from JAfectacion p left outer join p.normativaAfectada t where t.codigo=:codigo"),
+        @NamedQuery(name = JAfectacion.FIND_BY_NORMATIVA_ORIGEN,
+                query="select p from JAfectacion p left outer join p.normativaOrigen t where t.codigo=:codigo")
+})
 public class JAfectacion extends BaseEntity {
+
+    public static final String FIND_BY_ID = "afectacion.FIND_BY_ID";
+    public static final String FIND_BY_NORMATIVA_AFECTADA = "afectacion.FIND_BY_NORMATIVA_AFECTADA";
+
+    public static final String FIND_BY_NORMATIVA_ORIGEN = "afectacion.FIND_BY_NORMATIVA_ORIGEN";
 
     /**
      * Código
@@ -20,7 +33,7 @@ public class JAfectacion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "afectacion-sequence")
     @Column(name = "AFNO_CODIGO", nullable = false)
-    private Integer codigo;
+    private Long codigo;
 
     /**
      * Tipo afectación
@@ -32,38 +45,40 @@ public class JAfectacion extends BaseEntity {
     /**
      * Normativa origen
      */
-    @Column(name = "AFNO_NORORG", nullable = false)
-    private Long normativaOrigen;
+    @ManyToOne
+    @JoinColumn(name = "AFNO_NORORG", nullable = false)
+    private JNormativa normativaOrigen;
 
     /**
      * Normativa afectada
      */
-    @Column(name = "AFNO_NORAFE", nullable = false)
-    private Long normativaAfectada;
+    @ManyToOne
+    @JoinColumn(name = "AFNO_NORAFE", nullable = false)
+    private JNormativa normativaAfectada;
 
 
     /**
      * Obtiene el codigo.
      *
-     * @return codigo
+     * @return codigo codigo
      */
-    public Integer getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
     /**
      * Establece el codigo
      *
-     * @param codigo
+     * @param codigo the codigo
      */
-    public void setCodigo(Integer codigo) {
+    public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
     /**
      * Obtiene el tipo.
      *
-     * @return tipo
+     * @return tipo tipo afectacion
      */
     public JTipoAfectacion getTipoAfectacion() {
         return tipoAfectacion;
@@ -72,7 +87,7 @@ public class JAfectacion extends BaseEntity {
     /**
      * Establece el codigo
      *
-     * @param tipoAfect
+     * @param tipoAfect the tipo afect
      */
     public void setTipoAfectacion(JTipoAfectacion tipoAfect) {
         this.tipoAfectacion = tipoAfect;
@@ -81,36 +96,36 @@ public class JAfectacion extends BaseEntity {
     /**
      * Obtiene la normativa origen.
      *
-     * @return normativaOrigen
+     * @return normativaOrigen normativa origen
      */
-    public Long getNormativaOrigen() {
+    public JNormativa getNormativaOrigen() {
         return normativaOrigen;
     }
 
     /**
      * Establece la normativa origen
      *
-     * @param normativaOrigen
+     * @param normativaOrigen the normativa origen
      */
-    public void setNormativaOrigen(Long normativaOrigen) {
+    public void setNormativaOrigen(JNormativa normativaOrigen) {
         this.normativaOrigen = normativaOrigen;
     }
 
     /**
      * Obtiene la normativa afectada.
      *
-     * @return normativaAfectada
+     * @return normativaAfectada normativa afectada
      */
-    public Long getNormativaAfectada() {
+    public JNormativa getNormativaAfectada() {
         return normativaAfectada;
     }
 
     /**
      * Establece la normativa afectada
      *
-     * @param normativaAfectada
+     * @param normativaAfectada the normativa afectada
      */
-    public void setNormativaAfectada(Long normativaAfectada) {
+    public void setNormativaAfectada(JNormativa normativaAfectada) {
         this.normativaAfectada = normativaAfectada;
     }
 

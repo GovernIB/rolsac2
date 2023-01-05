@@ -9,22 +9,51 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
  */
 @Schema(name = "EntidadGrid")
 public class EntidadGridDTO extends ModelApi {
-
+    /**
+     * Codigo
+     */
     private Long codigo;
 
+    /**
+     * Identificador
+     */
     private String identificador;
+
+
+    /**
+     * Descripcion
+     */
     private String descripcion;
+
+    /**
+     * Activa
+     */
     private Boolean activa;
 
+    /**
+     * Rol Administrador
+     */
     private String rolAdmin;
 
+    /**
+     * Rol administrador de contenido
+     */
     private String rolAdminContenido;
 
+    /**
+     * Rol de gestor
+     */
     private String rolGestor;
 
+    /**
+     * Rol de informador
+     */
     private String rolInformador;
 
 
+    /**
+     * Instantiates a new Entidad grid dto.
+     */
     public EntidadGridDTO() {
     }
 
@@ -43,6 +72,8 @@ public class EntidadGridDTO extends ModelApi {
     }
 
     /**
+     * Establece id string.
+     *
      * @param idString the codigo to set
      */
     public void setIdString(final String idString) {
@@ -53,71 +84,156 @@ public class EntidadGridDTO extends ModelApi {
         }
     }
 
+    /**
+     * Instantiates a new Entidad grid dto.
+     *
+     * @param id el id
+     */
     public EntidadGridDTO(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return el codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
 
+    /**
+     * Obtiene activa.
+     *
+     * @return  activa
+     */
     public Boolean getActiva() {
         return activa;
     }
 
+    /**
+     * Establece activa.
+     *
+     * @param activa activa
+     */
     public void setActiva(Boolean activa) {
         this.activa = activa;
     }
 
+    /**
+     * Obtiene rol admin.
+     *
+     * @return el rol admin
+     */
     public String getRolAdmin() {
         return rolAdmin;
     }
 
+    /**
+     * Establece rol admin.
+     *
+     * @param rolAdmin el rol admin
+     */
     public void setRolAdmin(String rolAdmin) {
         this.rolAdmin = rolAdmin;
     }
 
+    /**
+     * Obtiene rol admin contenido.
+     *
+     * @return el rol admin contenido
+     */
     public String getRolAdminContenido() {
         return rolAdminContenido;
     }
 
+    /**
+     * Establece rol admin contenido.
+     *
+     * @param rolAdminContenido el rol admin contenido
+     */
     public void setRolAdminContenido(String rolAdminContenido) {
         this.rolAdminContenido = rolAdminContenido;
     }
 
+    /**
+     * Obtiene rol gestor.
+     *
+     * @return el rol gestor
+     */
     public String getRolGestor() {
         return rolGestor;
     }
 
+    /**
+     * Establece rol gestor.
+     *
+     * @param rolGestor el rol gestor
+     */
     public void setRolGestor(String rolGestor) {
         this.rolGestor = rolGestor;
     }
 
+    /**
+     * Obtiene rol informador.
+     *
+     * @return el rol informador
+     */
     public String getRolInformador() {
         return rolInformador;
     }
 
+    /**
+     * Establece rol informador.
+     *
+     * @param rolInformador el rol informador
+     */
     public void setRolInformador(String rolInformador) {
         this.rolInformador = rolInformador;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return la descripcion
+     */
     public String getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion la descripcion
+     */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return el identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador el identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }

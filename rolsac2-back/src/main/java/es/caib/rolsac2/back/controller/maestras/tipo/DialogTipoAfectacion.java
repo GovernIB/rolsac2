@@ -16,6 +16,8 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -95,8 +97,22 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
     }
 
     public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
     }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        TipoAfectacionDTO datoDTO = (TipoAfectacionDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setDescripcion(datoDTO.getDescripcion());
+        }
+    }
+
 
     public void cerrar() {
 

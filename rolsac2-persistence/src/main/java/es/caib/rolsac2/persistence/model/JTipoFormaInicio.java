@@ -22,9 +22,18 @@ public class JTipoFormaInicio extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * La consulta FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "TipoFormaInicio.FIND_BY_ID";
+    /**
+     * La consulta COUNT_BY_IDENTIFICADOR.
+     */
     public static final String COUNT_BY_IDENTIFICADOR = "TipoFormaInicio.COUNT_BY_IDENTIFICADOR";
 
+    /**
+     * Codigo
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-forma-inicio-sequence")
     @Column(name = "TPFI_CODIGO", nullable = false, length = 10)
@@ -42,26 +51,56 @@ public class JTipoFormaInicio extends BaseEntity {
     @OneToMany(mappedBy = "tipoFormaInicio", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoFormaInicioTraduccion> descripcion;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificacion  identificacion
+     */
     public void setIdentificador(String identificacion) {
         this.identificador = identificacion;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return  descripcion
+     */
     public List<JTipoFormaInicioTraduccion> getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion  descripcion
+     */
     public void setDescripcion(List<JTipoFormaInicioTraduccion> descripcion) {
         this.descripcion = descripcion;
     }

@@ -28,7 +28,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewTipoSexo.buscar}" update="dataTable"/>
 
@@ -51,7 +51,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                 <p:ajax event="dialogReturn" listener="#{viewTipoSexo.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
                                              iconPos="top" actionListener="#{viewTipoSexo.editarTipoSexo}"
                                              process="@form" update="messages">
                                 <p:ajax event="dialogReturn" listener="#{viewTipoSexo.returnDialogo}"
@@ -109,17 +109,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <h:outputScript>
                 function triggerDblClick() {
-                myDoubleClickCommand();
-                /*$('#form\\:btnConsultaHidden').click();*/
+                     $('#form\\:btnEditar').click();
                 }
             </h:outputScript>
 
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewTipoSexo.editarTipoSexo()}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewTipoSexo.consultarTipoSexo}" process="@this" update="messages"
                              style="display: none">

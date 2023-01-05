@@ -6,6 +6,9 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * La clase J tema.
+ */
 @Entity
 @SequenceGenerator(name = "tema-sequence", sequenceName = "RS2_TEMA_SEQ", allocationSize = 1)
 @Table(name = "RS2_TEMA",
@@ -22,21 +25,39 @@ public class JTema extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * La consulta FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "Tema.FIND_BY_ID";
+    /**
+     * La consulta COUNT_BY_IDENTIFICADOR.
+     */
     public static final String COUNT_BY_IDENTIFICADOR = "Tema.COUNT_BY_IDENTIFICADOR";
 
+    /**
+     * Codigo
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tema-sequence")
     @Column(name = "TEMA_CODIGO", nullable = false)
     private Long codigo;
 
+    /**
+     * Entidad
+     */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TEMA_CODENTI", nullable = false)
     private JEntidad entidad;
 
+    /**
+     * Identificador
+     */
     @Column(name = "TEMA_IDENTI", nullable = false, length = 50)
     private String identificador;
 
+    /**
+     * Tema padre
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEMA_PADRE")
     private JTema temaPadre;
@@ -44,42 +65,92 @@ public class JTema extends BaseEntity {
     @OneToMany(mappedBy = "tema", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTemaTraduccion> descripcion;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene entidad.
+     *
+     * @return  entidad
+     */
     public JEntidad getEntidad() {
         return entidad;
     }
 
+    /**
+     * Establece entidad.
+     *
+     * @param temaCodenti  tema codenti
+     */
     public void setEntidad(JEntidad temaCodenti) {
         this.entidad = temaCodenti;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param temaIdenti  tema identi
+     */
     public void setIdentificador(String temaIdenti) {
         this.identificador = temaIdenti;
     }
 
+    /**
+     * Obtiene tema padre.
+     *
+     * @return  tema padre
+     */
     public JTema getTemaPadre() {
         return temaPadre;
     }
 
+    /**
+     * Establece tema padre.
+     *
+     * @param temaPadre  tema padre
+     */
     public void setTemaPadre(JTema temaPadre) {
         this.temaPadre = temaPadre;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return  descripcion
+     */
     public List<JTemaTraduccion> getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion  descripcion
+     */
     public void setDescripcion(List<JTemaTraduccion> descripcion) {
         if (this.descripcion == null || this.descripcion.isEmpty()) {
             this.descripcion = descripcion;

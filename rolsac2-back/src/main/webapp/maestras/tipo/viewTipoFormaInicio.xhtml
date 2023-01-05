@@ -30,7 +30,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewTipoFormaInicio.buscar}" update="dataTable"/>
 
@@ -48,7 +48,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
-                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                      actionListener="#{viewTipoFormaInicio.editarTipoFormaInicio}" process="@form"
                                      update="messages">
                         <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}"
@@ -105,17 +105,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <h:outputScript>
                 function triggerDblClick() {
-                    myDoubleClickCommand();
-                    /*$('#form\\:btnConsultaHidden').click();*/
+                    $('#form\\:btnEditar').click();
                 }
             </h:outputScript>
 
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewTipoFormaInicio.editarTipoFormaInicio()}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewTipoFormaInicio.consultarTipoFormaInicio}" process="@this"
                              update="messages" style="display: none">

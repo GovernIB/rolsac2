@@ -1,6 +1,5 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.converter.AfectacionConverter;
 import es.caib.rolsac2.persistence.model.JAfectacion;
 import es.caib.rolsac2.service.model.AfectacionDTO;
 
@@ -16,24 +15,27 @@ import java.util.List;
 @Stateless
 @Local(AfectacionRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class AfectacionRepositoryBean extends AbstractCrudRepository<JAfectacion, Long> implements AfectacionRepository{
+public class AfectacionRepositoryBean extends AbstractCrudRepository<JAfectacion, Long> implements AfectacionRepository {
 
-    protected AfectacionRepositoryBean(){super(JAfectacion.class);}
-
-    @Inject
-    private AfectacionConverter converter;
+    protected AfectacionRepositoryBean() {
+        super(JAfectacion.class);
+    }
 
     @Override
-    public List<AfectacionDTO> findAfectacion() {
+    public List<JAfectacion> findAfectacionesRelacionadas(Long idNormativa) {
         TypedQuery<JAfectacion> query =
-                entityManager.createQuery("SELECT j FROM JAfectacion j", JAfectacion.class);
-        List<JAfectacion> jAfectacions = query.getResultList();
-        List<AfectacionDTO> afectacionDTOS = new ArrayList<>();
-        if (jAfectacions != null) {
-            for (JAfectacion jAfectacion : jAfectacions) {
-                afectacionDTOS.add(this.converter.createDTO(jAfectacion));
-            }
-        }
-        return afectacionDTOS;
+                entityManager.createNamedQuery(JAfectacion.FIND_BY_NORMATIVA_AFECTADA, JAfectacion.class);
+        query.setParameter("codigo", idNormativa);
+        List<JAfectacion> result = query.getResultList();
+        return result;
+    }
+
+    @Override
+    public List<JAfectacion> findAfectacionesOrigen(Long idNormativaOrigen) {
+        TypedQuery<JAfectacion> query =
+                entityManager.createNamedQuery(JAfectacion.FIND_BY_NORMATIVA_ORIGEN, JAfectacion.class);
+        query.setParameter("codigo", idNormativaOrigen);
+        List<JAfectacion> result = query.getResultList();
+        return result;
     }
 }

@@ -21,4 +21,6 @@ public interface TipoAfectacionRepository extends CrudRepository<JTipoAfectacion
   long countByFiltro(TipoAfectacionFiltro filtro);
 
   boolean existeIdentificador(String identificador);
+
+  List<JTipoAfectacion> listTipoAfectaciones();
 }

@@ -17,9 +17,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Controlador para editar un tipo materia SIA
@@ -97,7 +95,7 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
             return false;
         }
         List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
-        if(!idiomasPendientesDescripcion.isEmpty()) {
+        if (!idiomasPendientesDescripcion.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }
@@ -106,8 +104,22 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
     }
 
     public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
     }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        TipoMateriaSIADTO datoDTO = (TipoMateriaSIADTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setDescripcion(datoDTO.getDescripcion());
+        }
+    }
+
 
     public void cerrar() {
         final DialogResult result = new DialogResult();

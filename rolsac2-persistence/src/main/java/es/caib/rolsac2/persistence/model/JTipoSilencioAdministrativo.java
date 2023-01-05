@@ -27,42 +27,86 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * La consulta FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "TipoSilencioAdministrativo.FIND_BY_ID";
 
+    /**
+     * La consulta COUNT_BY_IDENTIFICADOR.
+     */
     public static final String COUNT_BY_IDENTIFICADOR = "TipoSilencioAdministrativo.COUNT_BY_IDENTIFICADOR";
-
-
+    
+    /**
+     * Codigo
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-silencionadmvo-sequence")
     @Column(name = "TPSA_CODIGO", nullable = false, length = 10)
     private Long codigo;
 
+    /**
+     * Identificador
+     */
     @Column(name = "TPSA_IDENTI", length = 50)
     private String identificador;
 
+    /**
+     * Descripcion
+     */
     @OneToMany(mappedBy = "tipoSilencioAdministrativo", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoSilencioAdministrativoTraduccion> descripcion;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador  identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return  descripcion
+     */
     public List<JTipoSilencioAdministrativoTraduccion> getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion  descripcion
+     */
     public void setDescripcion(List<JTipoSilencioAdministrativoTraduccion> descripcion) {
         this.descripcion = descripcion;
     }

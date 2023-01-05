@@ -17,6 +17,12 @@ public class AfectacionDTO extends ModelApi {
      */
     private Long codigo;
 
+
+    /**
+     * Código utilizado para mostrar afectaciones en tabla de relaciones en Normativas
+     */
+    private String codigoTabla;
+
     /**
      * Tipo afectación
      */
@@ -25,17 +31,17 @@ public class AfectacionDTO extends ModelApi {
     /**
      * Normativa origen
      */
-    private Long normativaOrigen;
+    private NormativaGridDTO normativaOrigen;
 
     /**
      * Normativa afectada
      */
-    private Long normativaAfectada;
+    private NormativaGridDTO normativaAfectada;
 
     /**
      * Obtiene el codigo.
      *
-     * @return codigo
+     * @return codigo codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -44,7 +50,7 @@ public class AfectacionDTO extends ModelApi {
     /**
      * Establece el codigo
      *
-     * @param codigo
+     * @param codigo the codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -53,7 +59,7 @@ public class AfectacionDTO extends ModelApi {
     /**
      * Obtiene el tipo.
      *
-     * @return tipo
+     * @return tipo tipo
      */
     public TipoAfectacionDTO getTipo() {
         return tipo;
@@ -62,7 +68,7 @@ public class AfectacionDTO extends ModelApi {
     /**
      * Establece el tipo
      *
-     * @param tipo
+     * @param tipo the tipo
      */
     public void setTipo(TipoAfectacionDTO tipo) {
         this.tipo = tipo;
@@ -71,37 +77,46 @@ public class AfectacionDTO extends ModelApi {
     /**
      * Obtiene la normativa origen.
      *
-     * @return normativaOrigen
+     * @return normativaOrigen normativa origen
      */
-    public Long getNormativaOrigen() {
+    public NormativaGridDTO getNormativaOrigen() {
         return normativaOrigen;
     }
 
     /**
      * Establece la normativa origen
      *
-     * @param normativaOrigen
+     * @param normativaOrigen the normativa origen
      */
-    public void setNormativaOrigen(Long normativaOrigen) {
+    public void setNormativaOrigen(NormativaGridDTO normativaOrigen) {
         this.normativaOrigen = normativaOrigen;
     }
 
     /**
      * Obtiene la normativa afectada.
      *
-     * @return normativaAfectada
+     * @return normativaAfectada normativa afectada
      */
-    public Long getNormativaAfectada() {
+    public NormativaGridDTO getNormativaAfectada() {
         return normativaAfectada;
     }
 
     /**
      * Establece la normativa afectada
      *
-     * @param normativaAfectada
+     * @param normativaAfectada the normativa afectada
      */
-    public void setNormativaAfectada(Long normativaAfectada) {
+    public void setNormativaAfectada(NormativaGridDTO normativaAfectada) {
         this.normativaAfectada = normativaAfectada;
+    }
+
+
+    public String getCodigoTabla() {
+        return codigoTabla;
+    }
+
+    public void setCodigoTabla(String codigoTabla) {
+        this.codigoTabla = codigoTabla;
     }
 
     @Override
@@ -114,5 +129,14 @@ public class AfectacionDTO extends ModelApi {
     @Override
     public int hashCode() {
         return Objects.hash(codigo);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AfectacionDTO that = (AfectacionDTO) o;
+        return Objects.equals(codigo, that.codigo) && Objects.equals(tipo.getCodigo(), that.tipo.getCodigo())
+                && Objects.equals(normativaOrigen.getCodigo(), that.normativaOrigen.getCodigo()) && Objects.equals(normativaAfectada.getCodigo(), that.normativaAfectada.getCodigo());
     }
 }

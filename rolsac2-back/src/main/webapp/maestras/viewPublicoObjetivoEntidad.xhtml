@@ -31,7 +31,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewPublicoObjetivoEntidad.buscar}"
                              update="dataTable"/>
@@ -51,7 +51,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2"  icon="pi pi-file-o" iconPos="top"  actionListener="#{viewPublicoObjetivoEntidad.nuevoTPOE}" process="@all">
                                 <p:ajax event="dialogReturn" listener="#{viewPublicoObjetivoEntidad.returnDialogo}" update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.editar']}" styleClass="mr-2"  icon="pi pi-pencil" iconPos="top"  actionListener="#{viewPublicoObjetivoEntidad.editarTPOE}" process="@all" update="messages dataTable">
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" styleClass="mr-2"  icon="pi pi-pencil" iconPos="top"  actionListener="#{viewPublicoObjetivoEntidad.editarTPOE}" process="@all" update="messages dataTable">
                                 <p:ajax event="dialogReturn" listener="#{viewPublicoObjetivoEntidad.returnDialogo}" update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.borrar']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewPublicoObjetivoEntidad.borrarTPOE}" process="@form" update="messages dataTable">
@@ -107,17 +107,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
             <h:outputScript >
                 function triggerDblClick() {
-                myDoubleClickCommand();
-                /*$('#form\\:btnConsultaHidden').click();*/
+                    $('#form\\:btnEditar').click();
                 }
             </h:outputScript>
 
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewPublicoObjetivoEntidad.editarTPOE()}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden" actionListener="#{viewPublicoObjetivoEntidad.consultarTPOE}" process="@this" update="messages" style="display: none">
                 <p:ajax event="dialogReturn" listener="#{viewPublicoObjetivoEntidad.returnDialogo}" update="messages dataTable"/>
             </p:commandButton>

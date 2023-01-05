@@ -9,22 +9,49 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
  */
 @Schema(name = "FichaEnlace")
 public class FichaEnlaceDTO extends ModelApi {
+
+    /**
+     * Codigo
+     */
     private Long codigo;
 
+    /**
+     * Ficha.
+     */
     public Long ficha;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene ficha.
+     *
+     * @return  ficha
+     */
     public Long getFicha() {
         return ficha;
     }
 
+    /**
+     * Establece ficha.
+     *
+     * @param ficha  ficha
+     */
     public void setFicha(Long ficha) {
         this.ficha = ficha;
     }

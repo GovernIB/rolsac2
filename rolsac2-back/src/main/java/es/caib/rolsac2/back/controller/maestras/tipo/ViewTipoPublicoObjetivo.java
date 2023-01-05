@@ -161,7 +161,7 @@ public class ViewTipoPublicoObjetivo extends AbstractController implements Seria
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoPublicoObjetivo", modoAcceso, params, true, 850, 290);
+        UtilJSF.openDialog("dialogTipoPublicoObjetivo", modoAcceso, params, true, 850, 310);
     }
 
     public void borrarTipoPublicoObjetivo() {

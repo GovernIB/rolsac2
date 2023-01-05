@@ -30,7 +30,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
   </ui:define>
 
   <ui:define name="content">
-    <h:form>
+    <h:form id="form">
       <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                        action="#{viewTipoMediaFicha.buscar}" update="dataTable"/>
 
@@ -53,7 +53,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <p:ajax event="dialogReturn" listener="#{viewTipoMediaFicha.returnDialogo}"
                         update="messages dataTable"/>
               </p:commandButton>
-              <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
+              <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
                                iconPos="top" actionListener="#{viewTipoMediaFicha.editarTipoMediaFicha}"
                                process="@form" update="messages">
                 <p:ajax event="dialogReturn" listener="#{viewTipoMediaFicha.returnDialogo}"
@@ -111,17 +111,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
       <h:outputScript>
         function triggerDblClick() {
-        myDoubleClickCommand();
-        /*$('#form\\:btnConsultaHidden').click();*/
+            $('#form\\:btnEditar').click();
         }
       </h:outputScript>
-
-      <p:remoteCommand name="myDoubleClickCommand"
-                       widgetVar="myDoubleClickCommand"
-                       action="#{viewTipoMediaFicha.editarTipoMediaFicha()}"
-                       autoRun="false"
-                       partialSubmit="true"
-                       process="@this"/>
       <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                        actionListener="#{viewTipoMediaFicha.consultarTipoMediaFicha}" process="@this" update="messages"
                        style="display: none">

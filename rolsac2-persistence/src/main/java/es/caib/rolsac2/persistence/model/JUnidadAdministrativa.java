@@ -91,6 +91,16 @@ public class JUnidadAdministrativa extends BaseEntity {
             })
     private Set<JUsuario> usuarios;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "RS2_UADNOR",
+            joinColumns = {
+                    @JoinColumn(name = "UANO_CODUNA")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "UANO_CODNORM")
+            })
+    private Set<JNormativa> normativas;
+
     public Long getCodigo() {
         return codigo;
     }
@@ -218,6 +228,10 @@ public class JUnidadAdministrativa extends BaseEntity {
     public Set<JUsuario> getUsuarios() { return usuarios; }
 
     public void setUsuarios(Set<JUsuario> usuarios) { this.usuarios = usuarios; }
+
+    public Set<JNormativa> getNormativas() { return normativas; }
+
+    public void setNormativas(Set<JNormativa> normativas) { this.normativas = normativas; }
 
     public void setTraducciones(List<JUnidadAdministrativaTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {

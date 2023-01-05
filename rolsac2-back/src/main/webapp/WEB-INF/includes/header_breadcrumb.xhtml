@@ -403,6 +403,14 @@
                                                 #{labels['viewProcedimientos.titulo']}
                                             </span>
                                         </p:link></li>
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link id="viewServicios"
+                                                outcome="/maestras/viewServicios.xhtml"
+                                                title="#{labels['viewServicios.titulo']}">
+                                            <span class="mb-0 float-right #{view.viewId eq '/maestras/viewServicios.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+                                                #{labels['viewServicios.titulo']}
+                                            </span>
+                                        </p:link></li>
 
                                 </c:when>
                                 <c:when
@@ -432,6 +440,14 @@
                                             </span>
                                         </p:link></li>
 
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link id="viewServicios"
+                                                outcome="/maestras/viewServicios.xhtml"
+                                                title="#{labels['viewServicios.titulo']}">
+                                            <span class="mb-0 float-right #{view.viewId eq '/maestras/viewServicios.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+                                                #{labels['viewServicios.titulo']}
+                                            </span>
+                                        </p:link></li>
                                 </c:when>
                             </c:choose>
                         </p:panelGrid>

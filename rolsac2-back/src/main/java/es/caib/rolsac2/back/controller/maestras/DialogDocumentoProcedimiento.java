@@ -10,8 +10,8 @@ import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URLConnection;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Named
@@ -46,9 +48,11 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
     @Inject
     private SystemServiceFacade systemServiceBean;
 
-    private TypeFicheroExterno tipo = TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS;
+    private TypeFicheroExterno tipoFichero = TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS;
 
     private Long idProcedimento;
+
+    private String tipo;
 
 
     public void load() {
@@ -115,7 +119,19 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
     }
 
     public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        ProcedimientoDocumentoDTO datoDTO = (ProcedimientoDocumentoDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setDescripcion(datoDTO.getDescripcion());
+        }
     }
 
 
@@ -213,12 +229,12 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         this.data = data;
     }
 
-    public TypeFicheroExterno getTipo() {
-        return tipo;
+    public TypeFicheroExterno getTipoFichero() {
+        return tipoFichero;
     }
 
-    public void setTipo(TypeFicheroExterno tipo) {
-        this.tipo = tipo;
+    public void setTipoFichero(TypeFicheroExterno tipoFichero) {
+        this.tipoFichero = tipoFichero;
     }
 
     public Long getIdProcedimento() {
@@ -227,5 +243,13 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
 
     public void setIdProcedimento(Long idProcedimento) {
         this.idProcedimento = idProcedimento;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

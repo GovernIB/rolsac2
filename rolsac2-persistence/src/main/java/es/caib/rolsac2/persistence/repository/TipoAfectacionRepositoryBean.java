@@ -111,4 +111,11 @@ public class TipoAfectacionRepositoryBean extends AbstractCrudRepository<JTipoAf
         List<JTipoAfectacion> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
+
+    public List<JTipoAfectacion> listTipoAfectaciones() {
+        StringBuilder sql = new StringBuilder("SELECT j FROM JTipoAfectacion j");
+        Query query = entityManager.createQuery(sql.toString());
+        List<JTipoAfectacion> result = query.getResultList();
+        return result;
+    }
 }

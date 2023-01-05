@@ -7,11 +7,16 @@ import javax.validation.constraints.Size;
 import java.util.Objects;
 
 /**
+ * El tipo Tipo materia sia grid dto.
+ *
  * @author Indra
  */
 @Schema(name = "TipoMateriaSIAGrid")
 public class TipoMateriaSIAGridDTO extends ModelApi {
 
+    /**
+     * Codigo
+     */
     private Long codigo;
 
     /**
@@ -26,34 +31,73 @@ public class TipoMateriaSIAGridDTO extends ModelApi {
      */
     private Literal descripcion;
 
+    /**
+     * Instancia un nuevo Tipo materia sia grid dto.
+     */
     public TipoMateriaSIAGridDTO() {
     }
 
+    /**
+     * Instacia un nuevo Tipo materia sia grid dto.
+     *
+     * @param id             id
+     * @param identificador  identificador
+     */
     public TipoMateriaSIAGridDTO(Long id, String identificador) {
         this.codigo = id;
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador  identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return  descripcion
+     */
     public Literal getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion  descripcion
+     */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }

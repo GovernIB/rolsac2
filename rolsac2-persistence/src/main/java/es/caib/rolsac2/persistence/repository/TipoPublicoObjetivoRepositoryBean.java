@@ -53,7 +53,7 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
                 Literal literal = new Literal();
                 literal.add(new Traduccion(filtro.getIdioma(), (String) jtipoNom[2]));
                 tipoNormativaGridDTO.setDescripcion(literal);
-
+                tipoNormativaGridDTO.setEmpleadoPublico((boolean) jtipoNom[3]);
                 tipoNormativa.add(tipoNormativaGridDTO);
             }
         }
@@ -73,7 +73,7 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
                     "SELECT count(j) FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
         } else {
             sql = new StringBuilder(
-                    "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  where 1 = 1  ");
+                    "SELECT j.codigo, j.identificador, t.descripcion, j.empleadoPublico FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  where 1 = 1  ");
         }
         // if (filtro.isRellenoIdUA()) {
         // sql.append(" and j.unidadAdministrativa = :ua");

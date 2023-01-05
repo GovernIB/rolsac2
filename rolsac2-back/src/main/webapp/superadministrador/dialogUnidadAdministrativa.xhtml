@@ -24,18 +24,20 @@
         <span class="pi pi-tag mt-1"/>
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogUnidadAdministrativa.idioma}"
-                           styleClass="botoneraRed"
-                           disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50">
+                           styleClass="botoneraRed"  unselectable="false" maxlength="50">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-            <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable"/>
+            <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogUnidadAdministrativa.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog "
-                         process="@this"/>
+                         process="@this">
+            <p:ajax event="dialogReturn" listener="#{dialogUnidadAdministrativa.returnDialogTraducir}" process="@this"
+                    update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo"/>
+        </p:commandButton>
     </ui:define>
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
@@ -118,13 +120,14 @@
                                 <h:outputText value="#{labels['dialogUnidadAdministrativa.tipo']}:" for="txtTipo"/>
                             </p>
                             <p:selectOneMenu id="txtTipo" value="#{dialogUnidadAdministrativa.data.tipo}"
-                                             styleClass="w95"
+                                             styleClass="w95"  autoWidth="false"
                                              disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                              converter="#{tipoUnidadAdministrativaConverter}">
                                 <f:selectItem itemLabel="#{labels['dialogUnidadAdministrativa.selecciona.tipo']}"
                                               itemValue="#{null}"/>
                                 <f:selectItems value="#{dialogUnidadAdministrativa.tipos}" var="tipo"
-                                               itemLabel="#{tipo.identificador}" itemValue="#{tipo}"/>
+                                               itemLabel="#{tipo.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}" itemValue="#{tipo}"/>
+                                <p:ajax event="change" update="@this"></p:ajax>
                             </p:selectOneMenu>
                         </div>
                     </div>
@@ -206,7 +209,7 @@
                                            for="txtTipoSexo"/>
                             <p:selectOneMenu id="txtTipoSexo"
                                              value="#{dialogUnidadAdministrativa.data.responsableSexo}"
-                                             styleClass="w95" required="true"
+                                             styleClass="w95" required="true"  autoWidth="false"
                                              requiredMessage="#{labels['dict.obligatorio.responsableSexo']}"
                                              disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                              converter="#{tipoSexoConverter}">
@@ -214,8 +217,9 @@
                                         itemLabel="#{labels['dialogUnidadAdministrativa.seleccionado.tipoSexo']}"
                                         itemValue="#{null}"/>
                                 <f:selectItems value="#{dialogUnidadAdministrativa.tiposSexo}" var="responsableSexo"
-                                               itemLabel="#{responsableSexo.identificador}"
+                                               itemLabel="#{responsableSexo.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}"
                                                itemValue="#{responsableSexo}"/>
+                                <p:ajax event="change" update="@this"></p:ajax>
                             </p:selectOneMenu>
                         </div>
                     </div>

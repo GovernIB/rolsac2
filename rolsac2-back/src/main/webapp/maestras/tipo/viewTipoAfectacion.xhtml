@@ -53,7 +53,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                 <p:ajax event="dialogReturn" listener="#{viewTipoAfectacion.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
                                              iconPos="top" actionListener="#{viewTipoAfectacion.editarTipoAfectacion}"
                                              process="@form" update="messages">
                                 <p:ajax event="dialogReturn" listener="#{viewTipoAfectacion.returnDialogo}"
@@ -112,17 +112,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <h:outputScript>
                 function triggerDblClick() {
-                    myDoubleClickCommand();
-                    /*$('#form\\:btnConsultaHidden').click();*/
+                    $('#form\\:btnEditar').click();
                 }
             </h:outputScript>
-
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewTipoAfectacion.editarTipoAfectacion()}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewTipoAfectacion.consultarTipoAfectacion}" process="@this"
                              update="messages" style="display: none">

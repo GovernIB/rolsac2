@@ -4,6 +4,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Objects;
 
+/**
+ * El tipo Seccion dto.
+ */
 @Schema(name = "Seccion")
 public class SeccionDTO extends ModelApi {
 
@@ -17,8 +20,16 @@ public class SeccionDTO extends ModelApi {
 
     private Literal nombre;
 
+    /**
+     * Instancia una nueva Seccion dto.
+     */
     public SeccionDTO(){}
 
+    /**
+     * Instancia una nueva Seccion dto.
+     *
+     * @param codigo  codigo
+     */
     public SeccionDTO(Long codigo) {
         this.codigo = codigo;
     }
@@ -26,7 +37,7 @@ public class SeccionDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return the codigo
+     * @return  codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -37,7 +48,9 @@ public class SeccionDTO extends ModelApi {
     }
 
     /**
-     * @param idString the codigo to set
+     * Establece id string.
+     *
+     * @param idString  codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -47,48 +60,103 @@ public class SeccionDTO extends ModelApi {
         }
     }
 
+    /**
+     * Create instance seccion dto.
+     *
+     * @return  seccion dto
+     */
     public static SeccionDTO createInstance() {
         SeccionDTO seccion = new SeccionDTO();
         seccion.setNombre(Literal.createInstance());
         return seccion;
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene entidad.
+     *
+     * @return  entidad
+     */
     public EntidadDTO getEntidad() {
         return entidad;
     }
 
+    /**
+     * Establece entidad.
+     *
+     * @param entidad  entidad
+     */
     public void setEntidad(EntidadDTO entidad) {
         this.entidad = entidad;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificador  identificador
+     */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene padre.
+     *
+     * @return  padre
+     */
     public SeccionDTO getPadre() {
         return padre;
     }
 
+    /**
+     * Establece padre.
+     *
+     * @param padre  padre
+     */
     public void setPadre(SeccionDTO padre) {
         this.padre = padre;
     }
 
+    /**
+     * Obtiene nombre.
+     *
+     * @return  nombre
+     */
     public Literal getNombre() {
         return nombre;
     }
 
+    /**
+     * Establece nombre.
+     *
+     * @param nombre  nombre
+     */
     public void setNombre(Literal nombre) {
         this.nombre = nombre;
     }

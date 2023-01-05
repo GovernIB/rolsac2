@@ -12,6 +12,7 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,9 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Named
@@ -68,7 +71,7 @@ public class DialogTema extends AbstractController implements Serializable {
         if (!verificarGuardar()) {
             return;
         }
-        if(this.data.getTemaPadre() != null && this.data.getTemaPadre().getCodigo() == null) {
+        if (this.data.getTemaPadre() != null && this.data.getTemaPadre().getCodigo() == null) {
             this.data.setTemaPadre(null);
         }
         if (this.data.getCodigo() == null) {
@@ -89,7 +92,20 @@ public class DialogTema extends AbstractController implements Serializable {
     }
 
     public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        TemaDTO datoDTO = (TemaDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setDescripcion(datoDTO.getDescripcion());
+        }
     }
 
     public void cerrar() {
@@ -117,7 +133,7 @@ public class DialogTema extends AbstractController implements Serializable {
         }
 
         List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getDescripcion(), sessionBean.getIdiomasObligatoriosList());
-        if(!idiomasPendientesDescripcion.isEmpty()) {
+        if (!idiomasPendientesDescripcion.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }

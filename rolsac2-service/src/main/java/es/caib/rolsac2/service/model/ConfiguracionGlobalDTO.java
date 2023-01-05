@@ -12,23 +12,39 @@ import java.util.Objects;
 @Schema(name = "ConfiguracionGlobal")
 public class ConfiguracionGlobalDTO extends ModelApi {
 
+    /**
+     * Codigo
+     */
     private Long codigo;
 
+    /**
+     * Propiedad
+     */
     private String propiedad;
 
+    /**
+     * Valor
+     */
     private String valor;
 
+    /**
+     * Descripcion
+     */
     private String descripcion;
 
+    /**
+     * noModificable
+     */
     private Boolean noModificable = false;
 
+    /**
+     * Instancia una nueva Configuracion global dto.
+     */
     public ConfiguracionGlobalDTO() {
     }
 
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
-     *
-     * @return the codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -37,10 +53,7 @@ public class ConfiguracionGlobalDTO extends ModelApi {
             return String.valueOf(codigo);
         }
     }
-
-    /**
-     * @param idString the codigo to set
-     */
+    
     public void setIdString(final String idString) {
         if (idString == null) {
             this.codigo = null;
@@ -49,46 +62,101 @@ public class ConfiguracionGlobalDTO extends ModelApi {
         }
     }
 
+    /**
+     * Instancia una nueva Configuracion global dto.
+     *
+     * @param id el id
+     */
     public ConfiguracionGlobalDTO(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return el codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo el codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene propiedad.
+     *
+     * @return la propiedad
+     */
     public String getPropiedad() {
         return propiedad;
     }
 
+    /**
+     * Establece propiedad.
+     *
+     * @param propiedad la propiedad
+     */
     public void setPropiedad(String propiedad) {
         this.propiedad = propiedad;
     }
 
+    /**
+     * Obtiene valor.
+     *
+     * @return el valor
+     */
     public String getValor() {
         return valor;
     }
 
+    /**
+     * Establece valor.
+     *
+     * @param valor el valor
+     */
     public void setValor(String valor) {
         this.valor = valor;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return el descripcion
+     */
     public String getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion la descripcion
+     */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
+    /**
+     * Obtiene no modificable.
+     *
+     * @return  no modificable
+     */
     public Boolean getNoModificable() {
         return noModificable;
     }
 
+    /**
+     * Establece no modificable.
+     *
+     * @param noModificable  no modificable
+     */
     public void setNoModificable(Boolean noModificable) {
         this.noModificable = noModificable;
     }

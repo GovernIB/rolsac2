@@ -25,9 +25,18 @@ public class JTipoAfectacion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * La consulta FIND_BY_ID.
+     */
     public static final String FIND_BY_ID = "TipoAfectacion.FIND_BY_ID";
+    /**
+     * La consulta COUNT_BY_IDENTIFICADOR.
+     */
     public static final String COUNT_BY_IDENTIFICADOR = "TipoAfectacion.COUNT_BY_IDENTIFICADOR";
 
+    /**
+     * Codigo
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo-afectacion-sequence")
     @Column(name = "TPAN_CODIGO", nullable = false, length = 10)
@@ -47,26 +56,56 @@ public class JTipoAfectacion extends BaseEntity {
     @OneToMany(mappedBy = "tipoAfectacion", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoAfectacionTraduccion> descripcion;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene identificador.
+     *
+     * @return  identificador
+     */
     public String getIdentificador() {
         return identificador;
     }
 
+    /**
+     * Establece identificador.
+     *
+     * @param identificacion  identificacion
+     */
     public void setIdentificador(String identificacion) {
         this.identificador = identificacion;
     }
 
+    /**
+     * Obtiene descripcion.
+     *
+     * @return  descripcion
+     */
     public List<JTipoAfectacionTraduccion> getDescripcion() {
         return descripcion;
     }
 
+    /**
+     * Establece descripcion.
+     *
+     * @param descripcion  descripcion
+     */
     public void setDescripcion(List<JTipoAfectacionTraduccion> descripcion) {
         this.descripcion = descripcion;
     }

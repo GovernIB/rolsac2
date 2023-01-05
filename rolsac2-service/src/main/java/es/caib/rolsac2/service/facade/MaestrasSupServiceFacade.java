@@ -53,6 +53,12 @@ public interface MaestrasSupServiceFacade {
     Pagina<TipoAfectacionGridDTO> findByFiltro(TipoAfectacionFiltro filtro);
 
     /**
+     * Método para listar los diferentes tipos de afectación dados de alta.
+     * @return
+     */
+    List<TipoAfectacionDTO> findTipoAfectaciones();
+
+    /**
      * Devuelve si existe un tipo de afectación con el identificador indicado
      *
      * @param identificador identificador del tipo de afectación
