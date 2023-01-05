@@ -6,7 +6,6 @@ import java.util.Objects;
  * Tiene la información básica, el código (normalmente Long) y puede que algo de información de descripción.
  *
  * @author Indra
- *
  */
 public class ProcesoBaseDTO extends ModelApi implements Comparable<ProcesoBaseDTO> {
 
@@ -14,8 +13,14 @@ public class ProcesoBaseDTO extends ModelApi implements Comparable<ProcesoBaseDT
   /** Codigo. ***/
   private Long codigo;
 
+  /**
+   * Entidad
+   */
   private EntidadDTO entidad;
 
+  /**
+   * Descripcion
+   */
   private String descripcion;
 
   /**
@@ -26,27 +31,51 @@ public class ProcesoBaseDTO extends ModelApi implements Comparable<ProcesoBaseDT
   }
 
   /**
-   * @return the codigo
+   * Obtiene codigo.
+   *
+   * @return  codigo
    */
   public Long getCodigo() {
     return codigo;
   }
 
   /**
-   * @param codigo the codigo to set
+   * Establece codigo.
+   *
+   * @param codigo  codigo to set
    */
   public void setCodigo(final Long codigo) {
     this.codigo = codigo;
   }
 
+  /**
+   * Obtiene entidad.
+   *
+   * @return  entidad
+   */
   public EntidadDTO getEntidad() { return entidad; }
 
+  /**
+   * Establece entidad.
+   *
+   * @param entidad  entidad
+   */
   public void setEntidad(EntidadDTO entidad) { this.entidad = entidad; }
 
+  /**
+   * Obtiene descripcion.
+   *
+   * @return  descripcion
+   */
   public String getDescripcion() {
     return descripcion;
   }
 
+  /**
+   * Establece descripcion.
+   *
+   * @param descripcion  descripcion
+   */
   public void setDescripcion(final String descripcion) {
     this.descripcion = descripcion;
   }

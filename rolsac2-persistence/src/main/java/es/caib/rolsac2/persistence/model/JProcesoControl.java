@@ -6,8 +6,7 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the "RS2_PROCEX database table.
- *
+ * La clase J Proceso Control
  */
 
 @Entity
@@ -21,13 +20,22 @@ public class JProcesoControl implements Serializable {
   /** Serial version UID. **/
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Identificador
+   */
   @Id
   @Column(name = "PROCEX_CODIGO", unique = true, nullable = false)
   private String identificador;
 
+  /**
+   * Instancia
+   */
   @Column(name = "PROCEX_INSTAN", length = 50)
   private String instancia;
 
+  /**
+   * Fecha
+   */
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "PROCEX_FECHA")
   private Date fecha;

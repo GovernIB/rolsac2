@@ -3,36 +3,81 @@ import es.caib.rolsac2.service.utils.UtilJSON;
 import java.util.List;
 
 
+/**
+ * The type Proceso grid dto.
+ */
 public class ProcesoGridDTO extends ProcesoBaseDTO {
 
+  /**
+   * Identificador del proceso
+   */
   private String identificadorProceso;
 
+  /**
+   * Cron
+   */
   private String cron;
 
+  /**
+   * Activo
+   */
   private Boolean activo;
 
+  /**
+   * Parametros de invocacion
+   */
   private List<Propiedad> parametrosInvocacion;
 
+  /**
+   * Obtiene identificador proceso.
+   *
+   * @return  identificador proceso
+   */
   public String getIdentificadorProceso() {
     return identificadorProceso;
   }
 
+  /**
+   * Establece identificador proceso.
+   *
+   * @param identificadorProceso  identificador proceso
+   */
   public void setIdentificadorProceso(final String identificadorProceso) {
     this.identificadorProceso = identificadorProceso;
   }
 
+  /**
+   * Obtiene cron.
+   *
+   * @return  cron
+   */
   public String getCron() {
     return cron;
   }
 
+  /**
+   * Establece cron.
+   *
+   * @param cron  cron
+   */
   public void setCron(final String cron) {
     this.cron = cron;
   }
 
+  /**
+   * Obtiene activo.
+   *
+   * @return  activo
+   */
   public Boolean getActivo() {
     return activo;
   }
 
+  /**
+   * Establece activo.
+   *
+   * @param activo  activo
+   */
   public void setActivo(final Boolean activo) {
     this.activo = activo;
   }
@@ -40,9 +85,8 @@ public class ProcesoGridDTO extends ProcesoBaseDTO {
   /**
    * Castea un object[] en ProcesoGrid
    *
-   * @param resultado
-   * @param
-   * @return
+   * @param resultado  resultado
+   * @return proceso grid dto
    */
   public static ProcesoGridDTO cast(final Object[] resultado) {
     final ProcesoGridDTO proceso = new ProcesoGridDTO();
@@ -58,7 +102,7 @@ public class ProcesoGridDTO extends ProcesoBaseDTO {
   /**
    * Obtiene parametrosInvocacion.
    *
-   * @return parametrosInvocacion
+   * @return parametrosInvocacion parametros invocacion
    */
   public List<Propiedad> getParametrosInvocacion() {
     return parametrosInvocacion;

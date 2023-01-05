@@ -10,10 +10,6 @@ import javax.persistence.*;
 import java.util.List;
 
 
-/**
- * The persistent class for the "RS2_PROCES database table.
- *
- */
 /*
  * PROCES_CODIGO NUMBER(10,0) No 1 CODIGO PROCES_IDENTI VARCHAR2(10 CHAR) No 2 IDENTIFICADOR PROCESO PROCES_DESCRI VARCHAR2(100 CHAR) No 3 DESCRIPCIÓN PROCESO
  * PROCES_CRON VARCHAR2(100 CHAR) Yes 4 CRON PROCES_ACTIVO NUMBER(1,0) No 0 5 ACTIVO PROCES_PARAMS VARCHAR2(1000 CHAR) Yes 6 PARÁMETROS INVOCACIÓN (SERIALIZADO
@@ -21,6 +17,9 @@ import java.util.List;
  *
  */
 
+/**
+ * La clase J Proceso
+ */
 @Entity
 @SequenceGenerator(name = "proces-sequence", sequenceName = "RS2_PROCES_SEQ", allocationSize = 1)
 @Table(name = "RS2_PROCES",
@@ -40,77 +39,168 @@ public class JProceso extends BaseEntity {
   @Column(name = "PROCES_CODIGO", unique = true, nullable = false, precision = 10)
   private Long codigo;
 
+  /**
+   * Entidad
+   */
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "PROCES_CODENTI", nullable = false)
   private JEntidad entidad;
 
+  /**
+   * Identificador del proceso
+   */
   @Column(name = "PROCES_IDENTI", length = 10, nullable = false)
   private String identificadorProceso;
 
+  /**
+   * Descripcion
+   */
   @Column(name = "PROCES_DESCRI", length = 100, nullable = false)
   private String descripcion;
 
+  /**
+   * Cronologia
+   */
   @Column(name = "PROCES_CRON", length = 100)
   private String cron;
 
+  /**
+   * Activo
+   */
   @Column(name = "PROCES_ACTIVO", nullable = false)
   private Boolean activo; // NUMBER(1,0) No 0 5 ACTIVO
 
+  /**
+   * Parametros del a invocacion serializados en Json
+   */
   @Column(name = "PROCES_PARAMS", length = 2000)
-  private String parametrosInvocacion; // PARÁMETROS INVOCACIÓN (SERIALIZADO JSON)
+  private String parametrosInvocacion;
 
+  /**
+   * Lista de procesos
+   */
   @OneToMany(mappedBy = "proceso", cascade = CascadeType.REMOVE)
   private List<JProcesoLog> jProcesoLog;
 
+  /**
+   * Obtiene entidad.
+   *
+   * @return  entidad
+   */
   public JEntidad getEntidad() { return entidad; }
 
+  /**
+   * Establece entidad.
+   *
+   * @param entidad  entidad
+   */
   public void setEntidad(JEntidad entidad) { this.entidad = entidad; }
 
+  /**
+   * Obtiene identificador proceso.
+   *
+   * @return  identificador proceso
+   */
   public String getIdentificadorProceso() {
     return identificadorProceso;
   }
 
+  /**
+   * Establece identificador proceso.
+   *
+   * @param identificadorProceso  identificador proceso
+   */
   public void setIdentificadorProceso(final String identificadorProceso) {
     this.identificadorProceso = identificadorProceso;
   }
 
+  /**
+   * Obtiene descripcion.
+   *
+   * @return  descripcion
+   */
   public String getDescripcion() {
     return descripcion;
   }
 
+  /**
+   * Establece descripcion.
+   *
+   * @param descripcion  descripcion
+   */
   public void setDescripcion(final String descripcion) {
     this.descripcion = descripcion;
   }
 
+  /**
+   * Obtiene cron.
+   *
+   * @return  cron
+   */
   public String getCron() {
     return cron;
   }
 
+  /**
+   * Establece cron.
+   *
+   * @param cron  cron
+   */
   public void setCron(final String cron) {
     this.cron = cron;
   }
 
+  /**
+   * Obtiene activo.
+   *
+   * @return  activo
+   */
   public Boolean getActivo() {
     return activo;
   }
 
+  /**
+   * Establece activo.
+   *
+   * @param activo  activo
+   */
   public void setActivo(final Boolean activo) {
     this.activo = activo;
   }
 
+  /**
+   * Obtiene parametros invocacion.
+   *
+   * @return  parametros invocacion
+   */
   public String getParametrosInvocacion() {
     return parametrosInvocacion;
   }
 
+  /**
+   * Establece parametros invocacion.
+   *
+   * @param parametrosInvocacion  parametros invocacion
+   */
   public void setParametrosInvocacion(final String parametrosInvocacion) {
     this.parametrosInvocacion = parametrosInvocacion;
   }
 
 
+  /**
+   * Obtiene proceso log.
+   *
+   * @return  proceso log
+   */
   public List<JProcesoLog> getjProcesoLog() {
     return jProcesoLog;
   }
 
+  /**
+   * Establece proceso log.
+   *
+   * @param jProcesoLog  j proceso log
+   */
   public void setjProcesoLog(final List<JProcesoLog> jProcesoLog) {
     this.jProcesoLog = jProcesoLog;
   }
@@ -118,7 +208,7 @@ public class JProceso extends BaseEntity {
   /**
    * Transforma una entidad JPA en un objeto POJO de Java equivalente.
    *
-   * @return
+   * @return proceso dto
    */
   public ProcesoDTO toModel() {
     final ProcesoDTO proceso = new ProcesoDTO();
@@ -134,7 +224,8 @@ public class JProceso extends BaseEntity {
   /**
    * Transforma un objeto POJO de Java en una entidad JPA equivalente .
    *
-   * @return
+   * @param proceso  proceso
+   * @return j proceso
    */
   public static JProceso fromModel(final ProcesoDTO proceso) {
     JProceso jproceso = null;
@@ -153,7 +244,7 @@ public class JProceso extends BaseEntity {
   /**
    * Genera un merge con el Proceso
    *
-   * @param
+   * @param proceso  proceso
    */
   public void merge(final ProcesoDTO proceso) {
     this.setDescripcion(proceso.getDescripcion());
@@ -163,9 +254,20 @@ public class JProceso extends BaseEntity {
     this.setParametrosInvocacion(UtilJSON.toJSON(proceso.getParametrosInvocacion()));
   }
 
+  /**
+   * Obtiene codigo.
+   *
+   * @return  codigo
+   */
   public Long getCodigo() {
     return this.codigo;
   }
+
+  /**
+   * Establece codigo.
+   *
+   * @param codigo  codigo
+   */
   public void setCodigo(final Long codigo) {
     this.codigo = codigo;
 

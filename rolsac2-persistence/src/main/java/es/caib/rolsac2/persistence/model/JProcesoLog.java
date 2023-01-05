@@ -12,8 +12,7 @@ import java.util.Date;
 
 
 /**
- * The persistent class for the RS2_PROCLOG database table.
- *
+ * La clase J Proceso Log
  */
 /*
  * EsNULL PROCLOG_CODIGO NUMBER(10,0) No 1 CODIGO PROCLOG_CODPROC NUMBER(10,0) No 2 CODIGO PROCESO PROCLOG_ESTADO VARCHAR2(1 CHAR) No 3 ESTADO PROCESO: INICIADO
@@ -29,84 +28,179 @@ public class JProcesoLog extends BaseEntity  {
 
   private static final Logger LOG = LoggerFactory.getLogger(JProcesoLog.class);
 
+  /**
+   * Codigo
+   */
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "proces-sequence")
   @Column(name = "PROCLOG_CODIGO", unique = true, nullable = false, precision = 10)
   private Long codigo;
 
+  /**
+   * Proceso
+   * PROCLOG_CODPROC NUMBER(10,0) No 2 CODIGO PROCESO
+   */
   @ManyToOne
   @JoinColumn(name = "PROCLOG_CODPROC")
-  private JProceso proceso; // PROCLOG_CODPROC NUMBER(10,0) No 2 CODIGO PROCESO
+  private JProceso proceso;
 
+  /**
+   * Estado del proceso
+   * ESTADO PROCESO: VACIO("V"), CORRECTO("C"), ALERTA("A"), ERROR("E");
+   */
   @Column(name = "PROCLOG_ESTADO", length = 1, nullable = false)
-  private String estadoProceso; // ESTADO PROCESO: VACIO("V"), CORRECTO("C"), ALERTA("A"), ERROR("E");
+  private String estadoProceso;
 
+  /**
+   * Fecha de inicio
+   */
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "PROCLOG_FECINI")
   private Date fechaInicio;
 
+  /**
+   * Fecha de fin
+   */
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "PROCLOG_FECFIN")
   private Date fechaFin;
 
+  /**
+   * Mensaje de error
+   * MENSAJE ERROR EN CASO DE FALLO
+   */
   @Column(name = "PROCLOG_ERRMSG")
-  private String mensajeError; // MENSAJE ERROR EN CASO DE FALLO
+  private String mensajeError;
 
+  /**
+   * Informacion del proceso
+   * PROCLOG_INFOPROC CLOB Yes 7 INFORMACIÓN ADICIONAL (SERIALIZADA JSON)
+   */
   @Column(name = "PROCLOG_INFOPROC")
-  private String informacionProceso; // PROCLOG_INFOPROC CLOB Yes 7 INFORMACIÓN ADICIONAL (SERIALIZADA JSON)
+  private String informacionProceso; 
 
+  /**
+   * Obtiene codigo.
+   *
+   * @return  codigo
+   */
   public Long getCodigo() {
     return this.codigo;
   }
 
+  /**
+   * Establece codigo.
+   *
+   * @param codigo  codigo
+   */
   public void setCodigo(final Long codigo) {
     this.codigo = codigo;
   }
 
+  /**
+   * Obtiene proceso.
+   *
+   * @return  proceso
+   */
   public JProceso getProceso() {
     return proceso;
   }
 
+  /**
+   * Establece proceso.
+   *
+   * @param proceso  proceso
+   */
   public void setProceso(final JProceso proceso) {
     this.proceso = proceso;
   }
 
+  /**
+   * Obtiene estado proceso.
+   *
+   * @return  estado proceso
+   */
   public String getEstadoProceso() {
     return estadoProceso;
   }
 
+  /**
+   * Establece estado proceso.
+   *
+   * @param estadoProceso  estado proceso
+   */
   public void setEstadoProceso(final String estadoProceso) {
     this.estadoProceso = estadoProceso;
   }
 
+  /**
+   * Obtiene fecha inicio.
+   *
+   * @return  fecha inicio
+   */
   public Date getFechaInicio() {
     return fechaInicio;
   }
 
+  /**
+   * Establece fecha inicio.
+   *
+   * @param fechaInicio  fecha inicio
+   */
   public void setFechaInicio(final Date fechaInicio) {
     this.fechaInicio = fechaInicio;
   }
 
+  /**
+   * Obtiene fecha fin.
+   *
+   * @return  fecha fin
+   */
   public Date getFechaFin() {
     return fechaFin;
   }
 
+  /**
+   * Establece fecha fin.
+   *
+   * @param fechaFin  fecha fin
+   */
   public void setFechaFin(final Date fechaFin) {
     this.fechaFin = fechaFin;
   }
 
+  /**
+   * Obtiene mensaje error.
+   *
+   * @return  mensaje error
+   */
   public String getMensajeError() {
     return mensajeError;
   }
 
+  /**
+   * Establece mensaje error.
+   *
+   * @param mensajeError  mensaje error
+   */
   public void setMensajeError(final String mensajeError) {
     this.mensajeError = mensajeError;
   }
 
+  /**
+   * Obtiene informacion proceso.
+   *
+   * @return  informacion proceso
+   */
   public String getInformacionProceso() {
     return informacionProceso;
   }
 
+  /**
+   * Establece informacion proceso.
+   *
+   * @param informacionProceso  informacion proceso
+   */
   public void setInformacionProceso(final String informacionProceso) {
     this.informacionProceso = informacionProceso;
   }
@@ -114,7 +208,7 @@ public class JProcesoLog extends BaseEntity  {
   /**
    * Transforma una entidad JPA en un objeto POJO de Java equivalente.
    *
-   * @return
+   * @return proceso log dto
    */
   public ProcesoLogDTO toModel() {
     final ProcesoLogDTO proceso = new ProcesoLogDTO();
