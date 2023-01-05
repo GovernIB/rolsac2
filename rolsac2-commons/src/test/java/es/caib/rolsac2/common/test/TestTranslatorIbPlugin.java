@@ -14,9 +14,9 @@ public class TestTranslatorIbPlugin {
 
         Map<String, String> opciones = new HashMap<>();
         Properties prop = new Properties();
-        prop.put("es.caib.rolsac2.pluginsib.traduccion.translatorib.url", "https://dev.caib.es/translatorib/api/services/traduccion/v1");
+        prop.put("es.caib.rolsac2.pluginsib.traduccion.translatorib.url", "https://ibenred.indra.es/translatorib/api/services/traduccion/v1");
         prop.put("es.caib.rolsac2.pluginsib.traduccion.translatorib.usr", "api-tib");
-        prop.put("es.caib.rolsac2.pluginsib.traduccion.translatorib.pwd", "XXXXXXX");
+        prop.put("es.caib.rolsac2.pluginsib.traduccion.translatorib.pwd", "C4mp30n@s");
         IPlugin plg = (IPlugin) PluginsManager.instancePluginByClassName("es.caib.rolsac2.commons.plugins.traduccion.translatorib.TranslatorIBPlugin",
                 "es.caib.rolsac2.pluginsib.traduccion.translatorib.", prop);
         IPluginTraduccion pdgTraduccion = (IPluginTraduccion) plg;

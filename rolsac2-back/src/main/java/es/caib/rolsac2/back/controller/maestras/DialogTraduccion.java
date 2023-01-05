@@ -3,21 +3,27 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.commons.plugins.traduccion.api.IPluginTraduccionException;
+import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
+import es.caib.rolsac2.commons.plugins.traduccion.api.TipoEntrada;
+import es.caib.rolsac2.service.facade.integracion.TraduccionServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.ProcedimientoDTO;
+import es.caib.rolsac2.service.model.ServicioDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -25,41 +31,101 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
     private static final Logger LOG = LoggerFactory.getLogger(DialogTraduccion.class);
 
+    @EJB
+    private TraduccionServiceFacade traduccionServiceFacade;
+
     private Object data;
+
+    private Object dataCopy;
 
     private List<String> idiomas;
 
-    private String idiomaSeleccionado;
+    private String idiomaDestino;
+
+    private String idiomaOrigen;
 
     private List<Traduccion> traducciones;
 
     private List<Literal> literales;
 
-    private List<String> trad1;
-
-    private List<String> trad2;
-
     private Literal litTrad;
+
+    private List<Literal> literalAux;
+    private List<String> literalAuxOrigen;
+    private List<String> literalAuxDestino;
+    private List<String> literalAuxDestinoSust;
+    private List<String> listaFields;
+
+    private boolean sustitucion = true;
 
     public void load() throws IllegalAccessException {
         LOG.debug("load");
         this.setearIdioma();
         literales = new ArrayList<>();
-        trad1 = new ArrayList<>();
-        trad2 = new ArrayList<>();
         traducciones = new ArrayList<>();
-        idiomas  = new ArrayList<>();
+        idiomas = new ArrayList<>();
         litTrad = Literal.createInstance();
-        idiomaSeleccionado = "es";
+        idiomaDestino = "es";
+        idiomaOrigen = sessionBean.getLang();
+        literalAux = new ArrayList<>();
+        listaFields = new ArrayList<>();
 
         data = UtilJSF.getValorMochilaByKey("dataTraduccion");
+        UtilJSF.vaciarMochila();
+        dataCopy = data;
 
+        if (data instanceof ProcedimientoDTO) {
 
-        imprimirLiterales();
+            imprimirLiteralesProcedimiento();
+
+        } else if (data instanceof ServicioDTO) {
+
+            imprimirLiteralesServicio();
+
+        } else {
+            imprimirLiterales();
+        }
+
+        literalAuxOrigen = new ArrayList<>();
+        literalAuxDestino = new ArrayList<>();
+        if (literales != null) {
+            for (Literal literal : literales) {
+                literalAuxOrigen.add(literal.getTraduccion(idiomaOrigen));
+                literalAuxDestino.add(literal.getTraduccion(idiomaDestino));
+            }
+            literalAuxDestinoSust = new ArrayList<>(literalAuxDestino);
+        }
     }
 
     public void guardar() {
-        traducirLiterales();
+
+        if (literales != null) {
+            Method[] metodos = data.getClass().getMethods();
+            Field[] fields = data.getClass().getDeclaredFields();
+            int cont = 0;
+
+            for (Field field : fields) {
+                for (Method m : metodos) {
+                    if ((m.getName().startsWith("set"))
+                            && (m.getParameterTypes()[0].getTypeName().equals(Literal.class.getTypeName()))) {
+                        try {
+
+                            if ((field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("set", "")))) {
+                                if (literales.size() > cont) {
+                                    m.invoke(data, literales.get(cont));
+                                    cont++;
+                                }
+                            }
+                        } catch (IllegalAccessException | IllegalArgumentException
+                                 | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+
         final DialogResult result = new DialogResult();
         result.setModoAcceso(TypeModoAcceso.ALTA);
         result.setResult(data);
@@ -68,6 +134,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
     }
 
     public void cerrar() {
+        data = dataCopy;
         final DialogResult result = new DialogResult();
         result.setModoAcceso(TypeModoAcceso.ALTA);
         result.setCanceled(true);
@@ -79,22 +146,79 @@ public class DialogTraduccion extends AbstractController implements Serializable
         return literales.isEmpty();
     }
 
-    public void imprimirLiterales() {
+    public void imprimirLiteralesServicio() {
+        literales.add((Literal) ((ProcedimientoDTO) data).getNombreProcedimientoWorkFlow().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesFinalidad().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesDestinatario().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getRequisitos().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getObjeto().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getDestinatarios().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getTerminoResolucion().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getObservaciones().clone());
+        listaFields.add("nombreProcedimientoWorkFlow");
+        listaFields.add("datosPersonalesFinalidad");
+        listaFields.add("datosPersonalesDestinatario");
+        listaFields.add("requisitos");
+        listaFields.add("objeto");
+        listaFields.add("destinatarios");
+        listaFields.add("terminoResolucion");
+        listaFields.add("observaciones");
 
-        Method[] metodos=data.getClass().getMethods();
+        literales.add((Literal) ((ProcedimientoDTO) data).getLopdFinalidad().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getLopdDestinatario().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getLopdDerechos().clone());
+        //literales.add((Literal) ((ProcedimientoDTO) data).getLopdInfoAdicional().clone());
+        listaFields.add("lopdFinalidad");
+        listaFields.add("lopdDestinatario");
+        listaFields.add("lopdDerechos");
+        //listaFields.add("lopdInfoAdicional");
+    }
+
+    public void imprimirLiteralesProcedimiento() {
+        literales.add((Literal) ((ProcedimientoDTO) data).getNombreProcedimientoWorkFlow().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesFinalidad().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesDestinatario().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getRequisitos().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getObjeto().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getDestinatarios().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getTerminoResolucion().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getObservaciones().clone());
+        listaFields.add("nombreProcedimientoWorkFlow");
+        listaFields.add("datosPersonalesFinalidad");
+        listaFields.add("datosPersonalesDestinatario");
+        listaFields.add("requisitos");
+        listaFields.add("objeto");
+        listaFields.add("destinatarios");
+        listaFields.add("terminoResolucion");
+        listaFields.add("observaciones");
+
+        literales.add((Literal) ((ProcedimientoDTO) data).getLopdFinalidad().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getLopdDestinatario().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getLopdDerechos().clone());
+        //literales.add((Literal) ((ProcedimientoDTO) data).getLopdInfoAdicional().clone());
+        listaFields.add("lopdFinalidad");
+        listaFields.add("lopdDestinatario");
+        listaFields.add("lopdDerechos");
+        //listaFields.add("lopdInfoAdicional");
+    }
+
+    public void imprimirLiterales() {
+        literales = new ArrayList<>();
+        Method[] metodos = data.getClass().getMethods();
         Literal lit = new Literal();
         Field[] fields = data.getClass().getDeclaredFields();
 
         for (Field field : fields) {
-            for (Method m: metodos) {
+            for (Method m : metodos) {
                 if ((m.getName().startsWith("get")) &&
                         m.getGenericReturnType().getTypeName().equals(lit.getClass().getTypeName())) {
                     if ((field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("get", "")))) {
-                        try{
+                        try {
                             Literal k = (Literal) m.invoke(data, null);
-                            literales.add(k);
+                            literales.add((Literal) k.clone());
+                            listaFields.add(field.getName());
                         } catch (IllegalAccessException | IllegalArgumentException
-                                | InvocationTargetException e) {
+                                 | InvocationTargetException e) {
                             e.printStackTrace();
                         }
                     }
@@ -103,39 +227,75 @@ public class DialogTraduccion extends AbstractController implements Serializable
         }
     }
 
-    public void traducirLiterales() {
-
-        for (String li : trad1) {
-            traducciones.add(new Traduccion(sessionBean.getLang(), li));
-            traducciones.add(new Traduccion(idiomaSeleccionado, trad2.get(trad1.indexOf(li))));
-            for (Traduccion trad : traducciones) {
-                litTrad.add(trad);
-            }
-            literales.add(litTrad);
-            litTrad = new Literal();
-            traducciones = new ArrayList<>();
+    public void cambiarIdiomaOrigenAux() {
+        literalAuxOrigen.clear();
+        for (Literal literal : literales) {
+            literalAuxOrigen.add(literal.getTraduccion(idiomaOrigen));
         }
+    }
 
-        Method[] metodos=data.getClass().getMethods();
-        Field[] fields = data.getClass().getDeclaredFields();
-        int cont = 0;
+    public void cambiarIdiomaDestinoAux() {
+        literalAuxDestino.clear();
+        for (Literal literal : literales) {
+            literalAuxDestino.add(literal.getTraduccion(idiomaDestino));
+        }
+    }
 
-        for (Field field : fields) {
-            for (Method m: metodos) {
-                if ((m.getName().startsWith("set"))
-                        && (m.getParameterTypes()[0].getTypeName().equals(Literal.class.getTypeName()))) {
-                    try {
+    public void cambioIdiomaOrigen(Literal literal, String idioma, Integer posicion) {
+        literal.add(new Traduccion(idioma, this.literalAuxOrigen.get(posicion)));
+    }
 
-                        if ((field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("set", "")))) {
-                            m.invoke(data, literales.get(cont));
-                            cont++;
-                        }
+    public void cambioIdiomaDestino(Literal literal, String idioma, Integer posicion) {
+        literal.add(new Traduccion(idioma, this.literalAuxDestino.get(posicion)));
+    }
 
-                    } catch (IllegalAccessException | IllegalArgumentException
-                            | InvocationTargetException e) {
-                        e.printStackTrace();
+    public void cambioValores() {
+        String aux = idiomaOrigen;
+        idiomaOrigen = idiomaDestino;
+        idiomaDestino = aux;
+    }
+
+    public Idioma comprobarIdioma(String idioma) {
+        switch (idioma) {
+            case "ca":
+                return Idioma.CATALAN;
+            case "es":
+                return Idioma.CASTELLANO;
+            case "fr":
+                return Idioma.FRANCES;
+            case "en":
+                return Idioma.INGLES;
+            case "de":
+                return Idioma.ALEMAN;
+            case "it":
+                return Idioma.ITALIANO;
+            default:
+                return null;
+        }
+    }
+
+    public void traducirLiterales() {
+        if (idiomaDestino.equals(idiomaOrigen)) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraduccion.mismoIdioma"), true);
+        } else {
+            literalAux = literales;
+            Map<String, String> opciones = new HashMap<>();
+            for (int i = 0; i < literales.size(); i++) {
+                try {
+                    String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.TEXTO_PLANO.toString(),
+                            literales.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino),
+                            opciones, sessionBean.getEntidad().getCodigo());
+                    if (isSustitucion()) {
+                        literalAuxDestino.add(i, tradDestino);
+                        this.cambioIdiomaDestino(literales.get(i), idiomaDestino, i);
+                    } else {
+                        literalAuxDestinoSust.add(i, tradDestino);
                     }
+                } catch (IPluginTraduccionException e) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "dialogTraduccion.errorComunicacion");
                 }
+
+
             }
         }
     }
@@ -164,22 +324,6 @@ public class DialogTraduccion extends AbstractController implements Serializable
         this.literales = literales;
     }
 
-    public List<String> getTrad1() {
-        return trad1;
-    }
-
-    public void setTrad1(List<String> trad1) {
-        this.trad1 = trad1;
-    }
-
-    public List<String> getTrad2() {
-        return trad2;
-    }
-
-    public void setTrad2(List<String> trad2) {
-        this.trad2 = trad2;
-    }
-
     public Literal getLitTrad() {
         return litTrad;
     }
@@ -196,13 +340,67 @@ public class DialogTraduccion extends AbstractController implements Serializable
         this.idiomas = idiomas;
     }
 
-    public String getIdiomaSeleccionado() {
-        return idiomaSeleccionado;
+    public String getIdiomaDestino() {
+        return idiomaDestino;
     }
 
-    public void setIdiomaSeleccionado(String idiomaSeleccionado) {
-        this.idiomaSeleccionado = idiomaSeleccionado;
+    public void setIdiomaDestino(String idiomaDestino) {
+        this.idiomaDestino = idiomaDestino;
     }
 
+    public String getIdiomaOrigen() {
+        return idiomaOrigen;
+    }
 
+    public void setIdiomaOrigen(String idiomaOrigen) {
+        this.idiomaOrigen = idiomaOrigen;
+    }
+
+    public List<Literal> getLiteralAux() {
+        return literalAux;
+    }
+
+    public void setLiteralAux(List<Literal> literalAux) {
+        this.literalAux = literalAux;
+    }
+
+    public List<String> getListaFields() {
+        return listaFields;
+    }
+
+    public void setListaFields(List<String> listaFields) {
+        this.listaFields = listaFields;
+    }
+
+    public List<String> getLiteralAuxOrigen() {
+        return literalAuxOrigen;
+    }
+
+    public void setLiteralAuxOrigen(List<String> literalAuxOrigen) {
+        this.literalAuxOrigen = literalAuxOrigen;
+    }
+
+    public List<String> getLiteralAuxDestino() {
+        return literalAuxDestino;
+    }
+
+    public void setLiteralAuxDestino(List<String> literalAuxDestino) {
+        this.literalAuxDestino = literalAuxDestino;
+    }
+
+    public boolean isSustitucion() {
+        return sustitucion;
+    }
+
+    public void setSustitucion(boolean sustitucion) {
+        this.sustitucion = sustitucion;
+    }
+
+    public List<String> getLiteralAuxDestinoSust() {
+        return literalAuxDestinoSust;
+    }
+
+    public void setLiteralAuxDestinoSust(List<String> literalAuxDestinoSust) {
+        this.literalAuxDestinoSust = literalAuxDestinoSust;
+    }
 }

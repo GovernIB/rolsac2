@@ -3,77 +3,101 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:my="http://java.sun.com/jsf/composite/components" xmlns:c="http://java.sun.com/jsp/jstl/core"
 >
-<ui:composition template="/WEB-INF/templates/layoutDialogSeleccion.xhtml">
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
         <f:metadata>
             <f:viewAction action="#{dialogTraduccion.load}"/>
         </f:metadata>
     </ui:define>
-    <ui:define name="pageTitleDialogSelec">
+    <ui:define name="pageTitleDialog">
         <h:outputFormat value="Traduccion"/>
     </ui:define>
-    <ui:define name="contentDialogSelec">
-        <p:growl id="messagesDialogSelec"
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
                  globalOnly="false"
-                 showDetail="true"
+                 showDetail="false"
                  life="5000"
                  escape="false"/>
-        <div class="ui-g-12 ui-md-9 pl-4 panel-container">
-            <p:panel header="Traduccion" styleClass="panel">
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <p:selectOneMenu value="#{dialogTraduccion.idioma}"
-                                         styleClass="w95" required="false">
-                            <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{sessionBean.lang}"/>
-                            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
-                                           itemLabel="#{labels['idiomas.' += idioma]}" itemValue="#{idioma}"/>
-                        </p:selectOneMenu>
-                        <div class="col-5 p-1">
-                            <h:panelGroup id="literales">
-                                <h:form rendered="#{not empty dialogTraduccion.literales}">
-                                    <ui:repeat id="traduc" value="#{dialogTraduccion.literales}" varStatus="loop">
-                                        <p:inputText value="#{dialogTraduccion.literales[loop.index].getTraduccion(sessionBean.lang)}"
-                                        rendered="#{!dialogTraduccion.isEmptyLiterales()}"/>
-                                        <p:inputText value="#{dialogTraduccion.trad1[loop.index]}" rendered="#{dialogTraduccion.isEmptyLiterales()}"/>
-                                    </ui:repeat>
-                                </h:form>
-                            </h:panelGroup>
+        <p:panel id="panelTraduccion">
+            <div class="d-flex justify-content-center align-content-center h25px">
+                <p:outputLabel value="#{labels['dialogTraduccion.idiomaOrigen']}" styleClass="mr-2 "></p:outputLabel>
+                <p:selectOneMenu id="selectId1" value="#{dialogTraduccion.idiomaOrigen}"
+                                 required="false" styleClass="p-0">
+                    <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{null}"/>
+                    <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="lang"
+                                   itemLabel="#{labels['idiomas.' += lang]}" itemValue="#{lang}"/>
+                    <p:ajax event="change" listener="#{dialogTraduccion.cambiarIdiomaOrigenAux}" update="tradLiteral"/>
+                </p:selectOneMenu>
+                <p:commandButton action="#{dialogTraduccion.cambioValores}"
+                                 update="selectId1 selectId2 tradLiteral"
+                                 icon="pi pi-refresh"
+                                 process="@this" styleClass="mx-1"/>
+                <p:selectOneMenu id="selectId2" value="#{dialogTraduccion.idiomaDestino}"
+                                 required="false" styleClass="p-0">
+                    <f:selectItem itemLabel="#{labels['dict.seleccionar']}"
+                                  itemValue="#{null}"/>
+                    <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="lang"
+                                   itemLabel="#{labels['idiomas.' += lang]}" itemValue="#{lang}"/>
+                    <p:ajax process="@this" listener="#{dialogTraduccion.cambiarIdiomaDestinoAux}"
+                            update="tradLiteral"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2"></p:outputLabel>
+            </div>
+            <h:panelGroup id="tradLiteral">
+                <ui:repeat id="lit" value="#{dialogTraduccion.literales}" varStatus="rep" rendered="true">
+                    <!--<h:outputText value="Campo #{rep.index}:" />-->
+                    <div class="d-flex justify-content-center align-content-center align-items-center mt-3"
+                         style="gap: .5rem;">
+                        <div class="w10">
+                            <h:outputText value="#{labels['dict.' += dialogTraduccion.listaFields[rep.index]]}:"/>
                         </div>
+                        <p:inputTextarea rows="3" autoResize="false" styleClass="w40"
+                                         value="#{dialogTraduccion.literalAuxOrigen[rep.index]}">
+                            <p:ajax event="change"
+                                    listener="#{dialogTraduccion.cambioIdiomaOrigen(dialogTraduccion.literales[rep.index], dialogTraduccion.idiomaOrigen, rep.index)}"></p:ajax>
+                        </p:inputTextarea>
+                        <p:inputTextarea rows="3" autoResize="false" styleClass="w50"
+                                         value="#{dialogTraduccion.literalAuxDestino[rep.index]}">
+                            <p:ajax event="change"
+                                    listener="#{dialogTraduccion.cambioIdiomaDestino(dialogTraduccion.literales[rep.index], dialogTraduccion.idiomaDestino, rep.index)}"></p:ajax>
+                        </p:inputTextarea>
                     </div>
-                    <div class="form-group col-md-3">
-                        <p:selectOneMenu value="#{dialogTraduccion.idiomaSeleccionado}"
-                                         styleClass="w95" required="false">
-                            <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{sessionBena.getIdiomasPermitidosList.get(1)}"/>
-                            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
-                                           itemLabel="#{labels['idiomas.' += idioma]}" itemValue="#{idioma}"/>
-                        </p:selectOneMenu>
-                        <div class="col-5 p-1">
-                            <h:panelGroup id="literales1">
-                                <h:form rendered="#{not empty dialogTraduccion.literales}">
-                                    <ui:repeat id="repTrad" value="#{dialogTraduccion.literales}" varStatus="loop">
-                                        <p:inputText id="txtTrad" value="#{dialogTraduccion.literales[loop.index].getTraduccion(dialogTraduccion.idiomaSeleccionado)}"
-                                        rendered="#{!dialogTraduccion.isEmptyLiterales()}"/>
-                                        <p:inputText value="#{dialogTraduccion.trad2[loop.index]}" rendered="#{dialogTraduccion.isEmptyLiterales()}"/>
-                                    </ui:repeat>
-                                </h:form>
-                            </h:panelGroup>
+                    <h:panelGroup rendered="#{!dialogTraduccion.sustitucion}">
+                        <div class="d-flex justify-content-center mt-2">
+                            <p:outputLabel value="#{labels['dict.traduccio'] += ':'}" styleClass="mr-2"></p:outputLabel>
+                            <p:inputTextarea rows="3" autoResize="false" styleClass="w50"
+                                             value="#{dialogTraduccion.literalAuxDestinoSust[rep.index]}">
+                            </p:inputTextarea>
                         </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <p:commandButton action="#{dialogTraduccion.traducirLiterales}"
-                                     value="#{labels['dict.traducir']}"
-                                     update="messagesDialogSelec formDialogSelec:literales1"
-                                     process="@this"/>
-                </div>
-            </p:panel>
-        </div>
+                    </h:panelGroup>
+                </ui:repeat>
+            </h:panelGroup>
+
+            <div class="row justify-content-center align-items-center mt-3">
+
+                <p:commandButton id="btnTraduccion"
+                                 actionListener="#{dialogTraduccion.traducirLiterales()}"
+                                 style="margin: 20px"
+                                 value="#{labels['dict.traducir']}"
+                                 update="tradLiteral messagesDialog"
+                                 process="@form"/>
+                    <p:selectBooleanCheckbox value="#{dialogTraduccion.sustitucion}"
+                                             itemLabel="#{labels['dialogTraduccion.sustituirValor']}"/>
+            </div>
+        </p:panel>
+        <p:blockUI block="panelTraduccion" trigger="btnTraduccion" widgetVar="timeSpinner">
+            <div class="spinner-border text-light spinner-large" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </p:blockUI>
+
+
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogTraduccion.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialogSelec"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
                          process="@all"/>
         <p:commandButton action="#{dialogTraduccion.cerrar}"
                          value="#{labels['dict.cerrar']}"
