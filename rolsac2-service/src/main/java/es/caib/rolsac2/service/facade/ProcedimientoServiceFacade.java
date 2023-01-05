@@ -2,10 +2,7 @@ package es.caib.rolsac2.service.facade;
 
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.ProcedimientoDTO;
-import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
-import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
@@ -22,22 +19,23 @@ import java.util.Optional;
 public interface ProcedimientoServiceFacade {
 
     /**
-     * Crea un nuevo fichas a la base de datos relacionada con la unidad indicada.
+     * Crea un nuevo procedimiento a la base de datos relacionada con la unidad indicada.
      *
-     * @param dto      datos del personal
-     * @param idUnitat identificador de la unidad
+     * @param dto el procedimiento
      * @return EL identificador del nuevo personal
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    Long create(ProcedimientoDTO dto) throws RecursoNoEncontradoException;
+    Long create(ProcedimientoBaseDTO dto) throws RecursoNoEncontradoException;
+
 
     /**
-     * Actualiza los datos de un fichas a la base de datos.
+     * Actualiza los datos de un procedimiento a la base de datos.
      *
      * @param dto nuevos datos del persoanl
      * @throws RecursoNoEncontradoException si el persoanl con el id no existe.
      */
-    void update(ProcedimientoDTO dto) throws RecursoNoEncontradoException;
+    void update(ProcedimientoBaseDTO dto) throws RecursoNoEncontradoException;
+
 
     /**
      * Borra una ficha de la bbdd
@@ -52,12 +50,20 @@ public interface ProcedimientoServiceFacade {
     void deleteWF(Long idWF) throws RecursoNoEncontradoException;
 
     /**
-     * Retorna un ficha amb el personal indicat per l'identificador.
+     * Retorna un procedimiento amb el personal indicat per l'identificador.
      *
      * @param id identificador del personal a cercar
      * @return un opcional amb les dades del personal indicat o buid si no existeix.
      */
-    ProcedimientoDTO findById(Long id);
+    ProcedimientoDTO findProcedimientoById(Long id);
+
+    /**
+     * Retorna un servicio amb el personal indicat per l'identificador.
+     *
+     * @param id identificador del personal a cercar
+     * @return un opcional amb les dades del personal indicat o buid si no existeix.
+     */
+    ServicioDTO findServicioById(Long id);
 
     /**
      * Devuelve una página con las fichas relacionado con los parámetros del filtro
@@ -65,7 +71,15 @@ public interface ProcedimientoServiceFacade {
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de fichas i la llista de fichas pel rang indicat.
      */
-    Pagina<ProcedimientoGridDTO> findByFiltro(ProcedimientoFiltro filtro);
+    Pagina<ProcedimientoGridDTO> findProcedimientosByFiltro(ProcedimientoFiltro filtro);
+
+    /**
+     * Devuelve una página con las fichas relacionado con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return una pàgina amb el nombre total de fichas i la llista de fichas pel rang indicat.
+     */
+    Pagina<ServicioGridDTO> findServiciosByFiltro(ProcedimientoFiltro filtro);
 
     /**
      * Devuelve el total de fichas relacionado con los parámetros del filtro.
@@ -85,7 +99,7 @@ public interface ProcedimientoServiceFacade {
 
     void deleteProcedimientoTramite(Long id) throws RecursoNoEncontradoException;
 
-    void guardarFlujo(ProcedimientoDTO data, TypeProcedimientoEstado estadoDestino, String mensajes);
+    void guardarFlujo(ProcedimientoBaseDTO data, TypeProcedimientoEstado estadoDestino, String mensajes);
 
     void actualizarMensajes(Long idProc, String mensajes);
 

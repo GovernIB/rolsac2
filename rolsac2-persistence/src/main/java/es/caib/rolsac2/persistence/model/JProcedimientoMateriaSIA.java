@@ -10,7 +10,7 @@ public class JProcedimientoMateriaSIA {
     @EmbeddedId
     private JProcedimientoMateriaSIAPK codigo;
 
-    @MapsId("procedimento")
+    @MapsId("procedimiento")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PRMS_CODPRWF", nullable = false)
     private JProcedimientoWorkflow procedimientoWF;

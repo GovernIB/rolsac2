@@ -10,46 +10,93 @@ import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
 
+/**
+ * La clase J procedimiento normativa.
+ */
 @Entity
 @Table(name = "RS2_PRCNOR")
 public class JProcedimientoNormativa {
+    /**
+     * Codigo
+     */
     @EmbeddedId
     private JProcedimientoNormativaPK codigo;
 
+    /**
+     * Procedimiento
+     */
     @MapsId("procedimiento")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PRWF_CODIGO", nullable = false)
     private JProcedimientoWorkflow procedimiento;
 
+    /**
+     * Normativa
+     */
     @MapsId("normativa")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "NORM_CODIGO", nullable = false)
     private JNormativa normativa;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public JProcedimientoNormativaPK getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(JProcedimientoNormativaPK codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene procedimiento.
+     *
+     * @return  procedimiento
+     */
     public JProcedimientoWorkflow getProcedimiento() {
         return procedimiento;
     }
 
+    /**
+     * Establece procedimiento.
+     *
+     * @param procedimiento  procedimiento
+     */
     public void setProcedimiento(JProcedimientoWorkflow procedimiento) {
         this.procedimiento = procedimiento;
     }
 
+    /**
+     * Obtiene normativa.
+     *
+     * @return  normativa
+     */
     public JNormativa getNormativa() {
         return normativa;
     }
 
+    /**
+     * Establece normativa.
+     *
+     * @param normativa  normativa
+     */
     public void setNormativa(JNormativa normativa) {
         this.normativa = normativa;
     }
 
+    /**
+     * To model grid normativa grid dto.
+     *
+     * @return  normativa grid dto
+     */
     public NormativaGridDTO toModelGrid() {
         NormativaGridDTO normativa = new NormativaGridDTO();
         normativa.setCodigo(this.getNormativa().getCodigo());
@@ -65,6 +112,11 @@ public class JProcedimientoNormativa {
         return normativa;
     }
 
+    /**
+     * To model proc procedimiento normativa dto.
+     *
+     * @return  procedimiento normativa dto
+     */
     public ProcedimientoNormativaDTO toModelProc() {
         ProcedimientoNormativaDTO procedimiento = new ProcedimientoNormativaDTO();
         procedimiento.setCodigo(this.getProcedimiento().getCodigo());

@@ -76,13 +76,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private String id = "";
 
     private String textoValor;
-
+    private String comunUA;
     private static final Logger LOG = LoggerFactory.getLogger(DialogProcedimiento.class);
     private final Integer FASE_INICIACION = 1;
 
     public void load() {
-
-
         LOG.debug("init");
         // Inicializamos combos/desplegables/inputs
         // De momento, no tenemos desplegables.
@@ -113,6 +111,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UtilJSF.vaciarMochila();
         }
 
+        comunUA = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.UA_COMUN, this.getIdioma());
         listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
         listTipoSilencio = maestrasSupService.findAllTipoSilencio();
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
@@ -121,7 +120,19 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        ProcedimientoDTO datoDTO = (ProcedimientoDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setDatosPersonalesDestinatario(datoDTO.getDatosPersonalesDestinatario());
+        }
     }
 
     public void guardarFlujo() {
@@ -131,6 +142,12 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         params.put("ESTADO", data.getEstado().toString());
 
         if (sessionBean.getPerfil() == TypePerfiles.GESTOR) {
+
+            if (data.getEstado() != TypeProcedimientoEstado.MODIFICACION) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.soloEstadoModificacion"));
+                return;
+            }
+
             boolean tiene = false;
             if (data.getTramites() != null) {
                 for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
@@ -502,6 +519,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
             UtilJSF.anyadirMochila("documento", this.documentoSeleccionado.clone());
         }
+        params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
+
         UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
                 800, 350);
     }
@@ -759,6 +778,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void setListTipoVia(List<TipoViaDTO> listTipoVia) {
         this.listTipoVia = listTipoVia;
+    }
+
+    public String getComunUA() {
+        return comunUA;
+    }
+
+    public void setComunUA(String comunUA) {
+        this.comunUA = comunUA;
     }
 }
 

@@ -10,17 +10,17 @@ public class JProcedimientoMateriaSIAPK implements Serializable {
     private static final long serialVersionUID = 8754334654034342054L;
     //procedimiento workflow
     @Column(name = "PRMS_CODPRWF", nullable = false)
-    private Long procedimento;
+    private Long procedimiento;
 
     @Column(name = "PRMS_TIPMSIA", nullable = false)
     private Long tipoMateriaSIA;
 
-    public Long getProcedimento() {
-        return procedimento;
+    public Long getProcedimiento() {
+        return procedimiento;
     }
 
-    public void setProcedimento(Long prmsCodprwf) {
-        this.procedimento = prmsCodprwf;
+    public void setProcedimiento(Long prmsCodprwf) {
+        this.procedimiento = prmsCodprwf;
     }
 
     public Long getTipoMateriaSIA() {
@@ -37,12 +37,12 @@ public class JProcedimientoMateriaSIAPK implements Serializable {
         if (o == null || this.getClass() != o.getClass()) return false;
         JProcedimientoMateriaSIAPK entity = (JProcedimientoMateriaSIAPK) o;
         return Objects.equals(this.tipoMateriaSIA, entity.tipoMateriaSIA) &&
-                Objects.equals(this.procedimento, entity.procedimento);
+                Objects.equals(this.procedimiento, entity.procedimiento);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tipoMateriaSIA, procedimento);
+        return Objects.hash(tipoMateriaSIA, procedimiento);
     }
 
 }

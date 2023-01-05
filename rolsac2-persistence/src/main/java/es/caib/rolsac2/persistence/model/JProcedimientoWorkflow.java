@@ -27,7 +27,6 @@ public class JProcedimientoWorkflow {
     private Boolean workflow = false;
     public final static boolean WORKFLOW_PUBLICADO = false;
     public final static boolean WORKFLOW_EN_MODIFICACION = true;
-
     @Column(name = "PRWF_WFESTADO", nullable = false, length = 1)
     private String estado;
 
@@ -129,7 +128,32 @@ public class JProcedimientoWorkflow {
     @JoinColumn(name = "PRWF_SVTPRE", nullable = false)
     private JTipoTramitacion tramiteElectronico;
 
+    /**
+     * PARA SERVICIO:Tramitación presencial
+     */
+    @Column(name = "PRWF_SVPRES", nullable = false, precision = 1, scale = 0)
+    private Boolean tramitPresencial;
 
+    /**
+     * PARA SERVICIO:Tramitación electrónica
+     */
+    @Column(name = "PRWF_SVELEC", nullable = false, precision = 1, scale = 0)
+    private Boolean tramitElectronica;
+
+    /**
+     * PARA SERVICIO:Tramitacion telefonica
+     */
+    @Column(name = "PRWF_SVTEL", nullable = false, precision = 1, scale = 0)
+    private Boolean tramitTelefonica;
+
+    @Column(name = "PRWF_COMUN", nullable = false, precision = 1, scale = 0)
+    private boolean comun = false;
+
+    @Column(name = "PRWF_HABAPO", nullable = false, precision = 1, scale = 0)
+    private boolean habilitadoApoderado;
+
+    @Column(name = "PRWF_HABFUN", nullable = false)
+    private String habilitadoFuncionario;
     /**
      * Traducciones
      */
@@ -330,13 +354,6 @@ public class JProcedimientoWorkflow {
         this.lopdResponsable = lopdResponsable;
     }
 
-    @Override
-    public String toString() {
-        return "JProcedimientoWorkflow{" +
-                "codigo=" + codigo +
-                '}';
-    }
-
     public List<JProcedimientoWorkflowTraduccion> getTraducciones() {
         return traducciones;
     }
@@ -357,6 +374,30 @@ public class JProcedimientoWorkflow {
         this.tipoVia = tipoVia;
     }
 
+    public Boolean isTramitPresencial() {
+        return tramitPresencial;
+    }
+
+    public void setTramitPresencial(Boolean tramitPresencial) {
+        this.tramitPresencial = tramitPresencial;
+    }
+
+    public Boolean isTramitElectronica() {
+        return tramitElectronica;
+    }
+
+    public void setTramitElectronica(Boolean tramitElectronica) {
+        this.tramitElectronica = tramitElectronica;
+    }
+
+    public Boolean isTramitTelefonica() {
+        return tramitTelefonica;
+    }
+
+    public void setTramitTelefonica(Boolean tramitTelefonica) {
+        this.tramitTelefonica = tramitTelefonica;
+    }
+
     public void setTraducciones(List<JProcedimientoWorkflowTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {
             this.traducciones = traducciones;
@@ -365,6 +406,48 @@ public class JProcedimientoWorkflow {
         }
     }
 
+    public Boolean getTramitPresencial() {
+        return tramitPresencial;
+    }
+
+    public Boolean getTramitElectronica() {
+        return tramitElectronica;
+    }
+
+    public Boolean getTramitTelefonica() {
+        return tramitTelefonica;
+    }
+
+    public boolean isComun() {
+        return comun;
+    }
+
+    public void setComun(boolean comun) {
+        this.comun = comun;
+    }
+
+    public boolean isHabilitadoApoderado() {
+        return habilitadoApoderado;
+    }
+
+    public void setHabilitadoApoderado(boolean habilitadoApoderado) {
+        this.habilitadoApoderado = habilitadoApoderado;
+    }
+
+    public String getHabilitadoFuncionario() {
+        return habilitadoFuncionario;
+    }
+
+    public void setHabilitadoFuncionario(String habilitadoFuncionario) {
+        this.habilitadoFuncionario = habilitadoFuncionario;
+    }
+
+    @Override
+    public String toString() {
+        return "JProcedimientoWorkflow{" +
+                "codigo=" + codigo +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

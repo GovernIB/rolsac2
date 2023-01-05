@@ -1,21 +1,34 @@
 package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
+import es.caib.rolsac2.back.model.DialogResult;
+import es.caib.rolsac2.back.model.RespuestaFlujo;
+import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.types.*;
+import org.primefaces.event.SelectEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Named
 @ViewScoped
 public class DialogServicio extends AbstractController implements Serializable {
 
-    private ProcedimientoDTO data;
+
+    private ServicioDTO data;
 
     private String objeto;
+
 
     private String destinatarios;
 
@@ -25,116 +38,573 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     private String validacion;
 
-    private TipoPublicoObjetivoDTO publicoSeleccionado;
-
-    private List<TipoPublicoObjetivoDTO> publicoObjetivo;
-
-    private List<TipoPublicoObjetivoDTO> publicoObjetivoSeleccionado;
-
     private String tipoProcedimientoSeleccionado;
 
-    private List<TipoMateriaSIADTO> materiasSIA;
 
-    private TipoMateriaSIADTO materiaSIASeleccionada;
+    private TipoMateriaSIAGridDTO materiaSIAGridSeleccionada;
 
     private NormativaDTO normativaSeleccionada;
-
+    private NormativaGridDTO normativaGridSeleccionada;
     private ProcedimientoDocumentoDTO documentoSeleccionado;
+    private ProcedimientoDocumentoDTO documentoLOPDSeleccionado;
+
+    private List<TipoFormaInicioDTO> listTipoFormaInicio;
+    private List<TipoSilencioAdministrativoDTO> listTipoSilencio;
+    private List<TipoLegitimacionDTO> listTipoLegitimacion;
+
+    private List<TipoProcedimientoDTO> listTipoProcedimiento;
+    private List<TipoViaDTO> listTipoVia;
 
     private ProcedimientoTramiteDTO tramiteSeleccionado;
+    private TipoPublicoObjetivoEntidadGridDTO tipoPubObjEntGridSeleccionado;
 
-    private TipoTramitacionDTO tipoTramitacion;
+    @EJB
+    private SystemServiceFacade systemServiceFacade;
+    @EJB
+    private ProcedimientoServiceFacade procedimientoServiceFacade;
 
-    private String[] canalesSeleccionados;
+    @EJB
+    private MaestrasSupServiceFacade maestrasSupService;
+
+    @EJB
+    private UnidadAdministrativaServiceFacade uaService;
+
+
+    private String id = "";
+
+    private String textoValor;
+
+    private static final Logger LOG = LoggerFactory.getLogger(DialogServicio.class);
+    private List<PlatTramitElectronicaDTO> platTramitElectronica;
+    private List<TipoTramitacionDTO> plantillasTipoTramitacion;
+    private List<String> canalesSeleccionados;
+    @EJB
+    private PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;
+
+    @EJB
+    private MaestrasSupServiceFacade maestrasSupServiceFacade;
 
     public void load() {
+        LOG.debug("init");
+        // Inicializamos combos/desplegables/inputs
+        // De momento, no tenemos desplegables.
         this.setearIdioma();
 
-        data = new ProcedimientoDTO();
-        data.setCodigo(1L);
-        final List<NormativaDTO> normativas = new ArrayList<>();
-        final NormativaDTO n1 = new NormativaDTO();
-        final TipoNormativaDTO tn1 = new TipoNormativaDTO();
-        tn1.setIdentificador("Real Decreto 128/75");
-        n1.setCodigo(1L);
-        n1.setTipoNormativa(tn1);
-        normativas.add(n1);
-        // data.setNormativas(normativas);
-
-        final List<TipoPublicoObjetivoDTO> publicos = new ArrayList<>();
-
-        final TipoPublicoObjetivoDTO po1 = new TipoPublicoObjetivoDTO();
-        po1.setCodigo(1l);
-        po1.setIdentificador("Empresas");
-
-        final TipoPublicoObjetivoDTO po2 = new TipoPublicoObjetivoDTO();
-        po2.setCodigo(2l);
-        po2.setIdentificador("Administraciones");
-
-        final TipoPublicoObjetivoDTO po3 = new TipoPublicoObjetivoDTO();
-        po3.setCodigo(3l);
-        po3.setIdentificador("Personas");
-
-        final TipoPublicoObjetivoDTO po4 = new TipoPublicoObjetivoDTO();
-        po4.setCodigo(4l);
-        po4.setIdentificador("Empleados públicos");
-
-        publicos.add(po1);
-        publicos.add(po2);
-        publicos.add(po3);
-        publicos.add(po4);
-
-        data.setPublicosObjetivo(publicos);
+        canalesSeleccionados = new ArrayList<>();
+        platTramitElectronica = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
+        plantillasTipoTramitacion = maestrasSupServiceFacade.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo());
 
 
-        final TipoMateriaSIADTO mat1 = new TipoMateriaSIADTO();
-        final Literal l1 = new Literal();
-        final List<Traduccion> traducciones = new ArrayList<>();
-        final Traduccion t1 = new Traduccion();
-        t1.setLiteral("Descripción del tipo de materia SIA.");
-        t1.setIdioma("es");
+        if (this.isModoAlta()) {
+            data = ServicioDTO.createInstance(sessionBean.getIdiomasPermitidosList());
+            data.setUaInstructor(sessionBean.getUnidadActiva());
+            data.setUaResponsable(sessionBean.getUnidadActiva());
+            Literal lopdDerechos = new Literal();
+            Literal lopdDestinatario = new Literal();
+            Literal lopdInfoAdicional = new Literal();
+            Literal lopdFinalidad = new Literal();
+            for (String idioma : UtilJSF.getSessionBean().getIdiomasPermitidosList()) {
+                lopdDerechos.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_DERECHOS, idioma)));
+                lopdDestinatario.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_DESTINATARIO, idioma)));
+                //lopdInfoAdicional.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_INFO, idioma));
+                lopdFinalidad.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_FINALIDAD, idioma)));
+            }
+            data.setLopdDerechos(lopdDerechos);
+            data.setLopdDestinatario(lopdDestinatario);
+            data.setLopdInfoAdicional(lopdInfoAdicional);
+            data.setLopdFinalidad(lopdFinalidad);
+            data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
+        } else if (this.isModoEdicion() || this.isModoConsulta()) {
+            data = (ServicioDTO) UtilJSF.getValorMochilaByKey("SERV");
+            //data = procedimientoServiceFacade.findById(Long.valueOf(id));
+            UtilJSF.vaciarMochila();
+        }
 
-        final Traduccion t2 = new Traduccion();
-        t1.setLiteral("Descripción del tipo de materia SIA.");
-        t1.setIdioma("ca");
+        if (data != null && data.isTramitPresencial()) {
+            canalesSeleccionados.add("PRE");
+        }
+        if (data != null && data.isTramitElectronica()) {
+            canalesSeleccionados.add("TEL");
+        }
+        if (data != null && data.isTramitTelefonica()) {
+            canalesSeleccionados.add("TFN");
+        }
+        listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
+        listTipoSilencio = maestrasSupService.findAllTipoSilencio();
+        listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
+        listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
+        listTipoVia = maestrasSupService.findAllTipoVia();
+    }
 
-        traducciones.add(t1);
-        traducciones.add(t2);
+    public void traducir() {
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        String url = "/entidades/dialogTraduccion";
+        UtilJSF.openDialog(url, TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
 
-        l1.setTraducciones(traducciones);
-        mat1.setCodigo(1L);
-        mat1.setIdentificador("Materia SIA 1");
-        mat1.setDescripcion(l1);
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        ServicioDTO datoDTO = (ServicioDTO) respuesta.getResult();
 
-        final TipoMateriaSIADTO mat2 = new TipoMateriaSIADTO();
-        mat2.setCodigo(2L);
-        mat2.setIdentificador("Materia SIA 2");
-        mat2.setDescripcion(l1);
+        if (datoDTO != null) {
+            data.setDatosPersonalesDestinatario(datoDTO.getDatosPersonalesDestinatario());
+        }
+    }
 
-        final TipoMateriaSIADTO mat3 = new TipoMateriaSIADTO();
-        mat3.setCodigo(3L);
-        mat3.setIdentificador("Materia SIA 2");
-        mat3.setDescripcion(l1);
+    public void guardarFlujo() {
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
+        //params.put("SOLO_MENSAJES","N");
+        params.put("ESTADO", data.getEstado().toString());
 
-        final TipoMateriaSIADTO mat4 = new TipoMateriaSIADTO();
-        mat4.setCodigo(4L);
-        mat4.setIdentificador("Materia SIA N");
-        mat4.setDescripcion(l1);
+        if (sessionBean.getPerfil() == TypePerfiles.GESTOR) {
 
-        materiasSIA = new ArrayList<>();
-        materiasSIA.add(mat1);
-        materiasSIA.add(mat2);
-        materiasSIA.add(mat3);
-        materiasSIA.add(mat4);
+            if (data.getEstado() != TypeProcedimientoEstado.MODIFICACION) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.soloEstadoModificacion"));
+                return;
+            }
 
+            if (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty()) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
+                return;
+            }
+
+
+        }
+        UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
+    }
+
+    public void verMensajes() {
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
+        params.put("SOLO_MENSAJES", "S");
+        params.put("ESTADO", data.getEstado().toString());
+        UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
+    }
+
+    public void returnDialogFlujo(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
+            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes());
+            final DialogResult result = new DialogResult();
+            if (this.getModoAcceso() != null) {
+                result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+            } else {
+                result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            }
+            data.setEstado(respuestaFlujo.getEstadoDestino());
+            data.setMensajes(respuestaFlujo.getMensajes());
+
+            this.data.setTramitPresencial(canalesSeleccionados.contains("PRE"));
+            this.data.setTramitElectronica(canalesSeleccionados.contains("TEL"));
+            this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
+
+            result.setResult(data);
+            UtilJSF.closeDialog(result);
+        }
+    }
+
+    public void returnDialogMensajes(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
+            procedimientoServiceFacade.actualizarMensajes(data.getCodigo(), respuestaFlujo.getMensajes());
+            data.setMensajes(respuestaFlujo.getMensajes());
+        }
+    }
+
+    public void guardar() {
+
+        this.data.setTramitPresencial(canalesSeleccionados.contains("PRE"));
+        this.data.setTramitElectronica(canalesSeleccionados.contains("TEL"));
+        this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
+
+        if (this.data.getTipoTramitacion() != null) {
+            this.data.getTipoTramitacion().setEntidad(sessionBean.getEntidad());
+        }
+
+        if (!checkObligatorio()) {
+            return;
+        }
+
+        if (this.data.getCodigo() == null) {
+            procedimientoServiceFacade.create(this.data);
+        } else {
+            procedimientoServiceFacade.update(this.data);
+        }
+
+        final DialogResult result = new DialogResult();
+        if (this.getModoAcceso() != null) {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        } else {
+            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+        }
+        result.setResult(data);
+        UtilJSF.closeDialog(result);
+    }
+
+    private boolean checkObligatorio() {
+        if (this.data.getUaInstructor() == null || this.data.getUaInstructor().getCodigo() == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.uaInstructor"));
+            return false;
+        }
+
+        if (this.data.getUaResponsable() == null || this.data.getUaResponsable().getCodigo() == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.uaResponsable"));
+            return false;
+        }
+
+        if (this.data.getFechaPublicacion() != null && this.data.getFechaCaducidad() != null && data.getFechaCaducidad().before(this.data.getFechaPublicacion())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionCaducidad"));
+            return false;
+        }
+
+        if (!this.data.isTramitElectronica() && !this.data.isTramitPresencial() && !this.data.isTramitTelefonica()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunCanalPresentacion"));
+            return false;
+        }
+
+        return true;
+    }
+
+    public void cerrar() {
+        final DialogResult result = new DialogResult();
+        if (this.getModoAcceso() != null) {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        } else {
+            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+        }
+        result.setCanceled(true);
+        UtilJSF.closeDialog(result);
+    }
+
+    //PUBLICO OBJETIVO
+
+    public void returnDialogPubObjEnt(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            List<TipoPublicoObjetivoEntidadGridDTO> tipPubObjEntSeleccionadas = (List<TipoPublicoObjetivoEntidadGridDTO>) respuesta.getResult();
+            if (tipPubObjEntSeleccionadas == null) {
+                data.setTiposPubObjEntGrid(new ArrayList<>());
+            } else {
+                if (data.getTiposPubObjEntGrid() == null) {
+                    data.setTiposPubObjEntGrid(new ArrayList<>());
+                }
+                data.setTiposPubObjEntGrid(new ArrayList<>());
+                data.getTiposPubObjEntGrid().addAll(tipPubObjEntSeleccionadas);
+            }
+        }
+    }
+
+    public void nuevoPubObjEnt() {
+        abrirDialogPubObjEnt(TypeModoAcceso.ALTA);
+    }
+
+    public void consultarPubObjEnt() {
+        if (tipoPubObjEntGridSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogPubObjEnt(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    public void borrarPubObjEnt() {
+        if (tipoPubObjEntGridSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getTiposPubObjEntGrid().remove(tipoPubObjEntGridSeleccionado);
+            tipoPubObjEntGridSeleccionado = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    public void abrirDialogPubObjEnt(TypeModoAcceso modoAcceso) {
+
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", tipoPubObjEntGridSeleccionado.getCodigo().toString());
+            UtilJSF.openDialog("dialogTipoPublicoObjetivoEntidad", modoAcceso, params, true, 700, 300);
+        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+            UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", data.getTiposPubObjEntGrid());
+            final Map<String, String> params = new HashMap<>();
+            UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", modoAcceso, params, true, 1040, 460);
+        }
+    }
+
+    //MATERIA SIA
+
+    public void returnDialogMateria(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            List<TipoMateriaSIAGridDTO> materiasSeleccionadas = (List<TipoMateriaSIAGridDTO>) respuesta.getResult();
+            if (materiasSeleccionadas == null) {
+                data.setMateriasGridSIA(new ArrayList<>());
+            } else {
+                if (data.getMateriasGridSIA() == null) {
+                    data.setMateriasGridSIA(new ArrayList<>());
+                }
+                data.setMateriasGridSIA(new ArrayList<>());
+                data.getMateriasGridSIA().addAll(materiasSeleccionadas);
+            }
+        }
+    }
+
+    public void nuevaMateriaSIA() {
+        abrirDialogMateria(TypeModoAcceso.ALTA);
+    }
+
+    public void consultarMateriaSIA() {
+        if (materiaSIAGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogMateria(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    public void borrarMateriaSIA() {
+        if (materiaSIAGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            // maestrasSupService.deleteTipoMateriaSIA(materiaSIAGridSeleccionada.getCodigo());
+            data.getMateriasGridSIA().remove(materiaSIAGridSeleccionada);
+            materiaSIAGridSeleccionada = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    public void abrirDialogMateria(TypeModoAcceso modoAcceso) {
+
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", materiaSIAGridSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("tipo/dialogTipoMateriaSIA", modoAcceso, params, true, 700, 300);
+        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+            UtilJSF.anyadirMochila("materiasSeleccionadas", data.getMateriasGridSIA());
+            final Map<String, String> params = new HashMap<>();
+            UtilJSF.openDialog("tipo/dialogSeleccionMateriaSIA", modoAcceso, params, true, 1040, 460);
+        }
+    }
+
+
+    //NORMATIVA
+    public void returnDialogNormativa(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            List<NormativaGridDTO> normativaG = (List<NormativaGridDTO>) respuesta.getResult();
+
+            if (normativaG == null) {
+                data.setNormativas(new ArrayList<>());
+            } else {
+                if (data.getNormativas() == null) {
+                    data.setNormativas(new ArrayList<>());
+                }
+                data.setNormativas(new ArrayList<>());
+                data.getNormativas().addAll(normativaG);
+            }
+        }
+    }
+
+
+    public void abrirDialogNormativa(TypeModoAcceso modoAcceso) {
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", normativaGridSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true,
+                    (Integer.parseInt(sessionBean.getScreenWidth()) - 200),
+                    (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+            UtilJSF.anyadirMochila("normativasSeleccionadas", data.getNormativas());
+            final Map<String, String> params = new HashMap<>();
+            UtilJSF.openDialog("tipo/dialogSeleccionNormativa", modoAcceso, params, true, 1040, 460);
+        }
 
     }
 
-    public ProcedimientoDTO getData() {
+    public void nuevaNormativa() {
+        abrirDialogNormativa(TypeModoAcceso.ALTA);
+    }
+
+    public void consultarNormativa() {
+        if (normativaGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogNormativa(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    public void borrarNormativa() {
+        if (normativaGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getNormativas().remove(normativaGridSeleccionada);
+            normativaGridSeleccionada = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+
+    //DOCUMENTO
+    public void returnDialogDocumento(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            // Verificamos si se ha modificado
+            ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
+            if (doc != null) {
+                if (data.getDocumentos() == null) {
+                    data.setDocumentos(new ArrayList<>());
+                }
+                data.agregarDocumento(doc);
+            }
+        }
+    }
+
+
+    public void abrirDialogDocumento(TypeModoAcceso modoAcceso) {
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
+        if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
+            UtilJSF.anyadirMochila("documento", this.documentoSeleccionado.clone());
+        }
+        params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
+
+        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
+                800, 350);
+    }
+
+    public void nuevoDocumento() {
+        abrirDialogDocumento(TypeModoAcceso.ALTA);
+    }
+
+    public void editarDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumento(TypeModoAcceso.EDICION);
+        }
+    }
+
+    public void consultarDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumento(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    public void borrarDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getDocumentos().remove(documentoSeleccionado);
+            documentoSeleccionado = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    //DOCUMENTO LOPD
+    public void returnDialogDocumentoLOPD(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            // Verificamos si se ha modificado
+            ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
+            if (doc != null) {
+                if (data.getDocumentos() == null) {
+                    data.setDocumentos(new ArrayList<>());
+                }
+                data.agregarDocumentoLOPD(doc);
+            }
+        }
+    }
+
+    public void abrirDialogDocumentoLOPD(TypeModoAcceso modoAcceso) {
+        final Map<String, String> params = new HashMap<>();
+        params.put("ID", data.getCodigo() == null ? "" : data.getCodigo().toString());
+        if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
+            UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado.clone());
+        }
+        UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", modoAcceso, params, true,
+                800, 320);
+    }
+
+    public void nuevoDocumentoLOPD() {
+        abrirDialogDocumentoLOPD(TypeModoAcceso.ALTA);
+    }
+
+    public void editarDocumentoLOPD() {
+        if (documentoLOPDSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumentoLOPD(TypeModoAcceso.EDICION);
+        }
+    }
+
+    public void consultarDocumentoLOPD() {
+        if (documentoLOPDSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogDocumentoLOPD(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    public void borrarDocumentoLOPD() {
+        if (documentoLOPDSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getDocumentosLOPD().remove(documentoLOPDSeleccionado);
+            documentoLOPDSeleccionado = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    public List<TipoProcedimientoDTO> getListTipoProcedimiento() {
+        return listTipoProcedimiento;
+    }
+
+    public void setListTipoProcedimiento(List<TipoProcedimientoDTO> listTipoProcedimiento) {
+        this.listTipoProcedimiento = listTipoProcedimiento;
+    }
+
+    public NormativaGridDTO getNormativaGridSeleccionada() {
+        return normativaGridSeleccionada;
+    }
+
+    public void setNormativaGridSeleccionada(NormativaGridDTO normativaGridSeleccionada) {
+        this.normativaGridSeleccionada = normativaGridSeleccionada;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public TipoMateriaSIAGridDTO getMateriaSIAGridSeleccionada() {
+        return materiaSIAGridSeleccionada;
+    }
+
+    public void setMateriaSIAGridSeleccionada(TipoMateriaSIAGridDTO materiaSIAGridSeleccionada) {
+        this.materiaSIAGridSeleccionada = materiaSIAGridSeleccionada;
+    }
+
+    public String getTextoValor() {
+        return textoValor;
+    }
+
+    public void setTextoValor(String textoValor) {
+        this.textoValor = textoValor;
+    }
+
+    public ServicioDTO getData() {
         return data;
     }
 
-    public void setData(ProcedimientoDTO data) {
+    public void setData(ServicioDTO data) {
         this.data = data;
     }
 
@@ -186,22 +656,6 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.tipoProcedimientoSeleccionado = tipoProcedimientoSeleccionado;
     }
 
-    public List<TipoMateriaSIADTO> getMateriasSIA() {
-        return materiasSIA;
-    }
-
-    public void setMateriasSIA(List<TipoMateriaSIADTO> materiasSIA) {
-        this.materiasSIA = materiasSIA;
-    }
-
-    public TipoMateriaSIADTO getMateriaSIASeleccionada() {
-        return materiaSIASeleccionada;
-    }
-
-    public void setMateriaSIASeleccionada(TipoMateriaSIADTO materiaSIASeleccionada) {
-        this.materiaSIASeleccionada = materiaSIASeleccionada;
-    }
-
     public NormativaDTO getNormativaSeleccionada() {
         return normativaSeleccionada;
     }
@@ -226,28 +680,81 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.tramiteSeleccionado = tramiteSeleccionado;
     }
 
-    public TipoPublicoObjetivoDTO getPublicoSeleccionado() {
-        return publicoSeleccionado;
+
+    public List<TipoFormaInicioDTO> getListTipoFormaInicio() {
+        return listTipoFormaInicio;
     }
 
-    public void setPublicoSeleccionado(TipoPublicoObjetivoDTO publicoSeleccionado) {
-        this.publicoSeleccionado = publicoSeleccionado;
+    public void setListTipoFormaInicio(List<TipoFormaInicioDTO> listTipoFormaInicio) {
+        this.listTipoFormaInicio = listTipoFormaInicio;
     }
 
-
-    public TipoTramitacionDTO getTipoTramitacion() {
-        return tipoTramitacion;
+    public List<TipoSilencioAdministrativoDTO> getListTipoSilencio() {
+        return listTipoSilencio;
     }
 
-    public void setTipoTramitacion(TipoTramitacionDTO tipoTramitacion) {
-        this.tipoTramitacion = tipoTramitacion;
+    public void setListTipoSilencio(List<TipoSilencioAdministrativoDTO> listTipoSilencio) {
+        this.listTipoSilencio = listTipoSilencio;
     }
 
-    public String[] getCanalesSeleccionados() {
+    public List<TipoLegitimacionDTO> getListTipoLegitimacion() {
+        return listTipoLegitimacion;
+    }
+
+    public void setListTipoLegitimacion(List<TipoLegitimacionDTO> listTipoLegitimacion) {
+        this.listTipoLegitimacion = listTipoLegitimacion;
+    }
+
+    public TipoPublicoObjetivoEntidadGridDTO getTipoPubObjEntGridSeleccionado() {
+        return tipoPubObjEntGridSeleccionado;
+    }
+
+    public void setTipoPubObjEntGridSeleccionado(TipoPublicoObjetivoEntidadGridDTO tipoPubObjEntGridSeleccionado) {
+        this.tipoPubObjEntGridSeleccionado = tipoPubObjEntGridSeleccionado;
+    }
+
+    public ProcedimientoDocumentoDTO getDocumentoLOPDSeleccionado() {
+        return documentoLOPDSeleccionado;
+    }
+
+    public void setDocumentoLOPDSeleccionado(ProcedimientoDocumentoDTO documentoLOPDSeleccionado) {
+        this.documentoLOPDSeleccionado = documentoLOPDSeleccionado;
+    }
+
+    public List<TipoViaDTO> getListTipoVia() {
+        return listTipoVia;
+    }
+
+    public void setListTipoVia(List<TipoViaDTO> listTipoVia) {
+        this.listTipoVia = listTipoVia;
+    }
+
+    public List<PlatTramitElectronicaDTO> getPlatTramitElectronica() {
+        return platTramitElectronica;
+    }
+
+    public void setPlatTramitElectronica(List<PlatTramitElectronicaDTO> platTramitElectronica) {
+        this.platTramitElectronica = platTramitElectronica;
+    }
+
+    public List<TipoTramitacionDTO> getPlantillasTipoTramitacion() {
+        return plantillasTipoTramitacion;
+    }
+
+    public void setPlantillasTipoTramitacion(List<TipoTramitacionDTO> plantillasTipoTramitacion) {
+        this.plantillasTipoTramitacion = plantillasTipoTramitacion;
+    }
+
+    public List<String> getCanalesSeleccionados() {
         return canalesSeleccionados;
     }
 
-    public void setCanalesSeleccionados(String[] canalesSeleccionados) {
+    public void setCanalesSeleccionados(List<String> canalesSeleccionados) {
         this.canalesSeleccionados = canalesSeleccionados;
     }
+
+    public void cambiaTipo() {
+        String cambia = "";
+    }
 }
+

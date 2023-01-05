@@ -160,6 +160,26 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         UtilJSF.closeDialog(result);
     }
 
+    public void traducir() {
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        ProcedimientoTramiteDTO datoDTO = (ProcedimientoTramiteDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setDocumentacion(datoDTO.getDocumentacion());
+            data.setRequisitos(datoDTO.getRequisitos());
+            data.setNombre(datoDTO.getNombre());
+            data.setObservacion(datoDTO.getObservacion());
+            data.setTerminoMaximo(datoDTO.getTerminoMaximo());
+        }
+    }
+
     public void cerrar() {
         final DialogResult result = new DialogResult();
         if (this.getModoAcceso() != null) {
@@ -193,6 +213,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
             UtilJSF.anyadirMochila("documento", this.documentoSeleccionado);
         }
+        params.put(TypeParametroVentana.TIPO.toString(), "TRAM_DOC");
         UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
                 800, 350);
     }
@@ -250,6 +271,8 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
             UtilJSF.anyadirMochila("documento", this.modeloSeleccionado);
         }
+        params.put(TypeParametroVentana.TIPO.toString(), "TRAM_MOD");
+
         UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
                 800, 350);
     }

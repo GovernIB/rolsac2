@@ -43,7 +43,42 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
-    public List<ProcedimientoGridDTO> findPagedByFiltro(ProcedimientoFiltro filtro) {
+    public List<ServicioGridDTO> findServiciosPagedByFiltro(ProcedimientoFiltro filtro) {
+        Query query = getQuery(false, filtro);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
+
+        List<Object[]> jprocs = query.getResultList();
+        List<ServicioGridDTO> procs = new ArrayList<>();
+        if (jprocs != null) {
+            for (Object[] jproc : jprocs) {
+                ServicioGridDTO servicioGridDTO = new ServicioGridDTO();
+                servicioGridDTO.setCodigo((Long) jproc[0]);
+                servicioGridDTO.setCodigoWFPub((Long) jproc[1]);
+                servicioGridDTO.setCodigoWFMod((Long) jproc[2]);
+                servicioGridDTO.setEstado((String) jproc[3]);
+                servicioGridDTO.setTipo((String) jproc[4]);
+                servicioGridDTO.setCodigoSIA((Integer) jproc[5]);
+                servicioGridDTO.setEstadoSIA((Boolean) jproc[6]);
+                servicioGridDTO.setSiaFecha((LocalDate) jproc[7]);
+                servicioGridDTO.setCodigoDir3SIA((String) jproc[8]);
+                String t1 = (String) jproc[9]; //Nombre wf publicado
+                String t2 = (String) jproc[10]; //Nombre wf en edicion
+                String nombre;
+                if (t1 != null && !t1.isEmpty()) {
+                    nombre = t1;
+                } else {
+                    nombre = t2;
+                }
+                servicioGridDTO.setNombre(nombre);
+                procs.add(servicioGridDTO);
+            }
+        }
+        return procs;
+    }
+
+    @Override
+    public List<ProcedimientoGridDTO> findProcedimientosPagedByFiltro(ProcedimientoFiltro filtro) {
         Query query = getQuery(false, filtro);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
@@ -215,7 +250,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     nuevo.setTipoMateriaSIA(jTipoMateriaSIA);
                     JProcedimientoMateriaSIAPK id = new JProcedimientoMateriaSIAPK();
                     id.setTipoMateriaSIA(elemento.getCodigo());
-                    id.setProcedimento(codigoWF);
+                    id.setProcedimiento(codigoWF);
                     nuevo.setCodigo(id);
                     entityManager.persist(nuevo);
                     entityManager.flush();
@@ -1051,18 +1086,30 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoPublicoObjetivo()) {
             sql.append(" AND exists (select pubObj from JProcedimientoPublicoObjectivo pubObj where pubObj.tipoPublicoObjetivo = :tipoPublicoObjetivo and pubObj.procedimiento.codigo = WF.codigo ) ");
         }
+        if (filtro.isRellenoTipo()) {
+            sql.append(" AND j.tipo = :tipo ");
+        }
         if (filtro.isRellenoTipoProcedimiento()) {
             sql.append(" AND (WF.tipoProcedimiento.codigo = :tipoProcedimiento or WF2.tipoProcedimiento.codigo = :tipoProcedimiento) ");
         }
         if (filtro.isRellenoSilencioAdministrativo()) {
             sql.append(" AND (WF.silencioAdministrativo.codigo = :tipoSilencio or WF2.silencioAdministrativo.codigo = :tipoSilencio) ");
         }
-        if (filtro.isRellenoIdUA()) {
+
+        if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUbidadesOrganicas()) {
+            sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) ) ");
+        } else if (filtro.isRellenoIdUA()) {
             sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA) ");
-        }/*
+        }
         if (filtro.isRellenoNormativas()) {
-            sql.append(" AND EXISTS ( SELECT procNorm FROM JProcedimientoNormativa procNorm WHERE (procNorm.codigo.procedimiento = WF.codigo OR procNorm.codigo.procedimiento = WF2.codigo) AND procNorm.codigo.normativa IN (:normativas) ) ");
-        }*/
+            sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoNormativa procNorm WHERE (procNorm.codigo.procedimiento = WF.codigo OR procNorm.codigo.procedimiento = WF2.codigo) AND procNorm.codigo.normativa IN (:normativas) ) ");
+        }
+        if (filtro.isRellenoPublicoObjetivos()) {
+            sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo OR procPub.codigo.procedimiento = WF2.codigo) AND procPub.codigo.tipoPublicoObjetivo IN (:publicoObjetivos) ) ");
+        }
+        if (filtro.isRellenoMaterias()) {
+            sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoMateriaSIA procMat WHERE (procMat.codigo.procedimiento = WF.codigo OR procMat.codigo.procedimiento = WF2.codigo) AND procMat.codigo.tipoMateriaSIA IN (:materias) ) ");
+        }
         if (filtro.isRellenoVolcadoSIA()) {
             switch (filtro.getVolcadoSIA()) {
                 case "S":
@@ -1088,6 +1135,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("idioma", filtro.getIdioma());
+        if (filtro.isRellenoTipo()) {
+            query.setParameter("tipo", filtro.getTipo());
+        }
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
@@ -1109,11 +1159,20 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoEstado()) {
             query.setParameter("estado", filtro.getEstado());
         }
-        if (filtro.isRellenoIdUA()) {
+
+        if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUbidadesOrganicas()) {
+            query.setParameter("idUAs", filtro.getIdUAsHijas());
+        } else if (filtro.isRellenoIdUA()) {
             query.setParameter("idUA", filtro.getIdUA());
         }
         if (filtro.isRellenoNormativas()) {
             query.setParameter("normativas", filtro.getNormativasId());
+        }
+        if (filtro.isRellenoPublicoObjetivos()) {
+            query.setParameter("publicoObjetivos", filtro.getPublicoObjetivosId());
+        }
+        if (filtro.isRellenoMaterias()) {
+            query.setParameter("materias", filtro.getMateriasId());
         }
         return query;
     }

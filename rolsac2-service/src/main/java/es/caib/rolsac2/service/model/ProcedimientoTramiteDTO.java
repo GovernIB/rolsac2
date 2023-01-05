@@ -47,6 +47,12 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     private boolean tramitElectronica;
     private boolean tramitTelefonica;
 
+    /**
+     * Crea instancia de procedimiento tramite dto.
+     *
+     * @param idiomas  idiomas
+     * @return  procedimiento tramite dto
+     */
     public static ProcedimientoTramiteDTO createInstance(List<String> idiomas) {
         ProcedimientoTramiteDTO procedimientoTramite = new ProcedimientoTramiteDTO();
         procedimientoTramite.setCodigoString(String.valueOf(Calendar.getInstance().getTime().getTime()));
@@ -69,13 +75,16 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
         return procedimientoTramite;
     }
 
+    /**
+     * Instancia un nuevo Procedimiento tramite dto.
+     */
     public ProcedimientoTramiteDTO() {
     }
 
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return the codigo
+     * @return  codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -86,7 +95,9 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     }
 
     /**
-     * @param idString the codigo to set
+     * Establece id string.
+     *
+     * @param idString  codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -96,6 +107,11 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
         }
     }
 
+    /**
+     * Agregar documento.
+     *
+     * @param doc  doc
+     */
     public void agregarDocumento(ProcedimientoDocumentoDTO doc) {
         if (getListaDocumentos() == null) {
             this.setListaDocumentos(new ArrayList<>());
@@ -120,6 +136,11 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     }
 
 
+    /**
+     * Agregar modelo.
+     *
+     * @param doc  doc
+     */
     public void agregarModelo(ProcedimientoDocumentoDTO doc) {
         if (getListaModelos() == null) {
             this.setListaModelos(new ArrayList<>());
@@ -143,130 +164,290 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
         }
     }
 
+    /**
+     * Instantiates a new Procedimiento tramite dto.
+     *
+     * @param id  id
+     */
     public ProcedimientoTramiteDTO(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo  codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene unidad administrativa.
+     *
+     * @return  unidad administrativa
+     */
     public UnidadAdministrativaDTO getUnidadAdministrativa() {
         return unidadAdministrativa;
     }
 
+    /**
+     * Establece unidad administrativa.
+     *
+     * @param unidadAdministrativa  unidad administrativa
+     */
     public void setUnidadAdministrativa(UnidadAdministrativaDTO unidadAdministrativa) {
         this.unidadAdministrativa = unidadAdministrativa;
     }
 
+    /**
+     * Obtiene procedimiento.
+     *
+     * @return  procedimiento
+     */
     public ProcedimientoWorkflowDTO getProcedimiento() {
         return procedimiento;
     }
 
+    /**
+     * Establece procedimiento.
+     *
+     * @param procedimiento  procedimiento
+     */
     public void setProcedimiento(ProcedimientoWorkflowDTO procedimiento) {
         this.procedimiento = procedimiento;
     }
 
+    /**
+     * Obtiene tipo tramitacion.
+     *
+     * @return  tipo tramitacion
+     */
     public TipoTramitacionDTO getTipoTramitacion() {
         return tipoTramitacion;
     }
 
+    /**
+     * Establece tipo tramitacion.
+     *
+     * @param tipoTramitacion  tipo tramitacion
+     */
     public void setTipoTramitacion(TipoTramitacionDTO tipoTramitacion) {
         this.tipoTramitacion = tipoTramitacion;
     }
 
+    /**
+     * Obtiene lista documentos.
+     *
+     * @return  lista documentos
+     */
     public List<ProcedimientoDocumentoDTO> getListaDocumentos() {
         return listaDocumentos;
     }
 
+    /**
+     * Establece lista documentos.
+     *
+     * @param listaDocumentos  lista documentos
+     */
     public void setListaDocumentos(List<ProcedimientoDocumentoDTO> listaDocumentos) {
         this.listaDocumentos = listaDocumentos;
     }
 
+    /**
+     * Obtiene lista modelos.
+     *
+     * @return  lista modelos
+     */
     public List<ProcedimientoDocumentoDTO> getListaModelos() {
         return listaModelos;
     }
 
+    /**
+     * Establece lista modelos.
+     *
+     * @param listaModelos  lista modelos
+     */
     public void setListaModelos(List<ProcedimientoDocumentoDTO> listaModelos) {
         this.listaModelos = listaModelos;
     }
 
+    /**
+     * Obtiene tasa asociada.
+     *
+     * @return  tasa asociada
+     */
     public Boolean getTasaAsociada() {
         return tasaAsociada;
     }
 
+    /**
+     * Establece tasa asociada.
+     *
+     * @param tasaAsociada  tasa asociada
+     */
     public void setTasaAsociada(Boolean tasaAsociada) {
         this.tasaAsociada = tasaAsociada;
     }
 
+    /**
+     * Obtiene requisitos.
+     *
+     * @return  requisitos
+     */
     public Literal getRequisitos() {
         return requisitos;
     }
 
+    /**
+     * Establece requisitos.
+     *
+     * @param requisitos  requisitos
+     */
     public void setRequisitos(Literal requisitos) {
         this.requisitos = requisitos;
     }
 
+    /**
+     * Obtiene nombre.
+     *
+     * @return  nombre
+     */
     public Literal getNombre() {
         return nombre;
     }
 
+    /**
+     * Establece nombre.
+     *
+     * @param nombre  nombre
+     */
     public void setNombre(Literal nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     * Obtiene documentacion.
+     *
+     * @return  documentacion
+     */
     public Literal getDocumentacion() {
         return documentacion;
     }
 
+    /**
+     * Establece documentacion.
+     *
+     * @param documentacion  documentacion
+     */
     public void setDocumentacion(Literal documentacion) {
         this.documentacion = documentacion;
     }
 
+    /**
+     * Obtiene observacion.
+     *
+     * @return  observacion
+     */
     public Literal getObservacion() {
         return observacion;
     }
 
+    /**
+     * Establece observacion.
+     *
+     * @param observacion  observacion
+     */
     public void setObservacion(Literal observacion) {
         this.observacion = observacion;
     }
 
+    /**
+     * Obtiene termino maximo.
+     *
+     * @return  termino maximo
+     */
     public Literal getTerminoMaximo() {
         return terminoMaximo;
     }
 
+    /**
+     * Establece termino maximo.
+     *
+     * @param terminoMaximo  termino maximo
+     */
     public void setTerminoMaximo(Literal terminoMaximo) {
         this.terminoMaximo = terminoMaximo;
     }
 
+    /**
+     * Obtiene fecha publicacion.
+     *
+     * @return  fecha publicacion
+     */
     public Date getFechaPublicacion() {
         return fechaPublicacion;
     }
 
+    /**
+     * Establece fecha publicacion.
+     *
+     * @param fechaPublicacion  fecha publicacion
+     */
     public void setFechaPublicacion(Date fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
 
+    /**
+     * Obtiene fecha inicio.
+     *
+     * @return  fecha inicio
+     */
     public Date getFechaInicio() {
         return fechaInicio;
     }
 
+    /**
+     * Establece fecha inicio.
+     *
+     * @param fechaInicio  fecha inicio
+     */
     public void setFechaInicio(Date fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
+    /**
+     * Obtiene fecha cierre.
+     *
+     * @return  fecha cierre
+     */
     public Date getFechaCierre() {
         return fechaCierre;
     }
 
+    /**
+     * Establece fecha cierre.
+     *
+     * @param fechaCierre  fecha cierre
+     */
     public void setFechaCierre(Date fechaCierre) {
         this.fechaCierre = fechaCierre;
     }
 
+    /**
+     * Obtiene codigo string.
+     *
+     * @return  codigo string
+     */
     public String getCodigoString() {
         if (codigo == null) {
             return codigoString;
@@ -275,46 +456,101 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
         }
     }
 
+    /**
+     * Establece codigo string.
+     *
+     * @param codigoString  codigo string
+     */
     public void setCodigoString(String codigoString) {
         this.codigoString = codigoString;
     }
 
+    /**
+     * Obtiene fase.
+     *
+     * @return  fase
+     */
     public Integer getFase() {
         return fase;
     }
 
+    /**
+     * Establece fase.
+     *
+     * @param fase  fase
+     */
     public void setFase(Integer fase) {
         this.fase = fase;
     }
 
+    /**
+     * Obtiene plantilla sel.
+     *
+     * @return  plantilla sel
+     */
     public TipoTramitacionDTO getPlantillaSel() {
         return plantillaSel;
     }
 
+    /**
+     * Establece plantilla sel.
+     *
+     * @param plantillaSel  plantilla sel
+     */
     public void setPlantillaSel(TipoTramitacionDTO plantillaSel) {
         this.plantillaSel = plantillaSel;
     }
 
+    /**
+     * Is tramit presencial boolean.
+     *
+     * @return  boolean
+     */
     public boolean isTramitPresencial() {
         return tramitPresencial;
     }
 
+    /**
+     * Establece tramit presencial.
+     *
+     * @param tramitPresencial  tramit presencial
+     */
     public void setTramitPresencial(boolean tramitPresencial) {
         this.tramitPresencial = tramitPresencial;
     }
 
+    /**
+     * Is tramit electronica boolean.
+     *
+     * @return  boolean
+     */
     public boolean isTramitElectronica() {
         return tramitElectronica;
     }
 
+    /**
+     * Establece tramit electronica.
+     *
+     * @param tramitElectronica  tramit electronica
+     */
     public void setTramitElectronica(boolean tramitElectronica) {
         this.tramitElectronica = tramitElectronica;
     }
 
+    /**
+     * Is tramit telefonica boolean.
+     *
+     * @return  boolean
+     */
     public boolean isTramitTelefonica() {
         return tramitTelefonica;
     }
 
+    /**
+     * Establece tramit telefonica.
+     *
+     * @param tramitTelefonica  tramit telefonica
+     */
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
     }

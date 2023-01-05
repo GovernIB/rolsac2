@@ -18,7 +18,10 @@
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="Nuevo Trámite "/>
+        <h:outputFormat value="#{labels['dialogProcedimientoTramite.detalle']}"
+                        rendered="#{!dialogProcedimientoTramite.isModoAlta()}"/>
+        <h:outputFormat value="#{labels['dialogProcedimientoTramite.nuevo']}"
+                        rendered="#{dialogProcedimientoTramite.isModoAlta()}"/>
     </ui:define>
     <ui:define name="contentDialog">
         <p:panel header="Prueba">
@@ -39,7 +42,10 @@
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this" />
+                         process="@this">
+            <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogTraducir}" process="@this"
+                    update="formDialog:txtNombre formDialog:txtRequisitos  formDialog:txtDocum formDialog:txtTermMax"/>
+        </p:commandButton>
 
     </ui:define>
 
@@ -225,8 +231,8 @@
                         <!--Aquí es mapear luego con los bools que tiene TipoTramitacionDTO para ello-->
                         <p:selectManyCheckbox id="canalesTramitacion"
                                               value="#{dialogProcedimientoTramite.canalesSeleccionados}">
-                            <f:selectItem itemLabel="Presencial" itemValue="PRE" />
-                            <f:selectItem itemLabel="Telemático" itemValue="TEL" />
+                            <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.canalPresencial']}" itemValue="PRE" />
+                            <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.canalTelematico']}" itemValue="TEL" />
                             <!--<f:selectItem itemLabel="Telefónico" itemValue="TFN"  />-->
                             <p:ajax update="txtTraPlantilla txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto"
                                     event="change" listener="#{dialogProcedimientoTramite.cambiaTipo}"/>

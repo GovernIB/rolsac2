@@ -6,6 +6,9 @@ import es.caib.rolsac2.service.model.*;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * La claseJ procedimiento documento.
+ */
 @Entity
 @SequenceGenerator(name = "procedimiento-doc-sequence", sequenceName = "RS2_DOCPR_SEQ", allocationSize = 1)
 @Table(name = "RS2_DOCPR",
@@ -14,6 +17,9 @@ import java.util.List;
         }
 )
 public class JProcedimientoDocumento {
+    /**
+     * Codigo
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-doc-sequence")
     @Column(name = "DOPR_CODIGO", nullable = false)
@@ -35,30 +41,65 @@ public class JProcedimientoDocumento {
             orphanRemoval = true)
     private List<JProcedimientoDocumentoTraduccion> traducciones;
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return  codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param id  id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtiene lista documentos.
+     *
+     * @return  lista documentos
+     */
     public Long getListaDocumentos() {
         return listaDocumentos;
     }
 
+    /**
+     * Establece lista documentos.
+     *
+     * @param listaDocumentos  lista documentos
+     */
     public void setListaDocumentos(Long listaDocumentos) {
         this.listaDocumentos = listaDocumentos;
     }
 
+    /**
+     * Obtiene traducciones.
+     *
+     * @return  traducciones
+     */
     public List<JProcedimientoDocumentoTraduccion> getTraducciones() {
         return traducciones;
     }
 
+    /**
+     * Establece traducciones.
+     *
+     * @param traducciones  traducciones
+     */
     public void setTraducciones(List<JProcedimientoDocumentoTraduccion> traducciones) {
         this.traducciones = traducciones;
     }
 
+    /**
+     * To model procedimiento documento dto.
+     *
+     * @return  procedimiento documento dto
+     */
     public ProcedimientoDocumentoDTO toModel() {
         ProcedimientoDocumentoDTO doc = new ProcedimientoDocumentoDTO();
         doc.setCodigo(this.getCodigo());

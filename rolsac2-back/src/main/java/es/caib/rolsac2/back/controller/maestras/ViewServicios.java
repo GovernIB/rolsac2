@@ -29,8 +29,8 @@ import java.util.Map;
 
 @Named
 @ViewScoped
-public class ViewProcedimientos extends AbstractController implements Serializable {
-    private static final Logger LOG = LoggerFactory.getLogger(ViewProcedimientos.class);
+public class ViewServicios extends AbstractController implements Serializable {
+    private static final Logger LOG = LoggerFactory.getLogger(ViewServicios.class);
 
     @EJB
     ProcedimientoServiceFacade procedimientoService;
@@ -41,9 +41,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     @EJB
     private MaestrasSupServiceFacade maestrasSupService;
-    private ProcedimientoGridDTO datoSeleccionado;
+    private ServicioGridDTO datoSeleccionado;
     private ProcedimientoFiltro filtro;
-    private LazyDataModel<ProcedimientoGridDTO> lazyModel;
+    private LazyDataModel<ServicioGridDTO> lazyModel;
 
     private List<TipoProcedimientoDTO> listTipoProcedimiento;
     private List<TipoSilencioAdministrativoDTO> listTipoSilencio;
@@ -51,12 +51,12 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     private List<TipoFormaInicioDTO> listTipoFormaInicio;
     private List<TipoLegitimacionDTO> listTipoLegitimacion;
 
-    public LazyDataModel<ProcedimientoGridDTO> getLazyModel() {
+    public LazyDataModel<ServicioGridDTO> getLazyModel() {
         return lazyModel;
     }
 
     public void load() {
-        LOG.debug("load View Procedimientos");
+        LOG.debug("load View Servicios");
 
         this.limpiarFiltro();
         cargarFiltros();
@@ -94,7 +94,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
-        filtro.setTipo("P");
+        filtro.setTipo("S");
     }
 
     private void cargarFiltros() {
@@ -128,8 +128,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub());
                 this.datoSeleccionado.setCodigoWFMod(idProcMod);
             }
-            ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
-            abrirVentana(TypeModoAcceso.EDICION, proc);
+            ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
+            abrirVentana(TypeModoAcceso.EDICION, serv);
 
         }
     }
@@ -139,10 +139,10 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             Long idProcPub = datoSeleccionado.getCodigoWFPub();//procedimientoService.getCodigoByWF(datoSeleccionado.getCodigo(), TypeProcedimientoWorfklow.PUBLICADO.getValor());
             if (idProcPub == null) {
                 // Mensaje --> No tiene publicado el dato
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewProcedimientos.error.procNoPublicado"), getLiteral("msg.seleccioneElemento"));
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewServicios.error.procNoPublicado"), getLiteral("msg.seleccioneElemento"));
             } else {
-                ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcPub);
-                abrirVentana(TypeModoAcceso.CONSULTA, proc);
+                ServicioDTO serv = procedimientoService.findServicioById(idProcPub);
+                abrirVentana(TypeModoAcceso.CONSULTA, serv);
             }
         }
     }
@@ -157,12 +157,12 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 //PrimeFaces.current().executeScript("PF('confirmDlgBorrarModificado').show();");
                 procedimientoService.deleteWF(idProcMod);
                 this.datoSeleccionado.setCodigoWFMod(null);
-                ProcedimientoGridDTO proc = this.datoSeleccionado;
+                ServicioGridDTO proc = this.datoSeleccionado;
                 this.buscar();
                 this.seleccionarPorId(proc);
             } else if (idProcPub != null) {
                 //PrimeFaces.current().executeScript("PF('confirmDlgBorrarPublicado').show();");
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewProcedimientos.error.borrarPublicado"));
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewServicios.error.borrarPublicado"));
             } else {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + ".");// UtilJSF.getLiteral("info.borrado.ok"));
             }
@@ -178,7 +178,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + " Modificacion");
             } else {
                 procedimientoService.deleteWF(idProcMod);
-                ProcedimientoGridDTO proc = this.datoSeleccionado;
+                ServicioGridDTO proc = this.datoSeleccionado;
                 this.buscar();
                 this.seleccionarPorId(proc);
             }
@@ -195,44 +195,34 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + " Modificacion");
             } else {
                 procedimientoService.deleteWF(idProcPub);
-                ProcedimientoGridDTO proc = this.datoSeleccionado;
+                ServicioGridDTO proc = this.datoSeleccionado;
                 this.buscar();
                 this.seleccionarPorId(proc);
             }
         }
     }
 
-    private void seleccionarPorId(ProcedimientoGridDTO idProcSeleccionado) {
+    private void seleccionarPorId(ServicioGridDTO idProcSeleccionado) {
         if (idProcSeleccionado == null || this.lazyModel == null) {
             return;
         }
 
         this.datoSeleccionado = idProcSeleccionado;
-        /*
-        Iterator<ProcedimientoGridDTO> it = this.lazyModel.iterator();
-
-        while (it != null && it.hasNext()) {
-            ProcedimientoGridDTO procGrid = it.next();
-            if (procGrid != null && procGrid.getCodigo().compareTo(idProcSeleccionado) == 0) {
-                this.datoSeleccionado = procGrid;
-                break;
-            }
-        }*/
     }
 
-    private void abrirVentana(TypeModoAcceso modoAcceso, ProcedimientoDTO proc) {
+    private void abrirVentana(TypeModoAcceso modoAcceso, ServicioDTO serv) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (proc != null) {
-            UtilJSF.anyadirMochila("PROC", proc);
-            params.put(TypeParametroVentana.ID.toString(), proc.getCodigo().toString());
+        if (serv != null) {
+            UtilJSF.anyadirMochila("SERV", serv);
+            params.put(TypeParametroVentana.ID.toString(), serv.getCodigo().toString());
         }
         //Integer ancho = sessionBean.getScreenWidthInt();
         //if (ancho == null) {
         //    ancho = 1433;
         //}
         Integer ancho = 975;
-        UtilJSF.openDialog("dialogProcedimiento", modoAcceso, params, true, ancho, 733);
+        UtilJSF.openDialog("dialogServicio", modoAcceso, params, true, ancho, 733);
     }
 
     public void cambiarUAbuscarEvt(UnidadAdministrativaDTO ua) {
@@ -255,9 +245,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             private static final long serialVersionUID = 1L;
 
             @Override
-            public ProcedimientoGridDTO getRowData(String rowKey) {
+            public ServicioGridDTO getRowData(String rowKey) {
                 if (getWrappedData() != null) {
-                    for (ProcedimientoGridDTO proc : (List<ProcedimientoGridDTO>) getWrappedData()) {
+                    for (ServicioGridDTO proc : (List<ServicioGridDTO>) getWrappedData()) {
                         if (proc.getCodigo().toString().equals(rowKey))
                             return proc;
                     }
@@ -266,24 +256,24 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             }
 
             @Override
-            public Object getRowKey(ProcedimientoGridDTO proc) {
+            public Object getRowKey(ServicioGridDTO proc) {
                 return proc.getCodigo().toString();
             }
 
             @Override
-            public List<ProcedimientoGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-                                                   Map<String, FilterMeta> filterBy) {
+            public List<ServicioGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+                                              Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
                     }
-                    Pagina<ProcedimientoGridDTO> pagina = procedimientoService.findProcedimientosByFiltro(filtro);
+                    Pagina<ServicioGridDTO> pagina = procedimientoService.findServiciosByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 } catch (Exception e) {
                     LOG.error("Error llamando", e);
-                    Pagina<ProcedimientoGridDTO> pagina = pagina = new Pagina(new ArrayList(), 0);
+                    Pagina<ServicioGridDTO> pagina = pagina = new Pagina(new ArrayList(), 0);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
@@ -296,7 +286,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
         // Verificamos si se ha modificado
         if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
-            ProcedimientoGridDTO proc = this.datoSeleccionado;
+            ServicioGridDTO proc = this.datoSeleccionado;
             this.buscar();
             this.seleccionarPorId(proc);
 
@@ -375,11 +365,11 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         return filtro;
     }
 
-    public void setDatoSeleccionado(ProcedimientoGridDTO dato) {
+    public void setDatoSeleccionado(ServicioGridDTO dato) {
         this.datoSeleccionado = dato;
     }
 
-    public ProcedimientoGridDTO getDatoSeleccionado() {
+    public ServicioGridDTO getDatoSeleccionado() {
         return datoSeleccionado;
     }
 

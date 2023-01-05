@@ -35,6 +35,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private List<NormativaGridDTO> normativas;
     private String estado;
     private boolean hijasActivas = false;
+    private List<Long> idUAsHijas;
     private boolean todasUbidadesOrganicas = false;
 
     public String getTexto() {
@@ -137,6 +138,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return publicoObjetivos;
     }
 
+    public List<Long> getPublicoObjetivosId() {
+        List<Long> idPublicos = new ArrayList<>();
+        for (TipoPublicoObjetivoEntidadGridDTO pub : publicoObjetivos) {
+            idPublicos.add(pub.getCodigo());
+        }
+        return idPublicos;
+    }
+
     public String getPublicoObjetivos(String idioma) {
         if (publicoObjetivos == null || publicoObjetivos.isEmpty()) {
             return "";
@@ -156,6 +165,15 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public List<TipoMateriaSIAGridDTO> getMaterias() {
         return materias;
     }
+
+    public List<Long> getMateriasId() {
+        List<Long> idMaterias = new ArrayList<>();
+        for (TipoMateriaSIAGridDTO mat : materias) {
+            idMaterias.add(mat.getCodigo());
+        }
+        return idMaterias;
+    }
+
 
     public String getMaterias(String idioma) {
         if (materias == null || materias.isEmpty()) {
@@ -215,6 +233,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public void setTodasUbidadesOrganicas(boolean todasUbidadesOrganicas) {
         this.todasUbidadesOrganicas = todasUbidadesOrganicas;
+    }
+
+    public List<Long> getIdUAsHijas() {
+        return idUAsHijas;
+    }
+
+    public void setIdUAsHijas(List<Long> idUAsHijas) {
+        this.idUAsHijas = idUAsHijas;
     }
 
     /**

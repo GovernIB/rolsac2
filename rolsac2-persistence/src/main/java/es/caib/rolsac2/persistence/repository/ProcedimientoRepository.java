@@ -26,7 +26,9 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     Optional<JProcedimiento> findById(String id);
 
-    List<ProcedimientoGridDTO> findPagedByFiltro(ProcedimientoFiltro filtro);
+    List<ProcedimientoGridDTO> findProcedimientosPagedByFiltro(ProcedimientoFiltro filtro);
+
+    List<ServicioGridDTO> findServiciosPagedByFiltro(ProcedimientoFiltro filtro);
 
     long countByFiltro(ProcedimientoFiltro filtro);
 

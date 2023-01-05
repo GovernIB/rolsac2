@@ -92,6 +92,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                                 estados.add(TypeProcedimientoEstado.RESERVA);
                                 break;
                             case PUBLICADO:
+                                estados.add(TypeProcedimientoEstado.MODIFICACION);
                                 estados.add(TypeProcedimientoEstado.BORRADO);
                                 estados.add(TypeProcedimientoEstado.RESERVA);
                                 break;
