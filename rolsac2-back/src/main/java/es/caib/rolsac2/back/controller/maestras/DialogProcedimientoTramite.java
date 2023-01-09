@@ -70,13 +70,13 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         if (this.isModoEdicion() || this.isModoConsulta()) {
             data = (ProcedimientoTramiteDTO) UtilJSF.getValorMochilaByKey("tramiteSel");
 
-            if (data != null && data.getTipoTramitacion() != null && data.isTramitPresencial()) {
+            if (data != null && data.isTramitPresencial()) {
                 canalesSeleccionados.add("PRE");
             }
-            if (data != null && data.getTipoTramitacion() != null && data.isTramitElectronica()) {
+            if (data != null && data.isTramitElectronica()) {
                 canalesSeleccionados.add("TEL");
             }
-            if (data != null && data.getTipoTramitacion() != null && data.isTramitTelefonica()) {
+            if (data != null && data.isTramitTelefonica()) {
                 canalesSeleccionados.add("TFN");
             }
 
@@ -136,6 +136,12 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunCanalPresentacion"));
             return false;
         }
+
+        if (!this.data.isTramitPresencial() && (this.data.getListaModelos() == null || this.data.getListaModelos().isEmpty())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaAlgunModelo"));
+            return false;
+        }
+
         return true;
     }
 

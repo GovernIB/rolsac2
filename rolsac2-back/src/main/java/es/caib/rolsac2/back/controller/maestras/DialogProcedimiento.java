@@ -378,6 +378,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 }
 
                 data.addtramite(procTramite);
+                tramiteSeleccionado = procTramite;
             }
         }
     }

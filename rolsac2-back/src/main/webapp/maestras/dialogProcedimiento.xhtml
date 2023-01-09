@@ -65,7 +65,9 @@
                         <p>
                             <p:calendar id="txtFechaPublicacion" styleClass="fecha" disabled="#{dialogProcedimiento.isModoConsulta()}"
                                         value="#{dialogProcedimiento.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
-                                        showOn="button"/>
+                                        showOn="button">
+                                <p:ajax event="change" />
+                            </p:calendar>
                         </p>
                     </div>
                     <div class="form-group col-md-3">
