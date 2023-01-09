@@ -134,6 +134,12 @@ public interface NormativaServiceFacade {
      */
     List<ProcedimientoNormativaDTO> listarProcedimientosByNormativa(Long idNormativa);
 
+    /**
+     * Devuelve el listado de servicios que tienen asociada la normativa
+     * @param idNormativa
+     * @return
+     */
+    List<ProcedimientoNormativaDTO> listarServiciosByNormativa(Long idNormativa);
 
     Long createAfectacion(AfectacionDTO afectacionDTO);
 

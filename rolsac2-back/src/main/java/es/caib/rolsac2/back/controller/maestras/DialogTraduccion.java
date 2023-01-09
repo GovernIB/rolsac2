@@ -292,7 +292,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
                         literalAuxDestinoSust.add(i, tradDestino);
                     }
                 } catch (IPluginTraduccionException e) {
-                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "dialogTraduccion.errorComunicacion");
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraduccion.errorComunicacion"));
                 }
 
 

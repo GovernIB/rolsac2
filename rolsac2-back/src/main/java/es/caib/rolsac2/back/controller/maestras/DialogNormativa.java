@@ -39,6 +39,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
     private List<TipoBoletinDTO> tipoBoletin;
 
     private List<ProcedimientoNormativaDTO> procedimientosRelacionados;
+    private List<ProcedimientoNormativaDTO> serviciosRelacionados;
 
     private List<String> documentosRelacionados;
 
@@ -61,6 +62,8 @@ public class DialogNormativa extends AbstractController implements Serializable 
     private UnidadAdministrativaGridDTO uaSeleccionada;
 
     private ProcedimientoNormativaDTO procSeleccionado;
+
+    private ProcedimientoNormativaDTO servicioSeleccionado;
 
     private AfectacionDTO afectacionSeleccionada;
 
@@ -92,6 +95,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
             } else if (this.isModoEdicion() || this.isModoConsulta()) {
                 data = normativaServiceFacade.findById(Long.valueOf(id));
                 findProcedimientosRelacionados();
+                findServiciosRelacionados();
                 data.setAfectaciones(findAfectaciones());
                 if (data.getDocumentosNormativa() != null) {
                     for (DocumentoNormativaDTO documentoNormativaDTO : data.getDocumentosNormativa()) {
@@ -340,6 +344,10 @@ public class DialogNormativa extends AbstractController implements Serializable 
         procedimientosRelacionados = normativaServiceFacade.listarProcedimientosByNormativa(this.data.getCodigo());
     }
 
+    private void findServiciosRelacionados() {
+        serviciosRelacionados = normativaServiceFacade.listarServiciosByNormativa(this.data.getCodigo());
+    }
+
     private List<AfectacionDTO> findAfectaciones() {
         return normativaServiceFacade.findAfectacionesByNormativa(this.data.getCodigo());
     }
@@ -356,6 +364,21 @@ public class DialogNormativa extends AbstractController implements Serializable 
                 ancho = 1433;
             }
             UtilJSF.openDialog("dialogProcedimiento", TypeModoAcceso.CONSULTA, params, true, ancho, 733);
+        }
+    }
+
+    public void consultarServicio() {
+        if (servicioSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", servicioSeleccionado.getCodigo().toString());
+            params.put(TypeParametroVentana.MODO_ACCESO.toString(), TypeModoAcceso.CONSULTA.toString());
+            Integer ancho = sessionBean.getScreenWidthInt();
+            if (ancho == null) {
+                ancho = 1433;
+            }
+            UtilJSF.openDialog("dialogServicio", TypeModoAcceso.CONSULTA, params, true, ancho, 733);
         }
     }
 
@@ -534,5 +557,21 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     public void setAfectacionSeleccionada(AfectacionDTO afectacionSeleccionada) {
         this.afectacionSeleccionada = afectacionSeleccionada;
+    }
+
+    public List<ProcedimientoNormativaDTO> getServiciosRelacionados() {
+        return serviciosRelacionados;
+    }
+
+    public void setServiciosRelacionados(List<ProcedimientoNormativaDTO> serviciosRelacionados) {
+        this.serviciosRelacionados = serviciosRelacionados;
+    }
+
+    public ProcedimientoNormativaDTO getServicioSeleccionado() {
+        return servicioSeleccionado;
+    }
+
+    public void setServicioSeleccionado(ProcedimientoNormativaDTO servicioSeleccionado) {
+        this.servicioSeleccionado = servicioSeleccionado;
     }
 }

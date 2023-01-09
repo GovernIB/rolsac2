@@ -359,7 +359,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public List<ProcedimientoNormativaDTO> getProcedimientosByNormativa(Long idNormativa) {
         List<ProcedimientoNormativaDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoNormativa j where j.normativa.codigo = :idNormativa ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoNormativa j where j.normativa.codigo = :idNormativa and j.procedimiento.procedimiento.tipo='P'");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("idNormativa", idNormativa);
         List<JProcedimientoNormativa> jLista = query.getResultList();
@@ -372,6 +372,21 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     }
 
+    @Override
+    public List<ProcedimientoNormativaDTO> getServiciosByNormativa(Long idNormativa) {
+        List<ProcedimientoNormativaDTO> lista = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoNormativa j where j.normativa.codigo = :idNormativa and j.procedimiento.procedimiento.tipo='S'");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("idNormativa", idNormativa);
+        List<JProcedimientoNormativa> jLista = query.getResultList();
+        if (jLista != null && !jLista.isEmpty()) {
+            for (JProcedimientoNormativa elemento : jLista) {
+                lista.add(elemento.toModelProc());
+            }
+        }
+        return lista;
+
+    }
 
     @Override
     public void mergeDocumentos(Long codigoWF, Long idListaDocumentos, boolean isLopd, List<ProcedimientoDocumentoDTO> docs, String ruta) {

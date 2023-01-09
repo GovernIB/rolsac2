@@ -72,6 +72,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     List<ProcedimientoNormativaDTO> getProcedimientosByNormativa(Long idNormativa);
 
+    List<ProcedimientoNormativaDTO> getServiciosByNormativa(Long idNormativa);
+
     /**
      * Actualiza los mensajes
      *

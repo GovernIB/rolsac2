@@ -369,6 +369,13 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<ProcedimientoNormativaDTO> listarServiciosByNormativa(Long idNormativa) {
+        return procedimientoRepository.getServiciosByNormativa(idNormativa);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long createAfectacion(AfectacionDTO afectacionDTO) {
         if(afectacionDTO != null) {
             JAfectacion jAfectacion = new JAfectacion();
