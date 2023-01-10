@@ -137,7 +137,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             return false;
         }
 
-        if (!this.data.isTramitPresencial() && (this.data.getListaModelos() == null || this.data.getListaModelos().isEmpty())) {
+        if (this.data.isTramitPresencial() && (this.data.getListaModelos() == null || this.data.getListaModelos().isEmpty())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaAlgunModelo"));
             return false;
         }

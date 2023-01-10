@@ -1,7 +1,6 @@
 package es.caib.rolsac2.service.facade.integracion;
 
 
-import es.caib.rolsac2.commons.plugins.boletin.api.model.Edicto;
 import es.caib.rolsac2.service.model.EdictoGridDTO;
 
 import java.util.List;
@@ -13,6 +12,7 @@ public interface BoletinServiceFacade {
 
     /**
      * Búsqueda de los edictos en el boletín
+     *
      * @param numeroBoletin
      * @param fechaBoletin
      * @param numeroEdicto

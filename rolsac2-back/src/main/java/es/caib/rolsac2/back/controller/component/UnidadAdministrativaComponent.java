@@ -46,6 +46,10 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
 
     private String estiloInput;
 
+    private UIInput btnAbrir;
+
+    private boolean mostrarBoton;
+
 
     // Actions ------------------------------------------------------------------------------------
 
@@ -79,6 +83,7 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
     public void encodeBegin(FacesContext context) throws IOException {
         String idioma = (String) getAttributes().get("idioma");
         String iModoAcceso = (String) getAttributes().get("soloLecture");
+        mostrarBoton = true;
         ocultarTexto = (String) getAttributes().get("ocultarTexto");
         esCabecera = (Boolean) getAttributes().get(ES_CABECERA);
 
@@ -115,9 +120,10 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
         if (texto != null) {
             texto.setRendered(!ocultar);
         }
-        if (boton != null) {
-            this.boton.setRendered(!ocultar);
+        if (btnAbrir != null) {
+            this.btnAbrir.setRendered(!ocultar);
         }
+        mostrarBoton = !ocultar;
     }
 
     private void setearTextos(UnidadAdministrativaDTO ua) {
@@ -258,6 +264,22 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
 
     public void setEstiloInput(String estiloInput) {
         this.estiloInput = estiloInput;
+    }
+
+    public boolean isMostrarBoton() {
+        return mostrarBoton;
+    }
+
+    public void setMostrarBoton(boolean mostrarBoton) {
+        this.mostrarBoton = mostrarBoton;
+    }
+
+    public UIInput getBtnAbrir() {
+        return btnAbrir;
+    }
+
+    public void setBtnAbrir(UIInput btnAbrir) {
+        this.btnAbrir = btnAbrir;
     }
 
     public String getUpdateElementos() {

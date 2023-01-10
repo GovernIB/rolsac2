@@ -65,6 +65,8 @@
                         <p>
                             <p:calendar id="txtFechaPublicacion" styleClass="fecha" disabled="#{dialogProcedimiento.isModoConsulta()}"
                                         value="#{dialogProcedimiento.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
+                                        requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
+                                        required="true"
                                         showOn="button">
                                 <p:ajax event="change" />
                             </p:calendar>
@@ -212,29 +214,30 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.organoCompetente']}:"
                                        for="txtOrgComp"/>
                         <p>
-                            <!--<h:panelGroup id="panelComun" >
+                            <h:panelGroup id="panelComun">
                                 <p:inputText id="labelComun" value="COMUNX:#{dialogProcedimiento.comunUA}"
                                                  rendered="#{dialogProcedimiento.data.comun}"
                                                  styleClass="w95"
                                                  disabled="true" />
-                            </h:panelGroup>-->
-                            <h:panelGroup  id="columnaUaInstructor" >
-
+                            </h:panelGroup>
+                            <!--<h:panelGroup  id="columnaUaInstructor"  renderer="#{dialogProcedimiento.data.comun}" >-->
+                            <h:panelGroup  id="columnaUaInstructor">
                                 <my:unidadAdministrativaComponent id="txtOrgComp"
                                                               value="#{dialogProcedimiento.data.uaInstructor}"
                                                               idioma="#{dialogProcedimiento.idioma}"
                                                               required="#{!dialogProcedimiento.data.comun}"
                                                               requiredMessage="#{labels['dict.obligatorio.uaInstructor']}"
+
                                                               ocultarTexto="false" esCabecera="false"
 
-                            /><!-- ocultar="#{dialogProcedimiento.data.comun}"  -->
+                                /><!-- ocultar="#{dialogProcedimiento.data.comun}" -->
                             </h:panelGroup>
 
                         </p>
                     </div>
                     <div  class="form-group col-md-3">
                         <p:selectBooleanCheckbox  styleClass="mt-3" value="#{dialogProcedimiento.data.comun}" disabled="#{dialogProcedimiento.isGestor() or dialogProcedimiento.isModoConsulta()}" itemLabel="#{labels['dict.comun']}" style="margin-top:10px" >
-                            <p:ajax event="change"  update="columnaUaInstructor txtOrgComp"   />
+                            <!--<p:ajax event="change"  update="columnaUaInstructor txtOrgComp panelComun labelComun"   />-->
                         </p:selectBooleanCheckbox>
 
                     </div>

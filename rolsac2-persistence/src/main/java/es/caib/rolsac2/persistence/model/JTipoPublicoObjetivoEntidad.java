@@ -1,8 +1,9 @@
 package es.caib.rolsac2.persistence.model;
 
-import com.sun.mail.util.LineInputStream;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoPublicoObjetivoEntidadTraduccion;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
 import java.util.List;
@@ -77,7 +78,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -86,7 +87,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -95,7 +96,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * Obtiene entidad.
      *
-     * @return  entidad
+     * @return entidad
      */
     public JEntidad getEntidad() {
         return entidad;
@@ -104,7 +105,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * Establece entidad.
      *
-     * @param entidad  entidad
+     * @param entidad entidad
      */
     public void setEntidad(JEntidad entidad) {
         this.entidad = entidad;
@@ -113,7 +114,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * Obtiene tipo.
      *
-     * @return  tipo
+     * @return tipo
      */
     public JTipoPublicoObjetivo getTipo() {
         return tipo;
@@ -122,7 +123,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * Establece tipo.
      *
-     * @param tipo  tipo
+     * @param tipo tipo
      */
     public void setTipo(JTipoPublicoObjetivo tipo) {
         this.tipo = tipo;
@@ -131,7 +132,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -140,7 +141,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -149,7 +150,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * Obtiene traducciones.
      *
-     * @return  traducciones
+     * @return traducciones
      */
     public List<JTipoPublicoObjetivoEntidadTraduccion> getTraducciones() {
         return traducciones;
@@ -158,7 +159,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * Establece traducciones.
      *
-     * @param traducciones  traducciones
+     * @param traducciones traducciones
      */
     public void setTraducciones(List<JTipoPublicoObjetivoEntidadTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {
@@ -182,19 +183,19 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
     /**
      * To model tipo publico objetivo entidad grid dto.
      *
-     * @return  tipo publico objetivo entidad grid dto
+     * @return tipo publico objetivo entidad grid dto
      */
     public TipoPublicoObjetivoEntidadGridDTO toModel() {
         TipoPublicoObjetivoEntidadGridDTO tipo = new TipoPublicoObjetivoEntidadGridDTO();
         tipo.setCodigo(this.getCodigo());
         tipo.setIdentificador(this.getIdentificador());
-        /*Literal literal = new Literal();
-        if (this.getTipo() != null && this.getTipo().getDescripcion() != null) {
-            for (JTipoPublicoObjetivoTraduccion trad : this.getTipo().getDescripcion()) {
+        Literal literal = new Literal();
+        if (this.getTraducciones() != null) {
+            for (JTipoPublicoObjetivoEntidadTraduccion trad : this.getTraducciones()) {
                 literal.add(new Traduccion(trad.getIdioma(), trad.getDescripcion()));
             }
-
-        }*/
+        }
+        tipo.setDescripcion(literal);
         return tipo;
     }
 

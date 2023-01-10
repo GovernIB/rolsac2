@@ -147,29 +147,28 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.soloEstadoModificacion"));
                 return;
             }
+        }
 
-            boolean tiene = false;
-            if (data.getTramites() != null) {
-                for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
-                    if (tramite.getFase() == FASE_INICIACION) {
-                        tiene = true;
-                        break;
-                    }
+        if (data.getEstado() == TypeProcedimientoEstado.MODIFICACION && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
+            return;
+        }
+
+        boolean tiene = false;
+        if (data.getTramites() != null) {
+            for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
+                if (tramite.getFase() == FASE_INICIACION) {
+                    tiene = true;
+                    break;
                 }
             }
-
-            if (!tiene) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteFaseIniciacion"));
-                return;
-            }
-
-            if (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty()) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
-                return;
-            }
-
-
         }
+
+        if (!tiene) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteFaseIniciacion"));
+            return;
+        }
+
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }
 
@@ -243,6 +242,15 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (this.data.getFechaPublicacion() != null && this.data.getFechaCaducidad() != null && data.getFechaCaducidad().before(this.data.getFechaPublicacion())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionCaducidad"));
             return false;
+        }
+
+        if (this.data.getTramites() != null) {
+            for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
+                if (data.getFechaPublicacion() != null && tramite.getFechaPublicacion() != null && tramite.getFechaPublicacion().before(data.getFechaPublicacion())) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaPublicacion"));
+                    return false;
+                }
+            }
         }
 
         return true;
@@ -425,7 +433,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 //params.put(TypeParametroVentana.ID.toString(), String.valueOf(contadorProcMemoria--));
             }
             UtilJSF.anyadirMochila("nombreProcedimiento", data.getNombreProcedimientoWorkFlow());
-            UtilJSF.openDialog("dialogProcedimientoTramite", modoAcceso, params, true, 1240, 600);
+            UtilJSF.openDialog("dialogProcedimientoTramite", modoAcceso, params, true, 950, 600);
         }
     }
 
