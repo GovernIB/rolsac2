@@ -56,8 +56,22 @@ public class TemaServiceFacadeBean implements TemaServiceFacade{
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TemaGridDTO> getGridHijos(Long id, String idioma) {
+        return converter.createGridDTOs(temaRepository.getHijos(id, idioma));
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TemaDTO> getRoot(String idioma, Long entidadId) {
         return converter.createDTOs(temaRepository.getRoot(idioma, entidadId));
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TemaGridDTO> getGridRoot(String idioma, Long entidadId) {
+        return converter.createGridDTOs(temaRepository.getRoot(idioma, entidadId));
     }
 
     @Override
@@ -68,6 +82,18 @@ public class TemaServiceFacadeBean implements TemaServiceFacade{
             throw new DatoDuplicadoException(dto.getCodigo());
         }
         JTema jTema = converter.createEntity(dto);
+        String path = "";
+        //Calculamos path con el que se guardará el objeto
+        if(dto.getTemaPadre() != null && dto.getTemaPadre().getCodigo() != null) {
+            if(dto.getTemaPadre().getMathPath() != null && !dto.getTemaPadre().getMathPath().isEmpty()) {
+                path += dto.getTemaPadre().getMathPath();
+                path += ";" + dto.getTemaPadre().getCodigo();
+            } else {
+                path = dto.getTemaPadre().getCodigo().toString();
+            }
+
+        }
+        jTema.setMathPath(path);
         temaRepository.create(jTema);
         return jTema.getCodigo();
     }
@@ -75,14 +101,11 @@ public class TemaServiceFacadeBean implements TemaServiceFacade{
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void update(TemaDTO dto) throws RecursoNoEncontradoException {
+    public void update(TemaDTO dto, String idioma) throws RecursoNoEncontradoException {
         JEntidad jEntidad = entidadRepository.getReference(dto.getEntidad().getCodigo());
         JTema jTema = temaRepository.getReference(dto.getCodigo());
 
-        if (dto.getTemaPadre() != null) {
-            JTema temaPadre = temaRepository.getReference(dto.getTemaPadre().getCodigo());
-            jTema.setTemaPadre(temaPadre);
-        }
+        this.verificarModificacionTemaPadre(dto, jTema, idioma);
         jTema.setEntidad(jEntidad);
         converter.mergeEntity(jTema, dto);
         temaRepository.update(jTema);
@@ -139,5 +162,53 @@ public class TemaServiceFacadeBean implements TemaServiceFacade{
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Boolean checkIdentificador(String identificador) {
         return temaRepository.checkIdentificador(identificador);
+    }
+
+
+    private void verificarModificacionTemaPadre(TemaDTO temaActualizado, JTema jTema, String idioma) {
+        if (temaActualizado.getTemaPadre() != null && jTema.getTemaPadre() != null) {
+            if(jTema.getTemaPadre().getCodigo() != temaActualizado.getTemaPadre().getCodigo()) {
+                String mathPathAntiguo = jTema.getMathPath();
+                String mathPathNuevo = temaActualizado.getMathPath();
+                List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(mathPathAntiguo, idioma);
+                for(JTema tema: hijosAll) {
+                    String mathPath = tema.getMathPath();
+                    String mathPathActualizado = mathPath.replace(mathPathAntiguo, mathPathNuevo);
+                    tema.setMathPath(mathPathActualizado);
+                    temaRepository.update(tema);
+                }
+                JTema temaPadre = temaRepository.getReference(temaActualizado.getTemaPadre().getCodigo());
+                jTema.setTemaPadre(temaPadre);
+                String mathPathPadre = temaPadre.getMathPath();
+                if(mathPathPadre != null) {
+                    String mathPath = mathPathPadre += temaPadre.getCodigo().toString();
+                    jTema.setMathPath(mathPath);
+                } else {
+                    jTema.setMathPath(temaPadre.getCodigo().toString());
+                }
+            }
+        } else if(temaActualizado.getTemaPadre() == null && jTema.getTemaPadre() != null) {
+            String mathPathAntiguo = jTema.getMathPath();
+            List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(mathPathAntiguo, idioma);
+            for(JTema tema: hijosAll) {
+                String mathPath = tema.getMathPath();
+                String mathPathActualizado = mathPath.replace(mathPathAntiguo, "");
+                tema.setMathPath(mathPathActualizado);
+                temaRepository.update(tema);
+            }
+            jTema.setTemaPadre(null);
+            jTema.setMathPath(null);
+        } else if(temaActualizado.getTemaPadre() != null && jTema.getTemaPadre() == null) {
+            String mathPathActualizado = temaActualizado.getMathPath();
+            List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(temaActualizado.getCodigo().toString(), idioma);
+            for(JTema tema: hijosAll) {
+                String mathPath = temaActualizado.getMathPath() + tema.getMathPath();
+                tema.setMathPath(mathPath);
+                temaRepository.update(tema);
+            }
+            JTema temaPadre = temaRepository.getReference(temaActualizado.getTemaPadre().getCodigo());
+            jTema.setTemaPadre(temaPadre);
+            jTema.setMathPath(temaActualizado.getMathPath());
+        }
     }
 }

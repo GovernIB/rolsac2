@@ -62,6 +62,9 @@ public class JTema extends BaseEntity {
     @JoinColumn(name = "TEMA_PADRE")
     private JTema temaPadre;
 
+    @Column(name = "TEMA_MATHPATH")
+    private String mathPath;
+
     @OneToMany(mappedBy = "tema", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTemaTraduccion> descripcion;
 
@@ -144,6 +147,14 @@ public class JTema extends BaseEntity {
      */
     public List<JTemaTraduccion> getDescripcion() {
         return descripcion;
+    }
+
+    public String getMathPath() {
+        return mathPath;
+    }
+
+    public void setMathPath(String mathPath) {
+        this.mathPath = mathPath;
     }
 
     /**

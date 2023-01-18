@@ -1,12 +1,10 @@
 package es.caib.rolsac2.persistence.converter;
 
+import es.caib.rolsac2.persistence.model.JTema;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUsuario;
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
-import es.caib.rolsac2.service.model.UsuarioGridDTO;
+import es.caib.rolsac2.service.model.*;
 import org.mapstruct.*;
 
 import java.util.ArrayList;
@@ -29,6 +27,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "responsable",
             expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"responsableCV\"))")
     @Mapping(target = "usuariosUnidadAdministrativa", expression = "java(convertUsuariostoDTO(entity.getUsuarios()))")
+    @Mapping(target = "temas", expression = "java(convertTematoDTO(entity.getTemas()))")
     UnidadAdministrativaDTO createDTO(JUnidadAdministrativa entity);
 
     @Mapping(target = "nombre",
@@ -60,6 +59,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
             expression = "java(convierteLiteralToTraduccion(jUnidadAdministrativa,dto))")
     @Mapping(target = "padre", ignore = true)
     @Mapping(target = "usuarios", ignore = true)
+    @Mapping(target = "temas", ignore = true)
     JUnidadAdministrativa createEntity(UnidadAdministrativaDTO dto);
 
     @Override
@@ -70,6 +70,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "traducciones",
             expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "usuarios", ignore = true)
+    @Mapping(target = "temas", ignore = true)
     void mergeEntity(@MappingTarget JUnidadAdministrativa entity, UnidadAdministrativaDTO dto);
 
     default List<UnidadAdministrativaDTO> createDTOs(List<JUnidadAdministrativa> entities) {
@@ -193,5 +194,24 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
         }
 
         return usuariosUA;
+    }
+
+    default List<TemaGridDTO> convertTematoDTO(Set<JTema> temas) {
+        List<TemaGridDTO> temasDTO = new ArrayList<>();
+        if(temas != null) {
+            for(JTema tema : temas) {
+                TemaGridDTO temaGridDTO = new TemaGridDTO();
+                temaGridDTO.setCodigo(tema.getCodigo());
+                temaGridDTO.setIdentificador(tema.getIdentificador());
+                temaGridDTO.setEntidad(tema.getEntidad().getCodigo());
+                temaGridDTO.setMathPath(tema.getMathPath());
+                if(tema.getTemaPadre() != null) {
+                    temaGridDTO.setTemaPadre(tema.getTemaPadre().getIdentificador());
+                }
+                temasDTO.add(temaGridDTO);
+            }
+        }
+
+        return temasDTO;
     }
 }

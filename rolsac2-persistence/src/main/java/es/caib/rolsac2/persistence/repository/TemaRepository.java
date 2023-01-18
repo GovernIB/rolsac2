@@ -21,4 +21,6 @@ public interface TemaRepository extends CrudRepository<JTema, Long>{
     long countByFiltro(TemaFiltro filtro);
 
     Boolean checkIdentificador(String identificador);
+
+    List<JTema> getHijosTodosNiveles(String mathPath, String idioma);
 }

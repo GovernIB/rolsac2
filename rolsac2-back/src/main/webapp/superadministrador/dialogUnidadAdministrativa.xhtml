@@ -3,7 +3,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:my="http://java.sun.com/jsf/composite/components" xmlns:c="http://java.sun.com/jsp/jstl/core"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -24,10 +24,11 @@
         <span class="pi pi-tag mt-1"/>
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogUnidadAdministrativa.idioma}"
-                           styleClass="botoneraRed"  unselectable="false" maxlength="50">
+                           styleClass="botoneraRed" unselectable="false" maxlength="50">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-            <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo"/>
+            <p:ajax process="@this"
+                    update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogUnidadAdministrativa.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -67,7 +68,7 @@
                                          styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
                         <div class="form-group col-md-2">
-                           <p:outputLabel value="#{labels['dialogUnidadAdministrativa.orden']}:" for="txtOrden"
+                            <p:outputLabel value="#{labels['dialogUnidadAdministrativa.orden']}:" for="txtOrden"
                                            styleClass="mb-1 pt-0"/>
                             <p>
                                 <p:inputNumber id="txtOrden" value="#{dialogUnidadAdministrativa.data.orden}"
@@ -100,7 +101,7 @@
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      idioma="#{dialogUnidadAdministrativa.idioma}"
                                                      nombreLiteral="#{labels['dict.nombre']}">
-                                    <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                                    <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                                 </my:literalComponent>
                             </p>
 
@@ -120,19 +121,20 @@
                                 <h:outputText value="#{labels['dialogUnidadAdministrativa.tipo']}:" for="txtTipo"/>
                             </p>
                             <p:selectOneMenu id="txtTipo" value="#{dialogUnidadAdministrativa.data.tipo}"
-                                             styleClass="w95"  autoWidth="false"
+                                             styleClass="w95" autoWidth="false"
                                              disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                              converter="#{tipoUnidadAdministrativaConverter}">
                                 <f:selectItem itemLabel="#{labels['dialogUnidadAdministrativa.selecciona.tipo']}"
                                               itemValue="#{null}"/>
                                 <f:selectItems value="#{dialogUnidadAdministrativa.tipos}" var="tipo"
-                                               itemLabel="#{tipo.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}" itemValue="#{tipo}"/>
+                                               itemLabel="#{tipo.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}"
+                                               itemValue="#{tipo}"/>
                                 <p:ajax event="change" update="@this"></p:ajax>
                             </p:selectOneMenu>
                         </div>
                     </div>
                     <div class="form-row" style="height:auto;">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-12">
                             <p class="mb-1">
                                 <h:outputText styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.url']}:"
                                               for="txtUrl"/>
@@ -148,7 +150,10 @@
                             </p>
 
                         </div>
-                        <div class="form-group col-md-8" >
+
+                    </div>
+                    <div class="form-row" style="height:auto;">
+                        <div class="form-group col-md-12">
                             <p class="mb-1">
                                 <h:outputText styleClass="mr-2 mb-1"
                                               value="#{labels['dialogUnidadAdministrativa.presentacion']}:"
@@ -190,6 +195,7 @@
 
                         </div>
                     </div>
+
                 </p:panel>
                 <p:panel id="formResponsable" header="#{labels['dialogUnidadAdministrativa.responsable']}">
                     <div class="form-row">
@@ -209,7 +215,7 @@
                                            for="txtTipoSexo"/>
                             <p:selectOneMenu id="txtTipoSexo"
                                              value="#{dialogUnidadAdministrativa.data.responsableSexo}"
-                                             styleClass="w95" required="true"  autoWidth="false"
+                                             styleClass="w95" required="true" autoWidth="false"
                                              requiredMessage="#{labels['dict.obligatorio.responsableSexo']}"
                                              disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                              converter="#{tipoSexoConverter}">
@@ -223,7 +229,7 @@
                             </p:selectOneMenu>
                         </div>
                     </div>
-                    <div class="form-row"  style="height:auto;">
+                    <div class="form-row" style="height:auto;">
                         <div class="form-group col-md-4">
                             <p class="mb-1">
                                 <h:outputText value="#{labels['dialogUnidadAdministrativa.responsableEmail']}:"
@@ -234,7 +240,10 @@
                                          styleClass="w95"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
-                        <div class="form-group col-md-8">
+
+                    </div>
+                    <div class="form-row" style="height:auto;">
+                        <div class="form-group col-md-11">
                             <p class="mb-1">
                                 <h:outputText value="#{labels['dialogUnidadAdminsitrativa.responsableCV']}:"
                                               for="txtResponsable"/>
@@ -326,80 +335,13 @@
                         <p:button title="Consultar" icon="pi pi-eye"></p:button>
                     </div>
                 </div>
-                <!--<div class="row left-container mx-0 mb-2">
-                    <div class="col-12 left-container-header text-center">
-                        <p class="left-container-tit mt-2 mb-1">EDIFICIOS (MOCK)</p>
-                    </div>
-                    <div class="col-10 p-1">
-                        <p:dataTable id="dataTableEdificios" var="td" value="#{dialogUnidadAdministrativa.edificios}"
-                                     emptyMessage="La tabla está vacía" scrollable="true" scrollHeight="120"
-                                     paginator="false" selectionMode="single"
-                                     selection="#{dialogUnidadAdministrativa.edificioSeleccionado}"
-                                     rowKey="#{td.codigo}" styleClass="noHeader">
-
-                            &lt;!&ndash; Necesario para actualizar en controlador la fila seleccionada &ndash;&gt;
-                            <p:ajax event="rowSelect" global="false"/>
-                            <p:ajax event="rowUnselect"/>
-                            <p:ajax event="rowDblselect"
-                                    oncomplete="rcEditarPropiedad();"
-                            />
-
-                            &lt;!&ndash;<p:column headerText="CÓDIGO" styleClass="text-center w-25">
-                                <h:outputText value="#{td.codigo}"/>
-                            </p:column>&ndash;&gt;
-
-                            <p:column headerText="DIRECCIÓN" styleClass="text-center w75">
-                                <h:outputText value="#{td.direccion}"/>
-                            </p:column>
-
-                        </p:dataTable>
-                    </div>
-                    <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                        <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
-                        <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
-                        <p:button title="Consultar" icon="pi pi-eye"></p:button>
-                    </div>
-                </div>-->
-               <!-- <div class="row left-container mx-0 mb-2">
-                    <div class="col-12 left-container-header text-center">
-                        <p class="left-container-tit mt-2 mb-1">SECCIONES (MOCK)</p>
-                    </div>
-                    <div class="col-10 p-1">
-                        <p:dataTable id="dataTableSecciones" var="td" value="#{dialogUnidadAdministrativa.secciones}"
-                                     emptyMessage="La tabla está vacía" scrollable="true" scrollHeight="120"
-                                     paginator="false" selectionMode="single"
-                                     selection="#{dialogUnidadAdministrativa.seccionSeleccionada}"
-                                     rowKey="#{td.codigo}" styleClass="noHeader">
-
-                            &lt;!&ndash; Necesario para actualizar en controlador la fila seleccionada &ndash;&gt;
-                            <p:ajax event="rowSelect" global="false"/>
-                            <p:ajax event="rowUnselect"/>
-                            <p:ajax event="rowDblselect"
-                                    oncomplete="rcEditarPropiedad();"
-                            />
-
-                            &lt;!&ndash;<p:column headerText="CÓDIGO" styleClass="text-center w-25">
-                                <h:outputText value="#{td.codigo}"/>
-                            </p:column>&ndash;&gt;
-
-                            <p:column headerText="SECCIONES" styleClass="text-center w75">
-                                <h:outputText value="#{td.identificador}"/>
-                            </p:column>
-
-                        </p:dataTable>
-                    </div>
-                    <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                        <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
-                        <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
-                        <p:button title="Consultar" icon="pi pi-eye"></p:button>
-                    </div>
-                </div>-->
                 <div class="row left-container mx-0">
                     <div class="col-12 left-container-header text-center">
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.usuarios']}</p>
                     </div>
                     <div class="col-10 p-1">
-                        <p:dataTable id="dataTableUsuarios" var="td" value="#{dialogUnidadAdministrativa.data.usuariosUnidadAdministrativa}"
+                        <p:dataTable id="dataTableUsuarios" var="td"
+                                     value="#{dialogUnidadAdministrativa.data.usuariosUnidadAdministrativa}"
                                      emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
                                      paginator="false" selectionMode="single"
                                      selection="#{dialogUnidadAdministrativa.usuarioSeleccionado}"
@@ -418,9 +360,10 @@
                     </div>
                     <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                         <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                         process="@this" actionListener="#{dialogUnidadAdministrativa.anyadirUsuarios()}"
+                                         process="@this"
+                                         actionListener="#{dialogUnidadAdministrativa.anyadirUsuarios()}"
                                          rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}">
-                            <p:ajax event="dialogReturn"  process="@this"
+                            <p:ajax event="dialogReturn" process="@this"
                                     update="messagesDialog dataTableUsuarios"/>
                         </p:commandButton>
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
@@ -432,6 +375,50 @@
                                          process="@this" update="dataTableUsuarios messagesDialog"/>
                     </div>
                 </div>
+                <h:panelGroup id="panelTemas">
+                    <c:forEach items="#{dialogUnidadAdministrativa.temasPadre}" var="tema" varStatus="status">
+                        <div class="row left-container mx-0">
+                            <div class="col-12 left-container-header text-center">
+                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
+                                    #{tema.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}</p>
+                            </div>
+                            <div class="col-10 p-1">
+                                <p:dataTable value="#{dialogUnidadAdministrativa.temasHijosRelacionados[tema.codigo.toString()]}" var="td"
+                                             emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+                                             paginator="false" selectionMode="single"
+                                             selection="#{dialogUnidadAdministrativa.temasTabla[status.index]}"
+                                             rowKey="#{td.codigo}"
+                                             styleClass="noHeader">
+
+                                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                                    <p:ajax event="rowSelect" global="false"/>
+                                    <!--<p:ajax event="rowUnselect"/>-->
+
+
+                                    <p:column headerText="" styleClass="text-center w75">
+                                        <h:outputText value="#{td.identificador}"/>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </div>
+                            <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                                <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
+                                                 styleClass="text-success"
+                                                 process="@this"
+                                                 actionListener="#{dialogUnidadAdministrativa.altaTematicas(tema)}"
+                                                 rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}">
+                                    <p:ajax event="dialogReturn"
+                                            listener="#{dialogUnidadAdministrativa.returnDialogTemas}" process="@this"
+                                            update="messagesDialog panelTemas"/>
+                                </p:commandButton>
+                                <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                                 action="#{dialogUnidadAdministrativa.consultarTema(status.index)}"
+                                                 process="@this" update="panelTemas messagesDialog"/>
+                            </div>
+                        </div>
+                    </c:forEach>
+
+                </h:panelGroup>
 
                 <h:outputScript>
                     function rcEditarPropiedad() {
@@ -454,7 +441,8 @@
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
         <p:commandButton action="#{dialogUnidadAdministrativa.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog formDatos panel-ro formResponsable formContacto "
+                         value="#{labels['dict.guardar']}"
+                         update="messagesDialog formDatos panel-ro formResponsable formContacto "
                          rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}"
                          process="@all"/>
         <p:commandButton action="#{dialogUnidadAdministrativa.cerrar}"

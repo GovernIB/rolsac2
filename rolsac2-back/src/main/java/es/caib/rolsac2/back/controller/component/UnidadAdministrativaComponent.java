@@ -124,6 +124,7 @@ public class UnidadAdministrativaComponent extends UIInput implements NamingCont
             this.btnAbrir.setRendered(!ocultar);
         }
         mostrarBoton = !ocultar;
+        String parar = "";
     }
 
     private void setearTextos(UnidadAdministrativaDTO ua) {

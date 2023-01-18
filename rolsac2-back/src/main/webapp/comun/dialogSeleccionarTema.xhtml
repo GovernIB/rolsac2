@@ -15,7 +15,7 @@
     </ui:define>
 
     <ui:define name="pageTitleDialog">
-        Seleccionar Tema
+        #{labels['dialogSeleccionarTema.titulo']}
     </ui:define>
 	<ui:define name="icerik">
         <script>
@@ -71,36 +71,31 @@
         	//}
         </script>
         <style>
-        	.ui-treenode-parent{
-        		margin-top:15px !important;
-        	}
+            .ui-treenode-parent{
+                margin-top:.5rem !important;
+            }
 
-			.ui-state-highlight{
-				background-color: #e3f2fd !important;
-				background-image: none !important;
-				border: 2px #a6d5fa solid !important;
-				outline: none !important;
-			}
+            .ui-state-highlight{
+                background-color: #e3f2fd !important;
+                background-image: none !important;
+                border: 2px #a6d5fa solid !important;
+                outline: none !important;
+            }
 
-        	.ui-treenode-label{
-        		width:98% !important;
-        		color:#495057 !important;
-        		font-size: 1.5em;
-				word-wrap:break-word !important;
-				white-space: normal !important;
-        	}
+            .ui-treenode-label{
+                color:#495057 !important;
+                font-size: 1.2em;
+                word-wrap:break-word !important;
+                white-space: normal !important;
+            }
 
-			.ui-tree-container{
-				width:98.5% !important;
-			}
+            .ui-treenode-children{
+                padding: 0px 0px 0px 1rem !important;
+            }
 
-        	.ui-treenode-children{
-        		padding: 0px 0px 0px 33px !important;
-        	}
-
-        	.hide{
-        		display:none;
-        	}
+            .hide{
+                display:none;
+            }
         </style>
     </ui:define>
     <ui:define name="contentDialog">
@@ -110,18 +105,21 @@
                  life="5000"
                  process="@all"
                  escape="false"/>
-        <p:tree value="#{dialogSeleccionarTema.root}" var="node" dynamic="true"
-                selectionMode="single"
-                selection="#{dialogSeleccionarTema.selectedNode}" style="width: 100% !important; height: 90vh; overflow-y: scroll;"
-                >
-            <p:ajax event="expand" listener="#{dialogSeleccionarTema.onNodeExpand}" />
-            <p:ajax event="select" listener="#{dialogSeleccionarTema.onNodeSelect}" update="@form:messagesDialog"/>
+        <div class="container">
+            <p:tree value="#{dialogSeleccionarTema.root}" var="node" dynamic="true"
+                    selectionMode="single"
+                    selection="#{dialogSeleccionarTema.selectedNode}" styleClass="panel-tree w100"
+            >
+                <p:ajax event="expand" listener="#{dialogSeleccionarTema.onNodeExpand}" />
+                <p:ajax event="select" listener="#{dialogSeleccionarTema.onNodeSelect}" update="@form:messagesDialog"/>
 
-            <p:treeNode type="TemaDTO" nodeType="TemaDTO" >
-                <!--<h:outputText value="#{node.nombre.getTraduccion(sessionBean.lang)}"/>-->
-                <h:outputText value="#{node.identificador}" class="etElemento"/>
-            </p:treeNode>
-        </p:tree>
+                <p:treeNode type="TemaDTO" nodeType="TemaDTO" >
+                    <!--<h:outputText value="#{node.nombre.getTraduccion(sessionBean.lang)}"/>-->
+                    <h:outputText value="#{node.identificador}" class="etElemento"/>
+                </p:treeNode>
+            </p:tree>
+        </div>
+
     </ui:define>
 
     <ui:define name="contentFooterDialogLeft">

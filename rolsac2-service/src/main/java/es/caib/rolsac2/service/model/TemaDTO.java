@@ -36,6 +36,11 @@ public class TemaDTO extends ModelApi {
     private Literal descripcion;
 
     /**
+     * Path del objeto para organizarlo por niveles
+     */
+    private String mathPath;
+
+    /**
      * Instancia un nuevo Tema dto.
      */
     public TemaDTO(){}
@@ -176,6 +181,14 @@ public class TemaDTO extends ModelApi {
         this.descripcion = descripcion;
     }
 
+    public String getMathPath() {
+        return mathPath;
+    }
+
+    public void setMathPath(String mathPath) {
+        this.mathPath = mathPath;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -210,5 +223,15 @@ public class TemaDTO extends ModelApi {
             throw new NullPointerException("tema");
 
         return Long.compare(this.getCodigo(), tema.getCodigo());
+    }
+
+    public TemaGridDTO toGridDTO() {
+        TemaGridDTO temaGridDTO = new TemaGridDTO();
+        temaGridDTO.setTemaPadre(this.temaPadre.identificador);
+        temaGridDTO.setEntidad(this.entidad.getCodigo());
+        temaGridDTO.setCodigo(this.codigo);
+        temaGridDTO.setIdentificador(this.identificador);
+
+        return temaGridDTO;
     }
 }

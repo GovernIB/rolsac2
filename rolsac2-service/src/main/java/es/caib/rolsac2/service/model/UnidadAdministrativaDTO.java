@@ -97,6 +97,12 @@ public class UnidadAdministrativaDTO extends ModelApi {
      */
     private List<UsuarioGridDTO> usuariosUnidadAdministrativa;
 
+
+    /**
+     * Listado de temas asociados a la UA
+     */
+    private List<TemaGridDTO> temas;
+
     /**
      * Instancia una nueva Unidad administrativa dto.
      */
@@ -563,6 +569,22 @@ public class UnidadAdministrativaDTO extends ModelApi {
      * @param usuariosUnidadAdministrativa  usuarios unidad administrativa
      */
     public void setUsuariosUnidadAdministrativa(List<UsuarioGridDTO> usuariosUnidadAdministrativa) {  this.usuariosUnidadAdministrativa = usuariosUnidadAdministrativa; }
+
+    /**
+     * Obtiene temas asociados a la UA
+     * @return Listado de temas asociados
+     */
+    public List<TemaGridDTO> getTemas() {
+        return temas;
+    }
+
+    /**
+     * Establece temas asociados a la UA
+     * @param temas
+     */
+    public void setTemas(List<TemaGridDTO> temas) {
+        this.temas = temas;
+    }
 
     @Override
     public boolean equals(Object o) {

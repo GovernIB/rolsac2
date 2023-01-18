@@ -17,7 +17,6 @@ public abstract class AbstractController {
 
     @Inject
     private FacesContext context;
-
     @Inject
     protected SessionBean sessionBean;
 

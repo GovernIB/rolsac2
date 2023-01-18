@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.util.Objects;
+
 /**
  * The type Tema grid dto.
  */
@@ -16,7 +18,7 @@ public class TemaGridDTO extends ModelApi {
     /**
      * Entidad
      */
-    private String entidad;
+    private Long entidad;
 
     /**
      * Identificador
@@ -24,9 +26,19 @@ public class TemaGridDTO extends ModelApi {
     private String identificador;
 
     /**
+     * Descripción
+     */
+    private Literal descripcion;
+
+    /**
      * Tema padre
      */
     private String temaPadre;
+
+    /**
+     * MathPath
+     */
+    private String mathPath;
 
     /**
      * Instancia un nuevo Tema grid dto.
@@ -82,7 +94,7 @@ public class TemaGridDTO extends ModelApi {
      *
      * @return  entidad
      */
-    public String getEntidad() {
+    public Long getEntidad() {
         return entidad;
     }
 
@@ -91,7 +103,7 @@ public class TemaGridDTO extends ModelApi {
      *
      * @param entidad  entidad
      */
-    public void setEntidad(String entidad) {
+    public void setEntidad(Long entidad) {
         this.entidad = entidad;
     }
 
@@ -113,6 +125,14 @@ public class TemaGridDTO extends ModelApi {
         this.identificador = identificador;
     }
 
+    public Literal getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(Literal descripcion) {
+        this.descripcion = descripcion;
+    }
+
     /**
      * Obtiene tema padre.
      *
@@ -131,4 +151,34 @@ public class TemaGridDTO extends ModelApi {
         this.temaPadre = temaPadre;
     }
 
+    public String getMathPath() {
+        return mathPath;
+    }
+
+    public void setMathPath(String mathPath) {
+        this.mathPath = mathPath;
+    }
+
+    @Override
+    public String toString() {
+        return "TemaGridDTO{" +
+                "codigo=" + codigo +
+                ", entidad=" + entidad +
+                ", identificador='" + identificador + '\'' +
+                ", temaPadre='" + temaPadre + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TemaGridDTO that = (TemaGridDTO) o;
+        return Objects.equals(codigo, that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
 }

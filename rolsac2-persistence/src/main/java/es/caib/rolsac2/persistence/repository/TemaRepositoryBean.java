@@ -46,7 +46,7 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
             for (Object[] tema : jTema) {
                 TemaGridDTO temaGridDTO = new TemaGridDTO();
                 temaGridDTO.setCodigo((Long) tema[0]);
-                temaGridDTO.setEntidad(((JEntidad) tema[1]).getIdentificador());
+                temaGridDTO.setEntidad(((JEntidad) tema[1]).getCodigo());
                 temaGridDTO.setIdentificador((String) tema[2]);
                 if (tema[3] != null) {
                     temaGridDTO.setTemaPadre(((JTema) tema[3]).getIdentificador());
@@ -123,6 +123,18 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
         query.setParameter("idTema", idTema);
         query.setParameter("idioma", idioma);
         return query.getResultList();
+    }
+
+    @Override
+    public List<JTema> getHijosTodosNiveles(String mathPath, String idioma) {
+        TypedQuery<JTema> query = null;
+        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
+                +  "WHERE j.mathPath LIKE :mathPath";
+        query = entityManager.createQuery(sql, JTema.class);
+        query.setParameter("idioma", idioma);
+        query.setParameter("mathPath", mathPath + "%");
+        return query.getResultList();
+
     }
 
     @Override

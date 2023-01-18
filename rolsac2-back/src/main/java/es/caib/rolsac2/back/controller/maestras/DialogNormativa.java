@@ -327,7 +327,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
         if (uaSeleccionada == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else if (uaSeleccionada.getCodigo() == sessionBean.getUnidadActiva().getCodigo()) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("ç"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogNormativa.UAActiva"));
         } else {
 
             data.getUnidadesAdministrativas().remove(uaSeleccionada);

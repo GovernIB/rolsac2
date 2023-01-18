@@ -4,6 +4,7 @@ import es.caib.rolsac2.persistence.model.JTema;
 import es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TemaDTO;
+import es.caib.rolsac2.service.model.TemaGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import org.mapstruct.*;
 
@@ -27,6 +28,13 @@ public interface TemaConverter extends Converter<JTema, TemaDTO>{
     @Named("createTreeDTO")
     TemaDTO createTreeDTO(JTema entity);
 
+    @Mapping(target = "entidad", source = "entidad.codigo")
+    @Mapping(target = "temaPadre", source = "temaPadre.identificador")
+    @Mapping(target = "mathPath", source = "mathPath")
+    @Mapping(target = "descripcion",
+            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
+    TemaGridDTO createGridDTO(JTema entity);
+
     @Mapping(target = "descripcion",
             expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
     @Mapping(target = "entidad", ignore = true)
@@ -37,17 +45,29 @@ public interface TemaConverter extends Converter<JTema, TemaDTO>{
     @Override
     @Mapping(target = "descripcion",
             expression = "java(convierteLiteralToTraduccion(jTema,dto.getDescripcion()))")
+    @Mapping(target="mathPath", ignore = true)
     JTema createEntity(TemaDTO dto);
 
     @Override
     @Mapping(target = "descripcion",
             expression = "java(convierteLiteralToTraduccion(entity,dto.getDescripcion()))")
+    @Mapping(target="mathPath", ignore = true)
+    @Mapping(target = "entidad", ignore = true)
+    @Mapping(target = "temaPadre", ignore = true)
     void mergeEntity(@MappingTarget JTema entity, TemaDTO dto);
 
     default List<TemaDTO> createTreeDTOs(List<JTema> entities) {
         List<TemaDTO> resultado = new ArrayList<>();
         if (entities != null) {
             entities.forEach(e -> resultado.add(createTreeDTO(e)));
+        }
+        return resultado;
+    }
+
+    default List<TemaGridDTO> createGridDTOs(List<JTema> entities) {
+        List<TemaGridDTO> resultado = new ArrayList<>();
+        if (entities != null) {
+            entities.forEach(e -> resultado.add(createGridDTO(e)));
         }
         return resultado;
     }

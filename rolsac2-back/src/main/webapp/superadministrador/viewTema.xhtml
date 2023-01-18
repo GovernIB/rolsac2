@@ -36,7 +36,7 @@
                 <f:facet name="right">
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewTema.nuevoTema}"
-                                     process="@this">
+                                     process="@form">
                         <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
@@ -55,10 +55,9 @@
                                      action="#{viewTema.ayuda}" process="@this" update="messages"/>
                 </f:facet>
             </p:toolbar>
-            <p:dataTable id="dataTable" value="#{viewTema.lazyModel}" var="tema"
-                         paginator="true" lazy="true" filterDelay="300" widgetVar="temaTable"
+            <p:treeTable id="dataTable" value="#{viewTema.root}" var="tema"
+                         paginator="true"
                          rows="#{viewTema.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
-                         first="#{viewTema.filtro.paginaFirst}"
                          paginatorPosition="bottom" paginatorAlwaysVisible="true"
                          paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                          {NextPageLink} {LastPageLink}"
@@ -67,29 +66,27 @@
                          selectionMode="single" selection="#{viewTema.datoSeleccionado}"
                          rowKey="#{tema.codigo}"
                          reflow="true"
-                         sortBy="#{viewTema.filtro.orderBy}"
-                         sortOrder="#{viewTema.filtro.order}"
                          style="min-height: 300px;">
-                <p:ajax
+                <!--<p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"
-                        global="false"/>
+                        global="false"/>-->
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{tema.codigo}" headerText="#{labels['dict.codigo']}">
+                <p:column headerText="#{labels['dict.codigo']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{tema.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{tema.identificador}" headerText="#{labels['dict.identificador']}">
+                <p:column headerText="#{labels['dict.identificador']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{tema.identificador}"/>
                 </p:column>
-                <p:column sortBy="#{tema.temaPadre}" headerText="#{labels['viewTema.temaPadre']}">
+                <p:column headerText="#{labels['viewTema.temaPadre']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{tema.temaPadre}"/>
                 </p:column>
-            </p:dataTable>
+            </p:treeTable>
             <h:outputScript>
                 function triggerDblClick() {
                         $('#form\\:btnEditar').click();

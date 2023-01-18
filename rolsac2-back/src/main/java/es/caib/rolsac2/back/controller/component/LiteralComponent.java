@@ -43,8 +43,6 @@ public class LiteralComponent extends UIInput implements NamingContainer {
     private UIInput textoIdioma;
     private InputTextarea textoIdiomaA;
     private UIInput boton;
-    private CommandButton btnAbrir;
-
     private UIInput textoInicializado;
     private InputTextarea textoInicializadoA;
     private String idioma;
@@ -71,6 +69,9 @@ public class LiteralComponent extends UIInput implements NamingContainer {
     private String estiloInput;
 
     private String soloLecture;
+
+    private CommandButton btnAbrir;
+    //private CommandButton btnAbrir;
 
     // Actions
     // ------------------------------------------------------------------------------------
@@ -119,6 +120,14 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             String ocultarTexto = (String) getAttributes().get("ocultarTexto");
             if (ocultarTexto != null && "true".equalsIgnoreCase(ocultarTexto)) {
                 ((InputText) texto).setStyle("display:none;");
+            }
+            String ocultarBoton = (String) getAttributes().get("ocultarBoton");
+            if (ocultarBoton != null && "true".equalsIgnoreCase(ocultarBoton)) {
+                //TODO Faltaría obtener la id correcta, habría que pasar en un parametro el txtUrl o el que toque
+                btnAbrir = (CommandButton) FacesContext.getCurrentInstance().getViewRoot().findComponent("formDialog:txtUrl:btnAbrir");
+                if (btnAbrir != null) {
+                    btnAbrir.setStyle("display:none;");
+                }
             }
             if (literal == null) {
                 literal = Literal.createInstance();

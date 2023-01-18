@@ -101,6 +101,16 @@ public class JUnidadAdministrativa extends BaseEntity {
             })
     private Set<JNormativa> normativas;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "RS2_UATEMA",
+            joinColumns = {
+                    @JoinColumn(name = "UATE_CODUNA")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "UATE_CODTEMA")
+            })
+    private Set<JTema> temas;
+
     public Long getCodigo() {
         return codigo;
     }
@@ -232,6 +242,14 @@ public class JUnidadAdministrativa extends BaseEntity {
     public Set<JNormativa> getNormativas() { return normativas; }
 
     public void setNormativas(Set<JNormativa> normativas) { this.normativas = normativas; }
+
+    public Set<JTema> getTemas() {
+        return temas;
+    }
+
+    public void setTemas(Set<JTema> temas) {
+        this.temas = temas;
+    }
 
     public void setTraducciones(List<JUnidadAdministrativaTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {

@@ -1,20 +1,20 @@
 package es.caib.rolsac2.back.controller.maestras;
 
+
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.exception.ServiceException;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
+
 import es.caib.rolsac2.service.model.TemaGridDTO;
 import es.caib.rolsac2.service.model.filtro.TemaFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
+import org.primefaces.model.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +36,11 @@ public class ViewTema extends AbstractController implements Serializable {
     @EJB
     private TemaServiceFacade temaServiceFacade;
 
-    private TemaGridDTO datoSeleccionado;
+    private TreeNode datoSeleccionado;
 
     private TemaFiltro filtro;
+
+    private TreeNode root;
 
     public LazyDataModel<TemaGridDTO> getLazyModel() {
         return lazyModel;
@@ -49,55 +51,25 @@ public class ViewTema extends AbstractController implements Serializable {
         LOG.debug("load");
         filtro = new TemaFiltro();
         filtro.setIdioma(sessionBean.getLang());
-        buscar();
+        construirArbol();
     }
 
-    public void update() {
-        buscar();
+    private void construirArbolDesdeHoja(TemaGridDTO hoja, TreeNode arbol) {
+        DefaultTreeNode nodo = null;
+        List<TemaGridDTO> hijos = temaServiceFacade.getGridHijos(hoja.getCodigo(), sessionBean.getLang());
+        for (TemaGridDTO hijo : hijos) {
+            nodo = new DefaultTreeNode(hijo, arbol);
+            this.construirArbolDesdeHoja(hijo, nodo);
+        }
     }
 
-    public void buscarAvanzada() {
-        System.out.println();
-    }
-
-    public void buscar() {
-        lazyModel = new LazyDataModel<TemaGridDTO>() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public TemaGridDTO getRowData(String rowKey) {
-                for (TemaGridDTO pers : (List<TemaGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
-                }
-                return null;
-            }
-
-            @Override
-            public Object getRowKey(TemaGridDTO pers) {
-                return pers.getCodigo().toString();
-            }
-
-            @Override
-            public List<TemaGridDTO> load(int first, int pageSize, String sortField,
-                                          SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
-                try {
-                    filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
-                    }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    Pagina<TemaGridDTO> pagina = temaServiceFacade.findByFiltro(filtro);
-                    setRowCount((int) pagina.getTotal());
-                    return pagina.getItems();
-                } catch (Exception e) {
-                    LOG.error("Error llamando", e);
-                    Pagina<TemaGridDTO> pagina = new Pagina<>(new ArrayList(), 0);
-                    setRowCount((int) pagina.getTotal());
-                    return pagina.getItems();
-                }
-            }
-        };
+    private void construirArbol() {
+        root = new DefaultTreeNode(new TemaGridDTO(), null);
+        List<TemaGridDTO> temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+        for(TemaGridDTO tema : temasPadre) {
+            TreeNode nodo = new DefaultTreeNode(tema, root);
+            this.construirArbolDesdeHoja(tema, nodo);
+        }
     }
 
     public void nuevoTema() {
@@ -123,7 +95,7 @@ public class ViewTema extends AbstractController implements Serializable {
 
         // Verificamos si se ha modificado
         if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
-            this.buscar();
+            this.construirArbol();
         }
     }
 
@@ -132,7 +104,10 @@ public class ViewTema extends AbstractController implements Serializable {
         final Map<String, String> params = new HashMap<>();
         if (this.datoSeleccionado != null
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
-            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
+            TemaGridDTO temaSeleccionado = (TemaGridDTO) this.datoSeleccionado.getData();
+            params.put(TypeParametroVentana.ID.toString(), temaSeleccionado.getCodigo().toString());
+        } else if(this.datoSeleccionado != null && modoAcceso.equals(TypeModoAcceso.ALTA)) {
+            params.put("padreSeleccionado", ((TemaGridDTO) this.datoSeleccionado.getData()).getCodigo().toString());
         }
         UtilJSF.openDialog("dialogTema", modoAcceso, params, true, 850, 320);
     }
@@ -142,7 +117,9 @@ public class ViewTema extends AbstractController implements Serializable {
             if (datoSeleccionado == null) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
             } else {
-                temaServiceFacade.delete(datoSeleccionado.getCodigo());
+                TemaGridDTO temaSeleccionado = (TemaGridDTO) this.datoSeleccionado.getData();
+                temaServiceFacade.delete(temaSeleccionado.getCodigo());
+                construirArbol();
             }
         } catch (ServiceException e) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.hijos.relacionados"));
@@ -150,11 +127,11 @@ public class ViewTema extends AbstractController implements Serializable {
 
     }
 
-    public TemaGridDTO getDatoSeleccionado() {
+    public TreeNode getDatoSeleccionado() {
         return datoSeleccionado;
     }
 
-    public void setDatoSeleccionado(TemaGridDTO datoSeleccionado) {
+    public void setDatoSeleccionado(TreeNode datoSeleccionado) {
         this.datoSeleccionado = datoSeleccionado;
     }
 
@@ -177,5 +154,13 @@ public class ViewTema extends AbstractController implements Serializable {
             return this.filtro.getTexto();
         }
         return "";
+    }
+
+    public TreeNode getRoot() {
+        return root;
+    }
+
+    public void setRoot(TreeNode root) {
+        this.root = root;
     }
 }

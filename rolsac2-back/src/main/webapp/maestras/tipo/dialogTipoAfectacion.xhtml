@@ -110,7 +110,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          process="@all"/>
         <p:commandButton action="#{dialogTipoAfectacion.cerrar}"
                          value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+                         process="@this">
+                <p:confirmDialog rendered="#{dialogTipoAfectacion.hayCambios}">
+                </p:confirmDialog>
+        </p:commandButton>
     </ui:define>
 
 </ui:composition>

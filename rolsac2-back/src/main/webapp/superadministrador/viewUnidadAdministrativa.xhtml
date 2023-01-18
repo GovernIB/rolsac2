@@ -17,19 +17,21 @@
         <h:outputFormat value="#{labels['viewUnidadAdministrativa.titulo']}"/>
     </ui:define>
     <ui:define name="breadcrumbBoton">
-        <p:ajax event="eventoUpdate"   oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}" update="form:dataTable"  />
+        <p:ajax event="eventoUpdate" oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}"
+                update="form:dataTable"/>
     </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
             <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
-                        action="#{viewUnidadAdministrativa.cambiarUAbuscarEvt(ua)}" update="migaPan @form form:dataTable"
-                        >
+                        action="#{viewUnidadAdministrativa.cambiarUAbuscarEvt(ua)}"
+                        update="migaPan @form form:dataTable"
+            >
             </p:menuitem>
         </c:forEach>
     </ui:define>
     <ui:define name="content">
         <h:form id="form">
-            <p:remoteCommand name="rc" update="dataTable @form" process="@this"  />
+            <p:remoteCommand name="rc" update="dataTable @form" process="@this"/>
             <p:commandButton value="#{labels['viewUnidadAdministrativa.actualizar']}" id="actualizarBusqueda"
                              widgetVar="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewUnidadAdministrativa.buscar}"
@@ -48,9 +50,10 @@
                         <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
-                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                      actionListener="#{viewUnidadAdministrativa.editarUnidadAdministrativa}"
-                                     process="@form" update="messages">
+                                     process="@form" update="messages" onstart="PF('blocker').show();"
+                                     oncomplete="PF('blocker').hide()">
                         <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
@@ -78,7 +81,7 @@
                          sortBy="#{viewUnidadAdministrativa.filtro.orderBy}"
                          sortOrder="#{viewUnidadAdministrativa.filtro.order}"
                          style="min-height: 300px;"
-                         >
+            >
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"
@@ -94,7 +97,8 @@
                     <f:facet name="header"/>
                     <h:outputText value="#{unidadAdministrativa.nombre.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
-                <p:column sortBy="#{unidadAdministrativa.codigoDIR3}" headerText="#{labels['dialogUnidadAdministrativa.codigo.dir3']}">
+                <p:column sortBy="#{unidadAdministrativa.codigoDIR3}"
+                          headerText="#{labels['dialogUnidadAdministrativa.codigo.dir3']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{unidadAdministrativa.codigoDIR3}"/>
                 </p:column>
@@ -102,7 +106,8 @@
                     <f:facet name="header"/>
                     <h:outputText value="#{unidadAdministrativa.tipo}"/>
                 </p:column>
-                <p:column sortBy="#{unidadAdministrativa.nombrePadre}" headerText="#{labels['viewUnidadAdministrativa.nombre.padre']}">
+                <p:column sortBy="#{unidadAdministrativa.nombrePadre}"
+                          headerText="#{labels['viewUnidadAdministrativa.nombre.padre']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{unidadAdministrativa.nombrePadre.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
@@ -113,16 +118,36 @@
             </p:dataTable>
             <h:outputScript>
                 function triggerDblClick() {
-                myDoubleClickCommand();
-                /*$('#form\\:btnConsultaHidden').click();*/
+                    myDoubleClickCommand();
+                    /*$('#form\\:btnConsultaHidden').click();*/
                 }
             </h:outputScript>
-            <p:remoteCommand name="myDoubleClickCommand"
+            <!--<p:dialog modal="true" widgetVar="statusDialog1" header="#{labels['dict.cargandoLaInfo']}"
+                      draggable="false" closable="false" resizable="False">
+                <div class="text-center">
+                    <i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
+                </div>
+            </p:dialog>
+            <p:commandButton  id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
+                              actionListener="#{viewProcedimientos.dblClickProcedimiento()}" process="@this" update="messages"
+                              style="display: none"
+                              onstart="PF('statusDialog1').show();" oncomplete="PF('statusDialog1').hide()" >
+                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages dataTable"/>
+            </p:commandButton>-->
+            <p:blockUI block=":viewPage" widgetVar="blocker">
+                <div class="spinner-border text-light spinner-large" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </p:blockUI>
+            <p:remoteCommand id="dblClickCommand"
+                             name="myDoubleClickCommand"
                              widgetVar="myDoubleClickCommand"
                              action="#{viewUnidadAdministrativa.editarUnidadAdministrativa()}"
                              autoRun="false"
                              partialSubmit="true"
-                             process="@this"/>
+                             process="@this"
+                             onstart="PF('blocker').show();"
+                             oncomplete="PF('blocker').hide()"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewUnidadAdministrativa.consultarUnidadAdministrativa}"
                              process="@this" update="messages" style="display: none">

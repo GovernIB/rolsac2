@@ -78,8 +78,6 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
                     }else {
                         LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
                     	addTreeNodeCargando(rootChildNode);
-
-
                     }
 
                 }

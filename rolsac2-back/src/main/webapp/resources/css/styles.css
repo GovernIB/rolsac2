@@ -37,6 +37,7 @@ body {
     font: normal 100% 'Bariol Regular', Arial, Helvetica, sans-serif;
     color: #333;
     background-color: #eaeaea;
+    height: 100vh;
 }
 
 .ui-breadcrumb {
@@ -290,6 +291,18 @@ a:hover {
 .ui-dialog-titlebar {
     background-color: #cc073c !important;
     color: #FFFFFF;
+}
+
+.ui-confirm-dialog {
+    background-color: #cc073c !important;
+    color: #FFFFFF;
+}
+.ui-dialog-titlebar{
+    background-color: #cc073c !important;
+    color: #FFFFFF;
+}
+div.ui-dialog-content span.ui-confirm-dialog-severity{
+    display:none;
 }
 
 .w100 {

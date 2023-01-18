@@ -12,11 +12,15 @@ public interface TemaServiceFacade {
 
     List<TemaDTO> getHijos(Long id, String idioma);
 
+    List<TemaGridDTO> getGridHijos(Long id, String idioma);
+
+    List<TemaGridDTO> getGridRoot(String idioma, Long entidadId);
+
     List<TemaDTO> getRoot(String idioma, Long entidadId);
 
     Long create(TemaDTO dto);
 
-    void update(TemaDTO dto) throws RecursoNoEncontradoException;
+    void update(TemaDTO dto, String idioma) throws RecursoNoEncontradoException;
 
     void delete(Long id) throws RecursoNoEncontradoException;
 
