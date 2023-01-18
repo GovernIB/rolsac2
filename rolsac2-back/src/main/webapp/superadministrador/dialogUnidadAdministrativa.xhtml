@@ -70,13 +70,11 @@
                         <div class="form-group col-md-2">
                             <p:outputLabel value="#{labels['dialogUnidadAdministrativa.orden']}:" for="txtOrden"
                                            styleClass="mb-1 pt-0"/>
-                            <p>
-                                <p:inputNumber id="txtOrden" value="#{dialogUnidadAdministrativa.data.orden}"
-                                               styleClass="w55" required="true"
-                                               requiredMessage="#{labels['dict.obligatorio.orden']}"
-                                               disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
-                                               decimalPlaces="0"/>
-                            </p>
+                            <p:inputText id="txtOrden" type="number" value="#{dialogUnidadAdministrativa.data.orden}"
+                                         styleClass="w95" required="true"
+                                         requiredMessage="#{labels['dict.obligatorio.orden']}"
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                         decimalPlaces="0"/>
                         </div>
                         <div class="form-group col-md-4">
                             <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"
@@ -383,12 +381,14 @@
                                     #{tema.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}</p>
                             </div>
                             <div class="col-10 p-1">
-                                <p:dataTable value="#{dialogUnidadAdministrativa.temasHijosRelacionados[tema.codigo.toString()]}" var="td"
-                                             emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
-                                             paginator="false" selectionMode="single"
-                                             selection="#{dialogUnidadAdministrativa.temasTabla[status.index]}"
-                                             rowKey="#{td.codigo}"
-                                             styleClass="noHeader">
+                                <p:dataTable
+                                        value="#{dialogUnidadAdministrativa.temasHijosRelacionados[tema.codigo.toString()]}"
+                                        var="td"
+                                        emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+                                        paginator="false" selectionMode="single"
+                                        selection="#{dialogUnidadAdministrativa.temasTabla[status.index]}"
+                                        rowKey="#{td.codigo}"
+                                        styleClass="noHeader">
 
                                     <!-- Necesario para actualizar en controlador la fila seleccionada -->
                                     <p:ajax event="rowSelect" global="false"/>
