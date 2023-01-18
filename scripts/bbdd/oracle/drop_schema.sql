@@ -176,6 +176,7 @@ drop table "RS2_TRAUSER" cascade constraints;
 drop table "RS2_TRMPRE" cascade constraints;
 drop table "RS2_TRMSOL" cascade constraints;
 drop table "RS2_UADNOR" cascade constraints;
+drop table "RS2_UATEMA" cascade constraints;
 drop table "RS2_UNAAUDIT" cascade constraints;
 drop table "RS2_UNAEDI" cascade constraints;
 drop table "RS2_UNAEVO" cascade constraints;
