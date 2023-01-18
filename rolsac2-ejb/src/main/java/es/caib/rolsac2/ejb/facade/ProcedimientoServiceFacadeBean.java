@@ -2,6 +2,9 @@ package es.caib.rolsac2.ejb.facade;
 
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
+import es.caib.rolsac2.ejb.util.AuditoriaUtil;
+import es.caib.rolsac2.ejb.util.JSONUtil;
+import es.caib.rolsac2.ejb.util.JSONUtilException;
 import es.caib.rolsac2.persistence.converter.*;
 import es.caib.rolsac2.persistence.model.JProcedimiento;
 import es.caib.rolsac2.persistence.model.JProcedimientoTramite;
@@ -10,11 +13,16 @@ import es.caib.rolsac2.persistence.model.JTipoTramitacion;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
 import es.caib.rolsac2.persistence.repository.*;
+import es.caib.rolsac2.service.exception.AuditoriaException;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaDTO;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaIdioma;
+import es.caib.rolsac2.service.model.auditoria.ProcedimientoAuditoria;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
@@ -97,6 +105,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Inject
     private FicheroExternoRepository ficheroExternoRepository;
+
+    // @Inject
+    // private AuditoriaRepository auditoriaRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -417,6 +428,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setResponsable(jprocWF.getResponsableNombre());
         proc.setLopdResponsable(jprocWF.getLopdResponsable());
         proc.setComun(jprocWF.isComun());
+        //proc.setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
+        //proc.setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
         if (jprocWF.getUaResponsable() != null) {
             proc.setUaResponsable(jprocWF.getUaResponsable().toDTO());
         }
@@ -486,8 +499,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setDocumentosLOPD(procedimientoRepository.getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
         if (proc instanceof ProcedimientoDTO) {
             ((ProcedimientoDTO) proc).setTramites(procedimientoRepository.getTramitesByWF(proc.getCodigoWF()));
-            ((ProcedimientoDTO) proc).setHabilitadoApoderado(proc.isHabilitadoApoderado());
-            ((ProcedimientoDTO) proc).setHabilitadoFuncionario(proc.getHabilitadoFuncionario());
+            ((ProcedimientoDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
+            ((ProcedimientoDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
         }
         if (proc instanceof ServicioDTO) {
             ((ServicioDTO) proc).setTramitElectronica(jprocWF.isTramitElectronica());
@@ -504,6 +517,42 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             }
         }
         return proc;
+    }
+
+    /**
+     * Crear auditoria
+     *
+     * @param procedimientoAntiguo
+     * @param procedimientoNuevo
+     */
+    private void crearAuditoria(final ProcedimientoDTO procedimientoAntiguo, final ProcedimientoDTO procedimientoNuevo) {
+
+        final ProcedimientoAuditoria procedimientoAuditoria = new ProcedimientoAuditoria();
+        List<AuditoriaCambio> cambios = new ArrayList<>();
+        AuditoriaCambio cambio = null;
+        final AuditoriaDTO valores = new AuditoriaDTO();
+
+        cambio = AuditoriaUtil.auditarLiteral(procedimientoAntiguo == null ? null :
+                        procedimientoAntiguo.getNombreProcedimientoWorkFlow(), procedimientoNuevo.getNombreProcedimientoWorkFlow(), Constantes.PERSONA_IDENTIFICADOR,
+                AuditoriaIdioma.NO_IDIOMA);
+        if (cambio != null) {
+            cambios.add(cambio);
+        }
+
+        valores.setCambios(cambios);
+        // Crea el objeto de auditoria
+        procedimientoAuditoria.setFechaAuditoria(new Date());
+        procedimientoAuditoria.setUsuarioAuditoria(procedimientoNuevo.getUsuarioAuditoria());
+        procedimientoAuditoria.setProcedimientoDTO(procedimientoNuevo);
+
+        String auditoriaJson;
+        try {
+            auditoriaJson = JSONUtil.toJSON(valores);
+            procedimientoAuditoria.setValoresAnteriores(auditoriaJson);
+            //auditoriaRepository.guardarAuditoria(procedimientoAuditoria, JProcedimientoAuditoria.class);
+        } catch (final JSONUtilException e) {
+            throw new AuditoriaException(e);
+        }
     }
 
 

@@ -70,6 +70,7 @@ public class ViewEntidades extends AbstractController implements Serializable {
      */
     public void load() {
         LOG.debug("load");
+        
         // Inicializamos combos/desplegables/inputs/filtro
         this.setearIdioma();
         filtro = new EntidadFiltro();

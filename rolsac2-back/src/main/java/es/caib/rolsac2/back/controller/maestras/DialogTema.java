@@ -55,12 +55,16 @@ public class DialogTema extends AbstractController implements Serializable {
 
         this.setearIdioma();
         data = TemaDTO.createInstance();
-
         entidadesActivas = administracionSupServiceFacade.findEntidadActivas();
+        String idPadre = (String) UtilJSF.getDialogParam("padreSeleccionado");
 
         if (this.isModoAlta()) {
             data.setEntidad(sessionBean.getEntidad());
             data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            if(idPadre != null) {
+                TemaDTO padreDefecto = temaServiceFacade.findById(Long.valueOf(idPadre));
+                data.setTemaPadre(padreDefecto);
+            }
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = temaServiceFacade.findById((Long.valueOf(id)));
             this.identificadorOld = data.getIdentificador();
@@ -74,10 +78,20 @@ public class DialogTema extends AbstractController implements Serializable {
         if (this.data.getTemaPadre() != null && this.data.getTemaPadre().getCodigo() == null) {
             this.data.setTemaPadre(null);
         }
+
         if (this.data.getCodigo() == null) {
             temaServiceFacade.create(this.data);
         } else {
-            temaServiceFacade.update(this.data);
+            if(this.data.getTemaPadre() != null && this.data.getTemaPadre().getCodigo() != null) {
+                if(this.data.getTemaPadre().getMathPath() == null) {
+                    this.data.setMathPath(this.data.getTemaPadre().getCodigo().toString());
+                } else {
+                    String path = this.data.getTemaPadre().getMathPath();
+                    path += ";" + this.data.getTemaPadre().getCodigo();
+                }
+            }
+            temaServiceFacade.update(this.data, this.getIdioma());
+
         }
 
         //Retornamos resultado

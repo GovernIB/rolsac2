@@ -115,8 +115,11 @@ public class DialogServicio extends AbstractController implements Serializable {
             data.setLopdFinalidad(lopdFinalidad);
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = (ServicioDTO) UtilJSF.getValorMochilaByKey("SERV");
-            //data = procedimientoServiceFacade.findById(Long.valueOf(id));
+            if(id != null && !id.isEmpty()) {
+                data = procedimientoServiceFacade.findServicioById(Long.valueOf(id));
+            } else {
+                data = (ServicioDTO) UtilJSF.getValorMochilaByKey("SERV");
+            }
             UtilJSF.vaciarMochila();
         }
 

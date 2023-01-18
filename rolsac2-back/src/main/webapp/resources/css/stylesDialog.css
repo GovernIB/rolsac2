@@ -741,6 +741,10 @@ a.iconoXarxes{
 	display: none;
 }
 
+.noHeader.ui-treetable table thead tr {
+	display:none;
+}
+
 .btn-footer > span:first-child {
 	left: 7%;
 	width: 20px;
@@ -796,4 +800,8 @@ legend {
 
 .panel-boib{
 	min-height: 400px;
+}
+
+.panel-tree ul {
+	overflow: hidden;
 }

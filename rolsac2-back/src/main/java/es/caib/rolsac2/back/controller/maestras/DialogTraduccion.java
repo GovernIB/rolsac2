@@ -86,6 +86,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
             imprimirLiterales();
         }
 
+
         literalAuxOrigen = new ArrayList<>();
         literalAuxDestino = new ArrayList<>();
         if (literales != null) {

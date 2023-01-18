@@ -157,11 +157,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        Integer ancho = sessionBean.getScreenWidthInt();
-        if (ancho == null) {
-            ancho = 1530;
-        }
-        UtilJSF.openDialog("dialogUnidadAdministrativa", modoAcceso, params, true, ancho, 733);
+        UtilJSF.openDialog("dialogUnidadAdministrativa", modoAcceso, params, true, 975, 733);
     }
 
     public void borrarUnidadAdministrativa() {

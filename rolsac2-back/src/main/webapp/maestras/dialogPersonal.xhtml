@@ -22,7 +22,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogPersonal.titulo']}" /> <h:outputFormat value="- #{dialogPersonal.data.nombre} " renderer="{!dialogPersonal.isAlta()}" /> <h:outputFormat value="- #{dialogPersonal.data.identificador} " renderer="{!dialogPersonal.isAlta()}" />
+        <h:outputFormat value="#{labels['dialogPersonal.titulo']}" /> <h:outputFormat value="- #{dialogPersonal.data.nombre} " rendered="{!dialogPersonal.isAlta()}" /> <h:outputFormat value="- #{dialogPersonal.data.identificador} " rendered="{!dialogPersonal.isAlta()}" />
     </ui:define>
 
 

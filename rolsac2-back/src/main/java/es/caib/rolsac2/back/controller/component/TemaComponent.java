@@ -142,7 +142,7 @@ public class TemaComponent extends UIInput implements NamingContainer {
         String direccion = "/comun/dialogSeleccionarTema";
 
         UtilJSF.anyadirMochila("tema", this.getValue());
-        UtilJSF.openDialog(direccion, modoAcceso, params, true, 750, 375);
+        UtilJSF.openDialog(direccion, modoAcceso, params, true, 590, 375);
     }
 
     public UIInput getTexto() {

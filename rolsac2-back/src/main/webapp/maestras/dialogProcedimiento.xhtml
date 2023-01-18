@@ -148,7 +148,7 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.formaInicio']}:"
                                        for="txtFormaIni" />
                         <p:selectOneMenu id="txtFormaIni" value="#{dialogProcedimiento.data.iniciacion}"
@@ -162,7 +162,7 @@
                             <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.silencioAdministrativo']}:"
                                        for="txtSilAdmin"/>
                         <p:selectOneMenu id="txtSilAdmin" value="#{dialogProcedimiento.data.silencio}"
@@ -177,7 +177,7 @@
                         </p:selectOneMenu>
                     </div>
 
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.tipoProcedimiento']}:"
                                        for="txtTipoProcedimiento"/>
                         <p:selectOneMenu id="txtTipoProcedimiento" value="#{dialogProcedimiento.data.tipoProcedimiento}"
@@ -191,8 +191,10 @@
                             <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
                     </div>
+                </div>
 
-                    <div class="form-group col-md-3">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.tipoVia']}:"
                                        for="txtTipoVia"/>
                         <p:selectOneMenu id="txtTipoVia" value="#{dialogProcedimiento.data.tipoVia}"
@@ -206,7 +208,25 @@
                             <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
                     </div>
+                    <div class="form-group col-md-4">
+                        <p:selectBooleanCheckbox id="txtHabilitadoApoderado" styleClass="mt-4" value="#{dialogProcedimiento.data.habilitadoApoderado}" disabled="#{dialogProcedimiento.isModoConsulta()}" itemLabel="#{labels['dialogProcedimiento.habilitadoApoderado']}" style="margin-top:10px" >
+                        </p:selectBooleanCheckbox>
 
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.habilitadoFuncionario']}:"
+                                       for="txtHabilitadoFuncionario"/>
+                        <p:selectOneMenu id="txtHabilitadoFuncionario" value="#{dialogProcedimiento.data.habilitadoFuncionario}"
+                                         styleClass="w95"  autoWidth="false" required="true"
+                                         requiredMessage="#{labels['dict.obligatorio.habilitadoFuncionario']}"
+                                         disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                         >
+                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
+                             <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
+                             <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
+                        </p:selectOneMenu>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -220,24 +240,23 @@
                                                  styleClass="w95"
                                                  disabled="true" />
                             </h:panelGroup>
-                            <!--<h:panelGroup  id="columnaUaInstructor"  renderer="#{dialogProcedimiento.data.comun}" >-->
-                            <h:panelGroup  id="columnaUaInstructor">
+                            <h:panelGroup  id="columnaUaInstructor"  >
                                 <my:unidadAdministrativaComponent id="txtOrgComp"
                                                               value="#{dialogProcedimiento.data.uaInstructor}"
                                                               idioma="#{dialogProcedimiento.idioma}"
                                                               required="#{!dialogProcedimiento.data.comun}"
                                                               requiredMessage="#{labels['dict.obligatorio.uaInstructor']}"
+                                                                  ocultar="#{dialogProcedimiento.data.comun}"
+                                                                  ocultarTexto="false" esCabecera="false"
 
-                                                              ocultarTexto="false" esCabecera="false"
-
-                                /><!-- ocultar="#{dialogProcedimiento.data.comun}" -->
+                                />
                             </h:panelGroup>
 
                         </p>
                     </div>
                     <div  class="form-group col-md-3">
-                        <p:selectBooleanCheckbox  styleClass="mt-3" value="#{dialogProcedimiento.data.comun}" disabled="#{dialogProcedimiento.isGestor() or dialogProcedimiento.isModoConsulta()}" itemLabel="#{labels['dict.comun']}" style="margin-top:10px" >
-                            <!--<p:ajax event="change"  update="columnaUaInstructor txtOrgComp panelComun labelComun"   />-->
+                        <p:selectBooleanCheckbox  styleClass="mt-4" value="#{dialogProcedimiento.data.comun}" disabled="#{dialogProcedimiento.isGestor() or dialogProcedimiento.isModoConsulta()}" itemLabel="#{labels['dict.comun']}" style="margin-top:10px" >
+                            <p:ajax event="change"  update="columnaUaInstructor txtOrgComp panelComun labelComun"   />
                         </p:selectBooleanCheckbox>
 
                     </div>
@@ -695,6 +714,36 @@
                 <i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
             </div>
         </p:dialog>
+
+        <!--<p:commandButton  id="confirmButton" widgetVar="confirmButton" onclick="PF('cd2').show();"  actionListener="#{dialogProcedimiento.guardarSinCheck}"  />-->
+        <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoApoderadoFuncionario']}"
+                         header="#{labels['dict.guardandoDato']}"
+                         widgetVar="cdApoderadoFuncionario">
+            <p:commandButton value="#{labels['dict.continuar']}" action="#{dialogProcedimiento.guardarSinCheck()}" />
+            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" />
+        </p:confirmDialog>
+
+        <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoApoderado']}"
+                         header="#{labels['dict.guardandoDato']}"
+                         widgetVar="cdApoderado">
+            <p:commandButton value="#{labels['dict.continuar']}" action="#{dialogProcedimiento.guardarSinCheck()}" />
+            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" />
+        </p:confirmDialog>
+
+        <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoFuncionario']}"
+                         header="#{labels['dict.guardandoDato']}"
+                         widgetVar="cdFuncionario">
+            <p:commandButton value="#{labels['dict.continuar']}" action="#{dialogProcedimiento.guardarSinCheck()}" />
+            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" />
+        </p:confirmDialog>
+        <!--<p:confirmDialog message="¿Quieres seguir guardando?"
+                         header="Aviso"
+                         widgetVar="cd2">
+                <p:commandButton value="Continuar" action="#{dialogProcedimiento.guardarSinCheck()}" />
+                <p:commandButton value="No" onclick="confirmation.hide()" />
+        </p:confirmDialog> -->
+
+
     </ui:define>
     <ui:define name="contentFooterDialogLeft">
         <div class="d-flex flex-column flex-sm-row align-items-center mb-2 mb-sm-0" style="gap: 5px;">

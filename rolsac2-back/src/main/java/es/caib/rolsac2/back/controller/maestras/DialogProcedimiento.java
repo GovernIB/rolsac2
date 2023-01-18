@@ -10,11 +10,13 @@ import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.*;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -106,11 +108,16 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             data.setLopdFinalidad(lopdFinalidad);
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = (ProcedimientoDTO) UtilJSF.getValorMochilaByKey("PROC");
-            //data = procedimientoServiceFacade.findById(Long.valueOf(id));
+            if(id != null && !id.isEmpty()) {
+                data = procedimientoServiceFacade.findProcedimientoById(Long.valueOf(id));
+            } else {
+                data = (ProcedimientoDTO) UtilJSF.getValorMochilaByKey("PROC");
+            }
             UtilJSF.vaciarMochila();
         }
 
+        String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+        data.setUsuarioAuditoria(usuario);
         comunUA = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.UA_COMUN, this.getIdioma());
         listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
         listTipoSilencio = maestrasSupService.findAllTipoSilencio();
@@ -136,6 +143,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void guardarFlujo() {
+
+        if (!checkObligatorio()) {
+            return;
+        }
+
         final Map<String, String> params = new HashMap<>();
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         //params.put("SOLO_MENSAJES","N");
@@ -211,6 +223,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (!checkObligatorio()) {
             return;
         }
+        guardarSinCheck();
+    }
+
+    public void guardarSinCheck() {
 
         if (this.data.getCodigo() == null) {
             procedimientoServiceFacade.create(this.data);
@@ -253,6 +269,35 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
+        boolean checkHabilitadoFuncionario = false;
+        boolean checkHabilitadoApoderamiento = false;
+        if (this.data.getTiposPubObjEntGrid() != null && !this.data.getTiposPubObjEntGrid().isEmpty()) {
+            boolean empleadoPublico = this.data.getTiposPubObjEntGrid().get(0).isEmpleadoPublico();
+            if ((empleadoPublico && this.data.isHabilitadoApoderado()) || (!empleadoPublico && !this.data.isHabilitadoApoderado())) {
+                checkHabilitadoApoderamiento = true;
+            }
+        }
+
+        if (this.data.getTramites() != null && !this.data.getTramites().isEmpty()) {
+            for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
+                if (tramite.isTramitElectronica() && !tramite.isTramitPresencial() && !tramite.isTramitTelefonica()) {
+                    checkHabilitadoFuncionario = true;
+                    break;
+                }
+            }
+        }
+
+        if (checkHabilitadoApoderamiento || checkHabilitadoFuncionario) {
+            //PrimeFaces.current().executeScript("PF('confirmButton').jq.click();");
+            if (checkHabilitadoApoderamiento && checkHabilitadoFuncionario) {
+                PrimeFaces.current().executeScript("PF('cdApoderadoFuncionario').show();");
+            } else if (checkHabilitadoApoderamiento) {
+                PrimeFaces.current().executeScript("PF('cdApoderado').show();");
+            } else {
+                PrimeFaces.current().executeScript("PF('cdFuncionario').show();");
+            }
+            return false;
+        }
         return true;
     }
 
@@ -281,6 +326,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 }
                 data.setTiposPubObjEntGrid(new ArrayList<>());
                 data.getTiposPubObjEntGrid().addAll(tipPubObjEntSeleccionadas);
+
+                if (data.getTiposPubObjEntGrid() != null && !data.getTiposPubObjEntGrid().isEmpty()) {
+                    data.setHabilitadoApoderado(!data.getTiposPubObjEntGrid().get(0).isEmpleadoPublico());
+                }
             }
         }
     }

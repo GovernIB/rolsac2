@@ -5,12 +5,15 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
+import es.caib.rolsac2.service.facade.TemaServiceFacade;
 import es.caib.rolsac2.service.facade.TipoUnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +58,16 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
     private UsuarioGridDTO usuarioSeleccionado;
 
+    private List<TemaGridDTO> temasPadre;
+
+    private TreeNode temaSeleccionado;
+
+    private List<TreeNode> roots;
+
+    private List<TemaGridDTO> temasTabla;
+
+    private Map<String, List<TemaGridDTO>> temasHijosRelacionados;
+
     @EJB
     private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
@@ -63,6 +76,10 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
     @EJB
     private TipoUnidadAdministrativaServiceFacade tipoUnidadAdministrativaServiceFacade;
+
+    @EJB
+    private TemaServiceFacade temaServiceFacade;
+
 
     public void load() {
         LOG.debug("init1");
@@ -73,6 +90,8 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         tiposSexo = unidadAdministrativaServiceFacade.findTipoSexo();
         entidadesActivas = administracionSupServiceFacade.findEntidadActivas();
         tipos = tipoUnidadAdministrativaServiceFacade.findTipo();
+        temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+        temasHijosRelacionados = new HashMap<>();
 
         if (this.isModoAlta()) {
             data = new UnidadAdministrativaDTO();
@@ -83,51 +102,19 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             data.setPresentacion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setResponsable(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setUsuariosUnidadAdministrativa(new ArrayList<>());
+            data.setTemas(new ArrayList<>());
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
+            anyadirTemasHijosRelacionados();
+            temasTabla = new ArrayList<>();
+            for (TemaGridDTO tema : temasPadre) {
+                temasTabla.add(new TemaGridDTO());
+            }
         }
 
+
         materiasSIA = new ArrayList<>();
-
-        final TipoMateriaSIADTO mat1 = new TipoMateriaSIADTO();
-        final Literal l1 = new Literal();
-        final List<Traduccion> traducciones = new ArrayList<>();
-        final Traduccion t1 = new Traduccion();
-        t1.setLiteral("Descripción del tipo de materia SIA.");
-        t1.setIdioma("es");
-
-        final Traduccion t2 = new Traduccion();
-        t1.setLiteral("Descripción del tipo de materia SIA.");
-        t1.setIdioma("ca");
-
-        traducciones.add(t1);
-        traducciones.add(t2);
-
-        l1.setTraducciones(traducciones);
-        mat1.setCodigo(1L);
-        mat1.setIdentificador("Materia SIA 1");
-        mat1.setDescripcion(l1);
-
-        final TipoMateriaSIADTO mat2 = new TipoMateriaSIADTO();
-        mat2.setCodigo(2L);
-        mat2.setIdentificador("Materia SIA 2");
-        mat2.setDescripcion(l1);
-
-        final TipoMateriaSIADTO mat3 = new TipoMateriaSIADTO();
-        mat3.setCodigo(3L);
-        mat3.setIdentificador("Materia SIA 2");
-        mat3.setDescripcion(l1);
-
-        final TipoMateriaSIADTO mat4 = new TipoMateriaSIADTO();
-        mat4.setCodigo(4L);
-        mat4.setIdentificador("Materia SIA N");
-        mat4.setDescripcion(l1);
-
-        materiasSIA.add(mat1);
-        materiasSIA.add(mat2);
-        materiasSIA.add(mat3);
-        materiasSIA.add(mat4);
 
         secciones = new ArrayList<>();
 
@@ -243,26 +230,6 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
     }
 
     /**
-     * Método que asigna los usuarios a la UA al volver del dialog de selección de usuarios.
-     *
-     * @param event
-     */
-    public void returnDialogo(final SelectEvent event) {
-        final DialogResult respuesta = (DialogResult) event.getObject();
-        // Verificamos si se ha modificado
-        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
-            List<UsuarioGridDTO> usuariosUAseleccionados = (List<UsuarioGridDTO>) respuesta.getResult();
-            if (usuariosUAseleccionados != null) {
-                if (data.getUsuariosUnidadAdministrativa() == null) {
-                    data.setUsuariosUnidadAdministrativa(new ArrayList<>());
-                }
-                this.data.getUsuariosUnidadAdministrativa().clear();
-                this.data.getUsuariosUnidadAdministrativa().addAll(usuariosUAseleccionados);
-            }
-        }
-    }
-
-    /**
      * Método para dar de alta usuarios en una UA
      */
     public void anyadirUsuarios() {
@@ -290,6 +257,128 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             data.getUsuariosUnidadAdministrativa().remove(usuarioSeleccionado);
             usuarioSeleccionado = null;
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    /********************************************************************************************************************************
+     * Funciones relativas a las asignaciones temáticas
+     *********************************************************************************************************************************/
+
+
+    public void abrirSeleccionTematica(TemaGridDTO temaPadre, TypeModoAcceso modoAcceso) {
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.anyadirMochila("temaPadre", temaPadre);
+        UtilJSF.anyadirMochila("temasRelacionados", new ArrayList<>(data.getTemas()));
+        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", modoAcceso, params, true, 590, 460);
+
+    }
+
+    public void altaTematicas(TemaGridDTO temaPadre) {
+        this.abrirSeleccionTematica(temaPadre, TypeModoAcceso.ALTA);
+    }
+
+    /**
+     * Método para consultar el detalle de un tema en una UA
+     */
+    public void consultarTema(Integer index) {
+        if (temasTabla == null || temasTabla.get(index) == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            TemaGridDTO tema = temasTabla.get(index);
+            params.put("ID", tema.getCodigo().toString());
+            UtilJSF.openDialog("dialogTema", TypeModoAcceso.CONSULTA, params, true, 700, 300);
+        }
+    }
+
+    /**
+     * Método para borrar un tema en una UA
+     */
+    public void borrarTema() {
+        if (temaSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getTemas().remove(temaSeleccionado);
+            temaSeleccionado = null;
+            construirArbol();
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    public void returnDialogTemas(final SelectEvent event) {
+        DialogResult resultado = (DialogResult) event.getObject();
+        if (!resultado.isCanceled()) {
+            List<TemaGridDTO> temasSeleccionados = (List<TemaGridDTO>) resultado.getResult();
+            TemaGridDTO temaPadre = (TemaGridDTO) UtilJSF.getValorMochilaByKey("temaPadre");
+            UtilJSF.vaciarMochila();
+
+            for (TemaGridDTO tema : temasSeleccionados) {
+                if (!data.getTemas().contains(tema)) {
+                    data.getTemas().add(tema);
+                }
+            }
+            List<TemaGridDTO> temasBorrado = new ArrayList<>();
+            for (TemaGridDTO tema : data.getTemas()) {
+                if (tema.getMathPath().contains(temaPadre.getCodigo().toString()) && !temasSeleccionados.contains(tema)) {
+                    temasBorrado.add(tema);
+                }
+            }
+            data.getTemas().removeAll(temasBorrado);
+
+            anyadirTemasHijosRelacionados();
+
+            /*construirArbol();*/
+        }
+
+    }
+
+    private void construirArbol() {
+        roots = new ArrayList<>();
+        for (TemaGridDTO temaPadre : temasPadre) {
+            TreeNode root = new DefaultTreeNode(temaPadre, null);
+            this.construirArbolDesdeHoja(temaPadre, root);
+            roots.add(root);
+        }
+    }
+
+    /**
+     * Cosntruye los diferentes árboles que se mostrarán a partir de los temas seleccionados de una UA.
+     *
+     * @param hoja
+     * @param arbol
+     */
+    private void construirArbolDesdeHoja(TemaGridDTO hoja, TreeNode arbol) {
+        DefaultTreeNode nodo = null;
+        if (hoja.getMathPath() == null) {
+            for (TemaGridDTO tema : data.getTemas()) {
+                if (tema.getMathPath().equals(hoja.getCodigo().toString())) {
+                    nodo = new DefaultTreeNode(tema, arbol);
+                    arbol.setExpanded(true);
+                    this.construirArbolDesdeHoja(tema, nodo);
+                }
+            }
+        } else {
+            Integer nivel = hoja.getMathPath().split(";").length + 1;
+            for (TemaGridDTO tema : data.getTemas()) {
+                Integer nivelHijo = tema.getMathPath().split(";").length;
+                if (tema.getMathPath().contains(hoja.getCodigo().toString()) && nivelHijo == nivel) {
+                    nodo = new DefaultTreeNode(tema, arbol);
+                    arbol.setExpanded(true);
+                    this.construirArbolDesdeHoja(tema, nodo);
+                }
+            }
+        }
+    }
+
+    private void anyadirTemasHijosRelacionados() {
+        for(TemaGridDTO temaPadre : temasPadre) {
+            List<TemaGridDTO> temasHijos = new ArrayList<>();
+            for(TemaGridDTO tema : data.getTemas()) {
+                if(tema.getMathPath().contains(temaPadre.getCodigo().toString())) {
+                    temasHijos.add(tema);
+                }
+            }
+            temasHijosRelacionados.put(temaPadre.getCodigo().toString(), temasHijos);
         }
     }
 
@@ -404,5 +493,45 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
     public void setUsuarioSeleccionado(UsuarioGridDTO usuarioSeleccionado) {
         this.usuarioSeleccionado = usuarioSeleccionado;
+    }
+
+    public TreeNode getTemaSeleccionado() {
+        return temaSeleccionado;
+    }
+
+    public void setTemaSeleccionado(TreeNode temaSeleccionado) {
+        this.temaSeleccionado = temaSeleccionado;
+    }
+
+    public List<TemaGridDTO> getTemasPadre() {
+        return temasPadre;
+    }
+
+    public void setTemasPadre(List<TemaGridDTO> temasPadre) {
+        this.temasPadre = temasPadre;
+    }
+
+    public List<TreeNode> getRoots() {
+        return roots;
+    }
+
+    public void setRoots(List<TreeNode> roots) {
+        this.roots = roots;
+    }
+
+    public List<TemaGridDTO> getTemasTabla() {
+        return temasTabla;
+    }
+
+    public void setTemasTabla(List<TemaGridDTO> temasTabla) {
+        this.temasTabla = temasTabla;
+    }
+
+    public Map<String, List<TemaGridDTO>> getTemasHijosRelacionados() {
+        return temasHijosRelacionados;
+    }
+
+    public void setTemasHijosRelacionados(Map<String, List<TemaGridDTO>> temasHijosRelacionados) {
+        this.temasHijosRelacionados = temasHijosRelacionados;
     }
 }

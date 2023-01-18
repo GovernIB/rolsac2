@@ -63,6 +63,9 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Inject
     private UsuarioRepository usuarioRepository;
 
+    @Inject
+    private TemaRepository temaRepository;
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -127,6 +130,15 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         }
         jUnidadAdministrativa.setUsuarios(usuarios);
 
+        Set<JTema> temas = new HashSet<>();
+        if(dto.getTemas() != null) {
+            for(TemaGridDTO tema : dto.getTemas()) {
+                JTema jTema = temaRepository.getReference(tema.getCodigo());
+                temas.add(jTema);
+            }
+        }
+        jUnidadAdministrativa.setTemas(temas);
+
         unidadAdministrativaRepository.create(jUnidadAdministrativa);
         return jUnidadAdministrativa.getCodigo();
     }
@@ -167,6 +179,18 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
         jUnidadAdministrativa.getUsuarios().clear();
         jUnidadAdministrativa.getUsuarios().addAll(usuarios);
+
+        //Actualizamos temas
+        Set<JTema> temas = new HashSet<>();
+        if (dto.getTemas() != null) {
+            for (TemaGridDTO tema : dto.getTemas()) {
+                JTema jTema = temaRepository.getReference(tema.getCodigo());
+                temas.add(jTema);
+            }
+        }
+
+        jUnidadAdministrativa.getTemas().clear();
+        jUnidadAdministrativa.getTemas().addAll(temas);
 
         converter.mergeEntity(jUnidadAdministrativa, dto);
         unidadAdministrativaRepository.update(jUnidadAdministrativa);

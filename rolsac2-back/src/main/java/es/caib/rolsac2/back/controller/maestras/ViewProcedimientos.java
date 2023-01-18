@@ -225,7 +225,6 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         final Map<String, String> params = new HashMap<>();
         if (proc != null) {
             UtilJSF.anyadirMochila("PROC", proc);
-            params.put(TypeParametroVentana.ID.toString(), proc.getCodigo().toString());
         }
         //Integer ancho = sessionBean.getScreenWidthInt();
         //if (ancho == null) {

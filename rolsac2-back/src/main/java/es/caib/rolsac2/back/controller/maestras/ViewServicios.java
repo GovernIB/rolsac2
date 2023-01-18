@@ -215,7 +215,6 @@ public class ViewServicios extends AbstractController implements Serializable {
         final Map<String, String> params = new HashMap<>();
         if (serv != null) {
             UtilJSF.anyadirMochila("SERV", serv);
-            params.put(TypeParametroVentana.ID.toString(), serv.getCodigo().toString());
         }
         //Integer ancho = sessionBean.getScreenWidthInt();
         //if (ancho == null) {

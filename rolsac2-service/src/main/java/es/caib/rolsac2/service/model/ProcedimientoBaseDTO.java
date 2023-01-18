@@ -99,6 +99,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private boolean habilitadoApoderado;
 
     private String habilitadoFuncionario;
+    private String usuarioAuditoria;
 
     public static ProcedimientoBaseDTO createInstance(List<String> idiomas) {
         ProcedimientoBaseDTO proc = new ProcedimientoBaseDTO();
@@ -630,6 +631,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setHabilitadoFuncionario(String habilitadoFuncionario) {
         this.habilitadoFuncionario = habilitadoFuncionario;
+    }
+
+    public String getUsuarioAuditoria() {
+        return usuarioAuditoria;
+    }
+
+    public void setUsuarioAuditoria(String usuarioAuditoria) {
+        this.usuarioAuditoria = usuarioAuditoria;
     }
 
     @Override
