@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,7 @@ import java.util.*;
  * Dades d'un ProcedimientoTramite.
  */
 @Schema(name = "ProcedimientoTramite")
-public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
+public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comparable<ProcedimientoTramiteDTO> {
 
     /**
      * LOGGER
@@ -19,6 +20,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
 
     private Long codigo;
 
+    private Integer orden;
     private Integer fase;
 
     private String codigoString;
@@ -50,8 +52,8 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Crea instancia de procedimiento tramite dto.
      *
-     * @param idiomas  idiomas
-     * @return  procedimiento tramite dto
+     * @param idiomas idiomas
+     * @return procedimiento tramite dto
      */
     public static ProcedimientoTramiteDTO createInstance(List<String> idiomas) {
         ProcedimientoTramiteDTO procedimientoTramite = new ProcedimientoTramiteDTO();
@@ -84,7 +86,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return  codigo
+     * @return codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -97,7 +99,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece id string.
      *
-     * @param idString  codigo to set
+     * @param idString codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -110,7 +112,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Agregar documento.
      *
-     * @param doc  doc
+     * @param doc doc
      */
     public void agregarDocumento(ProcedimientoDocumentoDTO doc) {
         if (getListaDocumentos() == null) {
@@ -139,7 +141,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Agregar modelo.
      *
-     * @param doc  doc
+     * @param doc doc
      */
     public void agregarModelo(ProcedimientoDocumentoDTO doc) {
         if (getListaModelos() == null) {
@@ -167,7 +169,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Instantiates a new Procedimiento tramite dto.
      *
-     * @param id  id
+     * @param id id
      */
     public ProcedimientoTramiteDTO(Long id) {
         this.codigo = id;
@@ -176,7 +178,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -185,7 +187,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -194,7 +196,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene unidad administrativa.
      *
-     * @return  unidad administrativa
+     * @return unidad administrativa
      */
     public UnidadAdministrativaDTO getUnidadAdministrativa() {
         return unidadAdministrativa;
@@ -203,7 +205,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece unidad administrativa.
      *
-     * @param unidadAdministrativa  unidad administrativa
+     * @param unidadAdministrativa unidad administrativa
      */
     public void setUnidadAdministrativa(UnidadAdministrativaDTO unidadAdministrativa) {
         this.unidadAdministrativa = unidadAdministrativa;
@@ -212,7 +214,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene procedimiento.
      *
-     * @return  procedimiento
+     * @return procedimiento
      */
     public ProcedimientoWorkflowDTO getProcedimiento() {
         return procedimiento;
@@ -221,7 +223,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece procedimiento.
      *
-     * @param procedimiento  procedimiento
+     * @param procedimiento procedimiento
      */
     public void setProcedimiento(ProcedimientoWorkflowDTO procedimiento) {
         this.procedimiento = procedimiento;
@@ -230,7 +232,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene tipo tramitacion.
      *
-     * @return  tipo tramitacion
+     * @return tipo tramitacion
      */
     public TipoTramitacionDTO getTipoTramitacion() {
         return tipoTramitacion;
@@ -239,7 +241,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece tipo tramitacion.
      *
-     * @param tipoTramitacion  tipo tramitacion
+     * @param tipoTramitacion tipo tramitacion
      */
     public void setTipoTramitacion(TipoTramitacionDTO tipoTramitacion) {
         this.tipoTramitacion = tipoTramitacion;
@@ -248,7 +250,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene lista documentos.
      *
-     * @return  lista documentos
+     * @return lista documentos
      */
     public List<ProcedimientoDocumentoDTO> getListaDocumentos() {
         return listaDocumentos;
@@ -257,7 +259,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece lista documentos.
      *
-     * @param listaDocumentos  lista documentos
+     * @param listaDocumentos lista documentos
      */
     public void setListaDocumentos(List<ProcedimientoDocumentoDTO> listaDocumentos) {
         this.listaDocumentos = listaDocumentos;
@@ -266,7 +268,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene lista modelos.
      *
-     * @return  lista modelos
+     * @return lista modelos
      */
     public List<ProcedimientoDocumentoDTO> getListaModelos() {
         return listaModelos;
@@ -275,7 +277,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece lista modelos.
      *
-     * @param listaModelos  lista modelos
+     * @param listaModelos lista modelos
      */
     public void setListaModelos(List<ProcedimientoDocumentoDTO> listaModelos) {
         this.listaModelos = listaModelos;
@@ -284,7 +286,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene tasa asociada.
      *
-     * @return  tasa asociada
+     * @return tasa asociada
      */
     public Boolean getTasaAsociada() {
         return tasaAsociada;
@@ -293,7 +295,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece tasa asociada.
      *
-     * @param tasaAsociada  tasa asociada
+     * @param tasaAsociada tasa asociada
      */
     public void setTasaAsociada(Boolean tasaAsociada) {
         this.tasaAsociada = tasaAsociada;
@@ -302,7 +304,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene requisitos.
      *
-     * @return  requisitos
+     * @return requisitos
      */
     public Literal getRequisitos() {
         return requisitos;
@@ -311,7 +313,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece requisitos.
      *
-     * @param requisitos  requisitos
+     * @param requisitos requisitos
      */
     public void setRequisitos(Literal requisitos) {
         this.requisitos = requisitos;
@@ -320,7 +322,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene nombre.
      *
-     * @return  nombre
+     * @return nombre
      */
     public Literal getNombre() {
         return nombre;
@@ -329,7 +331,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece nombre.
      *
-     * @param nombre  nombre
+     * @param nombre nombre
      */
     public void setNombre(Literal nombre) {
         this.nombre = nombre;
@@ -338,7 +340,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene documentacion.
      *
-     * @return  documentacion
+     * @return documentacion
      */
     public Literal getDocumentacion() {
         return documentacion;
@@ -347,7 +349,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece documentacion.
      *
-     * @param documentacion  documentacion
+     * @param documentacion documentacion
      */
     public void setDocumentacion(Literal documentacion) {
         this.documentacion = documentacion;
@@ -356,7 +358,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene observacion.
      *
-     * @return  observacion
+     * @return observacion
      */
     public Literal getObservacion() {
         return observacion;
@@ -365,7 +367,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece observacion.
      *
-     * @param observacion  observacion
+     * @param observacion observacion
      */
     public void setObservacion(Literal observacion) {
         this.observacion = observacion;
@@ -374,7 +376,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene termino maximo.
      *
-     * @return  termino maximo
+     * @return termino maximo
      */
     public Literal getTerminoMaximo() {
         return terminoMaximo;
@@ -383,7 +385,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece termino maximo.
      *
-     * @param terminoMaximo  termino maximo
+     * @param terminoMaximo termino maximo
      */
     public void setTerminoMaximo(Literal terminoMaximo) {
         this.terminoMaximo = terminoMaximo;
@@ -392,7 +394,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene fecha publicacion.
      *
-     * @return  fecha publicacion
+     * @return fecha publicacion
      */
     public Date getFechaPublicacion() {
         return fechaPublicacion;
@@ -401,7 +403,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece fecha publicacion.
      *
-     * @param fechaPublicacion  fecha publicacion
+     * @param fechaPublicacion fecha publicacion
      */
     public void setFechaPublicacion(Date fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
@@ -410,7 +412,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene fecha inicio.
      *
-     * @return  fecha inicio
+     * @return fecha inicio
      */
     public Date getFechaInicio() {
         return fechaInicio;
@@ -419,7 +421,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece fecha inicio.
      *
-     * @param fechaInicio  fecha inicio
+     * @param fechaInicio fecha inicio
      */
     public void setFechaInicio(Date fechaInicio) {
         this.fechaInicio = fechaInicio;
@@ -428,7 +430,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene fecha cierre.
      *
-     * @return  fecha cierre
+     * @return fecha cierre
      */
     public Date getFechaCierre() {
         return fechaCierre;
@@ -437,7 +439,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece fecha cierre.
      *
-     * @param fechaCierre  fecha cierre
+     * @param fechaCierre fecha cierre
      */
     public void setFechaCierre(Date fechaCierre) {
         this.fechaCierre = fechaCierre;
@@ -446,7 +448,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene codigo string.
      *
-     * @return  codigo string
+     * @return codigo string
      */
     public String getCodigoString() {
         if (codigo == null) {
@@ -459,7 +461,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece codigo string.
      *
-     * @param codigoString  codigo string
+     * @param codigoString codigo string
      */
     public void setCodigoString(String codigoString) {
         this.codigoString = codigoString;
@@ -468,7 +470,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene fase.
      *
-     * @return  fase
+     * @return fase
      */
     public Integer getFase() {
         return fase;
@@ -477,7 +479,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece fase.
      *
-     * @param fase  fase
+     * @param fase fase
      */
     public void setFase(Integer fase) {
         this.fase = fase;
@@ -486,7 +488,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene plantilla sel.
      *
-     * @return  plantilla sel
+     * @return plantilla sel
      */
     public TipoTramitacionDTO getPlantillaSel() {
         return plantillaSel;
@@ -495,7 +497,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece plantilla sel.
      *
-     * @param plantillaSel  plantilla sel
+     * @param plantillaSel plantilla sel
      */
     public void setPlantillaSel(TipoTramitacionDTO plantillaSel) {
         this.plantillaSel = plantillaSel;
@@ -504,7 +506,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Is tramit presencial boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitPresencial() {
         return tramitPresencial;
@@ -513,7 +515,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece tramit presencial.
      *
-     * @param tramitPresencial  tramit presencial
+     * @param tramitPresencial tramit presencial
      */
     public void setTramitPresencial(boolean tramitPresencial) {
         this.tramitPresencial = tramitPresencial;
@@ -522,7 +524,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Is tramit electronica boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitElectronica() {
         return tramitElectronica;
@@ -531,7 +533,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece tramit electronica.
      *
-     * @param tramitElectronica  tramit electronica
+     * @param tramitElectronica tramit electronica
      */
     public void setTramitElectronica(boolean tramitElectronica) {
         this.tramitElectronica = tramitElectronica;
@@ -540,7 +542,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Is tramit telefonica boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitTelefonica() {
         return tramitTelefonica;
@@ -549,17 +551,25 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     /**
      * Establece tramit telefonica.
      *
-     * @param tramitTelefonica  tramit telefonica
+     * @param tramitTelefonica tramit telefonica
      */
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
     }
 
+    public Integer getOrden() {
+        return orden;
+    }
+
+    public void setOrden(Integer orden) {
+        this.orden = orden;
+    }
 
     public Object clone() {
         ProcedimientoTramiteDTO obj = null;
         try {
             obj = (ProcedimientoTramiteDTO) super.clone();
+            obj.setOrden(this.getOrden());
             if (obj.tipoTramitacion != null) {
                 obj.tipoTramitacion = (TipoTramitacionDTO) this.tipoTramitacion.clone();
             }
@@ -619,8 +629,116 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable {
     public String toString() {
         return "ProcedimientoTramiteDTO{" + "codigo=" + codigo + ", unidadAdministrativa=" + unidadAdministrativa
                 + ", procedimiento=" + procedimiento + ", tipoTramitacion=" + tipoTramitacion
+                + ", orden=" + orden
                 + ", listaDocumentos=" + listaDocumentos + ", listaModelos=" + listaModelos + ", tasaAsociada="
                 + tasaAsociada + ", requisitos=" + requisitos + ", nombre=" + nombre + ", documentacion="
                 + documentacion + ", observacion=" + observacion + ", terminoMaximo=" + terminoMaximo + '}';
     }
+
+    @Override
+    public int compareTo(ProcedimientoTramiteDTO data2) {
+        if (data2 == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getOrden(), data2.getOrden()) != 0) {
+            return UtilComparador.compareTo(this.getOrden(), data2.getOrden());
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getDocumentacion(), data2.getDocumentacion()) != 0) {
+            return UtilComparador.compareTo(this.getDocumentacion(), data2.getDocumentacion());
+        }
+
+        if (UtilComparador.compareTo(this.getNombre(), data2.getNombre()) != 0) {
+            return UtilComparador.compareTo(this.getNombre(), data2.getNombre());
+        }
+
+        if (UtilComparador.compareTo(this.getRequisitos(), data2.getRequisitos()) != 0) {
+            return UtilComparador.compareTo(this.getRequisitos(), data2.getRequisitos());
+        }
+
+        if (UtilComparador.compareTo(this.getTerminoMaximo(), data2.getTerminoMaximo()) != 0) {
+            return UtilComparador.compareTo(this.getTerminoMaximo(), data2.getTerminoMaximo());
+        }
+
+        if (UtilComparador.compareTo(this.getObservacion(), data2.getObservacion()) != 0) {
+            return UtilComparador.compareTo(this.getObservacion(), data2.getObservacion());
+        }
+        if (UtilComparador.compareTo(this.getFase(), data2.getFase()) != 0) {
+            return UtilComparador.compareTo(this.getFase(), data2.getFase());
+        }
+        if (UtilComparador.compareTo(this.getFechaCierre(), data2.getFechaCierre()) != 0) {
+            return UtilComparador.compareTo(this.getFechaCierre(), data2.getFechaCierre());
+        }
+        if (UtilComparador.compareTo(this.getFechaInicio(), data2.getFechaInicio()) != 0) {
+            return UtilComparador.compareTo(this.getFechaInicio(), data2.getFechaInicio());
+        }
+        if (UtilComparador.compareTo(this.getFechaPublicacion(), data2.getFechaPublicacion()) != 0) {
+            return UtilComparador.compareTo(this.getFechaPublicacion(), data2.getFechaPublicacion());
+        }
+
+        if (ProcedimientoDocumentoDTO.compareTo(this.getListaModelos(), data2.getListaModelos()) != 0) {
+            return ProcedimientoDocumentoDTO.compareTo(this.getListaModelos(), data2.getListaModelos());
+        }
+        if (ProcedimientoDocumentoDTO.compareTo(this.getListaDocumentos(), data2.getListaDocumentos()) != 0) {
+            return ProcedimientoDocumentoDTO.compareTo(this.getListaDocumentos(), data2.getListaDocumentos());
+        }
+        if (UtilComparador.compareTo(this.getDocumentacion(), data2.getDocumentacion()) != 0) {
+            return UtilComparador.compareTo(this.getDocumentacion(), data2.getDocumentacion());
+        }
+        if (UtilComparador.compareTo(this.isTramitElectronica(), data2.isTramitElectronica()) != 0) {
+            return UtilComparador.compareTo(this.isTramitElectronica(), data2.isTramitElectronica());
+        }
+        if (UtilComparador.compareTo(this.isTramitPresencial(), data2.isTramitPresencial()) != 0) {
+            return UtilComparador.compareTo(this.isTramitPresencial(), data2.isTramitPresencial());
+        }
+        if (UtilComparador.compareTo(this.isTramitTelefonica(), data2.isTramitTelefonica()) != 0) {
+            return UtilComparador.compareTo(this.isTramitTelefonica(), data2.isTramitTelefonica());
+        }
+        if (UtilComparador.compareTo(this.getTipoTramitacion(), data2.getTipoTramitacion()) != 0) {
+            return UtilComparador.compareTo(this.getTipoTramitacion(), data2.getTipoTramitacion());
+        }
+        if (UtilComparador.compareTo(this.getPlantillaSel(), data2.getPlantillaSel()) != 0) {
+            return UtilComparador.compareTo(this.getPlantillaSel(), data2.getPlantillaSel());
+        }
+        return 0;
+    }
+
+
+    public static int compareTo(List<ProcedimientoTramiteDTO> dato, List<ProcedimientoTramiteDTO> dato2) {
+        if ((dato == null || dato.size() == 0) && (dato2 == null || dato2.size() == 0)) {
+            return 0;
+        }
+        if ((dato == null || dato.size() == 0) && (dato2 != null && dato2.size() > 0)) {
+            return -1;
+        }
+        if ((dato != null && dato.size() > 0) && (dato2 == null || dato2.size() == 0)) {
+            return 1;
+        }
+
+        if (dato.size() > dato2.size()) {
+            return 1;
+        } else if (dato2.size() > dato.size()) {
+            return -1;
+        } else {
+            for (ProcedimientoTramiteDTO tipo : dato) {
+                boolean existe = false;
+                for (ProcedimientoTramiteDTO tipo2 : dato2) {
+                    if (tipo.getOrden().compareTo(tipo2.getOrden()) != 0) {
+                        return tipo.getOrden().compareTo(tipo2.getOrden());
+                    }
+                    existe = true;
+                }
+                if (!existe) {
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+
 }

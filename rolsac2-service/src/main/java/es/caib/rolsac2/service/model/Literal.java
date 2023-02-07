@@ -72,6 +72,7 @@ public class Literal implements Cloneable {
         return literal;
     }
 
+
     /**
      * Se hace a este nivel manualmente el clonar.
      *

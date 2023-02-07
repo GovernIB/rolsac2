@@ -168,4 +168,13 @@ public interface AdministracionEntServiceFacade {
      * @return
      */
     boolean existePluginTipo(Long codigoPlugin, String tipo);
+
+    /**
+     * Comprueba si ya existe un plugin creado con el tipo en la entidad.
+     *
+     * @param idEntidad
+     * @param tipo
+     * @return
+     */
+    boolean existePluginTipoByEntidad(Long idEntidad, String tipo);
 }

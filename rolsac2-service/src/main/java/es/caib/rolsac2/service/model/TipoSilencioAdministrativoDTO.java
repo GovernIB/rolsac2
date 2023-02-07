@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Date;
@@ -11,11 +12,11 @@ import java.util.Objects;
  * @author jsegovia
  */
 @Schema(name = "TipoSilencioAdministrativo")
-public class TipoSilencioAdministrativoDTO extends ModelApi {
+public class TipoSilencioAdministrativoDTO extends ModelApi implements Cloneable {
 
     /**
      * Codigo
-     */ 
+     */
     private Long codigo;
 
     /**
@@ -48,7 +49,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return  codigo
+     * @return codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -61,7 +62,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Establece id string.
      *
-     * @param idString  codigo to set
+     * @param idString codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -74,7 +75,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Instantiates a new Tipo silencio administrativo dto.
      *
-     * @param id  id
+     * @param id id
      */
     public TipoSilencioAdministrativoDTO(Long id) {
         this.codigo = id;
@@ -83,7 +84,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -92,7 +93,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -101,7 +102,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -110,7 +111,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -119,7 +120,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public Literal getDescripcion() {
         return descripcion;
@@ -128,7 +129,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
@@ -146,7 +147,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Obtiene descripcion 2.
      *
-     * @return  descripcion 2
+     * @return descripcion 2
      */
     public Object getDescripcion2() {
         return descripcion2;
@@ -155,7 +156,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Establece descripcion 2.
      *
-     * @param descripcion2  descripcion 2
+     * @param descripcion2 descripcion 2
      */
     public void setDescripcion2(Object descripcion2) {
         this.descripcion2 = descripcion2;
@@ -164,7 +165,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Obtiene fecha borrar.
      *
-     * @return  fecha borrar
+     * @return fecha borrar
      */
     public Date getFechaBorrar() {
         return fechaBorrar;
@@ -173,7 +174,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     /**
      * Establece fecha borrar.
      *
-     * @param fechaBorrar  fecha borrar
+     * @param fechaBorrar fecha borrar
      */
     public void setFechaBorrar(Date fechaBorrar) {
         this.fechaBorrar = fechaBorrar;
@@ -190,5 +191,46 @@ public class TipoSilencioAdministrativoDTO extends ModelApi {
     @Override
     public int hashCode() {
         return Objects.hash(codigo);
+    }
+
+    public int compareTo(TipoSilencioAdministrativoDTO data2) {
+
+        if (data2 == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion()) != 0) {
+            return UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion());
+        }
+
+        if (UtilComparador.compareTo(this.getFechaBorrar(), data2.getFechaBorrar()) != 0) {
+            return UtilComparador.compareTo(this.getFechaBorrar(), data2.getFechaBorrar());
+        }
+
+        if (UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador()) != 0) {
+            return UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador());
+        }
+
+        return 0;
+    }
+
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    @Override
+    public Object clone() {
+        TipoSilencioAdministrativoDTO tipo = new TipoSilencioAdministrativoDTO();
+        tipo.setCodigo(this.getCodigo());
+        tipo.setIdentificador(this.getIdentificador());
+        if (this.getDescripcion() != null) {
+            tipo.setDescripcion((Literal) this.getDescripcion().clone());
+        }
+        return tipo;
     }
 }

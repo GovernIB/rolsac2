@@ -79,8 +79,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          process="@all"/>
         <p:commandButton action="#{dialogConfiguracionGlobal.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+			<p:commandButton value="Sí" action="#{dialogConfiguracionGlobal.cerrarDefinitivo}" update="@form" oncomplete="PF('confirmCerrar').hide();"  />
+			<p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+		</p:confirmDialog>
 
     </ui:define>
 

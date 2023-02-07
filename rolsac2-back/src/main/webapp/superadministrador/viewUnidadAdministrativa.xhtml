@@ -46,7 +46,9 @@
                 <f:facet name="right">
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewUnidadAdministrativa.nuevaUnidadAdministrativa}"
-                                     process="@this" rendered="#{!viewUnidadAdministrativa.isAdmContenidos()}">
+                                     process="@this" rendered="#{!viewUnidadAdministrativa.isAdmContenidos()}"
+                                     onstart="PF('blocker').show();"
+                                     oncomplete="PF('blocker').hide()">
                         <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
@@ -131,7 +133,7 @@
             <p:commandButton  id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
                               actionListener="#{viewProcedimientos.dblClickProcedimiento()}" process="@this" update="messages"
                               style="display: none"
-                              onstart="PF('statusDialog1').show();" oncomplete="PF('statusDialog1').hide()" >
+                              onstart="startCargando()" oncomplete="stopCargando()" >
                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages dataTable"/>
             </p:commandButton>-->
             <p:blockUI block=":viewPage" widgetVar="blocker">

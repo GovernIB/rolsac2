@@ -8,6 +8,8 @@ import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.model.ConfiguracionGlobalDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+
+import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +34,9 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
 
     private ConfiguracionGlobalDTO data;
 
-    @Inject
+    private ConfiguracionGlobalDTO dataOriginal;
+
+	@Inject
     private SessionBean sessionBean;
 
     @EJB
@@ -47,6 +51,7 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
         data = new ConfiguracionGlobalDTO();
         if (this.isModoEdicion() || this.isModoConsulta()) {
             data = administracionSupServiceFacade.findConfGlobalById(Long.valueOf(id));
+            dataOriginal = data.clone();
         }
     }
 
@@ -67,7 +72,7 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
         UtilJSF.closeDialog(result);
     }
 
-    public void cerrar() {
+    public void cerrarDefinitivo() {
         final DialogResult result = new DialogResult();
         if (Objects.isNull(this.getModoAcceso())) {
             this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
@@ -76,6 +81,20 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);
+    }
+
+    public void cerrar() {
+        if(comprobarModificacion()) {
+        	PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
+        } else {
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return !data.getCodigo().equals(dataOriginal.getCodigo())
+                || !data.getValor().equals(dataOriginal.getValor())
+                || !data.getDescripcion().equals(dataOriginal.getDescripcion());
     }
 
     public void traducir() {
@@ -98,4 +117,13 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
     public void setData(ConfiguracionGlobalDTO data) {
         this.data = data;
     }
+
+    public ConfiguracionGlobalDTO getDataOriginal() {
+		return dataOriginal;
+	}
+
+	public void setDataOriginal(ConfiguracionGlobalDTO dataOriginal) {
+		this.dataOriginal = dataOriginal;
+	}
+
 }

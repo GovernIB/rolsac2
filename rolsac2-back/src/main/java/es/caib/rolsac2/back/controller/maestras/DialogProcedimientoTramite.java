@@ -255,7 +255,41 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     }
 
 
-    //DOCUMENTO
+    public void bajarDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getListaDocumentos().indexOf(documentoSeleccionado);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion < this.data.getListaDocumentos().size() - 1) {
+                //Mientras no sea el ultimo elemento, se puede bajar
+                this.data.getListaDocumentos().remove(posicion);
+                this.data.getListaDocumentos().add(posicion + 1, documentoSeleccionado);
+            }
+        }
+    }
+
+    public void subirDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getListaDocumentos().indexOf(documentoSeleccionado);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion != 0) {
+                //Mientras no sea el primer elemento, se puede subir
+                this.data.getListaDocumentos().remove(posicion);
+                this.data.getListaDocumentos().add(posicion - 1, documentoSeleccionado);
+            }
+        }
+    }
+
+    //MODELO
     public void returnDialogModelo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
@@ -310,6 +344,40 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             data.getListaModelos().remove(modeloSeleccionado);
             modeloSeleccionado = null;
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    public void bajarModelo() {
+        if (modeloSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getListaModelos().indexOf(modeloSeleccionado);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion < this.data.getListaModelos().size() - 1) {
+                //Mientras no sea el ultimo elemento, se puede bajar
+                this.data.getListaModelos().remove(posicion);
+                this.data.getListaModelos().add(posicion + 1, modeloSeleccionado);
+            }
+        }
+    }
+
+    public void subirModelo() {
+        if (modeloSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getListaModelos().indexOf(modeloSeleccionado);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion != 0) {
+                //Mientras no sea el primer elemento, se puede subir
+                this.data.getListaModelos().remove(posicion);
+                this.data.getListaModelos().add(posicion - 1, modeloSeleccionado);
+            }
         }
     }
 

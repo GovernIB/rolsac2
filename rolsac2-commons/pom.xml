@@ -97,6 +97,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!--Keycloak dependencies-->
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-authz-client</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -1,6 +1,7 @@
 package es.caib.rolsac2.service.model;
 
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public class FicheroDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -51,7 +52,7 @@ public class FicheroDTO extends ModelApi implements Cloneable {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -60,7 +61,7 @@ public class FicheroDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene filename.
      *
-     * @return  filename
+     * @return filename
      */
     public String getFilename() {
         return filename;
@@ -69,7 +70,7 @@ public class FicheroDTO extends ModelApi implements Cloneable {
     /**
      * Establece filename.
      *
-     * @param filename  filename
+     * @param filename filename
      */
     public void setFilename(String filename) {
         this.filename = filename;
@@ -78,7 +79,7 @@ public class FicheroDTO extends ModelApi implements Cloneable {
     /**
      * Get contenido byte [ ].
      *
-     * @return  byte [ ]
+     * @return byte [ ]
      */
     public byte[] getContenido() {
         return contenido;
@@ -87,7 +88,7 @@ public class FicheroDTO extends ModelApi implements Cloneable {
     /**
      * Establece contenido.
      *
-     * @param contenido  contenido
+     * @param contenido contenido
      */
     public void setContenido(byte[] contenido) {
         this.contenido = contenido;
@@ -96,7 +97,7 @@ public class FicheroDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene tipo.
      *
-     * @return  tipo
+     * @return tipo
      */
     public TypeFicheroExterno getTipo() {
         return tipo;
@@ -105,7 +106,7 @@ public class FicheroDTO extends ModelApi implements Cloneable {
     /**
      * Establece tipo.
      *
-     * @param tipo  tipo
+     * @param tipo tipo
      */
     public void setTipo(TypeFicheroExterno tipo) {
         this.tipo = tipo;
@@ -129,5 +130,24 @@ public class FicheroDTO extends ModelApi implements Cloneable {
                 "id=" + codigo +
                 ", filename='" + filename + '\'' +
                 '}';
+    }
+
+    public int compareTo(FicheroDTO data) {
+        if (data == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getTipo(), data.getTipo()) != 0) {
+            return UtilComparador.compareTo(this.getTipo(), data.getTipo());
+        }
+        if (UtilComparador.compareTo(this.getFilename(), data.getFilename()) != 0) {
+            return UtilComparador.compareTo(this.getFilename(), data.getFilename());
+        }
+
+        return 0;
     }
 }

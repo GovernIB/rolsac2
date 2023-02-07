@@ -54,7 +54,7 @@ public enum TypeProcedimientoEstado {
         return tipo;
     }
 
-    public static TypeProcedimientoWorfklow getWorkflowSegunEstado(TypeProcedimientoEstado estado) {
+    public static TypeProcedimientoWorkflow getWorkflowSegunEstado(TypeProcedimientoEstado estado) {
         if (estado == null) {
             return null;
         }
@@ -62,27 +62,27 @@ public enum TypeProcedimientoEstado {
         switch (estado) {
             case MODIFICACION:
             case PENDIENTE_PUBLICAR:
-                return TypeProcedimientoWorfklow.MODIFICACION;
+                return TypeProcedimientoWorkflow.MODIFICACION;
             case BORRADO:
             case PUBLICADO:
             case RESERVA:
-                return TypeProcedimientoWorfklow.PUBLICADO;
+                return TypeProcedimientoWorkflow.PUBLICADO;
             default:
                 return null;
         }
     }
 
 
-    public TypeProcedimientoWorfklow getWorkflowSegunEstado() {
+    public TypeProcedimientoWorkflow getWorkflowSegunEstado() {
 
         switch (this) {
             case MODIFICACION:
             case PENDIENTE_PUBLICAR:
-                return TypeProcedimientoWorfklow.MODIFICACION;
+                return TypeProcedimientoWorkflow.MODIFICACION;
             case BORRADO:
             case PUBLICADO:
             case RESERVA:
-                return TypeProcedimientoWorfklow.PUBLICADO;
+                return TypeProcedimientoWorkflow.PUBLICADO;
             default:
                 return null;
         }
@@ -93,8 +93,8 @@ public enum TypeProcedimientoEstado {
             return false;
         }
 
-        TypeProcedimientoWorfklow wf1 = estado1.getWorkflowSegunEstado();
-        TypeProcedimientoWorfklow wf2 = estado2.getWorkflowSegunEstado();
+        TypeProcedimientoWorkflow wf1 = estado1.getWorkflowSegunEstado();
+        TypeProcedimientoWorkflow wf2 = estado2.getWorkflowSegunEstado();
         return wf1 == wf2;
     }
 
@@ -103,8 +103,8 @@ public enum TypeProcedimientoEstado {
             return true;
         }
 
-        TypeProcedimientoWorfklow wf1 = estado1.getWorkflowSegunEstado();
-        TypeProcedimientoWorfklow wf2 = estado2.getWorkflowSegunEstado();
+        TypeProcedimientoWorkflow wf1 = estado1.getWorkflowSegunEstado();
+        TypeProcedimientoWorkflow wf2 = estado2.getWorkflowSegunEstado();
         return wf1 != wf2;
     }
 
@@ -112,5 +112,16 @@ public enum TypeProcedimientoEstado {
         return perfil;
     }
 
+    /**
+     * Es estado pendiente
+     **/
+    public boolean isEstadoPendiente() {
+        return this == TypeProcedimientoEstado.PENDIENTE_BORRAR ||
+                this == TypeProcedimientoEstado.PENDIENTE_PUBLICAR ||
+                this == TypeProcedimientoEstado.PENDIENTE_RESERVAR;
+    }
 
+    public String getLiteralMensajePendiente(String idioma) {
+        return "es.caib.rolsac2.procServ.accion." + perfil + "." + idioma;
+    }
 }

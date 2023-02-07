@@ -21,4 +21,6 @@ public interface TraduccionServiceFacade {
      * @return
      */
     String traducir(String tipoEntrada, String textoEntrada, Idioma idiomaEntrada, Idioma idiomaSalida, Map<String, String> opciones, Long idEntidad) throws IPluginTraduccionException;
+
+    Boolean tradExiste(Long idEntidad);
 }

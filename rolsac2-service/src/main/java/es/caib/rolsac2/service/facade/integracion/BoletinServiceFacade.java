@@ -20,5 +20,7 @@ public interface BoletinServiceFacade {
      */
     List<EdictoGridDTO> listar(final String numeroBoletin, final String fechaBoletin, final String numeroEdicto, final Long idEntidad);
 
+    Long obtenerBoletinPlugin(final Long idEntidad);
+
 
 }

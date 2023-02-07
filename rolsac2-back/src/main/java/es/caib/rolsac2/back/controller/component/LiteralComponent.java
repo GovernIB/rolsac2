@@ -393,6 +393,9 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             List<String> idiomasObligatorios = List
                     .of(((String) getAttributes().get("idiomasObligatorios")).split(";"));
             Literal literal = (Literal) getAttributes().get("literal");
+            if (literal == null) {
+                return ICONO_ROJO;
+            }
             boolean faltaCampo = false;
 
             if (idiomasPermitidos.size() > literal.getIdiomas().size()) {

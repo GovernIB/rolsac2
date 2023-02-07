@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;
@@ -121,5 +122,43 @@ public class TipoSexoDTO extends ModelApi {
                 ", identificador='" + identificador + '\'' +
                 ", descripcion=" + descripcion +
                 '}';
+    }
+
+    public int compareTo(TipoSexoDTO data2) {
+
+        if (data2 == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion()) != 0) {
+            return UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion());
+        }
+
+        if (UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador()) != 0) {
+            return UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador());
+        }
+
+        return 0;
+
+    }
+
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    @Override
+    public Object clone() {
+        TipoSexoDTO tipo = new TipoSexoDTO();
+        tipo.setCodigo(this.getCodigo());
+        tipo.setIdentificador(this.getIdentificador());
+        if (this.getDescripcion() != null) {
+            tipo.setDescripcion((Literal) this.getDescripcion().clone());
+        }
+        return tipo;
     }
 }

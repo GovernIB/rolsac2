@@ -1,5 +1,22 @@
 package es.caib.rolsac2.back.controller.maestras;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
@@ -10,21 +27,6 @@ import es.caib.rolsac2.service.model.filtro.EdificioFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 @Named
@@ -64,7 +66,7 @@ public class ViewEdificios extends AbstractController implements Serializable {
      */
     public void load() {
         LOG.debug("load");
-
+        permisoAccesoVentana(ViewEdificios.class);
         this.setearIdioma();
 
         // Inicializamos combos/desplegables/inputs/filtro

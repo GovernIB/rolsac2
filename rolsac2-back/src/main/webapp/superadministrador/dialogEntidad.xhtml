@@ -43,7 +43,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this">
+                         process="@this"
+                         rendered="#{!dialogEntidad.isModoConsulta() and dialogEntidad.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogEntidad.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion"/>
         </p:commandButton>
@@ -250,18 +251,22 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogEntidad.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this" update="messagesDialog"/>
-        <p:commandButton action="#{dialogEntidad.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog form"
-                         process="@all"/>
-        <p:commandButton action="#{dialogEntidad.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+		<p:commandButton action="#{dialogEntidad.ayuda}"
+			icon="pi pi-info-circle" iconPos="top"
+			value="#{labels['dict.ayuda']}" process="@this"
+			update="messagesDialog" />
+		<p:commandButton action="#{dialogEntidad.guardar}"
+			value="#{labels['dict.guardar']}" update="messagesDialog form"
+			process="@all" />
+		<p:commandButton action="#{dialogEntidad.cerrar}" update="messagesDialog form" process="@all"
+			value="#{labels['dict.cerrar']}" oncomplete="stopCargando()" onstart="startCargando()">
+		</p:commandButton>
 
-    </ui:define>
+		<p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+			<p:commandButton value="Sí" action="#{dialogEntidad.cerrarDefinitivo}" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();"  />
+			<p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+		</p:confirmDialog>
+	</ui:define>
 
 </ui:composition>
 </html>

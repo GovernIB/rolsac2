@@ -36,6 +36,16 @@ public class EntidadDTO extends ModelApi {
 
     private String idiomasObligatorios;
 
+
+    /**
+     * LOPD Datos
+     **/
+    private Literal lopdDestinatario;
+    private Literal lopdDerechos;
+    private Literal lopdFinalidad;
+
+    private Literal uaComun;
+
     /**
      * Instancia una nueva Entidad dto.
      */
@@ -61,6 +71,9 @@ public class EntidadDTO extends ModelApi {
             this.idiomaDefectoRest = otro.idiomaDefectoRest;
             this.idiomasPermitidos = otro.idiomasPermitidos;
             this.idiomasObligatorios = otro.idiomasObligatorios;
+            this.lopdDerechos = otro.lopdDerechos;
+            this.lopdFinalidad = otro.lopdFinalidad;
+            this.lopdDestinatario = otro.lopdDestinatario;
         }
     }
 
@@ -118,7 +131,7 @@ public class EntidadDTO extends ModelApi {
     /**
      * Obtiene activa.
      *
-     * @return  activa
+     * @return activa
      */
     public Boolean getActiva() {
         return activa;
@@ -127,7 +140,7 @@ public class EntidadDTO extends ModelApi {
     /**
      * Establece activa.
      *
-     * @param activa  activa
+     * @param activa activa
      */
     public void setActiva(Boolean activa) {
         this.activa = activa;
@@ -264,42 +277,86 @@ public class EntidadDTO extends ModelApi {
      *
      * @return el idioma defecto rest
      */
-    public String getIdiomaDefectoRest() { return idiomaDefectoRest; }
+    public String getIdiomaDefectoRest() {
+        return idiomaDefectoRest;
+    }
 
     /**
      * Establece idioma defecto rest.
      *
      * @param idiomaDefectoRest el idioma defecto rest
      */
-    public void setIdiomaDefectoRest(String idiomaDefectoRest) { this.idiomaDefectoRest = idiomaDefectoRest; }
+    public void setIdiomaDefectoRest(String idiomaDefectoRest) {
+        this.idiomaDefectoRest = idiomaDefectoRest;
+    }
 
     /**
      * Obtiene idiomas permitidos.
      *
      * @return los idiomas permitidos
      */
-    public String getIdiomasPermitidos() { return idiomasPermitidos; }
+    public String getIdiomasPermitidos() {
+        return idiomasPermitidos;
+    }
 
     /**
      * Establece idiomas permitidos.
      *
      * @param idiomasPermitidos los idiomas permitidos
      */
-    public void setIdiomasPermitidos(String idiomasPermitidos) { this.idiomasPermitidos = idiomasPermitidos; }
+    public void setIdiomasPermitidos(String idiomasPermitidos) {
+        this.idiomasPermitidos = idiomasPermitidos;
+    }
 
     /**
      * Obtiene idiomas obligatorios.
      *
      * @return los idiomas obligatorios
      */
-    public String getIdiomasObligatorios() { return idiomasObligatorios; }
+    public String getIdiomasObligatorios() {
+        return idiomasObligatorios;
+    }
 
     /**
      * Establece idiomas obligatorios.
      *
      * @param idiomasObligatorios los idiomas obligatorios
      */
-    public void setIdiomasObligatorios(String idiomasObligatorios) { this.idiomasObligatorios = idiomasObligatorios; }
+    public void setIdiomasObligatorios(String idiomasObligatorios) {
+        this.idiomasObligatorios = idiomasObligatorios;
+    }
+
+    public Literal getLopdDestinatario() {
+        return lopdDestinatario;
+    }
+
+    public void setLopdDestinatario(Literal lopdDestinatario) {
+        this.lopdDestinatario = lopdDestinatario;
+    }
+
+    public Literal getLopdDerechos() {
+        return lopdDerechos;
+    }
+
+    public void setLopdDerechos(Literal lopdDerechos) {
+        this.lopdDerechos = lopdDerechos;
+    }
+
+    public Literal getLopdFinalidad() {
+        return lopdFinalidad;
+    }
+
+    public void setLopdFinalidad(Literal lopdFinalidad) {
+        this.lopdFinalidad = lopdFinalidad;
+    }
+
+    public Literal getUaComun() {
+        return uaComun;
+    }
+
+    public void setUaComun(Literal uaComun) {
+        this.uaComun = uaComun;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -315,6 +372,11 @@ public class EntidadDTO extends ModelApi {
     @Override
     public int hashCode() {
         return Objects.hash(codigo, activa, rolAdmin, rolAdminContenido, rolGestor, rolInformador, logo, descripcion, idiomaDefectoRest, idiomasPermitidos, idiomasObligatorios);
+    }
+
+    @Override
+    public EntidadDTO clone() {
+        return new EntidadDTO(this);
     }
 
     @Override

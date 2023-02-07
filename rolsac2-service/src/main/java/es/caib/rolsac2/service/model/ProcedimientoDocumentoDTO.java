@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author Indra
  */
 @Schema(name = "ProcedimientoDocumento")
-public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable {
+public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable, Comparable<ProcedimientoDocumentoDTO> {
 
     /**
      * LOGGERR
@@ -24,6 +25,11 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable {
      * Codigo
      **/
     private Long codigo;
+
+    /**
+     * Orden
+     */
+    private Integer orden;
 
     /**
      * Código temporal para poder tratar con el dato
@@ -155,6 +161,14 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable {
         this.documentos = documentos;
     }
 
+    public Integer getOrden() {
+        return orden;
+    }
+
+    public void setOrden(Integer orden) {
+        this.orden = orden;
+    }
+
     /**
      * Obtiene codigo string.
      *
@@ -181,6 +195,7 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable {
         ProcedimientoDocumentoDTO obj = null;
         try {
             obj = (ProcedimientoDocumentoDTO) super.clone();
+            obj.setOrden(this.getOrden());
             if (this.titulo != null) {
                 obj.titulo = (Literal) this.titulo.clone();
             }
@@ -236,4 +251,66 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable {
         return idiomasSobrantes;
     }
 
+
+    @Override
+    public int compareTo(ProcedimientoDocumentoDTO data2) {
+        if (data2 == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getOrden(), data2.getOrden()) != 0) {
+            return UtilComparador.compareTo(this.getOrden(), data2.getOrden());
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion()) != 0) {
+            return UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion());
+        }
+
+        if (UtilComparador.compareTo(this.getTitulo(), data2.getTitulo()) != 0) {
+            return UtilComparador.compareTo(this.getTitulo(), data2.getTitulo());
+        }
+
+        if (UtilComparador.compareTo(this.getDocumentos(), data2.getDocumentos()) != 0) {
+            return UtilComparador.compareTo(this.getDocumentos(), data2.getDocumentos());
+        }
+        return 0;
+    }
+
+    public static int compareTo(List<ProcedimientoDocumentoDTO> dato, List<ProcedimientoDocumentoDTO> dato2) {
+        if ((dato == null || dato.size() == 0) && (dato2 == null || dato2.size() == 0)) {
+            return 0;
+        }
+        if ((dato == null || dato.size() == 0) && (dato2 != null && dato2.size() > 0)) {
+            return -1;
+        }
+        if ((dato != null && dato.size() > 0) && (dato2 == null || dato2.size() == 0)) {
+            return 1;
+        }
+
+        if (dato.size() > dato2.size()) {
+            return 1;
+        } else if (dato2.size() > dato.size()) {
+            return -1;
+        } else {
+            for (ProcedimientoDocumentoDTO tipo : dato) {
+                boolean existe = false;
+                for (ProcedimientoDocumentoDTO tipo2 : dato2) {
+                    if (tipo.getCodigo().compareTo(tipo2.getCodigo()) == 0) {
+                        if (tipo.getOrden().compareTo(tipo2.getOrden()) != 0) {
+                            return tipo.getOrden().compareTo(tipo2.getOrden());
+                        }
+                        existe = true;
+                    }
+                }
+                if (!existe) {
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
 }

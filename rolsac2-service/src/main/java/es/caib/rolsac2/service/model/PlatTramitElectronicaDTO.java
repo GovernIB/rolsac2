@@ -1,9 +1,12 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -46,7 +49,7 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -55,7 +58,7 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -64,7 +67,7 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Obtiene cod entidad.
      *
-     * @return  cod entidad
+     * @return cod entidad
      */
     public EntidadDTO getCodEntidad() {
         return codEntidad;
@@ -73,7 +76,7 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Establece cod entidad.
      *
-     * @param codEntidad  cod entidad
+     * @param codEntidad cod entidad
      */
     public void setCodEntidad(EntidadDTO codEntidad) {
         this.codEntidad = codEntidad;
@@ -82,7 +85,7 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -91,7 +94,7 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -100,7 +103,7 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public Literal getDescripcion() {
         return descripcion;
@@ -109,7 +112,7 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
@@ -118,7 +121,7 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Obtiene url acceso.
      *
-     * @return  url acceso
+     * @return url acceso
      */
     public Literal getUrlAcceso() {
         return urlAcceso;
@@ -127,7 +130,7 @@ public class PlatTramitElectronicaDTO extends ModelApi {
     /**
      * Establece url acceso.
      *
-     * @param urlAcceso  url acceso
+     * @param urlAcceso url acceso
      */
     public void setUrlAcceso(Literal urlAcceso) {
         this.urlAcceso = urlAcceso;
@@ -153,5 +156,29 @@ public class PlatTramitElectronicaDTO extends ModelApi {
         return "PlatTramitElectronicaDTO{" + "id=" + codigo + ", codEntidad=" + codEntidad + ", identificador='"
                 + identificador + '\'' + ", descripcion='" + descripcion + '\'' + ", urlAcceso='" + urlAcceso
                 + '\'' + '}';
+    }
+
+    public int compareTo(PlatTramitElectronicaDTO data2) {
+        if (data2 == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion()) != 0) {
+            return UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion());
+        }
+
+        if (UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador()) != 0) {
+            return UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador());
+        }
+
+        if (UtilComparador.compareTo(this.getUrlAcceso(), data2.getUrlAcceso()) != 0) {
+            return UtilComparador.compareTo(this.getUrlAcceso(), data2.getUrlAcceso());
+        }
+
+        return 0;
     }
 }

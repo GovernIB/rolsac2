@@ -85,11 +85,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2"  icon="pi pi-file-o" iconPos="top"  actionListener="#{viewProcedimientos.nuevoProcedimiento}" process="@this">
                                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" styleClass="mr-2"  icon="pi pi-eye" iconPos="top"  actionListener="#{viewProcedimientos.consultarProcedimiento}" process="@form" update="messages" disabled="#{!viewProcedimientos.datoSeleccionado.tieneDatosPublicados()}"  onstart="PF('statusDialog1').show();" oncomplete="PF('statusDialog1').hide()"  />
-                            <p:commandButton id="btnEditar"    value="#{labels['dict.editar']}" styleClass="mr-2"  icon="pi pi-pencil" iconPos="top"  actionListener="#{viewProcedimientos.editarProcedimiento}" process="@form" update="messages dataTable"  onstart="PF('statusDialog1').show();" oncomplete="PF('statusDialog1').hide()"  >
+                            <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" styleClass="mr-2"  icon="pi pi-eye" iconPos="top"  actionListener="#{viewProcedimientos.consultarProcedimiento}" process="@form" update="messages" disabled="#{!viewProcedimientos.datoSeleccionado.tieneDatosPublicados()}"  onstart="startCargando()" oncomplete="stopCargando()"  />
+                            <p:commandButton id="btnEditar"    value="#{labels['dict.editar']}" styleClass="mr-2"  icon="pi pi-pencil" iconPos="top"  actionListener="#{viewProcedimientos.editarProcedimiento}" process="@form" update="messages dataTable"  onstart="startCargando()" oncomplete="stopCargando()"  >
                                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.borrar']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewProcedimientos.borrarProcedimiento}" process="@form" update="messages dataTable" onstart="PF('statusDialog2').show();" oncomplete="PF('statusDialog2').hide()" >
+                            <p:commandButton value="#{labels['dict.borrar']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewProcedimientos.borrarProcedimiento}" process="@form" update="messages dataTable" onstart="startEliminando()" oncomplete="stopEliminando()" >
                                 <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"  action="#{viewProcedimientos.ayuda}" process="@this" update="messages dataTable" />
@@ -206,7 +206,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <h:outputText value="#{labels['viewProcedimientos.ubidadesOrganicas']}:" for="txtUbidadesOrganicas" />
                         </div>
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:selectBooleanCheckbox id="txtUbidadesOrganicas" value="#{viewProcedimientos.filtro.todasUbidadesOrganicas}">
+                            <p:selectBooleanCheckbox id="txtUbidadesOrganicas" value="#{viewProcedimientos.filtro.todasUnidadesOrganicas}">
                                 <p:ajax process="@this" event="change" partialSubmit="true" listener="#{viewProcedimientos.filtroUnidadOrganicasChange}" />
                             </p:selectBooleanCheckbox>
                         </div>
@@ -266,24 +266,19 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 }
             </h:outputScript>
 
+            <p:confirmDialog message="#{labels['viewProcedimientos.aviso.noExisteModif']}"
+                             header="#{labels['dict.aviso']}"
+                             widgetVar="cdDeseaCrearEditar">
+                <p:commandButton value="#{labels['dict.si']}" onclick="confirmation.hide()"  action="#{viewProcedimientos.editarProcedimientoSinPreguntar()}" />
+                <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" />
+            </p:confirmDialog>
 
             <!--<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>-->
-            <p:dialog modal="true" widgetVar="statusDialog1" header="#{labels['dict.cargandoLaInfo']}"
-                      draggable="false" closable="false" resizable="False">
-            <div class="text-center">
-                    <i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
-                </div>
-            </p:dialog>
-            <p:dialog modal="true" widgetVar="statusDialog2" header="#{labels['dict.eliminandoDato']}"
-                      draggable="false" closable="false" resizable="False">
-                <div class="text-center">
-                    <i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
-                </div>
-            </p:dialog>
+
             <p:commandButton  id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
                               actionListener="#{viewProcedimientos.dblClickProcedimiento()}" process="@this" update="messages"
                               style="display: none"
-                              onstart="PF('statusDialog1').show();" oncomplete="PF('statusDialog1').hide()" >
+                              onstart="startCargando()" oncomplete="stopCargando()" >
                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages dataTable"/>
             </p:commandButton>
         </h:form>

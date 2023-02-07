@@ -2,9 +2,11 @@ package es.caib.rolsac2.back.controller.maestras;
 
 import java.io.Serializable;
 
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.faces.view.ViewScoped;
+
+import org.primefaces.PrimeFaces;
 
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.controller.SessionBean;
@@ -32,6 +34,11 @@ public class DialogPropiedad  extends AbstractController implements Serializable
 	private Propiedad data;
 
 	/**
+	 * Datos elemento.
+	 */
+	private Propiedad dataOriginal;
+
+	/**
 	 * Parametro de entrada para ocultar 'valor'.
 	 */
 	private String ocultarValor;
@@ -49,6 +56,7 @@ public class DialogPropiedad  extends AbstractController implements Serializable
 			data = new Propiedad();
 		} else {
 			data = (Propiedad) UtilJSON.fromJSON(iData, Propiedad.class);
+			dataOriginal = data.clone();
 		}
 		if (ocultarValor != null && "S".equals(ocultarValor)) {
 			mostrarValor = false;
@@ -69,12 +77,31 @@ public class DialogPropiedad  extends AbstractController implements Serializable
 	/**
 	 * Cancelar.
 	 */
+//	public void cancelar() {
+//		if (comprobarModificacion()) {
+//			PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
+//		} else {
+//			cancelarDefinitivo();
+//		}
+//	}
 	public void cancelar() {
 		final DialogResult result = new DialogResult();
 		result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
 		result.setCanceled(true);
 		UtilJSF.closeDialog(result);
 	}
+
+//	private boolean comprobarModificacion() {
+//		return !data.getCodigo().equals(dataOriginal.getCodigo()) || !data.getValor().equals(dataOriginal.getValor())
+//				|| !data.getOrden().equals(dataOriginal.getOrden());
+//	}
+
+//	public void cancelarDefinitivo() {
+//		final DialogResult result = new DialogResult();
+//		result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
+//		result.setCanceled(true);
+//		UtilJSF.closeDialog(result);
+//	}
 
 	/**
 	 * @return the iData
@@ -134,6 +161,14 @@ public class DialogPropiedad  extends AbstractController implements Serializable
 	 */
 	public void setOcultarValor(final String ocultarValor) {
 		this.ocultarValor = ocultarValor;
+	}
+
+	public Propiedad getDataOriginal() {
+		return dataOriginal;
+	}
+
+	public void setDataOriginal(Propiedad dataOriginal) {
+		this.dataOriginal = dataOriginal;
 	}
 
 }

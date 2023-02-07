@@ -48,4 +48,12 @@ public class BoletinServiceFacadeBean implements BoletinServiceFacade {
         }
         return edictosGrid;
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long obtenerBoletinPlugin(final Long idEntidad) {
+        final IPluginBoletin pluginBoletin = (IPluginBoletin) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.BOLETIN, idEntidad);
+        return pluginBoletin.obtenerBoletinPlugin();
+    }
 }

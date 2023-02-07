@@ -20,6 +20,11 @@ public class ProcedimientoNormativaDTO {
      */
     private Literal nombre;
 
+    /**
+     * Orden
+     */
+    private Integer orden;
+
     public Long getCodigo() {
         return codigo;
     }
@@ -36,6 +41,14 @@ public class ProcedimientoNormativaDTO {
         this.nombre = nombre;
     }
 
+    public Integer getOrden() {
+        return orden;
+    }
+
+    public void setOrden(Integer orden) {
+        this.orden = orden;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,7 +59,7 @@ public class ProcedimientoNormativaDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo, nombre);
+        return Objects.hash(codigo, nombre, orden);
     }
 
     @Override

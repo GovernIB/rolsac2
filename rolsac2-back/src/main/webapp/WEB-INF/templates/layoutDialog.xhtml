@@ -85,7 +85,23 @@ Plantilla.
                     </div>
                     <ui:insert name="contentDialog"/>
                 </div>
-                <div class="footer">
+
+				<p:dialog modal="true" widgetVar="statusDialog1"
+					header="#{labels['dict.cargandoLaInfo']}" draggable="false"
+					closable="false" resizable="False">
+					<div class="text-center">
+						<i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
+					</div>
+				</p:dialog>
+				<p:dialog modal="true" widgetVar="statusDialog2"
+					header="#{labels['dict.eliminandoDato']}" draggable="false"
+					closable="false" resizable="False">
+					<div class="text-center">
+						<i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
+					</div>
+				</p:dialog>
+
+				<div class="footer">
                     <ui:include src="/WEB-INF/includes/footerDialog.xhtml"/>
                 </div>
             </div>
@@ -102,4 +118,21 @@ Plantilla.
         </div>-->
     </h:body>
 </f:view>
+<script>
+    function startCargando() {
+    	PF('statusDialog1').show();
+	}
+
+	function stopCargando() {
+		PF('statusDialog1').hide();
+	}
+
+	function startEliminando() {
+		PF('statusDialog2').show();
+	}
+
+	function stopEliminando() {
+		PF('statusDialog2').hide();
+	}
+</script>
 </html>

@@ -15,7 +15,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
      **/
     private String texto;
     private String tipo;
-    private Long codigoSIA;
+    private Integer codigoSIA;
     private String estadoSIA;
     private String siaFecha;
     private String codigoDir3SIA;
@@ -36,7 +36,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String estado;
     private boolean hijasActivas = false;
     private List<Long> idUAsHijas;
-    private boolean todasUbidadesOrganicas = false;
+    private boolean todasUnidadesOrganicas = false;
 
     public String getTexto() {
         return texto;
@@ -54,11 +54,11 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.tipo = procTipo;
     }
 
-    public Long getCodigoSIA() {
+    public Integer getCodigoSIA() {
         return codigoSIA;
     }
 
-    public void setCodigoSIA(Long procSiacod) {
+    public void setCodigoSIA(Integer procSiacod) {
         this.codigoSIA = procSiacod;
     }
 
@@ -227,12 +227,12 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.hijasActivas = hijasActivas;
     }
 
-    public boolean isTodasUbidadesOrganicas() {
-        return todasUbidadesOrganicas;
+    public boolean isTodasUnidadesOrganicas() {
+        return todasUnidadesOrganicas;
     }
 
-    public void setTodasUbidadesOrganicas(boolean todasUbidadesOrganicas) {
-        this.todasUbidadesOrganicas = todasUbidadesOrganicas;
+    public void setTodasUnidadesOrganicas(boolean todasUnidadesOrganicas) {
+        this.todasUnidadesOrganicas = todasUnidadesOrganicas;
     }
 
     public List<Long> getIdUAsHijas() {
@@ -312,8 +312,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return hijasActivas;
     }
 
-    public boolean isRellenoTodasUbidadesOrganicas() {
-        return todasUbidadesOrganicas;
+    public boolean isRellenoTodasUnidadesOrganicas() {
+        return todasUnidadesOrganicas;
     }
 
     @Override

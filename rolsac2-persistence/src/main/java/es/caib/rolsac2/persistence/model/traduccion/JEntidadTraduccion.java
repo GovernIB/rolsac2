@@ -2,7 +2,6 @@ package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.BaseEntity;
 import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,8 +28,35 @@ public class JEntidadTraduccion extends BaseEntity {
     @Column(name = "TREN_IDIOMA", nullable = false, length = 2)
     private String idioma;
 
+    /**
+     * Descripcion
+     **/
     @Column(name = "TREN_DESCRI")
     private String descripcion;
+
+    /**
+     * LOPD Finalidad
+     **/
+    @Column(name = "TREN_LOPDFI")
+    private String lopdFinalidad;
+
+    /**
+     * LOPD Destinatario
+     **/
+    @Column(name = "TREN_LOPDDS")
+    private String lopdDestinatario;
+
+    /**
+     * LOPD Derechos
+     **/
+    @Column(name = "TREN_LOPDDR")
+    private String lopdDerechos;
+
+    /**
+     * LOPD Derechos
+     **/
+    @Column(name = "TREN_UACOMU")
+    private String uaComun;
 
     public static List<JEntidadTraduccion> createInstance(List<String> idiomas) {
         List<JEntidadTraduccion> traducciones = new ArrayList<>();
@@ -72,6 +98,38 @@ public class JEntidadTraduccion extends BaseEntity {
 
     public void setDescripcion(String trenDescri) {
         this.descripcion = trenDescri;
+    }
+
+    public String getLopdFinalidad() {
+        return lopdFinalidad;
+    }
+
+    public void setLopdFinalidad(String lopdFinalidad) {
+        this.lopdFinalidad = lopdFinalidad;
+    }
+
+    public String getLopdDestinatario() {
+        return lopdDestinatario;
+    }
+
+    public void setLopdDestinatario(String lopdDestinatario) {
+        this.lopdDestinatario = lopdDestinatario;
+    }
+
+    public String getLopdDerechos() {
+        return lopdDerechos;
+    }
+
+    public void setLopdDerechos(String lopdDerechos) {
+        this.lopdDerechos = lopdDerechos;
+    }
+
+    public String getUaComun() {
+        return uaComun;
+    }
+
+    public void setUaComun(String uaComun) {
+        this.uaComun = uaComun;
     }
 
     @Override

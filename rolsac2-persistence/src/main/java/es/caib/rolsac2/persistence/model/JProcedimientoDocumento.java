@@ -25,6 +25,9 @@ public class JProcedimientoDocumento {
     @Column(name = "DOPR_CODIGO", nullable = false)
     private Long codigo;
 
+    @Column(name = "DOPR_ORDEN")
+    private Integer orden;
+
     /**
      * Lista de documentos
      **/
@@ -44,7 +47,7 @@ public class JProcedimientoDocumento {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -53,7 +56,7 @@ public class JProcedimientoDocumento {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -62,7 +65,7 @@ public class JProcedimientoDocumento {
     /**
      * Obtiene lista documentos.
      *
-     * @return  lista documentos
+     * @return lista documentos
      */
     public Long getListaDocumentos() {
         return listaDocumentos;
@@ -71,16 +74,24 @@ public class JProcedimientoDocumento {
     /**
      * Establece lista documentos.
      *
-     * @param listaDocumentos  lista documentos
+     * @param listaDocumentos lista documentos
      */
     public void setListaDocumentos(Long listaDocumentos) {
         this.listaDocumentos = listaDocumentos;
     }
 
+    public Integer getOrden() {
+        return orden;
+    }
+
+    public void setOrden(Integer orden) {
+        this.orden = orden;
+    }
+
     /**
      * Obtiene traducciones.
      *
-     * @return  traducciones
+     * @return traducciones
      */
     public List<JProcedimientoDocumentoTraduccion> getTraducciones() {
         return traducciones;
@@ -89,7 +100,7 @@ public class JProcedimientoDocumento {
     /**
      * Establece traducciones.
      *
-     * @param traducciones  traducciones
+     * @param traducciones traducciones
      */
     public void setTraducciones(List<JProcedimientoDocumentoTraduccion> traducciones) {
         this.traducciones = traducciones;
@@ -98,11 +109,12 @@ public class JProcedimientoDocumento {
     /**
      * To model procedimiento documento dto.
      *
-     * @return  procedimiento documento dto
+     * @return procedimiento documento dto
      */
     public ProcedimientoDocumentoDTO toModel() {
         ProcedimientoDocumentoDTO doc = new ProcedimientoDocumentoDTO();
         doc.setCodigo(this.getCodigo());
+        doc.setOrden(this.getOrden());
         Literal titulo = new Literal();
         Literal descripcion = new Literal();
         Literal url = new Literal();

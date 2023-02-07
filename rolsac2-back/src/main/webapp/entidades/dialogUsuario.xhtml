@@ -36,7 +36,8 @@
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this" >
+                         process="@this"
+                         rendered="#{!dialogEntidad.isModoConsulta() and dialogEntidad.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogUsuario.returnDialogTraducir}" process="@this"
                     update="formDialog:txtObservaciones"/>
         </p:commandButton>

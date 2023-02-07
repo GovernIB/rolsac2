@@ -40,7 +40,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this">
+                         process="@this"
+                         rendered="#{!dialogTipoMateriaSIA.isModoConsulta() and dialogTipoMateriaSIA.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogTipoMateriaSIA.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion"/>
         </p:commandButton>
@@ -108,8 +109,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          rendered="#{!dialogTipoMateriaSIA.isModoConsulta()}"
                          process="@all"/>
         <p:commandButton action="#{dialogTipoMateriaSIA.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+                         value="#{labels['dict.cerrar']}" update="messagesDialog form"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" update="messagesDialog form" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+			<p:commandButton value="Sí" action="#{dialogTipoMateriaSIA.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();"  />
+			<p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+		</p:confirmDialog>
 
     </ui:define>
 

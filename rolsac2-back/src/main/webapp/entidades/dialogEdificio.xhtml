@@ -40,7 +40,8 @@ Página con el detalle de un edificio
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this" />
+                         process="@this"
+                         rendered="#{!dialogEdificio.isModoConsulta() and dialogEdificio.tradExiste()}"/>
     </ui:define>
 
     <ui:define name="contentDialog">

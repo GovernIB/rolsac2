@@ -122,13 +122,14 @@
     </ui:define>
 
     <ui:define name="contentFooterDialogLeft">
+
+    </ui:define>
+
+    <ui:define name="contentFooterDialogRight">
         <p:commandButton  action="#{dialogSeleccionarTemaMultiple.ayuda}"
                           icon="pi pi-info-circle" iconPos="top"
                           value="#{labels['dict.ayuda']}"
                           process="@this" />
-    </ui:define>
-
-    <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogSeleccionarTemaMultiple.guardar}"
                          value="#{labels['dict.seleccionar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionarTemaMultiple.isModoConsulta()}"

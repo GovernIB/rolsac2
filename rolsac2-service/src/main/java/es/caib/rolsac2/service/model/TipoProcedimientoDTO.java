@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;
@@ -7,7 +8,7 @@ import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Schema(name = "TipoProcedimiento")
-public class TipoProcedimientoDTO extends ModelApi {
+public class TipoProcedimientoDTO extends ModelApi implements Cloneable {
 
     private Long codigo;
     @NotEmpty
@@ -55,6 +56,43 @@ public class TipoProcedimientoDTO extends ModelApi {
 
     public void setEntidad(EntidadDTO entidad) {
         this.entidad = entidad;
+    }
+
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    public Object clone() {
+        TipoProcedimientoDTO tipo = new TipoProcedimientoDTO();
+        tipo.setCodigo(this.getCodigo());
+        tipo.setIdentificador(this.getIdentificador());
+        if (this.getDescripcion() != null) {
+            tipo.setDescripcion((Literal) this.getDescripcion().clone());
+        }
+        return tipo;
+    }
+
+    public int compareTo(TipoProcedimientoDTO data2) {
+
+        if (data2 == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion()) != 0) {
+            return UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion());
+        }
+
+        if (UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador()) != 0) {
+            return UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador());
+        }
+
+        return 0;
+
     }
 
     @Override

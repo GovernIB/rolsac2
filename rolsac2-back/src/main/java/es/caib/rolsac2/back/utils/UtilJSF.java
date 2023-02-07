@@ -80,7 +80,7 @@ public class UtilJSF {
         options.put("contentHeight", "100%");
         options.put("headerElement", "customheader");
         options.put("MODO_ACCESO", modoAcceso.toString());
-        //options.put("maximizable", true);
+        options.put("maximizable", true);
 
         // Parametros
         String idParam = "";

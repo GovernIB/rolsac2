@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;
@@ -12,7 +13,7 @@ import java.util.Objects;
  * @author Indra
  */
 @Schema(name = "TipoFormaInicio")
-public class TipoFormaInicioDTO extends ModelApi {
+public class TipoFormaInicioDTO extends ModelApi implements Cloneable {
 
     private Long codigo;
 
@@ -38,8 +39,8 @@ public class TipoFormaInicioDTO extends ModelApi {
     /**
      * Instancia un nuevo Tipo forma inicio dto.
      *
-     * @param id             id
-     * @param identificador  identificador
+     * @param id            id
+     * @param identificador identificador
      */
     public TipoFormaInicioDTO(Long id, String identificador) {
         this.codigo = id;
@@ -49,7 +50,7 @@ public class TipoFormaInicioDTO extends ModelApi {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -58,7 +59,7 @@ public class TipoFormaInicioDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -67,7 +68,7 @@ public class TipoFormaInicioDTO extends ModelApi {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -76,7 +77,7 @@ public class TipoFormaInicioDTO extends ModelApi {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -85,7 +86,7 @@ public class TipoFormaInicioDTO extends ModelApi {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public Literal getDescripcion() {
         return descripcion;
@@ -94,19 +95,48 @@ public class TipoFormaInicioDTO extends ModelApi {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }
 
-    // public Long getDescripcion() {
-    // return descripcion;
-    // }
-    //
-    // public void setDescripcion(Long descripcion) {
-    // this.descripcion = descripcion;
-    // }
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    public Object clone() {
+        TipoFormaInicioDTO tipo = new TipoFormaInicioDTO();
+        tipo.setCodigo(this.getCodigo());
+        tipo.setIdentificador(this.getIdentificador());
+        if (this.getDescripcion() != null) {
+            tipo.setDescripcion((Literal) this.getDescripcion().clone());
+        }
+        return tipo;
+    }
+
+    public int compareTo(TipoFormaInicioDTO data2) {
+
+        if (data2 == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion()) != 0) {
+            return UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion());
+        }
+
+        if (UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador()) != 0) {
+            return UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador());
+        }
+
+        return 0;
+
+    }
 
     @Override
     public String toString() {

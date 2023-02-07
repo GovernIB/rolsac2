@@ -8,7 +8,6 @@ import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -23,53 +22,56 @@ import java.util.Objects;
  * @author jsegovia
  */
 @Mapper
-public interface EntidadConverter extends Converter<JEntidad, EntidadDTO>{
+public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
 
     // Els camps que no tenen exactament el mateix nom s'han de mapejar. En aquest cas, només quan
     // passam de Entity a DTO ens interessa agafar la clau forana de l'unitatOrganica.
     // @Mapping(target = "idUnitat", source = "unitatOrganica.id")
 
     @Override
-    @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion()))")
+    @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"descripcion\" ))")
+    @Mapping(target = "lopdFinalidad", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdFinalidad\" ))")
+    @Mapping(target = "lopdDestinatario", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdDestinatario\" ))")
+    @Mapping(target = "lopdDerechos", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdDerechos\" ))")
+    @Mapping(target = "uaComun", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"uaComun\" ))")
     @Mapping(target = "logo", expression = "java(jFicheroExternoToFicheroDTO(entity.getLogo()))")
     EntidadDTO createDTO(JEntidad entity);
 
     // @Mapping(target = "unidadOrganica", ignore = true)
 
     @Override
-    @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(jEntidad,dto.getDescripcion()))")
+    @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(jEntidad,dto))")
     JEntidad createEntity(EntidadDTO dto);
 
 
     @Override
-    @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(entity,dto.getDescripcion()))")
+    @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "logo", ignore = true)
     void mergeEntity(@MappingTarget JEntidad entity, EntidadDTO dto);
 
-    default List<JEntidadTraduccion> convierteLiteralToTraduccion(JEntidad jEntidad, Literal descripcion) {
+    default List<JEntidadTraduccion> convierteLiteralToTraduccion(JEntidad jEntidad, EntidadDTO dto) {
         //Iteramos sobre el literal para ver que idiomas se han rellenado
         List<String> idiomasRellenos = new ArrayList<>();
-        for(String idioma : descripcion.getIdiomas()) {
-            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
-                idiomasRellenos.add(idioma);
-            }
-        }
+        List<String> idiomasPermitidos = List.of(dto.getIdiomasPermitidos().split(";"));
 
+        //Comprobamos si aún no se ha creado la entidad
         if (jEntidad.getDescripcion() == null || jEntidad.getDescripcion().isEmpty()) {
-            jEntidad.setDescripcion(JEntidadTraduccion.createInstance(idiomasRellenos));
-            for (JEntidadTraduccion jent : jEntidad.getDescripcion()) {
-                jent.setEntidad(jEntidad);
+            jEntidad.setDescripcion(JEntidadTraduccion.createInstance(idiomasPermitidos));
+            for (JEntidadTraduccion jTrad : jEntidad.getDescripcion()) {
+                jTrad.setEntidad(jEntidad);
             }
-        } else if(idiomasRellenos.size() >  jEntidad.getDescripcion().size()) {
-            //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
+        } else if (jEntidad.getDescripcion().size() < idiomasPermitidos.size()) {
+            //            //En caso de que se haya creado, comprobamos que tenga todas las traducciones (pueden haberse dado de alta idiomas nuevos en entidad)
             List<JEntidadTraduccion> tradsAux = jEntidad.getDescripcion();
-            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
+            List<String> idiomasNuevos = new ArrayList<>(idiomasPermitidos);
 
             for (JEntidadTraduccion traduccion : jEntidad.getDescripcion()) {
-                if (idiomasNuevos.contains(traduccion.getIdioma())) {
+                if (idiomasPermitidos.contains(traduccion.getIdioma())) {
                     idiomasNuevos.remove(traduccion.getIdioma());
                 }
             }
+            //Añadimos a la lista de traducciones los nuevos valores
+
             for (String idioma : idiomasNuevos) {
                 JEntidadTraduccion trad = new JEntidadTraduccion();
                 trad.setIdioma(idioma);
@@ -78,15 +80,28 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO>{
             }
             jEntidad.setDescripcion(tradsAux);
         }
+
         for (JEntidadTraduccion traduccion : jEntidad.getDescripcion()) {
-            if (descripcion != null) {
-                traduccion.setDescripcion(descripcion.getTraduccion(traduccion.getIdioma()));
+            if (dto.getDescripcion() != null) {
+                traduccion.setDescripcion(dto.getDescripcion().getTraduccion(traduccion.getIdioma()));
+            }
+            if (dto.getLopdDerechos() != null) {
+                traduccion.setLopdDerechos(dto.getLopdDerechos().getTraduccion(traduccion.getIdioma()));
+            }
+            if (dto.getLopdFinalidad() != null) {
+                traduccion.setLopdFinalidad(dto.getLopdFinalidad().getTraduccion(traduccion.getIdioma()));
+            }
+            if (dto.getLopdDestinatario() != null) {
+                traduccion.setLopdDestinatario(dto.getLopdDestinatario().getTraduccion(traduccion.getIdioma()));
+            }
+            if (dto.getUaComun() != null) {
+                traduccion.setUaComun(dto.getUaComun().getTraduccion(traduccion.getIdioma()));
             }
         }
         return jEntidad.getDescripcion();
     }
 
-    default Literal convierteTraduccionToLiteral(List<JEntidadTraduccion> traducciones) {
+    default Literal convierteTraduccionToLiteral(List<JEntidadTraduccion> traducciones, String nombreLiteral) {
         Literal resultado = Literal.createInstance();
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
@@ -95,7 +110,17 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO>{
                 Traduccion trad = new Traduccion();
                 trad.setCodigo(Long.valueOf(traduccion.getCodigo()));
                 trad.setIdioma(traduccion.getIdioma());
-                trad.setLiteral(traduccion.getDescripcion());
+                if (nombreLiteral == "descripcion") {
+                    trad.setLiteral(traduccion.getDescripcion());
+                } else if (nombreLiteral == "lopdFinalidad") {
+                    trad.setLiteral(traduccion.getLopdFinalidad());
+                } else if (nombreLiteral == "lopdDestinatario") {
+                    trad.setLiteral(traduccion.getLopdDestinatario());
+                } else if (nombreLiteral == "lopdDerechos") {
+                    trad.setLiteral(traduccion.getLopdDerechos());
+                } else if (nombreLiteral == "uaComun") {
+                    trad.setLiteral(traduccion.getUaComun());
+                }
                 resultado.add(trad);
             }
         }
@@ -103,16 +128,16 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO>{
     }
 
     default FicheroDTO jFicheroExternoToFicheroDTO(JFicheroExterno jFicheroExterno) {
-        if ( jFicheroExterno == null ) {
+        if (jFicheroExterno == null) {
             return null;
         }
 
         FicheroDTO ficheroDTO = new FicheroDTO();
 
-        ficheroDTO.setCodigo( jFicheroExterno.getCodigo() );
-        ficheroDTO.setFilename( jFicheroExterno.getFilename() );
-        if ( jFicheroExterno.getTipo() != null ) {
-            ficheroDTO.setTipo( TypeFicheroExterno.fromString(jFicheroExterno.getTipo()) );
+        ficheroDTO.setCodigo(jFicheroExterno.getCodigo());
+        ficheroDTO.setFilename(jFicheroExterno.getFilename());
+        if (jFicheroExterno.getTipo() != null) {
+            ficheroDTO.setTipo(TypeFicheroExterno.fromString(jFicheroExterno.getTipo()));
         }
 
         return ficheroDTO;

@@ -24,4 +24,8 @@ public interface TipoTramitacionRepository extends CrudRepository<JTipoTramitaci
     List<TipoTramitacionDTO> findAll();
 
     List<TipoTramitacionDTO> findPlantillas(Long idEntidad);
+
+    JTipoTramitacion crearActualizar(JTipoTramitacion jTipoTramitacion);
+
+    void borrar(Long codigo);
 }

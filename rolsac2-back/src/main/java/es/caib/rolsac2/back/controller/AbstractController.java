@@ -1,10 +1,48 @@
 package es.caib.rolsac2.back.controller;
 
+import es.caib.rolsac2.back.controller.maestras.ViewAlertas;
+import es.caib.rolsac2.back.controller.maestras.ViewConfiguracionEntidad;
+import es.caib.rolsac2.back.controller.maestras.ViewConfiguracionesGlobales;
+import es.caib.rolsac2.back.controller.maestras.ViewContenidos;
+import es.caib.rolsac2.back.controller.maestras.ViewEntidades;
+import es.caib.rolsac2.back.controller.maestras.ViewEventosPlat;
+import es.caib.rolsac2.back.controller.maestras.ViewEvolucion;
+import es.caib.rolsac2.back.controller.maestras.ViewNormativa;
+import es.caib.rolsac2.back.controller.maestras.ViewPlatTramitElectronica;
+import es.caib.rolsac2.back.controller.maestras.ViewPlugins;
+import es.caib.rolsac2.back.controller.maestras.ViewProcedimientos;
+import es.caib.rolsac2.back.controller.maestras.ViewProcesos;
+import es.caib.rolsac2.back.controller.maestras.ViewProcesosLog;
+import es.caib.rolsac2.back.controller.maestras.ViewPublicoObjetivoEntidad;
+import es.caib.rolsac2.back.controller.maestras.ViewRoles;
+import es.caib.rolsac2.back.controller.maestras.ViewServicios;
+import es.caib.rolsac2.back.controller.maestras.ViewTema;
+import es.caib.rolsac2.back.controller.maestras.ViewTipoMediaFicha;
+import es.caib.rolsac2.back.controller.maestras.ViewTipoMediaUA;
+import es.caib.rolsac2.back.controller.maestras.ViewUnidadAdministrativa;
+import es.caib.rolsac2.back.controller.maestras.ViewUsuario;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoAfectacion;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoBoletin;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoFormaInicio;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoLegitimacion;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoMateriaSIA;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoNormativa;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoProcedimiento;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoPublicoObjetivo;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoSexo;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoSilencioAdministrativo;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoTramitacion;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoUnidadAdministrativa;
+import es.caib.rolsac2.back.controller.maestras.tipo.ViewTipoVia;
+import es.caib.rolsac2.back.exception.NoAutorizadoException;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.commons.utils.Constants;
+import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
+import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -19,6 +57,8 @@ public abstract class AbstractController {
     private FacesContext context;
     @Inject
     protected SessionBean sessionBean;
+    @Inject
+    private AdministracionEntServiceFacade administracionEntServiceFacade;
 
     private String idioma;
 
@@ -46,6 +86,43 @@ public abstract class AbstractController {
             throw new SinPermisoDeAcesoException("");
         }*/
     }
+
+    /**
+     * Metodo utilizado para verificar si se ha dado de alta el plugin de traducción para una entidad determinada
+     * return boolean
+     */
+    public boolean tradExiste(){
+        return administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo()
+                , TypePluginEntidad.TRADUCCION.toString());
+    }
+
+	public void permisoAccesoVentana(Class clase) {
+		if (!(clase != null && (isSuperadministrador()
+				&& (clase.equals(ViewEntidades.class) || clase.equals(ViewConfiguracionesGlobales.class)
+						|| clase.equals(ViewTipoAfectacion.class) || clase.equals(ViewTipoMateriaSIA.class)
+						|| clase.equals(ViewTipoFormaInicio.class) || clase.equals(ViewTipoNormativa.class)
+						|| clase.equals(ViewTipoSexo.class) || clase.equals(ViewTipoBoletin.class)
+						|| clase.equals(ViewTipoVia.class) || clase.equals(ViewTipoPublicoObjetivo.class)
+						|| clase.equals(ViewTipoSilencioAdministrativo.class)
+						|| clase.equals(ViewTipoLegitimacion.class))
+				|| isAdministradorEntidad() && (clase.equals(ViewConfiguracionEntidad.class)
+						|| clase.equals(ViewPlugins.class) || clase.equals(ViewUsuario.class)
+						|| clase.equals(ViewRoles.class) || clase.equals(ViewTipoUnidadAdministrativa.class)
+						|| clase.equals(ViewTipoMediaUA.class) || clase.equals(ViewPlatTramitElectronica.class)
+						|| clase.equals(ViewTipoTramitacion.class) || clase.equals(ViewTipoProcedimiento.class)
+						|| clase.equals(ViewTema.class) || clase.equals(ViewPublicoObjetivoEntidad.class)
+						|| clase.equals(ViewTipoMediaFicha.class) || clase.equals(ViewAlertas.class)
+						|| clase.equals(ViewEventosPlat.class)
+						|| clase.equals(ViewProcesos.class) || clase.equals(ViewProcesosLog.class)
+						|| clase.equals(ViewEvolucion.class) || clase.equals(ViewContenidos.class)
+						|| clase.equals(ViewUnidadAdministrativa.class))
+				|| (isAdministradorContenidos() || isGestor())
+						&& (clase.equals(ViewUnidadAdministrativa.class) || clase.equals(ViewNormativa.class)
+								|| clase.equals(ViewProcedimientos.class) || clase.equals(ViewServicios.class))))) {
+			throw new NoAutorizadoException();
+		}
+	}
+
 
     public boolean isPerfil(TypePerfiles typePerfil) {
         return sessionBean.getPerfil() != null && sessionBean.getPerfil() == typePerfil;
@@ -173,6 +250,5 @@ public abstract class AbstractController {
     public void actualizadoComponente() {
         this.actualizadoSinGuardar = true;
     }
-
 
 }

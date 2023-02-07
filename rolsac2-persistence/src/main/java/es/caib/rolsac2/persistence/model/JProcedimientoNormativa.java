@@ -31,6 +31,12 @@ public class JProcedimientoNormativa {
     private JProcedimientoWorkflow procedimiento;
 
     /**
+     * Fase
+     */
+    @Column(name = "PRNO_ORDEN")
+    private Integer orden;
+
+    /**
      * Normativa
      */
     @MapsId("normativa")
@@ -41,7 +47,7 @@ public class JProcedimientoNormativa {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public JProcedimientoNormativaPK getCodigo() {
         return codigo;
@@ -50,7 +56,7 @@ public class JProcedimientoNormativa {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(JProcedimientoNormativaPK codigo) {
         this.codigo = codigo;
@@ -59,7 +65,7 @@ public class JProcedimientoNormativa {
     /**
      * Obtiene procedimiento.
      *
-     * @return  procedimiento
+     * @return procedimiento
      */
     public JProcedimientoWorkflow getProcedimiento() {
         return procedimiento;
@@ -68,7 +74,7 @@ public class JProcedimientoNormativa {
     /**
      * Establece procedimiento.
      *
-     * @param procedimiento  procedimiento
+     * @param procedimiento procedimiento
      */
     public void setProcedimiento(JProcedimientoWorkflow procedimiento) {
         this.procedimiento = procedimiento;
@@ -77,7 +83,7 @@ public class JProcedimientoNormativa {
     /**
      * Obtiene normativa.
      *
-     * @return  normativa
+     * @return normativa
      */
     public JNormativa getNormativa() {
         return normativa;
@@ -86,16 +92,24 @@ public class JProcedimientoNormativa {
     /**
      * Establece normativa.
      *
-     * @param normativa  normativa
+     * @param normativa normativa
      */
     public void setNormativa(JNormativa normativa) {
         this.normativa = normativa;
     }
 
+    public Integer getOrden() {
+        return orden;
+    }
+
+    public void setOrden(Integer orden) {
+        this.orden = orden;
+    }
+
     /**
      * To model grid normativa grid dto.
      *
-     * @return  normativa grid dto
+     * @return normativa grid dto
      */
     public NormativaGridDTO toModelGrid() {
         NormativaGridDTO normativa = new NormativaGridDTO();
@@ -108,6 +122,7 @@ public class JProcedimientoNormativa {
         for (JNormativaTraduccion trad : this.getNormativa().getDescripcion()) {
             titulo.add(new Traduccion(trad.getIdioma(), trad.getTitulo()));
         }
+        normativa.setOrden(this.getOrden());
         normativa.setTitulo(titulo);
         return normativa;
     }
@@ -115,13 +130,14 @@ public class JProcedimientoNormativa {
     /**
      * To model proc procedimiento normativa dto.
      *
-     * @return  procedimiento normativa dto
+     * @return procedimiento normativa dto
      */
     public ProcedimientoNormativaDTO toModelProc() {
         ProcedimientoNormativaDTO procedimiento = new ProcedimientoNormativaDTO();
         procedimiento.setCodigo(this.getProcedimiento().getCodigo());
+        procedimiento.setOrden(this.getOrden());
         Literal nombre = new Literal();
-        for(JProcedimientoWorkflowTraduccion trad : this.getProcedimiento().getTraducciones()) {
+        for (JProcedimientoWorkflowTraduccion trad : this.getProcedimiento().getTraducciones()) {
             nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
         }
         procedimiento.setNombre(nombre);

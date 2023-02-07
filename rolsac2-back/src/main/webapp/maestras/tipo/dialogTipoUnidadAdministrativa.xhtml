@@ -40,7 +40,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this">
+                         process="@this"
+                         rendered="#{!dialogTipoUnidadAdministrativa.isModoConsulta() and dialogTipoUnidadAdministrativa.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogTipoUnidadAdministrativa.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion formDialog:inputCargoMasc formDialog:inputCargoFem formDialog:inputTratMasc formDialog:inputTratFem"/>
         </p:commandButton>

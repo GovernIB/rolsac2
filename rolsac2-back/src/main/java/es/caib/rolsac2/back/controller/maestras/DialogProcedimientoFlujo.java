@@ -23,10 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -75,7 +72,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         mostrarEstados = true;
         mensaje = (String) UtilJSF.getValorMochilaByKey("mensajes");
         if (mensaje != null && !mensaje.isEmpty()) {
-            mensajes = (List<Mensaje>) UtilJSON.fromJSON(mensaje, List.class);
+            mensajes = (List<Mensaje>) UtilJSON.getMensaje(mensaje);
         }
         if (consultarSoloMensajes != null && "S".equals(consultarSoloMensajes)) {
             mostrarEstados = false;
@@ -129,6 +126,10 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                 }
             }
         }
+
+        if (mensajes != null && !mensajes.isEmpty()) {
+            Collections.sort(mensajes);
+        }
     }
 
     public void guardar() {
@@ -151,24 +152,37 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             result.setModoAcceso(TypeModoAcceso.CONSULTA);
         }
 
+        if (sessionBean.getPerfil() == TypePerfiles.GESTOR && estadoSeleccionado.isEstadoPendiente()) {
+            String literal = estadoSeleccionado.getLiteralMensajePendiente(sessionBean.getLang());
+            Mensaje msg = new Mensaje();
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/dd/MM HH:mm");
+            String fecha = sdf.format((Date) Calendar.getInstance().getTime());
+            msg.setFecha(fecha);
+            msg.setFechaReal((Date) Calendar.getInstance().getTime());
+            String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+            msg.setUsuario(usuario);
+            msg.setMensaje(literal);
+            msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
+            mensajes.add(0, msg);
+        }
+
         if (mensajeNuevo != null && !mensajeNuevo.isEmpty()) {
             if (mensajes == null) {
                 mensajes = new ArrayList<>();
             }
             Mensaje msg = new Mensaje();
-            final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/dd/MM HH:mm");
             String fecha = sdf.format((Date) Calendar.getInstance().getTime());
             msg.setFecha(fecha);
-            //request.remoteUser
+            msg.setFechaReal((Date) Calendar.getInstance().getTime());
             String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
             msg.setUsuario(usuario);
             msg.setMensaje(mensajeNuevo);
-            mensajes.add(msg);
+            msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
+            mensajes.add(0, msg);
         }
 
-        if (mensajes != null && !mensajes.isEmpty()) {
-            data.setMensajes(UtilJSON.toJSON(mensajes));
-        }
+        data.setMensajes(UtilJSON.toJSON(mensajes));
         data.setEstadoDestino(this.estadoSeleccionado);
         result.setResult(data);
         UtilJSF.closeDialog(result);
@@ -184,6 +198,49 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);
+    }
+
+    public boolean esAdministradorContenido(Mensaje mensaje) {
+        return mensaje != null && mensaje.isAdmContenido() != null && mensaje.isAdmContenido();
+    }
+
+
+    public String getEstilo(Object mensaje) {
+        return "backgroundGestor borderDerArribaAbajo";
+    }
+
+    public String getEstiloAdmContenido(Mensaje mensaje) {
+
+        if (esAdministradorContenido(mensaje)) {
+            return "backgroundAdmContenido borderIzqArribaAbajo";
+        } else {
+            return "";
+        }
+    }
+
+    public String getEstiloMensaje(Mensaje mensaje) {
+        if (esAdministradorContenido(mensaje)) {
+            return "backgroundAdmContenido borderArribaAbajo";
+        } else {
+            return "backgroundGestor borderIzqArribaAbajo";
+        }
+    }
+
+
+    public String getEstiloFecha(Mensaje mensaje) {
+        if (esAdministradorContenido(mensaje)) {
+            return "backgroundAdmContenido borderDerArribaAbajo";
+        } else {
+            return "backgroundGestor borderArribaAbajo";
+        }
+    }
+
+    public String getEstiloGestor(Mensaje mensaje) {
+        if (esAdministradorContenido(mensaje)) {
+            return "";
+        } else {
+            return "backgroundGestor borderDerArribaAbajo";
+        }
     }
 
     public String getId() {
@@ -273,5 +330,6 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     public void setMensajeNuevo(String mensajeNuevo) {
         this.mensajeNuevo = mensajeNuevo;
     }
+
 
 }

@@ -1,8 +1,10 @@
 package es.caib.rolsac2.ejb.facade;
 
+import es.caib.rolsac2.commons.plugins.traduccion.translatorib.TranslatorIBPlugin;
 import es.caib.rolsac2.service.exception.PluginErrorException;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
+import es.caib.rolsac2.service.facade.integracion.TraduccionServiceFacade;
 import es.caib.rolsac2.service.model.PluginDTO;
 import es.caib.rolsac2.service.model.Propiedad;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -36,6 +38,9 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
 
     @Inject
     AdministracionEntServiceFacade administracionEntServiceFacade;
+
+    @Inject
+    TraduccionServiceFacade traduccionServiceFacade;
 
     /**
      * Executat a l'inici de l'aplicació.

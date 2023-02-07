@@ -170,15 +170,56 @@ a:hover{
 	width: 100%;
 }
 /* FI Motlla de pa */
+
+/*
 .ui-dialog .ui-dialog-titlebar {
-	/**
-	background-color: #4dba79 !important;
-	color: #FFFFFF;
-	 */
 
 	background: #DDF1D8 !important;
 	padding: 10px;
 	color: #4dba79;
+}*/
+.ui-dialog-titlebar-maximize {
+	margin-top: 10px !important;
+	margin-right: 5px !important;
+}
+
+.backgroundAdmContenido{
+	background: #f39c12;
+	border-color: #f39c12;
+	color: #fff;
+
+}
+.backgroundGestor {
+	background: #d2d6de;
+	/*border-color: #d2d6de;*/
+	margin: 5px 0 0 50px;
+	color: #444;
+
+}
+
+.borderDerArribaAbajo{
+	/*border-right: 1px solid;
+	border-top: 1px solid;
+	border-bottom: 1px solid;*/
+	border-radius: 0px 10px 10px 0px;
+}
+.borderIzqArribaAbajo{/*
+	border-left: 1px solid;
+	border-top: 1px solid;
+	border-bottom: 1px solid;*/
+	border-radius: 10px 0px 0px 10px;
+}
+.borderArribaAbajo{
+	/*border-top: 1px solid;
+	border-bottom: 1px solid;*/
+}
+
+.ui-dialog-titlebar{
+	background-color: #cc073c !important;
+	color: #FFFFFF;
+}
+div.ui-dialog-content span.ui-confirm-dialog-severity{
+	display:none;
 }
 
 .w100 { width: 100% !important;}

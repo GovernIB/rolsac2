@@ -6,12 +6,16 @@ import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.FicheroServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -43,6 +47,8 @@ public class DialogEntidad extends AbstractController implements Serializable {
 
     private EntidadDTO data;
 
+    private EntidadDTO dataOriginal;
+
     private String identificadorAntiguo;
     @EJB
     private AdministracionSupServiceFacade administracionSupServiceFacade;
@@ -56,6 +62,9 @@ public class DialogEntidad extends AbstractController implements Serializable {
 
     private StreamedContent file;
 
+    @EJB
+    private SystemServiceFacade systemServiceFacade;
+
     public void load() {
         LOG.debug("init");
         // Inicializamos combos/desplegables/inputs
@@ -65,8 +74,26 @@ public class DialogEntidad extends AbstractController implements Serializable {
         data = new EntidadDTO();
         if (this.isModoAlta()) {
             data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            final Literal lopdDerechos = new Literal();
+            final Literal lopdDestinatario = new Literal();
+            final Literal lopdFinalidad = new Literal();
+            final Literal uaComun = new Literal();
+            //List<String> idiomas = new ArrayList<>();
+            //idiomas.add(Constantes.IDIOMA_CATALAN);
+            //idiomas.add(Constantes.IDIOMA_ESPANYOL);
+            for (String idioma : sessionBean.getIdiomasPermitidosList()) {
+                lopdDerechos.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_DERECHOS, idioma)));
+                lopdDestinatario.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_DESTINATARIO, idioma)));
+                lopdFinalidad.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_FINALIDAD, idioma)));
+                uaComun.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.UA_COMUN, idioma)));
+            }
+            data.setLopdDerechos(lopdDerechos);
+            data.setLopdDestinatario(lopdDestinatario);
+            data.setLopdFinalidad(lopdFinalidad);
+            data.setUaComun(uaComun);
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = administracionSupServiceFacade.findEntidadById(Long.valueOf(id));
+            dataOriginal = data.clone();
             identificadorAntiguo = data.getIdentificador();
             /*if(data.getLogo() != null) {
                 file = obtenerFicheroDescarga(data.getLogo());
@@ -90,7 +117,7 @@ public class DialogEntidad extends AbstractController implements Serializable {
         }
 
         // Cerramos y retornamos resultado
-        cerrar();
+        cerrarDefinitivo();
     }
 
     private boolean checkObligatorio() {
@@ -133,9 +160,26 @@ public class DialogEntidad extends AbstractController implements Serializable {
         }
     }
 
-
     public void cerrar() {
+        if (comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
+        } else {
+            cerrarDefinitivo();
+        }
+    }
 
+    private boolean comprobarModificacion() {
+        return !data.getActiva().equals(dataOriginal.getActiva())
+                || !data.getCodigo().equals(dataOriginal.getCodigo())
+                || !data.getIdentificador().equals(dataOriginal.getIdentificador())
+                || !data.getDescripcion().equals(dataOriginal.getDescripcion())
+                || !data.getRolAdmin().equals(dataOriginal.getRolAdmin())
+                || !data.getRolAdminContenido().equals(dataOriginal.getRolAdminContenido())
+                || !data.getRolGestor().equals(dataOriginal.getRolGestor())
+                || !data.getRolInformador().equals(dataOriginal.getRolInformador());
+    }
+
+    public void cerrarDefinitivo() {
         final DialogResult result = new DialogResult();
         if (Objects.isNull(this.getModoAcceso())) {
             this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
@@ -305,5 +349,13 @@ public class DialogEntidad extends AbstractController implements Serializable {
 
     public void setFile(StreamedContent file) {
         this.file = file;
+    }
+
+    public EntidadDTO getDataOriginal() {
+        return dataOriginal;
+    }
+
+    public void setDataOriginal(EntidadDTO dataOriginal) {
+        this.dataOriginal = dataOriginal;
     }
 }

@@ -83,11 +83,11 @@ public class JUnidadAdministrativa extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "RS2_USERUA",
-                joinColumns = {
-            @JoinColumn(name = "UAUS_CODUA")
-                },
+            joinColumns = {
+                    @JoinColumn(name = "UAUS_CODUA")
+            },
             inverseJoinColumns = {
-            @JoinColumn(name = "UAUS_CODUSER")
+                    @JoinColumn(name = "UAUS_CODUSER")
             })
     private Set<JUsuario> usuarios;
 
@@ -235,13 +235,21 @@ public class JUnidadAdministrativa extends BaseEntity {
         return traducciones;
     }
 
-    public Set<JUsuario> getUsuarios() { return usuarios; }
+    public Set<JUsuario> getUsuarios() {
+        return usuarios;
+    }
 
-    public void setUsuarios(Set<JUsuario> usuarios) { this.usuarios = usuarios; }
+    public void setUsuarios(Set<JUsuario> usuarios) {
+        this.usuarios = usuarios;
+    }
 
-    public Set<JNormativa> getNormativas() { return normativas; }
+    public Set<JNormativa> getNormativas() {
+        return normativas;
+    }
 
-    public void setNormativas(Set<JNormativa> normativas) { this.normativas = normativas; }
+    public void setNormativas(Set<JNormativa> normativas) {
+        this.normativas = normativas;
+    }
 
     public Set<JTema> getTemas() {
         return temas;
@@ -302,6 +310,18 @@ public class JUnidadAdministrativa extends BaseEntity {
         ua.setAbreviatura(this.getAbreviatura());
         ua.setDominio(this.getDominio());
 
+        if (padre != null) {
+            UnidadAdministrativaDTO uaPadre = new UnidadAdministrativaDTO();
+            uaPadre.setCodigo(padre.getCodigo());
+            Literal nombre = new Literal();
+            if (padre.getTraducciones() != null) {
+                for (JUnidadAdministrativaTraduccion trad : padre.getTraducciones()) {
+                    nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+                }
+            }
+            uaPadre.setNombre(nombre);
+            ua.setPadre(uaPadre);
+        }
         Literal nombre = new Literal();
         Literal url = new Literal();
         Literal presentacion = new Literal();

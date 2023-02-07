@@ -184,4 +184,21 @@ public class UsuarioGridDTO extends ModelApi {
     public int hashCode() {
         return Objects.hash(codigo, identificador, entidad, nombre, email);
     }
+
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    @Override
+    public Object clone() {
+        UsuarioGridDTO tipo = new UsuarioGridDTO();
+        tipo.setCodigo(this.getCodigo());
+        tipo.setIdentificador(this.getIdentificador());
+        tipo.setNombre(this.getNombre());
+        tipo.setEntidad(this.getEntidad());
+        tipo.setEmail(this.getEmail());
+        tipo.setIdString(this.getIdString());
+        return tipo;
+    }
 }

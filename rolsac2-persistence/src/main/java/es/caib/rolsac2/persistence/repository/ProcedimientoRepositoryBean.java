@@ -10,7 +10,7 @@ import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoDocumentoTradu
 import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
-import es.caib.rolsac2.service.model.types.TypeProcedimientoWorfklow;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -451,8 +451,11 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 tramite.setTramitElectronica(jtramite.isTramitElectronica());
                 tramite.setTramitPresencial(jtramite.isTramitPresencial());
                 tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
-                if (tramite.getTipoTramitacion() != null && tramite.getTipoTramitacion().isPlantilla()) {
-                    tramite.setPlantillaSel(tramite.getTipoTramitacion());
+                if (jtramite.getTipoTramitacion() != null) {
+                    //tramite.setTipoTramitacion(tramite.getTipoTramitacion());
+                    tramite.setPlantillaSel(null);
+                } else if (jtramite.getTipoTramitacionPlantilla() != null) {
+                    tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
                     tramite.setTipoTramitacion(null);
                 }
                 if (jtramite.getListaDocumentos() != null) {
@@ -570,6 +573,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     for (JProcedimientoDocumento jelemento : jlista) {
                         if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getCodigo()) == 0) {
                             encontrado = true;
+                            jelemento.setOrden(elemento.getOrden());
+                            entityManager.merge(jelemento);
                             actualizarTraduccionDocumento(jelemento, elemento, codigoWF, ruta);
                             break;
                         }
@@ -580,6 +585,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     JProcedimientoDocumento nuevo = new JProcedimientoDocumento();
                     nuevo.setTraducciones(new ArrayList<>());
                     nuevo.setListaDocumentos(idListaDocumentos);
+                    nuevo.setOrden(elemento.getOrden());
                     entityManager.persist(nuevo);
                     actualizarTraduccionDocumento(nuevo, elemento, codigoWF, ruta);
 
@@ -882,17 +888,29 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                         if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getCodigo()) == 0) {
                             encontrado = true;
                             JTipoTramitacion jTipoTramitacion = null;
-                            if (elemento.getPlantillaSel() != null) {
-                                jTipoTramitacion = entityManager.find(JTipoTramitacion.class, elemento.getPlantillaSel().getCodigo());
-                            } else {
-                                jTipoTramitacion = tipoTramitacionConverter.createEntity(elemento.getTipoTramitacion());
-                                jTipoTramitacion.setPlantilla(false);
-                                if (elemento.getTipoTramitacion() != null && elemento.getTipoTramitacion().getUrl() != null) {
-                                    mergeTraduccionTipoTramitacion(jTipoTramitacion, elemento.getTipoTramitacion());
+                            JTipoTramitacion jTipoTramitacionPlantilla = null;
+
+                            if (elemento.getTipoTramitacion() != null && elemento.getTipoTramitacion().getTramiteId() != null) {
+                                if (elemento.getTipoTramitacion().getCodigo() == null) {
+                                    jTipoTramitacion = tipoTramitacionConverter.createEntity(elemento.getTipoTramitacion());
+                                    entityManager.persist(jTipoTramitacion);
+                                } else {
+                                    jTipoTramitacion = entityManager.find(JTipoTramitacion.class, elemento.getTipoTramitacion().getCodigo());
+                                    jTipoTramitacion.merge(elemento.getTipoTramitacion());
+                                    jTipoTramitacion.setPlantilla(false);
+                                    entityManager.merge(jTipoTramitacion);
+                                }
+
+                            } else if (elemento.getPlantillaSel() != null && elemento.getPlantillaSel().getCodigo() != null) {
+                                jTipoTramitacionPlantilla = entityManager.find(JTipoTramitacion.class, elemento.getPlantillaSel().getCodigo());
+                                if (elemento.getTipoTramitacion() != null && elemento.getTipoTramitacion().getCodigo() != null) {
+                                    JTipoTramitacion jTipoBorrar = entityManager.find(JTipoTramitacion.class, elemento.getTipoTramitacion().getCodigo());
+                                    entityManager.remove(jTipoBorrar);
                                 }
                             }
 
-                            jelemento.merge(elemento, jTipoTramitacion);
+
+                            jelemento.merge(elemento, jTipoTramitacionPlantilla, jTipoTramitacion);
                             if (elemento.getListaDocumentos() != null && jelemento.getListaDocumentos() == null) {
                                 JListaDocumentos jlistaDoc = new JListaDocumentos();
                                 entityManager.persist(jlistaDoc);
@@ -904,7 +922,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                                 jelemento.setListaModelos(jlistaDoc);
                             }
                             entityManager.merge(jelemento);
-
+                            entityManager.flush();
                             if (elemento.getListaDocumentos() != null) {
                                 mergearDocumentos(codigoWF, jelemento.getCodigo(), jelemento.getListaDocumentos().getCodigo(), elemento.getListaDocumentos(), ruta);
                             }
@@ -920,9 +938,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     JProcedimientoTramite nuevo = new JProcedimientoTramite();
 
                     JTipoTramitacion jTipoTramitacion = null;
+                    JTipoTramitacion jTipoTramitacionPlantilla = null;
                     if (elemento.getPlantillaSel() != null && elemento.getPlantillaSel().getCodigo() != null) {
-                        jTipoTramitacion = entityManager.find(JTipoTramitacion.class, elemento.getPlantillaSel().getCodigo());
-                    } else {
+                        jTipoTramitacionPlantilla = entityManager.find(JTipoTramitacion.class, elemento.getPlantillaSel().getCodigo());
+                        jTipoTramitacion.setPlantilla(true);
+                    }
+
+                    if (elemento.getTipoTramitacion() != null) {
                         jTipoTramitacion = tipoTramitacionConverter.createEntity(elemento.getTipoTramitacion());
                         jTipoTramitacion.setPlantilla(false);
                         entityManager.persist(jTipoTramitacion);
@@ -934,7 +956,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     }
                     nuevo.setUnidadAdministrativa(jua);
                     nuevo.setProcedimiento(jprocWF);
-                    nuevo.merge(elemento, jTipoTramitacion);
+                    nuevo.merge(elemento, jTipoTramitacionPlantilla, jTipoTramitacion);
                     if (elemento.getListaDocumentos() != null) {
                         JListaDocumentos jListaDocumentos = new JListaDocumentos();
                         entityManager.persist(jListaDocumentos);
@@ -1053,6 +1075,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 if (!jlista.isEmpty()) {
                     for (JProcedimientoNormativa jelemento : jlista) {
                         if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getNormativa().getCodigo()) == 0) {
+                            jelemento.setOrden(elemento.getOrden());
+                            entityManager.merge(jelemento);
                             encontrado = true;
                             break;
                         }
@@ -1068,6 +1092,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     id.setNormativa(elemento.getCodigo());
                     id.setProcedimiento(codigoWF);
                     nuevo.setCodigo(id);
+                    nuevo.setOrden(elemento.getOrden());
                     entityManager.persist(nuevo);
                 }
             }
@@ -1086,7 +1111,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql = new StringBuilder("SELECT count(j) FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = true LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder(
-                    "SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, j.codigoDir3SIA, t.nombre, t2.nombre FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorfklow.PUBLICADO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorfklow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma where 1 = 1 ");
+                    "SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, j.codigoDir3SIA, t.nombre, t2.nombre FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.PUBLICADO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma where 1 = 1 ");
         }
 
         if (filtro.isRellenoTexto()) {
@@ -1111,8 +1136,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND (WF.silencioAdministrativo.codigo = :tipoSilencio or WF2.silencioAdministrativo.codigo = :tipoSilencio) ");
         }
 
-        if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUbidadesOrganicas()) {
-            sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) ) ");
+        if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUnidadesOrganicas()) {
+            sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) OR WF2.uaInstructor.codigo in (:idUAs)) ");
         } else if (filtro.isRellenoIdUA()) {
             sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA) ");
         }
@@ -1138,7 +1163,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
         if (filtro.isRellenoCodigoSIA()) {
-            sql.append(" AND j.codigoSIA = :codigoSIA ");
+            sql.append(" AND j.codigoSIA LIKE :codigoSIA ");
         }
         if (filtro.isRellenoEstado()) {
             sql.append(" AND ( wf.estado = :estado OR wf2.estado = :estado) ");
@@ -1175,7 +1200,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             query.setParameter("estado", filtro.getEstado());
         }
 
-        if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUbidadesOrganicas()) {
+        if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUnidadesOrganicas()) {
             query.setParameter("idUAs", filtro.getIdUAsHijas());
         } else if (filtro.isRellenoIdUA()) {
             query.setParameter("idUA", filtro.getIdUA());

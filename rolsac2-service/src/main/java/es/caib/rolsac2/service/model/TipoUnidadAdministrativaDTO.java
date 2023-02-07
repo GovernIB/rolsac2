@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Objects;
@@ -262,5 +263,67 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
                 ", tratamientoMasculino=" + tratamientoMasculino +
                 ", tratamientoFemenino=" + tratamientoFemenino +
                 '}';
+    }
+
+    public int compareTo(TipoUnidadAdministrativaDTO data2) {
+
+        if (data2 == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion()) != 0) {
+            return UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion());
+        }
+
+        if (UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador()) != 0) {
+            return UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador());
+        }
+
+        if (UtilComparador.compareTo(this.getCargoMasculino(), data2.getCargoMasculino()) != 0) {
+            return UtilComparador.compareTo(this.getCargoMasculino(), data2.getCargoMasculino());
+        }
+
+        if (UtilComparador.compareTo(this.getCargoFemenino(), data2.getCargoFemenino()) != 0) {
+            return UtilComparador.compareTo(this.getCargoFemenino(), data2.getCargoFemenino());
+        }
+
+        if (UtilComparador.compareTo(this.getTratamientoFemenino(), data2.getTratamientoFemenino()) != 0) {
+            return UtilComparador.compareTo(this.getTratamientoFemenino(), data2.getTratamientoFemenino());
+        }
+
+        return 0;
+
+    }
+
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    @Override
+    public Object clone() {
+        TipoUnidadAdministrativaDTO tipo = new TipoUnidadAdministrativaDTO();
+        tipo.setCodigo(this.getCodigo());
+        tipo.setIdentificador(this.getIdentificador());
+        if (this.getDescripcion() != null) {
+            tipo.setDescripcion((Literal) this.getDescripcion().clone());
+        }
+        if (this.getTratamientoFemenino() != null) {
+            tipo.setTratamientoFemenino((Literal) this.getTratamientoFemenino().clone());
+        }
+        if (this.getTratamientoMasculino() != null) {
+            tipo.setTratamientoMasculino((Literal) this.getTratamientoMasculino().clone());
+        }
+        if (this.getCargoFemenino() != null) {
+            tipo.setCargoFemenino((Literal) this.getCargoFemenino().clone());
+        }
+        if (this.getCargoMasculino() != null) {
+            tipo.setCargoMasculino((Literal) this.getCargoMasculino().clone());
+        }
+        return tipo;
     }
 }

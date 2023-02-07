@@ -3,6 +3,7 @@ package es.caib.rolsac2.service.facade;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
@@ -34,7 +35,7 @@ public interface ProcedimientoServiceFacade {
      * @param dto nuevos datos del persoanl
      * @throws RecursoNoEncontradoException si el persoanl con el id no existe.
      */
-    void update(ProcedimientoBaseDTO dto) throws RecursoNoEncontradoException;
+    void update(ProcedimientoBaseDTO dto, ProcedimientoBaseDTO dtoAntiguo, TypePerfiles perfil) throws RecursoNoEncontradoException;
 
 
     /**
@@ -99,11 +100,19 @@ public interface ProcedimientoServiceFacade {
 
     void deleteProcedimientoTramite(Long id) throws RecursoNoEncontradoException;
 
-    void guardarFlujo(ProcedimientoBaseDTO data, TypeProcedimientoEstado estadoDestino, String mensajes);
+    void guardarFlujo(ProcedimientoBaseDTO data, TypeProcedimientoEstado estadoDestino, String mensajes, TypePerfiles perfil);
 
     void actualizarMensajes(Long idProc, String mensajes);
 
     Long getCodigoByWF(Long codigo, boolean valor);
 
     Long generarModificacion(Long codigoWFPub);
+
+    /**
+     * Devuelve las auditorias segun el id
+     *
+     * @param id
+     * @return
+     */
+    List<AuditoriaGridDTO> findProcedimientoAuditoriasById(Long id);
 }

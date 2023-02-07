@@ -54,7 +54,7 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
             if (tema.getMathPath() != null && tema.getMathPath().contains(temaPadre.getCodigo().toString())) {
                 root.setExpanded(true);
             }
-            if (tema.getCodigo() == temaPadre.getCodigo()) {
+            if (tema.getCodigo().compareTo(temaPadre.getCodigo()) == 0) {
                 root.setExpanded(true);
                 root.setSelected(true);
             }
@@ -73,7 +73,7 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
                 if (tema.getMathPath() != null && tema.getMathPath().contains(hijo.getCodigo().toString())) {
                     nodo.setExpanded(true);
                 }
-                if (tema.getCodigo() == hijo.getCodigo()) {
+                if (tema.getCodigo().compareTo(hijo.getCodigo()) == 0) {
                     nodo.setExpanded(true);
                     nodo.setSelected(true);
                 }
@@ -96,7 +96,7 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
         }
 
         // Retornamos resultado
-        LOG.error("Acceso:" + this.getModoAcceso());
+        //LOG.error("Acceso:" + this.getModoAcceso());
         UtilJSF.anyadirMochila("temaPadre", temaPadre);
 
         final DialogResult result = new DialogResult();

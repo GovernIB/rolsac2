@@ -48,6 +48,19 @@ public class TipoMateriaSIADTO extends ModelApi {
     }
 
     /**
+     * Instancia una nueva Entidad dto.
+     *
+     * @param otro the otro
+     */
+    public TipoMateriaSIADTO(TipoMateriaSIADTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.descripcion = (Literal) otro.descripcion.clone();
+        }
+    }
+
+    /**
      * Obtiene codigo.
      *
      * @return  codigo
@@ -104,5 +117,10 @@ public class TipoMateriaSIADTO extends ModelApi {
     @Override
     public String toString() {
         return "TipoMateriaSIADTO{" + "id=" + codigo + ", identificador='" + identificador + '\'' + '}';
+    }
+
+    @Override
+    public TipoMateriaSIADTO clone() {
+    	return new TipoMateriaSIADTO(this);
     }
 }

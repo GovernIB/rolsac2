@@ -81,6 +81,26 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         return converter.createTipoTramitacionDTOs(query.getResultList());
     }
 
+    @Override
+    public JTipoTramitacion crearActualizar(JTipoTramitacion jTipoTramitacion) {
+        if (jTipoTramitacion.getCodigo() == null) {
+            entityManager.persist(jTipoTramitacion);
+        } else {
+            entityManager.merge(jTipoTramitacion);
+        }
+        return jTipoTramitacion;
+    }
+
+    @Override
+    public void borrar(Long codigo) {
+
+        JTipoTramitacion jTipoTramitacion = entityManager.find(JTipoTramitacion.class, codigo);
+        entityManager.flush();
+        entityManager.remove(jTipoTramitacion);
+
+    }
+
+
     private Query getQuery(boolean isTotal, TipoTramitacionFiltro filtro) {
 
         StringBuilder sql;

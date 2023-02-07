@@ -110,7 +110,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -119,7 +119,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Is tramit presencial boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitPresencial() {
         return tramitPresencial;
@@ -128,7 +128,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -137,7 +137,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece tramit presencial.
      *
-     * @param tramitPresencial  tramit presencial
+     * @param tramitPresencial tramit presencial
      */
     public void setTramitPresencial(boolean tramitPresencial) {
         this.tramitPresencial = tramitPresencial;
@@ -146,7 +146,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Is tramit electronica boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitElectronica() {
         return tramitElectronica;
@@ -155,7 +155,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece tramit electronica.
      *
-     * @param tramitElectronica  tramit electronica
+     * @param tramitElectronica tramit electronica
      */
     public void setTramitElectronica(boolean tramitElectronica) {
         this.tramitElectronica = tramitElectronica;
@@ -164,7 +164,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Obtiene url tramitacion.
      *
-     * @return  url tramitacion
+     * @return url tramitacion
      */
     public String getUrlTramitacion() {
         return urlTramitacion;
@@ -173,7 +173,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece url tramitacion.
      *
-     * @param urlTramitacion  url tramitacion
+     * @param urlTramitacion url tramitacion
      */
     public void setUrlTramitacion(String urlTramitacion) {
         this.urlTramitacion = urlTramitacion;
@@ -182,7 +182,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Obtiene cod plat tramitacion.
      *
-     * @return  cod plat tramitacion
+     * @return cod plat tramitacion
      */
     public JPlatTramitElectronica getCodPlatTramitacion() {
         return codPlatTramitacion;
@@ -191,7 +191,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece cod plat tramitacion.
      *
-     * @param codPlatTramitacion  cod plat tramitacion
+     * @param codPlatTramitacion cod plat tramitacion
      */
     public void setCodPlatTramitacion(JPlatTramitElectronica codPlatTramitacion) {
         this.codPlatTramitacion = codPlatTramitacion;
@@ -200,7 +200,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Obtiene tramite id.
      *
-     * @return  tramite id
+     * @return tramite id
      */
     public String getTramiteId() {
         return tramiteId;
@@ -209,7 +209,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Is tramit telefonica boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitTelefonica() {
         return tramitTelefonica;
@@ -218,7 +218,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece tramit telefonica.
      *
-     * @param tramitTelefonica  tramit telefonica
+     * @param tramitTelefonica tramit telefonica
      */
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
@@ -227,7 +227,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece tramite id.
      *
-     * @param tramiteId  tramite id
+     * @param tramiteId tramite id
      */
     public void setTramiteId(String tramiteId) {
         this.tramiteId = tramiteId;
@@ -236,7 +236,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Obtiene tramite version.
      *
-     * @return  tramite version
+     * @return tramite version
      */
     public Integer getTramiteVersion() {
         return tramiteVersion;
@@ -245,7 +245,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece tramite version.
      *
-     * @param tramiteVersion  tramite version
+     * @param tramiteVersion tramite version
      */
     public void setTramiteVersion(Integer tramiteVersion) {
         this.tramiteVersion = tramiteVersion;
@@ -254,7 +254,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Obtiene tramite parametros.
      *
-     * @return  tramite parametros
+     * @return tramite parametros
      */
     public String getTramiteParametros() {
         return tramiteParametros;
@@ -263,7 +263,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece tramite parametros.
      *
-     * @param tramiteParametros  tramite parametros
+     * @param tramiteParametros tramite parametros
      */
     public void setTramiteParametros(String tramiteParametros) {
         this.tramiteParametros = tramiteParametros;
@@ -272,7 +272,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Is plantilla boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isPlantilla() {
         return plantilla;
@@ -281,7 +281,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece plantilla.
      *
-     * @param plantilla  plantilla
+     * @param plantilla plantilla
      */
     public void setPlantilla(boolean plantilla) {
         this.plantilla = plantilla;
@@ -290,7 +290,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Obtiene entidad.
      *
-     * @return  entidad
+     * @return entidad
      */
     public JEntidad getEntidad() {
         return entidad;
@@ -299,7 +299,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece entidad.
      *
-     * @param entidad  entidad
+     * @param entidad entidad
      */
     public void setEntidad(JEntidad entidad) {
         this.entidad = entidad;
@@ -308,7 +308,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Obtiene fase proc.
      *
-     * @return  fase proc
+     * @return fase proc
      */
     public Integer getFaseProc() {
         return faseProc;
@@ -317,7 +317,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece fase proc.
      *
-     * @param faseProc  fase proc
+     * @param faseProc fase proc
      */
     public void setFaseProc(Integer faseProc) {
         this.faseProc = faseProc;
@@ -326,7 +326,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Obtiene traducciones.
      *
-     * @return  traducciones
+     * @return traducciones
      */
     public List<JTipoTramitacionTraduccion> getTraducciones() {
         return traducciones;
@@ -335,7 +335,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Establece traducciones.
      *
-     * @param traducciones  traducciones
+     * @param traducciones traducciones
      */
     public void setTraducciones(List<JTipoTramitacionTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {
@@ -362,17 +362,18 @@ public class JTipoTramitacion extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JTipoTramitacion{" + "id=" + codigo + ", tramitPresencial="
+        return "JTipoTramitacion{" + "id=" + codigo + '}';
+       /* return "JTipoTramitacion{" + "id=" + codigo + ", tramitPresencial="
                 + tramitPresencial + ", plantilla=" + plantilla + ", tramitElectronica=" + tramitElectronica
                 + ", urlTramitacion='" + urlTramitacion + '\'' + ", codPlatTramitacion=" + codPlatTramitacion
                 + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion + ", tramiteParametros='"
-                + tramiteParametros + '\'' + '}';
+                + tramiteParametros + '\'' + '}'; **/
     }
 
     /**
      * Merge.
      *
-     * @param tipoTramitacion  tipo tramitacion
+     * @param tipoTramitacion tipo tramitacion
      */
     public void merge(TipoTramitacionDTO tipoTramitacion) {
         this.setTramitElectronica(tipoTramitacion.isTramitElectronica());
@@ -389,8 +390,8 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Obtiene traduccion.
      *
-     * @param idioma  idioma
-     * @return  traduccion
+     * @param idioma idioma
+     * @return traduccion
      */
     public JTipoTramitacionTraduccion getTraduccion(String idioma) {
         JTipoTramitacionTraduccion retorno = null;

@@ -10,7 +10,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -57,20 +57,27 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void load() {
         LOG.debug("load View Servicios");
-
+        permisoAccesoVentana(ViewServicios.class);
         this.limpiarFiltro();
         cargarFiltros();
         buscar();
     }
 
     public void filtroHijasActivasChange() {
-        if (filtro.isHijasActivas()) {
+        if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
             filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
+        } else if(filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
+            List<Long> ids = new ArrayList<>();
+            for (UnidadAdministrativaDTO ua : sessionBean.getUnidadesAdministrativasActivas()) {
+                List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
+                ids.addAll(idsUa);
+            }
+            filtro.setIdUAsHijas(ids);
         }
     }
 
     public void filtroUnidadOrganicasChange() {
-        if (filtro.isTodasUbidadesOrganicas()) {
+        if (filtro.isTodasUnidadesOrganicas()) {
             if (filtro.isHijasActivas()) {
                 List<Long> ids = new ArrayList<>();
                 for (UnidadAdministrativaDTO ua : sessionBean.getUnidadesAdministrativasActivas()) {
@@ -123,7 +130,22 @@ public class ViewServicios extends AbstractController implements Serializable {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
         } else {
-            Long idProcMod = this.datoSeleccionado.getCodigoWFMod();//procedimientoService.getCodigoByWF(datoSeleccionado.getCodigo(), TypeProcedimientoWorfklow.MODIFICACION.getValor());
+            Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
+            if (idProcMod == null) {
+                PrimeFaces.current().executeScript("PF('cdDeseaCrearEditar').show();");
+                return;
+            }
+            ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
+            abrirVentana(TypeModoAcceso.EDICION, serv);
+
+        }
+    }
+
+    public void editarProcedimientoSinPreguntar() {
+        if (datoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
+        } else {
+            Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
             if (idProcMod == null) {
                 idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub());
                 this.datoSeleccionado.setCodigoWFMod(idProcMod);
@@ -136,7 +158,7 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void consultarProcedimiento() {
         if (datoSeleccionado != null) {
-            Long idProcPub = datoSeleccionado.getCodigoWFPub();//procedimientoService.getCodigoByWF(datoSeleccionado.getCodigo(), TypeProcedimientoWorfklow.PUBLICADO.getValor());
+            Long idProcPub = datoSeleccionado.getCodigoWFPub();//procedimientoService.getCodigoByWF(datoSeleccionado.getCodigo(), TypeProcedimientoWorkflow.PUBLICADO.getValor());
             if (idProcPub == null) {
                 // Mensaje --> No tiene publicado el dato
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewServicios.error.procNoPublicado"), getLiteral("msg.seleccioneElemento"));

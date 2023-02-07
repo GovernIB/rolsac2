@@ -48,7 +48,7 @@ public class PersonalServiceFacadeBean implements PersonalServiceFacade {
     @Inject
     private PersonalRepository personalRepository;
     // @Inject
-    // private AuditoriaRepository auditoriaRepository;
+    // private ProcedimientoAuditoriaOldRepository auditoriaRepository;
     @Inject
     private PersonalConverter converter;
 

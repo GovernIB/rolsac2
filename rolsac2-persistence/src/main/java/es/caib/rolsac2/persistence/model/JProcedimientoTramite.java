@@ -46,6 +46,12 @@ public class JProcedimientoTramite {
     private Integer fase;
 
     /**
+     * Fase
+     */
+    @Column(name = "PRTA_ORDEN")
+    private Integer orden;
+
+    /**
      * Unidad administrativa competente
      **/
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -63,7 +69,14 @@ public class JProcedimientoTramite {
      * Tipo tramitacion
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "PRTA_TRMPRE", nullable = false)
+    @JoinColumn(name = "PRTA_TRMPRE")
+    private JTipoTramitacion tipoTramitacionPlantilla;
+
+    /**
+     * Tipo tramitacion
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "PRTA_TRMTRM")
     private JTipoTramitacion tipoTramitacion;
 
     /**
@@ -131,7 +144,7 @@ public class JProcedimientoTramite {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -140,16 +153,24 @@ public class JProcedimientoTramite {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    public Integer getOrden() {
+        return orden;
+    }
+
+    public void setOrden(Integer orden) {
+        this.orden = orden;
+    }
+
     /**
      * Obtiene unidad administrativa.
      *
-     * @return  unidad administrativa
+     * @return unidad administrativa
      */
     public JUnidadAdministrativa getUnidadAdministrativa() {
         return unidadAdministrativa;
@@ -158,7 +179,7 @@ public class JProcedimientoTramite {
     /**
      * Establece unidad administrativa.
      *
-     * @param prtaCoduac  prta coduac
+     * @param prtaCoduac prta coduac
      */
     public void setUnidadAdministrativa(JUnidadAdministrativa prtaCoduac) {
         this.unidadAdministrativa = prtaCoduac;
@@ -167,7 +188,7 @@ public class JProcedimientoTramite {
     /**
      * Obtiene procedimiento.
      *
-     * @return  procedimiento
+     * @return procedimiento
      */
     public JProcedimientoWorkflow getProcedimiento() {
         return procedimiento;
@@ -176,7 +197,7 @@ public class JProcedimientoTramite {
     /**
      * Establece procedimiento.
      *
-     * @param prtaCodprwf  prta codprwf
+     * @param prtaCodprwf prta codprwf
      */
     public void setProcedimiento(JProcedimientoWorkflow prtaCodprwf) {
         this.procedimiento = prtaCodprwf;
@@ -185,25 +206,33 @@ public class JProcedimientoTramite {
     /**
      * Obtiene tipo tramitacion.
      *
-     * @return  tipo tramitacion
+     * @return tipo tramitacion
      */
-    public JTipoTramitacion getTipoTramitacion() {
-        return tipoTramitacion;
+    public JTipoTramitacion getTipoTramitacionPlantilla() {
+        return tipoTramitacionPlantilla;
     }
 
     /**
      * Establece tipo tramitacion.
      *
-     * @param prtaTrmpre  prta trmpre
+     * @param prtaTrmpre prta trmpre
      */
-    public void setTipoTramitacion(JTipoTramitacion prtaTrmpre) {
-        this.tipoTramitacion = prtaTrmpre;
+    public void setTipoTramitacionPlantilla(JTipoTramitacion prtaTrmpre) {
+        this.tipoTramitacionPlantilla = prtaTrmpre;
+    }
+
+    public JTipoTramitacion getTipoTramitacion() {
+        return tipoTramitacion;
+    }
+
+    public void setTipoTramitacion(JTipoTramitacion tipoTramitacion) {
+        this.tipoTramitacion = tipoTramitacion;
     }
 
     /**
      * Obtiene lista documentos.
      *
-     * @return  lista documentos
+     * @return lista documentos
      */
     public JListaDocumentos getListaDocumentos() {
         return listaDocumentos;
@@ -212,7 +241,7 @@ public class JProcedimientoTramite {
     /**
      * Establece lista documentos.
      *
-     * @param prtaLstdoc  prta lstdoc
+     * @param prtaLstdoc prta lstdoc
      */
     public void setListaDocumentos(JListaDocumentos prtaLstdoc) {
         this.listaDocumentos = prtaLstdoc;
@@ -221,7 +250,7 @@ public class JProcedimientoTramite {
     /**
      * Obtiene lista modelos.
      *
-     * @return  lista modelos
+     * @return lista modelos
      */
     public JListaDocumentos getListaModelos() {
         return listaModelos;
@@ -230,7 +259,7 @@ public class JProcedimientoTramite {
     /**
      * Establece lista modelos.
      *
-     * @param lsdoCodigo  lsdo codigo
+     * @param lsdoCodigo lsdo codigo
      */
     public void setListaModelos(JListaDocumentos lsdoCodigo) {
         this.listaModelos = lsdoCodigo;
@@ -239,7 +268,7 @@ public class JProcedimientoTramite {
     /**
      * Obtiene tasa asociada.
      *
-     * @return  tasa asociada
+     * @return tasa asociada
      */
     public Boolean getTasaAsociada() {
         return tasaAsociada;
@@ -248,7 +277,7 @@ public class JProcedimientoTramite {
     /**
      * Establece tasa asociada.
      *
-     * @param prtaTasa  prta tasa
+     * @param prtaTasa prta tasa
      */
     public void setTasaAsociada(Boolean prtaTasa) {
         this.tasaAsociada = prtaTasa;
@@ -257,7 +286,7 @@ public class JProcedimientoTramite {
     /**
      * Obtiene fecha publicacion.
      *
-     * @return  fecha publicacion
+     * @return fecha publicacion
      */
     public Date getFechaPublicacion() {
         return fechaPublicacion;
@@ -266,7 +295,7 @@ public class JProcedimientoTramite {
     /**
      * Establece fecha publicacion.
      *
-     * @param fechaPublicacion  fecha publicacion
+     * @param fechaPublicacion fecha publicacion
      */
     public void setFechaPublicacion(Date fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
@@ -275,7 +304,7 @@ public class JProcedimientoTramite {
     /**
      * Obtiene fecha inicio.
      *
-     * @return  fecha inicio
+     * @return fecha inicio
      */
     public Date getFechaInicio() {
         return fechaInicio;
@@ -284,7 +313,7 @@ public class JProcedimientoTramite {
     /**
      * Establece fecha inicio.
      *
-     * @param fechaInicio  fecha inicio
+     * @param fechaInicio fecha inicio
      */
     public void setFechaInicio(Date fechaInicio) {
         this.fechaInicio = fechaInicio;
@@ -293,7 +322,7 @@ public class JProcedimientoTramite {
     /**
      * Obtiene fecha cierre.
      *
-     * @return  fecha cierre
+     * @return fecha cierre
      */
     public Date getFechaCierre() {
         return fechaCierre;
@@ -302,7 +331,7 @@ public class JProcedimientoTramite {
     /**
      * Establece fecha cierre.
      *
-     * @param fechaCierre  fecha cierre
+     * @param fechaCierre fecha cierre
      */
     public void setFechaCierre(Date fechaCierre) {
         this.fechaCierre = fechaCierre;
@@ -311,7 +340,7 @@ public class JProcedimientoTramite {
     /**
      * Obtiene traducciones.
      *
-     * @return  traducciones
+     * @return traducciones
      */
     public List<JProcedimientoTramiteTraduccion> getTraducciones() {
         return traducciones;
@@ -320,7 +349,7 @@ public class JProcedimientoTramite {
     /**
      * Obtiene fase.
      *
-     * @return  fase
+     * @return fase
      */
     public Integer getFase() {
         return fase;
@@ -329,7 +358,7 @@ public class JProcedimientoTramite {
     /**
      * Establece fase.
      *
-     * @param fase  fase
+     * @param fase fase
      */
     public void setFase(Integer fase) {
         this.fase = fase;
@@ -338,7 +367,7 @@ public class JProcedimientoTramite {
     /**
      * Is tramit presencial boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitPresencial() {
         return tramitPresencial;
@@ -347,7 +376,7 @@ public class JProcedimientoTramite {
     /**
      * Establece tramit presencial.
      *
-     * @param tramitPresencial  tramit presencial
+     * @param tramitPresencial tramit presencial
      */
     public void setTramitPresencial(boolean tramitPresencial) {
         this.tramitPresencial = tramitPresencial;
@@ -356,7 +385,7 @@ public class JProcedimientoTramite {
     /**
      * Is tramit electronica boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitElectronica() {
         return tramitElectronica;
@@ -365,7 +394,7 @@ public class JProcedimientoTramite {
     /**
      * Establece tramit electronica.
      *
-     * @param tramitElectronica  tramit electronica
+     * @param tramitElectronica tramit electronica
      */
     public void setTramitElectronica(boolean tramitElectronica) {
         this.tramitElectronica = tramitElectronica;
@@ -374,7 +403,7 @@ public class JProcedimientoTramite {
     /**
      * Is tramit telefonica boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitTelefonica() {
         return tramitTelefonica;
@@ -383,7 +412,7 @@ public class JProcedimientoTramite {
     /**
      * Establece tramit telefonica.
      *
-     * @param tramitTelefonica  tramit telefonica
+     * @param tramitTelefonica tramit telefonica
      */
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
@@ -392,7 +421,7 @@ public class JProcedimientoTramite {
     /**
      * Establece traducciones.
      *
-     * @param traducciones  traducciones
+     * @param traducciones traducciones
      */
     public void setTraducciones(List<JProcedimientoTramiteTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {
@@ -405,10 +434,11 @@ public class JProcedimientoTramite {
     /**
      * Merge.
      *
-     * @param elemento          elemento
-     * @param jTipoTramitacion  j tipo tramitacion
+     * @param elemento         elemento
+     * @param jTipoTramitacion j tipo tramitacion
      */
-    public void merge(ProcedimientoTramiteDTO elemento, JTipoTramitacion jTipoTramitacion) {
+    public void merge(ProcedimientoTramiteDTO elemento, JTipoTramitacion jTipoTramitacionPlantilla, JTipoTramitacion jTipoTramitacion) {
+        this.setOrden(elemento.getOrden());
         this.setTramitPresencial(elemento.isTramitPresencial());
         this.setTramitElectronica(elemento.isTramitElectronica());
         this.setTramitTelefonica(elemento.isTramitTelefonica());
@@ -417,6 +447,7 @@ public class JProcedimientoTramite {
         this.setFechaPublicacion(elemento.getFechaPublicacion());
         this.setTasaAsociada(elemento.getTasaAsociada());
         this.setTipoTramitacion(jTipoTramitacion);
+        this.setTipoTramitacionPlantilla(jTipoTramitacionPlantilla);
         this.setFase(elemento.getFase());
         if (this.getTraducciones() == null || this.getTraducciones().isEmpty()) {
             List<JProcedimientoTramiteTraduccion> traduccionesNew = new ArrayList<>();

@@ -9,6 +9,8 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,8 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
 
     private TipoMateriaSIADTO data;
 
+    private TipoMateriaSIADTO dataOriginal;
+
     private Date fecha;
 
     @EJB
@@ -50,6 +54,7 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
         data = new TipoMateriaSIADTO();
         if (this.isModoEdicion() || this.isModoConsulta()) {
             data = maestrasSupService.findTipoMateriaSIAById(Long.valueOf(id));
+            dataOriginal = data.clone();
             identificadorAntiguo = data.getIdentificador();
         }
 
@@ -121,7 +126,7 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
     }
 
 
-    public void cerrar() {
+    public void cerrarDefinitivo() {
         final DialogResult result = new DialogResult();
         if (Objects.isNull(this.getModoAcceso())) {
             result.setModoAcceso(TypeModoAcceso.CONSULTA);
@@ -130,6 +135,20 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);
+    }
+
+    public void cerrar() {
+        if(comprobarModificacion()) {
+        	PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
+        } else {
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return !data.getCodigo().equals(dataOriginal.getCodigo())
+                || !data.getIdentificador().equals(dataOriginal.getIdentificador())
+                || !data.getDescripcion().equals(dataOriginal.getDescripcion());
     }
 
 
@@ -185,4 +204,12 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
+
+	public TipoMateriaSIADTO getDataOriginal() {
+		return dataOriginal;
+	}
+
+	public void setDataOriginal(TipoMateriaSIADTO dataOriginal) {
+		this.dataOriginal = dataOriginal;
+	}
 }

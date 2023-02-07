@@ -16,9 +16,22 @@ public enum TypePluginEntidad {
 	/**
 	 * Traducción (Entidad)
 	 */
-	TRADUCCION("TRA");
+	TRADUCCION("TRA"),
 
+	/**
+	 * DIR3
+	 */
+	DIR3("DI3"),
 
+	/**
+	 * Indexación
+	 */
+	INDEXACION("IDX"),
+
+	/**
+	 * SIA
+	 */
+	SIA("SIA");
 
 	/**
 	 * Valor como string.

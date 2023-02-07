@@ -71,25 +71,48 @@
         <p:panel header="#{labels['dialogProcedimientoFlujo.historial']}" id="formDatos2">
             <div class="row">
                 <div class="ui-g-12 ui-md-12 ui-lg-12 d-flex w100">
-                    <p:dataTable id="datatableMensajes" var="td" value="#{dialogProcedimientoFlujo.mensajes}"
-                                 rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1;"
-                                 paginator="false">
-                        <!--selectionMode="single"> selection="#{dialogProcedimientoFlujo.mensajeSeleccionado}" rowKey="#{td.codigo}">-->
-                        <!-- Columnas -->
-                        <p:column headerText="#{labels['dialogProcedimientoFlujo.fecha']}" class="ui-panelgrid-cell" styleClass="w20">
-                            <h:outputText value="#{td.fecha}"/>
-                        </p:column>
+                    <table style="padding:5px;width: 100%">
+                    <thead>
+                    <tr>
+                        <th scope="col" width="10%" style="padding:10px">#{labels['dialogProcedimientoFlujo.admContenido']}</th>
+                        <th scope="col" width="60%" style="padding:10px">#{labels['dialogProcedimientoFlujo.mensaje']}</th>
+                        <th scope="col" width="20%" style="padding:10px">#{labels['dialogProcedimientoFlujo.fecha']}</th>
+                        <th scope="col" width="10%" style="padding:10px">#{labels['dialogProcedimientoFlujo.gestor']}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-                        <p:column headerText="#{labels['dialogProcedimientoFlujo.usuario']}" class="ui-panelgrid-cell" styleClass="w20">
-                            <h:outputText value="#{td.usuario}"/>
-                        </p:column>
+                        <ui:repeat var="mensaje" value="#{dialogProcedimientoFlujo.mensajes}" >
+                            <tr >
+                                <ui:fragment rendered="#{dialogProcedimientoFlujo.esAdministradorContenido(mensaje)}">
+                                    <td class="backgroundAdmContenido borderIzqArribaAbajo" style="padding: 10px;">#{mensaje.usuario}</td>
+                                    <td class="backgroundAdmContenido borderArribaAbajo" style="padding: 20px;">#{mensaje.mensaje}</td>
+                                    <td class="backgroundAdmContenido borderDerArribaAbajo" style="padding: 10px;">
+                                        <h:outputText value="#{mensaje.fechaReal}">
+                                            <f:convertDateTime type="date" pattern="yyyy/dd/MM HH:mm"/>
+                                        </h:outputText>
+                                    </td>
+                                    <td></td>
+                                </ui:fragment>
+                                <ui:fragment rendered="#{!dialogProcedimientoFlujo.esAdministradorContenido(mensaje)}">
+                                    <td style="border-top:none !important;"></td>
+                                    <td class="backgroundGestor borderIzqArribaAbajo" style="padding: 20px;">#{mensaje.mensaje}</td>
+                                    <td class="backgroundGestor borderArribaAbajo" style="padding: 10px;">
+                                        <h:outputText value="#{mensaje.fechaReal}">
+                                            <f:convertDateTime type="date" pattern="yyyy/dd/MM HH:mm"/>
+                                        </h:outputText>
+                                    </td>
+                                    <td class="backgroundGestor borderDerArribaAbajo" style="padding: 10px;">#{mensaje.usuario}</td>
+                                </ui:fragment>
 
-                        <p:column headerText="#{labels['dialogProcedimientoFlujo.mensaje']}" class="ui-panelgrid-cell" styleClass="w60">
-                            <h:outputText value="#{td.mensaje}"/>
+                            </tr>
+                            <tr style="height:5px">
+                                <td colspan="4" height="5px"></td>
 
-                        </p:column>
-
-                    </p:dataTable>
+                            </tr>
+                        </ui:repeat>
+                    </tbody>
+                    </table>
                 </div>
             </div>
         </p:panel>

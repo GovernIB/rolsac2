@@ -25,6 +25,25 @@ public final class Propiedad extends ModelApi {
 	 */
 	private Integer orden;
 
+    /**
+     * Instancia una nueva Propiedad.
+     */
+    public Propiedad() {
+    }
+
+	/**
+     * Instancia una nueva Propiedad.
+     *
+     * @param otro the otro
+     */
+    public Propiedad(Propiedad otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.valor = otro.valor;
+            this.orden = otro.orden;
+        }
+    }
+
 	/**
 	 * @return the codigo
 	 */
@@ -69,5 +88,10 @@ public final class Propiedad extends ModelApi {
 	public void setOrden(final Integer orden) {
 		this.orden = orden;
 	}
+
+    @Override
+    public Propiedad clone() {
+    	return new Propiedad(this);
+    }
 
 }

@@ -40,7 +40,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this"/>
+                         process="@this"
+                         rendered="#{!dialogDocumentoNormativa.isModoConsulta() and dialogDocumentoNormativa.tradExiste()}"/>
     </ui:define>
 
     <ui:define name="contentDialog">

@@ -39,7 +39,14 @@
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton value="#{labels['dict.guardar']}" actionListener="#{dialogPropiedad.aceptar()}" process="@form" update="@form dialogPropiedad:growlDialog"/>
-		<p:commandButton value="#{labels['dict.cerrar']}" actionListener="#{dialogPropiedad.cancelar()}" process="@this"/>
+		<p:commandButton value="#{labels['dict.cerrar']}" actionListener="#{dialogPropiedad.cancelar()}" process="@this" oncomplete="stopCargando()" onstart="startCargando()"/>
+
+<!-- 		<p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar"> -->
+<!-- 			<p:commandButton value="Sí" action="#{dialogPropiedad.cancelarDefinitivo}" update="@form" oncomplete="PF('confirmCerrar').hide();"  /> -->
+<!-- 			<p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  /> -->
+<!-- 		</p:confirmDialog> -->
+
+
     </ui:define>
 </ui:composition>
 </html>

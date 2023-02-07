@@ -1,10 +1,11 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import es.caib.rolsac2.back.controller.AbstractController;
+import java.io.Serializable;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import java.io.Serializable;
+
+import es.caib.rolsac2.back.controller.AbstractController;
 
 @Named
 @ViewScoped

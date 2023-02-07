@@ -127,7 +127,12 @@ public class DialogLiteral extends AbstractController implements Serializable {
     }
 
     public boolean calcularRequired(String idioma) {
-        return sessionBean.getIdiomasObligatoriosList().contains(idioma);
+        if(required) {
+            return sessionBean.getIdiomasObligatoriosList().contains(idioma);
+        } else {
+            return false;
+        }
+
     }
 
     public String getId() {

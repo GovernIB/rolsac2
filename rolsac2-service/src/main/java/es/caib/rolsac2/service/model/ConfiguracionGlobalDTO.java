@@ -53,7 +53,7 @@ public class ConfiguracionGlobalDTO extends ModelApi {
             return String.valueOf(codigo);
         }
     }
-    
+
     public void setIdString(final String idString) {
         if (idString == null) {
             this.codigo = null;
@@ -71,7 +71,17 @@ public class ConfiguracionGlobalDTO extends ModelApi {
         this.codigo = id;
     }
 
-    /**
+    public ConfiguracionGlobalDTO(ConfiguracionGlobalDTO otro) {
+    	 if (otro != null) {
+             this.codigo = otro.codigo;
+             this.valor = otro.valor;
+             this.descripcion = otro.descripcion;
+             this.propiedad = otro.propiedad;
+             this.noModificable = otro.noModificable;
+         }
+	}
+
+	/**
      * Obtiene codigo.
      *
      * @return el codigo
@@ -159,6 +169,11 @@ public class ConfiguracionGlobalDTO extends ModelApi {
      */
     public void setNoModificable(Boolean noModificable) {
         this.noModificable = noModificable;
+    }
+
+    @Override
+    public ConfiguracionGlobalDTO clone() {
+    	return new ConfiguracionGlobalDTO(this);
     }
 
     @Override

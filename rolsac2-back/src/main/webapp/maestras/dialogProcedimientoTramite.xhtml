@@ -42,7 +42,8 @@
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this">
+                         process="@this"
+                         rendered="#{!dialogProcedimientoTramite.isModoConsulta() and dialogProcedimientoTramite.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogTraducir}" process="@this"
                     update="formDialog:txtNombre formDialog:txtRequisitos  formDialog:txtDocum formDialog:txtTermMax formDialog:txtObservaciones"/>
         </p:commandButton>
@@ -117,6 +118,8 @@
                             <p:calendar id="txtFechaInicio" styleClass="fecha"
                                         disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaInicio}"
+                                        required="true"
+                                        requiredMessage="#{labels['dict.obligatorio.fechaInicio']}"
                                         pattern="dd/MM/yyyy HH:mm" showOn="button"/>
                         </p>
                     </div>
@@ -236,13 +239,11 @@
                             <my:literalComponent id="txtObservaciones" styleClass="w95"
                                                  value="#{dialogProcedimientoTramite.data.observacion}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                                 required="true"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimientoTramite.idioma}"
                                                  literal="#{dialogProcedimientoTramite.data.observacion}"
                                                  nombreLiteral="#{labels['dialogProcedimientoTramite.observaciones']}">
-                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                             </my:literalComponent>
                         </p>
 
@@ -408,6 +409,12 @@
                     <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-pencil"
                                      action="#{dialogProcedimientoTramite.editarDocumento}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                    <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
+                                     action="#{dialogProcedimientoTramite.subirDocumento}"
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                    <p:commandButton id="btnBajarDocumento" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down"
+                                     action="#{dialogProcedimientoTramite.bajarDocumento}"
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -445,6 +452,12 @@
                                      process="@this" update="dataDocumentosModelo messagesDialog"/>
                     <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-pencil"
                                      action="#{dialogProcedimientoTramite.editarModelo}"
+                                     process="@this" update="dataDocumentosModelo messagesDialog"/>
+                    <p:commandButton id="btnSubirModelo" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
+                                     action="#{dialogProcedimientoTramite.subirModelo}"
+                                     process="@this" update="dataDocumentosModelo messagesDialog"/>
+                    <p:commandButton id="btnBajarModelo" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down"
+                                     action="#{dialogProcedimientoTramite.bajarModelo}"
                                      process="@this" update="dataDocumentosModelo messagesDialog"/>
                 </div>
             </div>

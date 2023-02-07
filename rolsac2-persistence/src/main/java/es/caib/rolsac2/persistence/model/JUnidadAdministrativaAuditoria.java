@@ -2,6 +2,7 @@ package es.caib.rolsac2.persistence.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * La clase J unidad administrativa auditoria.
@@ -33,7 +34,7 @@ public class JUnidadAdministrativaAuditoria {
      * Fecha de modificacion
      */
     @Column(name = "UAAU_FECMOD", nullable = false)
-    private LocalDate fechaModificacion;
+    private Date fechaModificacion;
 
     /**
      * Lista de modificaciones
@@ -47,6 +48,12 @@ public class JUnidadAdministrativaAuditoria {
      */
     @Column(name = "UAAU_USUMOD", nullable = false, length = 100)
     private String usuarioModificacion;
+
+    /**
+     * perfil del usuario
+     */
+    @Column(name = "UAAU_USUPRF", nullable = false)
+    private String usuarioPerfil;
 
     /**
      * Obtiene codigo.
@@ -89,7 +96,7 @@ public class JUnidadAdministrativaAuditoria {
      *
      * @return  fecha modificacion
      */
-    public LocalDate getFechaModificacion() {
+    public Date getFechaModificacion() {
         return fechaModificacion;
     }
 
@@ -98,7 +105,7 @@ public class JUnidadAdministrativaAuditoria {
      *
      * @param uaauFecmod  uaau fecmod
      */
-    public void setFechaModificacion(LocalDate uaauFecmod) {
+    public void setFechaModificacion(Date uaauFecmod) {
         this.fechaModificacion = uaauFecmod;
     }
 
@@ -138,4 +145,11 @@ public class JUnidadAdministrativaAuditoria {
         this.usuarioModificacion = uaauUsumod;
     }
 
+    public String getUsuarioPerfil() {
+        return usuarioPerfil;
+    }
+
+    public void setUsuarioPerfil(String usuarioPerfil) {
+        this.usuarioPerfil = usuarioPerfil;
+    }
 }

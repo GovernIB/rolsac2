@@ -111,7 +111,22 @@ Plantilla.
                 <!-- FI Contingut -->
             </div>
         </div>
-        <!-- FI Content -->
+
+		<p:dialog modal="true" widgetVar="statusDialog1"
+			header="#{labels['dict.cargandoLaInfo']}" draggable="false"
+			closable="false" resizable="False">
+			<div class="text-center">
+				<i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
+			</div>
+		</p:dialog>
+		<p:dialog modal="true" widgetVar="statusDialog2"
+			header="#{labels['dict.eliminandoDato']}" draggable="false"
+			closable="false" resizable="False">
+			<div class="text-center">
+				<i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
+			</div>
+		</p:dialog>
+		<!-- FI Content -->
 
 
 
@@ -131,5 +146,21 @@ Plantilla.
         document.getElementById("formAspect:windowHeight").setAttribute("value", window.innerHeight);
         document.getElementById("formAspect:btnAspect").click();
     })
+
+    function startCargando() {
+    	PF('statusDialog1').show();
+	}
+
+	function stopCargando() {
+		PF('statusDialog1').hide();
+	}
+
+	function startEliminando() {
+		PF('statusDialog2').show();
+	}
+
+	function stopEliminando() {
+		PF('statusDialog2').hide();
+	}
 </script>
 </html>

@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Indra
  */
 
-public abstract class ModelApi implements Serializable {
+public abstract class ModelApi implements Serializable, Cloneable {
 
     /**
      * Serial version UID.

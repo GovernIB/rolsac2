@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @SequenceGenerator(name = "procedimiento-wf-sequence", sequenceName = "RS2_PRCWF_SEQ", allocationSize = 1)
@@ -61,8 +62,8 @@ public class JProcedimientoWorkflow {
     @Column(name = "PRWF_RSTFNO", length = 9)
     private String responsableTelefono;
 
-    @Column(name = "PROC_DPACTV", nullable = false)
-    private Boolean datosPersonalesActivo = false;
+    //@Column(name = "PROC_DPACTV", nullable = false)
+    //private Boolean datosPersonalesActivo = false;
 
     @Column(name = "PROC_LOPDRESP", nullable = false)
     private String lopdResponsable;
@@ -125,7 +126,14 @@ public class JProcedimientoWorkflow {
      * PARA SERVICIO: TRAMITE ELECTRONICO ASOCIADO
      **/
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "PRWF_SVTPRE", nullable = false)
+    @JoinColumn(name = "PRWF_SVTPRE")
+    private JTipoTramitacion tramiteElectronicoPlantilla;
+
+    /**
+     * PARA SERVICIO: TRAMITE ELECTRONICO ASOCIADO
+     **/
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "PRWF_SVTREL")
     private JTipoTramitacion tramiteElectronico;
 
     /**
@@ -147,7 +155,7 @@ public class JProcedimientoWorkflow {
     private Boolean tramitTelefonica;
 
     @Column(name = "PRWF_COMUN", nullable = false, precision = 1, scale = 0)
-    private boolean comun = false;
+    private int comun = 0;
 
     @Column(name = "PRWF_HABAPO", nullable = false, precision = 1, scale = 0)
     private boolean habilitadoApoderado;
@@ -160,6 +168,16 @@ public class JProcedimientoWorkflow {
     @OneToMany(mappedBy = "procedimientoWorkflow", fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<JProcedimientoWorkflowTraduccion> traducciones;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "RS2_PRCTEM",
+            joinColumns = {
+                    @JoinColumn(name = "PRTM_CODPRWF")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "PRTM_CODTEMA")
+            })
+    private Set<JTema> temas;
 
     public Long getCodigo() {
         return codigo;
@@ -249,14 +267,6 @@ public class JProcedimientoWorkflow {
         this.responsableTelefono = prwfRstfno;
     }
 
-    public Boolean getDatosPersonalesActivo() {
-        return datosPersonalesActivo;
-    }
-
-    public void setDatosPersonalesActivo(Boolean procDpactv) {
-        this.datosPersonalesActivo = procDpactv;
-    }
-
     public JListaDocumentos getListaDocumentos() {
         return listaDocumentos;
     }
@@ -305,12 +315,12 @@ public class JProcedimientoWorkflow {
         this.tieneTasa = prwfSvtasa;
     }
 
-    public JTipoTramitacion getTramiteElectronico() {
-        return tramiteElectronico;
+    public JTipoTramitacion getTramiteElectronicoPlantilla() {
+        return tramiteElectronicoPlantilla;
     }
 
-    public void setTramiteElectronico(JTipoTramitacion prwfSvtpre) {
-        this.tramiteElectronico = prwfSvtpre;
+    public void setTramiteElectronicoPlantilla(JTipoTramitacion prwfSvtpre) {
+        this.tramiteElectronicoPlantilla = prwfSvtpre;
     }
 
     public JTipoLegitimacion getDatosPersonalesLegitimacion() {
@@ -418,11 +428,11 @@ public class JProcedimientoWorkflow {
         return tramitTelefonica;
     }
 
-    public boolean isComun() {
+    public int getComun() {
         return comun;
     }
 
-    public void setComun(boolean comun) {
+    public void setComun(int comun) {
         this.comun = comun;
     }
 
@@ -440,6 +450,22 @@ public class JProcedimientoWorkflow {
 
     public void setHabilitadoFuncionario(String habilitadoFuncionario) {
         this.habilitadoFuncionario = habilitadoFuncionario;
+    }
+
+    public Set<JTema> getTemas() {
+        return temas;
+    }
+
+    public void setTemas(Set<JTema> temas) {
+        this.temas = temas;
+    }
+
+    public JTipoTramitacion getTramiteElectronico() {
+        return tramiteElectronico;
+    }
+
+    public void setTramiteElectronico(JTipoTramitacion tramiteElectronico) {
+        this.tramiteElectronico = tramiteElectronico;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +101,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Instantiates a new Tipo tramitacion dto.
      *
-     * @param id  id
+     * @param id id
      */
     public TipoTramitacionDTO(Long id) {
         this.codigo = id;
@@ -109,8 +110,8 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Create instance tipo tramitacion dto.
      *
-     * @param idiomasPermitidosList  idiomas permitidos list
-     * @return  tipo tramitacion dto
+     * @param idiomasPermitidosList idiomas permitidos list
+     * @return tipo tramitacion dto
      */
     public static TipoTramitacionDTO createInstance(List<String> idiomasPermitidosList) {
         TipoTramitacionDTO tipoTramitacion = new TipoTramitacionDTO();
@@ -125,7 +126,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -134,7 +135,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -143,7 +144,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Is tramit presencial boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitPresencial() {
         return tramitPresencial;
@@ -152,7 +153,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece tramit presencial.
      *
-     * @param tramitPresencial  tramit presencial
+     * @param tramitPresencial tramit presencial
      */
     public void setTramitPresencial(boolean tramitPresencial) {
         this.tramitPresencial = tramitPresencial;
@@ -161,7 +162,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Is tramit electronica boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitElectronica() {
         return tramitElectronica;
@@ -170,7 +171,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece tramit electronica.
      *
-     * @param tramitElectronica  tramit electronica
+     * @param tramitElectronica tramit electronica
      */
     public void setTramitElectronica(boolean tramitElectronica) {
         this.tramitElectronica = tramitElectronica;
@@ -179,7 +180,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene url tramitacion.
      *
-     * @return  url tramitacion
+     * @return url tramitacion
      */
     public String getUrlTramitacion() {
         return urlTramitacion;
@@ -188,7 +189,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece url tramitacion.
      *
-     * @param urlTramitacion  url tramitacion
+     * @param urlTramitacion url tramitacion
      */
     public void setUrlTramitacion(String urlTramitacion) {
         this.urlTramitacion = urlTramitacion;
@@ -197,7 +198,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene cod plat tramitacion.
      *
-     * @return  cod plat tramitacion
+     * @return cod plat tramitacion
      */
     public PlatTramitElectronicaDTO getCodPlatTramitacion() {
         return codPlatTramitacion;
@@ -206,7 +207,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece cod plat tramitacion.
      *
-     * @param codPlatTramitacion  cod plat tramitacion
+     * @param codPlatTramitacion cod plat tramitacion
      */
     public void setCodPlatTramitacion(PlatTramitElectronicaDTO codPlatTramitacion) {
         this.codPlatTramitacion = codPlatTramitacion;
@@ -215,7 +216,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene tramite id.
      *
-     * @return  tramite id
+     * @return tramite id
      */
     public String getTramiteId() {
         return tramiteId;
@@ -224,7 +225,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece tramite id.
      *
-     * @param tramiteId  tramite id
+     * @param tramiteId tramite id
      */
     public void setTramiteId(String tramiteId) {
         this.tramiteId = tramiteId;
@@ -233,7 +234,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene tramite version.
      *
-     * @return  tramite version
+     * @return tramite version
      */
     public Integer getTramiteVersion() {
         return tramiteVersion;
@@ -242,7 +243,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece tramite version.
      *
-     * @param tramiteVersion  tramite version
+     * @param tramiteVersion tramite version
      */
     public void setTramiteVersion(Integer tramiteVersion) {
         this.tramiteVersion = tramiteVersion;
@@ -251,7 +252,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene tramite parametros.
      *
-     * @return  tramite parametros
+     * @return tramite parametros
      */
     public String getTramiteParametros() {
         return tramiteParametros;
@@ -260,7 +261,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece tramite parametros.
      *
-     * @param tramiteParametros  tramite parametros
+     * @param tramiteParametros tramite parametros
      */
     public void setTramiteParametros(String tramiteParametros) {
         this.tramiteParametros = tramiteParametros;
@@ -269,7 +270,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Is plantilla boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isPlantilla() {
         return plantilla;
@@ -278,7 +279,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece plantilla.
      *
-     * @param plantilla  plantilla
+     * @param plantilla plantilla
      */
     public void setPlantilla(boolean plantilla) {
         this.plantilla = plantilla;
@@ -287,7 +288,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene entidad.
      *
-     * @return  entidad
+     * @return entidad
      */
     public EntidadDTO getEntidad() {
         return entidad;
@@ -296,7 +297,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece entidad.
      *
-     * @param entidad  entidad
+     * @param entidad entidad
      */
     public void setEntidad(EntidadDTO entidad) {
         this.entidad = entidad;
@@ -305,7 +306,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public Literal getDescripcion() {
         return descripcion;
@@ -314,7 +315,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
@@ -323,7 +324,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene url.
      *
-     * @return  url
+     * @return url
      */
     public Literal getUrl() {
         return url;
@@ -332,7 +333,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece url.
      *
-     * @param url  url
+     * @param url url
      */
     public void setUrl(Literal url) {
         this.url = url;
@@ -341,7 +342,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Obtiene fase proc.
      *
-     * @return  fase proc
+     * @return fase proc
      */
     public final Integer getFaseProc() {
         return faseProc;
@@ -350,7 +351,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece fase proc.
      *
-     * @param faseProc  fase proc
+     * @param faseProc fase proc
      */
     public final void setFaseProc(Integer faseProc) {
         this.faseProc = faseProc;
@@ -359,7 +360,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Is tramit telefonica boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTramitTelefonica() {
         return tramitTelefonica;
@@ -368,7 +369,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Establece tramit telefonica.
      *
-     * @param tramitTelefonica  tramit telefonica
+     * @param tramitTelefonica tramit telefonica
      */
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
@@ -422,7 +423,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     /**
      * Instantiates a new Tipo tramitacion dto.
      *
-     * @param otro  otro
+     * @param otro otro
      */
     public TipoTramitacionDTO(TipoTramitacionDTO otro) {
         if (otro != null) {
@@ -438,5 +439,41 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
             this.plantilla = otro.plantilla;
             this.entidad = new EntidadDTO(otro.entidad);
         }
+    }
+
+    public int compareTo(TipoTramitacionDTO data2) {
+
+        if (data2 == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion()) != 0) {
+            return UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion());
+        }
+
+        if (UtilComparador.compareTo(this.getFaseProc(), data2.getFaseProc()) != 0) {
+            return UtilComparador.compareTo(this.getFaseProc(), data2.getFaseProc());
+        }
+        if (UtilComparador.compareTo(this.getTramiteId(), data2.getTramiteId()) != 0) {
+            return UtilComparador.compareTo(this.getTramiteId(), data2.getTramiteId());
+        }
+        if (UtilComparador.compareTo(this.getUrlTramitacion(), data2.getUrlTramitacion()) != 0) {
+            return UtilComparador.compareTo(this.getUrlTramitacion(), data2.getUrlTramitacion());
+        }
+        if (UtilComparador.compareTo(this.getTramiteParametros(), data2.getTramiteParametros()) != 0) {
+            return UtilComparador.compareTo(this.getTramiteParametros(), data2.getTramiteParametros());
+        }
+        if (UtilComparador.compareTo(this.getTramiteVersion(), data2.getTramiteVersion()) != 0) {
+            return UtilComparador.compareTo(this.getTramiteVersion(), data2.getTramiteVersion());
+        }
+        if (UtilComparador.compareTo(this.getCodPlatTramitacion(), data2.getCodPlatTramitacion()) != 0) {
+            return UtilComparador.compareTo(this.getCodPlatTramitacion(), data2.getCodPlatTramitacion());
+        }
+        return 0;
+
     }
 }

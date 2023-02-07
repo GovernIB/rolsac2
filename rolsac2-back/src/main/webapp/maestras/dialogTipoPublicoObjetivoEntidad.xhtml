@@ -40,7 +40,8 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this">
+                         process="@this"
+                         rendered="#{!dialogTipoPublicoObjetivoEntidad.isModoConsulta() and dialogTipoPublicoObjetivoEntidad.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogTipoPublicoObjetivoEntidad.returnDialogTraducir}" process="@this" update="formDialog:inputDescripcion"/>
         </p:commandButton>
     </ui:define>

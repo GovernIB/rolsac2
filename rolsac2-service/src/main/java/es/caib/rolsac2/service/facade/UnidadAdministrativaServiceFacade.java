@@ -5,7 +5,9 @@ import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoSexoDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
 
 import java.util.List;
 
@@ -51,7 +53,7 @@ public interface UnidadAdministrativaServiceFacade {
      * @param dto nuevos datos del ua
      * @throws RecursoNoEncontradoException si el ua con el id no existe.
      */
-    void update(UnidadAdministrativaDTO dto) throws RecursoNoEncontradoException;
+    void update(UnidadAdministrativaDTO dto, UnidadAdministrativaDTO dtoAntiguo, TypePerfiles perfil) throws RecursoNoEncontradoException;
 
     /**
      * Borra una ua de la bbdd
@@ -95,6 +97,8 @@ public interface UnidadAdministrativaServiceFacade {
 
     List<UnidadAdministrativaDTO> getHijosSimple(Long codigo, String idioma, UnidadAdministrativaDTO padre);
 
+    List<AuditoriaGridDTO> findUaAuditoriasById(Long id);
+
     /**
      * Devuelve un listado de UAs relacionadas a un usuario
      *
@@ -135,4 +139,6 @@ public interface UnidadAdministrativaServiceFacade {
      * @return
      */
     List<Long> getListaHijosRecursivo(Long codigoUA);
+
+
 }

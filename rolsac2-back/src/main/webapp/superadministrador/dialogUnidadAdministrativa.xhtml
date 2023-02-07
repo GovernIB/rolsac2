@@ -35,7 +35,8 @@
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog "
-                         process="@this">
+                         process="@this"
+                         rendered="#{!dialogUnidadAdministrativa.isModoConsulta() and dialogUnidadAdministrativa.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogUnidadAdministrativa.returnDialogTraducir}" process="@this"
                     update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo"/>
         </p:commandButton>
@@ -302,37 +303,6 @@
 
             </div>
             <div class="ui-g-12 ui-md-3 pr-1">
-
-                <div class="row left-container mx-0 mb-2">
-                    <div class="col-12 left-container-header text-center">
-                        <p class="left-container-tit mt-2 mb-1">MATERIAS (MOCK)</p>
-                    </div>
-                    <div class="col-10 p-1">
-                        <p:dataTable id="dataTableMaterias" var="td" value="#{dialogUnidadAdministrativa.materiasSIA}"
-                                     emptyMessage="La tabla está vacía" scrollable="true" scrollHeight="120"
-                                     paginator="false" selectionMode="single"
-                                     selection="#{dialogUnidadAdministrativa.materiaSeleccionada}"
-                                     rowKey="#{td.codigo}" styleClass="noHeader">
-
-                            <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                            <p:ajax event="rowSelect" global="false"/>
-                            <p:ajax event="rowUnselect"/>
-                            <p:ajax event="rowDblselect"
-                                    oncomplete="rcEditarPropiedad();"
-                            />
-
-                            <p:column headerText="DESCRIPCIÓN" styleClass="text-center w75">
-                                <h:outputText value="#{td.identificador}"/>
-                            </p:column>
-
-                        </p:dataTable>
-                    </div>
-                    <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                        <p:button title="Nuevo" icon="pi pi-plus" styleClass="text-success"></p:button>
-                        <p:button title="Eliminar" icon="pi pi-minus" styleClass="text-danger"></p:button>
-                        <p:button title="Consultar" icon="pi pi-eye"></p:button>
-                    </div>
-                </div>
                 <div class="row left-container mx-0">
                     <div class="col-12 left-container-header text-center">
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.usuarios']}</p>
@@ -374,15 +344,15 @@
                     </div>
                 </div>
                 <h:panelGroup id="panelTemas">
-                    <c:forEach items="#{dialogUnidadAdministrativa.temasPadre}" var="tema" varStatus="status">
-                        <div class="row left-container mx-0">
+                    <c:forEach items="#{dialogUnidadAdministrativa.roots}" var="tema" varStatus="status">
+                        <div class="row left-container mx-0 mt-2">
                             <div class="col-12 left-container-header text-center">
                                 <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                    #{tema.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}</p>
+                                    #{tema.data.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}</p>
                             </div>
                             <div class="col-10 p-1">
-                                <p:dataTable
-                                        value="#{dialogUnidadAdministrativa.temasHijosRelacionados[tema.codigo.toString()]}"
+                                <p:treeTable
+                                        value="#{tema}"
                                         var="td"
                                         emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
                                         paginator="false" selectionMode="single"
@@ -391,21 +361,28 @@
                                         styleClass="noHeader">
 
                                     <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                                    <p:ajax event="rowSelect" global="false"/>
+                                    <p:ajax event="select" global="false"/>
                                     <!--<p:ajax event="rowUnselect"/>-->
 
 
-                                    <p:column headerText="" styleClass="text-center w75">
+                                    <p:column headerText="" styleClass="w75">
+
+                                        <div class="ui-chkbox ui-widget ui-selection">
+                                            <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
+                                                <h:outputText
+                                                        styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
+                                            </div>
+                                        </div>
                                         <h:outputText value="#{td.identificador}"/>
                                     </p:column>
 
-                                </p:dataTable>
+                                </p:treeTable>
                             </div>
                             <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                                 <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                                  styleClass="text-success"
                                                  process="@this"
-                                                 actionListener="#{dialogUnidadAdministrativa.altaTematicas(tema)}"
+                                                 actionListener="#{dialogUnidadAdministrativa.altaTematicas(tema.data)}"
                                                  rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}">
                                     <p:ajax event="dialogReturn"
                                             listener="#{dialogUnidadAdministrativa.returnDialogTemas}" process="@this"
@@ -434,7 +411,19 @@
 
 
     </ui:define>
+    <ui:define name="contentFooterDialogLeft">
+        <div class="d-flex flex-column flex-sm-row align-items-center mb-2 mb-sm-0" style="gap: 5px;">
 
+            <p:commandButton value="#{labels['dict.auditorias']}"
+                             icon="pi pi-inbox"
+                             action="#{dialogUnidadAdministrativa.verAuditorias}"
+                             styleClass="btn-footer"
+                             process="@all"
+                             disabled="#{empty dialogUnidadAdministrativa.data.codigo}"
+            />
+        </div>
+
+    </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogUnidadAdministrativa.ayuda}"
                          icon="pi pi-info-circle" iconPos="top"

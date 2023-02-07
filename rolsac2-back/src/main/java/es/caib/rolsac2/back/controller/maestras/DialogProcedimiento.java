@@ -1,17 +1,20 @@
 package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
+import es.caib.rolsac2.back.controller.comun.UtilsArbolTemas;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceFacade;
+import es.caib.rolsac2.service.facade.TemaServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.*;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +34,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
 
     private ProcedimientoDTO data;
+    private ProcedimientoDTO dataOriginal;
 
     private String objeto;
 
@@ -63,8 +67,16 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private ProcedimientoTramiteDTO tramiteSeleccionado;
     private TipoPublicoObjetivoEntidadGridDTO tipoPubObjEntGridSeleccionado;
 
-    @EJB
-    private SystemServiceFacade systemServiceFacade;
+    private List<TemaGridDTO> temasPadre;
+
+    private TreeNode temaSeleccionado;
+
+    private List<TreeNode> roots;
+
+    private List<TreeNode> temasTabla;
+
+    private List<TemaGridDTO> temasPadreAnyadidos;
+
     @EJB
     private ProcedimientoServiceFacade procedimientoServiceFacade;
 
@@ -74,6 +86,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     @EJB
     private UnidadAdministrativaServiceFacade uaService;
 
+    @EJB
+    private TemaServiceFacade temaServiceFacade;
+
 
     private String id = "";
 
@@ -81,6 +96,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private String comunUA;
     private static final Logger LOG = LoggerFactory.getLogger(DialogProcedimiento.class);
     private final Integer FASE_INICIACION = 1;
+    private boolean esSoloGuardar;
 
     public void load() {
         LOG.debug("init");
@@ -88,37 +104,37 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         // De momento, no tenemos desplegables.
         this.setearIdioma();
 
+        temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+        temasPadreAnyadidos = new ArrayList<>();
+
         if (this.isModoAlta()) {
             data = ProcedimientoDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUaInstructor(sessionBean.getUnidadActiva());
             data.setUaResponsable(sessionBean.getUnidadActiva());
-            Literal lopdDerechos = new Literal();
-            Literal lopdDestinatario = new Literal();
-            Literal lopdInfoAdicional = new Literal();
-            Literal lopdFinalidad = new Literal();
-            for (String idioma : UtilJSF.getSessionBean().getIdiomasPermitidosList()) {
-                lopdDerechos.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_DERECHOS, idioma)));
-                lopdDestinatario.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_DESTINATARIO, idioma)));
-                //lopdInfoAdicional.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_INFO, idioma));
-                lopdFinalidad.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_FINALIDAD, idioma)));
-            }
-            data.setLopdDerechos(lopdDerechos);
-            data.setLopdDestinatario(lopdDestinatario);
-            data.setLopdInfoAdicional(lopdInfoAdicional);
-            data.setLopdFinalidad(lopdFinalidad);
+            data.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
+            data.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
+            data.setLopdInfoAdicional(new Literal());
+            data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
+            data.setTemas(new ArrayList<>());
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
-            if(id != null && !id.isEmpty()) {
+            if (id != null && !id.isEmpty()) {
                 data = procedimientoServiceFacade.findProcedimientoById(Long.valueOf(id));
             } else {
                 data = (ProcedimientoDTO) UtilJSF.getValorMochilaByKey("PROC");
             }
+            dataOriginal = (ProcedimientoDTO) data.clone();
             UtilJSF.vaciarMochila();
         }
+        temasTabla = new ArrayList<>();
+        for (TemaGridDTO tema : temasPadre) {
+            temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
+        }
+        this.construirArbol();
 
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
-        comunUA = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.UA_COMUN, this.getIdioma());
+        comunUA = sessionBean.getEntidad().getUaComun().getTraduccion(this.getIdioma());
         listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
         listTipoSilencio = maestrasSupService.findAllTipoSilencio();
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
@@ -133,6 +149,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
     }
 
+    public void verAuditorias() {
+        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+        params.put("ID", data.getCodigo().toString());
+        params.put("TIPO", "PROC");
+        UtilJSF.openDialog("/comun/dialogAuditoria", TypeModoAcceso.CONSULTA, params, true, 800, 600);
+    }
+
     public void returnDialogTraducir(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
         ProcedimientoDTO datoDTO = (ProcedimientoDTO) respuesta.getResult();
@@ -142,12 +166,51 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
+    public boolean esUAResponsableRaiz() {
+        return this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz();
+    }
+
+    public void returnDialogoUA(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        // Verificamos si se ha modificado
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
+            if (uaSeleccionada != null) {
+                this.data.setUaResponsable(uaSeleccionada);
+                PrimeFaces.current().ajax().update("formDialog:selectComun");
+                PrimeFaces.current().ajax().update("selectComun");
+            }
+        }
+    }
+
+    public void abrirVentanaUA() {
+        final Map<String, String> params = new HashMap<>();
+        /*
+         * if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso ==
+         * TypeModoAcceso.CONSULTA)) { params.put(TypeParametroVentana.ID.toString(),
+         * this.datoSeleccionado.getId().toString()); }
+         */
+
+        params.put(TypeParametroVentana.MODO_ACCESO.toString(), this.getModoAcceso());
+        String direccion = "/comun/dialogSeleccionarUA";
+
+        UtilJSF.anyadirMochila("ua", data.getUaResponsable());
+        //params.put("esCabecera", null);
+        UtilJSF.openDialog(direccion, TypeModoAcceso.valueOf(this.getModoAcceso()), params, true, 850, 575);
+    }
+
     public void guardarFlujo() {
 
+        esSoloGuardar = false;
         if (!checkObligatorio()) {
             return;
         }
 
+        guardarFlujoSinCheck();
+    }
+
+    public void guardarFlujoSinCheck() {
         final Map<String, String> params = new HashMap<>();
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         //params.put("SOLO_MENSAJES","N");
@@ -196,7 +259,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
             RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
-            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes());
+
+            resetearOrdenListas();
+            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil());
             final DialogResult result = new DialogResult();
             if (this.getModoAcceso() != null) {
                 result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
@@ -220,19 +285,32 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void guardar() {
+
+        esSoloGuardar = true;
         if (!checkObligatorio()) {
             return;
         }
         guardarSinCheck();
     }
 
+    public void accionSin() {
+        if (esSoloGuardar) {
+            guardarSinCheck();
+        } else {
+            guardarFlujoSinCheck();
+        }
+    }
+
     public void guardarSinCheck() {
+
+        resetearOrdenListas();
 
         if (this.data.getCodigo() == null) {
             procedimientoServiceFacade.create(this.data);
         } else {
-            procedimientoServiceFacade.update(this.data);
+            procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil());
         }
+
 
         final DialogResult result = new DialogResult();
         if (this.getModoAcceso() != null) {
@@ -242,6 +320,60 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
         result.setResult(data);
         UtilJSF.closeDialog(result);
+    }
+
+    private void resetearOrdenListas() {
+        if (data.getNormativas() != null && !data.getNormativas().isEmpty()) {
+            int posicion = 0;
+            for (NormativaGridDTO normativaGridDTO : data.getNormativas()) {
+                normativaGridDTO.setOrden(posicion);
+                posicion++;
+            }
+        }
+
+        if (data.getDocumentos() != null && !data.getDocumentos().isEmpty()) {
+            int posicion = 0;
+            for (ProcedimientoDocumentoDTO doc : data.getDocumentos()) {
+                doc.setOrden(posicion);
+                posicion++;
+            }
+        }
+
+        if (data.getDocumentosLOPD() != null && !data.getDocumentosLOPD().isEmpty()) {
+            int posicion = 0;
+            for (ProcedimientoDocumentoDTO doc : data.getDocumentosLOPD()) {
+                doc.setOrden(posicion);
+                posicion++;
+            }
+        }
+
+        if (data.getTramites() != null && !data.getTramites().isEmpty()) {
+            int posicion = 0;
+            for (ProcedimientoTramiteDTO tram : data.getTramites()) {
+                if (tram.getPlantillaSel() != null && tram.getPlantillaSel().getCodigo() != null) {
+                    //Si hay plantilla, se quita el resto de info
+                    tram.setTipoTramitacion(new TipoTramitacionDTO());
+                }
+                tram.setOrden(posicion);
+                posicion++;
+
+                if (tram.getListaDocumentos() != null && !tram.getListaDocumentos().isEmpty()) {
+                    int posicionDoc = 0;
+                    for (ProcedimientoDocumentoDTO doc : tram.getListaDocumentos()) {
+                        doc.setOrden(posicionDoc);
+                        posicionDoc++;
+                    }
+                }
+
+                if (tram.getListaModelos() != null && !tram.getListaModelos().isEmpty()) {
+                    int posicionDoc = 0;
+                    for (ProcedimientoDocumentoDTO doc : tram.getListaModelos()) {
+                        doc.setOrden(posicionDoc);
+                        posicionDoc++;
+                    }
+                }
+            }
+        }
     }
 
     private boolean checkObligatorio() {
@@ -260,6 +392,21 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             return false;
         }
 
+        if (this.data.getPublicosObjetivo() == null || this.data.getPublicosObjetivo().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunPublicoObjetivo"));
+            return false;
+        }
+
+        if (this.data.getMateriasSIA() == null || this.data.getMateriasSIA().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaMateriaSIA"));
+            return false;
+        }
+
+        if (this.data.getNormativas() == null || this.data.getNormativas().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaNormativa"));
+            return false;
+        }
+
         if (this.data.getTramites() != null) {
             for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
                 if (data.getFechaPublicacion() != null && tramite.getFechaPublicacion() != null && tramite.getFechaPublicacion().before(data.getFechaPublicacion())) {
@@ -271,16 +418,16 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
         boolean checkHabilitadoFuncionario = false;
         boolean checkHabilitadoApoderamiento = false;
-        if (this.data.getTiposPubObjEntGrid() != null && !this.data.getTiposPubObjEntGrid().isEmpty()) {
-            boolean empleadoPublico = this.data.getTiposPubObjEntGrid().get(0).isEmpleadoPublico();
+        if (this.data.getPublicosObjetivo() != null && !this.data.getPublicosObjetivo().isEmpty()) {
+            boolean empleadoPublico = this.data.getPublicosObjetivo().get(0).isEmpleadoPublico();
             if ((empleadoPublico && this.data.isHabilitadoApoderado()) || (!empleadoPublico && !this.data.isHabilitadoApoderado())) {
                 checkHabilitadoApoderamiento = true;
             }
         }
 
-        if (this.data.getTramites() != null && !this.data.getTramites().isEmpty()) {
+        if (this.data.getTramites() != null && !this.data.getTramites().isEmpty() && "S".equals(this.data.getHabilitadoFuncionario())) {
             for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
-                if (tramite.isTramitElectronica() && !tramite.isTramitPresencial() && !tramite.isTramitTelefonica()) {
+                if (tramite.isTramitElectronica() && !tramite.isTramitPresencial()) {
                     checkHabilitadoFuncionario = true;
                     break;
                 }
@@ -302,6 +449,15 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void cerrar() {
+        if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && (this.data.getCodigoWF() == null || this.data.compareTo(this.dataOriginal) != 0)) {
+            PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
+            return;
+        }
+
+        cerrarSinCheck();
+    }
+
+    public void cerrarSinCheck() {
         final DialogResult result = new DialogResult();
         if (this.getModoAcceso() != null) {
             result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
@@ -319,16 +475,16 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (!respuesta.isCanceled()) {
             List<TipoPublicoObjetivoEntidadGridDTO> tipPubObjEntSeleccionadas = (List<TipoPublicoObjetivoEntidadGridDTO>) respuesta.getResult();
             if (tipPubObjEntSeleccionadas == null) {
-                data.setTiposPubObjEntGrid(new ArrayList<>());
+                data.setPublicosObjetivo(new ArrayList<>());
             } else {
-                if (data.getTiposPubObjEntGrid() == null) {
-                    data.setTiposPubObjEntGrid(new ArrayList<>());
+                if (data.getPublicosObjetivo() == null) {
+                    data.setPublicosObjetivo(new ArrayList<>());
                 }
-                data.setTiposPubObjEntGrid(new ArrayList<>());
-                data.getTiposPubObjEntGrid().addAll(tipPubObjEntSeleccionadas);
+                data.setPublicosObjetivo(new ArrayList<>());
+                data.getPublicosObjetivo().addAll(tipPubObjEntSeleccionadas);
 
-                if (data.getTiposPubObjEntGrid() != null && !data.getTiposPubObjEntGrid().isEmpty()) {
-                    data.setHabilitadoApoderado(!data.getTiposPubObjEntGrid().get(0).isEmpleadoPublico());
+                if (data.getPublicosObjetivo() != null && !data.getPublicosObjetivo().isEmpty()) {
+                    data.setHabilitadoApoderado(!data.getPublicosObjetivo().get(0).isEmpleadoPublico());
                 }
             }
         }
@@ -350,7 +506,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (tipoPubObjEntGridSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            data.getTiposPubObjEntGrid().remove(tipoPubObjEntGridSeleccionado);
+            data.getPublicosObjetivo().remove(tipoPubObjEntGridSeleccionado);
             tipoPubObjEntGridSeleccionado = null;
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
         }
@@ -363,7 +519,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             params.put("ID", tipoPubObjEntGridSeleccionado.getCodigo().toString());
             UtilJSF.openDialog("dialogTipoPublicoObjetivoEntidad", modoAcceso, params, true, 700, 300);
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
-            UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", data.getTiposPubObjEntGrid());
+            UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", data.getPublicosObjetivo());
             final Map<String, String> params = new HashMap<>();
             UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", modoAcceso, params, true, 1040, 460);
         }
@@ -376,13 +532,13 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (!respuesta.isCanceled()) {
             List<TipoMateriaSIAGridDTO> materiasSeleccionadas = (List<TipoMateriaSIAGridDTO>) respuesta.getResult();
             if (materiasSeleccionadas == null) {
-                data.setMateriasGridSIA(new ArrayList<>());
+                data.setMateriasSIA(new ArrayList<>());
             } else {
-                if (data.getMateriasGridSIA() == null) {
-                    data.setMateriasGridSIA(new ArrayList<>());
+                if (data.getMateriasSIA() == null) {
+                    data.setMateriasSIA(new ArrayList<>());
                 }
-                data.setMateriasGridSIA(new ArrayList<>());
-                data.getMateriasGridSIA().addAll(materiasSeleccionadas);
+                data.setMateriasSIA(new ArrayList<>());
+                data.getMateriasSIA().addAll(materiasSeleccionadas);
             }
         }
     }
@@ -404,7 +560,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
             // maestrasSupService.deleteTipoMateriaSIA(materiaSIAGridSeleccionada.getCodigo());
-            data.getMateriasGridSIA().remove(materiaSIAGridSeleccionada);
+            data.getMateriasSIA().remove(materiaSIAGridSeleccionada);
             materiaSIAGridSeleccionada = null;
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
         }
@@ -417,7 +573,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             params.put("ID", materiaSIAGridSeleccionada.getCodigo().toString());
             UtilJSF.openDialog("tipo/dialogTipoMateriaSIA", modoAcceso, params, true, 700, 300);
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
-            UtilJSF.anyadirMochila("materiasSeleccionadas", data.getMateriasGridSIA());
+            UtilJSF.anyadirMochila("materiasSeleccionadas", data.getMateriasSIA());
             final Map<String, String> params = new HashMap<>();
             UtilJSF.openDialog("tipo/dialogSeleccionMateriaSIA", modoAcceso, params, true, 1040, 460);
         }
@@ -463,6 +619,39 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
+    public void bajarTramite() {
+        if (tramiteSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getTramites().indexOf(tramiteSeleccionado);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion < this.data.getTramites().size() - 1) {
+                //Mientras no sea el ultimo elemento, se puede bajar
+                this.data.getTramites().remove(posicion);
+                this.data.getTramites().add(posicion + 1, tramiteSeleccionado);
+            }
+        }
+    }
+
+    public void subirTramite() {
+        if (tramiteSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getTramites().indexOf(tramiteSeleccionado);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion != 0) {
+                //Mientras no sea el primer elemento, se puede subir
+                this.data.getTramites().remove(posicion);
+                this.data.getTramites().add(posicion - 1, tramiteSeleccionado);
+            }
+        }
+    }
 
     public void abrirDialogTramite(TypeModoAcceso modoAcceso) {
         if (TypeModoAcceso.EDICION.equals(modoAcceso) && tramiteSeleccionado == null) {
@@ -544,6 +733,40 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
+    public void bajarNormativa() {
+        if (normativaGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getNormativas().indexOf(normativaGridSeleccionada);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion < this.data.getNormativas().size() - 1) {
+                //Mientras no sea el ultimo elemento, se puede bajar
+                this.data.getNormativas().remove(posicion);
+                this.data.getNormativas().add(posicion + 1, normativaGridSeleccionada);
+            }
+        }
+    }
+
+    public void subirNormativa() {
+        if (normativaGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getNormativas().indexOf(normativaGridSeleccionada);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion != 0) {
+                //Mientras no sea el primer elemento, se puede subir
+                this.data.getNormativas().remove(posicion);
+                this.data.getNormativas().add(posicion - 1, normativaGridSeleccionada);
+            }
+        }
+    }
+
     public void borrarNormativa() {
         if (normativaGridSeleccionada == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
@@ -613,6 +836,40 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
+    public void bajarDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getDocumentos().indexOf(documentoSeleccionado);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion < this.data.getDocumentos().size() - 1) {
+                //Mientras no sea el ultimo elemento, se puede bajar
+                this.data.getDocumentos().remove(posicion);
+                this.data.getDocumentos().add(posicion + 1, documentoSeleccionado);
+            }
+        }
+    }
+
+    public void subirDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getDocumentos().indexOf(documentoSeleccionado);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion != 0) {
+                //Mientras no sea el primer elemento, se puede subir
+                this.data.getDocumentos().remove(posicion);
+                this.data.getDocumentos().add(posicion - 1, documentoSeleccionado);
+            }
+        }
+    }
+
     //DOCUMENTO LOPD
     public void returnDialogDocumentoLOPD(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
@@ -667,6 +924,116 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
         }
     }
+
+    public void bajarDocumentoLOPD() {
+        if (documentoLOPDSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getDocumentosLOPD().indexOf(documentoLOPDSeleccionado);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion < this.data.getDocumentosLOPD().size() - 1) {
+                //Mientras no sea el ultimo elemento, se puede bajar
+                this.data.getDocumentosLOPD().remove(posicion);
+                this.data.getDocumentosLOPD().add(posicion + 1, documentoLOPDSeleccionado);
+            }
+        }
+    }
+
+    public void subirDocumentoLOPD() {
+        if (documentoLOPDSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getDocumentosLOPD().indexOf(documentoLOPDSeleccionado);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion != 0) {
+                //Mientras no sea el primer elemento, se puede subir
+                this.data.getDocumentosLOPD().remove(posicion);
+                this.data.getDocumentosLOPD().add(posicion - 1, documentoLOPDSeleccionado);
+            }
+        }
+    }
+
+    /********************************************************************************************************************************
+     * Funciones relativas a las asignaciones temáticas
+     *********************************************************************************************************************************/
+
+
+    public void abrirSeleccionTematica(TemaGridDTO temaPadre, TypeModoAcceso modoAcceso) {
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.anyadirMochila("temaPadre", temaPadre);
+        UtilJSF.anyadirMochila("temasRelacionados", new ArrayList<>(data.getTemas()));
+        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", modoAcceso, params, true, 590, 460);
+
+    }
+
+    public void altaTematicas(TemaGridDTO temaPadre) {
+        this.abrirSeleccionTematica(temaPadre, TypeModoAcceso.ALTA);
+    }
+
+    /**
+     * Método para consultar el detalle de un tema en una UA
+     */
+    public void consultarTema(Integer index) {
+        if (temasTabla == null || temasTabla.get(index) == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            TemaGridDTO tema = (TemaGridDTO) temasTabla.get(index).getData();
+            params.put("ID", tema.getCodigo().toString());
+            UtilJSF.openDialog("dialogTema", TypeModoAcceso.CONSULTA, params, true, 700, 300);
+        }
+    }
+
+    /**
+     * Método para borrar un tema en una UA
+     */
+    public void borrarTema() {
+        if (temaSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getTemas().remove(temaSeleccionado);
+            temaSeleccionado = null;
+            construirArbol();
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    public void returnDialogTemas(final SelectEvent event) {
+        DialogResult resultado = (DialogResult) event.getObject();
+        if (!resultado.isCanceled()) {
+            List<TemaGridDTO> temasSeleccionados = (List<TemaGridDTO>) resultado.getResult();
+            TemaGridDTO temaPadre = (TemaGridDTO) UtilJSF.getValorMochilaByKey("temaPadre");
+            UtilJSF.vaciarMochila();
+
+            for (TemaGridDTO tema : temasSeleccionados) {
+                if (!data.getTemas().contains(tema)) {
+                    data.getTemas().add(tema);
+                }
+            }
+            List<TemaGridDTO> temasBorrado = new ArrayList<>();
+            for (TemaGridDTO tema : data.getTemas()) {
+                if (tema.getMathPath() != null && tema.getMathPath().contains(temaPadre.getCodigo().toString()) && !temasSeleccionados.contains(tema)) {
+                    temasBorrado.add(tema);
+                }
+            }
+            data.getTemas().removeAll(temasBorrado);
+            temasPadreAnyadidos.clear();
+            construirArbol();
+        }
+
+    }
+
+    private void construirArbol() {
+        roots = new ArrayList<>();
+        UtilsArbolTemas.construirArbol(roots, temasPadre, temasPadreAnyadidos, data.getTemas(), temaServiceFacade);
+    }
+
 
     public List<TipoProcedimientoDTO> getListTipoProcedimiento() {
         return listTipoProcedimiento;
@@ -844,6 +1211,46 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void setComunUA(String comunUA) {
         this.comunUA = comunUA;
+    }
+
+    public TreeNode getTemaSeleccionado() {
+        return temaSeleccionado;
+    }
+
+    public void setTemaSeleccionado(TreeNode temaSeleccionado) {
+        this.temaSeleccionado = temaSeleccionado;
+    }
+
+    public List<TreeNode> getRoots() {
+        return roots;
+    }
+
+    public void setRoots(List<TreeNode> roots) {
+        this.roots = roots;
+    }
+
+    public List<TreeNode> getTemasTabla() {
+        return temasTabla;
+    }
+
+    public void setTemasTabla(List<TreeNode> temasTabla) {
+        this.temasTabla = temasTabla;
+    }
+
+    public List<TemaGridDTO> getTemasPadre() {
+        return temasPadre;
+    }
+
+    public void setTemasPadre(List<TemaGridDTO> temasPadre) {
+        this.temasPadre = temasPadre;
+    }
+
+    public boolean isEsSoloGuardar() {
+        return esSoloGuardar;
+    }
+
+    public void setEsSoloGuardar(boolean esSoloGuardar) {
+        this.esSoloGuardar = esSoloGuardar;
     }
 }
 

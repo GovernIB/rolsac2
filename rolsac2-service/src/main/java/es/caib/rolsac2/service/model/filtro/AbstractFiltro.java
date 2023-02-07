@@ -48,7 +48,7 @@ public abstract class AbstractFiltro implements Serializable {
     /**
      * Ascendente.
      **/
-    private boolean ascendente = true;
+    private boolean ascendente = false;
 
     /**
      * Indicador si se permite el uso de operadores en campos cadena (String)

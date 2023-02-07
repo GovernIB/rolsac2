@@ -2,13 +2,20 @@ package es.caib.rolsac2.ejb.facade;
 
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
+import es.caib.rolsac2.ejb.util.JSONUtil;
+import es.caib.rolsac2.ejb.util.JSONUtilException;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
 import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.repository.*;
+import es.caib.rolsac2.service.exception.AuditoriaException;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
+import es.caib.rolsac2.service.model.auditoria.ProcedimientoAuditoria;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
@@ -18,10 +25,7 @@ import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.*;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Implementación de los casos de uso de mantenimiento de personal. Es responsabilidad de esta caap definir el limite de
@@ -65,6 +69,9 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Inject
     private TemaRepository temaRepository;
+
+    @Inject
+    private UnidadAdministrativaAuditoriaRepository auditoriaRepository;
 
 
     @Override
@@ -131,8 +138,8 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         jUnidadAdministrativa.setUsuarios(usuarios);
 
         Set<JTema> temas = new HashSet<>();
-        if(dto.getTemas() != null) {
-            for(TemaGridDTO tema : dto.getTemas()) {
+        if (dto.getTemas() != null) {
+            for (TemaGridDTO tema : dto.getTemas()) {
                 JTema jTema = temaRepository.getReference(tema.getCodigo());
                 temas.add(jTema);
             }
@@ -146,7 +153,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void update(UnidadAdministrativaDTO dto) throws RecursoNoEncontradoException {
+    public void update(UnidadAdministrativaDTO dto, UnidadAdministrativaDTO dtoAntiguo, TypePerfiles perfil) throws RecursoNoEncontradoException {
         JEntidad jEntidad = entidadRepository.getReference(dto.getEntidad().getCodigo());
         JTipoUnidadAdministrativa jTipoUnidadAdministrativa = null;
         if (dto.getTipo() != null) {
@@ -194,6 +201,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
         converter.mergeEntity(jUnidadAdministrativa, dto);
         unidadAdministrativaRepository.update(jUnidadAdministrativa);
+        this.crearAuditoria(dtoAntiguo,dto, perfil);
     }
 
     @Override
@@ -251,6 +259,13 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<AuditoriaGridDTO> findUaAuditoriasById(Long id) {
+        return auditoriaRepository.findUaAuditoriasById(id);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoSexoDTO> findTipoSexo() {
         try {
             List<TipoSexoDTO> items = tipoSexoRepository.findAll();
@@ -288,5 +303,37 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
             unidadesAdministrativas.add(unidadAdministrativaDTO);
         }
         return unidadesAdministrativas;
+    }
+
+    /**
+     * Crear auditoria
+     *
+     * @param uaAntigua
+     * @param uaNueva
+     *
+     */
+    private void crearAuditoria(final UnidadAdministrativaDTO uaAntigua, final UnidadAdministrativaDTO uaNueva, TypePerfiles perfil) {
+
+        List<AuditoriaCambio> cambios = new ArrayList<>();
+        AuditoriaCambio cambio = null;
+        cambios = UnidadAdministrativaDTO.auditar(uaAntigua, uaNueva);
+
+        if (!cambios.isEmpty()) {
+            try {
+                String auditoriaJson = JSONUtil.toJSON(cambios);
+                JUnidadAdministrativaAuditoria jUniAdminAuditoria = new JUnidadAdministrativaAuditoria();
+                JUnidadAdministrativa jUniAdm = this.unidadAdministrativaRepository.findById(uaNueva.getCodigo());
+                jUniAdminAuditoria.setUnidadAdministrativa(jUniAdm);
+                Calendar calendar = Calendar.getInstance();
+                jUniAdminAuditoria.setFechaModificacion(calendar.getTime());
+                jUniAdminAuditoria.setListaModificaciones(auditoriaJson);
+                jUniAdminAuditoria.setUsuarioModificacion(uaNueva.getUsuarioAuditoria());
+                jUniAdminAuditoria.setUsuarioPerfil(perfil.toString());
+                this.auditoriaRepository.create(jUniAdminAuditoria);
+
+            } catch (final JSONUtilException e) {
+                throw new AuditoriaException(e);
+            }
+        }
     }
 }

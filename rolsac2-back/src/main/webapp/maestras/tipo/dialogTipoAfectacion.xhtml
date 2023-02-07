@@ -41,7 +41,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this" >
+                         process="@this"
+                         rendered="#{!dialogTipoAfectacion.isModoConsulta() and dialogTipoAfectacion.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogTipoAfectacion.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion"/>
         </p:commandButton>
@@ -111,8 +112,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogTipoAfectacion.cerrar}"
                          value="#{labels['dict.cerrar']}"
                          process="@this">
-                <p:confirmDialog rendered="#{dialogTipoAfectacion.hayCambios}">
-                </p:confirmDialog>
+<!--                 <p:confirmDialog rendered="#{dialogTipoAfectacion.hayCambios}"> -->
+<!--                 </p:confirmDialog> -->
         </p:commandButton>
     </ui:define>
 

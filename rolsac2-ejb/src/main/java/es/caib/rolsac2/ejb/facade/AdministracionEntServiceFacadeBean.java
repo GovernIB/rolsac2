@@ -291,4 +291,10 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     public boolean existePluginTipo(Long codigoPlugin, String tipo) {
         return pluginRepository.existePluginTipo(codigoPlugin, tipo);
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existePluginTipoByEntidad(Long idEntidad, String tipo) {
+        return pluginRepository.existePluginTipoByEntidad(idEntidad, tipo);
+    }
 }
