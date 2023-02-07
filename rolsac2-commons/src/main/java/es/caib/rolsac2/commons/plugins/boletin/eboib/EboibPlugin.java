@@ -16,7 +16,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class EboibPlugin extends AbstractPluginProperties implements IPluginBoletin {
@@ -24,6 +27,8 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
     public static final String EBOIB_URL_HACK = "eboibUrlHack";
 
     public static final String EBOIB_URL = "eboibUrl";
+
+    public static final String TIPO_BOLETIN_PROPIEDAD = "tipoBoletin";
 
     private ParametrosEBoib parametrosEBoib;
 
@@ -42,6 +47,9 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
         return this.makeSearch(numeroBoletin, fechaBoletin, numeroEdicto);
     }
 
+    public Long obtenerBoletinPlugin() {
+        return Long.valueOf(this.getProperty(TIPO_BOLETIN_PROPIEDAD));
+    }
 
 
     /**********************************************************************************************
@@ -425,7 +433,12 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
         Edicto edicto = new Edicto();
         edicto.setBoletinFecha(normativa.getFechaBoletin());
         edicto.setBoletinTipo(normativa.getNombreBoletin());
-        edicto.setBoletinNumero(normativa.getNumeroBoib());
+        if(normativa.getNumeroBoib().length() == 7) {
+            String numeroBoibFormateado = normativa.getNumeroBoib().substring(4, 7) + "/" + normativa.getNumeroBoib().substring(0, 4);
+            edicto.setBoletinNumero(numeroBoibFormateado);
+        } else {
+            edicto.setBoletinNumero(normativa.getNumeroBoib());
+        }
         edicto.setEdictoNumero(normativa.getValorRegistro());
         edicto.setEdictoTexto(normativa.getTitulos());
         edicto.setEdictoUrl(normativa.getEnlaces());
