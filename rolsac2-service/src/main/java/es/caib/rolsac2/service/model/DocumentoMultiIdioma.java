@@ -122,6 +122,27 @@ public class DocumentoMultiIdioma extends ModelApi implements Cloneable {
     }
 
     /**
+     * Obtiene el valor de un fichero DTO.
+     *
+     * @param idioma idioma
+     * @return el valor del ficheroDTO
+     */
+    public DocumentoTraduccion getDocumentoTraduccion(String idioma) {
+
+        if (traducciones == null || idioma == null) {
+            return null;
+        }
+
+        for (final DocumentoTraduccion traduccion : traducciones) {
+            if (idioma.equals(traduccion.getIdioma())) {
+                return traduccion;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Obtiene el valor de ficheroDTO (con algún valor por defecto).
      *
      * @param idioma idioma

@@ -20,15 +20,16 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
+
         <p:panel id="panelTraduccion">
             <div class="d-flex justify-content-center align-content-center h25px">
-                <p:outputLabel value="#{labels['dialogTraduccion.idiomaOrigen']}" styleClass="mr-2 "></p:outputLabel>
+                <p:outputLabel value="#{labels['dialogTraduccion.idiomaOrigen']}" styleClass="mr-2 "/>
                 <p:selectOneMenu id="selectId1" value="#{dialogTraduccion.idiomaOrigen}"
                                  required="false" styleClass="p-0">
                     <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{null}"/>
                     <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="lang"
                                    itemLabel="#{labels['idiomas.' += lang]}" itemValue="#{lang}"/>
-                    <p:ajax event="change" listener="#{dialogTraduccion.cambiarIdiomaOrigenAux}" update="tradLiteral"/>
+                    <p:ajax event="change" listener="#{dialogTraduccion.cambiarIdiomaOrigenAux}" update="tradLiteral selectId1 selectId2"/>
                 </p:selectOneMenu>
                 <p:commandButton action="#{dialogTraduccion.cambioValores}"
                                  update="selectId1 selectId2 tradLiteral"
@@ -41,13 +42,14 @@
                     <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="lang"
                                    itemLabel="#{labels['idiomas.' += lang]}" itemValue="#{lang}"/>
                     <p:ajax process="@this" listener="#{dialogTraduccion.cambiarIdiomaDestinoAux}"
-                            update="tradLiteral"/>
+                            update="tradLiteral selectId1 selectId2"/>
                 </p:selectOneMenu>
-                <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2"></p:outputLabel>
+                <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2"/>
+                <p:selectBooleanCheckbox value="#{dialogTraduccion.sustitucion}" styleClass="ml-2"
+                                         itemLabel="#{labels['dialogTraduccion.sustituirValor']}"/>
             </div>
             <h:panelGroup id="tradLiteral">
                 <ui:repeat id="lit" value="#{dialogTraduccion.literales}" varStatus="rep" rendered="true">
-                    <!--<h:outputText value="Campo #{rep.index}:" />-->
                     <div class="d-flex justify-content-center align-content-center align-items-center mt-3"
                          style="gap: .5rem;">
                         <div class="w10">
@@ -56,46 +58,93 @@
                         <p:inputTextarea rows="3" autoResize="false" styleClass="w40"
                                          value="#{dialogTraduccion.literalAuxOrigen[rep.index]}">
                             <p:ajax event="change"
-                                    listener="#{dialogTraduccion.cambioIdiomaOrigen(dialogTraduccion.literales[rep.index], dialogTraduccion.idiomaOrigen, rep.index)}"></p:ajax>
+                                    listener="#{dialogTraduccion.cambioIdiomaOrigen(dialogTraduccion.literales[rep.index], dialogTraduccion.idiomaOrigen, rep.index)}"/>
                         </p:inputTextarea>
                         <p:inputTextarea rows="3" autoResize="false" styleClass="w50"
                                          value="#{dialogTraduccion.literalAuxDestino[rep.index]}">
                             <p:ajax event="change"
-                                    listener="#{dialogTraduccion.cambioIdiomaDestino(dialogTraduccion.literales[rep.index], dialogTraduccion.idiomaDestino, rep.index)}"></p:ajax>
+                                    listener="#{dialogTraduccion.cambioIdiomaDestino(dialogTraduccion.literales[rep.index], dialogTraduccion.idiomaDestino, rep.index)}"/>
                         </p:inputTextarea>
                     </div>
                     <h:panelGroup rendered="#{!dialogTraduccion.sustitucion}">
                         <div class="d-flex justify-content-center mt-2">
-                            <p:outputLabel value="#{labels['dict.traduccio'] += ':'}" styleClass="mr-2"></p:outputLabel>
+                            <p:outputLabel value="#{labels['dict.traduccio'] += ':'}" styleClass="mr-2"/>
                             <p:inputTextarea rows="3" autoResize="false" styleClass="w50"
                                              value="#{dialogTraduccion.literalAuxDestinoSust[rep.index]}">
                             </p:inputTextarea>
                         </div>
                     </h:panelGroup>
                 </ui:repeat>
+                <ui:repeat id="litHTML" value="#{dialogTraduccion.literalesHTML}" varStatus="stat" rendered="#{dialogTraduccion.containHTML()}">
+                    <div id="contHTML" class="d-flex justify-content-center align-content-center align-items-center mt-3"
+                         style="gap: .5rem;">
+                        <div class="w10">
+                            <h:outputText value="#{labels['dict.' += dialogTraduccion.listaFieldsHTML[stat.index]]}:"/>
+                        </div>
+                        <p:inputTextarea id="literalOrigen" rows="3" autoResize="false" styleClass="w40" class="htmlEditor" value="#{dialogTraduccion.literalHTMLAuxOrigen[stat.index]}">
+
+                        </p:inputTextarea>
+                        <p:inputText id="literalOrigenInput" value="#{dialogTraduccion.literalHTMLAuxOrigen[stat.index]}" style="display: none;"></p:inputText>
+                        <p:commandButton id="literalOrigenBtn" actionListener="#{dialogTraduccion.cambioIdiomaOrigenHTML(dialogTraduccion.literalesHTML[stat.index], dialogTraduccion.idiomaOrigen, stat.index)}" process="@form" style="display: none;"></p:commandButton>
+
+                        <p:inputTextarea id="literalDestino" rows="3" autoResize="false" styleClass="w50" class="htmlEditor" value="#{dialogTraduccion.literalHTMLAuxDestino[stat.index]}">
+
+                        </p:inputTextarea>
+                        <p:inputText id="literalDestinoInput" value="#{dialogTraduccion.literalHTMLAuxDestino[stat.index]}" style="display: none;"></p:inputText>
+                        <p:commandButton id="literalDestinoBtn" actionListener="#{dialogTraduccion.cambioIdiomaDestinoHTML(dialogTraduccion.literalesHTML[stat.index], dialogTraduccion.idiomaDestino, stat.index)}" process="@form" style="display: none;"></p:commandButton>
+                    </div>
+                    <h:panelGroup rendered="#{!dialogTraduccion.sustitucion}">
+                        <div class="d-flex justify-content-center mt-2">
+                            <p:outputLabel value="#{labels['dict.traduccio'] += ':'}" styleClass="mr-2"/>
+                            <p:inputTextarea rows="3" autoResize="false" styleClass="w50" class="htmlEditor"
+                                             value="#{dialogTraduccion.literalHTMLAuxDestinoSust[stat.index]}">
+                            </p:inputTextarea>
+                        </div>
+                    </h:panelGroup>
+                    <script src="../tinymce/js/tinymce/tinymce.min.js" type="text/javascript"></script>
+                    <h:outputScript>
+                        tinyMCE.init({
+                        // General options
+                        mode : "specific_textareas",
+                        editor_selector: "htmlEditor",
+                        plugins: "code image link lists paste textcolor",
+                        menubar: "",
+                        statusbar: false,
+                        paste_as_text : false,
+                        content_css : "/rolsac2back/javax.faces.resource/css/tinymce_style_editor.css.xhtml",
+                        readonly:#{dialogTraduccion.isModoConsulta()},
+                        setup: function (editor) {
+                        editor.on('keyup', function (e) {
+                          document.getElementById(editor.id+'Input').value=editor.getContent();
+                          document.getElementById(editor.id+'Btn').click();
+                        });
+                        }
+
+                        })
+
+
+
+
+
+
+
+                    </h:outputScript>
+                </ui:repeat>
             </h:panelGroup>
 
-            <div class="row justify-content-center align-items-center mt-3">
-
-                <p:commandButton id="btnTraduccion"
-                                 actionListener="#{dialogTraduccion.traducirLiterales()}"
-                                 style="margin: 20px"
-                                 value="#{labels['dict.traducir']}"
-                                 update="tradLiteral messagesDialog"
-                                 process="@form"/>
-                    <p:selectBooleanCheckbox value="#{dialogTraduccion.sustitucion}"
-                                             itemLabel="#{labels['dialogTraduccion.sustituirValor']}"/>
-            </div>
         </p:panel>
         <p:blockUI block="panelTraduccion" trigger="btnTraduccion" widgetVar="timeSpinner">
             <div class="spinner-border text-light spinner-large" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
         </p:blockUI>
-
-
     </ui:define>
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton id="btnTraduccion"
+                         actionListener="#{dialogTraduccion.traducirLiterales()}"
+                         value="#{labels['dict.traducir']}"
+                         update="tradLiteral messagesDialog"
+                         process="@form"/>
         <p:commandButton action="#{dialogTraduccion.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          process="@all"/>

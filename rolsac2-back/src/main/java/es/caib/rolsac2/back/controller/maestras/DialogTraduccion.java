@@ -7,16 +7,16 @@ import es.caib.rolsac2.commons.plugins.traduccion.api.IPluginTraduccionException
 import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.commons.plugins.traduccion.api.TipoEntrada;
 import es.caib.rolsac2.service.facade.integracion.TraduccionServiceFacade;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.ProcedimientoDTO;
-import es.caib.rolsac2.service.model.ServicioDTO;
-import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -44,6 +44,9 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
     private String idiomaOrigen;
 
+    private String idiomaAuxOrigen;
+    private String idiomaAuxDestino;
+
     private List<Traduccion> traducciones;
 
     private List<Literal> literales;
@@ -56,6 +59,13 @@ public class DialogTraduccion extends AbstractController implements Serializable
     private List<String> literalAuxDestinoSust;
     private List<String> listaFields;
 
+    private List<Literal> literalesHTML;
+    private List<String> literalHTMLAuxOrigen;
+    private List<String> literalHTMLAuxDestino;
+    private List<String> listaFieldsHTML;
+    private List<String> literalHTMLAuxDestinoSust;
+
+
     private boolean sustitucion = true;
 
     public void load() throws IllegalAccessException {
@@ -65,10 +75,19 @@ public class DialogTraduccion extends AbstractController implements Serializable
         traducciones = new ArrayList<>();
         idiomas = new ArrayList<>();
         litTrad = Literal.createInstance();
-        idiomaDestino = "es";
         idiomaOrigen = sessionBean.getLang();
+        idiomaAuxOrigen = idiomaOrigen;
+        if (idiomaOrigen.equals("es")) {
+            idiomaDestino = "ca";
+            idiomaAuxDestino = idiomaDestino;
+        } else {
+            idiomaDestino = "es";
+            idiomaAuxDestino = idiomaDestino;
+        }
         literalAux = new ArrayList<>();
         listaFields = new ArrayList<>();
+        literalesHTML = new ArrayList<>();
+        listaFieldsHTML = new ArrayList<>();
 
         data = UtilJSF.getValorMochilaByKey("dataTraduccion");
         UtilJSF.vaciarMochila();
@@ -82,13 +101,22 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
             imprimirLiteralesServicio();
 
+        } else if (data instanceof UnidadAdministrativaDTO) {
+
+            imprimirLiteralesUA();
+
         } else {
+
             imprimirLiterales();
+
         }
 
 
         literalAuxOrigen = new ArrayList<>();
         literalAuxDestino = new ArrayList<>();
+        literalHTMLAuxOrigen = new ArrayList<>();
+        literalHTMLAuxDestino = new ArrayList<>();
+
         if (literales != null) {
             for (Literal literal : literales) {
                 literalAuxOrigen.add(literal.getTraduccion(idiomaOrigen));
@@ -96,36 +124,77 @@ public class DialogTraduccion extends AbstractController implements Serializable
             }
             literalAuxDestinoSust = new ArrayList<>(literalAuxDestino);
         }
+
+        if (literalesHTML != null) {
+            for (Literal literal : literalesHTML) {
+                literalHTMLAuxOrigen.add(literal.getTraduccion(idiomaOrigen));
+                literalHTMLAuxDestino.add(literal.getTraduccion(idiomaDestino));
+            }
+            literalHTMLAuxDestinoSust = new ArrayList<>(literalHTMLAuxDestino);
+        }
     }
 
     public void guardar() {
 
-        if (literales != null) {
-            Method[] metodos = data.getClass().getMethods();
-            Field[] fields = data.getClass().getDeclaredFields();
-            int cont = 0;
+        if (data instanceof UnidadAdministrativaDTO) {
 
-            for (Field field : fields) {
-                for (Method m : metodos) {
-                    if ((m.getName().startsWith("set"))
-                            && (m.getParameterTypes()[0].getTypeName().equals(Literal.class.getTypeName()))) {
-                        try {
+            if (literales != null & literalesHTML != null) {
+                ((UnidadAdministrativaDTO) data).setNombre(literales.get(0));
+//                ((UnidadAdministrativaDTO) data).setUrl(literales.get(1));
+                ((UnidadAdministrativaDTO) data).setPresentacion(literalesHTML.get(0));
+                ((UnidadAdministrativaDTO) data).setResponsable(literalesHTML.get(1));
+            }
 
-                            if ((field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("set", "")))) {
-                                if (literales.size() > cont) {
-                                    m.invoke(data, literales.get(cont));
-                                    cont++;
+        } else if(data instanceof ProcedimientoDTO) {
+            if(literales != null) {
+                ((ProcedimientoDTO) data).setNombreProcedimientoWorkFlow(literales.get(0));
+                ((ProcedimientoDTO) data).setObjeto(literales.get(1));
+                ((ProcedimientoDTO) data).setDestinatarios(literales.get(2));
+                ((ProcedimientoDTO) data).setTerminoResolucion(literales.get(3));
+                ((ProcedimientoDTO) data).setObservaciones(literales.get(4));
+                ((ProcedimientoDTO) data).setLopdFinalidad(literales.get(5));
+                ((ProcedimientoDTO) data).setLopdDestinatario(literales.get(6));
+                ((ProcedimientoDTO) data).setLopdDerechos(literales.get(7));
+            }
+        } else if(data instanceof ServicioDTO) {
+            if(literales != null) {
+                ((ServicioDTO) data).setNombreProcedimientoWorkFlow(literales.get(0));
+                ((ServicioDTO) data).setObjeto(literales.get(1));
+                ((ServicioDTO) data).setDestinatarios(literales.get(2));
+                ((ServicioDTO) data).setRequisitos(literales.get(3));
+                ((ServicioDTO) data).setObservaciones(literales.get(4));
+                ((ServicioDTO) data).setLopdFinalidad(literales.get(5));
+                ((ServicioDTO) data).setLopdDestinatario(literales.get(6));
+                ((ServicioDTO) data).setLopdDerechos(literales.get(7));
+            }
+        } else {
+
+            if (literales != null) {
+                Method[] metodos = data.getClass().getMethods();
+                Field[] fields = data.getClass().getDeclaredFields();
+                int cont = 0;
+
+                for (Field field : fields) {
+                    for (Method m : metodos) {
+                        if ((m.getName().startsWith("set"))
+                                && (m.getParameterTypes()[0].getTypeName().equals(Literal.class.getTypeName()))) {
+                            try {
+
+                                if ((field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("set", "")))) {
+                                    if (literales.size() > cont) {
+                                        m.invoke(data, literales.get(cont));
+                                        cont++;
+                                    }
                                 }
+                            } catch (IllegalAccessException | IllegalArgumentException
+                                    | InvocationTargetException e) {
+                                e.printStackTrace();
                             }
-                        } catch (IllegalAccessException | IllegalArgumentException
-                                 | InvocationTargetException e) {
-                            e.printStackTrace();
                         }
                     }
                 }
             }
         }
-
 
         final DialogResult result = new DialogResult();
         result.setModoAcceso(TypeModoAcceso.ALTA);
@@ -147,27 +216,48 @@ public class DialogTraduccion extends AbstractController implements Serializable
         return literales.isEmpty();
     }
 
+    public boolean containHTML(){
+        return data instanceof UnidadAdministrativaDTO;
+    }
+
+    private void imprimirLiteralesUA() {
+        literales.add((Literal) ((UnidadAdministrativaDTO) data).getNombre().clone());
+//        literales.add((Literal) ((UnidadAdministrativaDTO) data).getUrl().clone());
+        listaFields.add("nombre");
+//        listaFields.add("url");
+
+        literalesHTML.add((Literal) ((UnidadAdministrativaDTO) data).getPresentacion().clone());
+        literalesHTML.add((Literal) ((UnidadAdministrativaDTO) data).getResponsable().clone());
+        listaFieldsHTML.add("presentacion");
+        listaFieldsHTML.add("responsable");
+    }
+
     public void imprimirLiteralesServicio() {
-        literales.add((Literal) ((ProcedimientoDTO) data).getNombreProcedimientoWorkFlow().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesFinalidad().clone());
+        literales.add((Literal) ((ServicioDTO) data).getNombreProcedimientoWorkFlow().clone());
+        literales.add((Literal) ((ServicioDTO) data).getObjeto().clone());
+        literales.add((Literal) ((ServicioDTO) data).getDestinatarios().clone());
+        literales.add((Literal) ((ServicioDTO) data).getRequisitos().clone());
+        literales.add((Literal) ((ServicioDTO) data).getObservaciones().clone());
+        //literales.add((Literal) ((ServicioDTO) data).getTipoTramitacion().getUrl().clone());
+
+        /*literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesFinalidad().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesDestinatario().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getRequisitos().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getObjeto().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getDestinatarios().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getTerminoResolucion().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getObservaciones().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getRequisitos().clone());*/
+
         listaFields.add("nombreProcedimientoWorkFlow");
-        listaFields.add("datosPersonalesFinalidad");
-        listaFields.add("datosPersonalesDestinatario");
-        listaFields.add("requisitos");
         listaFields.add("objeto");
         listaFields.add("destinatarios");
         listaFields.add("terminoResolucion");
         listaFields.add("observaciones");
+//      listaFields.add("url");
+        /*listaFields.add("datosPersonalesFinalidad");
+        listaFields.add("datosPersonalesDestinatario");
+        listaFields.add("requisitos");*/
 
-        literales.add((Literal) ((ProcedimientoDTO) data).getLopdFinalidad().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getLopdDestinatario().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getLopdDerechos().clone());
+
+        literales.add((Literal) ((ServicioDTO) data).getLopdFinalidad().clone());
+        literales.add((Literal) ((ServicioDTO) data).getLopdDestinatario().clone());
+        literales.add((Literal) ((ServicioDTO) data).getLopdDerechos().clone());
         //literales.add((Literal) ((ProcedimientoDTO) data).getLopdInfoAdicional().clone());
         listaFields.add("lopdFinalidad");
         listaFields.add("lopdDestinatario");
@@ -177,21 +267,23 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
     public void imprimirLiteralesProcedimiento() {
         literales.add((Literal) ((ProcedimientoDTO) data).getNombreProcedimientoWorkFlow().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesFinalidad().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesDestinatario().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getRequisitos().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getObjeto().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getDestinatarios().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesDestinatario().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getTerminoResolucion().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getObservaciones().clone());
+        //literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesFinalidad().clone());
+        //literales.add((Literal) ((ProcedimientoDTO) data).getDestinatarios().clone());
+        //literales.add((Literal) ((ProcedimientoDTO) data).getRequisitos().clone());
+
         listaFields.add("nombreProcedimientoWorkFlow");
-        listaFields.add("datosPersonalesFinalidad");
-        listaFields.add("datosPersonalesDestinatario");
-        listaFields.add("requisitos");
         listaFields.add("objeto");
-        listaFields.add("destinatarios");
+        listaFields.add("datosPersonalesDestinatario");
         listaFields.add("terminoResolucion");
         listaFields.add("observaciones");
+        //listaFields.add("datosPersonalesFinalidad");
+        //listaFields.add("destinatarios");
+        //listaFields.add("requisitos");
+
 
         literales.add((Literal) ((ProcedimientoDTO) data).getLopdFinalidad().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getLopdDestinatario().clone());
@@ -215,9 +307,12 @@ public class DialogTraduccion extends AbstractController implements Serializable
                         m.getGenericReturnType().getTypeName().equals(lit.getClass().getTypeName())) {
                     if ((field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("get", "")))) {
                         try {
-                            Literal k = (Literal) m.invoke(data, null);
-                            literales.add((Literal) k.clone());
-                            listaFields.add(field.getName());
+                            if (!field.getName().toLowerCase(Locale.ROOT).contains("url")) {
+                                Literal k = (Literal) m.invoke(data, null);
+                                literales.add((Literal) k.clone());
+                                listaFields.add(field.getName());
+                            }
+
                         } catch (IllegalAccessException | IllegalArgumentException
                                  | InvocationTargetException e) {
                             e.printStackTrace();
@@ -229,31 +324,75 @@ public class DialogTraduccion extends AbstractController implements Serializable
     }
 
     public void cambiarIdiomaOrigenAux() {
-        literalAuxOrigen.clear();
-        for (Literal literal : literales) {
-            literalAuxOrigen.add(literal.getTraduccion(idiomaOrigen));
+        if (!Objects.equals(idiomaOrigen, idiomaDestino)) {
+            literalAuxOrigen.clear();
+            for (Literal literal : literales) {
+                literalAuxOrigen.add(literal.getTraduccion(idiomaOrigen));
+            }
+            if (data instanceof UnidadAdministrativaDTO) {
+                literalHTMLAuxOrigen.clear();
+                for (Literal literal : literalesHTML) {
+                    literalHTMLAuxOrigen.add(literal.getTraduccion(idiomaOrigen));
+                }
+            }
+            idiomaAuxOrigen = idiomaOrigen;
+        } else {
+            idiomaOrigen = idiomaAuxOrigen;
+            cambioValores();
         }
     }
 
     public void cambiarIdiomaDestinoAux() {
-        literalAuxDestino.clear();
-        for (Literal literal : literales) {
-            literalAuxDestino.add(literal.getTraduccion(idiomaDestino));
+        if (!Objects.equals(idiomaDestino, idiomaOrigen)) {
+            literalAuxDestino.clear();
+            for (Literal literal : literales) {
+                literalAuxDestino.add(literal.getTraduccion(idiomaDestino));
+            }
+            if (data instanceof UnidadAdministrativaDTO) {
+                literalHTMLAuxDestino.clear();
+                for (Literal literal : literalesHTML) {
+                    literalHTMLAuxDestino.add(literal.getTraduccion(idiomaDestino));
+                }
+            }
+            idiomaAuxDestino = idiomaDestino;
+        } else {
+            idiomaDestino = idiomaAuxDestino;
+            cambioValores();
         }
-    }
 
-    public void cambioIdiomaOrigen(Literal literal, String idioma, Integer posicion) {
-        literal.add(new Traduccion(idioma, this.literalAuxOrigen.get(posicion)));
-    }
-
-    public void cambioIdiomaDestino(Literal literal, String idioma, Integer posicion) {
-        literal.add(new Traduccion(idioma, this.literalAuxDestino.get(posicion)));
     }
 
     public void cambioValores() {
         String aux = idiomaOrigen;
         idiomaOrigen = idiomaDestino;
         idiomaDestino = aux;
+        idiomaAuxOrigen = idiomaOrigen;
+        idiomaAuxDestino = idiomaDestino;
+        cambiarIdiomaOrigenAux();
+        cambiarIdiomaDestinoAux();
+
+    }
+
+    public void cambioIdiomaOrigen(Literal literal, String idioma, Integer posicion) {
+        literal.add(new Traduccion(idioma, this.literalAuxOrigen.get(posicion)));
+    }
+
+    public void cambioIdiomaOrigenHTML(Literal literal,  String idioma, Integer posicion) {
+        if (data instanceof UnidadAdministrativaDTO) {
+//            literal.add(new Traduccion(idioma, this.literalHTMLAuxOrigen.get(posicion)));
+            literalesHTML.get(posicion).add(new Traduccion(idioma, this.literalHTMLAuxOrigen.get(posicion)));
+        }
+    }
+
+    public void cambioIdiomaDestino(Literal literal, String idioma, Integer posicion) {
+        literal.add(new Traduccion(idioma, this.literalAuxDestino.get(posicion)));
+    }
+
+    public void cambioIdiomaDestinoHTML(Literal literal, String idioma, Integer posicion) {
+        if (data instanceof UnidadAdministrativaDTO) {
+//            literal.add(new Traduccion(idioma, this.literalHTMLAuxDestino.get(posicion)));
+            literalesHTML.get(posicion).add(new Traduccion(idioma, this.literalHTMLAuxDestino.get(posicion)));
+        }
     }
 
     public Idioma comprobarIdioma(String idioma) {
@@ -279,25 +418,60 @@ public class DialogTraduccion extends AbstractController implements Serializable
         if (idiomaDestino.equals(idiomaOrigen)) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraduccion.mismoIdioma"), true);
         } else {
-            literalAux = literales;
             Map<String, String> opciones = new HashMap<>();
-            for (int i = 0; i < literales.size(); i++) {
-                try {
-                    String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.TEXTO_PLANO.toString(),
-                            literales.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino),
-                            opciones, sessionBean.getEntidad().getCodigo());
-                    if (isSustitucion()) {
-                        literalAuxDestino.add(i, tradDestino);
-                        this.cambioIdiomaDestino(literales.get(i), idiomaDestino, i);
-                    } else {
-                        literalAuxDestinoSust.add(i, tradDestino);
+            if (data instanceof UnidadAdministrativaDTO) {
+                for (int i = 0; i < literales.size(); i++) {
+                    try {
+                        String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.TEXTO_PLANO.toString(),
+                                literales.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino),
+                                opciones, sessionBean.getEntidad().getCodigo());
+                        if (isSustitucion()) {
+                            literalAuxDestino.add(i, tradDestino);
+                            this.cambioIdiomaDestino(literales.get(i), idiomaDestino, i);
+                        } else {
+                            literalAuxDestinoSust.add(i, tradDestino);
+                        }
+                    } catch (IPluginTraduccionException e) {
+                        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraduccion.errorComunicacion"));
                     }
-                } catch (IPluginTraduccionException e) {
-                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraduccion.errorComunicacion"));
                 }
+                for (int i = 0; i < literalesHTML.size(); i++) {
+                    try {
+                        String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.HTML.toString(),
+                                literalesHTML.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino),
+                                opciones, sessionBean.getEntidad().getCodigo());
+                        if (isSustitucion()) {
+                            literalHTMLAuxDestino.add(i, tradDestino);
+                            this.cambioIdiomaDestinoHTML(literalesHTML.get(i), idiomaDestino, i);
+                        } else {
+                            literalHTMLAuxDestinoSust.add(i, tradDestino);
+                        }
+                    } catch (IPluginTraduccionException e) {
+                        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraduccion.errorComunicacion"));
+                    }
 
 
+                }
+            } else {
+                for (int i = 0; i < literales.size(); i++) {
+                    try {
+                        String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.TEXTO_PLANO.toString(),
+                                literales.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino),
+                                opciones, sessionBean.getEntidad().getCodigo());
+                        if (isSustitucion()) {
+                            literalAuxDestino.add(i, tradDestino);
+                            this.cambioIdiomaDestino(literales.get(i), idiomaDestino, i);
+                        } else {
+                            literalAuxDestinoSust.add(i, tradDestino);
+                        }
+                    } catch (IPluginTraduccionException e) {
+                        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraduccion.errorComunicacion"));
+                    }
+
+
+                }
             }
+
         }
     }
 
@@ -403,5 +577,61 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
     public void setLiteralAuxDestinoSust(List<String> literalAuxDestinoSust) {
         this.literalAuxDestinoSust = literalAuxDestinoSust;
+    }
+
+    public List<Literal> getLiteralesHTML() {
+        return literalesHTML;
+    }
+
+    public void setLiteralesHTML(List<Literal> literalesHTML) {
+        this.literalesHTML = literalesHTML;
+    }
+
+    public List<String> getLiteralHTMLAuxOrigen() {
+        return literalHTMLAuxOrigen;
+    }
+
+    public void setLiteralHTMLAuxOrigen(List<String> literalHTMLAuxOrigen) {
+        this.literalHTMLAuxOrigen = literalHTMLAuxOrigen;
+    }
+
+    public List<String> getLiteralHTMLAuxDestino() {
+        return literalHTMLAuxDestino;
+    }
+
+    public void setLiteralHTMLAuxDestino(List<String> literalHTMLAuxDestino) {
+        this.literalHTMLAuxDestino = literalHTMLAuxDestino;
+    }
+
+    public List<String> getListaFieldsHTML() {
+        return listaFieldsHTML;
+    }
+
+    public void setListaFieldsHTML(List<String> listaFieldsHTML) {
+        this.listaFieldsHTML = listaFieldsHTML;
+    }
+
+    public List<String> getLiteralHTMLAuxDestinoSust() {
+        return literalHTMLAuxDestinoSust;
+    }
+
+    public void setLiteralHTMLAuxDestinoSust(List<String> literalHTMLAuxDestinoSust) {
+        this.literalHTMLAuxDestinoSust = literalHTMLAuxDestinoSust;
+    }
+
+    public String getIdiomaAuxOrigen() {
+        return idiomaAuxOrigen;
+    }
+
+    public void setIdiomaAuxOrigen(String idiomaAuxOrigen) {
+        this.idiomaAuxOrigen = idiomaAuxOrigen;
+    }
+
+    public String getIdiomaAuxDestino() {
+        return idiomaAuxDestino;
+    }
+
+    public void setIdiomaAuxDestino(String idiomaAuxDestino) {
+        this.idiomaAuxDestino = idiomaAuxDestino;
     }
 }
