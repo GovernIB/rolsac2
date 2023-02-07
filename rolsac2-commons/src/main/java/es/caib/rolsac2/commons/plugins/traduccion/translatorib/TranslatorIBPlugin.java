@@ -9,6 +9,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -44,11 +47,43 @@ public class TranslatorIBPlugin extends AbstractPluginProperties implements IPlu
         String textoSalida = "";
 //        client = ClientBuilder.newClient().register(new BasicAuthenticator(getProperty(USER), getProperty(PASSWORD)));
 
-        // En mock realizamos echo de la entrada
-        if (tipoEntrada.equals(TipoEntrada.TEXTO_PLANO.toString())) {
-            textoSalida = traducirString(textoEntrada, idiomaEntrada, idiomaSalida, TipoEntrada.TEXTO_PLANO);
+        if (textoEntrada == null || textoEntrada.isEmpty()) {
+            return textoSalida;
+        } else {
+            // En mock realizamos echo de la entrada
+            if (tipoEntrada.equals(TipoEntrada.TEXTO_PLANO.toString())) {
+                textoSalida = traducirString(textoEntrada, idiomaEntrada, idiomaSalida, TipoEntrada.TEXTO_PLANO);
+            } else {
+                textoSalida = traducirHTML(textoEntrada, idiomaEntrada, idiomaSalida, TipoEntrada.HTML);
+            }
+            return textoSalida;
         }
-        return textoSalida;
+    }
+
+    public String traducirHTML(String texto, Idioma entrada, Idioma salida, TipoEntrada te) throws IPluginTraduccionException {
+        String res = "";
+        ParametrosTraduccionTexto parametros = new ParametrosTraduccionTexto();
+        parametros.setTextoEntrada(texto);
+        parametros.setTipoEntrada(te);
+
+        parametros.setIdiomaEntrada(entrada);
+        parametros.setIdiomaSalida(salida);
+
+        try {
+            final Response response = client.target(getProperty(BASE_URL) + "/texto").request().post(Entity.json(parametros));
+
+            final ResultadoTraduccionDocumento respuesta = response.readEntity(ResultadoTraduccionDocumento.class);
+
+            if (respuesta != null && !respuesta.isError()) {
+                res = respuesta.getTextoTraducido();
+            } else {
+                res = texto;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IPluginTraduccionException("Ha habido un error en la comunicación con el plugin de traducción. " + e.getMessage());
+        }
+        return res;
     }
 
     public String traducirString(String texto, Idioma entrada, Idioma salida, TipoEntrada te) throws IPluginTraduccionException{
@@ -68,7 +103,7 @@ public class TranslatorIBPlugin extends AbstractPluginProperties implements IPlu
             if (respuesta != null && !respuesta.isError()) {
                 res = respuesta.getTextoTraducido();
             } else {
-                res = "XX ERROR XX";
+                res = texto;
             }
 
         } catch (Exception e) {
