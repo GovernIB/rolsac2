@@ -1,17 +1,16 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import es.caib.rolsac2.back.controller.AbstractController;
-import es.caib.rolsac2.back.model.DialogResult;
-import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.facade.NormativaServiceFacade;
-import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
-import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
-import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
@@ -20,12 +19,22 @@ import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.*;
+import es.caib.rolsac2.back.controller.AbstractController;
+import es.caib.rolsac2.back.model.DialogResult;
+import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.NormativaServiceFacade;
+import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.model.NormativaDTO;
+import es.caib.rolsac2.service.model.NormativaGridDTO;
+import es.caib.rolsac2.service.model.Pagina;
+import es.caib.rolsac2.service.model.TipoBoletinDTO;
+import es.caib.rolsac2.service.model.TipoNormativaDTO;
+import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
+import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 
 @Named
 @ViewScoped
@@ -60,8 +69,10 @@ public class ViewNormativa extends AbstractController implements Serializable {
     }
 
     public void load() {
-        this.setearIdioma();
         LOG.debug("load");
+        this.setearIdioma();
+
+        permisoAccesoVentana(ViewNormativa.class);
         filtro = new NormativaFiltro();
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());

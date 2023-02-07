@@ -42,6 +42,9 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
     @EJB
     UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
+    @EJB
+    MaestrasSupServiceFacade maestrasSupServiceFacade;
+
     private List<EdictoGridDTO> data;
 
     private EdictoGridDTO datoSeleccionado;
@@ -114,6 +117,10 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
 
     private NormativaDTO createNormativaDTO(EdictoGridDTO dto) {
         NormativaDTO normativaDTO = new NormativaDTO();
+        if(boletinServiceFacade.obtenerBoletinPlugin(this.sessionBean.getEntidad().getCodigo()) != null) {
+            Long tipoBoletinId = boletinServiceFacade.obtenerBoletinPlugin(this.sessionBean.getEntidad().getCodigo());
+            normativaDTO.setBoletinOficial(maestrasSupServiceFacade.findTipoBoletinById(tipoBoletinId));
+        }
         normativaDTO.setEntidad(sessionBean.getEntidad());
         normativaDTO.setNombre(dto.getTitulo());
         normativaDTO.setUrlBoletin(dto.getUrl());
