@@ -23,9 +23,14 @@ public class AuditoriaValorCampo {
     private String valorNuevo;
 
     /**
+     * Identificador elemento
+     */
+    private String elemento;
+
+    /**
      * Constructor.
      *
-     * @param campo         campo
+     * @param idioma        idioma
      * @param valorAnterior valor anterior
      * @param valorNuevo    valor nuevo
      */
@@ -34,6 +39,21 @@ public class AuditoriaValorCampo {
         this.idioma = idioma;
         this.valorAnterior = valorAnterior;
         this.valorNuevo = valorNuevo;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param idioma        idioma
+     * @param valorAnterior valor anterior
+     * @param valorNuevo    valor nuevo
+     */
+    public AuditoriaValorCampo(final AuditoriaIdioma idioma, final String valorAnterior, final String valorNuevo, final String iElemento) {
+        super();
+        this.idioma = idioma;
+        this.valorAnterior = valorAnterior;
+        this.valorNuevo = valorNuevo;
+        this.elemento = iElemento;
     }
 
     /**
@@ -97,6 +117,11 @@ public class AuditoriaValorCampo {
         this.idioma = idioma;
     }
 
+    public String getElemento() {
+        return elemento;
+    }
 
-
+    public void setElemento(String elemento) {
+        this.elemento = elemento;
+    }
 }

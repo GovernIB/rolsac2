@@ -1,0 +1,98 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+>
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogAuditoria.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogAuditoria.id}"/>
+            <f:viewParam id="TIPO" name="TIPO" value="#{dialogAuditoria.tipo}"/>
+            <f:viewAction action="#{dialogAuditoria.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogAuditoria.detalle']}" />
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+
+        <h:outputStylesheet>
+            .myTable thead {
+                display:none;
+            }
+            .ui-paginator-top{
+            display:none;
+            }
+        </h:outputStylesheet>
+        <div class="panel-container">
+            <p:panel header="#{labels['dialogAuditoria.datos']}" id="formDatos" styleClass="mx-3">
+                <div class="row">
+                    <div class="ui-g-12">
+                        <p:dataTable id="datatableEstado" var="td" value="#{dialogAuditoria.data}"
+                                     rows="7" scrollable="true" style=" margin-right:0px !important;  flex: 1;" styleClass="w100"
+                                     paginator="true" selectionMode="single" paginatorposition="bottom"
+                                     required="true"
+                                     rendered="#{!empty dialogAuditoria.data}"
+                                     selection="#{dialogAuditoria.datoSeleccionado}" rowKey="#{td.codigo.toString()}">
+
+                            <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                            <p:ajax event="rowSelect" process="@all" update="formDialog:datatableMensajes @form:datatableMensajes" />
+                            <!--
+                            <p:ajax event="rowUnselect"/> -->
+
+                            <!-- Columnas -->
+                            <p:column class="ui-panelgrid-cell"  headerText="Fecha">
+                                <h:outputText value="#{td.fecha}"/>
+                            </p:column>
+
+                            <!-- Columnas -->
+                            <p:column class="ui-panelgrid-cell"  headerText="Usuario">
+                                <h:outputText value="#{td.usuario}"/>
+                            </p:column>
+
+                            <p:column class="ui-panelgrid-cell"  headerText="Perfil">
+                                <h:outputText value="#{td.usuarioPerfil}"/>
+                            </p:column>
+
+                            <p:ajax event="rowUnselect" global="true"  update="@form:datatableMensajes"  process="@form" listener="#{dialogAuditoria.selectDato()}" />
+                            <p:ajax event="rowSelect"   global="true"  update="@form:datatableMensajes"  process="@form"  listener="#{dialogAuditoria.unselectDato()}" />
+
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:panel>
+            <p:panel header="#{labels['dialogAuditoria.historial']}" id="formDatos2" styleClass="mx-3">
+                <div class="row">
+                    <div class="ui-g-12 ui-md-12 ui-lg-12 d-flex w100">
+                        <p:dataTable id="datatableMensajes" var="mensaje" value="#{dialogAuditoria.datoSeleccionado.cambios}"
+                                     rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1; min-height: 150px"
+                                     paginator="false" >
+                            <p:column headerText="#{labels['dialogAuditoria.admContenido']}" styleClass="w20 ">
+                                <h:outputText value="#{dialogAuditoria.getMensajeTraducido(mensaje)}" />
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:panel>
+        </div>
+
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogAuditoria.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogAuditoria.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this"/>
+    </ui:define>
+</ui:composition>
+</html>

@@ -4,7 +4,7 @@
 package es.caib.rolsac2.service.model.auditoria;
 
 
-import es.caib.rolsac2.service.model.ProcedimientoDTO;
+import es.caib.rolsac2.service.model.ProcedimientoBaseDTO;
 
 import java.util.Date;
 
@@ -39,7 +39,7 @@ public class ProcedimientoAuditoria {
     /**
      * persona asociada a la auditoria
      **/
-    private ProcedimientoDTO procedimientoDTO;
+    private ProcedimientoBaseDTO procedimientoDTO;
 
 
     /**
@@ -101,7 +101,7 @@ public class ProcedimientoAuditoria {
     /**
      * @return the oposicion
      */
-    public ProcedimientoDTO getProcedimientoDTO() {
+    public ProcedimientoBaseDTO getProcedimientoDTO() {
 
         return procedimientoDTO;
     }
@@ -109,7 +109,7 @@ public class ProcedimientoAuditoria {
     /**
      * @param procedimientoDTO the oposicion to set
      */
-    public void setProcedimientoDTO(ProcedimientoDTO procedimientoDTO) {
+    public void setProcedimientoDTO(ProcedimientoBaseDTO procedimientoDTO) {
         this.procedimientoDTO = procedimientoDTO;
     }
 

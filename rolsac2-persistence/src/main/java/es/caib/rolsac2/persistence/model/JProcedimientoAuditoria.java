@@ -1,7 +1,7 @@
 package es.caib.rolsac2.persistence.model;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * La clase J procedimiento auditoria.
@@ -33,7 +33,7 @@ public class JProcedimientoAuditoria {
      * Fecha de modificacion
      */
     @Column(name = "PRAU_FECMOD", nullable = false)
-    private LocalDate fechaModificacion;
+    private Date fechaModificacion;
 
     /**
      * Lista de modificaciones
@@ -48,10 +48,13 @@ public class JProcedimientoAuditoria {
     @Column(name = "PRAU_USUMOD", nullable = false, length = 100)
     private String usuarioModificacion;
 
+    @Column(name = "PRAU_USUPRF", nullable = false)
+    private String usuarioPerfil;
+
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Integer getCodigo() {
         return codigo;
@@ -60,7 +63,7 @@ public class JProcedimientoAuditoria {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Integer id) {
         this.codigo = id;
@@ -69,25 +72,25 @@ public class JProcedimientoAuditoria {
     /**
      * Obtiene fecha modificacion.
      *
-     * @return  fecha modificacion
+     * @return fecha modificacion
      */
-    public LocalDate getFechaModificacion() {
+    public Date getFechaModificacion() {
         return fechaModificacion;
     }
 
     /**
      * Establece fecha modificacion.
      *
-     * @param prauFecmod  prau fecmod
+     * @param prauFecmod prau fecmod
      */
-    public void setFechaModificacion(LocalDate prauFecmod) {
+    public void setFechaModificacion(Date prauFecmod) {
         this.fechaModificacion = prauFecmod;
     }
 
     /**
      * Obtiene lista modificaciones.
      *
-     * @return  lista modificaciones
+     * @return lista modificaciones
      */
     public String getListaModificaciones() {
         return listaModificaciones;
@@ -96,7 +99,7 @@ public class JProcedimientoAuditoria {
     /**
      * Establece lista modificaciones.
      *
-     * @param prauLstmod  prau lstmod
+     * @param prauLstmod prau lstmod
      */
     public void setListaModificaciones(String prauLstmod) {
         this.listaModificaciones = prauLstmod;
@@ -105,7 +108,7 @@ public class JProcedimientoAuditoria {
     /**
      * Obtiene usuario modificacion.
      *
-     * @return  usuario modificacion
+     * @return usuario modificacion
      */
     public String getUsuarioModificacion() {
         return usuarioModificacion;
@@ -114,7 +117,7 @@ public class JProcedimientoAuditoria {
     /**
      * Establece usuario modificacion.
      *
-     * @param prauUsumod  prau usumod
+     * @param prauUsumod prau usumod
      */
     public void setUsuarioModificacion(String prauUsumod) {
         this.usuarioModificacion = prauUsumod;
@@ -123,7 +126,7 @@ public class JProcedimientoAuditoria {
     /**
      * Obtiene procedimiento.
      *
-     * @return  procedimiento
+     * @return procedimiento
      */
     public JProcedimiento getProcedimiento() {
         return procedimiento;
@@ -132,9 +135,17 @@ public class JProcedimientoAuditoria {
     /**
      * Establece procedimiento.
      *
-     * @param procedimiento  procedimiento
+     * @param procedimiento procedimiento
      */
     public void setProcedimiento(JProcedimiento procedimiento) {
         this.procedimiento = procedimiento;
+    }
+
+    public String getUsuarioPerfil() {
+        return usuarioPerfil;
+    }
+
+    public void setUsuarioPerfil(String usuarioPerfil) {
+        this.usuarioPerfil = usuarioPerfil;
     }
 }

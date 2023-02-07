@@ -32,29 +32,19 @@ public class AuditoriaFiltro extends AbstractFiltro {
     private boolean responsable;
 
     /**
-     * indica si implica cambio de puesto
-     */
-    private boolean cambioPuesto;
-
-    /**
      * Entidad por la cual se va a filtrar
      **/
     private Object auditoriaEntidad;
 
     /**
-     * indica si se debe mostrar los componentes gráficos de cambio de puesto
+     * Procedimiento
      **/
-    private boolean mostrarCambioPuesto;
+    private Long procedimiento;
 
     /**
-     * indica si se debe ocultar los componentes gráficos de Responsable
-     **/
-    private boolean mostrarResponsable;
-
-    /**
-     * indica si se van a mostrar las etapas en el caso de auditoría de empleo público (oposición)
-     **/
-    private boolean mostrarEtapas;
+     * Unidad Administrativa
+     */
+    private Long unidadAdministrativa;
 
     /**
      * @return the fechaDesde
@@ -98,18 +88,12 @@ public class AuditoriaFiltro extends AbstractFiltro {
         this.responsable = responsable;
     }
 
-    /**
-     * @return the cambioPuesto
-     */
-    public boolean isCambioPuesto() {
-        return cambioPuesto;
+    public Long getProcedimiento() {
+        return procedimiento;
     }
 
-    /**
-     * @param cambioPuesto the cambioPuesto to set
-     */
-    public void setCambioPuesto(final boolean cambioPuesto) {
-        this.cambioPuesto = cambioPuesto;
+    public void setProcedimiento(Long procedimiento) {
+        this.procedimiento = procedimiento;
     }
 
     /**
@@ -127,6 +111,14 @@ public class AuditoriaFiltro extends AbstractFiltro {
     }
 
 
+    public Long getUnidadAdministrativa() {
+        return unidadAdministrativa;
+    }
+
+    public void setUnidadAdministrativa(Long unidadAdministrativa) {
+        this.unidadAdministrativa = unidadAdministrativa;
+    }
+
     /**
      * @return the codigo
      */
@@ -141,6 +133,10 @@ public class AuditoriaFiltro extends AbstractFiltro {
         this.codigo = codigo;
     }
 
+    public boolean isRellenoCodigo() {
+        return this.getCodigo() != null;
+    }
+
     /**
      * Valida fechaDesde
      *
@@ -148,6 +144,10 @@ public class AuditoriaFiltro extends AbstractFiltro {
      */
     public boolean isRellenoFechaDesde() {
         return this.getFechaDesde() != null;
+    }
+
+    public boolean isRellenoProcedimiento() {
+        return this.getProcedimiento() != null;
     }
 
     /**
@@ -159,6 +159,10 @@ public class AuditoriaFiltro extends AbstractFiltro {
         return this.getFechaHasta() != null;
     }
 
+    public boolean isRellenoUA() {
+        return this.getUnidadAdministrativa() != null;
+    }
+
     /**
      * Valida si es responsable
      *
@@ -168,56 +172,11 @@ public class AuditoriaFiltro extends AbstractFiltro {
         return this.isResponsable();
     }
 
-    /**
-     * Valida si hay cambio de puesto
-     *
-     * @return
-     */
-    public boolean isRellenoCambioPuesto() {
-        return this.isCambioPuesto();
-    }
-
-    /**
-     * @return the mostrarCambioPuesto
-     */
-    public boolean isMostrarCambioPuesto() {
-        return mostrarCambioPuesto;
-    }
-
-    /**
-     * @param mostrarCambioPuesto the mostrarCambioPuesto to set
-     */
-    public void setMostrarCambioPuesto(final boolean mostrarCambioPuesto) {
-        this.mostrarCambioPuesto = mostrarCambioPuesto;
-    }
-
-
-    public boolean isMostrarResponsable() {
-        return mostrarResponsable;
-    }
-
-    public void setMostrarResponsable(final boolean mostrarResponsable) {
-        this.mostrarResponsable = mostrarResponsable;
-    }
-
     @Override
     protected String getDefaultOrder() {
         this.setAscendente(false);
-        return "P.fechaAuditoria";
+        return "J.codigo";
     }
 
-    /**
-     * @return the mostrarEtapas
-     */
-    public boolean isMostrarEtapas() {
-        return mostrarEtapas;
-    }
-
-    /**
-     * @param mostrarEtapas the mostrarEtapas to set
-     */
-    public void setMostrarEtapas(final boolean mostrarEtapas) {
-        this.mostrarEtapas = mostrarEtapas;
-    }
 
 }
