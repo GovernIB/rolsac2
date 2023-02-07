@@ -36,8 +36,8 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         if (isTotal) {
             sql = new StringBuilder(
                     "select count(j) from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
-                    + " LEFT OUTER JOIN j.unidadesAdministrativas u"
-                    + " where 1 = 1 ");
+                            + " LEFT OUTER JOIN j.unidadesAdministrativas u"
+                            + " where 1 = 1 ");
         } else {
             sql = new StringBuilder(
                     "SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion " +
@@ -57,20 +57,19 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         }
 
 
-
-        if(filtro.isRellenoTipoNormativa()) {
+        if (filtro.isRellenoTipoNormativa()) {
             sql.append(" and (j.tipoNormativa.codigo = :tipoNormativa) ");
         }
 
-        if(filtro.isRellenoTipoBoletin()) {
+        if (filtro.isRellenoTipoBoletin()) {
             sql.append(" and (j.boletinOficial.codigo = :boletinOficial)");
         }
 
-        if(filtro.isRellenoFechaAprobacion()) {
+        if (filtro.isRellenoFechaAprobacion()) {
             sql.append(" and (j.fechaAprobacion = :fechaAprobacion) ");
         }
 
-        if(filtro.isRellenoFechaBoletin()) {
+        if (filtro.isRellenoFechaBoletin()) {
             sql.append(" and (j.fechaBoletin = :fechaBoletin) ");
         }
 
@@ -94,19 +93,19 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             query.setParameter("idUA", filtro.getIdUA());
         }
 
-        if(filtro.isRellenoTipoNormativa()) {
+        if (filtro.isRellenoTipoNormativa()) {
             query.setParameter("tipoNormativa", filtro.getTipoNormativa().getCodigo());
         }
 
-        if(filtro.isRellenoTipoBoletin()) {
+        if (filtro.isRellenoTipoBoletin()) {
             query.setParameter("boletinOficial", filtro.getTipoBoletin().getCodigo());
         }
 
-        if(filtro.isRellenoFechaAprobacion()) {
+        if (filtro.isRellenoFechaAprobacion()) {
             query.setParameter("fechaAprobacion", filtro.getFechaAprobacion());
         }
 
-        if(filtro.isRellenoFechaBoletin()) {
+        if (filtro.isRellenoFechaBoletin()) {
             query.setParameter("fechaBoletin", filtro.getFechaBoletin());
         }
 

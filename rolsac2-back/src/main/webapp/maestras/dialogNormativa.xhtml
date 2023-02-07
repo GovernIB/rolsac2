@@ -36,7 +36,8 @@
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this">
+                         process="@this"
+                         rendered="#{!dialogNormativa.isModoConsulta() and dialogNormativa.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogTraducir}" process="@this"
                     update="formDialog:txtNombre formDialog:txtUrlBoletin"/>
         </p:commandButton>
@@ -94,7 +95,7 @@
                         </p>
                         <p:inputText id="txtNumero" value="#{dialogNormativa.data.numero}"
                                      styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"
-                                     placeholder="NNNNN/YYYY"/>
+                                     />
                     </div>
                     <div class="form-group col-md-4">
                         <p class="mb-0">
