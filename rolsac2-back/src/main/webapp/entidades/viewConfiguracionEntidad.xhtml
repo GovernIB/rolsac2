@@ -74,8 +74,21 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
          background-position-y: 100px;
          }
 
+         .ui-growl {
+             top: 10%;
+             right: 10px;
+         }
+
      </h:outputStylesheet>
+
      <h:form id="form" >
+
+         <p:growl id="messages"
+                  globalOnly="false"
+                  showDetail="false"
+                  life="5000"
+                  escape="false"/>
+
              <p:importConstants type="es.caib.rolsac2.service.model.types.TypeIdiomaFijo"
                                 var="idiomasFijos"></p:importConstants>
              <p:importConstants type="es.caib.rolsac2.service.model.types.TypeIdiomaOpcional"
@@ -91,7 +104,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
                             <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
                             <p:inputText id="txtCodigo" value="#{viewConfiguracionEntidad.data.codigo}"
                                          styleClass="w95" disabled="true"/>
                         </div>
@@ -101,7 +114,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
                             <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
                             <p:inputText id="txtIdentificador" value="#{viewConfiguracionEntidad.data.identificador}"
                                          styleClass="w95" disabled="true" maxlength="50">
                                 <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
@@ -109,81 +122,88 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             </p:inputText>
                         </div>
                     </div>
-
-                    <!--
                     <div class="row">
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                            <p:outputLabel value="#{labels['dict.lopdFinalidad']}:" for="txtLopdFinalidad"/>
                         </div>
-
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
-                            <my:literalComponent id="inputDescripcion"
-                                                 literal="#{viewConfiguracionEntidad.data.descripcion}"
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <my:literalComponent id="txtLopdFinalidad" styleClass="w95"
+                                                 value="#{viewConfiguracionEntidad.data.lopdFinalidad}"
                                                  soloLecture="#{viewConfiguracionEntidad.isModoConsulta()}"
-                                                 idioma="#{viewConfiguracionEntidad.idioma}"
                                                  required="true"
-                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                 nombreLiteral="#{labels['dict.descripcion']}"/>
+                                                 idiomasObligatorios="#{viewConfiguracionEntidad.data.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
+                                                 idioma="#{viewConfiguracionEntidad.idioma}"
+                                                 literal="#{viewConfiguracionEntidad.data.lopdFinalidad}"
+                                                 nombreLiteral="#{labels['dict.lopdFinalidad']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.rol.admin']}:" for="txtRolAdmin"/>
+                            <p:outputLabel value="#{labels['dict.lopdDestinatario']}:" for="txtLopdDestinatario"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
-                            <p:inputText id="txtRolAdmin" value="#{viewConfiguracionEntidad.data.rolAdmin}"
-                                         styleClass="w95" required="true"
-                                         disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.rol.adminContenido']}:" for="txtRolAdminContenido"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
-                            <p:inputText id="txtRolAdminContenido" value="#{viewConfiguracionEntidad.data.rolAdminContenido}"
-                                         styleClass="w95" required="true"
-                                         disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.rol.gestor']}:" for="txtRolGestor"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
-                            <p:inputText id="txtRolGestor" value="#{viewConfiguracionEntidad.data.rolGestor}"
-                                         styleClass="w95" required="true"
-                                         disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.rol.informador']}:" for="txtRolInformador"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
-                            <p:inputText id="txtRolInformador" value="#{viewConfiguracionEntidad.data.rolInformador}"
-                                         styleClass="w95" required="true"
-                                         disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50"/>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <my:literalComponent id="txtLopdDestinatario" styleClass="w95"
+                                                 value="#{viewConfiguracionEntidad.data.lopdDestinatario}"
+                                                 soloLecture="#{viewConfiguracionEntidad.isModoConsulta()}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{viewConfiguracionEntidad.data.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
+                                                 idioma="#{viewConfiguracionEntidad.idioma}"
+                                                 literal="#{viewConfiguracionEntidad.data.lopdDestinatario}"
+                                                 nombreLiteral="#{labels['dict.lopdDestinatario']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
                         </div>
                     </div>
 
+
                     <div class="row">
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <h:outputText value="#{labels['dialogEntidad.activa']}:" for="txtActiva"/>
+                            <p:outputLabel value="#{labels['dict.lopdDerechos']}:" for="txtLopdDerechos"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
-                            <p:selectBooleanCheckbox id="txtActiva" value="#{viewConfiguracionEntidad.data.activa}"
-                                                     styleClass="w95"
-                                                     disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50"/>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <my:literalComponent id="txtLopdDerechos" styleClass="w95"
+                                                 value="#{viewConfiguracionEntidad.data.lopdDerechos}"
+                                                 soloLecture="#{viewConfiguracionEntidad.isModoConsulta()}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{viewConfiguracionEntidad.data.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
+                                                 idioma="#{viewConfiguracionEntidad.idioma}"
+                                                 literal="#{viewConfiguracionEntidad.data.lopdDerechos}"
+                                                 nombreLiteral="#{labels['dict.lopdDerechos']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
                         </div>
-                    </div> -->
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dict.comunUA']}:" for="txtUAComun"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <my:literalComponent id="txtUAComun" styleClass="w95"
+                                                 value="#{viewConfiguracionEntidad.data.uaComun}"
+                                                 soloLecture="#{viewConfiguracionEntidad.isModoConsulta()}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{viewConfiguracionEntidad.data.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
+                                                 idioma="#{viewConfiguracionEntidad.idioma}"
+                                                 literal="#{viewConfiguracionEntidad.data.uaComun}"
+                                                 nombreLiteral="#{labels['dict.comunUA']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
+                        </div>
+                    </div>
+
+
                     <div class="row">
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
                             <h:outputText value="#{labels['dialogEntidad.idiomas.permitidos']}:" for="txtIdiomasPermitidos"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
                             <p:selectManyButton id="txtIdiomasPermitidos" value="#{viewConfiguracionEntidad.idiomasPermitidos}"
                                                 styleClass="w95 botoneraRed" maxlength="50">
                                 <f:selectItems value="#{idiomasFijos.values()}" var="idioma"
@@ -200,7 +220,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <h:outputText value="#{labels['dialogEntidad.idiomas.obligatorios']}:"
                                           for="txtIdiomasObligatorios"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
                             <p:selectManyButton id="txtIdiomasObligatorios" value="#{viewConfiguracionEntidad.idiomasObligatorios}"
                                                 styleClass="w95 botoneraRed"  maxlength="50">
                                 <f:selectItems value="#{viewConfiguracionEntidad.idiomasPermitidos}" var="idioma"
@@ -214,7 +234,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
                             <h:outputText value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4">
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
                             <p:selectOneMenu id="txtIdiomaDefecto" value="#{viewConfiguracionEntidad.data.idiomaDefectoRest}"
                                              styleClass="w95"
                                              disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50">
@@ -228,7 +248,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
                             <h:outputText value="#{labels['dialogEntidad.logo']}:" for=""/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-4" >
+                        <div class="ui-g-12 ui-md-9 ui-lg-5" >
                             <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
                                 <h:outputText value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
                             </c:if>

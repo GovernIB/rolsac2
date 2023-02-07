@@ -23,6 +23,12 @@
 .iconoRojo {
     color: red !important;
 }
+.iconoVerde {
+    color: #1eba12 !important;
+}
+.iconoAmarillo {
+    color: #ff8000 !important;
+}
 .iconoUAselector span {
     width: 20px;
     height: 20px;
@@ -293,16 +299,16 @@ a:hover {
     color: #FFFFFF;
 }
 
-.ui-confirm-dialog {
-    background-color: #cc073c !important;
-    color: #FFFFFF;
-}
 .ui-dialog-titlebar{
     background-color: #cc073c !important;
     color: #FFFFFF;
 }
 div.ui-dialog-content span.ui-confirm-dialog-severity{
     display:none;
+}
+.ui-dialog-titlebar-maximize {
+    margin-top: 10px !important;
+    margin-right: 5px !important;
 }
 
 .w100 {
