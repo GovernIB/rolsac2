@@ -118,4 +118,13 @@ public class PluginRepositoryBean extends AbstractCrudRepository<JPlugin, Long> 
         Long resultado = (Long) query.getSingleResult();
         return resultado > 0;
     }
+
+    public boolean existePluginTipoByEntidad(Long idEntidad, String tipo) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(p) FROM JPlugin p where p.tipo = :tipo and p.entidad.codigo = :idEntidad");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("tipo", tipo);
+        query.setParameter("idEntidad", idEntidad);
+        Long resultado = (Long) query.getSingleResult();
+        return resultado > 0;
+    }
 }

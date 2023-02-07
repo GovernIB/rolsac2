@@ -107,6 +107,10 @@
         <location>/error/serviceException.xhtml</location>
     </error-page>
     <error-page>
+        <exception-type>es.caib.rolsac2.back.exception.NoAutorizadoException</exception-type>
+        <location>/error/accessException.xhtml</location>
+    </error-page>
+    <error-page>
         <exception-type>javax.ejb.EJBAccessException</exception-type>
         <location>/error/accessException.xhtml</location>
     </error-page>

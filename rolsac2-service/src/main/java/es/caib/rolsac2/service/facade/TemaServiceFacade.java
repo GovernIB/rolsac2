@@ -26,6 +26,8 @@ public interface TemaServiceFacade {
 
     TemaDTO findById(Long id);
 
+    TemaGridDTO findGridById(Long id);
+
     Pagina<TemaGridDTO> findByFiltro(TemaFiltro filtro);
 
     int countByFiltro(TemaFiltro filtro);

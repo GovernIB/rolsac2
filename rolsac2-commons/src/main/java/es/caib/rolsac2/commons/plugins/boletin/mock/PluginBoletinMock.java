@@ -15,6 +15,8 @@ public class PluginBoletinMock extends AbstractPluginProperties implements IPlug
      */
     public static final String IMPLEMENTATION_BASE_PROPERTY = "boletinmock.";
 
+    public static final String TIPO_BOLETIN_PROPIEDAD = "tipoBoletin";
+
     /**
      * Constructor.
      *
@@ -29,6 +31,11 @@ public class PluginBoletinMock extends AbstractPluginProperties implements IPlug
     public List<Edicto> listar(String numeroboletin, String numeroregistro, String fecha) {
         List<Edicto> lista = new ArrayList<>();
         return lista;
+    }
+
+    @Override
+    public Long obtenerBoletinPlugin() {
+        return Long.valueOf(this.getProperty(TIPO_BOLETIN_PROPIEDAD));
     }
 
 }

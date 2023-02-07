@@ -130,6 +130,13 @@ public class TemaServiceFacadeBean implements TemaServiceFacade{
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public TemaGridDTO findGridById(Long id) {
+        return converter.createGridDTO(temaRepository.findById(id));
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<TemaGridDTO> findByFiltro(TemaFiltro filtro) {
         try {
             List<TemaGridDTO> items = temaRepository.findPageByFiltro(filtro);

@@ -17,4 +17,6 @@ public interface PluginRepository extends CrudRepository<JPlugin, Long> {
     List<JPlugin> listPluginsByEntidad(Long idEntidad);
 
     boolean existePluginTipo(Long codigoPlugin, String tipo);
+
+    boolean existePluginTipoByEntidad(Long idEntidad, String tipo);
 }

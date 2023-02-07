@@ -3,6 +3,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -41,14 +42,17 @@
                     <p:outputLabel value="#{labels['dict.tipo']}:" for="txtTipo"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:selectOneMenu id="txtTipo"  requiredMessage="#{labels['dict.obligatorio.tipo']}"
-                                     required="true" value="#{dialogPlugins.data.tipo}" disabled="#{dialogPlugins.isModoConsulta()}">
-                        <f:selectItem itemValue="" itemLabel="#{labels['dialogPlugins.sinPlugin']}" />
-                        <f:selectItem itemValue="TRA" itemLabel="#{labels['dialogPlugins.plugin.TRA']}" />
-                        <f:selectItem itemValue="BOL" itemLabel="#{labels['dialogPlugins.plugin.BOL']}" />
-                        <f:selectItem itemValue="DI3" itemLabel="#{labels['dialogPlugins.plugin.DI3']}" />
-                        <f:selectItem itemValue="IDX" itemLabel="#{labels['dialogPlugins.plugin.IDX']}" />
-                        <f:selectItem itemValue="SIA" itemLabel="#{labels['dialogPlugins.plugin.SIA']}" />
+                    <p:selectOneMenu id="txtTipo" requiredMessage="#{labels['dict.obligatorio.tipo']}"
+                                     required="true" value="#{dialogPlugins.data.tipo}"
+                                     disabled="#{dialogPlugins.isModoConsulta()}">
+                        <f:selectItem itemValue="" itemLabel="#{labels['dialogPlugins.sinPlugin']}"/>
+                        <!--<f:selectItem itemValue="BOL" itemLabel="#{labels['dialogPlugins.plugin.BOL']}"/>
+                        <f:selectItem itemValue="TRA" itemLabel="#{labels['dialogPlugins.plugin.DI3']}"/>
+                        <f:selectItem itemValue="DI3" itemLabel="#{labels['dialogPlugins.plugin.DI3']}"/>-->
+                        <f:selectItems value="#{dialogPlugins.tiposPlugin}" var="plugin" itemValue="#{plugin}"
+                                       itemLabel="#{labels['dialogPlugins.plugin.' += plugin]}"></f:selectItems>
+                        <p:ajax event="valueChange" process="@this" update="seleccionNormativa"></p:ajax>
+
                     </p:selectOneMenu>
                 </div>
 
@@ -92,9 +96,33 @@
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtPrefijo" value="#{dialogPlugins.data.prefijoPropiedades}"
-                                     styleClass="w95"
-                                     disabled="#{dialogPlugins.isModoConsulta()}" maxlength="100"/>
+                                 styleClass="w95"
+                                 disabled="#{dialogPlugins.isModoConsulta()}" maxlength="100"/>
                 </div>
+
+                <h:panelGroup id="seleccionNormativa" style="display: inline-block; width: 100%">
+                    <c:if test="#{dialogPlugins.data.tipo.equals('BOL')}">
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <p:outputLabel value="#{labels['dialogNormativa.tipoBoletin']}:"
+                                           for="selectTipoBoletin"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-10 ui-lg-5">
+                            <p:selectOneMenu id="selectTipoBoletin" value="#{dialogPlugins.boletinSeleccionado}"
+                                             required="true"
+                                             requiredMessage="#{labels['dict.obligatorio.boletinOficial']}"
+                                             disabled="#{dialogPlugins.isModoConsulta()}"
+                                             converter="#{boletinOficialConverter}">
+                                <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.boletinOficial']}"
+                                              itemValue="#{null}"/>
+                                <f:selectItems value="#{dialogPlugins.tiposBoletin}" var="tipoBoletin"
+                                               itemLabel="#{tipoBoletin.nombre}"
+                                               itemValue="#{tipoBoletin}"/>
+                                <p:ajax event="change" update="@this"></p:ajax>
+                            </p:selectOneMenu>
+                        </div>
+                    </c:if>
+                </h:panelGroup>
+
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['dialogPlugins.propiedades']}:" for="dataTablePropiedades"/>

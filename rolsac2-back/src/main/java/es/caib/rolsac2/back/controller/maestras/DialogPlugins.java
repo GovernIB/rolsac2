@@ -5,11 +5,15 @@ import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.PluginDTO;
 import es.caib.rolsac2.service.model.Propiedad;
+import es.caib.rolsac2.service.model.TipoBoletinDTO;
+import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 import es.caib.rolsac2.service.utils.UtilJSON;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
@@ -20,27 +24,32 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
 public class DialogPlugins extends AbstractController implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(DialogUsuario.class);
 
+    private static final String TIPO_BOLETIN_PROPIEDAD = "tipoBoletin";
+
     private String id;
 
     private PluginDTO data;
+
+    private List<TipoBoletinDTO> tiposBoletin;
+
+    private TipoBoletinDTO boletinSeleccionado;
+
+    private List<String> tiposPlugin;
 
     /**
      * Propiedad seleccionada.
      */
     private Propiedad propiedadSeleccionada;
 
-
-    @Inject
-    private SessionBean sessionBean;
+    @EJB
+    private MaestrasSupServiceFacade maestrasSupServiceFacade;
 
     @EJB
     AdministracionEntServiceFacade administracionEntService;
@@ -50,15 +59,27 @@ public class DialogPlugins extends AbstractController implements Serializable {
         LOG.debug("init");
 
         this.setearIdioma();
+        tiposPlugin = new ArrayList<>();
+        tiposBoletin = maestrasSupServiceFacade.findBoletines();
+        for (TypePluginEntidad tipoPlugin : TypePluginEntidad.values()) {
+            tiposPlugin.add(tipoPlugin.toString());
+        }
         data = new PluginDTO();
         if (this.isModoAlta()) {
             data = new PluginDTO();
             data.setEntidad(sessionBean.getEntidad());
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = administracionEntService.findPluginById(Long.valueOf(id));
+            if(this.data.getTipo().equals(TypePluginEntidad.BOLETIN.toString())) {
+                Propiedad prop = this.data.getPropiedades().stream().
+                        filter(propiedad -> propiedad.getCodigo().equals(TIPO_BOLETIN_PROPIEDAD)).findFirst().get();
+                this.data.getPropiedades().remove(prop);
+                boletinSeleccionado = maestrasSupServiceFacade.findTipoBoletinById(Long.valueOf(prop.getValor()));
+            }
         }
 
     }
+
 
     public void guardar() {
 
@@ -66,6 +87,10 @@ public class DialogPlugins extends AbstractController implements Serializable {
         if (existe) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogPlugins.error.yaExisteTipo"), true);
             return;
+        }
+
+        if(this.data.getTipo().equals(TypePluginEntidad.BOLETIN.toString())) {
+            this.altaPropiedadNormativa();
         }
 
         if (this.data.getCodigo() == null) {
@@ -243,6 +268,28 @@ public class DialogPlugins extends AbstractController implements Serializable {
         }
     }
 
+    private void altaPropiedadNormativa() {
+        // Refrescamos datos
+        final Propiedad propiedad = new Propiedad();
+        propiedad.setCodigo(TIPO_BOLETIN_PROPIEDAD);
+        if (boletinSeleccionado != null) {
+            propiedad.setValor(boletinSeleccionado.getCodigo().toString());
+        } else {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogPlugins.boletin.seleccionTipoNor"));
+        }
+
+        if (data.getPropiedades() == null) {
+            data.setPropiedades(new ArrayList<>());
+        }
+        for (final Propiedad prop : data.getPropiedades()) {
+            if (prop.getCodigo().equals(propiedad.getCodigo())) {
+                data.getPropiedades().remove(prop);
+            }
+        }
+
+        this.data.getPropiedades().add(propiedad);
+    }
+
     public void cerrar() {
         final DialogResult result = new DialogResult();
         if (this.getModoAcceso() != null) {
@@ -278,4 +325,27 @@ public class DialogPlugins extends AbstractController implements Serializable {
         this.propiedadSeleccionada = propiedadSeleccionada;
     }
 
+    public List<TipoBoletinDTO> getTiposBoletin() {
+        return tiposBoletin;
+    }
+
+    public void setTiposBoletin(List<TipoBoletinDTO> tiposBoletin) {
+        this.tiposBoletin = tiposBoletin;
+    }
+
+    public TipoBoletinDTO getBoletinSeleccionado() {
+        return boletinSeleccionado;
+    }
+
+    public void setBoletinSeleccionado(TipoBoletinDTO boletinSeleccionado) {
+        this.boletinSeleccionado = boletinSeleccionado;
+    }
+
+    public List<String> getTiposPlugin() {
+        return tiposPlugin;
+    }
+
+    public void setTiposPlugin(List<String> tiposPlugin) {
+        this.tiposPlugin = tiposPlugin;
+    }
 }

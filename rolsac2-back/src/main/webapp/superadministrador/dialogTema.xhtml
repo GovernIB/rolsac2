@@ -35,7 +35,8 @@
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
                          update="messagesDialog"
-                         process="@this">
+                         process="@this"
+                         rendered="#{!dialogTema.isModoConsulta() and dialogTema.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogTema.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion"/>
         </p:commandButton>
@@ -62,10 +63,12 @@
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtIdentificador" value="#{dialogTema.data.identificador}"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 styleClass="w95"
+                                 styleClass="w95" onblur="this.value = this.value.toUpperCase();"
                                  required="true" disabled="#{dialogTema.isModoConsulta()}" maxlength="50">
+                        <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
                     </p:inputText>
-                </div>
+                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <h:outputText value="#{labels['dialogTema.temaPadre']}:" for="txtTemaPadre"/>
                 </div>
