@@ -10,25 +10,27 @@
     <nav class="navbar navbar-light navbar-expand-sm">
         <div class="d-flex flex-column">
             <div class="d-flex flex-row align-content-center">
-                <div style="margin-top: 5px">
+                <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getPerfil() == TypePerfiles.GESTOR) or (sessionBean.getPerfil() == TypePerfiles.INFORMADOR) or sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml')   }">
                     <div style="margin-top: 5px">
-                        <my:unidadAdministrativaComponent id="uaGeneral"
-                                                          value="#{sessionBean.unidadActiva}"
-                                                          idioma="#{sessionBean.lang}"
-                                                          ocultarTexto="true" esCabecera="true"
-                        >
+                        <div style="margin-top: 5px">
+                            <my:unidadAdministrativaComponent id="uaGeneral"
+                                                              value="#{sessionBean.unidadActiva}"
+                                                              idioma="#{sessionBean.lang}"
+                                                              ocultarTexto="true" esCabecera="true"
+                            >
 
-                            <!--<p:ajax event="eventoUpdate"   oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}"  />-->
-                            <ui:insert name="breadcrumbBoton"/>
+                                <!--<p:ajax event="eventoUpdate"   oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}"  />-->
+                                <ui:insert name="breadcrumbBoton"/>
 
-                        </my:unidadAdministrativaComponent>
+                            </my:unidadAdministrativaComponent>
+                        </div>
                     </div>
-                </div>
-                <p:breadCrumb id="migaPan" styleClass="breadcrumb migaPan"
-                              homeDisplay="text"
-                              style="background-image: none !important;background: transparent;  border: none; margin-top: 5px">
-                    <ui:insert name="breadcrumb"/>
-                </p:breadCrumb>
+                    <p:breadCrumb id="migaPan" styleClass="breadcrumb migaPan"
+                                  homeDisplay="text"
+                                  style="background-image: none !important;background: transparent;  border: none; margin-top: 5px">
+                        <ui:insert name="breadcrumb"/>
+                    </p:breadCrumb>
+                </c:if>
             </div>
             <button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target="#collapsingNavbar2">
                 <span class="navbar-toggler-icon"></span>

@@ -8,24 +8,26 @@
     <!-- Logo i nom aplicació -->
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mobil">
-            <li class="nav-item dropdown colorRojo">
-                <a class="nav-link dropdown mobil" title="Entidades" href="#" id="entidades"
-                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
-                                          aria-hidden="true"></span>
-                    <span class="mb-0 float-right botoCurt">#{sessionBean.entidad.descripcion.getTraduccion(sessionBean.getLang())}</span>
-                    <span class="oi oi-globe" title="#{labels['idioma_link']}" aria-hidden="true"></span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="entidades">
-                    <p:repeat value="#{sessionBean.entidades}" var="entidad">
-                        <p:commandLink styleClass="dropdown-item mobil" hreflang="#{entidad}"
-                                       action="#{sessionBean.reload()}"
-                                       value="#{entidad.descripcion.getTraduccion(sessionBean.getLang())}">
-                            <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}" />
-                        </p:commandLink>
-                    </p:repeat>
-                </div>
-            </li>
+            <c:if test="#{sessionBean.getPerfil() != TypePerfiles.SUPER_ADMINISTRADOR}">
+                <li class="nav-item dropdown colorRojo">
+                    <a class="nav-link dropdown mobil" title="Entidades" href="#" id="entidades"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
+                                              aria-hidden="true"></span>
+                        <span class="mb-0 float-right botoCurt">#{sessionBean.entidad.descripcion.getTraduccion(sessionBean.getLang())}</span>
+                        <span class="oi oi-globe" title="#{labels['idioma_link']}" aria-hidden="true"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="entidades">
+                        <p:repeat value="#{sessionBean.entidades}" var="entidad">
+                            <p:commandLink styleClass="dropdown-item mobil" hreflang="#{entidad}"
+                                           action="#{sessionBean.reload()}"
+                                           value="#{entidad.descripcion.getTraduccion(sessionBean.getLang())}">
+                                <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}" />
+                            </p:commandLink>
+                        </p:repeat>
+                    </div>
+                </li>
+            </c:if>
             <li class="nav-item dropdown colorRojo">
                 <a class="nav-link dropdown mobil" title="Unidades" href="#" id="perfiles"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
