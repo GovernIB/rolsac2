@@ -23,6 +23,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -335,6 +336,18 @@ public class SessionBean implements Serializable {
         entidades = new ArrayList<>();
         entidades.add(entidad1);
         entidades.add(entidad2);
+    }
+
+    public String getUrl() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String url = request.getRequestURL().toString();
+        return url;
+    }
+
+    public String getUri() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String url = request.getRequestURI().toString();
+        return url;
     }
 
     public void cambiarUnidadAdministrativa(UnidadAdministrativaDTO ua) {
