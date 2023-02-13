@@ -74,10 +74,17 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
     }
 
     @Override
-    public List<TipoTramitacionDTO> findPlantillas(Long idEntidad) {
+    public List<TipoTramitacionDTO> findPlantillas(Long idEntidad, Integer fase) {
+        String sql = "SELECT j FROM JTipoTramitacion j WHERE j.plantilla = true and j.entidad.codigo = :idEntidad";
+        if (fase != null) {
+            sql += " and j.faseProc = :fase ";
+        }
         TypedQuery<JTipoTramitacion> query = entityManager.createQuery(
-                "SELECT j FROM JTipoTramitacion j WHERE j.plantilla = true and j.entidad.codigo = :idEntidad", JTipoTramitacion.class);
+                sql, JTipoTramitacion.class);
         query.setParameter("idEntidad", idEntidad);
+        if (fase != null) {
+            query.setParameter("fase", fase);
+        }
         return converter.createTipoTramitacionDTOs(query.getResultList());
     }
 

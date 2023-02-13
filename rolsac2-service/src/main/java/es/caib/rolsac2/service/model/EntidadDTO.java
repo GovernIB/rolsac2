@@ -66,14 +66,14 @@ public class EntidadDTO extends ModelApi {
             this.rolAdminContenido = otro.rolAdminContenido;
             this.rolGestor = otro.rolGestor;
             this.rolInformador = otro.rolInformador;
-            this.logo = otro.logo;
-            this.descripcion = otro.descripcion;
+            this.logo = otro.logo == null ? null : (FicheroDTO) otro.logo.clone();
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
             this.idiomaDefectoRest = otro.idiomaDefectoRest;
             this.idiomasPermitidos = otro.idiomasPermitidos;
             this.idiomasObligatorios = otro.idiomasObligatorios;
-            this.lopdDerechos = otro.lopdDerechos;
-            this.lopdFinalidad = otro.lopdFinalidad;
-            this.lopdDestinatario = otro.lopdDestinatario;
+            this.lopdDerechos = otro.lopdDerechos == null ? null : (Literal) otro.lopdDerechos.clone();;
+            this.lopdFinalidad = otro.lopdFinalidad == null ? null : (Literal) otro.lopdFinalidad.clone();;
+            this.lopdDestinatario = otro.lopdDestinatario == null ? null : (Literal) otro.lopdDestinatario.clone();;
         }
     }
 

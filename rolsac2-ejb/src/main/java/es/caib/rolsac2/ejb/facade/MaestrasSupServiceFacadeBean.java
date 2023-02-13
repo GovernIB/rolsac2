@@ -990,9 +990,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<TipoTramitacionDTO> findPlantillasTiposTramitacion(Long idEntidad) {
+    public List<TipoTramitacionDTO> findPlantillasTiposTramitacion(Long idEntidad, Integer fase) {
         try {
-            return tipoTramitacionRepository.findPlantillas(idEntidad);
+            return tipoTramitacionRepository.findPlantillas(idEntidad, fase);
         } catch (Exception e) {
             LOG.error("Error: ", e);
             return new ArrayList<>();

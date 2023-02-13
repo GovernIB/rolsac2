@@ -9,20 +9,24 @@ public interface SystemServiceFacade {
 
     /**
      * Método utilizado para obtener las propiedades de configuración
-     * */
+     */
+    String obtenerPropiedadConfiguracion(String propiedad);
+
+    /**
+     * Método utilizado para obtener las propiedades de configuración
+     */
     String obtenerPropiedadConfiguracion(TypePropiedadConfiguracion propiedad);
 
     /**
      * Método utilizado para obtener las propiedades de configuración pasando el idioma como parámetro.
-     * */
+     */
     String obtenerPropiedadConfiguracion(TypePropiedadConfiguracion propiedad, String idioma);
 
 
     /**
      * Obtiene tipo plugin entidad.
      *
-     * @param tipoPlugin
-     *                       tipo plugin
+     * @param tipoPlugin tipo plugin
      * @return Plugin
      */
     IPlugin obtenerPluginEntidad(TypePluginEntidad tipoPlugin, Long idEntidad);

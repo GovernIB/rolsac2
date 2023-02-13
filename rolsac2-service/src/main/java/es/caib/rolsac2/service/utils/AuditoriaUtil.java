@@ -145,7 +145,7 @@ public final class AuditoriaUtil {
     }
 
 
-    public static void auditar(TypeProcedimientoEstado valorPublicado, TypeProcedimientoEstado valorModificado, List<AuditoriaCambio> cambios) {
+    public static void auditar(TypeProcedimientoEstado valorModificado, TypeProcedimientoEstado valorPublicado, List<AuditoriaCambio> cambios) {
 
         if (valorPublicado != null && valorModificado != null) {
             if (valorPublicado != valorModificado) {
@@ -363,28 +363,33 @@ public final class AuditoriaUtil {
             }
         } else {
 
+            //Seccion datos
             ArrayList<AuditoriaCambio> cambios = new ArrayList();
-            AuditoriaUtil.auditar(valorPublicado.getFechaCierre(), valorModificado.getFechaCierre(), cambios, "auditoria.tramite.fechaCierre");
             AuditoriaUtil.auditar(valorPublicado.getFechaPublicacion(), valorModificado.getFechaPublicacion(), cambios, "auditoria.tramite.fechaPublicacion");
             AuditoriaUtil.auditar(valorPublicado.getFechaInicio(), valorModificado.getFechaInicio(), cambios, "auditoria.tramite.fechaInicio");
+            AuditoriaUtil.auditar(valorPublicado.getFechaCierre(), valorModificado.getFechaCierre(), cambios, "auditoria.tramite.fechaCierre");
             AuditoriaUtil.auditar(valorPublicado.getFase(), valorModificado.getFase(), cambios, "auditoria.tramite.fase");
-            if (valorPublicado.getOrden().compareTo(valorModificado.getOrden()) != 0) {
+            if (valorPublicado.getOrden() != null && valorModificado.getOrden() != null && valorPublicado.getOrden().compareTo(valorModificado.getOrden()) != 0) {
                 AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, getValor(valorPublicado), "de " + valorPublicado.getOrden() + " a " + valorModificado.getOrden(), "auditoria.tramite.orden");
                 cambios.add(cambio);
             }
-            AuditoriaUtil.auditar(valorPublicado.getTasaAsociada(), valorModificado.getTasaAsociada(), cambios, "auditoria.tramite.tasaAsociada");
-            AuditoriaUtil.auditar(valorPublicado.getTipoTramitacion(), valorModificado.getTipoTramitacion(), cambios, "auditoria.tramite.tipoTramitacion");
+            AuditoriaUtil.auditar(valorPublicado.getNombre(), valorModificado.getNombre(), cambios, "auditoria.tramite.nombre");
+            AuditoriaUtil.auditar(valorPublicado.getRequisitos(), valorModificado.getRequisitos(), cambios, "auditoria.tramite.requisitos");
+            AuditoriaUtil.auditar(valorPublicado.getDocumentacion(), valorModificado.getDocumentacion(), cambios, "auditoria.tramite.documentacion");
+            AuditoriaUtil.auditar(valorPublicado.getTerminoMaximo(), valorModificado.getTerminoMaximo(), cambios, "auditoria.tramite.terminoMaximo");
             AuditoriaUtil.auditar(valorPublicado.getUnidadAdministrativa(), valorModificado.getUnidadAdministrativa(), cambios, "auditoria.tramite.unidadAdministrativa");
+            AuditoriaUtil.auditar(valorPublicado.getObservacion(), valorModificado.getObservacion(), cambios, "auditoria.tramite.observacion");
+
+            //Canales presentacion
+            AuditoriaUtil.auditar(valorPublicado.getPlantillaSel(), valorModificado.getPlantillaSel(), cambios, "auditoria.tramite.plantillaSel");
+            //AuditoriaUtil.auditar(valorPublicado.getTasaAsociada(), valorModificado.getTasaAsociada(), cambios, "auditoria.tramite.tasaAsociada");
+            AuditoriaUtil.auditar(valorPublicado.getTipoTramitacion(), valorModificado.getTipoTramitacion(), cambios, "auditoria.tramite.tipoTramitacion");
 
             //Literal
-            AuditoriaUtil.auditar(valorPublicado.getNombre(), valorModificado.getNombre(), cambios, "auditoria.tramite.nombre");
-            AuditoriaUtil.auditar(valorPublicado.getTerminoMaximo(), valorModificado.getTerminoMaximo(), cambios, "auditoria.tramite.terminoMaximo");
-            AuditoriaUtil.auditar(valorPublicado.getRequisitos(), valorModificado.getRequisitos(), cambios, "auditoria.tramite.requisitos");
-            AuditoriaUtil.auditar(valorPublicado.getObservacion(), valorModificado.getObservacion(), cambios, "auditoria.tramite.observacion");
-            AuditoriaUtil.auditar(valorPublicado.getDocumentacion(), valorModificado.getDocumentacion(), cambios, "auditoria.tramite.documentacion");
             //AuditoriaUtil.auditar(valorPublicado.getPlantillaSel(), valorModificado.getPlantillaSel(), cambios, "auditoria.tramite.plantillaSel");
 
 
+            //Relaciones
             AuditoriaUtil.auditarDocumentos(valorPublicado.getListaDocumentos(), valorModificado.getListaDocumentos(), cambios, "auditoria.tramite.listaDocumentos");
             AuditoriaUtil.auditarDocumentos(valorPublicado.getListaModelos(), valorModificado.getListaModelos(), cambios, "auditoria.tramite.listaModelos");
 
@@ -581,7 +586,7 @@ public final class AuditoriaUtil {
                     for (NormativaGridDTO tipoPublicado : valorPublicado) {
                         if (tipo.getCodigo().compareTo(tipoPublicado.getCodigo()) == 0) {
                             normativasAnteriores.add(tipoPublicado);
-                            if (tipo.getOrden().compareTo(tipoPublicado.getOrden()) != 0) {
+                            if (tipo.getOrden() != null && tipoPublicado.getOrden() != null && tipo.getOrden().compareTo(tipoPublicado.getOrden()) != 0) {
                                 AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, getValor(tipo), "de " + tipoPublicado.getOrden() + " a " + tipo.getOrden(), idCampo + ".orden");
                                 cambios.add(cambio);
                             }
@@ -848,7 +853,7 @@ public final class AuditoriaUtil {
                     for (ProcedimientoDocumentoDTO tipoPublicado : valorPublicado) {
                         if (tipo.getCodigo() != null && tipo.getCodigo().compareTo(tipoPublicado.getCodigo()) == 0) {
                             documentosAnteriores.add(tipoPublicado);
-                            if (tipo.getOrden().compareTo(tipoPublicado.getOrden()) != 0) {
+                            if (tipo.getOrden() != null && tipoPublicado.getOrden() != null && tipo.getOrden().compareTo(tipoPublicado.getOrden()) != 0) {
                                 AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, getValor(tipo), "de " + tipoPublicado.getOrden() + " a " + tipo.getOrden(), idCampo + ".orden");
                                 cambios.add(cambio);
                             }
@@ -902,44 +907,6 @@ public final class AuditoriaUtil {
                     }
                 }
             }
-            /*for (ProcedimientoDocumentoDTO tipo : valorModificado) {
-                boolean existe = false;
-                for (ProcedimientoDocumentoDTO tipoPublicado : valorPublicado) {
-                    if (tipo.getCodigo() != null && tipo.getCodigo().compareTo(tipoPublicado.getCodigo()) == 0) {
-
-                        auditar(tipoPublicado, tipo, cambios, idCampo);
-
-                        *//*if (tipo.getOrden().compareTo(tipoPublicado.getOrden()) != 0) {
-                            AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, getValor(tipo), "de " + tipoPublicado.getOrden() + " a " + tipo.getOrden(), idCampo + ".orden");
-                            cambios.add(cambio);
-                        }*//*
-
-
-                        existe = true;
-                        break;
-                    }
-                }
-
-                if (!existe) {
-                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, getTexto(tipo), idCampo + ".add");
-                    cambios.add(cambio);
-                }
-            }
-
-            for (ProcedimientoDocumentoDTO tipoNuevo : valorModificado) {
-                boolean existe = false;
-                for (ProcedimientoDocumentoDTO tipo : valorPublicado) {
-                    if (tipo.getCodigo() != null && tipoNuevo.getCodigo() != null && tipo.getCodigo().compareTo(tipoNuevo.getCodigo()) == 0) {
-                        existe = true;
-                        break;
-                    }
-                }
-
-                if (!existe) {
-                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, getTexto(tipoNuevo), null, idCampo + ".remove");
-                    cambios.add(cambio);
-                }
-            }*/
         }
     }
 
@@ -981,7 +948,7 @@ public final class AuditoriaUtil {
                     for (ProcedimientoTramiteDTO tipoPublicado : valorPublicado) {
                         if (tipo.getCodigo() != null && tipo.getCodigo().compareTo(tipoPublicado.getCodigo()) == 0) {
                             tramitesAnteriores.add(tipoPublicado);
-                            if (tipo.getOrden().compareTo(tipoPublicado.getOrden()) != 0) {
+                            if (tipo.getOrden() != null && tipoPublicado.getOrden() != null && tipo.getOrden().compareTo(tipoPublicado.getOrden()) != 0) {
                                 AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, getValor(tipo), "de " + tipoPublicado.getOrden() + " a " + tipo.getOrden(), idCampo + ".orden");
                                 cambios.add(cambio);
                             }

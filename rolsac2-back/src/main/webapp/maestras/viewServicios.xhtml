@@ -82,7 +82,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              actionListener="#{viewServicios.buscar()}"
                                              update="messages dataTable"
                                              process="@form"/>
-                            <p:commandButton value="+" onclick="PF('panel').toggle()"/>
+                            <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" onclick="PF('panel').toggle();cambiarBoton()" />
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                             <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2" icon="pi pi-file-o"
@@ -311,6 +311,15 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
             <h:outputScript>
                 function triggerDblClick() {
                     $('#form\\:btnEditarHidden').click();
+                }
+                function cambiarBoton() {
+                    if ( $('#form\\:btnBusquedaAvanzada span').hasClass('pi-plus'))  {
+                        $('#form\\:btnBusquedaAvanzada span').removeClass('pi-plus');
+                        $('#form\\:btnBusquedaAvanzada span').addClass('pi-minus');
+                    } else {
+                        $('#form\\:btnBusquedaAvanzada span').removeClass('pi-minus');
+                        $('#form\\:btnBusquedaAvanzada span').addClass('pi-plus');
+                    }
                 }
             </h:outputScript>
 

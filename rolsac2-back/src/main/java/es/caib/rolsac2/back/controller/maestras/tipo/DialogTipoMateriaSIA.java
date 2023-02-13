@@ -9,6 +9,7 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.utils.UtilComparador;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -138,7 +139,7 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
     }
 
     public void cerrar() {
-        if(comprobarModificacion()) {
+    	if (data != null && dataOriginal != null && comprobarModificacion()) {
         	PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
             cerrarDefinitivo();
@@ -146,9 +147,9 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
     }
 
     private boolean comprobarModificacion() {
-        return !data.getCodigo().equals(dataOriginal.getCodigo())
-                || !data.getIdentificador().equals(dataOriginal.getIdentificador())
-                || !data.getDescripcion().equals(dataOriginal.getDescripcion());
+        return UtilComparador.compareTo(data.getCodigo(),dataOriginal.getCodigo())!=0
+                || UtilComparador.compareTo(data.getIdentificador(),dataOriginal.getIdentificador())!=0
+                || UtilComparador.compareTo(data.getDescripcion(),dataOriginal.getDescripcion())!=0;
     }
 
 

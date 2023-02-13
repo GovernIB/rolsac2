@@ -846,3 +846,16 @@ legend {
 .panel-tree ul {
 	overflow: hidden;
 }
+.ocultar {
+	display:none;
+}
+.mt-1-1rem{
+	margin-top: 1.1rem !important;
+}
+
+.mt-1-2rem{
+	margin-top: 1.2rem !important;
+}
+.mt-1-3rem{
+	margin-top: 1.3rem !important;
+}

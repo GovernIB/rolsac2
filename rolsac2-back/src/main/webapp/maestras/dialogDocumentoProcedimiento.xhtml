@@ -20,10 +20,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogDocumentoProcedimiento.detalle.' += dialogDocumentoProcedimiento.tipo]} - #{dialogDocumentoProcedimiento.data.codigo} "
+        <h:outputFormat value="#{labels['dialogDocumentoProcedimiento.detalle.' += dialogDocumentoProcedimiento.tipo]} "
                         rendered="#{!dialogDocumentoProcedimiento.isModoAlta()}"/>
-        <h:outputFormat value="#{labels['dialogDocumentoProcedimiento.nuevo.documentoNormativa.' += dialogDocumentoProcedimiento.tipo]}"
+        <h:outputFormat value="- #{dialogDocumentoProcedimiento.data.codigo} "
+                        rendered="#{!dialogDocumentoProcedimiento.isModoAlta() and !empty dialogDocumentoProcedimiento.data.codigo}"/>
+        <h:outputFormat value="#{labels['dialogDocumentoProcedimiento.nuevo.documento.' += dialogDocumentoProcedimiento.tipo]}"
                         rendered="#{dialogDocumentoProcedimiento.isModoAlta()}"/>
+
     </ui:define>
 
     <ui:define name="contentIdioma">

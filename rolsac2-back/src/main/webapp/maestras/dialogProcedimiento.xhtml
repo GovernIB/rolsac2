@@ -118,11 +118,25 @@
                                         value="#{dialogProcedimiento.data.fechaCaducidad}" pattern="dd/MM/yyyy HH:mm" showOn="button"/>
                         </p>
                     </div>
-                    <div class="form-group col-md-2 d-flex flex-column justify-content-center">
+                    <div class="form-group col-md-1 d-flex flex-column ">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.tasa']}:"
                                        for="txtTasa"/>
-                        <p:selectBooleanCheckbox id="txtTasa"
+                        <p:selectBooleanCheckbox id="txtTasa" styleClass="mt-1"
                                                  value="#{dialogProcedimiento.data.tieneTasa}"/>
+                    </div>
+                    <div class="form-group col-md-2">
+                          <p:outputLabel id="labelSelectComun" value="#{labels['dict.tipo']}:"  styleClass="pt-0"/>
+
+                            <p:selectOneMenu id="selectComun" value="#{dialogProcedimiento.data.comun}"
+                                              autoWidth="false"
+                                             disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                             converter="javax.faces.Integer">
+                                <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
+                                <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1" />
+                                <p:ajax event="change"  update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun" process="@this"  />
+                            </p:selectOneMenu>
+
+
                     </div>
                 </div>
                 <div class="form-row">
@@ -283,6 +297,9 @@
                                                                      rendered="#{!dialogProcedimiento.data.esComun()}"
                                                                      value="#{dialogProcedimiento.data.uaResponsable.nombre.getTraduccion(dialogProcedimiento.idioma)}"
                                                                      styleClass="w90 mr-1" disabled="true"/>
+                                                        <p:inputText id="txtOrgCompRaiz" styleClass="ocultar"
+                                                                     value="#{dialogProcedimiento.uaRaiz}"
+                                                                        />
                                                         <p:commandButton  action="#{dialogProcedimiento.abrirVentanaUA()}"
                                                                           icon="pi pi-sitemap"
                                                                           value=" "
@@ -293,7 +310,7 @@
                                                                           id="btnAbrirUA"
                                                         >
                                                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogoUA}" process="@this"
-                                                                    update="formDialog:txtOrgComp formDialog:selectComun selectComun" />
+                                                                    update="formDialog:txtOrgComp formDialog:txtOrgCompRaiz formDialog:selectComun" oncomplete="checkUAraiz()" />
                                                         </p:commandButton>
 
 
@@ -304,15 +321,7 @@
                                         </p>
                                     </div>
                                     <div  class="form-group col-md-3">
-                                        <p:selectOneMenu id="selectComun" value="#{dialogProcedimiento.data.comun}"
-                                                         styleClass="mt-3" autoWidth="false"
-                                                         disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                                         rendered="#{dialogProcedimiento.esUAResponsableRaiz()}"
-                                                         converter="javax.faces.Integer">
-                                            <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
-                                            <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1" />
-                                            <p:ajax event="change"  update="selectComun formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun" process="@this"  />
-                                        </p:selectOneMenu>
+
                                     </div>
                                 </div>
                 <div class="form-row">
@@ -713,23 +722,21 @@
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton id="btnNuevoDocLOPD" title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this"
+                                     disabled="#{dialogProcedimiento.isModoConsulta() or !empty dialogProcedimiento.data.documentosLOPD}" process="@this"
                                      actionListener="#{dialogProcedimiento.nuevoDocumentoLOPD()}"
-                                     rendered="#{empty dialogProcedimiento.data.documentosLOPD}"
                             >
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumentoLOPD}" process="@this"
-                                update="dataDocumentosLopd btnNuevoDocLOPD btnEliminarDocLOPD btnEditarDocLopd"/>
+                                update="dataDocumentosLopd btnNuevoDocLOPD btnEliminarDocLOPD btnEditarDocLOPD"/>
                     </p:commandButton>
                     <p:commandButton id="btnEliminarDocLOPD" title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                                     disabled="#{dialogProcedimiento.isModoConsulta()}" action="#{dialogProcedimiento.borrarDocumentoLOPD}"
-                                     rendered="#{!empty dialogProcedimiento.data.documentosLOPD}"
-                                     process="@this" update="dataDocumentosLopd @form:btnNuevoDocLOPD  @form:btnEliminarDocLOPD  @form:btnEditarDocLopd messagesDialog"/>
-                    <p:commandButton id="btnEditarDocLopd" title="#{labels['dict.editar']}" icon="pi pi-pencil"
-                                     action="#{dialogProcedimiento.editarDocumentoLOPD}"
+                                     disabled="#{dialogProcedimiento.isModoConsulta() or empty dialogProcedimiento.data.documentosLOPD}" action="#{dialogProcedimiento.borrarDocumentoLOPD}"
+                                     process="@this" update="dataDocumentosLopd @form:btnNuevoDocLOPD  @form:btnEliminarDocLOPD  @form:btnEditarDocLOPD messagesDialog"/>
+                    <p:commandButton id="btnEditarDocLOPD" title="#{labels['dict.editar']}" icon="pi pi-pencil"
+                                     action="#{dialogProcedimiento.editarDocumentoLOPD}" styleClass=" "
                                      process="@this" update="dataDocumentosLopd messagesDialog"
-                                     rendered="#{!empty dialogProcedimiento.data.documentosLOPD}">
+                                     disabled="#{dialogProcedimiento.isModoConsulta() or empty dialogProcedimiento.data.documentosLOPD}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumentoLOPD}" process="@this"
-                                update="dataDocumentosLopd btnNuevoDocLOPD btnEliminarDocLOPD btnEditarDocLopd"/>
+                                update="dataDocumentosLopd btnNuevoDocLOPD btnEliminarDocLOPD btnEditarDocLOPD"/>
                     </p:commandButton>
                 </div>
             </div>
@@ -802,9 +809,20 @@
                 document.getElementById("formDialog:btnEditarDoc").click();
             }
             function triggerDblClickDocLopd() {
-                document.getElementById("formDialog:btnEditarDocLopd").click();
+                document.getElementById("formDialog:btnEditarDocLOPD").click();
             }
-
+            function checkUAraiz() {
+                if ('false' == $("#formDialog\\:txtOrgCompRaiz").val() ) {
+                    $("#formDialog\\:selectComun").hide();
+                    $("#formDialog\\:labelSelectComun").hide();
+                } else {
+                    $("#formDialog\\:selectComun").show();
+                    $("#formDialog\\:labelSelectComun").show();
+                }
+             }
+            $( document ).ready(function() {
+                checkUAraiz();
+            });
         </h:outputScript>
 
 
@@ -838,13 +856,10 @@
             <p:commandButton value="#{labels['dict.no']}"        onclick="confirmation.hide()" />
         </p:confirmDialog>
 
-        <p:confirmDialog message="#{labels['dialogProcedimiento.warning.datoModificadoCerrar']}"
-                         header="#{labels['dict.aviso']}!"
-                         widgetVar="cdSalirSinGuardar">
-            <p:commandButton value="#{labels['dict.si']}" onclick="confirmation.hide()" action="#{dialogProcedimiento.cerrarSinCheck()}" update="messagesDialog" />
-            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" />
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="cdSalirSinGuardar">
+            <p:commandButton value="#{labels['dict.si']}" action="#{dialogProcedimiento.cerrarSinCheck()}" update="messagesDialog" onclick="confirmation.hide()"  />
+            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()"  />
         </p:confirmDialog>
-
 
 
     </ui:define>

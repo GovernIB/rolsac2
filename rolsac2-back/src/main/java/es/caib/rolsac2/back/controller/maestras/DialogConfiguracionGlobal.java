@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.model.ConfiguracionGlobalDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.utils.UtilComparador;
 
 import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
@@ -84,7 +85,7 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
     }
 
     public void cerrar() {
-        if(comprobarModificacion()) {
+    	if (data != null && dataOriginal != null && comprobarModificacion()) {
         	PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
             cerrarDefinitivo();
@@ -92,9 +93,9 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
     }
 
     private boolean comprobarModificacion() {
-        return !data.getCodigo().equals(dataOriginal.getCodigo())
-                || !data.getValor().equals(dataOriginal.getValor())
-                || !data.getDescripcion().equals(dataOriginal.getDescripcion());
+        return UtilComparador.compareTo(data.getCodigo(),dataOriginal.getCodigo())!=0
+                || UtilComparador.compareTo(data.getValor(),dataOriginal.getValor())!=0
+                || UtilComparador.compareTo(data.getDescripcion(),dataOriginal.getDescripcion())!=0;
     }
 
     public void traducir() {

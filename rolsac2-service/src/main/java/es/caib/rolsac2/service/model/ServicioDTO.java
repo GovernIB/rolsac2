@@ -132,6 +132,9 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         srvClonado.setFechaCaducidad(this.getFechaCaducidad());
         srvClonado.setFechaPublicacion(this.getFechaPublicacion());
         srvClonado.setFechaActualizacion(this.getFechaActualizacion());
+        srvClonado.setTramitElectronica(this.isTramitElectronica());
+        srvClonado.setTramitPresencial(this.isTramitPresencial());
+        srvClonado.setTramitTelefonica(this.isTramitTelefonica());
 
         srvClonado.setResponsable(this.getResponsable());
         srvClonado.setFechaSIA(this.getFechaSIA());

@@ -10,13 +10,10 @@ import es.caib.rolsac2.service.facade.integracion.TraduccionServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -105,6 +102,10 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
             imprimirLiteralesUA();
 
+        } else if (data instanceof ProcedimientoTramiteDTO) {
+
+            imprimirProcedimientoTramite();
+
         } else {
 
             imprimirLiterales();
@@ -140,13 +141,13 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
             if (literales != null & literalesHTML != null) {
                 ((UnidadAdministrativaDTO) data).setNombre(literales.get(0));
-//                ((UnidadAdministrativaDTO) data).setUrl(literales.get(1));
+                //                ((UnidadAdministrativaDTO) data).setUrl(literales.get(1));
                 ((UnidadAdministrativaDTO) data).setPresentacion(literalesHTML.get(0));
                 ((UnidadAdministrativaDTO) data).setResponsable(literalesHTML.get(1));
             }
 
-        } else if(data instanceof ProcedimientoDTO) {
-            if(literales != null) {
+        } else if (data instanceof ProcedimientoDTO) {
+            if (literales != null) {
                 ((ProcedimientoDTO) data).setNombreProcedimientoWorkFlow(literales.get(0));
                 ((ProcedimientoDTO) data).setObjeto(literales.get(1));
                 ((ProcedimientoDTO) data).setDestinatarios(literales.get(2));
@@ -156,8 +157,8 @@ public class DialogTraduccion extends AbstractController implements Serializable
                 ((ProcedimientoDTO) data).setLopdDestinatario(literales.get(6));
                 ((ProcedimientoDTO) data).setLopdDerechos(literales.get(7));
             }
-        } else if(data instanceof ServicioDTO) {
-            if(literales != null) {
+        } else if (data instanceof ServicioDTO) {
+            if (literales != null) {
                 ((ServicioDTO) data).setNombreProcedimientoWorkFlow(literales.get(0));
                 ((ServicioDTO) data).setObjeto(literales.get(1));
                 ((ServicioDTO) data).setDestinatarios(literales.get(2));
@@ -166,6 +167,14 @@ public class DialogTraduccion extends AbstractController implements Serializable
                 ((ServicioDTO) data).setLopdFinalidad(literales.get(5));
                 ((ServicioDTO) data).setLopdDestinatario(literales.get(6));
                 ((ServicioDTO) data).setLopdDerechos(literales.get(7));
+            }
+        } else if (data instanceof ProcedimientoTramiteDTO) {
+            if (literales != null) {
+                ((ProcedimientoTramiteDTO) data).setNombre(literales.get(0));
+                ((ProcedimientoTramiteDTO) data).setRequisitos(literales.get(1));
+                ((ProcedimientoTramiteDTO) data).setDocumentacion(literales.get(2));
+                ((ProcedimientoTramiteDTO) data).setTerminoMaximo(literales.get(3));
+                ((ProcedimientoTramiteDTO) data).setObservacion(literales.get(4));
             }
         } else {
 
@@ -187,7 +196,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
                                     }
                                 }
                             } catch (IllegalAccessException | IllegalArgumentException
-                                    | InvocationTargetException e) {
+                                     | InvocationTargetException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -216,20 +225,34 @@ public class DialogTraduccion extends AbstractController implements Serializable
         return literales.isEmpty();
     }
 
-    public boolean containHTML(){
+    public boolean containHTML() {
         return data instanceof UnidadAdministrativaDTO;
     }
 
     private void imprimirLiteralesUA() {
         literales.add((Literal) ((UnidadAdministrativaDTO) data).getNombre().clone());
-//        literales.add((Literal) ((UnidadAdministrativaDTO) data).getUrl().clone());
+        //        literales.add((Literal) ((UnidadAdministrativaDTO) data).getUrl().clone());
         listaFields.add("nombre");
-//        listaFields.add("url");
+        //        listaFields.add("url");
 
         literalesHTML.add((Literal) ((UnidadAdministrativaDTO) data).getPresentacion().clone());
         literalesHTML.add((Literal) ((UnidadAdministrativaDTO) data).getResponsable().clone());
         listaFieldsHTML.add("presentacion");
         listaFieldsHTML.add("responsable");
+    }
+
+    private void imprimirProcedimientoTramite() {
+        literales.add((Literal) ((ProcedimientoTramiteDTO) data).getNombre().clone());
+        literales.add((Literal) ((ProcedimientoTramiteDTO) data).getRequisitos().clone());
+        literales.add((Literal) ((ProcedimientoTramiteDTO) data).getDocumentacion().clone());
+        literales.add((Literal) ((ProcedimientoTramiteDTO) data).getTerminoMaximo().clone());
+        literales.add((Literal) ((ProcedimientoTramiteDTO) data).getObservacion().clone());
+
+        listaFields.add("nombre");
+        listaFields.add("requisitos");
+        listaFields.add("documentacion");
+        listaFields.add("terminoMaximo");
+        listaFields.add("observacion");
     }
 
     public void imprimirLiteralesServicio() {
@@ -247,9 +270,9 @@ public class DialogTraduccion extends AbstractController implements Serializable
         listaFields.add("nombreProcedimientoWorkFlow");
         listaFields.add("objeto");
         listaFields.add("destinatarios");
-        listaFields.add("terminoResolucion");
+        listaFields.add("requisitos");
         listaFields.add("observaciones");
-//      listaFields.add("url");
+        //      listaFields.add("url");
         /*listaFields.add("datosPersonalesFinalidad");
         listaFields.add("datosPersonalesDestinatario");
         listaFields.add("requisitos");*/
@@ -277,7 +300,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
         listaFields.add("nombreProcedimientoWorkFlow");
         listaFields.add("objeto");
-        listaFields.add("datosPersonalesDestinatario");
+        listaFields.add("destinatarios");
         listaFields.add("terminoResolucion");
         listaFields.add("observaciones");
         //listaFields.add("datosPersonalesFinalidad");
@@ -377,9 +400,9 @@ public class DialogTraduccion extends AbstractController implements Serializable
         literal.add(new Traduccion(idioma, this.literalAuxOrigen.get(posicion)));
     }
 
-    public void cambioIdiomaOrigenHTML(Literal literal,  String idioma, Integer posicion) {
+    public void cambioIdiomaOrigenHTML(Literal literal, String idioma, Integer posicion) {
         if (data instanceof UnidadAdministrativaDTO) {
-//            literal.add(new Traduccion(idioma, this.literalHTMLAuxOrigen.get(posicion)));
+            //            literal.add(new Traduccion(idioma, this.literalHTMLAuxOrigen.get(posicion)));
             literalesHTML.get(posicion).add(new Traduccion(idioma, this.literalHTMLAuxOrigen.get(posicion)));
         }
     }
@@ -390,7 +413,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
     public void cambioIdiomaDestinoHTML(Literal literal, String idioma, Integer posicion) {
         if (data instanceof UnidadAdministrativaDTO) {
-//            literal.add(new Traduccion(idioma, this.literalHTMLAuxDestino.get(posicion)));
+            //            literal.add(new Traduccion(idioma, this.literalHTMLAuxDestino.get(posicion)));
             literalesHTML.get(posicion).add(new Traduccion(idioma, this.literalHTMLAuxDestino.get(posicion)));
         }
     }

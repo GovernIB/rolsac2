@@ -54,6 +54,7 @@ public interface MaestrasSupServiceFacade {
 
     /**
      * Método para listar los diferentes tipos de afectación dados de alta.
+     *
      * @return
      */
     List<TipoAfectacionDTO> findTipoAfectaciones();
@@ -662,7 +663,7 @@ public interface MaestrasSupServiceFacade {
      * @return lista de tipo tramitación que son plantillas
      */
 
-    List<TipoTramitacionDTO> findPlantillasTiposTramitacion(Long idEntidad);
+    List<TipoTramitacionDTO> findPlantillasTiposTramitacion(Long idEntidad, Integer fase);
 
     /**************************************************
      **************** TIPO VIA  ***********************

@@ -6,6 +6,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Mensaje;
 import es.caib.rolsac2.service.model.Propiedad;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
@@ -57,6 +58,10 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     @EJB
     AdministracionEntServiceFacade administracionEntService;
 
+
+    @EJB
+    private SystemServiceFacade systemServiceFacade;
+
     private boolean mostrarEstados;
 
 
@@ -64,6 +69,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     TypeProcedimientoEstado estadoSeleccionado;
 
     String mensaje;
+    TypeProcedimientoEstado typeEstadoActual;
 
     public void load() {
         LOG.debug("init");
@@ -74,15 +80,18 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         if (mensaje != null && !mensaje.isEmpty()) {
             mensajes = (List<Mensaje>) UtilJSON.getMensaje(mensaje);
         }
+        if (mensajes == null) {
+            mensajes = new ArrayList<>();
+        }
         if (consultarSoloMensajes != null && "S".equals(consultarSoloMensajes)) {
             mostrarEstados = false;
         } else {
             if (estadoActual != null) {
-                TypeProcedimientoEstado typeEstado = TypeProcedimientoEstado.fromString(estadoActual);
+                typeEstadoActual = TypeProcedimientoEstado.fromString(estadoActual);
                 if (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) {
-                    if (typeEstado != null) {
+                    if (typeEstadoActual != null) {
                         estados = new ArrayList<>();
-                        switch (typeEstado) {
+                        switch (typeEstadoActual) {
                             case MODIFICACION:
                                 estados.add(TypeProcedimientoEstado.PUBLICADO);
                                 estados.add(TypeProcedimientoEstado.BORRADO);
@@ -118,7 +127,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                 }
                 if (sessionBean.getPerfil() == TypePerfiles.GESTOR) {
                     estados = new ArrayList<>();
-                    if (typeEstado != null && typeEstado == TypeProcedimientoEstado.MODIFICACION) {
+                    if (typeEstadoActual != null && typeEstadoActual == TypeProcedimientoEstado.MODIFICACION) {
                         estados.add(TypeProcedimientoEstado.PENDIENTE_PUBLICAR);
                         estados.add(TypeProcedimientoEstado.PENDIENTE_RESERVAR);
                         estados.add(TypeProcedimientoEstado.PENDIENTE_BORRAR);
@@ -152,18 +161,26 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             result.setModoAcceso(TypeModoAcceso.CONSULTA);
         }
 
-        if (sessionBean.getPerfil() == TypePerfiles.GESTOR && estadoSeleccionado.isEstadoPendiente()) {
+        //Si el estado actual o seleccionado es pendiente, entonces es un cambio de un
+        if (typeEstadoActual.isEstadoPendiente() || estadoSeleccionado.isEstadoPendiente()) {
+            //if (sessionBean.getPerfil() == TypePerfiles.GESTOR && estadoSeleccionado.isEstadoPendiente()) {
             String literal = estadoSeleccionado.getLiteralMensajePendiente(sessionBean.getLang());
-            Mensaje msg = new Mensaje();
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/dd/MM HH:mm");
-            String fecha = sdf.format((Date) Calendar.getInstance().getTime());
-            msg.setFecha(fecha);
-            msg.setFechaReal((Date) Calendar.getInstance().getTime());
-            String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-            msg.setUsuario(usuario);
-            msg.setMensaje(literal);
-            msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
-            mensajes.add(0, msg);
+            String valorLiteral = null;
+            if (literal != null) {
+                valorLiteral = systemServiceFacade.obtenerPropiedadConfiguracion(literal);
+            }
+            if (literal != null && valorLiteral != null && !valorLiteral.isEmpty()) {
+                Mensaje msg = new Mensaje();
+                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                String fecha = sdf.format((Date) Calendar.getInstance().getTime());
+                msg.setFecha(fecha);
+                msg.setFechaReal((Date) Calendar.getInstance().getTime());
+                String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+                msg.setUsuario(usuario);
+                msg.setMensaje(valorLiteral);
+                msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
+                mensajes.add(0, msg);
+            }
         }
 
         if (mensajeNuevo != null && !mensajeNuevo.isEmpty()) {

@@ -40,7 +40,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtPropiedad" value="#{dialogConfiguracionGlobal.data.propiedad}"
-                                 styleClass="w95" required="true"
+                    			 requiredMessage="#{labels['dict.obligatorio.propiedad']}"
+                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
                                  disabled="true" maxlength="50"/>
                 </div>
             </div>
@@ -50,7 +51,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtValor" value="#{dialogConfiguracionGlobal.data.valor}"
-                                 styleClass="w95" required="true"
+                    			 requiredMessage="#{labels['dict.obligatorio.valor']}"
+                                 styleClass="w95"  required="#{empty param['formDialog:closeButton']}"
                                  disabled="#{dialogConfiguracionGlobal.isModoConsulta()}" maxlength="50"/>
                 </div>
             </div>
@@ -60,7 +62,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputTextarea id="txtDescripcion" value="#{dialogConfiguracionGlobal.data.descripcion}"
-                                     styleClass="w95" required="true" rows="10"
+                                     requiredMessage="#{labels['dict.obligatorio.descripcion']}" styleClass="w95"
+                                     required="#{empty param['formDialog:closeButton']}" rows="10"
                                      disabled="#{dialogConfiguracionGlobal.isModoConsulta()}" maxlength="50"/>
                 </div>
             </div>
@@ -78,13 +81,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogConfiguracionGlobal.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          process="@all"/>
-        <p:commandButton action="#{dialogConfiguracionGlobal.cerrar}"
+        <p:commandButton action="#{dialogConfiguracionGlobal.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
                          process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
-			<p:commandButton value="Sí" action="#{dialogConfiguracionGlobal.cerrarDefinitivo}" update="@form" oncomplete="PF('confirmCerrar').hide();"  />
-			<p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+			<p:commandButton value="#{labels['dict.si']}" process="@this" action="#{dialogConfiguracionGlobal.cerrarDefinitivo}" update="@form" oncomplete="PF('confirmCerrar').hide();"  />
+			<p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"  />
 		</p:confirmDialog>
 
     </ui:define>

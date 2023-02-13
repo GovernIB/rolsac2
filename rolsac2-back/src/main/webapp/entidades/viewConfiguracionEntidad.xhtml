@@ -294,7 +294,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          process="@this"/>
                         <p:commandButton action="#{viewConfiguracionEntidad.guardar}"
                                          value="#{labels['dict.guardar']}"
-                                         process="@all">
+                                         process="@all" update="messages">
                             <f:ajax event="click" listener="#{sessionBean.updateLogo()}" render=":imgLogo :imgDefecto"></f:ajax>
                         </p:commandButton>
                          </div>

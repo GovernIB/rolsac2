@@ -941,7 +941,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     JTipoTramitacion jTipoTramitacionPlantilla = null;
                     if (elemento.getPlantillaSel() != null && elemento.getPlantillaSel().getCodigo() != null) {
                         jTipoTramitacionPlantilla = entityManager.find(JTipoTramitacion.class, elemento.getPlantillaSel().getCodigo());
-                        jTipoTramitacion.setPlantilla(true);
+                        jTipoTramitacionPlantilla.setPlantilla(true);
                     }
 
                     if (elemento.getTipoTramitacion() != null) {
@@ -1117,6 +1117,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( LOWER(cast(j.codigo as string)) like :filtro "
                     + " OR LOWER(t.nombre) LIKE :filtro  OR LOWER(t2.nombre) LIKE :filtro "
+                    + " OR LOWER(wf.estado) LIKE :filtro OR LOWER(wf2.estado) LIKE :filtro    "
                     + " OR LOWER(j.tipo) LIKE :filtro  OR LOWER(cast(j.codigoSIA as string)) LIKE :filtro "
                     + " OR LOWER(cast(j.estadoSIA as string)) LIKE :filtro OR LOWER(cast(j.codigoDir3SIA as string)) LIKE :filtro )");
         }

@@ -66,6 +66,9 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         nombreProcedimiento = (Literal) UtilJSF.getValorMochilaByKey("nombreProcedimiento");
         fechaPublicacion = (Date) UtilJSF.getValorMochilaByKey("fechaPublicacion");
         canalesSeleccionados = new ArrayList<>();
+        if (ocultarIniciacion != null && "S".equals(ocultarIniciacion)) {
+            this.mostrarIniciacion = false;
+        }
 
         if (this.isModoEdicion() || this.isModoConsulta()) {
             data = (ProcedimientoTramiteDTO) UtilJSF.getValorMochilaByKey("tramiteSel");
@@ -84,21 +87,29 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             data = ProcedimientoTramiteDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUnidadAdministrativa(sessionBean.getUnidadActiva());
             data.getUnidadAdministrativa().setEntidad(sessionBean.getEntidad());
+            if (mostrarIniciacion) {
+                data.setFase(1);
+            } else {
+                data.setFase(2);
+            }
         } else {
             data = ProcedimientoTramiteDTO.createInstance(null);
         }
 
         platTramitElectronica = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
-        plantillasTipoTramitacion = maestrasSupServiceFacade.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo());
+        plantillasTipoTramitacion = maestrasSupServiceFacade.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), data.getFase());
 
         if (this.data.getTipoTramitacion() == null) {
             this.data.setTipoTramitacion(TipoTramitacionDTO.createInstance(sessionBean.getIdiomasPermitidosList()));
             this.data.getTipoTramitacion().setEntidad(UtilJSF.getSessionBean().getEntidad());
         }
 
-        if (ocultarIniciacion != null && "S".equals(ocultarIniciacion)) {
-            this.mostrarIniciacion = false;
-        }
+
+    }
+
+    public void cambiaFase() {
+        plantillasTipoTramitacion = maestrasSupServiceFacade.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), data.getFase());
+        data.setPlantillaSel(null);
     }
 
     private boolean verificarGuardar() {

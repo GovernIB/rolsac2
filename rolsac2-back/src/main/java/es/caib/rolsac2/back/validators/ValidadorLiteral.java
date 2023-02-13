@@ -21,10 +21,9 @@ public class ValidadorLiteral implements Validator {
             LiteralComponent literalComponent = (LiteralComponent) component;
 
             String estado = literalComponent.comprobarEstado();
-            if (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado)) {
+            if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
 
                 literalComponent.setEstiloInput("bordeRojoRequired");
-
 
                 String mensajeError = "";
                 if (literalComponent.getAttributes().get("mensajeError") != null) {

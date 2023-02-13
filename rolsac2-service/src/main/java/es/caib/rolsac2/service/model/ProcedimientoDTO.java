@@ -414,38 +414,52 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             return cambios;
         }
 
+        //Estado
         AuditoriaUtil.auditar(data.getEstado(), dataOriginal.getEstado(), cambios);
-        AuditoriaUtil.auditar(data.getFechaCaducidad(), dataOriginal.getFechaCaducidad(), cambios, "auditoria.procedimiento.fechaCaducidad");
+
+        //Seccion Datos
         AuditoriaUtil.auditar(data.getFechaPublicacion(), dataOriginal.getFechaPublicacion(), cambios, "auditoria.procedimiento.fechaPublicacion");
+        AuditoriaUtil.auditar(data.getFechaCaducidad(), dataOriginal.getFechaCaducidad(), cambios, "auditoria.procedimiento.fechaCaducidad");
         AuditoriaUtil.auditar(data.isTieneTasa(), dataOriginal.isTieneTasa(), cambios, "auditoria.procedimiento.tieneTasa");
-        // AuditoriaUtil.auditar(data.getFechaActualizacion(), dataOriginal.getFechaActualizacion(), cambios, "auditoria.procedimiento.fechaActualizacion");
-        AuditoriaUtil.auditar(data.getResponsable(), dataOriginal.getResponsable(), cambios, "auditoria.procedimiento.responsable");
-        AuditoriaUtil.auditar(data.getComun(), dataOriginal.getComun(), cambios, "auditoria.procedimiento.comun");
-        AuditoriaUtil.auditar(data.getLopdResponsable(), dataOriginal.getLopdResponsable(), cambios, "auditoria.procedimiento.lopdResponsable");
-        AuditoriaUtil.auditar(data.isInterno(), dataOriginal.isInterno(), cambios, "auditoria.procedimiento.interno");
-        AuditoriaUtil.auditar(data.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado(), cambios, "auditoria.procedimiento.habilitadoApoderado");
-        AuditoriaUtil.auditar(data.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario(), cambios, "auditoria.procedimiento.habilitadoFuncionario");
-        AuditoriaUtil.auditar(data.getSilencio(), dataOriginal.getSilencio(), cambios, "auditoria.procedimiento.silencio");
-        AuditoriaUtil.auditar(data.getDatosPersonalesLegitimacion(), dataOriginal.getDatosPersonalesLegitimacion(), cambios, "auditoria.procedimiento.datosPersonalesLegitimacion");
+        AuditoriaUtil.auditar(data.getNombreProcedimientoWorkFlow(), dataOriginal.getNombreProcedimientoWorkFlow(), cambios, "auditoria.procedimiento.nombre");
+        AuditoriaUtil.auditar(data.getObjeto(), dataOriginal.getObjeto(), cambios, "auditoria.procedimiento.objeto");
+        AuditoriaUtil.auditar(data.getDestinatarios(), dataOriginal.getDestinatarios(), cambios, "auditoria.procedimiento.destinatarios");
+        AuditoriaUtil.auditar(data.getRequisitos(), dataOriginal.getRequisitos(), cambios, "auditoria.procedimiento.requisitos");
+        AuditoriaUtil.auditar(data.getDatosPersonalesDestinatario(), dataOriginal.getDatosPersonalesDestinatario(), cambios, "auditoria.procedimiento.datosPersonalesDestinatario");
         AuditoriaUtil.auditar(data.getIniciacion(), dataOriginal.getIniciacion(), cambios, "auditoria.procedimiento.iniciacion");
-        AuditoriaUtil.auditar(data.getUaResponsable(), dataOriginal.getUaResponsable(), cambios, "auditoria.procedimiento.uaResponsable");
-        AuditoriaUtil.auditar(data.getUaInstructor(), dataOriginal.getUaInstructor(), cambios, "auditoria.procedimiento.uaInstructor");
+        AuditoriaUtil.auditar(data.getSilencio(), dataOriginal.getSilencio(), cambios, "auditoria.procedimiento.silencio");
         AuditoriaUtil.auditar(data.getTipoProcedimiento(), dataOriginal.getTipoProcedimiento(), cambios, "auditoria.procedimiento.tipoProcedimiento");
         AuditoriaUtil.auditar(data.getTipoVia(), dataOriginal.getTipoVia(), cambios, "auditoria.procedimiento.tipoVia");
+        AuditoriaUtil.auditar(data.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado(), cambios, "auditoria.procedimiento.habilitadoApoderado");
+        AuditoriaUtil.auditar(data.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario(), cambios, "auditoria.procedimiento.habilitadoFuncionario");
+        AuditoriaUtil.auditar(data.getUaInstructor(), dataOriginal.getUaInstructor(), cambios, "auditoria.procedimiento.uaInstructor");
+        AuditoriaUtil.auditar(data.getComun(), dataOriginal.getComun(), cambios, "auditoria.procedimiento.comun");
+        AuditoriaUtil.auditar(data.getTerminoResolucion(), dataOriginal.getTerminoResolucion(), cambios, "auditoria.procedimiento.terminoResolucion");
+        AuditoriaUtil.auditar(data.getObservaciones(), dataOriginal.getObservaciones(), cambios, "auditoria.procedimiento.observaciones");
 
-        //Literal
-        AuditoriaUtil.auditar(data.getNombreProcedimientoWorkFlow(), dataOriginal.getNombreProcedimientoWorkFlow(), cambios, "auditoria.procedimiento.nombre");
-        AuditoriaUtil.auditar(data.getDatosPersonalesFinalidad(), dataOriginal.getDatosPersonalesFinalidad(), cambios, "auditoria.procedimiento.datosPersonalesFinalidad");
-        AuditoriaUtil.auditar(data.getDatosPersonalesDestinatario(), dataOriginal.getDatosPersonalesDestinatario(), cambios, "auditoria.procedimiento.datosPersonalesDestinatario");
+        //Seccion datos contacto
+        AuditoriaUtil.auditar(data.getUaResponsable(), dataOriginal.getUaResponsable(), cambios, "auditoria.procedimiento.uaResponsable");
+        AuditoriaUtil.auditar(data.getResponsable(), dataOriginal.getResponsable(), cambios, "auditoria.procedimiento.responsable");
+        AuditoriaUtil.auditar(data.getResponsableEmail(), dataOriginal.getResponsableEmail(), cambios, "auditoria.procedimiento.responsableEmail");
+
+        //Seccion datos LOPD
+        AuditoriaUtil.auditar(data.isInterno(), dataOriginal.isInterno(), cambios, "auditoria.procedimiento.interno");
+        AuditoriaUtil.auditar(data.getLopdResponsable(), dataOriginal.getLopdResponsable(), cambios, "auditoria.procedimiento.lopdResponsable");
+        AuditoriaUtil.auditar(data.getDatosPersonalesLegitimacion(), dataOriginal.getDatosPersonalesLegitimacion(), cambios, "auditoria.procedimiento.datosPersonalesLegitimacion");
         AuditoriaUtil.auditar(data.getLopdFinalidad(), dataOriginal.getLopdFinalidad(), cambios, "auditoria.procedimiento.lopdFinalidad");
         AuditoriaUtil.auditar(data.getLopdDestinatario(), dataOriginal.getLopdDestinatario(), cambios, "auditoria.procedimiento.lopdDestinatario");
         AuditoriaUtil.auditar(data.getLopdDerechos(), dataOriginal.getLopdDerechos(), cambios, "auditoria.procedimiento.lopdDerechos");
         AuditoriaUtil.auditar(data.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional(), cambios, "auditoria.procedimiento.lopdInfoAdicional");
-        AuditoriaUtil.auditar(data.getObjeto(), dataOriginal.getObjeto(), cambios, "auditoria.procedimiento.objeto");
-        AuditoriaUtil.auditar(data.getDestinatarios(), dataOriginal.getDestinatarios(), cambios, "auditoria.procedimiento.destinatarios");
-        AuditoriaUtil.auditar(data.getTerminoResolucion(), dataOriginal.getTerminoResolucion(), cambios, "auditoria.procedimiento.terminoResolucion");
-        AuditoriaUtil.auditar(data.getObservaciones(), dataOriginal.getObservaciones(), cambios, "auditoria.procedimiento.observaciones");
-        AuditoriaUtil.auditar(data.getRequisitos(), dataOriginal.getRequisitos(), cambios, "auditoria.procedimiento.requisitos");
+        AuditoriaUtil.auditar(data.getDatosPersonalesFinalidad(), dataOriginal.getDatosPersonalesFinalidad(), cambios, "auditoria.procedimiento.datosPersonalesFinalidad");
+
+        if (data instanceof ServicioDTO) {
+            AuditoriaUtil.auditar(((ServicioDTO) data).getTasa(), ((ServicioDTO) dataOriginal).getTasa(), cambios, "auditoria.servicio.tasa");
+            AuditoriaUtil.auditar(((ServicioDTO) data).getTipoTramitacion(), ((ServicioDTO) dataOriginal).getTipoTramitacion(), cambios, "auditoria.servicio.tipoTramitacion");
+            AuditoriaUtil.auditar(((ServicioDTO) data).getPlantillaSel(), ((ServicioDTO) dataOriginal).getPlantillaSel(), cambios, "auditoria.servicio.tipoTramitacionSel");
+            AuditoriaUtil.auditar(((ServicioDTO) data).isTramitPresencial(), ((ServicioDTO) dataOriginal).isTramitPresencial(), cambios, "auditoria.servicio.isTramitPresencial");
+            AuditoriaUtil.auditar(((ServicioDTO) data).isTramitElectronica(), ((ServicioDTO) dataOriginal).isTramitElectronica(), cambios, "auditoria.servicio.isTramitElectronica");
+            AuditoriaUtil.auditar(((ServicioDTO) data).isTramitTelefonica(), ((ServicioDTO) dataOriginal).isTramitTelefonica(), cambios, "auditoria.servicio.isTramitTelefonica");
+        }
 
         //Relaciones
         AuditoriaUtil.auditarTipoPublico(data.getPublicosObjetivo(), dataOriginal.getPublicosObjetivo(), cambios, "auditoria.procedimiento.publicosObjetivo");
@@ -453,20 +467,12 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         AuditoriaUtil.auditarDocumentos(data.getDocumentos(), dataOriginal.getDocumentos(), cambios, "auditoria.procedimiento.documentos");
         AuditoriaUtil.auditarDocumentos(data.getDocumentosLOPD(), dataOriginal.getDocumentosLOPD(), cambios, "auditoria.procedimiento.documentosLOPD");
         AuditoriaUtil.auditarNormativas(data.getNormativas(), dataOriginal.getNormativas(), cambios, "auditoria.procedimiento.normativas");
-        if (data instanceof ServicioDTO) {
-            /*
-            tasa;
-            tipoTramitacion;
-             plantillaSel;
-              tramitPresencial;
-              tramitElectronica;
-              tramitTelefonica;
-             */
-        }
+        AuditoriaUtil.auditarTemas(data.getTemas(), dataOriginal.getTemas(), cambios, "auditoria.procedimiento.temas");
+
         if (data instanceof ProcedimientoDTO) {
             AuditoriaUtil.auditarTramites(((ProcedimientoDTO) data).getTramites(), ((ProcedimientoDTO) dataOriginal).getTramites(), cambios, "auditoria.procedimiento.tramites");
         }
-        AuditoriaUtil.auditarTemas(data.getTemas(), dataOriginal.getTemas(), cambios, "auditoria.procedimiento.temas");
+
 
         return cambios;
     }

@@ -56,7 +56,7 @@ public class TipoMateriaSIADTO extends ModelApi {
         if (otro != null) {
             this.codigo = otro.codigo;
             this.identificador = otro.identificador;
-            this.descripcion = (Literal) otro.descripcion.clone();
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
         }
     }
 

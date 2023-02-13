@@ -1,6 +1,5 @@
 package es.caib.rolsac2.ejb.facade;
 
-import es.caib.rolsac2.commons.plugins.traduccion.translatorib.TranslatorIBPlugin;
 import es.caib.rolsac2.service.exception.PluginErrorException;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
@@ -18,7 +17,8 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.*;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.inject.Inject;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -71,6 +71,13 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public String obtenerPropiedadConfiguracion(String propiedad) {
+        return this.propertiesLocales.getProperty(propiedad.toString());
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String obtenerPropiedadConfiguracion(TypePropiedadConfiguracion propiedad, String idioma) {
         return this.propertiesLocales.getProperty(propiedad.toString() + "." + idioma);
     }
@@ -106,6 +113,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
 
     /**
      * Función encargada de instanciar un plugin
+     *
      * @param plugins
      * @param plgTipo
      * @return

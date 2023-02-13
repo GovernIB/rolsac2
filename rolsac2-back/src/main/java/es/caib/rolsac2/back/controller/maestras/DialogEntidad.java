@@ -15,6 +15,7 @@ import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -91,6 +92,8 @@ public class DialogEntidad extends AbstractController implements Serializable {
             data.setLopdDestinatario(lopdDestinatario);
             data.setLopdFinalidad(lopdFinalidad);
             data.setUaComun(uaComun);
+            data.setActiva(false);
+            dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = administracionSupServiceFacade.findEntidadById(Long.valueOf(id));
             dataOriginal = data.clone();
@@ -161,7 +164,7 @@ public class DialogEntidad extends AbstractController implements Serializable {
     }
 
     public void cerrar() {
-        if (comprobarModificacion()) {
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
             PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
             cerrarDefinitivo();
@@ -169,14 +172,14 @@ public class DialogEntidad extends AbstractController implements Serializable {
     }
 
     private boolean comprobarModificacion() {
-        return !data.getActiva().equals(dataOriginal.getActiva())
-                || !data.getCodigo().equals(dataOriginal.getCodigo())
-                || !data.getIdentificador().equals(dataOriginal.getIdentificador())
-                || !data.getDescripcion().equals(dataOriginal.getDescripcion())
-                || !data.getRolAdmin().equals(dataOriginal.getRolAdmin())
-                || !data.getRolAdminContenido().equals(dataOriginal.getRolAdminContenido())
-                || !data.getRolGestor().equals(dataOriginal.getRolGestor())
-                || !data.getRolInformador().equals(dataOriginal.getRolInformador());
+        return UtilComparador.compareTo(data.getActiva(), dataOriginal.getActiva()) != 0
+                || UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
+                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
+                || UtilComparador.compareTo(data.getRolAdmin(), dataOriginal.getRolAdmin()) != 0
+                || UtilComparador.compareTo(data.getRolAdminContenido(), dataOriginal.getRolAdminContenido()) != 0
+                || UtilComparador.compareTo(data.getRolGestor(), dataOriginal.getRolGestor()) != 0
+                || UtilComparador.compareTo(data.getRolInformador(), dataOriginal.getRolInformador()) != 0;
     }
 
     public void cerrarDefinitivo() {

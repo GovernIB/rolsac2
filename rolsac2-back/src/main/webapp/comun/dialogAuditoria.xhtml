@@ -59,7 +59,7 @@
                             </p:column>
 
                             <p:column class="ui-panelgrid-cell"  headerText="Perfil">
-                                <h:outputText value="#{td.usuarioPerfil}"/>
+                                <h:outputText value="#{labels['TypePerfiles.' += td.usuarioPerfil]}"/>
                             </p:column>
 
                             <p:ajax event="rowUnselect" global="true"  update="@form:datatableMensajes"  process="@form" listener="#{dialogAuditoria.selectDato()}" />

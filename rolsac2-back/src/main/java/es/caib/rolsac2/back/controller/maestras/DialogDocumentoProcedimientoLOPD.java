@@ -51,9 +51,11 @@ public class DialogDocumentoProcedimientoLOPD extends AbstractController impleme
     @Inject
     private SystemServiceFacade systemServiceBean;
 
-    private TypeFicheroExterno tipo = TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS;
+    private TypeFicheroExterno tipoFichero = TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS;
 
     private Long idProcedimento;
+
+    private String tipo;
 
 
     public void load() {
@@ -231,12 +233,12 @@ public class DialogDocumentoProcedimientoLOPD extends AbstractController impleme
         this.data = data;
     }
 
-    public TypeFicheroExterno getTipo() {
-        return tipo;
+    public TypeFicheroExterno getTipoFichero() {
+        return tipoFichero;
     }
 
-    public void setTipo(TypeFicheroExterno tipo) {
-        this.tipo = tipo;
+    public void setTipoFichero(TypeFicheroExterno tipoFichero) {
+        this.tipoFichero = tipoFichero;
     }
 
     public Long getIdProcedimento() {
@@ -245,5 +247,13 @@ public class DialogDocumentoProcedimientoLOPD extends AbstractController impleme
 
     public void setIdProcedimento(Long idProcedimento) {
         this.idProcedimento = idProcedimento;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

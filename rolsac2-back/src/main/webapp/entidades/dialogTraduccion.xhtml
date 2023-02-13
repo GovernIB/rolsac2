@@ -84,14 +84,14 @@
                         <p:inputTextarea id="literalOrigen" rows="3" autoResize="false" styleClass="w40" class="htmlEditor" value="#{dialogTraduccion.literalHTMLAuxOrigen[stat.index]}">
 
                         </p:inputTextarea>
-                        <p:inputText id="literalOrigenInput" value="#{dialogTraduccion.literalHTMLAuxOrigen[stat.index]}" style="display: none;"></p:inputText>
-                        <p:commandButton id="literalOrigenBtn" actionListener="#{dialogTraduccion.cambioIdiomaOrigenHTML(dialogTraduccion.literalesHTML[stat.index], dialogTraduccion.idiomaOrigen, stat.index)}" process="@form" style="display: none;"></p:commandButton>
+                        <p:inputText id="literalOrigenInput" value="#{dialogTraduccion.literalHTMLAuxOrigen[stat.index]}" style="display: none;"/>
+                        <p:commandButton id="literalOrigenBtn" actionListener="#{dialogTraduccion.cambioIdiomaOrigenHTML(dialogTraduccion.literalesHTML[stat.index], dialogTraduccion.idiomaOrigen, stat.index)}" process="@form" style="display: none;"/>
 
                         <p:inputTextarea id="literalDestino" rows="3" autoResize="false" styleClass="w50" class="htmlEditor" value="#{dialogTraduccion.literalHTMLAuxDestino[stat.index]}">
 
                         </p:inputTextarea>
-                        <p:inputText id="literalDestinoInput" value="#{dialogTraduccion.literalHTMLAuxDestino[stat.index]}" style="display: none;"></p:inputText>
-                        <p:commandButton id="literalDestinoBtn" actionListener="#{dialogTraduccion.cambioIdiomaDestinoHTML(dialogTraduccion.literalesHTML[stat.index], dialogTraduccion.idiomaDestino, stat.index)}" process="@form" style="display: none;"></p:commandButton>
+                        <p:inputText id="literalDestinoInput" value="#{dialogTraduccion.literalHTMLAuxDestino[stat.index]}" style="display: none;"/>
+                        <p:commandButton id="literalDestinoBtn" actionListener="#{dialogTraduccion.cambioIdiomaDestinoHTML(dialogTraduccion.literalesHTML[stat.index], dialogTraduccion.idiomaDestino, stat.index)}" process="@form" style="display: none;"/>
                     </div>
                     <h:panelGroup rendered="#{!dialogTraduccion.sustitucion}">
                         <div class="d-flex justify-content-center mt-2">

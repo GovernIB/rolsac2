@@ -79,6 +79,22 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         }
     }
 
+    public boolean isTipoProcedimientoDocumento() {
+        return tipo != null && "PROC_DOC".equals(tipo);
+    }
+
+    public boolean isTipoServicioDocumento() {
+        return tipo != null && "SERV_DOC".equals(tipo);
+    }
+
+    public boolean isTipoTramiteDocumento() {
+        return tipo != null && "TRAM_DOC".equals(tipo);
+    }
+
+    public boolean isTipoTramiteModelo() {
+        return tipo != null && "TRAM_MOD".equals(tipo);
+    }
+
     public void guardar() {
         if (!verificarGuardar()) {
             return;

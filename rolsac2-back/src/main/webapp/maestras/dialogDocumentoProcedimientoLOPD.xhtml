@@ -14,15 +14,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <f:metadata>
             <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogDocumentoProcedimientoLOPD.modoAcceso}"/>
             <f:viewParam id="ID" name="ID" value="#{dialogDocumentoProcedimientoLOPD.idProcedimento}"/>
+            <f:viewParam id="TIPO" name="TIPO" value="#{dialogDocumentoProcedimientoLOPD.tipo}"/>
             <f:viewAction action="#{dialogDocumentoProcedimientoLOPD.load}"/>
         </f:metadata>
     </ui:define>
 
 
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogDocumentoProcedimientoLOPD.detalle']} - #{dialogDocumentoProcedimientoLOPD.data.codigo} "
+
+        <h:outputFormat value="#{labels['dialogDocumentoProcedimientoLOPD.detalle.' += dialogDocumentoProcedimientoLOPD.tipo]} - #{dialogDocumentoProcedimientoLOPD.data.codigo} "
                         rendered="#{!dialogDocumentoProcedimientoLOPD.isModoAlta()}"/>
-        <h:outputFormat value="#{labels['dialogDocumentoProcedimientoLOPD.nuevo.documentoNormativa']}"
+        <h:outputFormat value="#{labels['dialogDocumentoProcedimientoLOPD.nuevo.documento.' += dialogDocumentoProcedimientoLOPD.tipo]}"
                         rendered="#{dialogDocumentoProcedimientoLOPD.isModoAlta()}"/>
     </ui:define>
 

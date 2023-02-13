@@ -80,6 +80,8 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
 
         UtilJSF.getSessionBean().setEntidad(this.data);
 
+        addGlobalMessage(getLiteral("msg.creaciocorrecta"));
+
         UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("viewConfiguracionEntidad.actualizado"));
 
     }

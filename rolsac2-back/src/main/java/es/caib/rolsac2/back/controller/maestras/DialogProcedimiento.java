@@ -97,6 +97,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private static final Logger LOG = LoggerFactory.getLogger(DialogProcedimiento.class);
     private final Integer FASE_INICIACION = 1;
     private boolean esSoloGuardar;
+    private String uaRaiz;
 
     public void load() {
         LOG.debug("init");
@@ -132,6 +133,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
         this.construirArbol();
 
+        uaRaiz = Boolean.valueOf(this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz()).toString();
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
         comunUA = sessionBean.getEntidad().getUaComun().getTraduccion(this.getIdioma());
@@ -166,10 +168,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
-    public boolean esUAResponsableRaiz() {
-        return this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz();
-    }
-
     public void returnDialogoUA(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
@@ -178,8 +176,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
             if (uaSeleccionada != null) {
                 this.data.setUaResponsable(uaSeleccionada);
-                PrimeFaces.current().ajax().update("formDialog:selectComun");
-                PrimeFaces.current().ajax().update("selectComun");
+                uaRaiz = Boolean.valueOf(uaSeleccionada.esRaiz()).toString();
+                if (!uaSeleccionada.esRaiz()) {
+                    this.data.setComun(0); //Es raro que lo estuviese como comun pero por si acaso
+                }
             }
         }
     }
@@ -377,41 +377,42 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     private boolean checkObligatorio() {
+        boolean todoCorrecto = true;
         if (this.data.getUaInstructor() == null || this.data.getUaInstructor().getCodigo() == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.uaInstructor"));
-            return false;
+            todoCorrecto = false;
         }
 
         if (this.data.getUaResponsable() == null || this.data.getUaResponsable().getCodigo() == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.uaResponsable"));
-            return false;
+            todoCorrecto = false;
         }
 
         if (this.data.getFechaPublicacion() != null && this.data.getFechaCaducidad() != null && data.getFechaCaducidad().before(this.data.getFechaPublicacion())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionCaducidad"));
-            return false;
+            todoCorrecto = false;
         }
 
         if (this.data.getPublicosObjetivo() == null || this.data.getPublicosObjetivo().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunPublicoObjetivo"));
-            return false;
+            todoCorrecto = false;
         }
 
         if (this.data.getMateriasSIA() == null || this.data.getMateriasSIA().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaMateriaSIA"));
-            return false;
+            todoCorrecto = false;
         }
 
         if (this.data.getNormativas() == null || this.data.getNormativas().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaNormativa"));
-            return false;
+            todoCorrecto = false;
         }
 
         if (this.data.getTramites() != null) {
             for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
                 if (data.getFechaPublicacion() != null && tramite.getFechaPublicacion() != null && tramite.getFechaPublicacion().before(data.getFechaPublicacion())) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaPublicacion"));
-                    return false;
+                    todoCorrecto = false;
                 }
             }
         }
@@ -445,7 +446,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
             return false;
         }
-        return true;
+        return todoCorrecto;
     }
 
     public void cerrar() {
@@ -891,6 +892,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
             UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado.clone());
         }
+        params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
         UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", modoAcceso, params, true,
                 800, 320);
     }
@@ -1251,6 +1253,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void setEsSoloGuardar(boolean esSoloGuardar) {
         this.esSoloGuardar = esSoloGuardar;
+    }
+
+    public String getUaRaiz() {
+        return uaRaiz;
+    }
+
+    public void setUaRaiz(String uaRaiz) {
+        this.uaRaiz = uaRaiz;
     }
 }
 

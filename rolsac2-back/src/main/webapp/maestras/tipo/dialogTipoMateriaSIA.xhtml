@@ -69,15 +69,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                    for="txtIdentificador"
                     />
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogTipoMateriaSIA.data.identificador}"
                                  styleClass="w95" onblur="this.value = this.value.toUpperCase();"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 required="true" disabled="#{dialogTipoMateriaSIA.isModoConsulta()}" maxlength="50">
+                                 required="#{empty param['formDialog:closeButton']}" disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
+                        <f:validateBean disabled="true" />
                     </p:inputText>
                 </div>
+
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['dict.descripcion']}:"
                                    for="inputDescripcion"
@@ -88,7 +90,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <my:literalComponent id="inputDescripcion" literal="#{dialogTipoMateriaSIA.data.descripcion}"
                                          soloLecture="#{dialogTipoMateriaSIA.isModoConsulta()}"
                                          idioma="#{dialogTipoMateriaSIA.idioma}"
-                                         required="true"
+                                         required="#{empty param['formDialog:closeButton']}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                          nombreLiteral="#{labels['dict.descripcion']}">
@@ -108,12 +110,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogTipoMateriaSIA.isModoConsulta()}"
                          process="@all"/>
-        <p:commandButton action="#{dialogTipoMateriaSIA.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog form"
+        <p:commandButton action="#{dialogTipoMateriaSIA.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
                          process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" update="messagesDialog form" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
-			<p:commandButton value="Sí" action="#{dialogTipoMateriaSIA.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();"  />
+			<p:commandButton value="Sí" process="@this" action="#{dialogTipoMateriaSIA.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();"  />
 			<p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
 		</p:confirmDialog>
 

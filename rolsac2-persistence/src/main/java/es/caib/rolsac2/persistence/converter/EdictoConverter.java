@@ -9,6 +9,10 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,7 +23,7 @@ public interface EdictoConverter {
     @Mapping(target = "url", expression = "java(convierteMapToLiteral(dto.getEdictoUrl()))")
     @Mapping(source = "boletinTipo", target= "tipoBoletin")
     @Mapping(source = "boletinNumero", target = "numeroBoletin")
-    @Mapping(source = "boletinFecha", target = "fechaBoletin")
+    @Mapping(target = "fechaBoletin", expression = "java(setFechaBoletin(dto.getBoletinFecha()))")
     @Mapping(source= "edictoNumero", target="numeroRegistro")
     @Mapping(target="codigoTabla", expression = "java(setCodigoTabla())")
     EdictoGridDTO edictoToEdictoGridDTO(Edicto dto);
@@ -41,6 +45,15 @@ public interface EdictoConverter {
     default String setCodigoTabla() {
         return UUID.randomUUID().toString();
     }
+
+    default LocalDate setFechaBoletin(Date fecha) {
+        if ( fecha != null ) {
+            LocalDate date = LocalDateTime.ofInstant( fecha.toInstant(), ZoneId.systemDefault() ).toLocalDate();
+            return date;
+        }
+        return null;
+    }
+
 
 
 }
