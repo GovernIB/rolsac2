@@ -132,6 +132,14 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                         estados.add(TypeProcedimientoEstado.PENDIENTE_RESERVAR);
                         estados.add(TypeProcedimientoEstado.PENDIENTE_BORRAR);
                     }
+                    if (typeEstadoActual != null && (typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_PUBLICAR
+                            || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_RESERVAR
+                            || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_BORRAR
+                    )) {
+                        //Se puede tirar para atrás para poderlo volver a editar
+                        estados.add(TypeProcedimientoEstado.MODIFICACION);
+                        this.estadoSeleccionado = estados.get(0);
+                    }
                 }
             }
         }

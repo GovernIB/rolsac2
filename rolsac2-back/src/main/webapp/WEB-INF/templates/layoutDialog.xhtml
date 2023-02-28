@@ -22,6 +22,9 @@ Plantilla.
         </f:facet>
         <h:outputScript name="js/bootstrap.min.js" />
         <ui:insert name="icerik"/>
+        <ui:fragment id="cssPersonalizado" rendered="#{sessionBean.entidad.cssPersonalizado != null and !sessionBean.superAdministrador}">
+            <link rel="stylesheet" href="/rolsac2back/resources?id=#{sessionBean.entidad.cssPersonalizado.codigo}"></link>
+        </ui:fragment>
         <!-- Traduccions personalitzades de PrimeFaces en català i castellà -->
         <script src="#{resource['js/primefaceslocale_' += sessionBean.current.toLanguageTag() += '.js']}"
                 type="text/javascript"></script>

@@ -89,6 +89,13 @@ public class JEntidad extends BaseEntity {
     private JFicheroExterno logo;
 
     /**
+     * Fichero externo para personalizar CSS en los views
+     */
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ENTI_CSS", nullable = false)
+    private JFicheroExterno cssPersonalizado;
+
+    /**
      * Idioma por defecto
      **/
     @Column(name = "ENTI_IDIDEF", nullable = false, length = 20)
@@ -238,6 +245,24 @@ public class JEntidad extends BaseEntity {
      */
     public void setLogo(JFicheroExterno logo) {
         this.logo = logo;
+    }
+
+    /**
+     * Obtiene CSS.
+     *
+     * @return  cssPersonalizado
+     */
+    public JFicheroExterno getCssPersonalizado() {
+        return cssPersonalizado;
+    }
+
+    /**
+     * Establece CSS.
+     *
+     * @param cssPersonalizado  CSS
+     */
+    public void setCssPersonalizado(JFicheroExterno cssPersonalizado) {
+        this.cssPersonalizado = cssPersonalizado;
     }
 
     /**

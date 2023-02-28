@@ -43,6 +43,7 @@ public class AuditoriaGridDTO {
 
     private List<AuditoriaCambio> cambios;
 
+    private String literalFlujo;
 
     /**
      * @return the fecha
@@ -117,5 +118,13 @@ public class AuditoriaGridDTO {
 
     public void setUsuarioPerfil(String usuarioPerfil) {
         this.usuarioPerfil = usuarioPerfil;
+    }
+
+    public String getLiteralFlujo() {
+        return literalFlujo;
+    }
+
+    public void setLiteralFlujo(String literalFlujo) {
+        this.literalFlujo = literalFlujo;
     }
 }

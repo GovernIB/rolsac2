@@ -1,9 +1,11 @@
 package es.caib.rolsac2.ejb.facade;
 
+import es.caib.rolsac2.persistence.repository.ConfiguracionGlobalRepository;
 import es.caib.rolsac2.service.exception.PluginErrorException;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.facade.integracion.TraduccionServiceFacade;
+import es.caib.rolsac2.service.model.ConfiguracionGlobalGridDTO;
 import es.caib.rolsac2.service.model.PluginDTO;
 import es.caib.rolsac2.service.model.Propiedad;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -42,6 +44,9 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     @Inject
     TraduccionServiceFacade traduccionServiceFacade;
 
+    @Inject
+    ConfiguracionGlobalRepository configGlobal;
+
     /**
      * Executat a l'inici de l'aplicació.
      */
@@ -65,21 +70,36 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String obtenerPropiedadConfiguracion(TypePropiedadConfiguracion propiedad) {
-        return this.propertiesLocales.getProperty(propiedad.toString());
+        ConfiguracionGlobalGridDTO conf = configGlobal.findByPropiedad(propiedad.toString());
+        if (conf != null && conf.getValor() != null && !conf.getValor().isEmpty()) {
+            return conf.getValor();
+        } else {
+            return this.propertiesLocales.getProperty(propiedad.toString());
+        }
     }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String obtenerPropiedadConfiguracion(String propiedad) {
-        return this.propertiesLocales.getProperty(propiedad.toString());
+        ConfiguracionGlobalGridDTO conf = configGlobal.findByPropiedad(propiedad);
+        if (conf != null && conf.getValor() != null && !conf.getValor().isEmpty()) {
+            return conf.getValor();
+        } else {
+            return this.propertiesLocales.getProperty(propiedad);
+        }
     }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String obtenerPropiedadConfiguracion(TypePropiedadConfiguracion propiedad, String idioma) {
-        return this.propertiesLocales.getProperty(propiedad.toString() + "." + idioma);
+        ConfiguracionGlobalGridDTO conf = configGlobal.findByPropiedad(propiedad.toString() + "." + idioma);
+        if (conf != null && conf.getValor() != null && !conf.getValor().isEmpty()) {
+            return conf.getValor();
+        } else {
+            return this.propertiesLocales.getProperty(propiedad.toString() + "." + idioma);
+        }
     }
 
     @Override

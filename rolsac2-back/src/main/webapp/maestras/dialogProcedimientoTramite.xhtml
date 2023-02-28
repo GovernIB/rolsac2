@@ -335,7 +335,7 @@
                             <f:selectItem itemLabel="#{labels['dialogUnidadAdministrativa.selecciona.tipo']}"
                                           itemValue="#{null}"/>
                             <f:selectItems value="#{dialogProcedimientoTramite.platTramitElectronica}" var="plataforma"
-                                           itemLabel="#{plataforma.identificador}" itemValue="#{plataforma}"/>
+                                           itemLabel="#{plataforma.descripcion.getTraduccion(sessionBean.lang)}" itemValue="#{plataforma}"/>
                         </p:selectOneMenu>
                     </div>
                 </div>

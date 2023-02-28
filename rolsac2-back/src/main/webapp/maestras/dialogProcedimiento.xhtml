@@ -36,7 +36,7 @@
         <p:selectOneButton id="opcionIdioma" value="#{dialogProcedimiento.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-            <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones formDialog:txtNombreResp
+            <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones
             formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin" />
         </p:selectOneButton>
         <p:commandButton action="#{dialogProcedimiento.traducir}"
@@ -129,7 +129,7 @@
 
                             <p:selectOneMenu id="selectComun" value="#{dialogProcedimiento.data.comun}"
                                               autoWidth="false"
-                                             disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                             disabled="#{dialogProcedimiento.isModoConsulta() or dialogProcedimiento.isGestor()}"
                                              converter="javax.faces.Integer">
                                 <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
                                 <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1" />
@@ -907,7 +907,7 @@
                          process="@this"/>
         <p:commandButton action="#{dialogProcedimiento.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog formDatos formDatosSIA formDatosContacto formDatosLOPD"
-                         rendered="#{!dialogProcedimiento.isModoConsulta()}"
+                         rendered="#{dialogProcedimiento.mostrarBotonGuardar()}"
                          process="@all"/>
         <p:commandButton action="#{dialogProcedimiento.cerrar}"
                          value="#{labels['dict.cerrar']}"

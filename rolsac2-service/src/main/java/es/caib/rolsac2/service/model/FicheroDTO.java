@@ -39,6 +39,11 @@ public class FicheroDTO extends ModelApi implements Cloneable {
      */
     private TypeFicheroExterno tipo;
 
+    /**
+     * Referncia
+     */
+    private String referencia;
+
 
     /**
      * Obtiene codigo.
@@ -101,6 +106,15 @@ public class FicheroDTO extends ModelApi implements Cloneable {
      */
     public TypeFicheroExterno getTipo() {
         return tipo;
+    }
+
+
+    public String getReferencia() {
+        return referencia;
+    }
+
+    public void setReferencia(String referencia) {
+        this.referencia = referencia;
     }
 
     /**

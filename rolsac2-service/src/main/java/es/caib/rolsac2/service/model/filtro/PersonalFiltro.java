@@ -6,7 +6,7 @@ package es.caib.rolsac2.service.model.filtro;
 public class PersonalFiltro extends AbstractFiltro {
 
     /**
-     * El filtro que hay en el viewPersonal
+     * El filtro que hay en el view personal
      **/
     private String texto;
     private String nombre;

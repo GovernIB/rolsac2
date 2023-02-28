@@ -38,6 +38,13 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private List<Long> idUAsHijas;
     private boolean todasUnidadesOrganicas = false;
 
+    private TipoViaDTO finVia;
+    private String tramiteVigente;
+    private String tramiteTelematico;
+    private TipoTramitacionDTO plantilla;
+    private PlatTramitElectronicaDTO plataforma;
+    private String comun;
+
     public String getTexto() {
         return texto;
     }
@@ -219,6 +226,54 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         }
     }
 
+    public TipoViaDTO getFinVia() {
+        return finVia;
+    }
+
+    public void setFinVia(TipoViaDTO finVia) {
+        this.finVia = finVia;
+    }
+
+    public String getTramiteVigente() {
+        return tramiteVigente;
+    }
+
+    public void setTramiteVigente(String tramiteVigente) {
+        this.tramiteVigente = tramiteVigente;
+    }
+
+    public String getTramiteTelematico() {
+        return tramiteTelematico;
+    }
+
+    public void setTramiteTelematico(String tramiteTelematico) {
+        this.tramiteTelematico = tramiteTelematico;
+    }
+
+    public TipoTramitacionDTO getPlantilla() {
+        return plantilla;
+    }
+
+    public void setPlantilla(TipoTramitacionDTO plantilla) {
+        this.plantilla = plantilla;
+    }
+
+    public PlatTramitElectronicaDTO getPlataforma() {
+        return plataforma;
+    }
+
+    public void setPlataforma(PlatTramitElectronicaDTO plataforma) {
+        this.plataforma = plataforma;
+    }
+
+    public String getComun() {
+        return comun;
+    }
+
+    public void setComun(String comun) {
+        this.comun = comun;
+    }
+
     public boolean isHijasActivas() {
         return hijasActivas;
     }
@@ -315,6 +370,31 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public boolean isRellenoTodasUnidadesOrganicas() {
         return todasUnidadesOrganicas;
     }
+
+    public boolean isRellenoFinVia() {
+        return finVia != null && finVia.getCodigo() != null;
+    }
+
+    public boolean isRellenoTramiteVigente() {
+        return tramiteVigente != null && !tramiteVigente.isEmpty();
+    }
+
+    public boolean isRellenoTramiteTelematico() {
+        return tramiteTelematico != null && !tramiteTelematico.isEmpty();
+    }
+
+    public boolean isRellenoPlantilla() {
+        return plantilla != null && plantilla.getCodigo() != null;
+    }
+
+    public boolean isRellenoPlataforma() {
+        return plataforma != null && plataforma.getCodigo() != null;
+    }
+
+    public boolean isRellenoComun() {
+        return comun != null && !comun.isEmpty();
+    }
+
 
     @Override
     protected String getDefaultOrder() {

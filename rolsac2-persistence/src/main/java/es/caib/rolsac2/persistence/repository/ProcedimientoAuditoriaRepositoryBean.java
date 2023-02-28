@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JProcedimientoAuditoria;
-import es.caib.rolsac2.persistence.model.JUnidadAdministrativaAuditoria;
 import es.caib.rolsac2.persistence.util.JSONUtil;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
@@ -78,6 +77,7 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
 
                 registroAuditoria.setUsuario((String) resultado[4]);
                 registroAuditoria.setUsuarioPerfil((String) resultado[5]);
+                registroAuditoria.setLiteralFlujo((String) resultado[6]);
                 auditorias.add(registroAuditoria);
             }
         }
@@ -138,14 +138,14 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
                 sql = new StringBuilder("SELECT count(j) FROM JProcedimientoAuditoria where 1 = 1 ");
             } else {
                 sql = new StringBuilder(
-                        "SELECT j.codigo, j.procedimiento.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil  FROM JProcedimientoAuditoria j where 1 = 1 ");
+                        "SELECT j.codigo, j.procedimiento.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil, j.literalFlujo  FROM JProcedimientoAuditoria j where 1 = 1 ");
             }
         } else if ("UA".equalsIgnoreCase(tipo)) {
             if (isTotal) {
                 sql = new StringBuilder("SELECT count(j) FROM JUnidadAdministrativaAuditoria where 1 = 1 ");
             } else {
                 sql = new StringBuilder(
-                        "SELECT j.codigo, j.procedimiento.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion  FROM JUnidadAdministrativaAuditoria j where 1 = 1 ");
+                        "SELECT j.codigo, j.procedimiento.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil, j.literalFlujo  FROM JUnidadAdministrativaAuditoria j where 1 = 1 ");
             }
         } else {
             sql = null;

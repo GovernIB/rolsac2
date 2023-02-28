@@ -10,12 +10,25 @@ public class ConfiguracionGlobalFiltro extends AbstractFiltro {
      **/
     private String texto;
 
+    /**
+     * El filtro de propiedad
+     */
+    private String propiedad;
+
     public String getTexto() {
         return texto;
     }
 
     public void setTexto(String texto) {
         this.texto = texto;
+    }
+
+    public String getPropiedad() {
+        return propiedad;
+    }
+
+    public void setPropiedad(String propiedad) {
+        this.propiedad = propiedad;
     }
 
     /**
@@ -25,6 +38,16 @@ public class ConfiguracionGlobalFiltro extends AbstractFiltro {
      */
     public boolean isRellenoTexto() {
         return texto != null && !texto.isEmpty();
+    }
+
+
+    /**
+     * Esta relleno el texto
+     *
+     * @return
+     */
+    public boolean isRellenoPropiedad() {
+        return propiedad != null && !propiedad.isEmpty();
     }
 
     @Override

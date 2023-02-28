@@ -1,11 +1,14 @@
 package es.caib.rolsac2.back.security;
 
+import es.caib.rolsac2.commons.utils.Version;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ResourceBundle;
 
 /**
  * Bean CDI per obtenir instàncies de UserInfo
@@ -22,8 +25,14 @@ public class UserInfoProducer {
     @PostConstruct
     protected void init() {
         try {
-            Class.forName("org.keycloak.KeycloakPrincipal");
-            factory = new KeycloakUserInfoFactory();
+            ResourceBundle bundle = ResourceBundle.getBundle("rolsac2.version.Version");
+            String authMethod = bundle.getString("authMethod");
+            if(authMethod.equals("KEYCLOAK")) {
+                Class.forName("org.keycloak.KeycloakPrincipal");
+                factory = new KeycloakUserInfoFactory();
+            } else {
+                factory = new DefaultUserInfoFactory();
+            }
         } catch (ClassNotFoundException e) {
             factory = new DefaultUserInfoFactory();
         }

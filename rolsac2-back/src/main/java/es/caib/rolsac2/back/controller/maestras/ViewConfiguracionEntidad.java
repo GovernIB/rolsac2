@@ -246,6 +246,54 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
         this.data.setLogo(null);
     }
 
+    public void handleCssUpload(FileUploadEvent event) {
+        try {
+            InputStream is = event.getFile().getInputStream();
+            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.ENTIDAD, this.data.getCodigo());
+
+            FicheroDTO css = new FicheroDTO();
+            css.setFilename(event.getFile().getFileName());
+            //Quitamos el contenido para que ocupe menos
+            //
+            //logo.setContenido(is.readAllBytes());
+            css.setTipo(TypeFicheroExterno.ENTIDAD);
+            css.setCodigo(this.data.getCodigo());
+            css.setCodigo(idFichero);
+            this.data.setCssPersonalizado(css);
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewConfiguracionEntidad.cssAnyadido") , false);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public StreamedContent obtenerCss() {
+
+        if (this.data.getCssPersonalizado() == null || (this.data.getCssPersonalizado().getCodigo() == null && this.data.getCssPersonalizado().getContenido() == null)) {
+            //No debería entrar por aqui.
+            return null;
+        }
+        if (this.data.getCssPersonalizado().getContenido() == null) {
+            //Nos bajamos el fichero si está vacío
+            FicheroDTO fichero = ficheroServiceFacade.getContentById(this.data.getCssPersonalizado().getCodigo());
+            this.data.setCssPersonalizado(fichero);
+        }
+        //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());
+        String mimeType = URLConnection.guessContentTypeFromName(this.data.getCssPersonalizado().getFilename());
+        InputStream fis = new ByteArrayInputStream(this.data.getCssPersonalizado().getContenido());
+        StreamedContent file = DefaultStreamedContent.builder()
+                .name(this.data.getCssPersonalizado().getFilename())
+                .contentType(mimeType)
+                .stream(() -> fis)
+                .build();
+        return file;
+    }
+
+    public void eliminarCss() {
+        this.file = null;
+        this.data.setCssPersonalizado(null);
+    }
+
     public boolean isIdiomaDefecto(String idioma) {
         return idioma.equals("es") || idioma.equals("ca");
     }

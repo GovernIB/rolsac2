@@ -31,6 +31,16 @@
         </run-as>
     </servlet>
 
+    <!--Servlet para recursos estáticos añadidos en ROLSAC2 (css,..)-->
+    <servlet>
+        <servlet-name>Resource Servlet</servlet-name>
+        <servlet-class>es.caib.rolsac2.back.config.ResourcesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Resource Servlet</servlet-name>
+        <url-pattern>/resources/*</url-pattern>
+    </servlet-mapping>
+
     <!-- Per la llista completa de paràmetres de JSF veure 11.1.3 de l'especificació JSF -->
     <!-- State saving method: 'client' o 'server' (=default). Veure 2.5.2  de l'especifiació JSF -->
     <context-param>
@@ -115,14 +125,14 @@
         <location>/error/accessException.xhtml</location>
     </error-page>
 
-    <security-constraint>
+<!--    <security-constraint>
         <display-name>No permetre accés directe als recursos</display-name>
         <web-resource-collection>
             <web-resource-name>Accés directe a recursos</web-resource-name>
             <url-pattern>/resources/*</url-pattern>
         </web-resource-collection>
         <auth-constraint />
-    </security-constraint>
+    </security-constraint>-->
 
     <security-constraint>
         <display-name>Permetre accés als recursos a través de JSF</display-name>

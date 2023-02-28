@@ -44,6 +44,7 @@ public class JProcedimientoNormativa {
     @JoinColumn(name = "NORM_CODIGO", nullable = false)
     private JNormativa normativa;
 
+
     /**
      * Obtiene codigo.
      *

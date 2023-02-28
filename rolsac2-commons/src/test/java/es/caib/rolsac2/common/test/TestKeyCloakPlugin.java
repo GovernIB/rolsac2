@@ -1,19 +1,20 @@
 package es.caib.rolsac2.common.test;
 
 
+import es.caib.rolsac2.commons.plugins.autenticacion.api.AutenticacionErrorException;
 import es.caib.rolsac2.commons.plugins.autenticacion.api.IPluginAutenticacion;
 import es.caib.rolsac2.commons.plugins.autenticacion.api.model.UsuarioAutenticado;
-import es.caib.rolsac2.commons.plugins.boletin.api.IPluginBoletin;
-import es.caib.rolsac2.commons.plugins.boletin.api.model.Edicto;
+
 import org.fundaciobit.pluginsib.core.IPlugin;
 import org.fundaciobit.pluginsib.core.utils.PluginsManager;
+import org.junit.Test;
 
-import java.util.List;
 import java.util.Properties;
 
 public class TestKeyCloakPlugin {
 
-    public static void main(final String[] args) throws Exception {
+    @Test
+    public void testAutenticacion(){
         Properties prop = new Properties();
         /*prop.put("es.caib.rolsac2.pluginsib.autenticacion.keycloak.resource", "goib-ws");
         prop.put("es.caib.rolsac2.pluginsib.autenticacion.keycloak.authUrl", "http://localhost:8180/auth");
@@ -30,9 +31,14 @@ public class TestKeyCloakPlugin {
         } else {
             System.out.println("Se ha instanciado correctamente el plugin");
 
-            IPluginAutenticacion plgAutenticacion = (IPluginAutenticacion) plg;
-            UsuarioAutenticado usuario = plgAutenticacion.login("$rolsac_translatorib", "rolsac_translatorib");
-            System.out.println(usuario.toString());
+            try {
+                IPluginAutenticacion plgAutenticacion = (IPluginAutenticacion) plg;
+                UsuarioAutenticado usuario = plgAutenticacion.login("$rolsac_translatorib", "rolsac_translatorib");
+                System.out.println(usuario.toString());
+            } catch (AutenticacionErrorException e) {
+                e.printStackTrace();
+            }
+
 
         }
     }

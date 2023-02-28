@@ -2,7 +2,8 @@ package es.caib.rolsac2.back.utils;
 
 import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.controller.maestras.ViewEntidades;
-import es.caib.rolsac2.back.controller.maestras.ViewPersonal;
+import es.caib.rolsac2.back.controller.maestras.ViewProcedimientos;
+import es.caib.rolsac2.back.controller.maestras.ViewUnidadAdministrativa;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -107,7 +108,7 @@ public class UtilJSF {
     /**
      * Redirige pagina JSF por defecto para role.
      *
-     * @param jsfPage path JSF page
+     * @param perfil Pagina a redirigir segun perfil
      */
     public static void redirectJsfDefaultPagePerfil(final TypePerfiles perfil) {
         redirectJsfPage(getDefaultUrlPerfil(perfil));
@@ -132,7 +133,7 @@ public class UtilJSF {
     /**
      * Devuelve url por defecto segun perfil.
      *
-     * @param role role
+     * @param perfil perfil
      * @return url
      */
     public static String getDefaultUrlPerfil(final TypePerfiles perfil) {
@@ -148,15 +149,15 @@ public class UtilJSF {
                     url = PATH_VIEWS_ENTIDAD + "viewConfiguracionEntidad" + EXTENSION_XHTML;
                     break;
                 case ADMINISTRADOR_CONTENIDOS:
-                    url = PATH_VIEWS_MAESTRAS + UtilJSF.getViewNameFromClass(ViewPersonal.class) + EXTENSION_XHTML;
+                    url = PATH_VIEWS_SUPER_ADMIN + UtilJSF.getViewNameFromClass(ViewUnidadAdministrativa.class) + EXTENSION_XHTML;
                     break;
                 //TO DO SUSTITUIR AL CREAR SU RESPECTIVA PÁGINA
                 case GESTOR:
-                    url = PATH_VIEWS_SUPER_ADMIN + UtilJSF.getViewNameFromClass(ViewEntidades.class) + EXTENSION_XHTML;
+                    url = PATH_VIEWS_SUPER_ADMIN + UtilJSF.getViewNameFromClass(ViewUnidadAdministrativa.class) + EXTENSION_XHTML;
                     break;
                 //TO DO SUSTITUIR AL CREAR SU RESPECTIVA PÁGINA
                 case INFORMADOR:
-                    url = PATH_VIEWS_SUPER_ADMIN + UtilJSF.getViewNameFromClass(ViewEntidades.class) + EXTENSION_XHTML;
+                    url = PATH_VIEWS_MAESTRAS + UtilJSF.getViewNameFromClass(ViewProcedimientos.class) + EXTENSION_XHTML;
                     break;
                 default:
                     url = "/error/errorUsuarioSinRol.xhtml";

@@ -57,6 +57,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private boolean tieneTasa = false;
 
     private String responsableEmail;
+    private String responsableTelefono;
 
     // LOPD
     private String lopdResponsable;
@@ -503,6 +504,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setResponsableEmail(String responsableEmail) {
         this.responsableEmail = responsableEmail;
+    }
+
+    public String getResponsableTelefono() {
+        return responsableTelefono;
+    }
+
+    public void setResponsableTelefono(String responsableTelefono) {
+        this.responsableTelefono = responsableTelefono;
     }
 
     @Override

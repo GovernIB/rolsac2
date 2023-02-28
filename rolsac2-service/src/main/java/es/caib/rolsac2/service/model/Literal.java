@@ -296,4 +296,24 @@ public class Literal implements Cloneable {
     public int hashCode() {
         return Objects.hash(trads, codigo);
     }
+
+    /**
+     * Comprueba si al menos tiene una traducción con contenido.
+     *
+     * @return
+     */
+    public boolean estaVacio() {
+
+        if (this.getTraducciones() == null || this.getTraducciones().isEmpty()) {
+            return true;
+        }
+        boolean vacio = true;
+        for (Traduccion trad : this.getTraducciones()) {
+            if (trad.getLiteral() != null && !trad.getLiteral().isEmpty()) {
+                vacio = false;
+                break;
+            }
+        }
+        return vacio;
+    }
 }

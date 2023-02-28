@@ -28,8 +28,7 @@ public class TipoViaConverter implements Converter, Serializable {
         }
 
         if (s != null && s.trim().length() > 0) {
-            TipoViaDTO tipo = maestrasSupServiceFacade.findTipoViaById(Long.parseLong(s));
-            return tipo;
+            return maestrasSupServiceFacade.findTipoViaById(Long.parseLong(s));
         } else {
             return null;
         }

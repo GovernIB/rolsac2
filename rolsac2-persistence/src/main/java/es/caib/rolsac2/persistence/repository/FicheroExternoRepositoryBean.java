@@ -63,6 +63,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
             cf.setTipo(TypeFicheroExterno.fromString(fic.getTipo()));
             cf.setFilename(fic.getFilename());
             cf.setContenido(content);
+            cf.setReferencia(pathFile);
 
             return cf;
         } catch (final IOException e) {

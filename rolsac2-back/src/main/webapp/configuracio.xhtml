@@ -8,33 +8,29 @@ Pàgina amb informació d'accessibilitat
 -->
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 
-    <ui:define name="pageTitle">#{labels.configuracio_title}</ui:define>
-
-    <ui:define name="breadcrumb">
-        <p:menuitem value="#{labels.configuracio_link}" outcome="/configuracio"/>
-    </ui:define>
+    <ui:define name="pageTitle">#{labels['configuracio.titulo']}</ui:define>
 
     <ui:define name="content">
 		<table class="table">
 		  <tbody>
 		    <tr>
-		      <th scope="row">#{labels['configuracio_usuari']}</th>
+		      <th scope="row" class="w25">#{labels['configuracio.usuari']}: </th>
 		      <td>#{userInfo.username}</td>
 		    </tr>
 		    <tr>
-		      <th scope="row">#{labels['configuracio_nom']}</th>
+		      <th scope="row" class="w25">#{labels['configuracio.nom']}: </th>
 		      <td>#{userInfo.nom}</td>
 		    </tr>
 		    <tr>
-		      <th scope="row">#{labels['configuracio_llinatges']}</th>
+		      <th scope="row" class="w25">#{labels['configuracio.llinatges']}: </th>
 		      <td>#{userInfo.llinatges}</td>
 		    </tr>
 		    <tr>
-		      <th scope="row">#{labels['configuracio_email']}</th>
+		      <th scope="row" class="w25">#{labels['configuracio.email']}: </th>
 		      <td>#{userInfo.email}</td>
 		    </tr>
 		    <tr>
-		      <th scope="row">#{labels['configuracio_nif']}</th>
+		      <th scope="row" class="w25">#{labels['configuracio.nif']}: </th>
 		      <td>#{userInfo.nif}</td>
 		    </tr>
 		  </tbody>

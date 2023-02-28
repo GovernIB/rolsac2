@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -41,6 +43,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     @EJB
     private MaestrasSupServiceFacade maestrasSupService;
+
+    @EJB
+    private PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;
     private ProcedimientoGridDTO datoSeleccionado;
     private ProcedimientoFiltro filtro;
     private LazyDataModel<ProcedimientoGridDTO> lazyModel;
@@ -50,6 +55,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     private List<TipoPublicoObjetivoDTO> listTipoPublicoObjetivo;
     private List<TipoFormaInicioDTO> listTipoFormaInicio;
     private List<TipoLegitimacionDTO> listTipoLegitimacion;
+    private List<TipoViaDTO> listFinVias;
+    private List<TipoTramitacionDTO> listPlantillas;
+    private List<PlatTramitElectronicaDTO> listPlataformas;
 
     public LazyDataModel<ProcedimientoGridDTO> getLazyModel() {
         return lazyModel;
@@ -66,7 +74,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     public void filtroHijasActivasChange() {
         if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
             filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
-        } else if(filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
+        } else if (filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
             List<Long> ids = new ArrayList<>();
             for (UnidadAdministrativaDTO ua : sessionBean.getUnidadesAdministrativasActivas()) {
                 List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
@@ -110,6 +118,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
         listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
         listTipoPublicoObjetivo = maestrasSupService.findAllTiposPublicoObjetivo();
+        listFinVias = maestrasSupService.findAllTipoVia();
+        listPlantillas = maestrasSupService.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), null);
+        listPlataformas = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
     }
 
     public void nuevoProcedimiento() {
@@ -147,7 +158,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         } else {
             Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
             if (idProcMod == null) {
-                idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub());
+                String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+                idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub(), usuario, sessionBean.getPerfil());
             }
             this.datoSeleccionado.setCodigoWFMod(idProcMod);
             ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
@@ -442,5 +454,29 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void setListTipoLegitimacion(List<TipoLegitimacionDTO> listTipoLegitimacion) {
         this.listTipoLegitimacion = listTipoLegitimacion;
+    }
+
+    public List<TipoViaDTO> getListFinVias() {
+        return listFinVias;
+    }
+
+    public void setListFinVias(List<TipoViaDTO> listFinVias) {
+        this.listFinVias = listFinVias;
+    }
+
+    public List<TipoTramitacionDTO> getListPlantillas() {
+        return listPlantillas;
+    }
+
+    public void setListPlantillas(List<TipoTramitacionDTO> listPlantillas) {
+        this.listPlantillas = listPlantillas;
+    }
+
+    public List<PlatTramitElectronicaDTO> getListPlataformas() {
+        return listPlataformas;
+    }
+
+    public void setListPlataformas(List<PlatTramitElectronicaDTO> listPlataformas) {
+        this.listPlataformas = listPlataformas;
     }
 }

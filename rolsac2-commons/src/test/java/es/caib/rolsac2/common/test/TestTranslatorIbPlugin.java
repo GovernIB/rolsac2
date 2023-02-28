@@ -3,6 +3,7 @@ package es.caib.rolsac2.common.test;
 import es.caib.rolsac2.commons.plugins.traduccion.api.*;
 import org.fundaciobit.pluginsib.core.IPlugin;
 import org.fundaciobit.pluginsib.core.utils.PluginsManager;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,8 @@ import java.util.Properties;
 
 public class TestTranslatorIbPlugin {
 
-    public static void main(String arg[]) throws IPluginTraduccionException {
+    @Test
+    public void testTraduccion() {
 
         Map<String, String> opciones = new HashMap<>();
         Properties prop = new Properties();
@@ -19,9 +21,14 @@ public class TestTranslatorIbPlugin {
         prop.put("es.caib.rolsac2.pluginsib.traduccion.translatorib.pwd", "C4mp30n@s");
         IPlugin plg = (IPlugin) PluginsManager.instancePluginByClassName("es.caib.rolsac2.commons.plugins.traduccion.translatorib.TranslatorIBPlugin",
                 "es.caib.rolsac2.pluginsib.traduccion.translatorib.", prop);
-        IPluginTraduccion pdgTraduccion = (IPluginTraduccion) plg;
-        String resultadoTraduccion =  pdgTraduccion.traducir(TipoEntrada.TEXTO_PLANO.toString(), "prueba", Idioma.CASTELLANO, Idioma.CATALAN, opciones);
-        System.out.println("Resultado de la traducción es: " + resultadoTraduccion);
+        try {
+            IPluginTraduccion pdgTraduccion = (IPluginTraduccion) plg;
+            String resultadoTraduccion =  pdgTraduccion.traducir(TipoEntrada.TEXTO_PLANO.toString(), "prueba", Idioma.CASTELLANO, Idioma.CATALAN, opciones);
+            System.out.println("Resultado de la traducción es: " + resultadoTraduccion);
+        } catch (IPluginTraduccionException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

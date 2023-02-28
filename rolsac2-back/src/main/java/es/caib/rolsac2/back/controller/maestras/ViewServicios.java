@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -66,7 +67,7 @@ public class ViewServicios extends AbstractController implements Serializable {
     public void filtroHijasActivasChange() {
         if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
             filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
-        } else if(filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
+        } else if (filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
             List<Long> ids = new ArrayList<>();
             for (UnidadAdministrativaDTO ua : sessionBean.getUnidadesAdministrativasActivas()) {
                 List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
@@ -147,7 +148,8 @@ public class ViewServicios extends AbstractController implements Serializable {
         } else {
             Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
             if (idProcMod == null) {
-                idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub());
+                String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+                idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub(), usuario, sessionBean.getPerfil());
                 this.datoSeleccionado.setCodigoWFMod(idProcMod);
             }
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);

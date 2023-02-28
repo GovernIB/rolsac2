@@ -2,10 +2,7 @@ package es.caib.rolsac2.back.controller;
 
 import es.caib.rolsac2.back.security.Security;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
-import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceFacade;
-import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
 import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
@@ -17,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
@@ -59,13 +57,16 @@ public class SessionBean implements Serializable {
     @Inject
     private FacesContext context;
 
-    @Inject
+    @EJB
     private AdministracionEntServiceFacade administracionEntServiceFacade;
 
-    @Inject
+    @EJB
     private AdministracionSupServiceFacade entidadservice;
-    @Inject
+    @EJB
     private UnidadAdministrativaServiceFacade uaservice;
+
+    @EJB
+    private FicheroServiceFacade ficheroServiceFacade;
 
     private UnidadAdministrativaDTO unidad;
 
@@ -223,6 +224,7 @@ public class SessionBean implements Serializable {
                 opcion = "viewUnidadAdministrativa.titulo";
                 break;
             case INFORMADOR:
+                opcion = "viewProcedimientos.titulo";
                 break;
             case SUPER_ADMINISTRADOR:
                 opcion = "viewTipoEntidades.titulo";
@@ -429,6 +431,8 @@ public class SessionBean implements Serializable {
                 entidades.add(entidad);
             }
         }
+
+
     }
 
     // Mètodes
@@ -454,7 +458,9 @@ public class SessionBean implements Serializable {
                 reloadEntidad();
                 break;
             case INFORMADOR:
-                context.getPartialViewContext().getEvalScripts().add("location.replace(location)");
+                opcion = "viewProcedimientos.titulo";
+                context.getPartialViewContext().getEvalScripts()
+                        .add("location.replace('" + rolsac2back + "/maestras/viewProcedimientos.xhtml')");
                 reloadEntidad();
                 break;
             case SUPER_ADMINISTRADOR:
@@ -535,6 +541,7 @@ public class SessionBean implements Serializable {
             tiposViewIds.add("/superadministrador/viewTema.xhtml");
             tiposViewIds.add("/maestras/viewPublicoObjetivoEntidad.xhtml");
             tiposViewIds.add("/entidades/viewTipoMediaFicha.xhtml");
+            tiposViewIds.add("/entidades/viewLOPD.xhtml");
             String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
             return tiposViewIds.contains(viewId);
         } else {
@@ -668,6 +675,9 @@ public class SessionBean implements Serializable {
         }
     }
 
+    public String getReferenciaCss() {
+        return systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS) + "/" +  this.entidad.getCssPersonalizado().getReferencia();
+    }
 
     public Locale getCurrent() {
         return current;

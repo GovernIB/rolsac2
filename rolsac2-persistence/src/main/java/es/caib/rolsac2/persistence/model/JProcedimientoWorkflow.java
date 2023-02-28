@@ -62,8 +62,8 @@ public class JProcedimientoWorkflow {
     @Column(name = "PRWF_RSTFNO", length = 9)
     private String responsableTelefono;
 
-    //@Column(name = "PROC_DPACTV", nullable = false)
-    //private Boolean datosPersonalesActivo = false;
+    @Column(name = "PROC_LOPDACT")
+    private Boolean activoLOPD = true;
 
     @Column(name = "PROC_LOPDRESP", nullable = false)
     private String lopdResponsable;
@@ -354,6 +354,14 @@ public class JProcedimientoWorkflow {
 
     public void setFechaCaducidad(Date fechaCaducidad) {
         this.fechaCaducidad = fechaCaducidad;
+    }
+
+    public Boolean getActivoLOPD() {
+        return activoLOPD;
+    }
+
+    public void setActivoLOPD(Boolean datosLOPDActivo) {
+        this.activoLOPD = datosLOPDActivo;
     }
 
     public String getLopdResponsable() {

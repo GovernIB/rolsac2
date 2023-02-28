@@ -10,7 +10,10 @@ import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -212,17 +215,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void guardarFlujoSinCheck() {
         final Map<String, String> params = new HashMap<>();
-        UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
-        //params.put("SOLO_MENSAJES","N");
-        params.put("ESTADO", data.getEstado().toString());
 
-        if (sessionBean.getPerfil() == TypePerfiles.GESTOR) {
+        /*if (sessionBean.getPerfil() == TypePerfiles.GESTOR) {
 
             if (data.getEstado() != TypeProcedimientoEstado.MODIFICACION) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.soloEstadoModificacion"));
                 return;
             }
-        }
+        }*/
 
         if (data.getEstado() == TypeProcedimientoEstado.MODIFICACION && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
@@ -244,6 +244,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             return;
         }
 
+        UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
+        //params.put("SOLO_MENSAJES","N");
+        params.put("ESTADO", data.getEstado().toString());
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }
 
@@ -306,7 +309,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         resetearOrdenListas();
 
         if (this.data.getCodigo() == null) {
-            procedimientoServiceFacade.create(this.data);
+            procedimientoServiceFacade.create(this.data, sessionBean.getPerfil());
         } else {
             procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil());
         }
@@ -1036,6 +1039,26 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         UtilsArbolTemas.construirArbol(roots, temasPadre, temasPadreAnyadidos, data.getTemas(), temaServiceFacade);
     }
 
+    /**
+     * Se muestra el boton si:
+     * <ul>
+     *     <li>Es adm. contenido</li>
+     *     <li>Si es gestor, solo puede editar si está en modificación</li>
+     * </ul>
+     *
+     * @return
+     */
+    public boolean mostrarBotonGuardar() {
+        if (isModoConsulta()) {
+            return false;
+        }
+
+        if (this.isGestor()) {
+            return this.data.getEstado() == TypeProcedimientoEstado.MODIFICACION;
+        } else {
+            return true;
+        }
+    }
 
     public List<TipoProcedimientoDTO> getListTipoProcedimiento() {
         return listTipoProcedimiento;

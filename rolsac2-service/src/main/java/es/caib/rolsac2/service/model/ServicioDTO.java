@@ -23,13 +23,13 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
     private TipoTramitacionDTO plantillaSel;
 
     private boolean tramitPresencial;
-
     private boolean tramitElectronica;
-
     private boolean tramitTelefonica;
+    private boolean activoLOPD;
 
     public static ServicioDTO createInstance(List<String> idiomas) {
         ServicioDTO serv = new ServicioDTO();
+        serv.setActivoLOPD(true);
         serv.setWorkflow(TypeProcedimientoWorkflow.MODIFICACION);
         serv.setEstado(TypeProcedimientoEstado.MODIFICACION);
         serv.setNombreProcedimientoWorkFlow(Literal.createInstance(idiomas));
@@ -90,6 +90,14 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
 
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
+    }
+
+    public boolean isActivoLOPD() {
+        return activoLOPD;
+    }
+
+    public void setActivoLOPD(boolean activoLOPD) {
+        this.activoLOPD = activoLOPD;
     }
 
     @Override

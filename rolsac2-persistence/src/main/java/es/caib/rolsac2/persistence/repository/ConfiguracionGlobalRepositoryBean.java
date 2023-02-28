@@ -62,6 +62,28 @@ public class ConfiguracionGlobalRepositoryBean extends AbstractCrudRepository<JC
         return (long) getQuery(true, filtro).getSingleResult();
     }
 
+    @Override
+    public ConfiguracionGlobalGridDTO findByPropiedad(String propiedad) {
+        ConfiguracionGlobalFiltro filtro = new ConfiguracionGlobalFiltro();
+        filtro.setPropiedad(propiedad);
+        Query query = getQuery(false, filtro);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
+
+        List<Object[]> jConfiguracionesGlobal = query.getResultList();
+        if (jConfiguracionesGlobal != null && !jConfiguracionesGlobal.isEmpty()) {
+            Object[] jConfiguracionGlobal = jConfiguracionesGlobal.get(0);
+            ConfiguracionGlobalGridDTO configuracionGlobalGridDTO = new ConfiguracionGlobalGridDTO();
+            configuracionGlobalGridDTO.setCodigo((Long) jConfiguracionGlobal[0]);
+            configuracionGlobalGridDTO.setPropiedad((String) jConfiguracionGlobal[1]);
+            configuracionGlobalGridDTO.setValor((String) jConfiguracionGlobal[2]);
+            //configuracionGlobalGridDTO.setDescripcion((String) jConfiguracionGlobal[3]);
+            //configuracionGlobalGridDTO.setNoModificable((Boolean) jConfiguracionGlobal[4]);
+            return configuracionGlobalGridDTO;
+        }
+        return null;
+    }
+
     private Query getQuery(boolean isTotal, ConfiguracionGlobalFiltro filtro) {
 
         StringBuilder sql;
@@ -76,6 +98,9 @@ public class ConfiguracionGlobalRepositoryBean extends AbstractCrudRepository<JC
                     + " OR LOWER(j.valor) LIKE :filtro OR LOWER(j.descripcion) LIKE :filtro "
                     + " OR LOWER(cast(j.noModificable as string)) LIKE :filtro )");
         }
+        if (filtro.isRellenoPropiedad()) {
+            sql.append(" and  j.propiedad like :propiedad ");
+        }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -83,6 +108,9 @@ public class ConfiguracionGlobalRepositoryBean extends AbstractCrudRepository<JC
         Query query = entityManager.createQuery(sql.toString());
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto() + "%");
+        }
+        if (filtro.isRellenoPropiedad()) {
+            query.setParameter("propiedad", filtro.getPropiedad());
         }
         return query;
     }

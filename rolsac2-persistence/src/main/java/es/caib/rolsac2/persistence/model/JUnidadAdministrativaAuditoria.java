@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.model;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -56,9 +55,15 @@ public class JUnidadAdministrativaAuditoria {
     private String usuarioPerfil;
 
     /**
+     * LITERAL FLUJO
+     */
+    @Column(name = "UAAU_LTLFLJ", nullable = false)
+    private String literalFlujo;
+
+    /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Integer getCodigo() {
         return codigo;
@@ -67,7 +72,7 @@ public class JUnidadAdministrativaAuditoria {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Integer id) {
         this.codigo = id;
@@ -76,7 +81,7 @@ public class JUnidadAdministrativaAuditoria {
     /**
      * Obtiene unidad administrativa.
      *
-     * @return  unidad administrativa
+     * @return unidad administrativa
      */
     public JUnidadAdministrativa getUnidadAdministrativa() {
         return unidadAdministrativa;
@@ -85,7 +90,7 @@ public class JUnidadAdministrativaAuditoria {
     /**
      * Establece unidad administrativa.
      *
-     * @param uaauCodua  uaau codua
+     * @param uaauCodua uaau codua
      */
     public void setUnidadAdministrativa(JUnidadAdministrativa uaauCodua) {
         this.unidadAdministrativa = uaauCodua;
@@ -94,7 +99,7 @@ public class JUnidadAdministrativaAuditoria {
     /**
      * Obtiene fecha modificacion.
      *
-     * @return  fecha modificacion
+     * @return fecha modificacion
      */
     public Date getFechaModificacion() {
         return fechaModificacion;
@@ -103,7 +108,7 @@ public class JUnidadAdministrativaAuditoria {
     /**
      * Establece fecha modificacion.
      *
-     * @param uaauFecmod  uaau fecmod
+     * @param uaauFecmod uaau fecmod
      */
     public void setFechaModificacion(Date uaauFecmod) {
         this.fechaModificacion = uaauFecmod;
@@ -112,7 +117,7 @@ public class JUnidadAdministrativaAuditoria {
     /**
      * Obtiene lista modificaciones.
      *
-     * @return  lista modificaciones
+     * @return lista modificaciones
      */
     public String getListaModificaciones() {
         return listaModificaciones;
@@ -121,7 +126,7 @@ public class JUnidadAdministrativaAuditoria {
     /**
      * Establece lista modificaciones.
      *
-     * @param uaauLstmod  uaau lstmod
+     * @param uaauLstmod uaau lstmod
      */
     public void setListaModificaciones(String uaauLstmod) {
         this.listaModificaciones = uaauLstmod;
@@ -130,7 +135,7 @@ public class JUnidadAdministrativaAuditoria {
     /**
      * Obtiene usuario modificacion.
      *
-     * @return  usuario modificacion
+     * @return usuario modificacion
      */
     public String getUsuarioModificacion() {
         return usuarioModificacion;
@@ -139,7 +144,7 @@ public class JUnidadAdministrativaAuditoria {
     /**
      * Establece usuario modificacion.
      *
-     * @param uaauUsumod  uaau usumod
+     * @param uaauUsumod uaau usumod
      */
     public void setUsuarioModificacion(String uaauUsumod) {
         this.usuarioModificacion = uaauUsumod;
@@ -151,5 +156,13 @@ public class JUnidadAdministrativaAuditoria {
 
     public void setUsuarioPerfil(String usuarioPerfil) {
         this.usuarioPerfil = usuarioPerfil;
+    }
+
+    public String getLiteralFlujo() {
+        return literalFlujo;
+    }
+
+    public void setLiteralFlujo(String literalFlujo) {
+        this.literalFlujo = literalFlujo;
     }
 }

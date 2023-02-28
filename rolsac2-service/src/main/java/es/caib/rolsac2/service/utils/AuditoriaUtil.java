@@ -238,30 +238,64 @@ public final class AuditoriaUtil {
     public static final void auditar(final Literal valorPublicado, final Literal valorModificado, List<AuditoriaCambio> cambios, final String idCampo) {
 
 
-        if (valorPublicado == null && valorModificado == null) {
+        if ((valorPublicado == null || valorPublicado.estaVacio()) && (valorModificado == null || valorModificado.estaVacio())) {
             return;
-        } else if ((valorPublicado != null && valorModificado == null) || (valorPublicado != null && valorModificado == null)) {
+        } else if ((valorPublicado != null && !valorPublicado.estaVacio() && valorModificado == null) || (valorPublicado == null && valorModificado != null && !valorModificado.estaVacio())) {
 
             if (valorPublicado != null) {
                 for (Traduccion traduccion : valorPublicado.getTraducciones()) {
                     AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), traduccion.getLiteral(), null, idCampo);
                     cambios.add(cambio);
                 }
+                return;
             }
             if (valorModificado != null) {
                 for (Traduccion traduccion : valorModificado.getTraducciones()) {
                     AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), "nul", traduccion.getLiteral(), idCampo);
                     cambios.add(cambio);
                 }
+                return;
             }
         } else {
-            for (String idi : valorModificado.getIdiomas()) {
-                if (valorPublicado != null && valorPublicado.getTraduccion(idi) != null && !valorPublicado.getTraduccion(idi).equals(valorModificado.getTraduccion(idi))) {
-                    AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(idi), valorPublicado.getTraduccion(idi), valorModificado.getTraduccion(idi), idCampo);
+            if (valorModificado.estaVacio() && valorPublicado.estaVacio()) {
+                //Si los dos vacios, no hacer nada
+                return;
+            } else if (valorModificado.estaVacio()) {
+                //Si el modificado esta vacío, añadir los cambios del publicado
+                for (Traduccion traduccion : valorPublicado.getTraducciones()) {
+                    AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), traduccion.getLiteral(), null, idCampo);
                     cambios.add(cambio);
+                }
+            } else if (valorPublicado.estaVacio()) {
+                //Si el modificado esta vacío, añadir los cambios del modificado
+                for (Traduccion traduccion : valorModificado.getTraducciones()) {
+                    AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), "nul", traduccion.getLiteral(), idCampo);
+                    cambios.add(cambio);
+                }
+            } else {
+                //Sino ir comparando idiomas
+                for (String idi : valorModificado.getIdiomas()) {
+                    if (valorPublicado != null && !esIgual(valorPublicado.getTraduccion(idi), valorModificado.getTraduccion(idi))) {
+                        AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(idi), valorPublicado.getTraduccion(idi), valorModificado.getTraduccion(idi), idCampo);
+                        cambios.add(cambio);
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * Una pequeña comparativa por si dos textos son iguales (que daba un poco por saco si era nulo o si estaba vacío)
+     *
+     * @param traduccion
+     * @param traduccion2
+     * @return
+     */
+    private static boolean esIgual(String traduccion, String traduccion2) {
+        if ((traduccion == null || traduccion.isEmpty()) && (traduccion2 == null || traduccion2.isEmpty())) {
+            return true;
+        }
+        return traduccion.equals(traduccion2);
     }
 
 

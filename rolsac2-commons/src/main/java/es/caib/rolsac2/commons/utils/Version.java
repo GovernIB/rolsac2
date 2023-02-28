@@ -27,6 +27,8 @@ public class Version {
     private String jdkVersion;
     private String projectName;
     private String commit;
+
+    private String authMethod;
     private String url = "https://github.com/GovernIB/rolsac2/commit/";
 
 
@@ -47,6 +49,8 @@ public class Version {
         commit = !bundle.getString("commitGit").isEmpty() ? bundle.getString("commitGit") : bundle.getString("commitSvn");
         url = !bundle.getString("commitGit").isEmpty() ? url + bundle.getString("commitGit") : url;
         projectName = "ROLSAC2";// bundle.getString("project.name");
+        authMethod = bundle.getString("authMethod");
+
     }
 
     /**

@@ -49,17 +49,21 @@
                             <p:ajax event="rowUnselect"/> -->
 
                             <!-- Columnas -->
-                            <p:column class="ui-panelgrid-cell"  headerText="Fecha">
+                            <p:column class="ui-panelgrid-cell"  headerText="#{labels['dict.fecha']}">
                                 <h:outputText value="#{td.fecha}"/>
                             </p:column>
 
                             <!-- Columnas -->
-                            <p:column class="ui-panelgrid-cell"  headerText="Usuario">
+                            <p:column class="ui-panelgrid-cell"  headerText="#{labels['dict.usuario']}">
                                 <h:outputText value="#{td.usuario}"/>
                             </p:column>
 
-                            <p:column class="ui-panelgrid-cell"  headerText="Perfil">
+                            <p:column class="ui-panelgrid-cell"  headerText="#{labels['dict.perfil']}">
                                 <h:outputText value="#{labels['TypePerfiles.' += td.usuarioPerfil]}"/>
+                            </p:column>
+
+                            <p:column class="ui-panelgrid-cell"  headerText="#{labels['dict.mensajeFlujo']}">
+                                <h:outputText value="#{labels['' += td.literalFlujo]}" rendered="#{!empty td.literalFlujo}"/>
                             </p:column>
 
                             <p:ajax event="rowUnselect" global="true"  update="@form:datatableMensajes"  process="@form" listener="#{dialogAuditoria.selectDato()}" />

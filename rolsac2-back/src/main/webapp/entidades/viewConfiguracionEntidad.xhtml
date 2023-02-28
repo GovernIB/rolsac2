@@ -122,81 +122,26 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             </p:inputText>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:outputLabel value="#{labels['dict.lopdFinalidad']}:" for="txtLopdFinalidad"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
-                            <my:literalComponent id="txtLopdFinalidad" styleClass="w95"
-                                                 value="#{viewConfiguracionEntidad.data.lopdFinalidad}"
-                                                 soloLecture="#{viewConfiguracionEntidad.isModoConsulta()}"
-                                                 required="true"
-                                                 idiomasObligatorios="#{viewConfiguracionEntidad.data.getIdiomasObligatorios()}"
-                                                 idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
-                                                 idioma="#{viewConfiguracionEntidad.idioma}"
-                                                 literal="#{viewConfiguracionEntidad.data.lopdFinalidad}"
-                                                 nombreLiteral="#{labels['dict.lopdFinalidad']}">
-                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
-                            </my:literalComponent>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:outputLabel value="#{labels['dict.lopdDestinatario']}:" for="txtLopdDestinatario"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
-                            <my:literalComponent id="txtLopdDestinatario" styleClass="w95"
-                                                 value="#{viewConfiguracionEntidad.data.lopdDestinatario}"
-                                                 soloLecture="#{viewConfiguracionEntidad.isModoConsulta()}"
-                                                 required="true"
-                                                 idiomasObligatorios="#{viewConfiguracionEntidad.data.getIdiomasObligatorios()}"
-                                                 idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
-                                                 idioma="#{viewConfiguracionEntidad.idioma}"
-                                                 literal="#{viewConfiguracionEntidad.data.lopdDestinatario}"
-                                                 nombreLiteral="#{labels['dict.lopdDestinatario']}">
-                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
-                            </my:literalComponent>
-                        </div>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:outputLabel value="#{labels['dict.lopdDerechos']}:" for="txtLopdDerechos"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
-                            <my:literalComponent id="txtLopdDerechos" styleClass="w95"
-                                                 value="#{viewConfiguracionEntidad.data.lopdDerechos}"
-                                                 soloLecture="#{viewConfiguracionEntidad.isModoConsulta()}"
-                                                 required="true"
-                                                 idiomasObligatorios="#{viewConfiguracionEntidad.data.getIdiomasObligatorios()}"
-                                                 idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
-                                                 idioma="#{viewConfiguracionEntidad.idioma}"
-                                                 literal="#{viewConfiguracionEntidad.data.lopdDerechos}"
-                                                 nombreLiteral="#{labels['dict.lopdDerechos']}">
-                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
-                            </my:literalComponent>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
                             <p:outputLabel value="#{labels['dict.comunUA']}:" for="txtUAComun"/>
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5">
                             <my:literalComponent id="txtUAComun" styleClass="w95"
-                                                 value="#{viewConfiguracionEntidad.data.uaComun}"
-                                                 soloLecture="#{viewConfiguracionEntidad.isModoConsulta()}"
+                                                 value="#{viewLOPD.data.uaComun}"
+                                                 soloLecture="#{viewLOPD.isModoConsulta()}"
                                                  required="true"
-                                                 idiomasObligatorios="#{viewConfiguracionEntidad.data.getIdiomasObligatorios()}"
-                                                 idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
-                                                 idioma="#{viewConfiguracionEntidad.idioma}"
-                                                 literal="#{viewConfiguracionEntidad.data.uaComun}"
+                                                 idiomasObligatorios="#{viewLOPD.data.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{viewLOPD.data.getIdiomasPermitidos()}"
+                                                 idioma="#{viewLOPD.idioma}"
+                                                 literal="#{viewLOPD.data.uaComun}"
                                                  nombreLiteral="#{labels['dict.comunUA']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                             </my:literalComponent>
                         </div>
                     </div>
+
 
 
                     <div class="row">
@@ -281,6 +226,47 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                     </c:choose>
                                 </p:panel>
  
+                            </c:if>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['viewConfiguracionEntidad.css']}:" for=""/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5" >
+                            <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
+                                <h:outputText value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
+                            </c:if>
+                            <c:if test="#{!dialogEntidad.isModoAlta()}">
+                                <p:panel id="css" styleClass="logo-form w95">
+                                    <c:choose>
+                                        <c:when test="#{viewConfiguracionEntidad.data.cssPersonalizado == null}">
+                                            <p:fileUpload listener="#{viewConfiguracionEntidad.handleCssUpload}"
+                                                          mode="advanced"
+                                                          dragDropSupport="false"
+                                                          update="form:css messages"
+                                                          allowTypes="/(\.|\/)(css)$/"
+                                                          validateContentType="true" accept=".css"
+                                                          onupload=""
+                                                          label="#{labels['dict.anyadir']}"
+                                                          uploadLabel="#{labels['dict.subir']}"
+                                                          cancelLabel="#{labels['dict.cancelar']}"
+                                                          styleClass=""
+                                            />
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p:commandButton id="cssDescarga" value="#{viewConfiguracionEntidad.data.cssPersonalizado.filename}"
+                                                             ajax="false" process="@this"
+                                                             icon="pi pi-arrow-down">
+                                                <p:fileDownload value="#{viewConfiguracionEntidad.obtenerCss()}" ></p:fileDownload>
+                                            </p:commandButton>
+                                            <p:commandButton actionListener="#{viewConfiguracionEntidad.eliminarCss()}" icon="pi pi-times"
+                                                             update="form:css"></p:commandButton>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </p:panel>
+
                             </c:if>
 
                         </div>

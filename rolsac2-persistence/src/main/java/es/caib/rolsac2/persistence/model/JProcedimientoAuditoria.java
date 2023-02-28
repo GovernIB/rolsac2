@@ -51,6 +51,9 @@ public class JProcedimientoAuditoria {
     @Column(name = "PRAU_USUPRF", nullable = false)
     private String usuarioPerfil;
 
+    @Column(name = "PRAU_LTLFLJ", nullable = false)
+    private String literalFlujo;
+
     /**
      * Obtiene codigo.
      *
@@ -147,5 +150,13 @@ public class JProcedimientoAuditoria {
 
     public void setUsuarioPerfil(String usuarioPerfil) {
         this.usuarioPerfil = usuarioPerfil;
+    }
+
+    public String getLiteralFlujo() {
+        return literalFlujo;
+    }
+
+    public void setLiteralFlujo(String literalFlujo) {
+        this.literalFlujo = literalFlujo;
     }
 }

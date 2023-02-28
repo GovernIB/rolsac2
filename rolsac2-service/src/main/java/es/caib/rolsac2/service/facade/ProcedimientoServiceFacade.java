@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Servicio para los casos de uso de mantenimiento del personal.
+ * Servicio para los casos de uso de mantenimiento del proc/serv.
  *
  * @author Indra
  */
@@ -22,11 +22,12 @@ public interface ProcedimientoServiceFacade {
     /**
      * Crea un nuevo procedimiento a la base de datos relacionada con la unidad indicada.
      *
-     * @param dto el procedimiento
-     * @return EL identificador del nuevo personal
+     * @param dto    el procedimiento
+     * @param perfil El perfil
+     * @return EL identificador del nuevo proc/serv
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    Long create(ProcedimientoBaseDTO dto) throws RecursoNoEncontradoException;
+    Long create(ProcedimientoBaseDTO dto, TypePerfiles perfil) throws RecursoNoEncontradoException;
 
 
     /**
@@ -41,8 +42,8 @@ public interface ProcedimientoServiceFacade {
     /**
      * Borra una ficha de la bbdd
      *
-     * @param id identificador del personal a borrar
-     * @throws RecursoNoEncontradoException si el personal con el id no existe.
+     * @param id identificador del proc/serv a borrar
+     * @throws RecursoNoEncontradoException si el proc/serv con el id no existe.
      */
     void delete(Long id) throws RecursoNoEncontradoException;
 
@@ -51,18 +52,18 @@ public interface ProcedimientoServiceFacade {
     void deleteWF(Long idWF) throws RecursoNoEncontradoException;
 
     /**
-     * Retorna un procedimiento amb el personal indicat per l'identificador.
+     * Retorna un procedimiento amb el proc/serv indicat per l'identificador.
      *
-     * @param id identificador del personal a cercar
-     * @return un opcional amb les dades del personal indicat o buid si no existeix.
+     * @param id identificador del proc/serv a cercar
+     * @return un opcional amb les dades del proc/serv indicat o buid si no existeix.
      */
     ProcedimientoDTO findProcedimientoById(Long id);
 
     /**
-     * Retorna un servicio amb el personal indicat per l'identificador.
+     * Retorna un servicio amb el proc/serv indicat per l'identificador.
      *
-     * @param id identificador del personal a cercar
-     * @return un opcional amb les dades del personal indicat o buid si no existeix.
+     * @param id identificador del proc/serv a cercar
+     * @return un opcional amb les dades del proc/serv indicat o buid si no existeix.
      */
     ServicioDTO findServicioById(Long id);
 
@@ -106,7 +107,7 @@ public interface ProcedimientoServiceFacade {
 
     Long getCodigoByWF(Long codigo, boolean valor);
 
-    Long generarModificacion(Long codigoWFPub);
+    Long generarModificacion(Long codigoWFPub, String usuario, TypePerfiles perfil);
 
     /**
      * Devuelve las auditorias segun el id
