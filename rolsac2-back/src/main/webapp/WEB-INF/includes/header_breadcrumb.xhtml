@@ -81,55 +81,65 @@
                                         </li>
 
                                         <div class="menuTipos mt-4" id="menuTipos">
+                                            <p:outputLabel
+                                                    styleClass="font-weight-bold dropdown-item mobil mb-0 dropdown-label"
+                                                    value="#{labels['menu.label.superadm.normativas']}"></p:outputLabel>
                                             <p:link id="viewTipoAfectacion" styleClass="pb-4 dropdown-item mobil"
                                                     outcome="/maestras/tipo/viewTipoAfectacion.xhtml"
                                                     title="#{labels['viewTipoAfectacion.titulo']}">
                                                 <span class="mb-0 float-right ">#{labels['viewTipoAfectacion.titulo']}</span>
-                                            </p:link>
-                                            <p:link id="viewTipoMateriaSIA" styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoMateriaSIA.xhtml"
-                                                    title="#{labels['viewTipoMateriaSIA.titulo']}">
-                                                <span class="mb-0 float-right">#{labels['viewTipoMateriaSIA.titulo']}</span>
-                                            </p:link>
-                                            <p:link id="viewTipoFormaInicio" styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoFormaInicio.xhtml"
-                                                    title="#{labels['viewTipoFormaInicio.titulo']}">
-                                                <span class="mb-0 float-right">#{labels['viewTipoFormaInicio.titulo']}</span>
-                                            </p:link>
-                                            <p:link id="viewTipoNormativa" styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoNormativa.xhtml"
-                                                    title="#{labels['viewTipoNormativa.titulo']}">
-                                                <span class="mb-0 float-right ">#{labels['viewTipoNormativa.titulo']}</span>
-                                            </p:link>
-                                            <p:link id="viewTipoSexo" styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoSexo.xhtml"
-                                                    title="#{labels['viewTipoSexo.titulo']}">
-                                                <span class="mb-0 float-right ">#{labels['viewTipoSexo.titulo']}</span>
                                             </p:link>
                                             <p:link id="viewTipoBoletin" styleClass="pb-4 dropdown-item mobil"
                                                     outcome="/maestras/tipo/viewTipoBoletin.xhtml"
                                                     title="#{labels['viewTipoBoletin.titulo']}">
                                                 <span class="mb-0 float-right ">#{labels['viewTipoBoletin.titulo']}</span>
                                             </p:link>
-                                            <p:link id="viewTipoVia" styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoVia.xhtml"
-                                                    title="#{labels['viewTipoVia.titulo']}">
-                                                <span class="mb-0 float-right ">#{labels['viewTipoVia.titulo']}</span>
+                                            <p:link id="viewTipoNormativa" styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/maestras/tipo/viewTipoNormativa.xhtml"
+                                                    title="#{labels['viewTipoNormativa.titulo']}">
+                                                <span class="mb-0 float-right ">#{labels['viewTipoNormativa.titulo']}</span>
                                             </p:link>
-                                            <p:link id="viewTipoPublicoObjetivo" styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoPublicoObjetivo.xhtml"
-                                                    title="#{labels['viewTipoPublicoObjetivo.titulo']}">
-                                                <span class="mb-0 float-right">#{labels['viewTipoPublicoObjetivo.titulo']}</span>
-                                            </p:link>
+
+                                            <p:outputLabel
+                                                    styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
+                                                    value="#{labels['menu.label.superadm.procserv']}"></p:outputLabel>
                                             <p:link id="viewTipoSilencioAdministrativo" styleClass="pb-4 dropdown-item mobil"
                                                     outcome="/maestras/tipo/viewTipoSilencioAdministrativo.xhtml"
                                                     title="#{labels['viewTipoSilencioAdministrativo.titulo']}">
                                                 <span class="mb-0 float-right">#{labels['viewTipoSilencioAdministrativo.titulo']}</span>
                                             </p:link>
+                                            <p:link id="viewTipoFormaInicio" styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/maestras/tipo/viewTipoFormaInicio.xhtml"
+                                                    title="#{labels['viewTipoFormaInicio.titulo']}">
+                                                <span class="mb-0 float-right">#{labels['viewTipoFormaInicio.titulo']}</span>
+                                            </p:link>
+                                             <p:link id="viewTipoVia" styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/maestras/tipo/viewTipoVia.xhtml"
+                                                    title="#{labels['viewTipoVia.titulo']}">
+                                                <span class="mb-0 float-right ">#{labels['viewTipoVia.titulo']}</span>
+                                            </p:link>
                                             <p:link id="viewTipoLegitimacion" styleClass="pb-4 dropdown-item mobil"
                                                     outcome="/maestras/tipo/viewTipoLegitimacion.xhtml"
                                                     title="#{labels['viewTipoLegitimacion.titulo']}">
                                                 <span class="mb-0 float-right">#{labels['viewTipoLegitimacion.titulo']}</span>
+                                            </p:link>
+                                            <p:link styleClass="pb-3 dropdown-item mobil" >
+                                                <span > </span>
+                                            </p:link>
+                                            <p:link id="viewTipoMateriaSIA" styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/maestras/tipo/viewTipoMateriaSIA.xhtml"
+                                                    title="#{labels['viewTipoMateriaSIA.titulo']}">
+                                                <span class="mb-0 float-right">#{labels['viewTipoMateriaSIA.titulo']}</span>
+                                            </p:link>
+                                            <p:link id="viewTipoSexo" styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/maestras/tipo/viewTipoSexo.xhtml"
+                                                    title="#{labels['viewTipoSexo.titulo']}">
+                                                <span class="mb-0 float-right ">#{labels['viewTipoSexo.titulo']}</span>
+                                            </p:link>
+                                            <p:link id="viewTipoPublicoObjetivo" styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/maestras/tipo/viewTipoPublicoObjetivo.xhtml"
+                                                    title="#{labels['viewTipoPublicoObjetivo.titulo']}">
+                                                <span class="mb-0 float-right">#{labels['viewTipoPublicoObjetivo.titulo']}</span>
                                             </p:link>
 
                                         </div>
@@ -238,12 +248,20 @@
 										        #{labels['viewTema.titulo']}</span>
                                             </p:link>
                                             <p:link id="viewPublicoObjetivoEntidad"
-                                                    styleClass="pb-5 dropdown-item mobil"
+                                                    styleClass="pb-4 dropdown-item mobil"
                                                     outcome="/maestras/viewPublicoObjetivoEntidad.xhtml"
                                                     title="#{labels['viewPublicoObjetivoEntidad.titulo']}">
 									        <span class="mb-0 float-right ">
 										        #{labels['viewPublicoObjetivoEntidad.titulo']}</span>
                                             </p:link>
+                                            <p:link id="viewLOPD"
+                                                    styleClass="pb-5 dropdown-item mobil"
+                                                    outcome="/entidades/viewLOPD.xhtml"
+                                                    title="#{labels['viewLOPD.titulo']}">
+									        <span class="mb-0 float-right ">
+										        #{labels['viewLOPD.titulo']}</span>
+                                            </p:link>
+
 
                                             <p:outputLabel
                                                     styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
