@@ -142,6 +142,14 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
             entidadConverter.mergeEntity(jEntidad, dto);
             jEntidad.setLogo(null);
         }
+         if(dto.getCssPersonalizado() != null) {
+             ficheroExternoRepository.persistFicheroExterno(dto.getCssPersonalizado().getCodigo(), dto.getCodigo(), systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
+             entidadConverter.mergeEntity(jEntidad, dto);
+             JFicheroExterno jCss = ficheroExternoRepository.getReference(dto.getCssPersonalizado().getCodigo());
+             jEntidad.setCssPersonalizado(jCss);
+         }else {
+             jEntidad.setCssPersonalizado(null);
+         }
 
         entidadRepository.update(jEntidad);
     }

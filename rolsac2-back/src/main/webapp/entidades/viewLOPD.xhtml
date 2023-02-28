@@ -1,0 +1,174 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      >
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <!--<f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />-->
+            <f:viewAction action="#{viewLOPD.load}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="pageTitle">
+        <h:outputFormat value="#{labels['viewLOPD.titulo']}"/>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
+            </p:menuitem>
+        </c:forEach>
+    </ui:define>
+
+
+
+ <ui:define name="content">
+     <h:outputStylesheet library="css">
+         .ui-panel-content  {
+            padding: 20px !important;
+         }
+
+         /*Botoneras multiboton*/
+         .botoneraRed.ui-selectonebutton {
+         border-color: white;
+         }
+
+         .botoneraRed.ui-selectonebutton .ui-button {
+         background-color: #cc073c !important;
+         color: black;
+         }
+
+         .botoneraRed.ui-selectonebutton .ui-button.ui-state-hover,
+         .botoneraRed.ui-selectonebutton .ui-state-hover {
+         background-color: #cc073c !important;
+         }
+
+         .botoneraRed.ui-selectonebutton .ui-state-active {
+         background-color: #cc073c !important;
+         color: white !important;
+         text-shadow: none;
+         }
+         /*Para p:selectManyButton multibotón y selección*/
+         .botoneraRed > .ui-button {
+         transition: 0.5s;
+         }
+
+         .botoneraRed > .ui-button.ui-state-active {
+         background-color: #cc073c !important;
+         color: white !important;
+         }
+
+         .botoneraRed >.ui-button:hover {
+         background-color: #cc073c !important;
+         color: white !important;
+         background-position-x: 0;
+         background-position-y: 100px;
+         }
+
+         .ui-growl {
+             top: 10%;
+             right: 10px;
+         }
+
+     </h:outputStylesheet>
+
+     <h:form id="form" >
+
+         <p:growl id="messages"
+                  globalOnly="false"
+                  showDetail="false"
+                  life="5000"
+                  escape="false"/>
+
+            <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
+                             action="#{viewConfiguracionesGlobales.buscar}" update="dataTable"/>
+
+                <p:panel id="panel" >
+
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dict.lopdFinalidad']}:" for="txtLopdFinalidad"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <my:literalComponent id="txtLopdFinalidad" styleClass="w95"
+                                                 value="#{viewLOPD.data.lopdFinalidad}"
+                                                 soloLecture="#{viewLOPD.isModoConsulta()}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{viewLOPD.data.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{viewLOPD.data.getIdiomasPermitidos()}"
+                                                 idioma="#{viewLOPD.idioma}"
+                                                 literal="#{viewLOPD.data.lopdFinalidad}"
+                                                 nombreLiteral="#{labels['dict.lopdFinalidad']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dict.lopdDestinatario']}:" for="txtLopdDestinatario"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <my:literalComponent id="txtLopdDestinatario" styleClass="w95"
+                                                 value="#{viewLOPD.data.lopdDestinatario}"
+                                                 soloLecture="#{viewLOPD.isModoConsulta()}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{viewLOPD.data.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{viewLOPD.data.getIdiomasPermitidos()}"
+                                                 idioma="#{viewLOPD.idioma}"
+                                                 literal="#{viewLOPD.data.lopdDestinatario}"
+                                                 nombreLiteral="#{labels['dict.lopdDestinatario']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dict.lopdDerechos']}:" for="txtLopdDerechos"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <my:literalComponent id="txtLopdDerechos" styleClass="w95"
+                                                 value="#{viewLOPD.data.lopdDerechos}"
+                                                 soloLecture="#{viewLOPD.isModoConsulta()}"
+                                                 required="true"
+                                                 idiomasObligatorios="#{viewLOPD.data.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{viewLOPD.data.getIdiomasPermitidos()}"
+                                                 idioma="#{viewLOPD.idioma}"
+                                                 literal="#{viewLOPD.data.lopdDerechos}"
+                                                 nombreLiteral="#{labels['dict.lopdDerechos']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="row">
+                         <div class="ui-g-12 ui-md-12 ui-lg-6" style="text-align: end;padding-right: 27px;">
+
+                        <p:commandButton action="#{viewLOPD.ayuda}"
+                                         icon="pi pi-info-circle" iconPos="top"
+                                         value="#{labels['dict.ayuda']}"
+                                         process="@this"/>
+                        <p:commandButton action="#{viewLOPD.guardar}"
+                                         value="#{labels['dict.guardar']}"
+                                         process="@all" update="messages">
+                        </p:commandButton>
+                         </div>
+                    </div>
+                </p:panel>
+            </h:form>
+            </ui:define>
+</ui:composition>
+</html>

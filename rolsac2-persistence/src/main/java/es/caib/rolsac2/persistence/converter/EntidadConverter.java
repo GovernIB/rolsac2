@@ -35,6 +35,7 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
     @Mapping(target = "lopdDerechos", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdDerechos\" ))")
     @Mapping(target = "uaComun", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"uaComun\" ))")
     @Mapping(target = "logo", expression = "java(jFicheroExternoToFicheroDTO(entity.getLogo()))")
+    @Mapping(target = "cssPersonalizado", expression = "java(jFicheroExternoToFicheroDTO(entity.getCssPersonalizado()))")
     EntidadDTO createDTO(JEntidad entity);
 
     // @Mapping(target = "unidadOrganica", ignore = true)
@@ -47,6 +48,7 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
     @Override
     @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "logo", ignore = true)
+    @Mapping(target = "cssPersonalizado", ignore = true)
     void mergeEntity(@MappingTarget JEntidad entity, EntidadDTO dto);
 
     default List<JEntidadTraduccion> convierteLiteralToTraduccion(JEntidad jEntidad, EntidadDTO dto) {
@@ -139,6 +141,7 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
         if (jFicheroExterno.getTipo() != null) {
             ficheroDTO.setTipo(TypeFicheroExterno.fromString(jFicheroExterno.getTipo()));
         }
+        ficheroDTO.setReferencia(jFicheroExterno.getReferencia());
 
         return ficheroDTO;
     }

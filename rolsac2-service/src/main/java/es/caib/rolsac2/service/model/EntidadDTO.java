@@ -28,6 +28,8 @@ public class EntidadDTO extends ModelApi {
 
     private FicheroDTO logo;
 
+    private FicheroDTO cssPersonalizado;
+
     private Literal descripcion;
 
     private String idiomaDefectoRest;
@@ -67,6 +69,7 @@ public class EntidadDTO extends ModelApi {
             this.rolGestor = otro.rolGestor;
             this.rolInformador = otro.rolInformador;
             this.logo = otro.logo == null ? null : (FicheroDTO) otro.logo.clone();
+            this.cssPersonalizado = otro.cssPersonalizado == null ? null : (FicheroDTO) otro.cssPersonalizado.clone();
             this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
             this.idiomaDefectoRest = otro.idiomaDefectoRest;
             this.idiomasPermitidos = otro.idiomasPermitidos;
@@ -234,6 +237,24 @@ public class EntidadDTO extends ModelApi {
      */
     public void setLogo(FicheroDTO logo) {
         this.logo = logo;
+    }
+
+    /**
+     * Obtiene CSS.
+     *
+     * @return el CSS
+     */
+    public FicheroDTO getCssPersonalizado() {
+        return cssPersonalizado;
+    }
+
+    /**
+     * Establece CSS.
+     *
+     * @param cssPersonalizado el CSS
+     */
+    public void setCssPersonalizado(FicheroDTO cssPersonalizado) {
+        this.cssPersonalizado = cssPersonalizado;
     }
 
     /**
