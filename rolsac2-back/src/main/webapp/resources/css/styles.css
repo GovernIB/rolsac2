@@ -1266,3 +1266,9 @@ a.iconoXarxes {
 .mt-1-3rem{
     margin-top: 1.3rem !important;
 }
+.ui-dialog-buttonpane > button{
+    float: right;
+}
+.ui-confirm-dialog-message {
+    font-size: 16px;
+}
