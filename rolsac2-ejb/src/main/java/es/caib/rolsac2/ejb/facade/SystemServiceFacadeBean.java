@@ -1,5 +1,8 @@
 package es.caib.rolsac2.ejb.facade;
 
+import es.caib.rolsac2.persistence.converter.SesionConverter;
+import es.caib.rolsac2.persistence.model.JSesion;
+import es.caib.rolsac2.persistence.repository.SesionRepository;
 import es.caib.rolsac2.persistence.repository.ConfiguracionGlobalRepository;
 import es.caib.rolsac2.service.exception.PluginErrorException;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
@@ -8,6 +11,7 @@ import es.caib.rolsac2.service.facade.integracion.TraduccionServiceFacade;
 import es.caib.rolsac2.service.model.ConfiguracionGlobalGridDTO;
 import es.caib.rolsac2.service.model.PluginDTO;
 import es.caib.rolsac2.service.model.Propiedad;
+import es.caib.rolsac2.service.model.SesionDTO;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
@@ -43,6 +47,12 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
 
     @Inject
     TraduccionServiceFacade traduccionServiceFacade;
+
+    @Inject
+    SesionRepository sesionRepository;
+
+    @Inject
+    SesionConverter sesionConverter;
 
     @Inject
     ConfiguracionGlobalRepository configGlobal;
@@ -108,6 +118,45 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     public IPlugin obtenerPluginEntidad(TypePluginEntidad tipoPlugin, Long idEntidad) {
 
         return createPlugin(administracionEntServiceFacade.listPluginsByEntidad(idEntidad), tipoPlugin.toString());
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void crearSesion(SesionDTO sesionDTO) {
+        JSesion sesion = sesionConverter.createEntity(sesionDTO);
+        sesionRepository.create(sesion);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void updateSesion(SesionDTO sesionDTO) {
+        JSesion sesion = sesionRepository.findById(sesionDTO.getIdUsuario());
+        sesionConverter.mergeEntity(sesion, sesionDTO);
+        sesionRepository.update(sesion);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void deleteSesion(Long idUsuario) {
+        JSesion sesion = sesionRepository.findById(idUsuario);
+        sesionRepository.delete(sesion);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public SesionDTO findSesionById(Long idUsuario) {
+        return sesionConverter.createDTO(sesionRepository.findById(idUsuario));
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Boolean checkSesion(Long idUsuario) {
+        return sesionRepository.checkSesion(idUsuario);
     }
 
     /*********************************************************************************************************************************************

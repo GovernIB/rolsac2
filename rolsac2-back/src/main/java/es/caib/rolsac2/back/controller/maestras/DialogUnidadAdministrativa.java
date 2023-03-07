@@ -12,6 +12,8 @@ import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.utils.UtilComparador;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -33,6 +35,8 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
     private String id = "";
 
     private UnidadAdministrativaDTO data;
+
+    private UnidadAdministrativaDTO dataOriginal;
 
     private UnidadAdministrativaDTO dataAntigua;
 
@@ -98,10 +102,15 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             data.setResponsable(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setUsuariosUnidadAdministrativa(new ArrayList<>());
             data.setTemas(new ArrayList<>());
+            dataOriginal = (UnidadAdministrativaDTO) data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
             dataAntigua = (UnidadAdministrativaDTO) data.clone();
+            dataOriginal = (UnidadAdministrativaDTO) data.clone();
             this.identificadorOld = data.getIdentificador();
+            /*dataOriginal.setHijos(new ArrayList<>(data.getHijos()));*/
+            dataOriginal.setTemas(new ArrayList<>(data.getTemas()));
+            dataOriginal.setUsuariosUnidadAdministrativa(new ArrayList<>(data.getUsuariosUnidadAdministrativa()));
         }
 
         temasTabla = new ArrayList<>();
@@ -112,7 +121,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
-
+        dataOriginal = (UnidadAdministrativaDTO) data.clone();
     }
 
     public void traducir() {
@@ -158,11 +167,44 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
     }
 
     public void cerrar() {
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getCodigoDIR3(), dataOriginal.getCodigoDIR3()) != 0
+                || !dataOriginal.getTemas().equals(data.getTemas())
+                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
+                || UtilComparador.compareTo(data.getAbreviatura(), dataOriginal.getAbreviatura()) != 0
+                || UtilComparador.compareTo(data.getTelefono(), dataOriginal.getTelefono()) != 0
+                || UtilComparador.compareTo(data.getFax(), dataOriginal.getFax()) != 0
+                || UtilComparador.compareTo(data.getEmail(), dataOriginal.getEmail()) != 0
+                || UtilComparador.compareTo(data.getDominio(), dataOriginal.getDominio()) != 0
+                || UtilComparador.compareTo(data.getResponsableEmail(), dataOriginal.getResponsableEmail()) != 0
+                || UtilComparador.compareTo(data.getResponsableNombre(), dataOriginal.getResponsableNombre()) != 0
+                || UtilComparador.compareTo(data.getPresentacion(), dataOriginal.getPresentacion()) != 0
+                || UtilComparador.compareTo(data.getUrl(), dataOriginal.getUrl()) != 0
+                || UtilComparador.compareTo(data.getResponsable(), dataOriginal.getResponsable()) != 0
+                || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0
+                || (data.getTipo() != null && dataOriginal.getTipo() != null && UtilComparador.compareTo(data.getTipo().getCodigo(), dataOriginal.getTipo().getCodigo()) != 0)
+                || ((data.getTipo() == null || dataOriginal.getTipo() == null) && (data.getTipo() != null || dataOriginal.getTipo() != null))
+                || (data.getResponsableSexo() != null && dataOriginal.getResponsableSexo() != null && UtilComparador.compareTo(data.getResponsableSexo().getCodigo(), dataOriginal.getResponsableSexo().getCodigo()) != 0)
+                || ((data.getResponsableSexo() == null || dataOriginal.getResponsableSexo() == null) && (data.getResponsableSexo() != null || dataOriginal.getResponsableSexo() != null))
+                || UtilComparador.compareTo(data.getUsuarioAuditoria(), dataOriginal.getUsuarioAuditoria()) != 0
+                || !data.getUsuariosUnidadAdministrativa().equals(dataOriginal.getUsuariosUnidadAdministrativa())
+                || UtilComparador.compareTo(data.getOrden(), dataOriginal.getOrden()) != 0;
+    }
+
+    public void cerrarDefinitivo() {
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

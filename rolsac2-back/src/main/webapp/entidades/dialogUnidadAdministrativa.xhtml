@@ -66,13 +66,15 @@
                                               for="txtCodigoDIR3"/>
                             </p>
                             <p:inputText id="txtCodigoDIR3" value="#{dialogUnidadAdministrativa.data.codigoDIR3}"
-                                         styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                                         styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                         />
                         </div>
                         <div class="form-group col-md-2">
                             <p:outputLabel value="#{labels['dialogUnidadAdministrativa.orden']}:" for="txtOrden"
                                            styleClass="mb-1 pt-0"/>
                             <p:inputText id="txtOrden" type="number" value="#{dialogUnidadAdministrativa.data.orden}"
-                                         styleClass="w95" required="true"
+                                         styleClass="w95"
+                                         required="true"
                                          requiredMessage="#{labels['dict.obligatorio.orden']}"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                          decimalPlaces="0"/>
@@ -81,8 +83,9 @@
                             <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"
                                            styleClass="mb-1 pt-0"/>
                             <p:inputText id="txtIdentificador" value="#{dialogUnidadAdministrativa.data.identificador}"
+                                         required="true"
                                          requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                         styleClass="w95" required="true"
+                                         styleClass="w95"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
                     </div>
@@ -112,7 +115,8 @@
                                               for="txtAbreviatura"/>
                             </p>
                             <p:inputText id="txtAbreviatura" value="#{dialogUnidadAdministrativa.data.abreviatura}"
-                                         styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                                         styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                         />
 
                         </div>
                         <div class="form-group col-md-3">
@@ -142,6 +146,7 @@
                                 <my:literalComponent id="txtUrl"
                                                      literal="#{dialogUnidadAdministrativa.data.url}"
                                                      idioma="#{dialogUnidadAdministrativa.idioma}"
+
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      nombreLiteral="#{labels['dialogUnidadAdministrativa.url']}"
@@ -163,6 +168,7 @@
                                                      literal="#{dialogUnidadAdministrativa.data.presentacion}"
                                                      disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                                      idioma="#{dialogUnidadAdministrativa.idioma}"
+
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      tipo="html"
@@ -214,7 +220,7 @@
                                            for="txtTipoSexo"/>
                             <p:selectOneMenu id="txtTipoSexo"
                                              value="#{dialogUnidadAdministrativa.data.responsableSexo}"
-                                             styleClass="w95" required="true" autoWidth="false"
+                                             styleClass="w95"  autoWidth="false" required="true"
                                              requiredMessage="#{labels['dict.obligatorio.responsableSexo']}"
                                              disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                              converter="#{tipoSexoConverter}">
@@ -251,6 +257,7 @@
                                 <my:literalComponent id="txtResponsable"
                                                      literal="#{dialogUnidadAdministrativa.data.responsable}"
                                                      idioma="#{dialogUnidadAdministrativa.idioma}"
+
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      tipo="html"
@@ -279,7 +286,8 @@
                                 <h:outputText value="#{labels['dialogUnidadAdministrativa.fax']}:" for="txtFax"/>
                             </p>
                             <p:inputText id="txtFax" value="#{dialogUnidadAdministrativa.data.fax}" styleClass="w95"
-                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                         />
                         </div>
                         <div class="form-group col-md-4">
                             <p class="mb-1">
@@ -434,9 +442,13 @@
                          update="messagesDialog formDatos panel-ro formResponsable formContacto "
                          rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}"
                          process="@all"/>
-        <p:commandButton action="#{dialogUnidadAdministrativa.cerrar}"
+        <p:commandButton action="#{dialogUnidadAdministrativa.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" update="messagesDialog form" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+            <p:commandButton value="Sí" process="@this" action="#{dialogUnidadAdministrativa.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();"  />
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+        </p:confirmDialog>
 
     </ui:define>
 </ui:composition>

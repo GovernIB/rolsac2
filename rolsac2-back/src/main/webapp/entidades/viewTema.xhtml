@@ -1,0 +1,144 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:my="http://java.sun.com/jsf/composite/components">
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewAction action="#{viewTema.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitle">
+        <h:outputFormat value="#{labels['viewTema.titulo']}"/>
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                        action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
+                        oncomplete="$('#form:actualizarBusqueda').click();">
+            </p:menuitem>
+        </c:forEach>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="form">
+            <p:commandButton value="#{labels['viewTema.actualizar']}" id="actualizarBusqueda"
+                             style="display:none" ajax="false" action="#{viewTema.buscar}"
+                             update="dataTable"/>
+            <p:toolbar id="toolbar">
+                <f:facet name="right">
+                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
+                                     actionListener="#{viewTema.nuevoTema}"
+                                     process="@form">
+                        <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                                     actionListener="#{viewTema.editarTema}"
+                                     process="@form" update="messages">
+                        <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                                     action="#{viewTema.borrarTema}"
+                                     process="@form" update="messages dataTable">
+                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                     action="#{viewTema.ayuda}" process="@this" update="messages"/>
+                </f:facet>
+            </p:toolbar>
+            <div class="row">
+                <div class="col-12 col-lg-6 mx-auto">
+                    <p:treeTable id="dataTable" value="#{viewTema.root}" var="tema"
+
+                                 emptyMessage="#{labels['dict.noHayDatos']}"
+                                 selectionMode="single" selection="#{viewTema.datoSeleccionado}"
+                                 rowKey="#{tema.codigo}"
+                                 reflow="true"
+                                 style="min-height: 300px;"
+                    >
+                        <!--<p:ajax
+                                event="rowDblselect"
+                                oncomplete="triggerDblClick();"
+                                global="false"/>-->
+                        <!--<p:ajax event="select" listener="#{viewTema.consultaTemaSeleccionado()}"
+                                update="form:consultaTema"></p:ajax>-->
+                        <f:facet name="{RowsPerPageLabel}">
+                            #{labels.dataTable_rowsPerPage}
+                        </f:facet>
+                        <p:column
+                                  filterBy="#{tema.descripcion.getTraduccion(viewTema.idioma)}"
+                                  filterMatchMode="contains"
+                                  filterStyleClass="mt-2">
+                            <f:facet name="header"/>
+                            <h:outputText value="#{tema.codigo} - #{tema.descripcion.getTraduccion(viewTema.idioma)}"/>
+                        </p:column>
+
+                    </p:treeTable>
+                </div>
+                <!--<div class="col-12 col-lg-6 my-auto">
+                    <h:panelGroup id="consultaTema">
+                        <p:panel rendered="#{viewTema.temaConsulta != null}" header="#{labels['dialogTema.consulta']}" styleClass="mx-2">
+                            <div class="row">
+                                <div class="ui-g-12 ui-md-3">
+                                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-9 ">
+                                    <p:inputText id="txtCodigo" value="#{viewTema.temaConsulta.codigo}"
+                                                 styleClass="w95" disabled="true"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-3">
+                                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-9">
+                                    <p:inputText id="txtIdentificador" value="#{viewTema.temaConsulta.identificador}"
+                                                 requiredMessage="#{labels['dict.obligatorio.identificador']}"
+                                                 styleClass="w95" onblur="this.value = this.value.toUpperCase();"
+                                                 required="true" disabled="true" maxlength="50">
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-3">
+                                    <h:outputText value="#{labels['dialogTema.temaPadre']}:" for="txtTemaPadre"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-9 ">
+                                    <p:inputText id="txtTemaPadre"
+                                                 value="#{viewTema.temaConsulta.temaPadre.identificador}"
+                                                 styleClass="w95" disabled="true"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-3">
+                                    <h:outputText value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-9">
+                                    <p:inputText id="inputDescripcion"
+                                                 value="#{viewTema.temaConsulta.descripcion.getTraduccion(viewTema.idioma)}"
+                                                 styleClass="w95" disabled="true"/>
+                                </div>
+                            </div>
+                        </p:panel>
+
+                    </h:panelGroup>
+                </div>-->
+            </div>
+
+
+            <h:outputScript>
+                function triggerDblClick() {
+                    $('#form\\:btnEditar').click();
+                }
+            </h:outputScript>
+            <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
+                             actionListener="#{viewTema.consultarTema}"
+                             process="@this" update="messages" style="display: none">
+                <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
+                        update="messages dataTable"/>
+            </p:commandButton>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

@@ -6,6 +6,11 @@ package es.caib.rolsac2.service.model.types;
 public enum TypePerfiles {
 
     /**
+     * <P>REST API</P>
+     * <P>Acceso desde el API REST Externo. </P>
+     **/
+    RESTAPI(TypePerfiles.RESTAPI_VALOR),
+    /**
      * <P>SUPER ADMINISTRADOR</P>
      * <P>Responsable de la configuració dels paràmetres globals del sistema i gestió de la multientitat. </P>
      **/
@@ -43,12 +48,13 @@ public enum TypePerfiles {
     public static final String ADMINISTRADOR_CONTENIDOS_VALOR = "RS2_ADC";
     public static final String GESTOR_VALOR = "RS2_GES";
     public static final String INFORMADOR_VALOR = "RS2_INF";
+    public static final String RESTAPI_VALOR = "RS2_RES";
 
     TypePerfiles(String iPerfil) {
         perfil = iPerfil;
     }
 
-    public TypePerfiles fromString(String iPerfil) {
+    public static TypePerfiles fromString(String iPerfil) {
         TypePerfiles tipo = null;
         if (iPerfil != null) {
             for (TypePerfiles typeRol : TypePerfiles.values()) {

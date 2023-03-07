@@ -228,7 +228,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public TipoBoletinDTO findTipoBoletinById(Long id) {
 
         JTipoBoletin TipoBoletin = tipoBoletinRepository.findById(id);
@@ -238,7 +238,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public List<TipoBoletinDTO> findBoletines() {
         try {
             List<TipoBoletinDTO> items = tipoBoletinRepository.findAll();
@@ -491,7 +491,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(TipoNormativaDTO dto, Long idUnitat)
+    public Long create(TipoNormativaDTO dto)
             throws RecursoNoEncontradoException, DatoDuplicadoException {
         // Comprovam que el codiSia no existeix ja (
         if (dto.getCodigo() != null) { // .isPresent()) {
@@ -579,7 +579,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(TipoPublicoObjetivoDTO dto, Long idUnitat)
+    public Long create(TipoPublicoObjetivoDTO dto)
             throws RecursoNoEncontradoException, DatoDuplicadoException {
         // Comprovam que el codiSia no existeix ja (
         if (dto.getCodigo() != null) { // .isPresent()) {
@@ -823,7 +823,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(TipoSilencioAdministrativoDTO dto, Long idUnitat)
+    public Long create(TipoSilencioAdministrativoDTO dto)
             throws RecursoNoEncontradoException, DatoDuplicadoException {
         // Comprovam que el codiSia no existeix ja (
         if (dto.getCodigo() != null) { // .isPresent()) {

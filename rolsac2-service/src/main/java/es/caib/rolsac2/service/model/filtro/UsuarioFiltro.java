@@ -6,7 +6,6 @@ public class UsuarioFiltro extends AbstractFiltro {
     private String texto;
     private Long codigo;
     private String identificador;
-    private EntidadDTO entidad;
 
     public Long getCodigo() {
         return codigo;
@@ -22,14 +21,6 @@ public class UsuarioFiltro extends AbstractFiltro {
 
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
-    }
-
-    public EntidadDTO getEntidad() {
-        return entidad;
-    }
-
-    public void setEntidad(EntidadDTO entidad) {
-        this.entidad = entidad;
     }
 
     public String getTexto() {
@@ -50,10 +41,6 @@ public class UsuarioFiltro extends AbstractFiltro {
 
     public boolean isRellenoId() {
         return codigo != null;
-    }
-
-    public boolean isRellenoEntidad() {
-        return entidad.getCodigo() != null;
     }
 
     @Override

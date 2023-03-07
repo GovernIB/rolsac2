@@ -80,6 +80,19 @@ public class EntidadDTO extends ModelApi {
         }
     }
 
+    public EntidadGridDTO toGridDTO() {
+        EntidadGridDTO entidadGridDTO = new EntidadGridDTO();
+        entidadGridDTO.setDescripcion(this.getDescripcion());
+        entidadGridDTO.setCodigo(this.getCodigo());
+        entidadGridDTO.setActiva(this.getActiva());
+        entidadGridDTO.setIdentificador(this.getIdentificador());
+        entidadGridDTO.setRolAdmin(this.getRolAdmin());
+        entidadGridDTO.setRolAdminContenido(this.getRolAdminContenido());
+        entidadGridDTO.setRolGestor(this.getRolGestor());
+        entidadGridDTO.setRolInformador(this.getRolInformador());
+        return entidadGridDTO;
+    }
+
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      */

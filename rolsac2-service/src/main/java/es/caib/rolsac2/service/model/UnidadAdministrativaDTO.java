@@ -117,6 +117,31 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
     public UnidadAdministrativaDTO() {
     }
 
+    public UnidadAdministrativaDTO(UnidadAdministrativaDTO otro){
+        this.codigo = otro.codigo;
+        this.codigoDIR3 = otro.codigoDIR3;
+        this.identificador = otro.identificador;
+        this.abreviatura = otro.abreviatura;
+        this.telefono = otro.telefono;
+        this.fax = otro.fax;
+        this.email = otro.email;
+        this.dominio = otro.dominio;
+        this.responsableEmail = otro.responsableEmail;
+        this.responsableNombre = otro.responsableNombre;
+        this.presentacion = otro.presentacion == null ? null : (Literal) otro.presentacion.clone();
+        this.url = otro.url == null ? null : (Literal) otro.url.clone();
+        this.responsable = otro.responsable == null ? null : (Literal) otro.responsable.clone();
+        this.nombre = otro.nombre == null ? null : (Literal) otro.nombre.clone();
+        this.tipo = otro.tipo == null ? null : (TipoUnidadAdministrativaDTO) otro.tipo.clone();
+        this.responsableSexo = otro.responsableSexo == null ? null : (TipoSexoDTO) otro.responsableSexo.clone();
+        this.temas = otro.temas;
+        this.usuarioAuditoria = otro.usuarioAuditoria;
+        this.hijos = otro.hijos;
+        this.usuariosUnidadAdministrativa = otro.usuariosUnidadAdministrativa;
+        this.orden = otro.orden;
+        this.padre = otro.padre == null ? null : (UnidadAdministrativaDTO) otro.padre.clone();
+    }
+
     /**
      * Instancia una nueva Unidad administrativa dto.
      *
@@ -615,6 +640,9 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
         tipo.setDominio(this.dominio);
         tipo.setResponsableEmail(this.responsableEmail);
         tipo.setResponsableNombre(this.responsableNombre);
+        tipo.setOrden(this.orden);
+        tipo.setUsuarioAuditoria(this.usuarioAuditoria);
+        tipo.setHijos(this.hijos);
 
         if (this.getPresentacion() != null) {
             tipo.setPresentacion((Literal) this.getPresentacion().clone());

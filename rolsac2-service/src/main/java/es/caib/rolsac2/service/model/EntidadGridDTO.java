@@ -23,7 +23,7 @@ public class EntidadGridDTO extends ModelApi {
     /**
      * Descripcion
      */
-    private String descripcion;
+    private Literal descripcion;
 
     /**
      * Activa
@@ -207,7 +207,7 @@ public class EntidadGridDTO extends ModelApi {
      *
      * @return la descripcion
      */
-    public String getDescripcion() {
+    public Literal getDescripcion() {
         return descripcion;
     }
 
@@ -216,7 +216,7 @@ public class EntidadGridDTO extends ModelApi {
      *
      * @param descripcion la descripcion
      */
-    public void setDescripcion(String descripcion) {
+    public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }
 

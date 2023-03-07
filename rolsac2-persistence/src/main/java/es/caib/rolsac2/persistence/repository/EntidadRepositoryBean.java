@@ -3,6 +3,8 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.converter.EntidadConverter;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.service.model.EntidadGridDTO;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 
 import javax.ejb.Local;
@@ -52,7 +54,10 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
                 entidadGridDTO.setRolGestor((String) jEntidad[5]);
                 entidadGridDTO.setRolInformador((String) jEntidad[6]);
                 //El 7 es el logo
-                entidadGridDTO.setDescripcion((String) jEntidad[7]);
+                Literal descripcion = new Literal();
+                Traduccion trad = new Traduccion(filtro.getIdioma(), (String) jEntidad[7]);
+                descripcion.add(trad);
+                entidadGridDTO.setDescripcion(descripcion);
                 entidad.add(entidadGridDTO);
             }
         }
@@ -68,6 +73,24 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
 
 
         return jEntidad;
+    }
+
+    @Override
+    public List<String> findRolesDefinidos(List<Long> idEntidades) {
+        String sql = "SELECT j.rolAdmin, j.rolAdminContenido, j.rolGestor, j.rolInformador FROM JEntidad j WHERE j.codigo IN (:idEntidades)";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("idEntidades", idEntidades);
+        List<Object[]> jRoles = query.getResultList();
+        List<String> roles = new ArrayList<>();
+        if (jRoles != null) {
+            for (Object[] jRol : jRoles) {
+                roles.add((String) jRol[0]);
+                roles.add((String) jRol[1]);
+                roles.add((String) jRol[2]);
+                roles.add((String) jRol[3]);
+            }
+        }
+        return roles;
     }
 
     @Override

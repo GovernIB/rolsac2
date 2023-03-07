@@ -15,7 +15,8 @@ import java.util.Set;
 @Table(name = "RS2_USER", indexes = {@Index(name = "RS2_USER_PK_I", columnList = "USER_CODIGO")})
 @NamedQueries({@NamedQuery(name = JUsuario.FIND_BY_ID, query = "select p from JUsuario p where p.codigo = :codigo"),
         @NamedQuery(name = JUsuario.COUNT_BY_IDENTIFICADOR,
-                query = "select count(p) from JUsuario p where p.identificador = :identificador")
+                query = "select count(p) from JUsuario p where p.identificador = :identificador"),
+        @NamedQuery(name = JUsuario.FIND_BY_IDENTIFICADOR, query = "select p from JUsuario p where p.identificador = :identificador")
 
 })
 public class JUsuario extends BaseEntity {
@@ -31,19 +32,17 @@ public class JUsuario extends BaseEntity {
     public static final String COUNT_BY_IDENTIFICADOR = "Usuario.COUNT_BY_IDENTIFICADOR";
 
     /**
+     * La consulta FIND_BY_IDENTIFICADOR.
+     */
+    public static final String FIND_BY_IDENTIFICADOR = "Usuario.FIND_BY_IDENTIFICADOR";
+
+    /**
      * Codigo
      */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario-sequence")
     @Column(name = "USER_CODIGO", nullable = false)
     private Long codigo;
-
-    /**
-     * Entidad
-     */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "USER_CODENTI", nullable = false)
-    private JEntidad entidad;
 
     /**
      * Identificador
@@ -99,24 +98,6 @@ public class JUsuario extends BaseEntity {
      */
     public void setCodigo(Long id) {
         this.codigo = id;
-    }
-
-    /**
-     * Obtiene entidad.
-     *
-     * @return  entidad
-     */
-    public JEntidad getEntidad() {
-        return entidad;
-    }
-
-    /**
-     * Establece entidad.
-     *
-     * @param userCodenti  user codenti
-     */
-    public void setEntidad(JEntidad userCodenti) {
-        this.entidad = userCodenti;
     }
 
     /**
@@ -218,12 +199,11 @@ public class JUsuario extends BaseEntity {
     public String toString() {
         return "JUsuario{" +
                 "codigo=" + codigo +
-                ", entidad=" + entidad +
                 ", identificador='" + identificador + '\'' +
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
                 ", traducciones=" + traducciones +
-                ", usuarioUnidadAdministrativa=" + unidadesAdministrativas +
+                ", unidadesAdministrativas=" + unidadesAdministrativas +
                 '}';
     }
 }

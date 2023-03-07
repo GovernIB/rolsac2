@@ -12,6 +12,7 @@ public class UnidadAdministrativaFiltro extends AbstractFiltro {
     private String nombre;
     private String identificador;
     private Long codEnti;
+	private Integer codigoNormativa;
 
     public Long getCodEnti() {
         return codEnti;
@@ -76,9 +77,24 @@ public class UnidadAdministrativaFiltro extends AbstractFiltro {
         return codEnti != null;
     }
 
+    /**
+     * Esta relleno el codigoNormativa
+     **/
+    public boolean isRellenoCodigoNormativa() {
+        return codigoNormativa != null;
+    }
+
 
     @Override
     protected String getDefaultOrder() {
         return "id";
     }
+
+	public Integer getCodigoNormativa() {
+		return codigoNormativa;
+	}
+
+	public void setCodigoNormativa(Integer codigoNormativa) {
+		this.codigoNormativa = codigoNormativa;
+	}
 }

@@ -139,7 +139,7 @@ public class UtilJSF {
     public static String getDefaultUrlPerfil(final TypePerfiles perfil) {
         String url = null;
         if (perfil == null) {
-            url = "/error/errorUsuarioSinRol.xhtml";
+            url = "/error/usuarioAltaException.xhtml";
         } else {
             switch (perfil) {
                 case SUPER_ADMINISTRADOR:
@@ -149,18 +149,18 @@ public class UtilJSF {
                     url = PATH_VIEWS_ENTIDAD + "viewConfiguracionEntidad" + EXTENSION_XHTML;
                     break;
                 case ADMINISTRADOR_CONTENIDOS:
-                    url = PATH_VIEWS_SUPER_ADMIN + UtilJSF.getViewNameFromClass(ViewUnidadAdministrativa.class) + EXTENSION_XHTML;
+                    url = PATH_VIEWS_ENTIDAD + UtilJSF.getViewNameFromClass(ViewUnidadAdministrativa.class) + EXTENSION_XHTML;
                     break;
                 //TO DO SUSTITUIR AL CREAR SU RESPECTIVA PÁGINA
                 case GESTOR:
-                    url = PATH_VIEWS_SUPER_ADMIN + UtilJSF.getViewNameFromClass(ViewUnidadAdministrativa.class) + EXTENSION_XHTML;
+                    url = PATH_VIEWS_ENTIDAD + UtilJSF.getViewNameFromClass(ViewUnidadAdministrativa.class) + EXTENSION_XHTML;
                     break;
                 //TO DO SUSTITUIR AL CREAR SU RESPECTIVA PÁGINA
                 case INFORMADOR:
                     url = PATH_VIEWS_MAESTRAS + UtilJSF.getViewNameFromClass(ViewProcedimientos.class) + EXTENSION_XHTML;
                     break;
                 default:
-                    url = "/error/errorUsuarioSinRol.xhtml";
+                    url = "/error/usuarioAltaException.xhtml";
                     break;
             }
         }

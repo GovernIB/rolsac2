@@ -185,7 +185,6 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
             for(JUsuario usuario : usuarios) {
                 UsuarioGridDTO usuarioGridDTO = new UsuarioGridDTO();
                 usuarioGridDTO.setCodigo(usuario.getCodigo());
-                usuarioGridDTO.setEntidad(usuario.getEntidad().getCodigo().toString());
                 usuarioGridDTO.setNombre(usuario.getNombre());
                 usuarioGridDTO.setIdentificador(usuario.getIdentificador());
                 usuarioGridDTO.setEmail(usuario.getEmail());

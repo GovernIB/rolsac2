@@ -117,7 +117,7 @@ public interface MaestrasSupServiceFacade {
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de TipoBoletin i la llista de TipoBoletin pel rang indicat.
      */
-    Pagina<TipoBoletinGridDTO> findByFiltro(TipoBoletinFiltro filtro);
+	Pagina<TipoBoletinGridDTO> findByFiltro(TipoBoletinFiltro filtro);
 
     /**
      * Devuelve una lista de todos los tipoBoletin
@@ -313,7 +313,7 @@ public interface MaestrasSupServiceFacade {
      * @return EL identificador del nuevo TipoNormativa
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    Long create(TipoNormativaDTO dto, Long idUnitat) throws RecursoNoEncontradoException;
+    Long create(TipoNormativaDTO dto) throws RecursoNoEncontradoException;
 
     /**
      * Actualiza los datos de un TipoNormativa a la base de datos.
@@ -374,7 +374,7 @@ public interface MaestrasSupServiceFacade {
      * @return EL identificador del nuevo TipoPublicoObjetivo
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    Long create(TipoPublicoObjetivoDTO dto, Long idUnitat) throws RecursoNoEncontradoException;
+    Long create(TipoPublicoObjetivoDTO dto) throws RecursoNoEncontradoException;
 
     /**
      * Actualiza los datos de un TipoPublicoObjetivo a la base de datos.
@@ -551,7 +551,7 @@ public interface MaestrasSupServiceFacade {
      * @return EL identificador del nuevo  TipoSilencioAdministrativo
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    Long create(TipoSilencioAdministrativoDTO dto, Long idUnitat) throws RecursoNoEncontradoException;
+    Long create(TipoSilencioAdministrativoDTO dto) throws RecursoNoEncontradoException;
 
     /**
      * Actualiza los datos de un  TipoSilencioAdministrativo a la base de datos.

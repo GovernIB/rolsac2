@@ -20,10 +20,6 @@ public class UsuarioDTO extends ModelApi {
      */
     private String identificador;
 
-    /**
-     * Entidad
-     */
-    private EntidadDTO entidad;
 
     /**
      * Unidades administrativas
@@ -46,9 +42,25 @@ public class UsuarioDTO extends ModelApi {
     private Literal observaciones;
 
     /**
+     * Listado de entidades a las que está asociado el usuario
+     */
+    List<EntidadGridDTO> entidades;
+
+    /**
      * Instancia un nuevo Usuario dto.
      */
     public UsuarioDTO() {
+    }
+
+    public UsuarioDTO(UsuarioDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.unidadesAdministrativas = otro.unidadesAdministrativas;
+            this.nombre = otro.nombre;
+            this.email = otro.email;
+            this.observaciones = otro.observaciones == null ? null : (Literal) otro.observaciones.clone();
+        }
     }
 
     /**
@@ -87,23 +99,6 @@ public class UsuarioDTO extends ModelApi {
         this.identificador = identificador;
     }
 
-    /**
-     * Obtiene entidad.
-     *
-     * @return  entidad
-     */
-    public EntidadDTO getEntidad() {
-        return entidad;
-    }
-
-    /**
-     * Establece entidad.
-     *
-     * @param entidad  entidad
-     */
-    public void setEntidad(EntidadDTO entidad) {
-        this.entidad = entidad;
-    }
 
     /**
      * Obtiene unidades administrativas.
@@ -156,6 +151,14 @@ public class UsuarioDTO extends ModelApi {
      */
     public void setObservaciones(Literal observaciones) { this.observaciones = observaciones; }
 
+    public List<EntidadGridDTO> getEntidades() {
+        return entidades;
+    }
+
+    public void setEntidades(List<EntidadGridDTO> entidades) {
+        this.entidades = entidades;
+    }
+
     /**
      * Establece unidades administrativas.
      *
@@ -166,11 +169,15 @@ public class UsuarioDTO extends ModelApi {
     }
 
     @Override
+    public UsuarioDTO clone() {
+        return new UsuarioDTO(this);
+    }
+
+    @Override
     public String toString() {
         return "UsuarioDTO{" +
                 "codigo=" + codigo +
                 ", identificador='" + identificador + '\'' +
-                ", entidad=" + entidad +
                 ", usuarioUnidadAdministrativa=" + unidadesAdministrativas +
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +

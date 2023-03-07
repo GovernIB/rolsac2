@@ -13,6 +13,8 @@ import es.caib.rolsac2.service.model.UsuarioDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.utils.UtilComparador;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +24,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -36,6 +35,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
 
     private UsuarioDTO data;
 
+    private UsuarioDTO dataOriginal;
 
     private String identificadorOld = "";
 
@@ -57,11 +57,17 @@ public class DialogUsuario extends AbstractController implements Serializable {
         data = new UsuarioDTO();
         if (this.isModoAlta()) {
             data = new UsuarioDTO();
-            data.setEntidad(sessionBean.getEntidad());
+            data.setEntidades(new ArrayList<>());
+            data.getEntidades().add(sessionBean.getEntidad().toGridDTO());
             data.setObservaciones(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            data.setUnidadesAdministrativas(new ArrayList<>());
+            dataOriginal = data.clone();
+            dataOriginal.setUnidadesAdministrativas(new ArrayList<>());
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = administracionEntService.findUsuarioById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
+            dataOriginal = data.clone();
+            dataOriginal.setUnidadesAdministrativas(new ArrayList<>(data.getUnidadesAdministrativas()));
         }
     }
 
@@ -80,6 +86,35 @@ public class DialogUsuario extends AbstractController implements Serializable {
         if (datoDTO != null) {
             data.setObservaciones(datoDTO.getObservaciones());
         }
+    }
+
+    public void checkUsuario() {
+        if(this.data.getCodigo() == null) {
+            if(administracionEntService.checkIdentificadorUsuario(this.data.getIdentificador())) {
+                if(administracionEntService.checkIdentificadorUsuario(this.data.getIdentificador())) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
+                } else {
+                    PrimeFaces.current().executeScript("PF('usuarioAlta').show()");
+                }
+            } else {
+                guardar();
+            }
+        } else {
+            guardar();
+        }
+    }
+
+    public void altaUsuarioEntidad() {
+        this.data = administracionEntService.findUsuarioByIdentificador(this.data.getIdentificador());
+        administracionEntService.createUsuarioEntidad(this.data, sessionBean.getEntidad().getCodigo());
+        final DialogResult result = new DialogResult();
+        if (this.getModoAcceso() != null) {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        } else {
+            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+        }
+        result.setResult(data);
+        UtilJSF.closeDialog(result);
     }
 
     public void guardar() {
@@ -120,11 +155,28 @@ public class DialogUsuario extends AbstractController implements Serializable {
     }
 
     public void cerrar() {
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
+        } else {
+            cerrarDefinitivo();
+        }
+    }
+
+    public boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
+                || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0
+                || UtilComparador.compareTo(data.getEmail(), dataOriginal.getEmail()) != 0
+                || UtilComparador.compareTo(data.getObservaciones(), dataOriginal.getObservaciones()) != 0
+                || !data.getUnidadesAdministrativas().equals(dataOriginal.getUnidadesAdministrativas());
+    }
+
+    public void cerrarDefinitivo() {
         final DialogResult result = new DialogResult();
         if (Objects.isNull(this.getModoAcceso())) {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
         } else {
-            result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

@@ -27,6 +27,8 @@ public interface UnidadAdministrativaServiceFacade {
      */
     List<UnidadAdministrativaDTO> getHijos(Long idUnitat, String idioma);
 
+    List<UnidadAdministrativaGridDTO> getHijosGrid(Long idUnitat, String idioma);
+
 
     /**
      * Devuelve la UA simple
@@ -71,6 +73,8 @@ public interface UnidadAdministrativaServiceFacade {
      */
     UnidadAdministrativaDTO findById(Long id);
 
+    UnidadAdministrativaGridDTO findGridById(Long id);
+
     /**
      * Devuelve una página con el ua relacionado con los parámetros del filtro
      *
@@ -93,7 +97,7 @@ public interface UnidadAdministrativaServiceFacade {
 
     Boolean checkIdentificador(String identificador);
 
-    List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId);
+    List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId, String idioma);
 
     List<UnidadAdministrativaDTO> getHijosSimple(Long codigo, String idioma, UnidadAdministrativaDTO padre);
 
@@ -122,7 +126,6 @@ public interface UnidadAdministrativaServiceFacade {
      * @return
      */
     String obtenerPadreDir3(Long codigo, String idioma);
-
 
     /**
      * Verifica si existe un tipo de Sexo en alguna UA.

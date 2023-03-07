@@ -1,5 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
@@ -215,6 +216,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
                             + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp "
                             + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma "
                             + " LEFT OUTER JOIN j.entidad je "
+                            + " LEFT OUTER JOIN j.normativas n ON n.codigo=:codigoNormativa "
                             + " where 1 = 1 AND je.codigo=:codEnti");
         } else {
             sql = new StringBuilder("SELECT j.codigo, jtipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 "
@@ -222,6 +224,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
                     + " LEFT OUTER JOIN j.padre tp "
                     + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma "
                     + " LEFT OUTER JOIN j.entidad je "
+                    + " LEFT OUTER JOIN j.normativas n ON n.codigo=:codigoNormativa "
                     + " LEFT OUTER JOIN j.tipo jtipo where 1 = 1 AND je.codigo=:codEnti");
         }
         if (filtro.isRellenoTexto()) {
@@ -256,6 +259,9 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         }
         if (filtro.isRellenoIdUA()) {
             query.setParameter("idUA", filtro.getIdUA());
+        }
+        if (filtro.isRellenoCodigoNormativa()) {
+            query.setParameter("codigoNormativa", filtro.getCodigoNormativa());
         }
         query.setParameter("codEnti", filtro.getCodEnti());
 
@@ -341,8 +347,14 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId) {
-        return null;
+    public List<JUnidadAdministrativa> getUnidadesAdministrativaByEntidadId(Long entidadId, String idioma) {
+        String sql = "SELECT ua FROM JUnidadAdministrativa ua "
+                + " LEFT OUTER JOIN ua.traducciones t ON t.idioma=:idioma WHERE ua.entidad.codigo=:entidadId";
+
+        Query query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
+        query.setParameter("entidadId", entidadId);
+        query.setParameter("idioma", idioma);
+        return query.getResultList();
     }
 
     @Override
@@ -377,7 +389,9 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     public UnidadAdministrativaGridDTO modelToGridDTO(JUnidadAdministrativa jUnidadAdministrativa) {
         UnidadAdministrativaGridDTO unidadAdministrativa = new UnidadAdministrativaGridDTO();
         unidadAdministrativa.setCodigo(jUnidadAdministrativa.getCodigo());
+        unidadAdministrativa.setIdEntidad(jUnidadAdministrativa.getEntidad().getCodigo());
         unidadAdministrativa.setNombre(uaConverter.convierteTraduccionToLiteral(jUnidadAdministrativa.getTraducciones(), "nombre"));
+        unidadAdministrativa.setIdentificador(jUnidadAdministrativa.getIdentificador());
         if (jUnidadAdministrativa.getTipo() != null) {
             unidadAdministrativa.setTipo(jUnidadAdministrativa.getTipo().getIdentificador());
         }
@@ -416,5 +430,45 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         List<BigDecimal> resultados = query.getResultList();
         List<Long> resultList = resultados.stream().map(i -> i.longValue()).collect(Collectors.toList());
         return resultList;
+    }
+
+    @Override
+    public PathUA getPath(UnidadAdministrativaDTO ua) {
+        PathUA pathUA = new PathUA();
+        List<String> ruta = getRuta(ua, 0);
+        pathUA.setPath(ruta);
+        return pathUA;
+    }
+
+    /**
+     * Metodo recursivo para sacar el pathUA
+     *
+     * @param ua          Unidad administrativa
+     * @param profundidad Para evitar problemas de bucle eterno
+     * @return
+     */
+    private List<String> getRuta(UnidadAdministrativaDTO ua, int profundidad) {
+        List<String> ruta = new ArrayList<>();
+        if (profundidad == 20) {
+            //Limite de una profundidad de 20
+            ruta.add(ua.getCodigo().toString());
+            return ruta;
+        }
+        if (ua.esRaiz() || (ua.getPadre() == null || ua.getPadre().getCodigo() == null)) {
+            ruta.add(ua.getCodigo().toString());
+        } else {
+            JUnidadAdministrativa jpadre = entityManager.find(JUnidadAdministrativa.class, ua.getPadre().getCodigo());
+            UnidadAdministrativaDTO padre = new UnidadAdministrativaDTO();
+            padre.setCodigo(jpadre.getCodigo());
+            if (jpadre.getPadre() != null) {
+                UnidadAdministrativaDTO abuelo = new UnidadAdministrativaDTO();
+                abuelo.setCodigo(jpadre.getPadre().getCodigo());
+                padre.setPadre(abuelo);
+            }
+            profundidad++;
+            ruta = getRuta(padre, profundidad);
+            ruta.add(ua.getCodigo().toString());
+        }
+        return ruta;
     }
 }

@@ -13,17 +13,18 @@ import java.util.List;
 import java.util.Objects;
 
 @Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-                uses = {EntidadConverter.class, UnidadAdministrativaConverter.class})
+        uses = {EntidadConverter.class, UnidadAdministrativaConverter.class})
 public interface UsuarioConverter extends Converter<JUsuario, UsuarioDTO> {
 
     @Override
     @Mapping(target = "observaciones", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observaciones\"))")
     @Mapping(target = "unidadesAdministrativas", ignore = true)
+    @Mapping(target = "entidades", ignore = true)
     UsuarioDTO createDTO(JUsuario entity);
 
     @Named("createDTOSinUsuarioUnidadAdministrativa")
     @Mapping(target = "unidadesAdministrativas", ignore = true)
-    @Mapping(target ="observaciones", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observaciones\"))" )
+    @Mapping(target = "observaciones", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observaciones\"))")
     UsuarioDTO createDTOSinUsuarioUnidadAdministrativa(JUsuario entity);
 
     @Override
@@ -37,21 +38,28 @@ public interface UsuarioConverter extends Converter<JUsuario, UsuarioDTO> {
     void mergeEntity(@MappingTarget JUsuario entity, UsuarioDTO dto);
 
     default List<JUsuarioTraduccion> convierteLiteralToTraduccion(JUsuario jUsuario, UsuarioDTO usuarioDTO) {
-        List<String> idiomasPermitidos = List.of(usuarioDTO.getEntidad().getIdiomasPermitidos().split(";"));
+        List<String> idiomasRellenos = new ArrayList<>();
+        if (usuarioDTO.getObservaciones() != null) {
+            for (String idioma : usuarioDTO.getObservaciones().getIdiomas()) {
+                if (usuarioDTO.getObservaciones().getTraduccion(idioma) != null && !usuarioDTO.getObservaciones().getTraduccion(idioma).isEmpty()) {
+                    idiomasRellenos.add(idioma);
+                }
+            }
+        }
 
         //Comprobamos si aún no se ha creado la entidad
-        if (jUsuario.getTraducciones() == null || jUsuario.getTraducciones().isEmpty()) {
-            jUsuario.setTraducciones(JUsuarioTraduccion.createInstance(idiomasPermitidos));
+        if (jUsuario.getTraducciones() == null) {
+            jUsuario.setTraducciones(JUsuarioTraduccion.createInstance(idiomasRellenos));
             for (JUsuarioTraduccion jTrad : jUsuario.getTraducciones()) {
                 jTrad.setUsuario(jUsuario);
             }
-        } else if (jUsuario.getTraducciones().size() < idiomasPermitidos.size()) {
+        } else if (jUsuario.getTraducciones().size() < idiomasRellenos.size()) {
             //En caso de que se haya creado, comprobamos que tenga todas las traducciones (pueden haberse dado de alta idiomas nuevos en entidad)
             List<JUsuarioTraduccion> tradsAux = jUsuario.getTraducciones();
-            List<String> idiomasNuevos = new ArrayList<>(idiomasPermitidos);
+            List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
 
             for (JUsuarioTraduccion traduccion : jUsuario.getTraducciones()) {
-                if (idiomasPermitidos.contains(traduccion.getIdioma())) {
+                if (idiomasRellenos.contains(traduccion.getIdioma())) {
                     idiomasNuevos.remove(traduccion.getIdioma());
                 }
             }
@@ -77,7 +85,7 @@ public interface UsuarioConverter extends Converter<JUsuario, UsuarioDTO> {
 
 
     default Literal convierteTraduccionToLiteral(List<JUsuarioTraduccion> traducciones, String nombreLiteral) {
-        Literal resultado = null;
+        Literal resultado = Literal.createInstance();
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();

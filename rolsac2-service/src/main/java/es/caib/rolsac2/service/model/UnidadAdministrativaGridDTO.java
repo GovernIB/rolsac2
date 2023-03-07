@@ -15,11 +15,15 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
      */
     private Long codigo;
 
+    private String identificador;
+
     /**
      * Codigo DIR3
      */
     private String codigoDIR3;
     //private String entidad;
+
+    private Long idEntidad;
 
     /**
      * Nombre del padre
@@ -102,6 +106,22 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
+    }
+
+    public Long getIdEntidad() {
+        return idEntidad;
+    }
+
+    public void setIdEntidad(Long idEntidad) {
+        this.idEntidad = idEntidad;
+    }
+
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
     }
 
     /**

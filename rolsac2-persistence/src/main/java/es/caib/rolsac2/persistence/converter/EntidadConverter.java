@@ -3,10 +3,7 @@ package es.caib.rolsac2.persistence.converter;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JFicheroExterno;
 import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
-import es.caib.rolsac2.service.model.EntidadDTO;
-import es.caib.rolsac2.service.model.FicheroDTO;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -39,6 +36,8 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
     EntidadDTO createDTO(JEntidad entity);
 
     // @Mapping(target = "unidadOrganica", ignore = true)
+    @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entidad.getDescripcion(),\"descripcion\" ))")
+    EntidadGridDTO createGridDTO(JEntidad entidad);
 
     @Override
     @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(jEntidad,dto))")

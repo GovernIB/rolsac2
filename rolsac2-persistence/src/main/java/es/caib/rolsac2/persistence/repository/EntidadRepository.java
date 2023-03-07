@@ -20,6 +20,8 @@ public interface EntidadRepository extends CrudRepository<JEntidad, Long> {
 
     List<JEntidad> findActivas();
 
+    List<String> findRolesDefinidos(List<Long> idEntidades);
+
     long countByFiltro(EntidadFiltro filtro);
 
     boolean existeIdentificadorEntidad(String identificador);

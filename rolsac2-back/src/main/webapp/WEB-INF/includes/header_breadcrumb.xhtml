@@ -4,13 +4,100 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:my="http://java.sun.com/jsf/composite/components"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
 >
 <ui:composition>
 
-    <nav class="navbar navbar-light navbar-expand-sm">
-        <div class="d-flex flex-column">
-            <div class="d-flex flex-row align-content-center">
-                <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getPerfil() == TypePerfiles.GESTOR) or (sessionBean.getPerfil() == TypePerfiles.INFORMADOR) or sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml')   }">
+    <nav class="navbar navbar-light navbar-expand-sm flex-column justify-content-start align-items-start">
+
+
+        <div class="d-flex flex-column mt-3">
+            <c:if test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR}">
+                <h:panelGroup id="panelMolla">
+                    <ul class="mollaPa">
+                        <li>
+                            <div class="btn-group">
+                                <p:commandButton styleClass="btn btn-danger btn-molla" process="@this"
+                                                 actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
+                                                 value="#{sessionBean.unidadActivaAux.nombre.getTraduccion(sessionBean.lang)}"
+                                                 update="panelMolla">
+                                </p:commandButton>
+                                <button type="button"
+                                        class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                </button>
+                                <div class="dropdown-menu">
+                                    <c:forEach
+                                            items="#{sessionBean.obtenerUsuarioAutenticado().unidadesAdministrativas}"
+                                            var="ua">
+                                        <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
+                                                         actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
+                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                                                         update="panelMolla">
+                                            <f:actionListener binding="#{sessionBean.cambiarUaActivaAux(ua)}" />
+                                        </p:commandButton>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </li>
+                        <c:if test="#{!sessionBean.getUnidadesActivasGestor().isEmpty()}">
+                            <c:forEach var="ua" items="#{sessionBean.getUnidadesActivasGestor()}">
+                                <li>
+                                    <div class="btn-group">
+                                        <p:commandButton styleClass="btn btn-danger btn-molla" process="@this"
+                                                         actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
+                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                                                         update="panelMolla">
+                                        </p:commandButton>
+                                        <button type="button"
+                                                class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <c:forEach
+                                                    items="#{sessionBean.getUnidadesHijasUA(ua.padre.codigo)}"
+                                                    var="ua">
+                                                <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
+                                                                 actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
+                                                                 value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                                                                 update="panelMolla">
+                                                </p:commandButton>
+                                            </c:forEach>
+                                        </div>
+                                    </div>
+                                </li>
+                            </c:forEach>
+                        </c:if>
+                        <c:if test="#{!sessionBean.getUnidadesHijasActiva().isEmpty()}">
+                            <li>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-danger btn-molla"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        #{labels['msg.seleccion.uas']}
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <c:forEach
+                                                items="#{sessionBean.getUnidadesHijasActiva()}"
+                                                var="ua">
+                                            <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
+                                                             actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
+                                                             value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                                                             update="panelMolla">
+                                            </p:commandButton>
+                                        </c:forEach>
+                                    </div>
+                                </div>
+                            </li>
+                        </c:if>
+                    </ul>
+                </h:panelGroup>
+            </c:if>
+            <div id="bread" class="d-flex">
+                <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.INFORMADOR) or (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD) }">
                     <div style="margin-top: 5px">
                         <div style="margin-top: 5px">
                             <my:unidadAdministrativaComponent id="uaGeneral"
@@ -25,9 +112,12 @@
                             </my:unidadAdministrativaComponent>
                         </div>
                     </div>
+                </c:if>
+                <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getPerfil() == TypePerfiles.INFORMADOR) or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD)}">
                     <p:breadCrumb id="migaPan" styleClass="breadcrumb migaPan"
                                   homeDisplay="text"
                                   style="background-image: none !important;background: transparent;  border: none; margin-top: 5px">
+
                         <ui:insert name="breadcrumb"/>
                     </p:breadCrumb>
                 </c:if>
@@ -40,21 +130,21 @@
                     <ul id="listaOpciones" class="navbar-nav text-right">
                         <!-- Remote command para una vez se selecciona una opcion, actualizar la opcion visual en sessionBean-->
                         <p:remoteCommand name="commandSetearOpcion"
-                                         action="#{sessionBean.setearOpcion}" process="@all" />
+                                         action="#{sessionBean.setearOpcion}" process="@all"/>
 
                         <p:panelGrid id="opcionesMenu">
                             <c:choose>
                                 <c:when
                                         test="#{sessionBean.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR}">
                                     <li class="nav-item mt-3 mb-1 opcion-menu"><p:link id="viewTipoEntidades"
-                                            outcome="/superadministrador/viewEntidades.xhtml"
-                                            title="#{labels['viewTipoEntidades.titulo']}">
+                                                                                       outcome="/superadministrador/viewEntidades.xhtml"
+                                                                                       title="#{labels['viewTipoEntidades.titulo']}">
 										<span class="mb-0 float-right #{view.viewId eq '/superadministrador/viewEntidades.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
 											#{labels['viewTipoEntidades.titulo']}</span>
                                     </p:link></li>
                                     <li class="nav-item mt-3 mb-1 opcion-menu"><p:link id="viewConfigGlobales"
-                                            outcome="/superadministrador/viewConfiguracionesGlobales.xhtml"
-                                            title="#{labels['viewConfigGlobales.titulo']}">
+                                                                                       outcome="/superadministrador/viewConfiguracionesGlobales.xhtml"
+                                                                                       title="#{labels['viewConfigGlobales.titulo']}">
 										<span class="mb-0 float-right #{view.viewId eq '/superadministrador/viewConfiguracionesGlobales.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
 											#{labels['viewConfigGlobales.titulo']}</span>
                                     </p:link></li>
@@ -103,7 +193,8 @@
                                             <p:outputLabel
                                                     styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
                                                     value="#{labels['menu.label.superadm.procserv']}"></p:outputLabel>
-                                            <p:link id="viewTipoSilencioAdministrativo" styleClass="pb-4 dropdown-item mobil"
+                                            <p:link id="viewTipoSilencioAdministrativo"
+                                                    styleClass="pb-4 dropdown-item mobil"
                                                     outcome="/maestras/tipo/viewTipoSilencioAdministrativo.xhtml"
                                                     title="#{labels['viewTipoSilencioAdministrativo.titulo']}">
                                                 <span class="mb-0 float-right">#{labels['viewTipoSilencioAdministrativo.titulo']}</span>
@@ -113,7 +204,7 @@
                                                     title="#{labels['viewTipoFormaInicio.titulo']}">
                                                 <span class="mb-0 float-right">#{labels['viewTipoFormaInicio.titulo']}</span>
                                             </p:link>
-                                             <p:link id="viewTipoVia" styleClass="pb-4 dropdown-item mobil"
+                                            <p:link id="viewTipoVia" styleClass="pb-4 dropdown-item mobil"
                                                     outcome="/maestras/tipo/viewTipoVia.xhtml"
                                                     title="#{labels['viewTipoVia.titulo']}">
                                                 <span class="mb-0 float-right ">#{labels['viewTipoVia.titulo']}</span>
@@ -123,8 +214,8 @@
                                                     title="#{labels['viewTipoLegitimacion.titulo']}">
                                                 <span class="mb-0 float-right">#{labels['viewTipoLegitimacion.titulo']}</span>
                                             </p:link>
-                                            <p:link styleClass="pb-3 dropdown-item mobil" >
-                                                <span > </span>
+                                            <p:link styleClass="pb-3 dropdown-item mobil">
+                                                <span> </span>
                                             </p:link>
                                             <p:link id="viewTipoMateriaSIA" styleClass="pb-4 dropdown-item mobil"
                                                     outcome="/maestras/tipo/viewTipoMateriaSIA.xhtml"
@@ -242,7 +333,7 @@
                                             </p:link>
                                             <p:link id="viewTema"
                                                     styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/superadministrador/viewTema.xhtml"
+                                                    outcome="/entidades/viewTema.xhtml"
                                                     title="#{labels['viewTema.titulo']}">
 									        <span class="mb-0 float-right ">
 										        #{labels['viewTema.titulo']}</span>
@@ -314,6 +405,12 @@
                                                     title="#{labels['viewProcesosLog.titulo.pagina']}">
                                                 <span class="mb-0 float-right">#{labels['viewProcesosLog.titulo.pagina']}</span>
                                             </p:link>
+                                            <p:link id="viewProcesosSolr"
+                                                    styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/monitorizacion/viewProcesosSolr.xhtml"
+                                                    title="#{labels['viewProcesosSolr.titulo.pagina']}">
+                                                <span class="mb-0 float-right">#{labels['viewProcesosSolr.titulo.pagina']}</span>
+                                            </p:link>
                                         </div>
                                     </li>
                                     <li class="menuD nav-item mt-3 mb-1 opcion-menu"
@@ -339,7 +436,7 @@
 
                                             <p:link id="viewUnidadAdministrativa"
                                                     styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/superadministrador/viewUnidadAdministrativa.xhtml"
+                                                    outcome="/entidades/viewUnidadAdministrativa.xhtml"
                                                     title="#{labels['viewUnidadAdministrativa.titulo']}">
                                                 <span class="mb-0 float-right ">#{labels['viewUnidadAdministrativa.titulo']}</span>
                                             </p:link>
@@ -380,9 +477,9 @@
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
                                         <p:link id="viewUnidadAdministrativaCont"
                                                 style=""
-                                                outcome="/superadministrador/viewUnidadAdministrativa.xhtml"
+                                                outcome="/entidades/viewUnidadAdministrativa.xhtml"
                                                 title="#{labels['viewUnidadAdministrativa.titulo']}">
-									<span class="mb-0 float-right #{view.viewId eq '/superadministrador/viewUnidadAdministrativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+									<span class="mb-0 float-right #{view.viewId eq '/entidades/viewUnidadAdministrativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
 										#{labels['viewUnidadAdministrativa.titulo']}</span>
                                         </p:link></li>
                                     <!--<li class="nav-item mt-3 mb-1 opcion-menu">
@@ -438,9 +535,9 @@
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
                                         <p:link id="viewUnidadAdministrativaCont"
                                                 style=""
-                                                outcome="/superadministrador/viewUnidadAdministrativa.xhtml"
+                                                outcome="/entidades/viewUnidadAdministrativa.xhtml"
                                                 title="#{labels['viewUnidadAdministrativa.titulo']}">
-									<span class="mb-0 float-right #{view.viewId eq '/superadministrador/viewUnidadAdministrativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+									<span class="mb-0 float-right #{view.viewId eq '/entidades/viewUnidadAdministrativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
 										#{labels['viewUnidadAdministrativa.titulo']}</span>
                                         </p:link></li>
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
@@ -460,6 +557,64 @@
                                                 #{labels['viewServicios.titulo']}
                                             </span>
                                         </p:link></li>
+                                </c:when>
+                                <c:when
+                                        test="#{sessionBean.getPerfil() == TypePerfiles.INFORMADOR}">
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link id="viewUnidadAdministrativaCont"
+                                                style=""
+                                                outcome="/entidades/viewUnidadAdministrativa.xhtml"
+                                                title="#{labels['viewUnidadAdministrativa.titulo']}">
+									<span class="mb-0 float-right #{view.viewId eq '/entidades/viewUnidadAdministrativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+										#{labels['viewUnidadAdministrativa.titulo']}</span>
+                                        </p:link></li>
+                                    <!--<li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link styleClass="#{sessionBean.isActive('viewSeccion.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
+                                                outcome="/superadministrador/viewSeccion.xhtml"
+                                                title="#{labels['viewSeccion.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewSeccion.titulo'}]); return true;">
+                                        <span class="mb-0 float-right ">
+                                            #{labels['viewSeccion.titulo']}</span>
+                                        </p:link></li>
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link styleClass="#{sessionBean.isActive('viewPersonal.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
+                                                outcome="/maestras/viewPersonal.xhtml"
+                                                title="#{labels['viewPersonal.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewPersonal.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewPersonal.titulo']}</span>
+                                        </p:link></li>
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link styleClass="#{sessionBean.isActive('viewFichas.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
+                                                outcome="/maestras/viewFichas.xhtml"
+                                                title="#{labels['viewFichas.titulo']}"
+                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewFichas.titulo'}]); return true;">
+                                            <span class="mb-0 float-right">#{labels['viewFichas.titulo']}</span>
+                                        </p:link></li>-->
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link id="viewNormativas"
+                                                outcome="/maestras/viewNormativa.xhtml"
+                                                title="#{labels['viewNormativas.titulo.pagina']}">
+                                            <span class="mb-0 float-right #{view.viewId eq '/maestras/viewNormativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+                                                #{labels['viewNormativas.titulo.pagina']}
+                                            </span>
+                                        </p:link></li>
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link id="viewProcedimientos"
+                                                outcome="/maestras/viewProcedimientos.xhtml"
+                                                title="#{labels['viewProcedimientos.titulo']}">
+                                            <span class="mb-0 float-right #{view.viewId eq '/maestras/viewProcedimientos.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+                                                #{labels['viewProcedimientos.titulo']}
+                                            </span>
+                                        </p:link></li>
+                                    <li class="nav-item mt-3 mb-1 opcion-menu">
+                                        <p:link id="viewServicios"
+                                                outcome="/maestras/viewServicios.xhtml"
+                                                title="#{labels['viewServicios.titulo']}">
+                                            <span class="mb-0 float-right #{view.viewId eq '/maestras/viewServicios.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+                                                #{labels['viewServicios.titulo']}
+                                            </span>
+                                        </p:link></li>
+
                                 </c:when>
                             </c:choose>
                         </p:panelGrid>

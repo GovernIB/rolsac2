@@ -25,7 +25,7 @@
 
         <span class="pi pi-tag" style="margin-top:5px"/>
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
-        <p:selectOneButton id="opcionIdioma" value="#{dialogTema.idioma}" styleClass="botoneraRed"  unselectable="false">
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTema.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="inputDescripcion" process="@this"/>
@@ -64,11 +64,13 @@
                     <p:inputText id="txtIdentificador" value="#{dialogTema.data.identificador}"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  styleClass="w95" onblur="this.value = this.value.toUpperCase();"
-                                 required="true" disabled="#{dialogTema.isModoConsulta()}" maxlength="50">
+                                 disabled="#{dialogTema.isModoConsulta()}" maxlength="50"
+                                 required="true">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
-                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
+                        <f:validateBean disabled="true"/>
                     </p:inputText>
-                 </div>
+                </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <h:outputText value="#{labels['dialogTema.temaPadre']}:" for="txtTemaPadre"/>
                 </div>
@@ -105,9 +107,16 @@
         <p:commandButton action="#{dialogTema.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>
-        <p:commandButton action="#{dialogTema.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+        <p:commandButton action="#{dialogTema.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         update="messagesDialog form" responsive="true" width="458px"
+                         message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+            <p:commandButton value="Sí" process="@this" action="#{dialogTema.cerrarDefinitivo}"
+                             oncomplete="PF('confirmCerrar').hide();"/>
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"/>
+        </p:confirmDialog>
     </ui:define>
 </ui:composition>
 </html>

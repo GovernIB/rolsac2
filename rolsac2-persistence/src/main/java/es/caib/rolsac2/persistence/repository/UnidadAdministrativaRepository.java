@@ -1,5 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
@@ -28,7 +29,7 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     Boolean checkIdentificador(String identificador);
 
-    List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId);
+    List<JUnidadAdministrativa> getUnidadesAdministrativaByEntidadId(Long entidadId, String idioma);
 
     JUnidadAdministrativa findJUAById(UnidadAdministrativaDTO uaResponsable);
 
@@ -46,4 +47,5 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     List<Long> getListaHijosRecursivo(Long codigoUA);
 
+    PathUA getPath(UnidadAdministrativaDTO uaInstructor);
 }

@@ -85,6 +85,18 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<UnidadAdministrativaGridDTO> getHijosGrid(Long idUnitat, String idioma) {
+        List<JUnidadAdministrativa> jUaHijas = unidadAdministrativaRepository.getHijos(idUnitat, idioma);
+        List<UnidadAdministrativaGridDTO> uaHijas = new ArrayList<>();
+        for(JUnidadAdministrativa ua : jUaHijas) {
+            uaHijas.add(unidadAdministrativaRepository.modelToGridDTO(ua));
+        }
+        return uaHijas;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<UnidadAdministrativaDTO> getHijosSimple(Long idUnitat, String idioma, UnidadAdministrativaDTO padre) {
         return unidadAdministrativaRepository.getHijosSimple(idUnitat, idioma, padre);
 
@@ -214,9 +226,16 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public UnidadAdministrativaDTO findById(Long id) {
         return converter.createDTO(unidadAdministrativaRepository.findById(id));
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public UnidadAdministrativaGridDTO findGridById(Long id) {
+        return unidadAdministrativaRepository.modelToGridDTO(unidadAdministrativaRepository.findById(id));
     }
 
     @Override
@@ -228,7 +247,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro) {
         try {
             List<UnidadAdministrativaGridDTO> items = unidadAdministrativaRepository.findPagedByFiltro(filtro);
@@ -287,8 +306,13 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId) {
-        return unidadAdministrativaRepository.getUnidadesAdministrativaByEntidadId(entidadId);
+    public List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId, String idioma) {
+        List<JUnidadAdministrativa> jUnidades = unidadAdministrativaRepository.getUnidadesAdministrativaByEntidadId(entidadId, idioma);
+        List<UnidadAdministrativaDTO> unidades = new ArrayList<>();
+        for(JUnidadAdministrativa unidad : jUnidades) {
+            unidades.add(converter.createDTO(unidad));
+        }
+        return unidades;
     }
 
 

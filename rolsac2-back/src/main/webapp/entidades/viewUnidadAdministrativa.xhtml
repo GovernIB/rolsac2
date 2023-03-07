@@ -17,14 +17,21 @@
         <h:outputFormat value="#{labels['viewUnidadAdministrativa.titulo']}"/>
     </ui:define>
     <ui:define name="breadcrumbBoton">
-        <p:ajax event="eventoUpdate" oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}"
-                update="form:dataTable"/>
+        <c:choose>
+            <c:when test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD)  }">
+                <p:ajax event="eventoUpdate" oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}"
+                        update="form:dataTable"/>
+            </c:when>
+        </c:choose>
+
     </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
             <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
                         action="#{viewUnidadAdministrativa.cambiarUAbuscarEvt(ua)}"
                         update="migaPan @form form:dataTable"
+                        process="@this"
+                        disabled="#{sessionBean.getPerfil() == TypePerfiles.GESTOR and sessionBean.checkUaGestor(ua)}"
             >
             </p:menuitem>
         </c:forEach>
@@ -46,22 +53,30 @@
                 <f:facet name="right">
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewUnidadAdministrativa.nuevaUnidadAdministrativa}"
-                                     process="@this" rendered="#{!viewUnidadAdministrativa.isAdmContenidos()}"
+                                     process="@this" rendered="#{!viewUnidadAdministrativa.isAdmContenidos() and !viewUnidadAdministrativa.isModoConsulta()}"
                                      onstart="PF('blocker').show();"
-                                     oncomplete="PF('blocker').hide()">
+                                     oncomplete="PF('blocker').hide()" >
                         <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
                     <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                      actionListener="#{viewUnidadAdministrativa.editarUnidadAdministrativa}"
                                      process="@form" update="messages" onstart="PF('blocker').show();"
-                                     oncomplete="PF('blocker').hide()">
+                                     oncomplete="PF('blocker').hide()" rendered="#{!viewUnidadAdministrativa.isModoConsulta()}">
+                        <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" icon="pi pi-pencil" iconPos="top"
+                                     actionListener="#{viewUnidadAdministrativa.consultarUnidadAdministrativa()}"
+                                     process="@form" update="messages" onstart="PF('blocker').show();"
+                                     oncomplete="PF('blocker').hide()" rendered="#{viewUnidadAdministrativa.isModoConsulta()}">
                         <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
                     <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
                                      action="#{viewUnidadAdministrativa.borrarUnidadAdministrativa}"
-                                     process="@form" update="messages dataTable">
+                                     process="@form" update="messages dataTable"
+                                     rendered="#{!viewUnidadAdministrativa.isAdmContenidos()}">
                         <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                     </p:commandButton>
                     <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
