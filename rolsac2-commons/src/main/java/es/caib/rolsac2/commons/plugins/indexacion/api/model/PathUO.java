@@ -46,7 +46,11 @@ public class PathUO {
      * @return identificado uo
      */
     public String getUO() {
-        return path.get(path.size() - 1);
+        if (path == null || path.isEmpty()) {
+            return null;
+        } else {
+            return path.get(path.size() - 1);
+        }
     }
 
     /**

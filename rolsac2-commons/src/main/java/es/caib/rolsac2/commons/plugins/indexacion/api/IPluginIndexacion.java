@@ -20,21 +20,21 @@ public interface IPluginIndexacion extends IPlugin {
     /**
      * Indexa contenido.
      *
-     * @param indexData contenido a indexar.El contenido es multiidioma por lo que se
-     *                  rellenaran los idiomas necesarios.
+     * @param dataIndexacion contenido a indexar.El contenido es multiidioma por lo que se
+     *                       rellenaran los idiomas necesarios.
      * @throws IPluginIndexacionExcepcion
      */
-    ResultadoAccion indexarContenido(IndexData indexData) throws IPluginIndexacionExcepcion;
+    ResultadoAccion indexarContenido(DataIndexacion dataIndexacion) throws IPluginIndexacionExcepcion;
 
     /**
      * Indexa fichero.
      *
-     * @param indexFile fichero a indexar. Cuando se indexa un fichero sólo se puede
-     *                  indexar en un idioma. Se deberá rellenar los datos en el
-     *                  idioma establecido.
+     * @param ficheroIndexacion fichero a indexar. Cuando se indexa un fichero sólo se puede
+     *                          indexar en un idioma. Se deberá rellenar los datos en el
+     *                          idioma establecido.
      * @throws IPluginIndexacionExcepcion
      */
-    ResultadoAccion indexarFichero(IndexFile indexFile) throws IPluginIndexacionExcepcion;
+    ResultadoAccion indexarFichero(FicheroIndexacion ficheroIndexacion) throws IPluginIndexacionExcepcion;
 
     /**
      * Desindexa elementos caducados.
@@ -101,7 +101,7 @@ public interface IPluginIndexacion extends IPlugin {
     /**
      * Convierte HTML a texto.
      * <p>
-     * Información que este en formato HTML debe convertirse a texto para poder añadirla como texto de búsqueda en IndexData.
+     * Información que este en formato HTML debe convertirse a texto para poder añadirla como texto de búsqueda en DataIndexacion.
      *
      * @param html HTML
      * @return texto
@@ -119,6 +119,6 @@ public interface IPluginIndexacion extends IPlugin {
      * @return Resultado búsqueda
      * @throws IPluginIndexacionExcepcion Excepción
      */
-    ResultData buscar(String sesionId, String textoBusqueda, EnumIdiomas idiomaBusqueda, FilterSearch filtroBusqueda, PaginationSearch paginacionBusqueda) throws IPluginIndexacionExcepcion;
+    ResultadoBusqueda buscar(String sesionId, String textoBusqueda, EnumIdiomas idiomaBusqueda, FiltroBusqueda filtroBusqueda, BusquedaPaginacion paginacionBusqueda) throws IPluginIndexacionExcepcion;
 
 }
