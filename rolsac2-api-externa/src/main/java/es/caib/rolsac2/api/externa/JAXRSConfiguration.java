@@ -30,8 +30,9 @@ import javax.ws.rs.core.Application;
 @OpenAPIDefinition(
         info = @Info(title = "API REST EXTERNA", version = "1.0.0"),
         servers = {
-                @Server(url = "/rolsac2api/externa")
+                @Server(url = "/rolsac2api/externa",description = "localhost")
         }
+
 )
 public class JAXRSConfiguration extends Application {
 
