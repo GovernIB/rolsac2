@@ -20,9 +20,8 @@
                     <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="entidades">
                         <p:repeat value="#{sessionBean.entidades}" var="entidad">
                             <p:commandLink styleClass="dropdown-item mobil" hreflang="#{entidad}"
-                                           action="#{sessionBean.reload()}"
                                            value="#{entidad.descripcion.getTraduccion(sessionBean.getLang())}">
-                                <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}" />
+                                <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}" oncomplete="window.location.replace(window.location)"/>
                             </p:commandLink>
                         </p:repeat>
                     </div>
@@ -42,7 +41,7 @@
                                        action="#{sessionBean.reloadPerfil()}"
                                        value="#{labels['TypePerfiles.' += perfil.toString()]}"
                         >
-                            <p:ajax update=":imgLogo" listener="#{sessionBean.setPerfil(perfil)}" />
+                            <p:ajax update=":imgLogo" listener="#{sessionBean.cambioPerfil(perfil)}" />
                         </p:commandLink>
                     </p:repeat>
                 </div>

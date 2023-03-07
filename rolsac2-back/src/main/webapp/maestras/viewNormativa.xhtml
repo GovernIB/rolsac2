@@ -48,29 +48,33 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
                                              update="messages dataTable"
                                              actionListener="#{viewNormativa.buscar()}" process="@form"/>
-                            <p:commandButton styleClass="ml-1" value="+" onclick="PF('panel').toggle()"/>
+                            <p:commandButton styleClass="ml-1" icon="pi pi-plus" onclick="PF('panel').toggle()"/>
 
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                             <p:commandButton value="#{labels['dialogTraspasoBOIB.titulo']}" icon="pi pi-star"
                                              iconPos="top"
                                              actionListener="#{viewNormativa.abrirTraspaso}"
-                                             process="@this" styleClass="mr-2">
+                                             process="@this" styleClass="mr-2" rendered="#{!viewNormativa.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewNormativa.returnDialogoTraspaso}"
                                         update="messages"/>
                             </p:commandButton>
                             <p:commandButton id="btnNuevo" value="#{labels['dict.nuevo']}" icon="pi pi-file-o"
                                              iconPos="top"
                                              actionListener="#{viewNormativa.nuevaNormativa}"
-                                             process="@this">
+                                             process="@this" rendered="#{!viewNormativa.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewNormativa.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                              actionListener="#{viewNormativa.editarNormativa}"
-                                             process="@form" update="messages">
+                                             process="@form" update="messages" rendered="#{!viewNormativa.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewNormativa.returnDialogo}"
                                         update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.consultar']}" icon="pi pi-pencil" iconPos="top"
+                                             actionListener="#{viewNormativa.consultarNormativa()}"
+                                             process="@form" update="messages" rendered="#{viewNormativa.isModoConsulta()}">
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
                                              action="#{viewNormativa.borrarNormativa}"
@@ -204,6 +208,16 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 function triggerNuevaNormativa() {
                     document.getElementById("form:btnNuevo").click();
+                }
+
+                function cambiarBoton() {
+                    if ($('#form\\:btnBusquedaAvanzada span').hasClass('pi-plus')) {
+                        $('#form\\:btnBusquedaAvanzada span').removeClass('pi-plus');
+                        $('#form\\:btnBusquedaAvanzada span').addClass('pi-minus');
+                    } else {
+                        $('#form\\:btnBusquedaAvanzada span').removeClass('pi-minus');
+                        $('#form\\:btnBusquedaAvanzada span').addClass('pi-plus');
+                    }
                 }
             </h:outputScript>
             <p:remoteCommand name="myDoubleClickCommand"

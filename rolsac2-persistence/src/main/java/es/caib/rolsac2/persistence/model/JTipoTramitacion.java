@@ -385,6 +385,11 @@ public class JTipoTramitacion extends BaseEntity {
         this.setUrlTramitacion(tipoTramitacion.getUrlTramitacion());
         this.setTramitPresencial(tipoTramitacion.isTramitPresencial());
         this.setTramitElectronica(tipoTramitacion.isTramitElectronica());
+        if (this.getTraducciones() != null && tipoTramitacion.getUrl() != null) {
+            for (JTipoTramitacionTraduccion traduccion : this.getTraducciones()) {
+                traduccion.setUrl(tipoTramitacion.getUrl().getTraduccion(traduccion.getIdioma()));
+            }
+        }
     }
 
     /**

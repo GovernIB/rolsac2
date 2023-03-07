@@ -6,10 +6,13 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * The type Normativa grid dto.
  */
-@Schema(name = "Normativa")
+@XmlRootElement
+@Schema(name = "NormativaGrid")
 public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<NormativaGridDTO> {
 
     /**

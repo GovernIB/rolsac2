@@ -74,6 +74,9 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
             sql.append(" and (LOWER (j.identificador) LIKE :filtro OR cast(j.codigo as string) like :filtro "
                     + " OR LOWER (j.entidad.identificador) LIKE :filtro OR LOWER (j.temaPadre.identificador) LIKE :filtro ) " );
         }
+        if(filtro.isRellenoEntidad()) {
+            sql.append(" and j.entidad.codigo =:idEntidad");
+        }
 
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));

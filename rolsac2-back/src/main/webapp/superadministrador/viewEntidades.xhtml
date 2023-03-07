@@ -95,7 +95,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                 </p:column>
                 <p:column sortBy="#{entidad.descripcion}" headerText="#{labels['dict.descripcion']}">
                     <f:facet name="header" />
-                    <h:outputText value="#{entidad.descripcion}" />
+                    <h:outputText value="#{entidad.descripcion.getTraduccion()}" />
                 </p:column>
                 <p:column sortBy="#{entidad.activa}" headerText="#{labels['viewEntidades.activa']}">
                     <f:facet name="header"/>

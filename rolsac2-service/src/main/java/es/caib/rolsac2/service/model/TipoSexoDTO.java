@@ -48,6 +48,14 @@ public class TipoSexoDTO extends ModelApi {
         this.identificador = identificador;
     }
 
+    public TipoSexoDTO (TipoSexoDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+        }
+    }
+
     /**
      * Obtiene codigo.
      *
@@ -152,13 +160,7 @@ public class TipoSexoDTO extends ModelApi {
      * @return
      */
     @Override
-    public Object clone() {
-        TipoSexoDTO tipo = new TipoSexoDTO();
-        tipo.setCodigo(this.getCodigo());
-        tipo.setIdentificador(this.getIdentificador());
-        if (this.getDescripcion() != null) {
-            tipo.setDescripcion((Literal) this.getDescripcion().clone());
-        }
-        return tipo;
+    public TipoSexoDTO clone() {
+        return new TipoSexoDTO(this);
     }
 }

@@ -91,6 +91,9 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
                     + " OR LOWER(tp.descripcion) LIKE :filtro "
                     + " OR LOWER(tt.descripcion) LIKE :filtro ) ");
         }
+        if(filtro.isRellenoEntidad()) {
+            sql.append(" and j.entidad.codigo =:idEntidad");
+        }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -102,6 +105,10 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
 
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
+        }
+
+        if(filtro.isRellenoEntidad()) {
+            query.setParameter("idEntidad", filtro.getIdEntidad());
         }
         return query;
     }

@@ -4,7 +4,6 @@ public class TemaFiltro extends AbstractFiltro {
 
     private String texto;
     private String identificador;
-    private Long entidad;
 
     public String getTexto() {
         return texto;
@@ -22,14 +21,6 @@ public class TemaFiltro extends AbstractFiltro {
         this.identificador = identificador;
     }
 
-    public Long getEntidad() {
-        return entidad;
-    }
-
-    public void setEntidad(Long codEnti) {
-        this.entidad = codEnti;
-    }
-
     public boolean isRellenoTexto() {
         return texto != null && !texto.isEmpty();
     }
@@ -41,12 +32,6 @@ public class TemaFiltro extends AbstractFiltro {
         return identificador != null && !identificador.isEmpty();
     }
 
-    /**
-     * Esta relleno el codEnti
-     **/
-    public boolean isRellenoEntidad() {
-        return entidad != null;
-    }
 
     @Override
     protected String getDefaultOrder() {

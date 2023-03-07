@@ -71,9 +71,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
           <p:inputText id="txtIdentificador" value="#{dialogTipoMediaFicha.data.identificador}"
                        requiredMessage="#{labels['dict.obligatorio.identificador']}"
                        styleClass="w95"  onblur="this.value = this.value.toUpperCase();"
-                       required="true" disabled="#{dialogTipoMediaFicha.isModoConsulta()}" maxlength="50">
+                      required="true" disabled="#{dialogTipoMediaFicha.isModoConsulta()}" maxlength="50">
                 <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                 <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+            <f:validateBean disabled="true" />
           </p:inputText>
         </div>
 
@@ -82,7 +83,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
           <my:literalComponent id="inputDescripcion" literal="#{dialogTipoMediaFicha.data.descripcion}"
-                               required="true"
+                              required="true"
                                soloLecture="#{dialogTipoMediaFicha.isModoConsulta()}"
                                idioma="#{dialogTipoMediaFicha.idioma}"
                                idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
@@ -103,9 +104,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <p:commandButton action="#{dialogTipoMediaFicha.guardar}"
                      value="#{labels['dict.guardar']}" update="messagesDialog form"
                      process="@all"/>
-    <p:commandButton action="#{dialogTipoMediaFicha.cerrar}"
+    <p:commandButton action="#{dialogTipoMediaFicha.cerrar}" id="closeButton"
                      value="#{labels['dict.cerrar']}" update="messagesDialog"
-                     process="@this"/>
+                     process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+    <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" update="messagesDialog form" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+      <p:commandButton value="Sí" process="@this" action="#{dialogTipoMediaFicha.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();"  />
+      <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+    </p:confirmDialog>
 
   </ui:define>
 

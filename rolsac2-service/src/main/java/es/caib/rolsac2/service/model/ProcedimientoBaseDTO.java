@@ -92,6 +92,13 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private String mensajes;
     private String usuarioAuditoria;
 
+    /**
+     * Pendientes de indexar o mensajes
+     **/
+    private boolean pendienteIndexar = false;
+    private boolean pendienteMensajesGestor = false;
+    private boolean pendienteMensajesSupervisor = false;
+
     public static ProcedimientoBaseDTO createInstance(List<String> idiomas) {
         ProcedimientoBaseDTO proc = new ProcedimientoBaseDTO();
         proc.setWorkflow(TypeProcedimientoWorkflow.MODIFICACION);
@@ -104,6 +111,9 @@ public class ProcedimientoBaseDTO extends ModelApi {
         proc.setDestinatarios(Literal.createInstance(idiomas));
         proc.setTerminoResolucion(Literal.createInstance(idiomas));
         proc.setObservaciones(Literal.createInstance(idiomas));
+        proc.setPendienteIndexar(false);
+        proc.setPendienteMensajesGestor(false);
+        proc.setPendienteMensajesSupervisor(false);
         return proc;
     }
 
@@ -514,6 +524,30 @@ public class ProcedimientoBaseDTO extends ModelApi {
         this.responsableTelefono = responsableTelefono;
     }
 
+    public boolean isPendienteIndexar() {
+        return pendienteIndexar;
+    }
+
+    public void setPendienteIndexar(boolean pendienteIndexar) {
+        this.pendienteIndexar = pendienteIndexar;
+    }
+
+    public boolean isPendienteMensajesGestor() {
+        return pendienteMensajesGestor;
+    }
+
+    public void setPendienteMensajesGestor(boolean pendienteMensajesGestor) {
+        this.pendienteMensajesGestor = pendienteMensajesGestor;
+    }
+
+    public boolean isPendienteMensajesSupervisor() {
+        return pendienteMensajesSupervisor;
+    }
+
+    public void setPendienteMensajesSupervisor(boolean pendienteMensajesSupervisor) {
+        this.pendienteMensajesSupervisor = pendienteMensajesSupervisor;
+    }
+
     @Override
     public String toString() {
         return "ProcedimientoBaseDTO{" +
@@ -582,4 +616,18 @@ public class ProcedimientoBaseDTO extends ModelApi {
     }
 
 
+    public boolean isIndexable() {
+
+        if (!this.isPublicado()) {
+            return false;
+        }
+
+        if (this.uaInstructor == null) {
+            return false;
+        }
+        //if (this.uaInstructor..getValidacion() != 1 ) {
+        //    return false;
+        //}
+        return true;
+    }
 }

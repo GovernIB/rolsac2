@@ -72,7 +72,6 @@ public class ViewTipoFormaInicio extends AbstractController implements Serializa
 
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoFormaInicioFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
 
         // Generamos una búsqueda

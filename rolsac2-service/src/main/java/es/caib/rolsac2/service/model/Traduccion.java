@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +11,7 @@ import java.util.Objects;
  *
  * @author indra
  */
-
+@Schema(name = "Traduccion")
 public class Traduccion implements Cloneable {
 
     /**

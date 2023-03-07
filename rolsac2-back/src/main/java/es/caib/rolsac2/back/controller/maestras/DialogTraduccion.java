@@ -189,7 +189,8 @@ public class DialogTraduccion extends AbstractController implements Serializable
                                 && (m.getParameterTypes()[0].getTypeName().equals(Literal.class.getTypeName()))) {
                             try {
 
-                                if ((field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("set", "")))) {
+                                if (field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("set", ""))
+                                && !field.getName().toLowerCase(Locale.ROOT).contains("url")) {
                                     if (literales.size() > cont) {
                                         m.invoke(data, literales.get(cont));
                                         cont++;
@@ -291,7 +292,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
     public void imprimirLiteralesProcedimiento() {
         literales.add((Literal) ((ProcedimientoDTO) data).getNombreProcedimientoWorkFlow().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getObjeto().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesDestinatario().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getDestinatarios().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getTerminoResolucion().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getObservaciones().clone());
         //literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesFinalidad().clone());

@@ -4,6 +4,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 /**
  * El tipo Tipo media ficha dto.
@@ -43,6 +44,14 @@ public class TipoMediaFichaDTO {
     public TipoMediaFichaDTO(Long id, String identificador) {
         this.codigo = id;
         this.identificador = identificador;
+    }
+
+    public TipoMediaFichaDTO(TipoMediaFichaDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+        }
     }
 
     /**
@@ -100,4 +109,32 @@ public class TipoMediaFichaDTO {
     }
 
     //todo toString()
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TipoMediaFichaDTO that = (TipoMediaFichaDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
+    public TipoMediaFichaDTO clone() {
+        return new TipoMediaFichaDTO(this);
+    }
+
+    @Override
+    public String toString() {
+        return "TipoMediaFichaDTO{" +
+                "codigo=" + codigo +
+                ", identificador='" + identificador + '\'' +
+                ", descripcion=" + descripcion +
+                '}';
+    }
 }

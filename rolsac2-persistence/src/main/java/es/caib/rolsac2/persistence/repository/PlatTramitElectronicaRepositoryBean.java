@@ -54,6 +54,9 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
             sql.append(" and ( (cast(j.codigo as string)) like :filtro OR LOWER(j.identificador) LIKE :filtro " +
                     " OR LOWER(j.codEntidad.identificador) LIKE :filtro  ) ");
         }
+        if(filtro.isRellenoEntidad()) {
+            sql.append(" and j.codEntidad.codigo =:idEntidad");
+        }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -72,6 +75,10 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
         }
+        if(filtro.isRellenoEntidad()) {
+            query.setParameter("idEntidad", filtro.getIdEntidad());
+        }
+
 
         return query;
     }

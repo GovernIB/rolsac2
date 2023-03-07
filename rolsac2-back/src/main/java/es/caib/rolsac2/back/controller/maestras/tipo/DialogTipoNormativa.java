@@ -9,6 +9,8 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.utils.UtilComparador;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,8 @@ public class DialogTipoNormativa extends AbstractController implements Serializa
 
     private TipoNormativaDTO data;
 
+    private TipoNormativaDTO dataOriginal;
+
     @EJB
     MaestrasSupServiceFacade maestrasSupService;
 
@@ -49,13 +53,16 @@ public class DialogTipoNormativa extends AbstractController implements Serializa
         data = new TipoNormativaDTO();
         if (this.isModoAlta()) {
             data = new TipoNormativaDTO();
+            if (data.getDescripcion() == null) {
+                data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            }
+            dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = maestrasSupService.findTipoNormativaById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
+            dataOriginal = data.clone();
         }
-        if (data.getDescripcion() == null) {
-            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-        }
+
 
     }
 
@@ -83,7 +90,7 @@ public class DialogTipoNormativa extends AbstractController implements Serializa
         }
 
         if (Objects.isNull(this.data.getCodigo())) {
-            maestrasSupService.create(this.data, sessionBean.getUnidadActiva().getCodigo());
+            maestrasSupService.create(this.data);
         } else {
             maestrasSupService.update(this.data);
         }
@@ -122,12 +129,25 @@ public class DialogTipoNormativa extends AbstractController implements Serializa
     }
 
     public void cerrar() {
-
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
+                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0;
+    }
+
+    public void cerrarDefinitivo() {
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
             result.setModoAcceso(TypeModoAcceso.CONSULTA);
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

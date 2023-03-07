@@ -16,6 +16,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String texto;
     private String tipo;
     private Integer codigoSIA;
+    private Integer codigoProc;
+    private Integer codigoTram;
     private String estadoSIA;
     private String siaFecha;
     private String codigoDir3SIA;
@@ -44,6 +46,22 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private TipoTramitacionDTO plantilla;
     private PlatTramitElectronicaDTO plataforma;
     private String comun;
+
+    public Integer getCodigoProc() {
+        return codigoProc;
+    }
+
+    public void setCodigoProc(Integer codigoProc) {
+        this.codigoProc = codigoProc;
+    }
+
+    public Integer getCodigoTram() {
+        return codigoTram;
+    }
+
+    public void setCodigoTram(Integer codigoTram) {
+        this.codigoTram = codigoTram;
+    }
 
     public String getTexto() {
         return texto;
@@ -309,6 +327,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public boolean isRellenoTipo() {
         return tipo != null && !tipo.isEmpty();
+    }
+
+    public boolean isRellenoCodigoProc() {
+        return codigoProc != null;
+    }
+
+    public boolean isRellenoCodigoTram() {
+        return codigoTram != null;
     }
 
     public boolean isRellenoCodigoSIA() {

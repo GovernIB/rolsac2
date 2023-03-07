@@ -27,7 +27,7 @@
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
 
         <p:selectOneButton id="opcionIdioma" value="#{dialogPlatTramitElectronica.idioma}"
-                            styleClass="botoneraRed"  unselectable="false"  maxlength="50" >
+                           styleClass="botoneraRed" unselectable="false" maxlength="50">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this" update="formDialog:txturlAcceso formDialog:txtDescripcion"/>
@@ -50,10 +50,10 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
-        <p:panel>
+        <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogPlatTramitElectronica.data.codigo}"
@@ -65,8 +65,13 @@
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogPlatTramitElectronica.data.identificador}"
+                                 requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  styleClass="w95" required="true"
-                                 disabled="#{dialogPlatTramitElectronica.isModoConsulta()}" maxlength="50"/>
+                                 disabled="#{dialogPlatTramitElectronica.isModoConsulta()}" maxlength="50">
+                        <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
+                        <f:validateBean disabled="true"/>
+                    </p:inputText>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
@@ -80,11 +85,13 @@
                                          literal="#{dialogPlatTramitElectronica.data.descripcion}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dialogPlatTramitElectronica.descripcion']}"/>
+                                         nombreLiteral="#{labels['dialogPlatTramitElectronica.descripcion']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                    </my:literalComponent>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dialogPlatTramitElectronica.urlAcceso']}:" for="txturlAcceso" />
+                    <p:outputLabel value="#{labels['dialogPlatTramitElectronica.urlAcceso']}:" for="txturlAcceso"/>
 
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
@@ -95,7 +102,9 @@
                                          literal="#{dialogPlatTramitElectronica.data.urlAcceso}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dialogPlatTramitElectronica.urlAcceso']}"/>
+                                         nombreLiteral="#{labels['dialogPlatTramitElectronica.urlAcceso']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                    </my:literalComponent>
                 </div>
             </div>
         </p:panel>
@@ -108,9 +117,16 @@
         <p:commandButton action="#{dialogPlatTramitElectronica.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          process="@all"/>
-        <p:commandButton action="#{dialogPlatTramitElectronica.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+        <p:commandButton action="#{dialogPlatTramitElectronica.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
+                         widgetVar="confirmCerrar">
+            <p:commandButton value="#{labels['dict.si']}" action="#{dialogPlatTramitElectronica.cerrarDefinitivo}"
+                             process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"/>
+        </p:confirmDialog>
     </ui:define>
 </ui:composition>
 </html>

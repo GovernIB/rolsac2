@@ -82,7 +82,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long createEntidad(EntidadDTO dto, Long idUnitat)
+    public Long createEntidad(EntidadDTO dto)
             throws RecursoNoEncontradoException, DatoDuplicadoException {
         // Comprovam que el codiSia no existeix ja (
         if (dto.getCodigo() != null) { // .isPresent()) {
@@ -205,6 +205,13 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
             LOG.error(ERROR_LITERAL, e);
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<String> findRolesDefinidos(List<Long> idEntidades) {
+        return entidadRepository.findRolesDefinidos( idEntidades);
     }
 
     @Override

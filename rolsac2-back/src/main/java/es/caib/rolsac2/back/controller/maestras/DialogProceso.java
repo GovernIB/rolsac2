@@ -14,7 +14,9 @@ import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.utils.UtilComparador;
 import es.caib.rolsac2.service.utils.UtilJSON;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +26,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -37,6 +36,8 @@ public class DialogProceso extends AbstractController implements Serializable {
     private String id;
 
     private ProcesoDTO data;
+
+    private ProcesoDTO dataOriginal;
 
     /**
      * Propiedad seleccionada.
@@ -61,8 +62,13 @@ public class DialogProceso extends AbstractController implements Serializable {
         if(isModoAlta()) {
             data = new ProcesoDTO();
             data.setEntidad(sessionBean.getEntidad());
+            data.setParametrosInvocacion(new ArrayList<>());
+            dataOriginal = data.clone();
+            dataOriginal.setParametrosInvocacion(new ArrayList<>());
         } else {
             data = procesoServiceFacade.obtenerProcesoPorCodigo(Long.valueOf(id));
+            dataOriginal = data.clone();
+            dataOriginal.setParametrosInvocacion(new ArrayList<>(data.getParametrosInvocacion()));
         }
     }
 
@@ -265,11 +271,26 @@ public class DialogProceso extends AbstractController implements Serializable {
     }
 
     public void cerrar() {
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
+                || !dataOriginal.getParametrosInvocacion().equals(data.getParametrosInvocacion())
+                || UtilComparador.compareTo(data.getCron(), dataOriginal.getCron()) != 0;
+    }
+
+    public void cerrarDefinitivo() {
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.util.Objects;
+
 /**
  * Dades d'un TipoPublicoObjetivoEntitat.
  */
@@ -20,6 +22,16 @@ public class TipoPublicoObjetivoEntidadDTO extends ModelApi {
      * Instancia un nuevo Tipo publico objetivo entidad dto.
      */
     public TipoPublicoObjetivoEntidadDTO() {}
+
+    public TipoPublicoObjetivoEntidadDTO(TipoPublicoObjetivoEntidadDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.entidad = otro.entidad == null ? null : (EntidadDTO) otro.entidad.clone();
+            this.tipo = otro.tipo == null ? null : (TipoPublicoObjetivoDTO) otro.tipo.clone();
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+        }
+    }
 
 
     /**
@@ -151,5 +163,23 @@ public class TipoPublicoObjetivoEntidadDTO extends ModelApi {
     public String toString() {
         return "TipoPublicoObjetivoEntidadDTO{" + "id=" + codigo + ", entidad=" + entidad + ", tipo=" + tipo
                         + ", identificador=" + identificador + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TipoPublicoObjetivoEntidadDTO that = (TipoPublicoObjetivoEntidadDTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    @Override
+    public TipoPublicoObjetivoEntidadDTO clone() {
+        return new TipoPublicoObjetivoEntidadDTO(this);
     }
 }

@@ -24,6 +24,7 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Named
 @ViewScoped
@@ -42,6 +43,8 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
 
     private TreeNode selectedNode;
 
+    private TemaDTO temaAux;
+
     private TemaDTO tema;
 
     private Boolean esCabecera;
@@ -55,7 +58,7 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
 
         if (tema != null && tema.getCodigo() != null){
             tema = temaServiceFacade.findById(tema.getCodigo());
-
+            temaAux = tema.clone();
                 List<TemaDTO> temasRoot =
                         temaServiceFacade.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
 
@@ -88,7 +91,6 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
                 LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
                 addTreeNodeCargando(rootChildNode);
             }
-
         }
         ordenarArbol();
     }
@@ -197,9 +199,23 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
     }
 
     public void cerrar() {
-        final DialogResult result = new DialogResult();
+        /*final DialogResult result = new DialogResult();
         result.setModoAcceso(TypeModoAcceso.EDICION);
         result.setCanceled(true);
+        UtilJSF.closeDialog(result);*/
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        }
+        if (selectedNode != null) {
+//            temaAux = (TemaDTO) selectedNode.getData();
+            result.setModoAcceso(TypeModoAcceso.EDICION);
+            result.setResult(temaAux);
+        } else {
+            result.setCanceled(true);
+        }
         UtilJSF.closeDialog(result);
     }
 
@@ -225,5 +241,13 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
 
     public void setSelectedNode(TreeNode selectedNode) {
         this.selectedNode = selectedNode;
+    }
+
+    public TemaDTO getTemaAux() {
+        return temaAux;
+    }
+
+    public void setTemaAux(TemaDTO temaAux) {
+        this.temaAux = temaAux;
     }
 }

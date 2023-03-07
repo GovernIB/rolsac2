@@ -128,6 +128,7 @@ public class TemaComponent extends UIInput implements NamingContainer {
         // Verificamos si se ha modificado
         if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             TemaDTO temaSeleccionado = (TemaDTO) respuesta.getResult();
+
             if (temaSeleccionado != null) {
                 setearTextos(temaSeleccionado);
                 this.setValue(temaSeleccionado);

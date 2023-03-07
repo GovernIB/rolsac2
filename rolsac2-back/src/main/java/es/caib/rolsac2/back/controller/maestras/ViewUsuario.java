@@ -59,13 +59,7 @@ public class ViewUsuario extends AbstractController implements Serializable {
         filtro = new UsuarioFiltro();
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
-
-        LOG.debug("Rol admin: " + this.isUserRoleRSCAdmin());
-        LOG.debug("Rol user: " + this.isUserRoleRSCUser());
-        LOG.debug("Rol user: " + this.isUserRoleRSCMentira());
-        LOG.debug("Username: " + this.getUserName());
-
-        //idiomas = Arrays.asList("es", "ca");
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
 
         buscar();
     }
@@ -156,7 +150,7 @@ public class ViewUsuario extends AbstractController implements Serializable {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "Seleccione un elemento");// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
-            administracionEntService.deleteUsuario(datoSeleccionado.getCodigo());
+            administracionEntService.deleteUsuarioEntidad(datoSeleccionado.getCodigo(), sessionBean.getEntidad().getCodigo());
         }
     }
 

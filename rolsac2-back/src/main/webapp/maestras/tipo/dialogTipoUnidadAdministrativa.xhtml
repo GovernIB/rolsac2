@@ -30,7 +30,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
         <span class="pi pi-tag" style="margin-top:5px"/>
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
-        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoUnidadAdministrativa.idioma}" styleClass="botoneraRed" unselectable="false">
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoUnidadAdministrativa.idioma}" styleClass="botoneraRed"
+                           unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="inputDescripcion inputCargoMasc inputCargoFem inputTratMasc inputTratFem" process="@this"/>
@@ -42,19 +43,21 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          update="messagesDialog"
                          process="@this"
                          rendered="#{!dialogTipoUnidadAdministrativa.isModoConsulta() and dialogTipoUnidadAdministrativa.tradExiste()}">
-            <p:ajax event="dialogReturn" listener="#{dialogTipoUnidadAdministrativa.returnDialogTraducir}" process="@this"
+            <p:ajax event="dialogReturn" listener="#{dialogTipoUnidadAdministrativa.returnDialogTraducir}"
+                    process="@this"
                     update="formDialog:inputDescripcion formDialog:inputCargoMasc formDialog:inputCargoFem formDialog:inputTratMasc formDialog:inputTratFem"/>
         </p:commandButton>
     </ui:define>
 
     <ui:define name="contentDialog">
-        <p:growl id="messagesDialog"
-                 globalOnly="false"
-                 showDetail="false"
-                 life="5000"
-                 escape="false"/>
-
         <p:panel id="form">
+            <p:growl id="messagesDialog"
+                     globalOnly="false"
+                     showDetail="false"
+                     life="5000"
+                     escape="false"/>
+
+
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
@@ -70,10 +73,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogTipoUnidadAdministrativa.data.identificador}"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 styleClass="w95" required="true" onblur="this.value = this.value.toUpperCase();"
+                                 styleClass="w95" required="true"
+                                 onblur="this.value = this.value.toUpperCase();"
                                  disabled="#{dialogTipoUnidadAdministrativa.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
+                        <f:validateBean disabled="true"/>
                     </p:inputText>
                 </div>
 
@@ -89,12 +94,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                          nombreLiteral="#{labels['dict.descripcion']}">
-                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['viewTipoUnidadAdministrativa.cargo.masculino']}:"/>
+                    <h:outputText value="#{labels['viewTipoUnidadAdministrativa.cargo.masculino']}:"
+                                  for="inputCargoMasc"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputCargoMasc"
@@ -103,11 +109,14 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.cargo.masculino']}"/>
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.cargo.masculino']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                    </my:literalComponent>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['viewTipoUnidadAdministrativa.cargo.femenino']}:"/>
+                    <h:outputText value="#{labels['viewTipoUnidadAdministrativa.cargo.femenino']}:"
+                                  for="inputCargoFem"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputCargoFem"
@@ -116,11 +125,14 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.cargo.femenino']}"/>
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.cargo.femenino']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                    </my:literalComponent>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['viewTipoUnidadAdministrativa.tratamiento.masculino']}:"/>
+                    <h:outputText value="#{labels['viewTipoUnidadAdministrativa.tratamiento.masculino']}:"
+                                  for="inputTratMasc"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputTratMasc"
@@ -129,11 +141,14 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.tratamiento.masculino']}"/>
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.tratamiento.masculino']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                    </my:literalComponent>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['viewTipoUnidadAdministrativa.tratamiento.femenino']}:"/>
+                    <h:outputText value="#{labels['viewTipoUnidadAdministrativa.tratamiento.femenino']}:"
+                                  for="inputTratFem"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputTratFem"
@@ -142,7 +157,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.tratamiento.femenino']}"/>
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.tratamiento.femenino']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                    </my:literalComponent>
                 </div>
             </div>
         </p:panel>
@@ -159,10 +176,16 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogTipoUnidadAdministrativa.isModoConsulta()}"
                          process="@all"/>
-        <p:commandButton action="#{dialogTipoUnidadAdministrativa.cerrar}"
+        <p:commandButton action="#{dialogTipoUnidadAdministrativa.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
-
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
+                         widgetVar="confirmCerrar">
+            <p:commandButton value="#{labels['dict.si']}" action="#{dialogTipoUnidadAdministrativa.cerrarDefinitivo}"
+                             process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"/>
+        </p:confirmDialog>
     </ui:define>
 
 </ui:composition>

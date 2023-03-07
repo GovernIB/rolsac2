@@ -31,12 +31,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
         <span class="pi pi-tag" style="margin-top:5px"/>
         <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
-        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoPublicoObjetivo.idioma}" styleClass="botoneraRed" unselectable="false">
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoPublicoObjetivo.idioma}" styleClass="botoneraRed"
+                           unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="formDialog:inputDescripcion" process="@this"/>
         </p:selectOneButton>
-        <p:commandButton action="#{dialogTipoPublicoObjetivo.traducir}"
+        <!--<p:commandButton action="#{dialogTipoPublicoObjetivo.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
@@ -45,20 +46,19 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          rendered="#{!dialogTipoPublicoObjetivo.isModoConsulta() and dialogTipoPublicoObjetivo.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogTipoPublicoObjetivo.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion"/>
-        </p:commandButton>
+        </p:commandButton>-->
     </ui:define>
 
     <ui:define name="contentDialog">
-        <p:growl id="messagesDialog"
-                 globalOnly="false"
-                 showDetail="false"
-                 life="5000"
-                 escape="false"/>
-
         <p:panel id="form">
+            <p:growl id="messagesDialog"
+                     globalOnly="false"
+                     showDetail="false"
+                     life="5000"
+                     escape="false"/>
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogTipoPublicoObjetivo.data.codigo}"
@@ -73,9 +73,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtNombre" value="#{dialogTipoPublicoObjetivo.data.identificador}" styleClass="w95"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 required="true" disabled="#{dialogTipoPublicoObjetivo.isModoConsulta()}" onblur="this.value = this.value.toUpperCase();">
+                                 required="true" disabled="#{dialogTipoPublicoObjetivo.isModoConsulta()}"
+                                 onblur="this.value = this.value.toUpperCase();">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
-                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
                     </p:inputText>
                 </div>
 
@@ -93,14 +94,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                          nombreLiteral="#{labels['dict.descripcion']}">
-                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.esEmpleadoPublico']}:" for="txtEmpleadoPublico" />
+                    <h:outputText value="#{labels['dict.esEmpleadoPublico']}:" for="txtEmpleadoPublico"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:selectBooleanCheckbox id="txtEmpleadoPublico" value="#{dialogTipoPublicoObjetivo.data.empleadoPublico}" disabled="#{dialogTipoPublicoObjetivo.isModoConsulta()}" />
+                    <p:selectBooleanCheckbox id="txtEmpleadoPublico"
+                                             value="#{dialogTipoPublicoObjetivo.data.empleadoPublico}"
+                                             disabled="#{dialogTipoPublicoObjetivo.isModoConsulta()}"
+                    />
                 </div>
             </div>
         </p:panel>
@@ -115,10 +119,16 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogTipoPublicoObjetivo.isModoConsulta()}"
                          process="@all"/>
-        <p:commandButton action="#{dialogTipoPublicoObjetivo.cerrar}"
+        <p:commandButton action="#{dialogTipoPublicoObjetivo.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
-
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         update="messagesDialog form" responsive="true" width="458px"
+                         message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+            <p:commandButton value="Sí" process="@this" action="#{dialogTipoPublicoObjetivo.cerrarDefinitivo}"
+                             oncomplete="PF('confirmCerrar').hide();"/>
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"/>
+        </p:confirmDialog>
     </ui:define>
 
 </ui:composition>

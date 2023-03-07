@@ -12,7 +12,7 @@ public interface Constants {
     /**
      * Constant pel rol d'Administrador
      */
-    String RSC_ADMIN = "RSC_ADMIN";
+	String RSC_ADMIN = "RSC_ADMIN";
 
     /**
      * Constant pel rol d'Usuari

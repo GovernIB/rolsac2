@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.*;
 import javax.inject.Inject;
@@ -137,7 +138,8 @@ public class PersonalServiceFacadeBean implements PersonalServiceFacade {
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+//    @PermitAll
     public Pagina<PersonalGridDTO> findByFiltro(PersonalFiltro filtro) {
         List<PersonalGridDTO> items = personalRepository.findPagedByFiltro(filtro);
         long total = personalRepository.countByFiltro(filtro);

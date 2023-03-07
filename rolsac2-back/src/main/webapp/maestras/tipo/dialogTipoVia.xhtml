@@ -35,7 +35,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
       <p:ajax update="inputDescripcion" process="@this"/>
     </p:selectOneButton>
-    <p:commandButton action="#{dialogTipoVia.traducir}"
+    <!--<p:commandButton action="#{dialogTipoVia.traducir}"
                      icon="pi pi-compass" iconPos="top"
                      value="#{labels['dict.traducir']}"
                      style="margin-left:10px"
@@ -44,7 +44,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      rendered="#{!dialogTipoVia.isModoConsulta() and dialogTipoVia.tradExiste()}">
       <p:ajax event="dialogReturn" listener="#{dialogTipoVia.returnDialogTraducir}" process="@this"
               update="formDialog:inputDescripcion"/>
-    </p:commandButton>
+    </p:commandButton>-->
   </ui:define>
 
   <ui:define name="contentDialog">
@@ -107,10 +107,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <p:commandButton action="#{dialogTipoVia.guardar}"
                      value="Guardar" update="messagesDialog form"
                      process="@all"/>
-    <p:commandButton action="#{dialogTipoVia.cerrar}"
-                     value="Cerrar" update="messagesDialog"
-                     process="@this"/>
-
+    <p:commandButton id="closeButton" action="#{dialogTipoVia.cerrar}" update="messagesDialog" process="@all"
+                     value="#{labels['dict.cerrar']}" oncomplete="stopCargando()" onstart="startCargando()"/>
+    <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+      <p:commandButton value="#{labels['dict.si']}" action="#{dialogTipoVia.cerrarDefinitivo}" process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();"  />
+      <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"  />
+    </p:confirmDialog>
   </ui:define>
 
 </ui:composition>

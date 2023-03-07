@@ -2,6 +2,10 @@ package es.caib.rolsac2.service.model;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +16,8 @@ import java.util.Objects;
  *
  * @author areus
  */
+@XmlRootElement
+@Schema(name = "Pagina")
 public class Pagina<T> {
 
     private final List<T> items;

@@ -5,6 +5,8 @@ import es.caib.rolsac2.persistence.model.JProcedimiento;
 import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
+import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
+import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,4 +87,23 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
     Long getCodigoByWF(Long codigo, boolean valor);
 
     JProcedimientoWorkflow getWFByCodigoWF(Long codigoWF);
+
+    List<ProcedimientoBaseSolr> obtenerPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro);
+
+    Long obtenerCountPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro);
+
+    /**
+     * Actualizar info de solr
+     *
+     * @param proc
+     */
+    void actualizarSolr(ProcedimientoBaseSolr proc);
+
+
+    /**
+     * Marca un procedimiento para indexar
+     *
+     * @param codigo
+     */
+    void marcarParaIndexar(Long codigo);
 }

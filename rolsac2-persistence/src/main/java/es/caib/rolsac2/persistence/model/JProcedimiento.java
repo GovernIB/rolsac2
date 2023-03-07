@@ -2,6 +2,7 @@ package es.caib.rolsac2.persistence.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,7 +71,45 @@ public class JProcedimiento extends BaseEntity {
     private String mensajes;
 
     /**
-     * Workflow del procedimiento 
+     * Pendiente indexar
+     */
+    @Column(name = "PROC_PDTIDX", nullable = true, precision = 1, scale = 0)
+    private boolean pendienteIndexar = false;
+
+    /**
+     * Fecha indexacion
+     */
+    @Column(name = "PROC_DATIDX")
+    private Date fechaIndexacion;
+
+    /**
+     * Fecha inicio indexacion
+     */
+    @Column(name = "PROC_DATINX")
+    private Date fechaInicioIndexacion;
+
+    /**
+     * Error indexacion
+     */
+    @Column(name = "PROC_ERRIDX")
+    private String mensajeIndexacion;
+
+    /**
+     * Mensajes pdt gestor
+     */
+    @Column(name = "PROC_PDTGST", nullable = true, precision = 1, scale = 0)
+    private boolean mensajesPendienteGestor = false;
+
+
+    /**
+     * Mensajes pdt supervisor
+     */
+    @Column(name = "PROC_PDTSUP", nullable = true, precision = 1, scale = 0)
+    private boolean mensajesPendienteSupervisor = false;
+
+
+    /**
+     * Workflow del procedimiento
      */
     @OneToMany(mappedBy = "procedimiento", fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     private List<JProcedimientoWorkflow> procedimientoWF;
@@ -78,7 +117,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -87,7 +126,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -96,7 +135,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Obtiene tipo.
      *
-     * @return  tipo
+     * @return tipo
      */
     public String getTipo() {
         return tipo;
@@ -105,7 +144,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Establece tipo.
      *
-     * @param procTipo  proc tipo
+     * @param procTipo proc tipo
      */
     public void setTipo(String procTipo) {
         this.tipo = procTipo;
@@ -114,7 +153,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Obtiene codigo sia.
      *
-     * @return  codigo sia
+     * @return codigo sia
      */
     public Integer getCodigoSIA() {
         return codigoSIA;
@@ -123,7 +162,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Establece codigo sia.
      *
-     * @param procSiacod  proc siacod
+     * @param procSiacod proc siacod
      */
     public void setCodigoSIA(Integer procSiacod) {
         this.codigoSIA = procSiacod;
@@ -132,7 +171,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Obtiene estado sia.
      *
-     * @return  estado sia
+     * @return estado sia
      */
     public Boolean getEstadoSIA() {
         return estadoSIA;
@@ -141,7 +180,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Establece estado sia.
      *
-     * @param procSiaest  proc siaest
+     * @param procSiaest proc siaest
      */
     public void setEstadoSIA(Boolean procSiaest) {
         this.estadoSIA = procSiaest;
@@ -150,7 +189,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Obtiene sia fecha.
      *
-     * @return  sia fecha
+     * @return sia fecha
      */
     public LocalDate getSiaFecha() {
         return siaFecha;
@@ -159,7 +198,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Establece sia fecha.
      *
-     * @param procSiafc  proc siafc
+     * @param procSiafc proc siafc
      */
     public void setSiaFecha(LocalDate procSiafc) {
         this.siaFecha = procSiafc;
@@ -168,7 +207,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Obtiene codigo dir 3 sia.
      *
-     * @return  codigo dir 3 sia
+     * @return codigo dir 3 sia
      */
     public String getCodigoDir3SIA() {
         return codigoDir3SIA;
@@ -177,7 +216,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Establece codigo dir 3 sia.
      *
-     * @param procSiadir3  proc siadir 3
+     * @param procSiadir3 proc siadir 3
      */
     public void setCodigoDir3SIA(String procSiadir3) {
         this.codigoDir3SIA = procSiadir3;
@@ -186,7 +225,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Obtiene mensajes.
      *
-     * @return  mensajes
+     * @return mensajes
      */
     public String getMensajes() {
         return mensajes;
@@ -195,7 +234,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Establece mensajes.
      *
-     * @param mensajes  mensajes
+     * @param mensajes mensajes
      */
     public void setMensajes(String mensajes) {
         this.mensajes = mensajes;
@@ -204,7 +243,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Obtiene procedimiento wf.
      *
-     * @return  procedimiento wf
+     * @return procedimiento wf
      */
     public List<JProcedimientoWorkflow> getProcedimientoWF() {
         return procedimientoWF;
@@ -213,10 +252,58 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Establece procedimiento wf.
      *
-     * @param procedimientoWF  procedimiento wf
+     * @param procedimientoWF procedimiento wf
      */
     public void setProcedimientoWF(List<JProcedimientoWorkflow> procedimientoWF) {
         this.procedimientoWF = procedimientoWF;
+    }
+
+    public boolean isPendienteIndexar() {
+        return pendienteIndexar;
+    }
+
+    public void setPendienteIndexar(boolean pendienteIndexar) {
+        this.pendienteIndexar = pendienteIndexar;
+    }
+
+    public Date getFechaIndexacion() {
+        return fechaIndexacion;
+    }
+
+    public void setFechaIndexacion(Date fechaIndexacion) {
+        this.fechaIndexacion = fechaIndexacion;
+    }
+
+    public Date getFechaInicioIndexacion() {
+        return fechaInicioIndexacion;
+    }
+
+    public void setFechaInicioIndexacion(Date fechaInicioIndexacion) {
+        this.fechaInicioIndexacion = fechaInicioIndexacion;
+    }
+
+    public String getMensajeIndexacion() {
+        return mensajeIndexacion;
+    }
+
+    public void setMensajeIndexacion(String errorIndexacion) {
+        this.mensajeIndexacion = errorIndexacion;
+    }
+
+    public boolean isMensajesPendienteGestor() {
+        return mensajesPendienteGestor;
+    }
+
+    public void setMensajesPendienteGestor(boolean mensajesPendienteGestor) {
+        this.mensajesPendienteGestor = mensajesPendienteGestor;
+    }
+
+    public boolean isMensajesPendienteSupervisor() {
+        return mensajesPendienteSupervisor;
+    }
+
+    public void setMensajesPendienteSupervisor(boolean mensajesPendienteSupervisor) {
+        this.mensajesPendienteSupervisor = mensajesPendienteSupervisor;
     }
 
     @Override

@@ -34,7 +34,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
       <p:ajax update="inputDescripcion" process="@this"/>
     </p:selectOneButton>
-    <p:commandButton action="#{dialogTipoSexo.traducir}"
+    <!--<p:commandButton action="#{dialogTipoSexo.traducir}"
                      icon="pi pi-compass" iconPos="top"
                      value="#{labels['dict.traducir']}"
                      style="margin-left:10px"
@@ -43,7 +43,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      rendered="#{!dialogTipoSexo.isModoConsulta() and dialogTipoSexo.tradExiste()}">
       <p:ajax event="dialogReturn" listener="#{dialogTipoSexo.returnDialogTraducir}" process="@this"
               update="formDialog:inputDescripcion"/>
-    </p:commandButton>
+    </p:commandButton>-->
   </ui:define>
 
 
@@ -76,6 +76,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                        required="true" disabled="#{dialogTipoSexo.isModoConsulta()}" maxlength="50">
             <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
             <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+            <f:validateBean disabled="true" />
           </p:inputText>
         </div>
 
@@ -109,9 +110,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      value="#{labels['dict.guardar']}" update="messagesDialog form"
                      process="@all"/>
     <p:commandButton action="#{dialogTipoSexo.cerrar}"
-                     value="#{labels['dict.cerrar']}"
-                     process="@this"/>
-
+                     value="#{labels['dict.cerrar']}" id="closeButton" update="messagesDialog"
+                     process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+    <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" update="messagesDialog form" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+      <p:commandButton value="Sí" process="@this" action="#{dialogTipoSexo.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();"  />
+      <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+    </p:confirmDialog>
   </ui:define>
 
 </ui:composition>

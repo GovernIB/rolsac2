@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.model;
 
 import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
 import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
+
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +16,7 @@ import java.util.Objects;
  *
  * @author indra
  */
-
+@Schema(name = "Literal")
 public class Literal implements Cloneable {
 
     /**

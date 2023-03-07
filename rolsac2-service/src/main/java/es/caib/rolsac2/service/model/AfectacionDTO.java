@@ -38,6 +38,8 @@ public class AfectacionDTO extends ModelApi {
      */
     private NormativaGridDTO normativaAfectada;
 
+    public AfectacionDTO(){}
+
     /**
      * Obtiene el codigo.
      *

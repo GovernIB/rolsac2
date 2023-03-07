@@ -48,6 +48,14 @@ public class TipoAfectacionDTO extends ModelApi {
         this.identificador = identificador;
     }
 
+    public TipoAfectacionDTO(TipoAfectacionDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+        }
+    }
+
     /**
      * Obtiene codigo.
      *
@@ -100,6 +108,11 @@ public class TipoAfectacionDTO extends ModelApi {
      */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
+    }
+
+    @Override
+    public TipoAfectacionDTO clone() {
+        return new TipoAfectacionDTO(this);
     }
 
     @Override

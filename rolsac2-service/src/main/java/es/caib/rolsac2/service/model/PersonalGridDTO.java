@@ -4,12 +4,14 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Dades d'un Personal.
  *
  * @author Indra
  */
+@XmlRootElement
 @Schema(name = "PersonalGrid")
 public class PersonalGridDTO extends ModelApi {
 

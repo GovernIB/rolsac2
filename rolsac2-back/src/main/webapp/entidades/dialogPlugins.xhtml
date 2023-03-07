@@ -22,13 +22,12 @@
                         rendered="#{dialogPlugins.isModoAlta()}"/>
     </ui:define>
     <ui:define name="contentDialog">
-        <p:growl id="messagesDialog"
-                 globalOnly="false"
-                 showDetail="false"
-                 life="5000"
-                 escape="false"/>
-
         <p:panel id="form">
+            <p:growl id="messagesDialog"
+                     globalOnly="false"
+                     showDetail="false"
+                     life="5000"
+                     escape="false"/>
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
@@ -87,7 +86,8 @@
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputTextarea id="txtClassname" value="#{dialogPlugins.data.classname}"
                                      requiredMessage="#{labels['dict.obligatorio.classname']}"
-                                     styleClass="w95" required="true" rows="3" autoResize="false"
+                                     styleClass="w95" required="true"
+                                     rows="3" autoResize="false"
                                      disabled="#{dialogPlugins.isModoConsulta()}" maxlength="1000"/>
                 </div>
 
@@ -209,9 +209,16 @@
         <p:commandButton action="#{dialogPlugins.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>
-        <p:commandButton action="#{dialogPlugins.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+        <p:commandButton action="#{dialogPlugins.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         update="messagesDialog form" responsive="true" width="458px"
+                         message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+            <p:commandButton value="Sí" process="@this" action="#{dialogPlugins.cerrarDefinitivo}"
+                             oncomplete="PF('confirmCerrar').hide();"/>
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"/>
+        </p:confirmDialog>
     </ui:define>
 </ui:composition>
 </html>

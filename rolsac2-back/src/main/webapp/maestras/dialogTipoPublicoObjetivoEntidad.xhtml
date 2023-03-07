@@ -62,8 +62,12 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="ident" value="#{dialogTipoPublicoObjetivoEntidad.data.identificador}"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 styleClass="w95" maxlength="50"
-                                 required="true" disabled="#{dialogTipoPublicoObjetivoEntidad.modoConsultaCheck()}"/>
+                                 styleClass="w95" maxlength="50" onblur="this.value = this.value.toUpperCase();"
+                                 required="true" disabled="#{dialogTipoPublicoObjetivoEntidad.modoConsultaCheck()}">
+                        <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+                        <f:validateBean disabled="true" />
+                    </p:inputText>
 
                 </div>
 
@@ -116,9 +120,13 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogTipoPublicoObjetivoEntidad.isModoConsulta()}"
                          process="@all"/>
-        <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+        <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" update="messagesDialog form" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+            <p:commandButton value="Sí" process="@this" action="#{dialogTipoPublicoObjetivoEntidad.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();"  />
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+        </p:confirmDialog>
 
     </ui:define>
 

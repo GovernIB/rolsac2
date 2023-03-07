@@ -35,7 +35,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="inputDescripcion" process="@this"/>
         </p:selectOneButton>
-        <p:commandButton action="#{dialogTipoMateriaSIA.traducir}"
+        <!--<p:commandButton action="#{dialogTipoMateriaSIA.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
@@ -44,7 +44,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          rendered="#{!dialogTipoMateriaSIA.isModoConsulta() and dialogTipoMateriaSIA.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogTipoMateriaSIA.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion"/>
-        </p:commandButton>
+        </p:commandButton>-->
     </ui:define>
 
     <ui:define name="contentDialog">

@@ -36,6 +36,14 @@ public class TipoLegitimacionDTO extends ModelApi implements Cloneable {
     public TipoLegitimacionDTO() {
     }
 
+    public TipoLegitimacionDTO(TipoLegitimacionDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+        }
+    }
+
     /**
      * Obtiene codigo.
      *
@@ -95,14 +103,10 @@ public class TipoLegitimacionDTO extends ModelApi implements Cloneable {
      *
      * @return
      */
-    public Object clone() {
-        TipoLegitimacionDTO tipo = new TipoLegitimacionDTO();
-        tipo.setCodigo(this.getCodigo());
-        tipo.setIdentificador(this.getIdentificador());
-        if (this.getDescripcion() != null) {
-            tipo.setDescripcion((Literal) this.getDescripcion().clone());
-        }
-        return tipo;
+
+    @Override
+    public TipoLegitimacionDTO clone() {
+        return new TipoLegitimacionDTO(this);
     }
 
     @Override

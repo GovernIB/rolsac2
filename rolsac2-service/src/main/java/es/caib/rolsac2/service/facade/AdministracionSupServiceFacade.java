@@ -18,11 +18,10 @@ public interface AdministracionSupServiceFacade {
      * Crea un nuevo Entidad a la base de datos relacionada con la unidad indicada.
      *
      * @param dto      datos del Entidad
-     * @param idUnitat identificador de la unidad
      * @return EL identificador del nuevo Entidad
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    Long createEntidad(EntidadDTO dto, Long idUnitat) throws RecursoNoEncontradoException;
+    Long createEntidad(EntidadDTO dto) throws RecursoNoEncontradoException;
 
     /**
      * Actualiza los datos de un Entidad a la base de datos.
@@ -62,6 +61,12 @@ public interface AdministracionSupServiceFacade {
      * @return la lista de entidades activas
      */
     List<EntidadDTO> findEntidadActivas();
+
+    /**
+     * Función que se utilizará para obtener los roles definidos en todas las entidades.
+     * @return
+     */
+    List<String> findRolesDefinidos(List<Long> idEntidades);
 
 
     /**

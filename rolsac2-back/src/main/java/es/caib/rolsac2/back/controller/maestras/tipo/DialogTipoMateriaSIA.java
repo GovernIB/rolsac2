@@ -57,11 +57,14 @@ public class DialogTipoMateriaSIA extends AbstractController implements Serializ
             data = maestrasSupService.findTipoMateriaSIAById(Long.valueOf(id));
             dataOriginal = data.clone();
             identificadorAntiguo = data.getIdentificador();
+        } else if (this.isModoAlta()) {
+            if (data.getDescripcion() == null) {
+                data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            }
+            dataOriginal = data.clone();
         }
 
-        if (data.getDescripcion() == null) {
-            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-        }
+
     }
 
     public void guardar() {

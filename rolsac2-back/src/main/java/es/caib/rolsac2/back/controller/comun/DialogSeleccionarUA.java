@@ -50,6 +50,8 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
 
     private UnidadAdministrativaDTO ua;
 
+    private UnidadAdministrativaDTO uaAux;
+
     private Boolean esCabecera;
 
     public void load() {
@@ -61,6 +63,7 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
 
         //Dependiendo de si se pasa la UA o no, se tiene que cargar el arbol de manera distinta.
         if (ua != null && ua.getCodigo() != null) {
+            uaAux = (UnidadAdministrativaDTO) ua.clone();
 
             ua = uaService.findUASimpleByID(ua.getCodigo(), sessionBean.getLang(), null);
             if (ua.getPadre() != null) {
@@ -222,8 +225,14 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
 
         final DialogResult result = new DialogResult();
         result.setModoAcceso(TypeModoAcceso.EDICION);
-        result.setCanceled(true);
+
+        if (selectedNode != null) {
+            result.setResult(uaAux);
+        } else {
+            result.setCanceled(true);
+        }
         UtilJSF.closeDialog(result);
+
     }
 
     public String getId() {

@@ -12,6 +12,8 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.utils.UtilComparador;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,8 @@ public class DialogPlatTramitElectronica extends AbstractController implements S
     private String codigo;
 
     private PlatTramitElectronicaDTO data;
+
+    private PlatTramitElectronicaDTO dataOriginal;
 
     private List<EntidadDTO> entidadesActivas;
 
@@ -59,8 +63,10 @@ public class DialogPlatTramitElectronica extends AbstractController implements S
             data.setCodEntidad(sessionBean.getEntidad());
             data.setUrlAcceso(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = serviceFacade.findById(Long.valueOf(codigo));
+            dataOriginal = data.clone();
             this.identificadorOld = data.getIdentificador();
         }
     }
@@ -136,11 +142,27 @@ public class DialogPlatTramitElectronica extends AbstractController implements S
     }
 
     public void cerrar() {
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
+                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
+                || UtilComparador.compareTo(data.getCodEntidad().getCodigo(), dataOriginal.getCodEntidad().getCodigo()) != 0
+                || UtilComparador.compareTo(data.getUrlAcceso(), dataOriginal.getUrlAcceso()) != 0;
+    }
+
+    public void cerrarDefinitivo() {
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

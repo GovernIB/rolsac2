@@ -36,7 +36,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="inputDescripcion" process="@this"/>
         </p:selectOneButton>
-        <p:commandButton action="#{dialogTipoAfectacion.traducir}"
+        <!--<p:commandButton action="#{dialogTipoAfectacion.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
@@ -45,7 +45,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          rendered="#{!dialogTipoAfectacion.isModoConsulta() and dialogTipoAfectacion.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogTipoAfectacion.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion"/>
-        </p:commandButton>
+        </p:commandButton>-->
     </ui:define>
 
     <ui:define name="contentDialog">
@@ -74,9 +74,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:inputText id="txtIdentificador" value="#{dialogTipoAfectacion.data.identificador}"
                                 styleClass="w95"  onblur="this.value = this.value.toUpperCase();"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 required="true" disabled="#{dialogTipoAfectacion.isModoConsulta()}" maxlength="50">
+                                 required="true"
+                                 disabled="#{dialogTipoAfectacion.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+                        <f:validateBean disabled="true" />
                     </p:inputText>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
@@ -109,12 +111,16 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogTipoAfectacion.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>
-        <p:commandButton action="#{dialogTipoAfectacion.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this">
-<!--                 <p:confirmDialog rendered="#{dialogTipoAfectacion.hayCambios}"> -->
-<!--                 </p:confirmDialog> -->
-        </p:commandButton>
+        <p:commandButton action="#{dialogTipoAfectacion.cerrar}" update="messagesDialog" process="@all"
+                         value="#{labels['dict.cerrar']}" id="closeButton"
+                         oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         responsive="true" width="458px"
+                         message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar" update="messagesDialog form">
+            <p:commandButton value="#{labels['dict.si']}" action="#{dialogTipoAfectacion.cerrarDefinitivo}"
+                             process="@this"  oncomplete="PF('confirmCerrar').hide();"  />
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"  />
+        </p:confirmDialog>
     </ui:define>
 
 </ui:composition>

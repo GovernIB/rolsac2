@@ -46,6 +46,18 @@ public class PlatTramitElectronicaDTO extends ModelApi {
      */
     private Literal urlAcceso;
 
+    public PlatTramitElectronicaDTO(){};
+
+    public PlatTramitElectronicaDTO(PlatTramitElectronicaDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.codEntidad = otro.codEntidad == null ? null : (EntidadDTO) otro.codEntidad.clone();
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+            this.urlAcceso = otro.urlAcceso == null ? null : (Literal) otro.urlAcceso.clone();
+        }
+    }
+
     /**
      * Obtiene codigo.
      *
@@ -181,4 +193,10 @@ public class PlatTramitElectronicaDTO extends ModelApi {
 
         return 0;
     }
+
+    @Override
+    public PlatTramitElectronicaDTO clone() {
+        return new PlatTramitElectronicaDTO(this);
+    }
+
 }

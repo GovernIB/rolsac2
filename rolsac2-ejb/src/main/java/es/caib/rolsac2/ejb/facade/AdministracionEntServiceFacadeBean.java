@@ -2,11 +2,9 @@ package es.caib.rolsac2.ejb.facade;
 
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
-import es.caib.rolsac2.persistence.converter.EdificioConverter;
-import es.caib.rolsac2.persistence.converter.PluginConverter;
-import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
-import es.caib.rolsac2.persistence.converter.UsuarioConverter;
+import es.caib.rolsac2.persistence.converter.*;
 import es.caib.rolsac2.persistence.model.*;
+import es.caib.rolsac2.persistence.model.pk.JUsuarioEntidadPK;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
@@ -51,6 +49,9 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
     @Inject
     private EntidadRepository entidadRepository;
+
+    @Inject
+    private EntidadConverter entidadConverter;
 
     @Inject
     private UsuarioConverter converter;
@@ -145,20 +146,34 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         }
         jUsuario.setUnidadesAdministrativas(unidadesAdministrativas);
         usuarioRepository.create(jUsuario);
+
+        //Añadir en la tabla de JUsuarioEntidad el valor adecuado.
+        // Al ser la creación de este usuario, se da de alta en una entidad
+        // por lo que solo debería tener una entidad en el listado.
+        EntidadGridDTO entidad = dto.getEntidades().get(0);
+        usuarioRepository.anyadirNuevoUsuarioEntidad(jUsuario, entidad.getCodigo());
+
+
         return jUsuario.getCodigo();
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void createUsuarioEntidad(UsuarioDTO usuarioDTO, Long idEntidad) {
+        JUsuario jUsuario = usuarioRepository.findById(usuarioDTO.getCodigo());
+        usuarioRepository.anyadirNuevoUsuarioEntidad(jUsuario, idEntidad);
     }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(UsuarioDTO dto) throws RecursoNoEncontradoException {
         JUsuario jUsuario = usuarioRepository.getReference(dto.getCodigo());
-        JEntidad jEntidad = entidadRepository.getReference(dto.getEntidad().getCodigo());
-        jUsuario.setEntidad(jEntidad);
 
         /**
          * Asociación para UAs. En caso de que se hayan asignado UAs al usuario,
          * se recuperan las UAs añadidas y se añaden al modelo de Usuario.
          */
+
         Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
         if (dto.getUnidadesAdministrativas() != null) {
             JUnidadAdministrativa jUnidadAdministrativa;
@@ -173,6 +188,12 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
         converter.mergeEntity(jUsuario, dto);
         usuarioRepository.update(jUsuario);
+
+        List<Long> idEntidades = new ArrayList<>();
+        for(EntidadGridDTO entidad : dto.getEntidades()) {
+            idEntidades.add(entidad.getCodigo());
+        }
+        usuarioRepository.mergeUsuarioEntidad(jUsuario, idEntidades);
     }
 
     @Override
@@ -184,7 +205,20 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
             jUnidadAdministrativa.getUsuarios().remove(jUsuario);
             unidadAdministrativaRepository.update(jUnidadAdministrativa);
         }
+
+        List<Long> entidadesAsociadas = usuarioRepository.findEntidadesAsociadas(id);
+        for(Long entidad : entidadesAsociadas) {
+            usuarioRepository.eliminarUsuarioEntidad(jUsuario, entidad);
+        }
+
         usuarioRepository.delete(jUsuario);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void deleteUsuarioEntidad(Long idUsuario, Long idEntidad) {
+        JUsuario usuario = usuarioRepository.findById(idUsuario);
+        usuarioRepository.eliminarUsuarioEntidad(usuario, idEntidad);
     }
 
     @Override
@@ -200,6 +234,36 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
             }
         }
         usuarioDTO.setUnidadesAdministrativas(unidadesAdministrativas);
+
+        List<EntidadGridDTO> entidades = new ArrayList<>();
+        List<Long> idsEntidades = usuarioRepository.findEntidadesAsociadas(jUsuario.getCodigo());
+        for(Long idEntidad : idsEntidades) {
+            entidades.add(entidadConverter.createGridDTO(entidadRepository.findById(idEntidad)));
+        }
+        usuarioDTO.setEntidades(entidades);
+        return usuarioDTO;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public UsuarioDTO findUsuarioByIdentificador(String identificador) {
+        JUsuario jUsuario = usuarioRepository.findByIdentificador(identificador);
+        UsuarioDTO usuarioDTO = converter.createDTO(jUsuario);
+        List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
+        if (jUsuario.getUnidadesAdministrativas() != null) {
+            for (JUnidadAdministrativa jUnidadAdministrativa : jUsuario.getUnidadesAdministrativas()) {
+                UnidadAdministrativaGridDTO unidadAdministrativa = unidadAdministrativaRepository.modelToGridDTO(jUnidadAdministrativa);
+                unidadesAdministrativas.add(unidadAdministrativa);
+            }
+        }
+        usuarioDTO.setUnidadesAdministrativas(unidadesAdministrativas);
+
+        List<EntidadGridDTO> entidades = new ArrayList<>();
+        List<Long> idsEntidades = usuarioRepository.findEntidadesAsociadas(jUsuario.getCodigo());
+        for(Long idEntidad : idsEntidades) {
+            entidades.add(entidadConverter.createGridDTO(entidadRepository.findById(idEntidad)));
+        }
+        usuarioDTO.setEntidades(entidades);
         return usuarioDTO;
     }
 

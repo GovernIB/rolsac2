@@ -9,6 +9,8 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.utils.UtilComparador;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,8 @@ public class DialogTipoPublicoObjetivo extends AbstractController implements Ser
 
     private TipoPublicoObjetivoDTO data;
 
+    private TipoPublicoObjetivoDTO dataOriginal;
+
     private String identificadorOld;
 
     @EJB
@@ -49,14 +53,17 @@ public class DialogTipoPublicoObjetivo extends AbstractController implements Ser
         data = new TipoPublicoObjetivoDTO();
         if (this.isModoAlta()) {
             data = new TipoPublicoObjetivoDTO();
+            if (data.getDescripcion() == null) {
+                data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            }
+            dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = maestrasSupService.findTipoPublicoObjetivoById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
+            dataOriginal = data.clone();
         }
 
-        if (data.getDescripcion() == null) {
-            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-        }
+
     }
 
     public void traducir() {
@@ -83,7 +90,7 @@ public class DialogTipoPublicoObjetivo extends AbstractController implements Ser
         }
 
         if (Objects.isNull(this.data.getCodigo())) {
-            maestrasSupService.create(this.data, sessionBean.getUnidadActiva().getCodigo());
+            maestrasSupService.create(this.data);
         } else {
             maestrasSupService.update(this.data);
         }
@@ -100,12 +107,26 @@ public class DialogTipoPublicoObjetivo extends AbstractController implements Ser
     }
 
     public void cerrar() {
-
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
+                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
+                || UtilComparador.compareTo(data.isEmpleadoPublico(), dataOriginal.isEmpleadoPublico()) != 0;
+    }
+
+    public void cerrarDefinitivo() {
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
             result.setModoAcceso(TypeModoAcceso.CONSULTA);
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

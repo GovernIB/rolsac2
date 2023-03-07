@@ -80,7 +80,6 @@ public class ViewTipoPublicoObjetivo extends AbstractController implements Seria
 
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoPublicoObjetivoFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
 
         // Generamos una búsqueda

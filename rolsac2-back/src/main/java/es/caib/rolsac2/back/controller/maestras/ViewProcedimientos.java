@@ -479,4 +479,6 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     public void setListPlataformas(List<PlatTramitElectronicaDTO> listPlataformas) {
         this.listPlataformas = listPlataformas;
     }
+
+
 }

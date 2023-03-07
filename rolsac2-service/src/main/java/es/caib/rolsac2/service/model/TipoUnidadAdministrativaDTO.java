@@ -58,6 +58,18 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     public TipoUnidadAdministrativaDTO() {
     }
 
+    public TipoUnidadAdministrativaDTO(TipoUnidadAdministrativaDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.entidad = otro.entidad;
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+            this.cargoMasculino = otro.cargoMasculino == null ? null : (Literal) otro.cargoMasculino.clone();
+            this.cargoFemenino = otro.cargoFemenino == null ? null : (Literal) otro.cargoFemenino.clone();
+            this.tratamientoMasculino = otro.tratamientoMasculino == null ? null : (Literal) otro.tratamientoMasculino.clone();
+            this.tratamientoFemenino = otro.tratamientoFemenino == null ? null : (Literal) otro.tratamientoFemenino.clone();
+        }
+    }
 
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
@@ -305,25 +317,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
      * @return
      */
     @Override
-    public Object clone() {
-        TipoUnidadAdministrativaDTO tipo = new TipoUnidadAdministrativaDTO();
-        tipo.setCodigo(this.getCodigo());
-        tipo.setIdentificador(this.getIdentificador());
-        if (this.getDescripcion() != null) {
-            tipo.setDescripcion((Literal) this.getDescripcion().clone());
-        }
-        if (this.getTratamientoFemenino() != null) {
-            tipo.setTratamientoFemenino((Literal) this.getTratamientoFemenino().clone());
-        }
-        if (this.getTratamientoMasculino() != null) {
-            tipo.setTratamientoMasculino((Literal) this.getTratamientoMasculino().clone());
-        }
-        if (this.getCargoFemenino() != null) {
-            tipo.setCargoFemenino((Literal) this.getCargoFemenino().clone());
-        }
-        if (this.getCargoMasculino() != null) {
-            tipo.setCargoMasculino((Literal) this.getCargoMasculino().clone());
-        }
-        return tipo;
+    public TipoUnidadAdministrativaDTO clone() {
+        return new TipoUnidadAdministrativaDTO(this);
     }
 }

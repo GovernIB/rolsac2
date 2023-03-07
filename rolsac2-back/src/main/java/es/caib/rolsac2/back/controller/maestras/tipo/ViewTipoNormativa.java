@@ -85,7 +85,6 @@ public class ViewTipoNormativa extends AbstractController implements Serializabl
         this.setearIdioma();
         //Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoNormativaFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
 
         //Generamos una búsqueda

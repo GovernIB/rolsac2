@@ -20,7 +20,16 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
         #{labels['viewServicios.titulo']}
     </ui:define>
     <ui:define name="breadcrumbBoton">
-        <p:ajax event="eventoUpdate" oncomplete="rc()" listener="#{viewServicios.buscarEvt()}" update="form:dataTable"/>
+        <c:choose>
+            <c:when test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD)  }">
+                <p:ajax event="eventoUpdate" oncomplete="rc()" listener="#{viewServicios.buscarEvt()}"
+                        update="form:dataTable"/>
+            </c:when>
+            <c:when test="#{(sessionBean.getPerfil() == TypePerfiles.GESTOR)}">
+                <p:ajax event="change" listener="#{viewServicios.buscarEvt()}"
+                        update="form:dataTable"/>
+            </c:when>
+        </c:choose>
     </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
@@ -29,8 +38,28 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}"
                         update="migaPan"
                         oncomplete="$('#form\\:btnBuscar').click();"
+                        disabled="#{sessionBean.getPerfil() == TypePerfiles.GESTOR and sessionBean.checkUaGestor(ua)}"
             />
         </c:forEach>
+        <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.GESTOR) and not sessionBean.getUnidadesHijasActiva().isEmpty()}">
+            <p:menuitem>
+                <p:selectOneMenu value="#{sessionBean.unidadActivaHijaAux}" styleClass="bread-select"
+                                 panelStyleClass="bread-panel-select" converter="#{unidadAdministrativaConverter}"
+                >
+                    <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
+                                  itemValue="#{null}"/>
+                    <f:selectItems
+                            value="#{sessionBean.getUnidadesHijasActiva()}"
+                            var="ua" itemLabel="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                            itemValue="#{ua}">
+                    </f:selectItems>
+                    <p:ajax event="change" listener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaHijaAux.codigo)}"
+                            update="migaPan"></p:ajax>
+                    <p:ajax event="change" listener="#{viewServicios.buscarEvt()}"
+                            update="form:dataTable"/>
+                </p:selectOneMenu>
+            </p:menuitem>
+        </c:if>
     </ui:define>
 
     <ui:define name="content">
@@ -87,7 +116,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                             <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2" icon="pi pi-file-o"
                                              iconPos="top" actionListener="#{viewServicios.nuevoProcedimiento}"
-                                             process="@this">
+                                             process="@this" rendered="#{!viewServicios.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
@@ -101,7 +130,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              icon="pi pi-pencil" iconPos="top"
                                              actionListener="#{viewServicios.editarProcedimiento}" process="@form"
                                              update="messages dataTable" onstart="startCargando()"
-                                             oncomplete="stopCargando()">
+                                             oncomplete="stopCargando()" rendered="#{!viewServicios.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
@@ -120,6 +149,12 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
                 <p class="p-m-0">
                     <div class="row">
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.codigoProc']}:" for="txtCodigoProc" />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:inputText id="txtCodigoProc" value="#{viewServicios.filtro.codigoProc}" styleClass="w95" onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"  />
+                        </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
                             <h:outputText value="#{labels['viewServicios.codigoSIA']}:" for="txtCodigoSIA"/>
                         </div>

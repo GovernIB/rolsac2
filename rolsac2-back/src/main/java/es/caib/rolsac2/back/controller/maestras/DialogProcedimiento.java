@@ -420,35 +420,24 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
-        boolean checkHabilitadoFuncionario = false;
-        boolean checkHabilitadoApoderamiento = false;
-        if (this.data.getPublicosObjetivo() != null && !this.data.getPublicosObjetivo().isEmpty()) {
-            boolean empleadoPublico = this.data.getPublicosObjetivo().get(0).isEmpleadoPublico();
-            if ((empleadoPublico && this.data.isHabilitadoApoderado()) || (!empleadoPublico && !this.data.isHabilitadoApoderado())) {
-                checkHabilitadoApoderamiento = true;
-            }
-        }
 
         if (this.data.getTramites() != null && !this.data.getTramites().isEmpty() && "S".equals(this.data.getHabilitadoFuncionario())) {
             for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
                 if (tramite.isTramitElectronica() && !tramite.isTramitPresencial()) {
-                    checkHabilitadoFuncionario = true;
-                    break;
+                    PrimeFaces.current().executeScript("PF('cdFuncionario').show();");
+                    return false;
                 }
             }
         }
 
-        if (checkHabilitadoApoderamiento || checkHabilitadoFuncionario) {
-            //PrimeFaces.current().executeScript("PF('confirmButton').jq.click();");
-            if (checkHabilitadoApoderamiento && checkHabilitadoFuncionario) {
-                PrimeFaces.current().executeScript("PF('cdApoderadoFuncionario').show();");
-            } else if (checkHabilitadoApoderamiento) {
+        if (this.data.getPublicosObjetivo() != null && !this.data.getPublicosObjetivo().isEmpty()) {
+            boolean empleadoPublico = this.data.getPublicosObjetivo().get(0).isEmpleadoPublico();
+            if ((empleadoPublico && this.data.isHabilitadoApoderado()) || (!empleadoPublico && !this.data.isHabilitadoApoderado())) {
                 PrimeFaces.current().executeScript("PF('cdApoderado').show();");
-            } else {
-                PrimeFaces.current().executeScript("PF('cdFuncionario').show();");
+                return todoCorrecto;
             }
-            return false;
         }
+
         return todoCorrecto;
     }
 

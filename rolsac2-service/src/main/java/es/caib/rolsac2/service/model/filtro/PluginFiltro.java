@@ -6,7 +6,6 @@ public class PluginFiltro extends AbstractFiltro {
 
     private String texto;
     private Long id;
-    private EntidadDTO entidad;
     private String descripcion;
     private String classname;
     private String propiedades;
@@ -26,14 +25,6 @@ public class PluginFiltro extends AbstractFiltro {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public EntidadDTO getEntidad() {
-        return entidad;
-    }
-
-    public void setEntidad(EntidadDTO entidad) {
-        this.entidad = entidad;
     }
 
     public String getDescripcion() {
@@ -74,10 +65,6 @@ public class PluginFiltro extends AbstractFiltro {
 
     public boolean isRellenoId() {
         return id != null;
-    }
-
-    public boolean isRellenoEntidad() {
-        return entidad.getCodigo() != null;
     }
 
     public boolean isRellenoTexto() {

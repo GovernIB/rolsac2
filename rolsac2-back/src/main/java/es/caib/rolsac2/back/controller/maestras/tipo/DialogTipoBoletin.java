@@ -7,6 +7,8 @@ import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.TipoBoletinDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.utils.UtilComparador;
+import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,7 @@ public class DialogTipoBoletin extends AbstractController implements Serializabl
     MaestrasSupServiceFacade tipoBoletinService;
     private String id;
     private TipoBoletinDTO data;
+    private TipoBoletinDTO dataOriginal;
 
     private String identificadorOld = "";
 
@@ -39,9 +42,11 @@ public class DialogTipoBoletin extends AbstractController implements Serializabl
         data = new TipoBoletinDTO();
         if (this.isModoAlta()) {
             data = new TipoBoletinDTO();
+            dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = tipoBoletinService.findTipoBoletinById(Long.valueOf(id));
             identificadorOld = data.getIdentificador();
+            dataOriginal = data.clone();
         }
 
     }
@@ -81,12 +86,26 @@ public class DialogTipoBoletin extends AbstractController implements Serializabl
     }
 
     public void cerrar() {
-
-        final DialogResult result = new DialogResult();
-        if (getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
+                || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0
+                || UtilComparador.compareTo(data.getUrl(), dataOriginal.getUrl()) != 0;
+    }
+
+    public void cerrarDefinitivo() {
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
             result.setModoAcceso(TypeModoAcceso.CONSULTA);
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

@@ -50,6 +50,15 @@ public class TipoMediaUADTO {
         this.identificador = identificador;
     }
 
+    public TipoMediaUADTO(TipoMediaUADTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.entidad = otro.entidad == null ? null : (EntidadDTO) otro.entidad.clone();
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+        }
+    }
+
     /**
      * Obtiene codigo.
      *
@@ -123,4 +132,9 @@ public class TipoMediaUADTO {
     }
 
     //todo toString()
+
+    @Override
+    public TipoMediaUADTO clone() {
+        return new TipoMediaUADTO(this);
+    }
 }

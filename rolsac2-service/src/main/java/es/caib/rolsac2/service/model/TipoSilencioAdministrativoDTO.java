@@ -45,6 +45,15 @@ public class TipoSilencioAdministrativoDTO extends ModelApi implements Cloneable
     public TipoSilencioAdministrativoDTO() {
     }
 
+    public TipoSilencioAdministrativoDTO(TipoSilencioAdministrativoDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+            this.descripcion2 = otro.descripcion2;
+            this.fechaBorrar = otro.fechaBorrar == null ? null : (Date) otro.fechaBorrar.clone();
+        }
+    }
 
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
@@ -224,13 +233,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi implements Cloneable
      * @return
      */
     @Override
-    public Object clone() {
-        TipoSilencioAdministrativoDTO tipo = new TipoSilencioAdministrativoDTO();
-        tipo.setCodigo(this.getCodigo());
-        tipo.setIdentificador(this.getIdentificador());
-        if (this.getDescripcion() != null) {
-            tipo.setDescripcion((Literal) this.getDescripcion().clone());
-        }
-        return tipo;
+    public TipoSilencioAdministrativoDTO clone() {
+        return new TipoSilencioAdministrativoDTO(this);
     }
 }

@@ -63,6 +63,18 @@ public class PluginDTO implements Serializable {
     public PluginDTO() {
     }
 
+    public PluginDTO(PluginDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.entidad = otro.entidad;
+            this.descripcion = otro.descripcion;
+            this.tipo = otro.tipo;
+            this.classname = otro.classname;
+            this.propiedades = otro.propiedades;
+            this.prefijoPropiedades = otro.prefijoPropiedades;
+        }
+    }
+
     /**
      * Establece codigo.
      *
@@ -184,6 +196,11 @@ public class PluginDTO implements Serializable {
      * @param prefijoPropiedades  prefijo propiedades
      */
     public void setPrefijoPropiedades(String prefijoPropiedades) { this.prefijoPropiedades = prefijoPropiedades; }
+
+    @Override
+    public PluginDTO clone() {
+        return new PluginDTO(this);
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -76,7 +76,6 @@ public class ViewTipoSexo extends AbstractController implements Serializable {
 
         //Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoSexoFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());//UtilJSF.getSessionUnidadActiva());
         filtro.setIdioma(sessionBean.getLang());//UtilJSF.getSessionLang());
 
         //Generamos una búsqueda

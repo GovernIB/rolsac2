@@ -105,6 +105,18 @@
             <version>${keycloak.version}</version>
         </dependency>
 
+        <!-- solrapi -->
+        <dependency>
+            <groupId>es.caib</groupId>
+            <artifactId>solrapi</artifactId>
+            <version>${solrapi.version}</version>
+            <exclusions>
+                <exclusion>  <!-- declare the exclusion here -->
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>

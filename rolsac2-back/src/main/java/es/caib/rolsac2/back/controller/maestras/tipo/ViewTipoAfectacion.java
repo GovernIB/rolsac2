@@ -71,7 +71,7 @@ public class ViewTipoAfectacion extends AbstractController implements Serializab
         this.setearIdioma();
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoAfectacionFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        //filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
 
         // Generamos una búsqueda

@@ -10,6 +10,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import es.caib.rolsac2.service.model.TemaDTO;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.LazyDataModel;
@@ -42,6 +43,8 @@ public class ViewTema extends AbstractController implements Serializable {
 
     private TreeNode datoSeleccionado;
 
+    private TemaDTO temaConsulta;
+
     private TemaFiltro filtro;
 
     private TreeNode root;
@@ -56,6 +59,7 @@ public class ViewTema extends AbstractController implements Serializable {
         LOG.debug("load");
         filtro = new TemaFiltro();
         filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         construirArbol();
     }
 
@@ -73,6 +77,7 @@ public class ViewTema extends AbstractController implements Serializable {
         List<TemaGridDTO> temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
         for(TemaGridDTO tema : temasPadre) {
             TreeNode nodo = new DefaultTreeNode(tema, root);
+            nodo.setExpanded(true);
             this.construirArbolDesdeHoja(tema, nodo);
         }
     }
@@ -132,6 +137,12 @@ public class ViewTema extends AbstractController implements Serializable {
 
     }
 
+    public void consultaTemaSeleccionado() {
+        if(datoSeleccionado != null) {
+            temaConsulta = temaServiceFacade.findById(((TemaGridDTO) datoSeleccionado.getData()).getCodigo());
+        }
+    }
+
     public TreeNode getDatoSeleccionado() {
         return datoSeleccionado;
     }
@@ -167,5 +178,13 @@ public class ViewTema extends AbstractController implements Serializable {
 
     public void setRoot(TreeNode root) {
         this.root = root;
+    }
+
+    public TemaDTO getTemaConsulta() {
+        return temaConsulta;
+    }
+
+    public void setTemaConsulta(TemaDTO temaConsulta) {
+        this.temaConsulta = temaConsulta;
     }
 }

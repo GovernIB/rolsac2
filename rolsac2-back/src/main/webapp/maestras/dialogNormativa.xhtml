@@ -24,7 +24,8 @@
 
         <span class="pi pi-tag mt-1"/>
         <h:outputText value="#{labels['dict.idioma']}:" styleClass="mr-1 mt-1"/>
-        <p:selectOneButton id="opcionIdioma" value="#{dialogNormativa.idioma}" styleClass="botoneraRed" unselectable="false">
+        <p:selectOneButton id="opcionIdioma" value="#{dialogNormativa.idioma}" styleClass="botoneraRed"
+                           unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="formDialog:txtNombre formDialog:dataDocumentosRelacionados formDialog:txtUrlBoletin
@@ -85,7 +86,8 @@
                             <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.tipoNormativa']}"
                                           itemValue="#{null}"/>
                             <f:selectItems value="#{dialogNormativa.tipoNormativa}" var="tipoNormativa"
-                                           itemLabel="#{tipoNormativa.descripcion.getTraduccion(dialogNormativa.idioma)}" itemValue="#{tipoNormativa}"/>
+                                           itemLabel="#{tipoNormativa.descripcion.getTraduccion(dialogNormativa.idioma)}"
+                                           itemValue="#{tipoNormativa}"/>
                             <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
                     </div>
@@ -95,7 +97,7 @@
                         </p>
                         <p:inputText id="txtNumero" value="#{dialogNormativa.data.numero}"
                                      styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"
-                                     />
+                        />
                     </div>
                     <div class="form-group col-md-4">
                         <p class="mb-0">
@@ -134,7 +136,8 @@
                             <h:outputText value="#{labels['dialogNormativa.numeroBoletin']}:" for="txtNumeroBoletin"/>
                         </p>
                         <p:inputText id="txtNumeroBoletin" value="#{dialogNormativa.data.numeroBoletin}"
-                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
+                                     styleClass="w95" required="true"
+                                     disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
                     </div>
                     <div class="form-group col-md-4">
                         <p class="mb-1">
@@ -245,7 +248,8 @@
                                  emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
                                  paginator="false" selectionMode="single"
                                  selection="#{dialogNormativa.uaSeleccionada}"
-                                 rowKey="#{td.codigo}" styleClass="noHeader">
+                                 rowKey="#{td.codigo}" styleClass="noHeader"
+                    >
 
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
@@ -432,9 +436,16 @@
                          value="#{labels['dict.guardar']}" update="messagesDialog formPublicacion formDatos"
                          rendered="#{!dialogNormativa.isModoConsulta()}"
                          process="@all"/>
-        <p:commandButton action="#{dialogNormativa.cerrar}"
+        <p:commandButton action="#{dialogNormativa.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         update="messagesDialog form" responsive="true" width="458px"
+                         message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+            <p:commandButton value="Sí" process="@this" action="#{dialogNormativa.cerrarDefinitivo}"
+                             oncomplete="PF('confirmCerrar').hide();"/>
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"/>
+        </p:confirmDialog>
     </ui:define>
 </ui:composition>
 </html>

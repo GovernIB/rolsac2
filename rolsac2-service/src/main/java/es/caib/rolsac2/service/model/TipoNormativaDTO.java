@@ -19,6 +19,13 @@ public class TipoNormativaDTO extends ModelApi {
     public TipoNormativaDTO() {
     }
 
+    public TipoNormativaDTO(TipoNormativaDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.getCodigo();
+            this.identificador = otro.getIdentificador();
+            this.descripcion = otro.getDescripcion() == null ? null : (Literal) otro.descripcion.clone();
+        }
+    }
 
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
@@ -78,6 +85,11 @@ public class TipoNormativaDTO extends ModelApi {
         if (o == null || getClass() != o.getClass()) return false;
         TipoNormativaDTO that = (TipoNormativaDTO) o;
         return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public TipoNormativaDTO clone() {
+        return new TipoNormativaDTO(this);
     }
 
     @Override

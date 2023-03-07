@@ -88,7 +88,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:inputText id="txtTramiteId" value="#{dialogTipoTramitacion.data.tramiteId}" styleClass="w95"
                                  onblur="this.value = this.value.toUpperCase();"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="50">
+                                 required="true"
+                                  disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[0-9_-a-zA-Z\.]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[0-9_-a-zA-Z\.]{1,50}$" />
                     </p:inputText>
@@ -100,14 +101,15 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:inputNumber id="txtTramiteVersion" value="#{dialogTipoTramitacion.data.tramiteVersion}"
                                    styleClass="w95"
                                    requiredMessage="#{labels['dict.obligatorio.version']}"
-                                   required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" minValue="0"
+                                   required="true"
+                                    disabled="#{dialogTipoTramitacion.isModoConsulta()}" minValue="0"
                                    maxValue="999" decimalPlaces="0"/>
                 </div>
                  <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.platTramitacion']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-4">
-                    <p:selectOneMenu id="txtCodPlatTramitacion" required="true"
+                    <p:selectOneMenu id="txtCodPlatTramitacion"
                                      requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
                                      value="#{dialogTipoTramitacion.data.codPlatTramitacion}"
                                      converter="#{platTramitElectronicaConverter}"
@@ -122,7 +124,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.fasePro.titulo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-8 ui-lg-4">
-                    <p:selectOneMenu id="faseProc" required="true"
+                    <p:selectOneMenu id="faseProc"
+                                     required="true"
                                      requiredMessage="#{labels['dict.obligatorio.fase']}"
                                      value="#{dialogTipoTramitacion.data.faseProc}"
                                      styleClass="w35" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
@@ -143,8 +146,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtTramiteParametros" value="#{dialogTipoTramitacion.data.tramiteParametros}"
                                  requiredMessage="#{labels['dict.obligatorio.parametros']}"
-                                 styleClass="w95"
-                                 required="true" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="500"/>
+                                 styleClass="w95" required="true"
+                                  disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="500"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
@@ -153,11 +156,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:selectBooleanCheckbox value="#{dialogTipoTramitacion.data.tramitElectronica}"
                                              itemLabel="#{labels['viewTipoTramitacion.tramitElectronica']}"
-                                             disabled="#{dialogTipoTramitacion.isModoConsulta()}"/>
+                                             disabled="#{dialogTipoTramitacion.isModoConsulta()}"
+                                             />
 
                     <p:selectBooleanCheckbox value="#{dialogTipoTramitacion.data.tramitPresencial}"
                                              itemLabel="#{labels['viewTipoTramitacion.tramitPresencial']}"
-                                             disabled="#{dialogTipoTramitacion.isModoConsulta()}"/>
+                                             disabled="#{dialogTipoTramitacion.isModoConsulta()}"
+                                             />
                 </div>
             </div>
         </p:panel>
@@ -172,9 +177,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogTipoTramitacion.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>
-        <p:commandButton action="#{dialogTipoTramitacion.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+        <p:commandButton action="#{dialogTipoTramitacion.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+            <p:commandButton value="#{labels['dict.si']}" action="#{dialogTipoTramitacion.cerrarDefinitivo}" process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();"  />
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"  />
+        </p:confirmDialog>
     </ui:define>
 
 </ui:composition>

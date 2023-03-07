@@ -172,9 +172,13 @@
         <p:commandButton action="#{dialogProceso.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form  "
                          process="@all"/>
-        <p:commandButton action="#{dialogProceso.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+        <p:commandButton action="#{dialogProceso.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" update="messagesDialog form" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+            <p:commandButton value="Sí" process="@this" action="#{dialogProceso.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();"  />
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+        </p:confirmDialog>
     </ui:define>
 </ui:composition>
 </html>

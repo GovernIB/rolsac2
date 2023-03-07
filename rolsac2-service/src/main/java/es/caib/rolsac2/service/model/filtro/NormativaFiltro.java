@@ -6,6 +6,8 @@ import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 public class NormativaFiltro extends AbstractFiltro {
 
     private String texto;
@@ -16,13 +18,19 @@ public class NormativaFiltro extends AbstractFiltro {
 
     private LocalDate fechaAprobacion;
 
-    private LocalDate fechaBoletin;
+	private LocalDate fechaBoletin;
+
+    private String numero;
 
     private boolean hijasActivas = false;
 
     private List<Long> idUAsHijas;
 
     private boolean todasUnidadesOrganicas = false;
+
+	private Integer codigoProcedimiento;
+
+	private Integer codigoServicio;
 
     @Override
     protected String getDefaultOrder() {
@@ -55,10 +63,6 @@ public class NormativaFiltro extends AbstractFiltro {
 
     public LocalDate getFechaAprobacion() {
         return fechaAprobacion;
-    }
-
-    public void setFechaAprobacion(LocalDate fechaAprobacion) {
-        this.fechaAprobacion = fechaAprobacion;
     }
 
     public LocalDate getFechaBoletin() {
@@ -110,9 +114,13 @@ public class NormativaFiltro extends AbstractFiltro {
         return tipoNormativa != null && tipoNormativa.getCodigo() != null;
     }
 
-    public boolean isRellenoTipoBoletin() {
-        return tipoBoletin != null && tipoBoletin.getCodigo() != null;
-    }
+	public boolean isRellenoTipoBoletin() {
+		return tipoBoletin != null && tipoBoletin.getCodigo() != null;
+	}
+
+	public void setFechaAprobacion(LocalDate fechaAprobacion) {
+		this.fechaAprobacion = fechaAprobacion;
+	}
 
     public boolean isRellenoHijasActivas() {
         return hijasActivas;
@@ -120,4 +128,30 @@ public class NormativaFiltro extends AbstractFiltro {
 
     public boolean isRellenoTodasUnidadesOrganicas() { return this.todasUnidadesOrganicas;
     }
+
+    public boolean isRellenoNumero() { return numero != null && !numero.isEmpty(); }
+
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	public Integer getCodigoProcedimiento() {
+		return codigoProcedimiento;
+	}
+
+	public void setCodigoProcedimiento(Integer codigoProcedimiento) {
+		this.codigoProcedimiento = codigoProcedimiento;
+	}
+
+	public Integer getCodigoServicio() {
+		return codigoServicio;
+	}
+
+	public void setCodigoServicio(Integer codigoServicio) {
+		this.codigoServicio = codigoServicio;
+	}
 }

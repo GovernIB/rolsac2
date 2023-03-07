@@ -12,6 +12,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 
 @Named
@@ -31,6 +33,8 @@ public class DialogNormativa extends AbstractController implements Serializable 
     private String id = "";
 
     private NormativaDTO data;
+
+    private NormativaDTO dataOriginal;
 
     private List<AfectacionDTO> afectacion;
 
@@ -91,7 +95,13 @@ public class DialogNormativa extends AbstractController implements Serializable 
                 List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
                 UnidadAdministrativaGridDTO uaActiva = unidadAdministrativaServiceFacade.findById(sessionBean.getUnidadActiva().getCodigo()).convertDTOtoGridDTO();
                 unidadesAdministrativas.add(uaActiva);
-                data.setUnidadesAdministrativas(unidadesAdministrativas);
+                data.setUnidadesAdministrativas(new ArrayList<>(unidadesAdministrativas));
+                data.setDocumentosNormativa(new ArrayList<>());
+                data.setAfectaciones(new ArrayList<>());
+                dataOriginal = data.clone();
+                dataOriginal.setUnidadesAdministrativas(new ArrayList<>(data.getUnidadesAdministrativas()));
+                dataOriginal.setAfectaciones(new ArrayList<>());
+                dataOriginal.setDocumentosNormativa(new ArrayList<>());
             } else if (this.isModoEdicion() || this.isModoConsulta()) {
                 data = normativaServiceFacade.findById(Long.valueOf(id));
                 findProcedimientosRelacionados();
@@ -107,6 +117,10 @@ public class DialogNormativa extends AbstractController implements Serializable 
                         afectacionDTO.setCodigoTabla(UUID.randomUUID().toString());
                     }
                 }
+                dataOriginal = data.clone();
+                dataOriginal.setDocumentosNormativa(new ArrayList<>(data.getDocumentosNormativa()));
+                dataOriginal.setUnidadesAdministrativas(new ArrayList<>(data.getUnidadesAdministrativas()));
+                dataOriginal.setAfectaciones(new ArrayList<>(data.getAfectaciones()));
             }
         }
 
@@ -152,11 +166,43 @@ public class DialogNormativa extends AbstractController implements Serializable 
     }
 
     public void cerrar() {
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0
+                || UtilComparador.compareTo(data.getNumero(), dataOriginal.getNumero()) != 0
+
+                || (data.getFechaAprobacion() != null && dataOriginal.getFechaAprobacion() != null && !data.getFechaAprobacion().equals(dataOriginal.getFechaAprobacion()))
+                || ((data.getFechaAprobacion() == null || dataOriginal.getFechaAprobacion() == null) && (data.getFechaAprobacion() != null || dataOriginal.getFechaAprobacion() != null))
+
+                || (data.getFechaBoletin() != null && dataOriginal.getFechaBoletin() != null && !data.getFechaBoletin().equals(dataOriginal.getFechaBoletin()))
+                || ((data.getFechaBoletin() == null || dataOriginal.getFechaBoletin() == null) && (data.getFechaBoletin() != null || dataOriginal.getFechaBoletin() != null))
+
+                || UtilComparador.compareTo(data.getNumeroBoletin(), dataOriginal.getNumeroBoletin()) != 0
+                || UtilComparador.compareTo(data.getUrlBoletin(), dataOriginal.getUrlBoletin()) != 0
+                || UtilComparador.compareTo(data.getNombreResponsable(), dataOriginal.getNombreResponsable()) != 0
+                || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0
+                || (data.getBoletinOficial() != null && dataOriginal.getBoletinOficial() != null && UtilComparador.compareTo(data.getBoletinOficial().getCodigo(), dataOriginal.getBoletinOficial().getCodigo()) != 0)
+                || ((data.getBoletinOficial() == null || dataOriginal.getBoletinOficial() == null) && (data.getBoletinOficial() != null || dataOriginal.getBoletinOficial() != null))
+                || (data.getTipoNormativa() != null && dataOriginal.getTipoNormativa() != null && UtilComparador.compareTo(data.getTipoNormativa().getCodigo(), dataOriginal.getTipoNormativa().getCodigo()) != 0)
+                || ((data.getTipoNormativa() == null || dataOriginal.getTipoNormativa() == null) && (data.getTipoNormativa() != null || dataOriginal.getTipoNormativa() != null))
+                || !data.getDocumentosNormativa().equals(dataOriginal.getDocumentosNormativa())
+                || !data.getUnidadesAdministrativas().equals(dataOriginal.getUnidadesAdministrativas())
+                || !data.getAfectaciones().equals(dataOriginal.getAfectaciones());
+    }
+
+    public void cerrarDefinitivo() {
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

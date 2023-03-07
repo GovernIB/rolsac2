@@ -9,105 +9,114 @@
 Pàgina amb el llistat de personal d'una unitat administrativa.
 -->
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
-  <ui:define name="metadata">
-    <f:metadata>
-      <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTipoMediaUA.modoAcceso}"/>
-      <f:viewParam id="ID" name="ID" value="#{dialogTipoMediaUA.id}"/>
-      <f:viewAction action="#{dialogTipoMediaUA.load}"/>
-    </f:metadata>
-  </ui:define>
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTipoMediaUA.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogTipoMediaUA.id}"/>
+            <f:viewAction action="#{dialogTipoMediaUA.load}"/>
+        </f:metadata>
+    </ui:define>
 
-  <ui:define name="pageTitleDialog">
-    <h:outputFormat value="#{labels['dialogTipoMediaUA.consulta']}"
-                    rendered="#{dialogTipoMediaUA.isModoConsulta()}"/>
-    <h:outputFormat value="#{labels['dialogTipoMediaUA.detalle']}"
-                    rendered="#{dialogTipoMediaUA.isModoEdicion()}"/>
-    <h:outputFormat value="#{labels['dialogTipoMediaUA.nuevo']}"
-                    rendered="#{dialogTipoMediaUA.isModoAlta()}"/>
-  </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogTipoMediaUA.consulta']}"
+                        rendered="#{dialogTipoMediaUA.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogTipoMediaUA.detalle']}"
+                        rendered="#{dialogTipoMediaUA.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogTipoMediaUA.nuevo']}"
+                        rendered="#{dialogTipoMediaUA.isModoAlta()}"/>
+    </ui:define>
 
-  <ui:define name="contentIdioma">
+    <ui:define name="contentIdioma">
 
-    <span class="pi pi-tag" style="margin-top:5px"/>
-    <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
-    <p:selectOneButton id="opcionIdioma" value="#{dialogTipoMediaUA.idioma}" styleClass="botoneraRed" unselectable="false">
-      <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
-                     itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-      <p:ajax update="inputDescripcion" process="@this"/>
-    </p:selectOneButton>
-    <p:commandButton action="#{dialogTipoMediaUA.traducir}"
-                     icon="pi pi-compass" iconPos="top"
-                     value="#{labels['dict.traducir']}"
-                     style="margin-left:10px"
-                     update="messagesDialog"
-                     process="@this"
-                     rendered="#{!dialogTipoMediaUA.isModoConsulta() and dialogTipoMediaUA.tradExiste()}">
-            <p:ajax event="dialogReturn" listener="#{dialogTipoMediaUA.returnDialogTraducir}" process="@this" update="formDialog:inputDescripcion"/>
-    </p:commandButton>
-  </ui:define>
+        <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTipoMediaUA.idioma}" styleClass="botoneraRed"
+                           unselectable="false">
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+            <p:ajax update="inputDescripcion" process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogTipoMediaUA.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this"
+                         rendered="#{!dialogTipoMediaUA.isModoConsulta() and dialogTipoMediaUA.tradExiste()}">
+            <p:ajax event="dialogReturn" listener="#{dialogTipoMediaUA.returnDialogTraducir}" process="@this"
+                    update="formDialog:inputDescripcion"/>
+        </p:commandButton>
+    </ui:define>
 
-  <ui:define name="contentDialog">
-    <p:panel id="form">
-      <p:growl id="messagesDialog"
-               globalOnly="false"
-               showDetail="false"
-               life="5000"
-               escape="false"/>
+    <ui:define name="contentDialog">
+        <p:panel id="form">
+            <p:growl id="messagesDialog"
+                     globalOnly="false"
+                     showDetail="false"
+                     life="5000"
+                     escape="false"/>
 
-      <div class="row">
+            <div class="row">
 
-        <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
-        </div>
-        <div class="ui-g-12 ui-md-10 ui-lg-5">
-          <p:inputText id="txtCodigo" value="#{dialogTipoMediaUA.data.codigo}"
-                       styleClass="w95" disabled="true" maxlength="50"/>
-        </div>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtCodigo" value="#{dialogTipoMediaUA.data.codigo}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
+                </div>
 
-        <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador" />
-        </div>
-        <div class="ui-g-12 ui-md-10 ui-lg-5">
-          <p:inputText id="txtIdentificador" value="#{dialogTipoMediaUA.data.identificador}"
-                       requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                       styleClass="w95"  onblur="this.value = this.value.toUpperCase();"
-                       required="true" disabled="#{dialogTipoMediaUA.isModoConsulta()}" maxlength="50">
-                <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
-                <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
-          </p:inputText>
-        </div>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtIdentificador" value="#{dialogTipoMediaUA.data.identificador}"
+                                 requiredMessage="#{labels['dict.obligatorio.identificador']}"
+                                 styleClass="w95" onblur="this.value = this.value.toUpperCase();"
+                                 required="true" disabled="#{dialogTipoMediaUA.isModoConsulta()}" maxlength="50">
+                        <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
+                        <f:validateBean disabled="true"/>
+                    </p:inputText>
+                </div>
 
-        <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
-        </div>
-        <div class="ui-g-12 ui-md-10 ui-lg-5">
-          <my:literalComponent id="inputDescripcion" literal="#{dialogTipoMediaUA.data.descripcion}"
-                               soloLecture="#{dialogTipoMediaUA.isModoConsulta()}"
-                               required="true"
-                               idioma="#{dialogTipoMediaUA.idioma}"
-                               idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                               idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                               nombreLiteral="#{labels['dict.descripcion']}">
-            <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
-          </my:literalComponent>
-        </div>
-      </div>
-    </p:panel>
-  </ui:define>
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <my:literalComponent id="inputDescripcion" literal="#{dialogTipoMediaUA.data.descripcion}"
+                                         soloLecture="#{dialogTipoMediaUA.isModoConsulta()}"
+                                         required="true"
+                                         idioma="#{dialogTipoMediaUA.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['dict.descripcion']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                    </my:literalComponent>
+                </div>
+            </div>
+        </p:panel>
+    </ui:define>
 
-  <ui:define name="contentFooterDialogRight">
-    <p:commandButton action="#{dialogTipoMediaUA.ayuda}"
-                     icon="pi pi-info-circle" iconPos="top"
-                     value="#{labels['dict.ayuda']}"
-                     process="@this"/>
-    <p:commandButton action="#{dialogTipoMediaUA.guardar}"
-                     value="#{labels['dict.guardar']}" update="messagesDialog form"
-                     process="@all"/>
-    <p:commandButton action="#{dialogTipoMediaUA.cerrar}"
-                     value="#{labels['dict.cerrar']}" update="messagesDialog"
-                     process="@this"/>
-
-  </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogTipoMediaUA.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogTipoMediaUA.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog form"
+                         process="@all"/>
+        <p:commandButton action="#{dialogTipoMediaUA.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
+                         widgetVar="confirmCerrar">
+            <p:commandButton value="#{labels['dict.si']}" action="#{dialogTipoMediaUA.cerrarDefinitivo}" process="@this"
+                             update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"/>
+        </p:confirmDialog>
+    </ui:define>
 
 </ui:composition>
 </html>

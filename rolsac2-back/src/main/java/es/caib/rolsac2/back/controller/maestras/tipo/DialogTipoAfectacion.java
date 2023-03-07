@@ -8,6 +8,8 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoAfectacionDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.utils.UtilComparador;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,8 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
 
     private TipoAfectacionDTO data;
 
+    private TipoAfectacionDTO dataOriginal;
+
     @EJB
     private MaestrasSupServiceFacade maestrasSupService;
 
@@ -50,10 +54,12 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
         if (this.isModoEdicion() || this.isModoConsulta()) {
             data = maestrasSupService.findTipoAfectacionById(Long.valueOf(id));
             identificadorAntiguo = data.getIdentificador();
-        }
-
-        if (data.getDescripcion() == null) {
-            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            dataOriginal = data.clone();
+        } else if(this.isModoAlta()) {
+            if (data.getDescripcion() == null) {
+                data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            }
+            dataOriginal = data.clone();
         }
     }
 
@@ -70,7 +76,7 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
         }
 
         // Retornamos resultado
-        cerrar();
+        cerrarDefinitivo();
     }
 
     private boolean verificarGuardar() {
@@ -113,8 +119,21 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
         }
     }
 
-
     public void cerrar() {
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
+        } else {
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
+                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0;
+    }
+
+    public void cerrarDefinitivo() {
 
         final DialogResult result = new DialogResult();
         if (Objects.isNull(this.getModoAcceso())) {
@@ -141,6 +160,14 @@ public class DialogTipoAfectacion extends AbstractController implements Serializ
 
     public void setData(TipoAfectacionDTO data) {
         this.data = data;
+    }
+
+    public TipoAfectacionDTO getDataOriginal() {
+        return dataOriginal;
+    }
+
+    public void setDataOriginal(TipoAfectacionDTO dataOriginal) {
+        this.dataOriginal = dataOriginal;
     }
 
     /**

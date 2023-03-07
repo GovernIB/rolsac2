@@ -58,6 +58,7 @@ public class DialogSeleccionUsuariosUnidadAdministrativa extends AbstractControl
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new UsuarioFiltro();
         filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
 
         // Generamos una búsqueda
         buscar();

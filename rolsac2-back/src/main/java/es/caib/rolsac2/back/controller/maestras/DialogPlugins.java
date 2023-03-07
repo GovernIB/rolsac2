@@ -14,7 +14,9 @@ import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import es.caib.rolsac2.service.model.types.TypePluginEntidad;
+import es.caib.rolsac2.service.utils.UtilComparador;
 import es.caib.rolsac2.service.utils.UtilJSON;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,8 @@ public class DialogPlugins extends AbstractController implements Serializable {
     private String id;
 
     private PluginDTO data;
+
+    private PluginDTO dataOriginal;
 
     private List<TipoBoletinDTO> tiposBoletin;
 
@@ -68,6 +72,8 @@ public class DialogPlugins extends AbstractController implements Serializable {
         if (this.isModoAlta()) {
             data = new PluginDTO();
             data.setEntidad(sessionBean.getEntidad());
+            data.setPropiedades(new ArrayList<>());
+            dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = administracionEntService.findPluginById(Long.valueOf(id));
             if(this.data.getTipo().equals(TypePluginEntidad.BOLETIN.toString())) {
@@ -76,6 +82,8 @@ public class DialogPlugins extends AbstractController implements Serializable {
                 this.data.getPropiedades().remove(prop);
                 boletinSeleccionado = maestrasSupServiceFacade.findTipoBoletinById(Long.valueOf(prop.getValor()));
             }
+            dataOriginal = data.clone();
+            dataOriginal.setPropiedades(new ArrayList<>(data.getPropiedades()));
         }
 
     }
@@ -291,11 +299,30 @@ public class DialogPlugins extends AbstractController implements Serializable {
     }
 
     public void cerrar() {
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            cerrarDefinitivo();
+        }
+    }
+
+    public boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getEntidad().getCodigo(), dataOriginal.getEntidad().getCodigo()) != 0
+                || UtilComparador.compareTo(data.getTipo(), dataOriginal.getTipo()) != 0
+                || UtilComparador.compareTo(data.getClassname(), dataOriginal.getClassname()) != 0
+                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
+                || !data.getPropiedades().equals(dataOriginal.getPropiedades())
+                || UtilComparador.compareTo(data.getPrefijoPropiedades(), dataOriginal.getPrefijoPropiedades()) != 0;
+
+    }
+
+    public void cerrarDefinitivo() {
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

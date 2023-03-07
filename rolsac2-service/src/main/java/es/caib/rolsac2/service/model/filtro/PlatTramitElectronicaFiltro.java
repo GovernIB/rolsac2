@@ -7,7 +7,6 @@ public class PlatTramitElectronicaFiltro extends AbstractFiltro{
     private String texto;
     private Long codigo;
     private String identificador;
-    private EntidadDTO entidad;
 
     @Override
     protected String getDefaultOrder() {
@@ -38,13 +37,6 @@ public class PlatTramitElectronicaFiltro extends AbstractFiltro{
         this.identificador = identificador;
     }
 
-    public EntidadDTO getIdentidad() {
-        return entidad;
-    }
-
-    public void setIdentidad(EntidadDTO entidad) {
-        this.entidad = entidad;
-    }
 
     public boolean isRellenoTexto() {
         return texto != null && !texto.isEmpty();
@@ -58,8 +50,5 @@ public class PlatTramitElectronicaFiltro extends AbstractFiltro{
         return codigo != null;
     }
 
-    public boolean isRellenoEntidad() {
-        return entidad.getCodigo() != null;
-    }
 
 }

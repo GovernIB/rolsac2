@@ -177,7 +177,7 @@ public class TemaServiceFacadeBean implements TemaServiceFacade{
             if(jTema.getTemaPadre().getCodigo() != temaActualizado.getTemaPadre().getCodigo()) {
                 String mathPathAntiguo = jTema.getMathPath();
                 String mathPathNuevo = temaActualizado.getMathPath();
-                List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(mathPathAntiguo, idioma);
+                List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(mathPathAntiguo + jTema.getCodigo().toString(), idioma);
                 for(JTema tema: hijosAll) {
                     String mathPath = tema.getMathPath();
                     String mathPathActualizado = mathPath.replace(mathPathAntiguo, mathPathNuevo);

@@ -58,6 +58,7 @@ public class ViewPlugins extends AbstractController implements Serializable {
         filtro = new PluginFiltro();
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
 
         buscar();
     }

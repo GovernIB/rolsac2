@@ -54,6 +54,17 @@ public class TemaDTO extends ModelApi {
         this.codigo = codigo;
     }
 
+    public TemaDTO(TemaDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.entidad = otro.entidad == null ? null : (EntidadDTO) otro.entidad.clone();
+            this.identificador = otro.identificador;
+            this.temaPadre = otro.temaPadre == null ? null : (TemaDTO) otro.temaPadre.clone();
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+            this.mathPath = otro.mathPath;
+        }
+    }
+
     /**
      * Create instance tema dto.
      *
@@ -233,5 +244,10 @@ public class TemaDTO extends ModelApi {
         temaGridDTO.setIdentificador(this.identificador);
 
         return temaGridDTO;
+    }
+
+    @Override
+    public TemaDTO clone() {
+        return new TemaDTO(this);
     }
 }

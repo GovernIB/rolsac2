@@ -68,6 +68,13 @@ public interface AdministracionEntServiceFacade {
     Long create(UsuarioDTO dto) throws RecursoNoEncontradoException;
 
     /**
+     * Método que se utiliza al crear una nueva entidad
+     * @param usuarioDTO
+     * @param idEntidad
+     */
+    void createUsuarioEntidad(UsuarioDTO usuarioDTO, Long idEntidad);
+
+    /**
      * Actualiza los datos de un tipo de afectación a la base de datos.
      *
      * @param dto nuevos datos del tipo de afectación
@@ -83,13 +90,28 @@ public interface AdministracionEntServiceFacade {
      */
     void deleteUsuario(Long id) throws RecursoNoEncontradoException;
 
+
     /**
-     * Retorna un opcional con el tipo de afectación indicado por el identificador
+     * Método para borrar un usuario de una entidad
+     * @param id
+     */
+    void deleteUsuarioEntidad(Long idUsuario, Long idEntidad);
+
+    /**
+     * Retorna el usuario relacionado al identificador
      *
-     * @param id identificador del tipo de afectación a buscar
-     * @return un opcional con los datos del tipo de afectación indicado o vacío si no existe
+     * @param id identificador del usuario
+     * @return un opcional con los datos del usuario
      */
     UsuarioDTO findUsuarioById(Long id);
+
+    /**
+     * Retorna el usuario relacionado al identificador
+     *
+     * @param identificador identificador del usuario
+     * @return un opcional con los datos del usuario
+     */
+    UsuarioDTO findUsuarioByIdentificador(String identificador);
 
     /**
      * Devuelve una página con el tipo de afectación relacionado con los parámetros del filtro

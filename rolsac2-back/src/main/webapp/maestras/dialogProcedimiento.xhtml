@@ -825,18 +825,6 @@
             });
         </h:outputScript>
 
-
-        <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoApoderadoFuncionario']}
-                                 #{labels['dialogProcedimiento.warning.habilitadoApoderadoFuncionario2']} "
-                         header="#{labels['dict.guardandoDato']}"
-                         escape="false"
-                         widgetVar="cdApoderadoFuncionario">
-            <p:commandButton value="#{labels['dict.continuar']}" onclick="confirmation.hide()" action="#{dialogProcedimiento.accionSin()}" update="messagesDialog" >
-                <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this" />
-            </p:commandButton>
-            <p:commandButton value="#{labels['dict.no']}"        onclick="confirmation.hide()" />
-        </p:confirmDialog>
-
         <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoApoderado']}"
                          header="#{labels['dict.guardandoDato']}"
 
@@ -850,10 +838,7 @@
         <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoFuncionario']}"
                          header="#{labels['dict.guardandoDato']}"
                          widgetVar="cdFuncionario">
-            <p:commandButton value="#{labels['dict.continuar']}" onclick="confirmation.hide()" action="#{dialogProcedimiento.accionSin()}" update="messagesDialog"  >
-                <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this" />
-            </p:commandButton>
-            <p:commandButton value="#{labels['dict.no']}"        onclick="confirmation.hide()" />
+            <p:commandButton value="#{labels['dict.aceptar']}"        onclick="confirmation.hide()" />
         </p:confirmDialog>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="cdSalirSinGuardar">

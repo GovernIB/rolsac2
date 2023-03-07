@@ -73,7 +73,6 @@ public class ViewTipoVia extends AbstractController implements Serializable {
 
         //Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoViaFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());//UtilJSF.getSessionUnidadActiva());
         filtro.setIdioma(sessionBean.getLang());//UtilJSF.getSessionLang());
 
 

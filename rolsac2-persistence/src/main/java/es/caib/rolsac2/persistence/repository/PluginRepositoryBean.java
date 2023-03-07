@@ -76,6 +76,9 @@ public class PluginRepositoryBean extends AbstractCrudRepository<JPlugin, Long> 
                     " OR LOWER(j.classname) like :filtro OR LOWER(j.propiedades) like :filtro " +
                     " OR LOWER(j.tipo) like :filtro  ) ");
         }
+        if(filtro.isRellenoEntidad()) {
+            sql.append(" and j.entidad.codigo =:idEntidad");
+        }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -84,6 +87,9 @@ public class PluginRepositoryBean extends AbstractCrudRepository<JPlugin, Long> 
 
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
+        }
+        if(filtro.isRellenoEntidad()) {
+            query.setParameter("idEntidad", filtro.getIdEntidad());
         }
 
         return query;

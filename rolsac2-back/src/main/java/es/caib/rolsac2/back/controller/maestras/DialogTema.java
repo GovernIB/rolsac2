@@ -12,6 +12,8 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.utils.UtilComparador;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,8 @@ public class DialogTema extends AbstractController implements Serializable {
     private String id = "";
 
     private TemaDTO data;
+
+    private TemaDTO dataOriginal;
 
     private List<EntidadDTO> entidadesActivas;
 
@@ -65,9 +69,11 @@ public class DialogTema extends AbstractController implements Serializable {
                 TemaDTO padreDefecto = temaServiceFacade.findById(Long.valueOf(idPadre));
                 data.setTemaPadre(padreDefecto);
             }
+            dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = temaServiceFacade.findById((Long.valueOf(id)));
             this.identificadorOld = data.getIdentificador();
+            dataOriginal = data.clone();
         }
     }
 
@@ -123,11 +129,27 @@ public class DialogTema extends AbstractController implements Serializable {
     }
 
     public void cerrar() {
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
+                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
+                || (data.getTemaPadre() != null && dataOriginal.getTemaPadre() != null && UtilComparador.compareTo(data.getTemaPadre().getCodigo(), dataOriginal.getTemaPadre().getCodigo()) != 0)
+                || ((data.getTemaPadre() == null || dataOriginal.getTemaPadre() == null) && (data.getTemaPadre() != null || dataOriginal.getTemaPadre() != null));
+    }
+
+    public void cerrarDefinitivo() {
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

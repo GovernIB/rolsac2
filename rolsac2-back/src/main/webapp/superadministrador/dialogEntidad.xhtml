@@ -38,7 +38,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this" update="inputDescripcion"/>
         </p:selectOneButton>
-        <p:commandButton action="#{dialogEntidad.traducir}"
+        <!--<p:commandButton action="#{dialogEntidad.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
                          style="margin-left:10px"
@@ -47,7 +47,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          rendered="#{!dialogEntidad.isModoConsulta() and dialogEntidad.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogEntidad.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion"/>
-        </p:commandButton>
+        </p:commandButton>-->
     </ui:define>
 
 

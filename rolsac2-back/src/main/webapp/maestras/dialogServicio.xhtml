@@ -381,14 +381,18 @@
                     <div class="form-grup col-md-2">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.version']}:"
                                        for="txtTraVer"/>
-                        <p:inputNumber id="txtTraVer" decimalPlaces="0"
-                                       disabled="#{dialogServicio.isModoConsulta() ||
+                        <p:inputText id="txtTraVer" decimalPlaces="0"
+                                     disabled="#{dialogServicio.isModoConsulta() ||
                                                     dialogServicio.data.plantillaSel != null ||
                                                     !dialogServicio.canalesSeleccionados.contains('TEL')}"
-                                       value="#{dialogServicio.data.tipoTramitacion.tramiteVersion}"
-                                       required="true"
-                                       requiredMessage="#{labels['dict.obligatorio.version']}"
-                                       styleClass="w95"/>
+                                     value="#{dialogServicio.data.tipoTramitacion.tramiteVersion}"
+                                     required="true"
+                                     requiredMessage="#{labels['dict.obligatorio.version']}"
+                                     onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"
+                                     width="100px"
+                                     maxlength="3"
+                                     style="width: 100px !important;" />
+
                     </div>
 
                 </div>
@@ -886,18 +890,6 @@
             />
         </div>
 
-
-        <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoApoderadoFuncionario']}
-                                 #{labels['dialogProcedimiento.warning.habilitadoApoderadoFuncionario2']} "
-                         header="#{labels['dict.guardandoDato']}"
-                         escape="false"
-                         widgetVar="cdApoderadoFuncionario">
-            <p:commandButton value="#{labels['dict.continuar']}" onclick="confirmation.hide()" action="#{dialogServicio.accionSin()}" update="messagesDialog" >
-                <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogFlujo}" process="@this" />
-            </p:commandButton>
-            <p:commandButton value="#{labels['dict.no']}"        onclick="confirmation.hide()" />
-        </p:confirmDialog>
-
         <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoApoderado']}"
                          header="#{labels['dict.guardandoDato']}"
 
@@ -911,10 +903,7 @@
         <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoFuncionario']}"
                          header="#{labels['dict.guardandoDato']}"
                          widgetVar="cdFuncionario">
-            <p:commandButton value="#{labels['dict.continuar']}" onclick="confirmation.hide()" action="#{dialogServicio.accionSin()}" update="messagesDialog"  >
-                <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogFlujo}" process="@this" />
-            </p:commandButton>
-            <p:commandButton value="#{labels['dict.no']}"        onclick="confirmation.hide()" />
+            <p:commandButton value="#{labels['dict.aceptar']}"        onclick="confirmation.hide()" />
         </p:confirmDialog>
 
         <p:confirmDialog message="#{labels['dialogProcedimiento.warning.datoModificadoCerrar']}"

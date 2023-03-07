@@ -42,6 +42,19 @@ public class TipoBoletinDTO extends ModelApi {
 
     /**
      * Instancia un nuevo Tipo boletin dto.
+     * * @param otro             TipoBoletinDTO
+     */
+    public TipoBoletinDTO(TipoBoletinDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador  = otro.identificador;
+            this.nombre = otro.nombre;
+            this.url = otro.url;
+        }
+    }
+
+    /**
+     * Instancia un nuevo Tipo boletin dto.
      *
      * @param id             id
      * @param identificador  identificador
@@ -125,6 +138,11 @@ public class TipoBoletinDTO extends ModelApi {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    @Override
+    public TipoBoletinDTO clone() {
+        return new TipoBoletinDTO(this);
     }
 
     @Override

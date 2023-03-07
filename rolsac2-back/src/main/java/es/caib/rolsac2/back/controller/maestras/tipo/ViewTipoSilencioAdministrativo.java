@@ -80,7 +80,6 @@ public class ViewTipoSilencioAdministrativo extends AbstractController implement
 
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoSilencioAdministrativoFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
 
         // Generamos una búsqueda

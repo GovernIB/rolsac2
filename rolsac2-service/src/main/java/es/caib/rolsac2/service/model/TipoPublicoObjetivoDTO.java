@@ -38,6 +38,15 @@ public class TipoPublicoObjetivoDTO extends ModelApi {
     public TipoPublicoObjetivoDTO() {
     }
 
+    public TipoPublicoObjetivoDTO(TipoPublicoObjetivoDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+            this.empleadoPublico = otro.empleadoPublico;
+        }
+    }
+
 
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
@@ -137,11 +146,16 @@ public class TipoPublicoObjetivoDTO extends ModelApi {
     }
 
     @Override
+    public TipoPublicoObjetivoDTO clone() {
+        return new TipoPublicoObjetivoDTO(this);
+    }
+
+    @Override
     public String toString() {
         return "TipoPublicoObjetivoDTO{" +
                 "id=" + codigo +
                 ", identificador=" + identificador +
-                ", descripcion=" + descripcion.toString() +
+                ", descripcion=" + descripcion +
                 ", empleadoPublico=" + empleadoPublico +
                 '}';
     }

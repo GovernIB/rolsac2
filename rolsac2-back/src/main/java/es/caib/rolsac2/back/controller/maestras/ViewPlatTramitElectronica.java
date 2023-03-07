@@ -58,6 +58,7 @@ public class ViewPlatTramitElectronica extends AbstractController implements Ser
 
         filtro = new PlatTramitElectronicaFiltro();
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
 
         buscar();

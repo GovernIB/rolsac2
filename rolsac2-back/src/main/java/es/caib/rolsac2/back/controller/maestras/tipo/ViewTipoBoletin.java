@@ -77,7 +77,7 @@ public class ViewTipoBoletin extends AbstractController implements Serializable 
 
         //Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoBoletinFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());//UtilJSF.getSessionUnidadActiva());
+        //filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());//UtilJSF.getSessionUnidadActiva());
         filtro.setIdioma(sessionBean.getLang());//UtilJSF.getSessionLang());
 
 

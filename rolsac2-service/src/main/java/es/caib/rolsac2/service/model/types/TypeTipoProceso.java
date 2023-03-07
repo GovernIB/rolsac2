@@ -5,16 +5,19 @@ import java.util.Map;
 
 public enum TypeTipoProceso {
 
-    TEST("TEST");
+    TEST("TEST"),
+
+    SOLR("SOLR");
 
 
-
-    /** Valor */
+    /**
+     * Valor
+     */
     private static final Map<String, TypeTipoProceso> BY_VALOR = new HashMap<>();
 
 
     static {
-        for (TypeTipoProceso proceso: values()) {
+        for (TypeTipoProceso proceso : values()) {
             BY_VALOR.put(proceso.valor, proceso);
         }
     }

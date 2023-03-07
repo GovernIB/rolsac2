@@ -26,6 +26,15 @@ public class TipoProcedimientoDTO extends ModelApi implements Cloneable {
         this.identificador = identificador;
     }
 
+    public TipoProcedimientoDTO(TipoProcedimientoDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+            this.entidad = otro.entidad == null ? null : (EntidadDTO) otro.entidad.clone();
+        }
+    }
+
     public Long getCodigo() {
         return codigo;
     }
@@ -63,14 +72,9 @@ public class TipoProcedimientoDTO extends ModelApi implements Cloneable {
      *
      * @return
      */
-    public Object clone() {
-        TipoProcedimientoDTO tipo = new TipoProcedimientoDTO();
-        tipo.setCodigo(this.getCodigo());
-        tipo.setIdentificador(this.getIdentificador());
-        if (this.getDescripcion() != null) {
-            tipo.setDescripcion((Literal) this.getDescripcion().clone());
-        }
-        return tipo;
+    @Override
+    public TipoProcedimientoDTO clone() {
+        return new TipoProcedimientoDTO(this);
     }
 
     public int compareTo(TipoProcedimientoDTO data2) {

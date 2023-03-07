@@ -79,7 +79,7 @@ public class ViewConfiguracionesGlobales extends AbstractController implements S
         this.setearIdioma();
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new ConfiguracionGlobalFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        //filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
 
         // Generamos una búsqueda

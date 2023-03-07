@@ -73,7 +73,6 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
 
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoMateriaSIAFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
 
         // Generamos una búsqueda

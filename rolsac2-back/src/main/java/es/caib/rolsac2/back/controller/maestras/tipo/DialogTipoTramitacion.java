@@ -9,6 +9,8 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.utils.UtilComparador;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,8 @@ public class DialogTipoTramitacion extends AbstractController implements Seriali
 
     private TipoTramitacionDTO data;
 
+    private TipoTramitacionDTO dataOriginal;
+
     private List<PlatTramitElectronicaDTO> plataformasTramiteList;
 
     @EJB
@@ -60,17 +64,20 @@ public class DialogTipoTramitacion extends AbstractController implements Seriali
             if ("S".equals(plantilla)) {
                 data.setEntidad(sessionBean.getEntidad());
             }
+            if (data.getDescripcion() == null) {
+                data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            }
+
+            if (data.getUrl() == null) {
+                data.setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            }
+            dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = maestrasSupService.findTipoTramitacionById(Long.valueOf(id));
+            dataOriginal = data.clone();
         }
 
-        if (data.getDescripcion() == null) {
-            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-        }
 
-        if (data.getUrl() == null) {
-            data.setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-        }
 
         plataformasTramiteList = platTramitElectronicaService.findAll(sessionBean.getEntidad().getCodigo());
     }
@@ -112,12 +119,33 @@ public class DialogTipoTramitacion extends AbstractController implements Seriali
     }
 
     public void cerrar() {
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
+        } else {
+            cerrarDefinitivo();
+        }
+    }
 
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
+                || UtilComparador.compareTo(data.getTramiteId(), dataOriginal.getTramiteId()) != 0
+                || UtilComparador.compareTo(data.getTramiteParametros(), dataOriginal.getTramiteParametros()) != 0
+                || UtilComparador.compareTo(data.getTramiteVersion(), dataOriginal.getTramiteVersion()) != 0
+                || UtilComparador.compareTo(data.getEntidad().getCodigo(), dataOriginal.getEntidad().getCodigo()) != 0
+                || UtilComparador.compareTo(data.getUrlTramitacion(), dataOriginal.getUrlTramitacion()) != 0
+                || UtilComparador.compareTo(data.isTramitPresencial(), dataOriginal.isTramitPresencial()) != 0
+                || UtilComparador.compareTo(data.isPlantilla(), dataOriginal.isPlantilla()) != 0
+                || UtilComparador.compareTo(data.isTramitElectronica(), dataOriginal.isTramitElectronica()) != 0
+                || UtilComparador.compareTo(data.getUrl(), dataOriginal.getUrl()) != 0;
+    }
+
+    public void cerrarDefinitivo() {
         final DialogResult result = new DialogResult();
         if (Objects.isNull(this.getModoAcceso())) {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
         } else {
-            result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

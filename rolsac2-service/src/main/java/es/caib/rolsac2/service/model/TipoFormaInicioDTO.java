@@ -47,6 +47,14 @@ public class TipoFormaInicioDTO extends ModelApi implements Cloneable {
         this.identificador = identificador;
     }
 
+    public TipoFormaInicioDTO(TipoFormaInicioDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+        }
+    }
+
     /**
      * Obtiene codigo.
      *
@@ -106,14 +114,9 @@ public class TipoFormaInicioDTO extends ModelApi implements Cloneable {
      *
      * @return
      */
-    public Object clone() {
-        TipoFormaInicioDTO tipo = new TipoFormaInicioDTO();
-        tipo.setCodigo(this.getCodigo());
-        tipo.setIdentificador(this.getIdentificador());
-        if (this.getDescripcion() != null) {
-            tipo.setDescripcion((Literal) this.getDescripcion().clone());
-        }
-        return tipo;
+    @Override
+    public TipoFormaInicioDTO clone() {
+        return new TipoFormaInicioDTO(this);
     }
 
     public int compareTo(TipoFormaInicioDTO data2) {

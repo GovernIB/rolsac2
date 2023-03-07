@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
+import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.FicheroServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
@@ -53,6 +54,9 @@ public class DialogEntidad extends AbstractController implements Serializable {
     private String identificadorAntiguo;
     @EJB
     private AdministracionSupServiceFacade administracionSupServiceFacade;
+
+    @EJB
+    private AdministracionEntServiceFacade administracionEntServiceFacade;
 
     @EJB
     private FicheroServiceFacade ficheroServiceFacade;
@@ -114,7 +118,9 @@ public class DialogEntidad extends AbstractController implements Serializable {
         adaptIdiomas();
 
         if (this.data.getCodigo() == null) {
-            administracionSupServiceFacade.createEntidad(this.data, sessionBean.getUnidadActiva().getCodigo());
+            Long nuevaEntidad = administracionSupServiceFacade.createEntidad(this.data);
+            administracionEntServiceFacade.createUsuarioEntidad(sessionBean.obtenerUsuarioAutenticado(), nuevaEntidad);
+            sessionBean.actualizarEntidades();
         } else {
             administracionSupServiceFacade.updateEntidad(this.data);
         }

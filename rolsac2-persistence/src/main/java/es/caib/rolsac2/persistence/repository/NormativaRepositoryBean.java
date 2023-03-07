@@ -73,6 +73,10 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             sql.append(" and (j.fechaBoletin = :fechaBoletin) ");
         }
 
+        if (filtro.isRellenoNumero()) {
+            sql.append(" and (j.numero = :numero) ");
+        }
+
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -107,6 +111,10 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
         if (filtro.isRellenoFechaBoletin()) {
             query.setParameter("fechaBoletin", filtro.getFechaBoletin());
+        }
+
+        if (filtro.isRellenoNumero()) {
+            query.setParameter("numero", filtro.getNumero());
         }
 
         if (filtro.getOrderBy() != null) {

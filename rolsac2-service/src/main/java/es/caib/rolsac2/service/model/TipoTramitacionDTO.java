@@ -375,22 +375,8 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
         this.tramitTelefonica = tramitTelefonica;
     }
 
-    public Object clone() {
-        TipoTramitacionDTO obj = null;
-        try {
-            obj = (TipoTramitacionDTO) super.clone();
-
-            if (this.url != null) {
-                obj.url = (Literal) this.url.clone();
-            }
-            if (this.descripcion != null) {
-                obj.descripcion = (Literal) this.descripcion.clone();
-            }
-
-        } catch (CloneNotSupportedException ex) {
-            LOG.error(" no se puede duplicar", ex);
-        }
-        return obj;
+    public TipoTramitacionDTO clone() {
+        return new TipoTramitacionDTO(this);
     }
 
     @Override
@@ -428,16 +414,17 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
     public TipoTramitacionDTO(TipoTramitacionDTO otro) {
         if (otro != null) {
             this.codigo = otro.codigo;
-            this.descripcion = otro.descripcion;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
             this.tramitPresencial = otro.tramitPresencial;
             this.tramitElectronica = otro.tramitElectronica;
             this.urlTramitacion = otro.urlTramitacion;
-            this.codPlatTramitacion = otro.codPlatTramitacion;
+            this.codPlatTramitacion = otro.codPlatTramitacion == null ? null : (PlatTramitElectronicaDTO) otro.codPlatTramitacion.clone();
             this.tramiteId = otro.tramiteId;
             this.tramiteVersion = otro.tramiteVersion;
             this.tramiteParametros = otro.tramiteParametros;
             this.plantilla = otro.plantilla;
-            this.entidad = new EntidadDTO(otro.entidad);
+            this.entidad = otro.entidad == null ? null : (EntidadDTO) otro.entidad.clone();
+            this.url = otro.url == null ? null : (Literal) otro.url.clone();
         }
     }
 

@@ -425,10 +425,13 @@ public class DialogServicio extends AbstractController implements Serializable {
             retorno = false;
         }
 
-        /*if (this.data.getNormativas() == null || this.data.getNormativas().isEmpty()) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogServicio.error.algunaNormativa"));
-            return false;
-        }**/
+        if (this.data.getPublicosObjetivo() != null && !this.data.getPublicosObjetivo().isEmpty()) {
+            boolean empleadoPublico = this.data.getPublicosObjetivo().get(0).isEmpleadoPublico();
+            if ((empleadoPublico && this.data.isHabilitadoApoderado()) || (!empleadoPublico && !this.data.isHabilitadoApoderado())) {
+                PrimeFaces.current().executeScript("PF('cdApoderado').show();");
+                return retorno;
+            }
+        }
 
         return retorno;
     }

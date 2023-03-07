@@ -74,6 +74,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                        required="true" disabled="#{dialogTipoProcedimiento.isModoConsulta()}" maxlength="50">
             <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
             <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
+            <f:validateBean disabled="true" />
           </p:inputText>
         </div>
 
@@ -104,10 +105,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <p:commandButton action="#{dialogTipoProcedimiento.guardar}"
                      value="#{labels['dict.guardar']}" update="messagesDialog form"
                      process="@all"/>
-    <p:commandButton action="#{dialogTipoProcedimiento.cerrar}"
-                     value="#{labels['dict.cerrar']}"
-                     process="@this"/>
-
+    <p:commandButton action="#{dialogTipoProcedimiento.cerrar}" id="closeButton"
+                     value="#{labels['dict.cerrar']}" update="messagesDialog"
+                     process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+    <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+      <p:commandButton value="#{labels['dict.si']}" action="#{dialogTipoProcedimiento.cerrarDefinitivo}" process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();"  />
+      <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"  />
+    </p:confirmDialog>
   </ui:define>
 
 </ui:composition>

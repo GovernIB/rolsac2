@@ -9,6 +9,8 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoProcedimientoDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.utils.UtilComparador;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,8 @@ public class DialogTipoProcedimiento extends AbstractController implements Seria
     private String identificadorAntiguo;
     private Literal descripcion;
 
+    private TipoProcedimientoDTO dataOriginal;
+
     public void load() {
         this.setearIdioma();
         LOG.debug("init");
@@ -46,14 +50,18 @@ public class DialogTipoProcedimiento extends AbstractController implements Seria
         data = new TipoProcedimientoDTO();
         if (this.isModoAlta()) {
             data.setEntidad(sessionBean.getEntidad());
+            if (data.getDescripcion() == null) {
+                data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            }
+            dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = tipoProcedimientoService.findTipoProcedimientoById(Long.valueOf(id));
+            data.setEntidad(sessionBean.getEntidad());
             identificadorAntiguo = data.getIdentificador();
+            dataOriginal = data.clone();
         }
 
-        if (data.getDescripcion() == null) {
-            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-        }
+
     }
 
     public void traducir() {
@@ -124,12 +132,26 @@ public class DialogTipoProcedimiento extends AbstractController implements Seria
     }
 
     public void cerrar() {
-
-        final DialogResult result = new DialogResult();
-        if (getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(getModoAcceso()));
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            cerrarDefinitivo();
+        }
+    }
+
+    private boolean comprobarModificacion() {
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
+                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
+                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
+                || UtilComparador.compareTo(data.getEntidad().getCodigo(), dataOriginal.getEntidad().getCodigo()) != 0;
+    }
+
+    public void cerrarDefinitivo() {
+        final DialogResult result = new DialogResult();
+        if (Objects.isNull(this.getModoAcceso())) {
+            this.setModoAcceso(TypeModoAcceso.CONSULTA.name());
+        } else {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
         }
         result.setCanceled(true);
         UtilJSF.closeDialog(result);

@@ -49,6 +49,14 @@ public class TipoViaDTO extends ModelApi implements Cloneable {
         this.descripcion = descripcion;
     }
 
+    public TipoViaDTO(TipoViaDTO otro) {
+        if (otro != null) {
+            this.codigo = otro.codigo;
+            this.identificador = otro.identificador;
+            this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+        }
+    }
+
     /**
      * Obtiene codigo.
      *
@@ -108,14 +116,8 @@ public class TipoViaDTO extends ModelApi implements Cloneable {
      *
      * @return
      */
-    public Object clone() {
-        TipoViaDTO tipo = new TipoViaDTO();
-        tipo.setCodigo(this.getCodigo());
-        tipo.setIdentificador(this.getIdentificador());
-        if (this.getDescripcion() != null) {
-            tipo.setDescripcion((Literal) this.getDescripcion().clone());
-        }
-        return tipo;
+    public TipoViaDTO clone() {
+        return new TipoViaDTO(this);
     }
 
     public int compareTo(TipoViaDTO data2) {

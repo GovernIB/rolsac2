@@ -58,11 +58,7 @@ public class ViewPublicoObjetivoEntidad extends AbstractController implements Se
         filtro = new TipoPublicoObjetivoEntidadFiltro();
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());//UtilJSF.getSessionUnidadActiva());
         filtro.setIdioma(sessionBean.getLang());//UtilJSF.getSessionLang());
-
-        LOG.error("Rol admin: " + this.isUserRoleRSCAdmin());
-        LOG.error("Rol user: " + this.isUserRoleRSCUser());
-        LOG.error("Rol user: " + this.isUserRoleRSCMentira());
-        LOG.error("Username: " + this.getUserName());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
 
         buscar();
     }
