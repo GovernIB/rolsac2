@@ -153,6 +153,11 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             return false;
         }
 
+        if (this.data.isTramitElectronica() && (this.data.getTipoTramitacion().getUrl() == null || this.data.getTipoTramitacion().getUrl().estaVacio()) && this.data.getTipoTramitacion().getCodPlatTramitacion() == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlPlataforma"));
+            return false;
+        }
+
         return true;
     }
 

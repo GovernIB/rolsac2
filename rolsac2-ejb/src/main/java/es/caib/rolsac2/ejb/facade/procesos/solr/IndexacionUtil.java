@@ -18,7 +18,6 @@ public class IndexacionUtil {
      */
     public static boolean isIndexableSolr(final ProcedimientoDocumentoDTO archivo) {
         boolean retorno = true;
-
         /*
         //Si archivo es nulo, no intentar indexar.
         if (archivo == null || archivo.getDatos() == null || archivo.getNombre() == null || archivo.getNombre().isEmpty()) {

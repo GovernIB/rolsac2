@@ -25,11 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-/**
- * Plugin indexacion
- * @author Indra
- *
- */
 public class PluginIndexacionSolr extends AbstractPluginProperties implements IPluginIndexacion {
 
     private static final Logger LOG = LoggerFactory.getLogger(PluginIndexacionSolr.class);

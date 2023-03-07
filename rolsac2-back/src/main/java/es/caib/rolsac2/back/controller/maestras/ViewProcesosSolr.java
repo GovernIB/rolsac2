@@ -173,7 +173,7 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
                             if (resultado != null && resultado.isCorrecto()) {
                                 proc.setMensajeError(resultado.getMensaje());
                                 proc.setMantenerIndexado(false);
-                                todoCorrecto = false;
+                                todoCorrecto = true;
                             }
                         }
                         plugin.commit();

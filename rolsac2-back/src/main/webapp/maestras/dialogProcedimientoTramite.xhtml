@@ -327,7 +327,6 @@
                                          value="#{dialogProcedimientoTramite.data.tipoTramitacion.codPlatTramitacion}"
                                          styleClass="w95"
                                          autoWidth="false"
-                                         required="true"
                                          requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
                                          disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
                                                             dialogProcedimientoTramite.data.plantillaSel != null ||
@@ -352,7 +351,6 @@
                                          disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
                                                             dialogProcedimientoTramite.data.plantillaSel != null ||
                                                         !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
-                                         required="true"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                          idioma="#{dialogProcedimientoTramite.idioma}"

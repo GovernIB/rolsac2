@@ -404,7 +404,6 @@
                                          value="#{dialogServicio.data.tipoTramitacion.codPlatTramitacion}"
                                          styleClass="w95"
                                          autoWidth="false"
-                                         required="true"
                                          requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
                                          disabled="#{dialogServicio.isModoConsulta() ||
                                                             dialogServicio.data.plantillaSel != null ||
@@ -429,7 +428,6 @@
                                              disabled="#{dialogServicio.isModoConsulta() ||
                                                             dialogServicio.data.plantillaSel != null ||
                                                         !dialogServicio.canalesSeleccionados.contains('TEL')}"
-                                             required="true"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                              idioma="#{dialogServicio.idioma}"
@@ -620,7 +618,7 @@
             </div>
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.normativaProc']}*</p>
+                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.normativaProc']}</p>
                 </div>
                 <div class="col-10 p-1">
                     <p:dataTable id="dataNormativaProcedimiento" var="td"
