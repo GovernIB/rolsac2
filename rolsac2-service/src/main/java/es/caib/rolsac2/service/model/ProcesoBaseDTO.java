@@ -30,6 +30,14 @@ public class ProcesoBaseDTO extends ModelApi implements Comparable<ProcesoBaseDT
     super();
   }
 
+  public ProcesoBaseDTO(ProcesoBaseDTO otro) {
+    if (otro != null) {
+      this.codigo = otro.codigo;
+      this.entidad = otro.entidad == null ? null : (EntidadDTO) otro.entidad.clone();
+      this.descripcion = otro.descripcion;
+    }
+  }
+
   /**
    * Obtiene codigo.
    *
@@ -109,5 +117,10 @@ public class ProcesoBaseDTO extends ModelApi implements Comparable<ProcesoBaseDT
   @Override
   public int hashCode() {
     return Objects.hash(getCodigo());
+  }
+
+  @Override
+  public ProcesoBaseDTO clone() {
+    return new ProcesoBaseDTO(this);
   }
 }

@@ -1,5 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
 import es.caib.rolsac2.persistence.converter.ProcedimientoTramiteConverter;
 import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
 import es.caib.rolsac2.persistence.model.*;
@@ -10,6 +11,8 @@ import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoDocumentoTradu
 import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
+import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
+import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 
 import javax.ejb.Local;
@@ -21,6 +24,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -146,6 +150,79 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         return jproc;
     }
+
+    @Override
+    public List<ProcedimientoBaseSolr> obtenerPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro) {
+        StringBuilder sql;
+        Query query = getQuerySolr(false, pendientesIndexar, tipo, filtro);
+        List<Object[]> resultado = query.getResultList();
+        List<ProcedimientoBaseSolr> procs = new ArrayList<>();
+        if (resultado != null) {
+            for (Object[] datos : resultado) {
+                ProcedimientoBaseSolr proc = new ProcedimientoBaseSolr();
+                proc.setCodigo((Long) datos[0]);
+                proc.setFechaInicioIndexacion((Date) datos[1]);
+                proc.setFechaIndexacion((Date) datos[2]);
+                proc.setMensajeError((String) datos[3]);
+                proc.setTipo((String) datos[4]);
+                procs.add(proc);
+            }
+        }
+        return procs;
+    }
+
+    @Override
+    public Long obtenerCountPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro) {
+        StringBuilder sql;
+        Query query = getQuerySolr(true, pendientesIndexar, tipo, filtro);
+        return (Long) query.getSingleResult();
+    }
+
+
+    private Query getQuerySolr(boolean total, boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro) {
+        StringBuilder sql;
+        if (total) {
+            sql = new StringBuilder("SELECT count(*) ");
+        } else {
+            sql = new StringBuilder("SELECT j.codigo, j.fechaInicioIndexacion, j.fechaIndexacion, j.mensajeIndexacion, j.tipo ");
+        }
+        sql.append("  FROM JProcedimiento j where 1 = 1  ");
+        if (tipo != null) {
+            sql.append(" AND j.tipo = :tipo ");
+        }
+        if (pendientesIndexar) {
+            sql.append(" AND j.pendienteIndexar = true ");
+        }
+
+        Query query = entityManager.createQuery(sql.toString());
+        if (tipo != null) {
+            query.setParameter("tipo", tipo);
+        }
+        if (!total && filtro != null && filtro.isPaginacionActiva()) {
+            query.setMaxResults(filtro.getPaginaTamanyo());
+            query.setFirstResult(filtro.getPaginaFirst());
+        }
+        return query;
+
+    }
+
+    @Override
+    public void actualizarSolr(ProcedimientoBaseSolr proc) {
+        JProcedimiento jproc = entityManager.find(JProcedimiento.class, proc.getCodigo());
+        jproc.setFechaIndexacion(proc.getFechaIndexacion());
+        jproc.setMensajeIndexacion(proc.getMensajeError());
+        jproc.setPendienteIndexar(proc.isMantenerIndexado());
+        entityManager.merge(jproc);
+    }
+
+    @Override
+    public void marcarParaIndexar(Long codigo) {
+        JProcedimiento jproc = entityManager.find(JProcedimiento.class, codigo);
+        jproc.setFechaInicioIndexacion(new Date());
+        jproc.setPendienteIndexar(true);
+        entityManager.merge(jproc);
+    }
+
 
     @Override
     public JProcedimientoWorkflow getWF(Long id, boolean procedimientoEnmodificacion) {
@@ -843,6 +920,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Inject
     TipoTramitacionConverter tipoTramitacionConverter;
 
+    @Inject
+    PlatTramitElectronicaConverter platTramitElectronicaConverter;
+
     @Override
     public void mergeTramitesProcWF(Long codigoWF, List<ProcedimientoTramiteDTO> listaNuevos, String ruta) {
         entityManager.flush();
@@ -897,6 +977,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                                 } else {
                                     jTipoTramitacion = entityManager.find(JTipoTramitacion.class, elemento.getTipoTramitacion().getCodigo());
                                     jTipoTramitacion.merge(elemento.getTipoTramitacion());
+                                    if (elemento.getTipoTramitacion().getCodPlatTramitacion() == null) {
+                                        jTipoTramitacion.setCodPlatTramitacion(null);
+                                    } else {
+                                        JPlatTramitElectronica jplataforma = platTramitElectronicaConverter.createEntity(elemento.getTipoTramitacion().getCodPlatTramitacion());
+                                        //JPlatTramitElectronica jplataforma = entityManager.find(JPlatTramitElectronica.class, elemento.getTipoTramitacion().getCodPlatTramitacion().getCodigo());
+                                        jTipoTramitacion.setCodPlatTramitacion(jplataforma);
+                                    }
                                     jTipoTramitacion.setPlantilla(false);
                                     entityManager.merge(jTipoTramitacion);
                                 }
@@ -1163,6 +1250,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     break;
             }
         }
+        if (filtro.isRellenoCodigoProc()) {
+            sql.append(" AND j.codigo LIKE :codigoProc ");
+        }
+        if (filtro.isRellenoCodigoTram()) {
+            sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND j.codigo = :codigoTram ) ");
+        }
         if (filtro.isRellenoCodigoSIA()) {
             sql.append(" AND j.codigoSIA LIKE :codigoSIA ");
         }
@@ -1220,6 +1313,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoSilencioAdministrativo()) {
             query.setParameter("tipoSilencio", filtro.getSilencioAdministrativo().getCodigo());
+        }
+        if (filtro.isRellenoCodigoProc()) {
+            query.setParameter("codigoProc", filtro.getCodigoProc());
+        }
+        if (filtro.isRellenoCodigoTram()) {
+            query.setParameter("codigoTram", filtro.getCodigoTram());
         }
         if (filtro.isRellenoCodigoSIA()) {
             query.setParameter("codigoSIA", filtro.getCodigoSIA());

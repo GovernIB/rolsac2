@@ -80,15 +80,17 @@ public abstract class AbstractController {
                 || clase.equals(ViewTema.class) || clase.equals(ViewPublicoObjetivoEntidad.class)
                 || clase.equals(ViewTipoMediaFicha.class) || clase.equals(ViewAlertas.class)
                 || clase.equals(ViewEventosPlat.class)
-                || clase.equals(ViewProcesos.class) || clase.equals(ViewProcesosLog.class)
+                || clase.equals(ViewProcesos.class) || clase.equals(ViewProcesosSolr.class) || clase.equals(ViewProcesosLog.class)
                 || clase.equals(ViewEvolucion.class) || clase.equals(ViewContenidos.class)
                 || clase.equals(ViewUnidadAdministrativa.class)) || clase.equals(ViewLOPD.class)
-                || (isAdministradorContenidos() || isGestor())
+                || (isAdministradorContenidos() || isGestor() || isInformador())
                 && (clase.equals(ViewUnidadAdministrativa.class) || clase.equals(ViewNormativa.class)
                 || clase.equals(ViewProcedimientos.class) || clase.equals(ViewServicios.class))))
-                || (isInformador())
-                && (clase.equals(ViewProcedimientos.class) || clase.equals(ViewServicios.class))) {
+                ) {
             throw new NoAutorizadoException();
+        }
+        if(isInformador()) {
+            setModoAcceso(TypeModoAcceso.CONSULTA.toString());
         }
     }
 

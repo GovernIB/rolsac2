@@ -9,7 +9,6 @@ import java.util.List;
  * Component auxiliar procesos (auditoría procesos, etc.).
  *
  * @author Indra
- *
  */
 public interface ProcesosExecComponentFacade {
 
@@ -32,7 +31,6 @@ public interface ProcesosExecComponentFacade {
      * Audita inicio proceso.
      *
      * @param idProceso id proceso
-     *
      * @return instancia proceso
      */
     Long auditarInicioProceso(String idProceso);
@@ -40,7 +38,7 @@ public interface ProcesosExecComponentFacade {
     /**
      * Audita fin proceso.
      *
-     * @param idProceso id proceso
+     * @param idProceso        id proceso
      * @param instanciaProceso instancia proceso
      * @param resultadoProceso resultado
      */
@@ -54,4 +52,11 @@ public interface ProcesosExecComponentFacade {
      */
     boolean verificarMaestro(String instanciaId);
 
+    /**
+     * Obtener entidad.
+     *
+     * @param idProceso
+     * @return
+     */
+    Long obtenerEntidad(String idProceso);
 }

@@ -3,11 +3,9 @@ package es.caib.rolsac2.ejb.facade.procesos.test;
 import es.caib.rolsac2.ejb.facade.procesos.ProcesoProgramadoFacade;
 import es.caib.rolsac2.service.model.ListaPropiedades;
 import es.caib.rolsac2.service.model.ResultadoProcesoProgramado;
-
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -46,14 +44,14 @@ public class ProcesoProgramadoTestComponentBean implements ProcesoProgramadoFaca
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public ResultadoProcesoProgramado ejecutar(final ListaPropiedades params) {
+    public ResultadoProcesoProgramado ejecutar(final ListaPropiedades params, Long idEntidad) {
         log.info("Ejecución proceso test");
         final ListaPropiedades detalles = new ListaPropiedades();
         final ResultadoProcesoProgramado res = new ResultadoProcesoProgramado();
         if (params != null) {
             detalles.addPropiedades(params);
             res.setFinalizadoOk(true);
-            if(params.getPropiedad("valida") != null) {
+            if (params.getPropiedad("valida") != null) {
                 Boolean valida = params.getPropiedad("valida").equals("true");
                 if (!valida) {
                     res.setFinalizadoOk(false);
@@ -62,7 +60,7 @@ public class ProcesoProgramadoTestComponentBean implements ProcesoProgramadoFaca
                             "Suspendisse semper blandit felis et facilisis. Donec sodales quam vitae lorem iaculis aliquam. Quisque faucibus, lorem in rutrum egestas, " +
                             "turpis orci lobortis elit, eget sagittis libero ligula at nulla. Praesent consectetur nisl ac orci faucibus fringilla ac a libero. " +
                             "Etiam tristique mauris massa, ac laoreet dolor tincidunt ac. Fusce finibus eget ex a mollis. Aliquam vel aliquam velit. " +
-                            "Curabitur placerat mi non eros commodo molestie. Proin venenatis turpis tincidunt felis dignissim pretium id nec lectus." );
+                            "Curabitur placerat mi non eros commodo molestie. Proin venenatis turpis tincidunt felis dignissim pretium id nec lectus.");
                 } else {
                     res.setFinalizadoOk(true);
                 }

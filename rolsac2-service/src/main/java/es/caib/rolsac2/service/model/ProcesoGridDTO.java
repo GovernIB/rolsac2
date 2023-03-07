@@ -28,6 +28,16 @@ public class ProcesoGridDTO extends ProcesoBaseDTO {
    */
   private List<Propiedad> parametrosInvocacion;
 
+  public ProcesoGridDTO(){
+    super();
+  }
+
+  public ProcesoGridDTO(ProcesoGridDTO otro) {
+    this.identificadorProceso = otro.identificadorProceso;
+    this.cron = otro.cron;
+    this.activo = otro.activo;
+  }
+
   /**
    * Obtiene identificador proceso.
    *
@@ -117,5 +127,9 @@ public class ProcesoGridDTO extends ProcesoBaseDTO {
     this.parametrosInvocacion = parametrosInvocacion;
   }
 
+  @Override
+  public ProcesoGridDTO clone() {
+    return new ProcesoGridDTO(this);
+  }
 
 }

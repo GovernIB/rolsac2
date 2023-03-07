@@ -1,14 +1,26 @@
 package es.caib.rolsac2.ejb.facade.procesos.solr;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.IPluginIndexacion;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.ejb.facade.procesos.ProcesoProgramadoFacade;
-import es.caib.rolsac2.service.model.ListaPropiedades;
-import es.caib.rolsac2.service.model.ResultadoProcesoProgramado;
+import es.caib.rolsac2.service.facade.NormativaServiceFacade;
+import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
+import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
+import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,9 +28,9 @@ import java.util.List;
  *
  * @author Indra
  */
-//@Stateless(name = "procesoProgramadoSolrComponent")
-//@Local(ProcesoProgramadoFacade.class)
-//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@Stateless(name = "procesoProgramadoSolrComponent")
+@Local(ProcesoProgramadoSolrComponentBean.class)
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 // En funcion del proceso, sera o no tx por si se tiene que dividir en transacciones
 public class ProcesoProgramadoSolrComponentBean implements ProcesoProgramadoFacade {
 
@@ -26,6 +38,16 @@ public class ProcesoProgramadoSolrComponentBean implements ProcesoProgramadoFaca
      * Código interno del proceso
      */
     private static final String CODIGO_PROCESO = "SOLR";
+
+    @Inject
+    private SystemServiceFacade systemServiceFacade;
+
+    @Inject
+    private ProcedimientoServiceFacade procedimientoService;
+
+    @Inject
+    private NormativaServiceFacade normativaService;
+
 
     /**
      * log.
@@ -42,32 +64,106 @@ public class ProcesoProgramadoSolrComponentBean implements ProcesoProgramadoFaca
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public ResultadoProcesoProgramado ejecutar(final ListaPropiedades params) {
+    public ResultadoProcesoProgramado ejecutar(final ListaPropiedades params, Long idEntidad) {
         log.info("Ejecución proceso solr");
         final ListaPropiedades detalles = new ListaPropiedades();
         final ResultadoProcesoProgramado res = new ResultadoProcesoProgramado();
 
 
-        if (params == null || params.getPropiedad("accion") == null) {
+        /*if (params == null || params.getPropiedad("accion") == null || params.getPropiedad("entidad") == null) {
+            res.setFinalizadoOk(false);
+            detalles.addPropiedad("Informació del procés", "No están bien especificados los parámetros para la indexación");
+            res.setDetalles(detalles);
+            return res;
+        } else {*/
 
-        } else {
+        String accion = params.getPropiedad("accion");
 
-            String accion = params.getPropiedad("accion");
+        detalles.addPropiedades(params);
+        List<ProcedimientoBaseSolr> procedimientos = procedimientoService.obtenerPendientesIndexar(true, Constantes.PROCEDIMIENTO);
+        List<Long> normativas = null; //normativaService.obtenerPendientesIndexar();
 
-            detalles.addPropiedades(params);
-            List<Long> procedimientos = null;
-            List<Long> normativas = null;
-            IPluginIndexacion plugin = null; //getPlugin();
-            for (Long proc : procedimientos) {
-                //Intentar indexar
-                //IndexData indexData;
-                //plugin.indexarContenido(indexData);
+        IPluginIndexacion plugin = (IPluginIndexacion) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.INDEXACION, idEntidad);
+
+        if (plugin == null) {
+            res.setFinalizadoOk(false);
+            detalles.addPropiedad("Informació del procés", "No está especificado el plugin de indexación");
+            res.setDetalles(detalles);
+            return res;
+        }
+
+        if (procedimientos != null) {
+            for (ProcedimientoBaseSolr proc : procedimientos) {
+                Long codigoWF = procedimientoService.getCodigoPublicado(proc.getCodigo());
+                boolean publicado = codigoWF != null;
+                proc.setFechaIndexacion(new Date());
+                if (publicado) {
+                    try {
+                        boolean todoCorrecto = true;
+                        DataIndexacion dato;
+                        //Mandar a indexar
+                        proc.setMantenerIndexado(false);
+                        if (proc.esTipoProcedimiento()) {
+                            ProcedimientoSolrDTO procedimiento = procedimientoService.findDataIndexacionProcById(codigoWF);
+                            ResultadoAccion resultado = plugin.indexarContenido(procedimiento.getDataIndexacion());
+                            if (resultado != null && resultado.isCorrecto()) {
+                                if (procedimiento.getProcedimientoDTO().getTramites() != null) {
+                                    for (ProcedimientoTramiteDTO tramite : procedimiento.getProcedimientoDTO().getTramites()) {
+                                        dato = procedimientoService.findDataIndexacionTram(tramite, procedimiento.getProcedimientoDTO(), procedimiento.getPathUA());
+                                        ResultadoAccion resultadoTramite = plugin.indexarContenido(dato);
+                                        if (resultadoTramite != null && !resultadoTramite.isCorrecto()) {
+                                            proc.setMensajeError(resultadoTramite.getMensaje());
+                                            proc.setMantenerIndexado(false);
+                                            todoCorrecto = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                proc.setMensajeError(resultado.getMensaje());
+                                proc.setMantenerIndexado(false);
+                                todoCorrecto = false;
+                            }
+                        } else {
+                            ProcedimientoSolrDTO servicio = procedimientoService.findDataIndexacionServById(codigoWF);
+                            ResultadoAccion resultado = plugin.indexarContenido(servicio.getDataIndexacion());
+                            if (resultado != null && resultado.isCorrecto()) {
+                                proc.setMensajeError(resultado.getMensaje());
+                                proc.setMantenerIndexado(false);
+                                todoCorrecto = false;
+                            }
+                        }
+
+                        if (todoCorrecto) {
+                            proc.setMensajeError("El procediment s'ha indexat correctament");
+                            proc.setMantenerIndexado(false);
+                        } else {
+                            proc.setMantenerIndexado(true);
+                        }
+                        procedimientoService.actualizarSolr(proc);
+                    } catch (Exception e) {
+                        proc.setMensajeError(e.getMessage());
+                        proc.setMantenerIndexado(true);
+                    }
+                    procedimientoService.actualizarSolr(proc);
+                } else {
+                    proc.setMensajeError("El procediment no està publicat");
+                    proc.setMantenerIndexado(false);
+                    procedimientoService.actualizarSolr(proc);
+                }
             }
 
-            for (Long norm : normativas) {
-                //Intentar indexar
-            }
+           /* if (servicios != null) {
+                for (Long serv : servicios) {
 
+                }
+            }*/
+
+            if (normativas != null) {
+                for (Long norm : normativas) {
+                    //Intentar indexar
+                }
+            }
 
             //Mandarlo a indexar
 
@@ -93,5 +189,6 @@ public class ProcesoProgramadoSolrComponentBean implements ProcesoProgramadoFaca
         res.setDetalles(detalles);
         return res;
     }
+
 
 }

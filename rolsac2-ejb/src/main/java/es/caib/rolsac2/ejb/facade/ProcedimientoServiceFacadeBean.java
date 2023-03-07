@@ -1,5 +1,8 @@
 package es.caib.rolsac2.ejb.facade;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
+import es.caib.rolsac2.ejb.facade.procesos.solr.CastUtil;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.ejb.util.JSONUtil;
@@ -18,6 +21,7 @@ import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.auditoria.ProcedimientoAuditoria;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
+import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
@@ -60,6 +64,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Inject
     private TipoTramitacionRepository tipoTramitacionRepository;
 
+    @Inject
+    private PlatTramitElectronicaConverter platTramitElectronicaConverter;
     @Inject
     private TipoFormaInicioConverter tipoFormaInicioConverter;
 
@@ -231,6 +237,13 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                     } else {
                         jTipoTramitacion = tipoTramitacionRepository.findById(((ServicioDTO) dto).getTipoTramitacion().getCodigo());
                         jTipoTramitacion.merge(((ServicioDTO) dto).getTipoTramitacion());
+                        if (((ServicioDTO) dto).getTipoTramitacion().getCodPlatTramitacion() == null) {
+                            jTipoTramitacion.setCodPlatTramitacion(null);
+                        } else {
+                            JPlatTramitElectronica jplataforma = platTramitElectronicaConverter.createEntity(((ServicioDTO) dto).getTipoTramitacion().getCodPlatTramitacion());
+                            //JPlatTramitElectronica jplataforma = entityManager.find(JPlatTramitElectronica.class, elemento.getTipoTramitacion().getCodPlatTramitacion().getCodigo());
+                            jTipoTramitacion.setCodPlatTramitacion(jplataforma);
+                        }
                         tipoTramitacionRepository.update(jTipoTramitacion);
                     }
                     jProcWF.setTramiteElectronicoPlantilla(null);
@@ -275,6 +288,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     public void update(ProcedimientoBaseDTO dto, ProcedimientoBaseDTO dtoAntiguo, TypePerfiles perfil) throws RecursoNoEncontradoException {
         JProcedimientoWorkflow jProcWF = procedimientoRepository.getWF(dto.getCodigo(), dto.getWorkflow().getValor());
         this.updateWF(dto, jProcWF);
+        procedimientoRepository.marcarParaIndexar(dto.getCodigo());
         crearAuditoria(dtoAntiguo, dto, perfil, null);
     }
 
@@ -467,9 +481,23 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public ProcedimientoDTO findProcedimientoById(Long codigoWF) {
         return (ProcedimientoDTO) getProcedimientoDTOByCodigoWF(codigoWF);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public ProcedimientoSolrDTO findDataIndexacionProcById(Long codigoWF) {
+        ProcedimientoDTO procedimiento = (ProcedimientoDTO) getProcedimientoDTOByCodigoWF(codigoWF);
+        PathUA pathUA = uaRepository.getPath(procedimiento.getUaInstructor());
+        DataIndexacion dataIndexacion = CastUtil.getDataIndexacion(procedimiento, pathUA);
+        ProcedimientoSolrDTO proc = new ProcedimientoSolrDTO();
+        proc.setDataIndexacion(dataIndexacion);
+        proc.setProcedimientoDTO(procedimiento);
+        proc.setPathUA(pathUA);
+        return proc;
     }
 
     @Override
@@ -477,6 +505,20 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public ServicioDTO findServicioById(Long codigoWF) {
         return (ServicioDTO) getProcedimientoDTOByCodigoWF(codigoWF);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public ProcedimientoSolrDTO findDataIndexacionServById(Long codigoWF) {
+        ServicioDTO serv = (ServicioDTO) getProcedimientoDTOByCodigoWF(codigoWF);
+        PathUA pathUA = uaRepository.getPath(serv.getUaInstructor());
+        DataIndexacion dataIndexacion = CastUtil.getDataIndexacion(serv, pathUA);
+        ProcedimientoSolrDTO proc = new ProcedimientoSolrDTO();
+        proc.setDataIndexacion(dataIndexacion);
+        proc.setServicioDTO(serv);
+        proc.setPathUA(pathUA);
+        return proc;
     }
 
     private ProcedimientoBaseDTO getProcedimientoDTOByCodigoWF(Long codigoWF) {
@@ -683,7 +725,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public Pagina<ProcedimientoGridDTO> findProcedimientosByFiltro(ProcedimientoFiltro filtro) {
         List<ProcedimientoGridDTO> items = procedimientoRepository.findProcedimientosPagedByFiltro(filtro);
         long total = procedimientoRepository.countByFiltro(filtro);
@@ -692,7 +734,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public Pagina<ServicioGridDTO> findServiciosByFiltro(ProcedimientoFiltro filtro) {
         List<ServicioGridDTO> items = procedimientoRepository.findServiciosPagedByFiltro(filtro);
         long total = procedimientoRepository.countByFiltro(filtro);
@@ -760,6 +802,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void guardarFlujo(ProcedimientoBaseDTO data, TypeProcedimientoEstado estadoDestino, String mensajes, TypePerfiles perfil) {
 
+        //Paso 0. Marcamos para indexar.
+        procedimientoRepository.marcarParaIndexar(data.getCodigo());
+
         //Primero borramos el wf destino (si es de destinto wf)
         if (TypeProcedimientoEstado.distintoWorkflow(data.getEstado(), estadoDestino)) {
 
@@ -784,6 +829,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         //Segundo actualizamos el dato
         JProcedimientoWorkflow jProcWF = procedimientoRepository.getWFByCodigoWF(data.getCodigoWF());
+
         data.setEstado(estadoDestino);
         data.setWorkflow(estadoDestino.getWorkflowSegunEstado());
         this.updateWF(data, jProcWF);
@@ -807,4 +853,35 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         return procedimientoRepository.getCodigoByWF(codigo, valor);
     }
 
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<ProcedimientoBaseSolr> obtenerPendientesIndexar(boolean pendientesIndexar, String tipo) {
+        return procedimientoRepository.obtenerPendientesIndexar(pendientesIndexar, tipo, null);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void actualizarSolr(ProcedimientoBaseSolr proc) {
+        procedimientoRepository.actualizarSolr(proc);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long getCodigoPublicado(Long codProc) {
+        return procedimientoRepository.getCodigoByWF(codProc, Constantes.PROCEDIMIENTO_PUBLICADO);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public DataIndexacion findDataIndexacionTram(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, PathUA pathUA) {
+        return CastUtil.getDataIndexacion(tramite, procedimientoDTO, pathUA);
+
+    }
 }
+
+

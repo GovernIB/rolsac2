@@ -2,6 +2,7 @@ package es.caib.rolsac2.ejb.facade;
 
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
+import es.caib.rolsac2.persistence.repository.ProcedimientoRepository;
 import es.caib.rolsac2.persistence.repository.ProcesoRepository;
 import es.caib.rolsac2.service.exception.ProcesoNoExistenteException;
 import es.caib.rolsac2.service.facade.ProcesoServiceFacade;
@@ -9,8 +10,9 @@ import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.ProcesoDTO;
 import es.caib.rolsac2.service.model.ProcesoGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
+import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
+import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
-
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -41,6 +43,9 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
 
     @Inject
     private ProcesoRepository procesoRepository;
+
+    @Inject
+    private ProcedimientoRepository procedimientoRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -110,5 +115,19 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
         }
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Pagina<ProcedimientoBaseSolr> findSolrByFiltro(ProcesoSolrFiltro filtro) {
+        try {
+            List<ProcedimientoBaseSolr> items = procedimientoRepository.obtenerPendientesIndexar(true, null, filtro);
+            long total = procedimientoRepository.obtenerCountPendientesIndexar(true, null, filtro).longValue();
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            List<ProcedimientoBaseSolr> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
 
 }

@@ -4,15 +4,9 @@ import es.caib.rolsac2.persistence.converter.EntidadConverter;
 import es.caib.rolsac2.persistence.model.JProceso;
 import es.caib.rolsac2.persistence.model.JProcesoControl;
 import es.caib.rolsac2.service.exception.ProcesoException;
-
 import es.caib.rolsac2.service.model.ProcesoDTO;
 import es.caib.rolsac2.service.model.ProcesoGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -20,6 +14,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Stateless
 @Local(ProcesoRepository.class)
@@ -188,7 +186,7 @@ public class ProcesoRepositoryBean extends AbstractCrudRepository<JProceso, Long
             sql.append(" and P.codigo = :codigo ");
         }
 
-        if(filtro.isRellenoEntidad()) {
+        if (filtro.isRellenoEntidad()) {
             sql.append(" and P.entidad.codigo = :entidad");
         }
 
@@ -216,7 +214,7 @@ public class ProcesoRepositoryBean extends AbstractCrudRepository<JProceso, Long
         if (filtro.isRellenoCodigo()) {
             query.setParameter("codigo", filtro.getCodigo());
         }
-        if(filtro.isRellenoEntidad()) {
+        if (filtro.isRellenoEntidad()) {
             query.setParameter("entidad", filtro.getIdEntidad());
         }
 

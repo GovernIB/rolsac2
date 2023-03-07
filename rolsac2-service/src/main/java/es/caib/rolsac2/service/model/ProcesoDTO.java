@@ -19,6 +19,13 @@ public class ProcesoDTO extends ProcesoGridDTO {
     super();
   }
 
+  public ProcesoDTO(ProcesoDTO otro) {
+    this.setCodigo(otro.getCodigo());
+    this.setDescripcion(otro.getDescripcion());
+    this.setActivo(otro.getActivo());
+    this.setParametrosInvocacion(otro.getParametrosInvocacion());
+    this.setCron(otro.getCron());
+  }
 
   /**
    * Devuelve una instancia de instancia.
@@ -29,5 +36,9 @@ public class ProcesoDTO extends ProcesoGridDTO {
     return new ProcesoDTO();
   }
 
+  @Override
+  public ProcesoDTO clone() {
+    return new ProcesoDTO(this);
+  }
 
 }
