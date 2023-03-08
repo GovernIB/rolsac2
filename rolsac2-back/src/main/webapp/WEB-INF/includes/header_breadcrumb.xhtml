@@ -28,7 +28,7 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <c:forEach
-                                            items="#{sessionBean.obtenerUsuarioAutenticado().unidadesAdministrativas}"
+                                            items="#{sessionBean.obtenerUasEntidad()}"
                                             var="ua">
                                         <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                          actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"

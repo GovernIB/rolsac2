@@ -21,7 +21,7 @@
                         <p:repeat value="#{sessionBean.entidades}" var="entidad">
                             <p:commandLink styleClass="dropdown-item mobil" hreflang="#{entidad}"
                                            value="#{entidad.descripcion.getTraduccion(sessionBean.getLang())}">
-                                <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}"/>
+                                <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}" oncomplete="window.location.replace(window.location)"/>
                             </p:commandLink>
                         </p:repeat>
                     </div>

@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Named
 @ViewScoped
@@ -40,6 +41,8 @@ public class DialogUsuario extends AbstractController implements Serializable {
     private String identificadorOld = "";
 
     private UnidadAdministrativaGridDTO uaSeleccionada;
+
+    private List<UnidadAdministrativaGridDTO> unidadesAdministrativasEntidad;
 
     @Inject
     private SessionBean sessionBean;
@@ -63,11 +66,15 @@ public class DialogUsuario extends AbstractController implements Serializable {
             data.setUnidadesAdministrativas(new ArrayList<>());
             dataOriginal = data.clone();
             dataOriginal.setUnidadesAdministrativas(new ArrayList<>());
+            unidadesAdministrativasEntidad = new ArrayList<>();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = administracionEntService.findUsuarioById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
             dataOriginal = data.clone();
             dataOriginal.setUnidadesAdministrativas(new ArrayList<>(data.getUnidadesAdministrativas()));
+            unidadesAdministrativasEntidad = this.data.getUnidadesAdministrativas().stream()
+                    .filter(ua -> ua.getIdEntidad().compareTo(sessionBean.getEntidad().getCodigo()) == 0)
+                    .collect(Collectors.toList());
         }
     }
 
@@ -154,6 +161,12 @@ public class DialogUsuario extends AbstractController implements Serializable {
         return true;
     }
 
+    public void actualizarUasEntidad() {
+        unidadesAdministrativasEntidad =  this.data.getUnidadesAdministrativas().stream()
+                .filter(ua -> ua.getIdEntidad().compareTo(sessionBean.getEntidad().getCodigo()) == 0)
+                .collect(Collectors.toList());
+    }
+
     public void cerrar() {
         if (data != null && dataOriginal != null && comprobarModificacion()) {
             PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
@@ -211,6 +224,9 @@ public class DialogUsuario extends AbstractController implements Serializable {
             uaSeleccionada = unidadAdministrativaServiceFacade.findById(uaSeleccionada.getCodigo());
             if (uaSeleccionada != null) {
                 UnidadAdministrativaGridDTO uaSeleccionadaGrid = uaSeleccionada.convertDTOtoGridDTO();
+                if(uaSeleccionadaGrid.getIdEntidad() == null) {
+                    uaSeleccionadaGrid.setIdEntidad(sessionBean.getEntidad().getCodigo());
+                }
                 //verificamos qeu la UA no esté seleccionada ya, en caso de estarlo mostramos mensaje
                 if (this.data.getUnidadesAdministrativas() == null) {
                     this.data.setUnidadesAdministrativas(new ArrayList<>());
@@ -219,6 +235,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
                     UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.elementoRepetido"));
                 } else {
                     this.data.getUnidadesAdministrativas().add(uaSeleccionadaGrid);
+                    actualizarUasEntidad();
                 }
             }
         }
@@ -278,5 +295,13 @@ public class DialogUsuario extends AbstractController implements Serializable {
 
     public void setUaSeleccionada(UnidadAdministrativaGridDTO uaSeleccionada) {
         this.uaSeleccionada = uaSeleccionada;
+    }
+
+    public List<UnidadAdministrativaGridDTO> getUnidadesAdministrativasEntidad() {
+        return unidadesAdministrativasEntidad;
+    }
+
+    public void setUnidadesAdministrativasEntidad(List<UnidadAdministrativaGridDTO> unidadesAdministrativasEntidad) {
+        this.unidadesAdministrativasEntidad = unidadesAdministrativasEntidad;
     }
 }

@@ -30,6 +30,7 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Bean per mantener todos los datos importantes de session. En resumen:
@@ -477,6 +478,12 @@ public class SessionBean implements Serializable {
         } else {
             unidadActiva = uaService.getUnidadesAdministrativaByEntidadId(this.entidad.getCodigo(), lang).get(0);
         }
+    }
+
+    public List<UnidadAdministrativaGridDTO> obtenerUasEntidad() {
+        return obtenerUsuarioAutenticado().getUnidadesAdministrativas().stream()
+                .filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0)
+                .collect(Collectors.toList());
     }
 
     /**
