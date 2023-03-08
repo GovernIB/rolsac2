@@ -115,7 +115,7 @@
 
                 <p:treeNode type="TemaDTO" nodeType="TemaDTO" >
                     <!--<h:outputText value="#{node.nombre.getTraduccion(sessionBean.lang)}"/>-->
-                    <h:outputText value="#{node.identificador}" class="etElemento"/>
+                    <h:outputText value="#{node.descripcion.getTraduccion(dialogSeleccionarTema.idioma)}" class="etElemento"/>
                 </p:treeNode>
             </p:tree>
         </div>

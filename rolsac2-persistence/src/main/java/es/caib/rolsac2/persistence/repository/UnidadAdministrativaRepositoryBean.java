@@ -177,8 +177,15 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro) {
-        Query query = getQuery(false, filtro);
+    public List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest) {
+    	Query query = null;
+
+    	if(isApiRest) {
+    		query = getQueryApiRest(false, filtro);
+    	} else {
+    		query = getQuery(false, filtro);
+    	}
+
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -206,8 +213,64 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         return unidadAdmin;
     }
 
-
     private Query getQuery(boolean isTotal, UnidadAdministrativaFiltro filtro) {
+
+        StringBuilder sql;
+        if (isTotal) {
+            sql = new StringBuilder(
+                    "SELECT count(j) FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma "
+                            + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp "
+                            + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma "
+                            + " LEFT OUTER JOIN j.entidad je "
+                            + " where 1 = 1 AND je.codigo=:codEnti");
+        } else {
+            sql = new StringBuilder("SELECT j.codigo, jtipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 "
+                    + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma "
+                    + " LEFT OUTER JOIN j.padre tp "
+                    + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma "
+                    + " LEFT OUTER JOIN j.entidad je "
+                    + " LEFT OUTER JOIN j.tipo jtipo where 1 = 1 AND je.codigo=:codEnti");
+        }
+        if (filtro.isRellenoTexto()) {
+            sql.append(" and (LOWER(jtipo.identificador) LIKE :filtro "
+                    + " OR LOWER(j.codigoDIR3) LIKE :filtro OR cast(j.id as string) like :filtro "
+                    + " OR LOWER(t.nombre) LIKE :filtro OR LOWER(cast(j.orden as string)) LIKE :filtro "
+                    + " OR LOWER(tpd.nombre) LIKE :filtro OR LOWER(cast(je.codigo as string)) LIKE :filtro ) ");
+        }
+
+        if (filtro.isRellenoIdUA()) {
+            sql.append(" and ( j.codigo = :idUA OR j.padre.codigo = :idUA) ");
+        }
+
+        if (filtro.getOrderBy() != null) {
+            sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
+            sql.append(filtro.isAscendente() ? " asc " : " desc ");
+        }
+
+        Query query = entityManager.createQuery(sql.toString());
+
+        if (filtro.isRellenoTexto()) {
+            query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoNombre()) {
+            query.setParameter("nombre", "%" + filtro.getNombre().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoIdentificador()) {
+            query.setParameter("identificador", "%" + filtro.getIdentificador().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoIdioma()) {
+            query.setParameter("idioma", filtro.getIdioma());
+        }
+        if (filtro.isRellenoIdUA()) {
+            query.setParameter("idUA", filtro.getIdUA());
+        }
+        query.setParameter("codEnti", filtro.getCodEnti());
+
+
+        return query;
+    }
+
+    private Query getQueryApiRest(boolean isTotal, UnidadAdministrativaFiltro filtro) {
 
         StringBuilder sql;
         if (isTotal) {
@@ -326,8 +389,12 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public long countByFiltro(UnidadAdministrativaFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+    public long countByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest) {
+    	if(isApiRest) {
+    		 return (long) getQueryApiRest(true, filtro).getSingleResult();
+    	} else {
+    		 return (long) getQuery(true, filtro).getSingleResult();
+    	}
     }
 
     private String getOrden(String order) {

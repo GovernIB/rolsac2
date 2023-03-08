@@ -149,7 +149,7 @@ public class UtilJSF {
                     url = PATH_VIEWS_ENTIDAD + "viewConfiguracionEntidad" + EXTENSION_XHTML;
                     break;
                 case ADMINISTRADOR_CONTENIDOS:
-                    url = PATH_VIEWS_ENTIDAD + UtilJSF.getViewNameFromClass(ViewUnidadAdministrativa.class) + EXTENSION_XHTML;
+                    url = PATH_VIEWS_MAESTRAS + UtilJSF.getViewNameFromClass(ViewProcedimientos.class) + EXTENSION_XHTML;
                     break;
                 //TO DO SUSTITUIR AL CREAR SU RESPECTIVA PÁGINA
                 case GESTOR:

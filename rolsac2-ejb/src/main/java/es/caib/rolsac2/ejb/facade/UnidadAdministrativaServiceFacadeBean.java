@@ -248,10 +248,10 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-    public Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro) {
+    public Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest) {
         try {
-            List<UnidadAdministrativaGridDTO> items = unidadAdministrativaRepository.findPagedByFiltro(filtro);
-            long total = unidadAdministrativaRepository.countByFiltro(filtro);
+            List<UnidadAdministrativaGridDTO> items = unidadAdministrativaRepository.findPagedByFiltro(filtro, isApiRest);
+            long total = unidadAdministrativaRepository.countByFiltro(filtro, isApiRest);
             return new Pagina<>(items, total);
         } catch (Exception e) {
             LOG.error("Error", e);
@@ -265,7 +265,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public int countByFiltro(UnidadAdministrativaFiltro filtro) {
-        return (int) unidadAdministrativaRepository.countByFiltro(filtro);
+        return (int) unidadAdministrativaRepository.countByFiltro(filtro, false);
     }
 
     @Override

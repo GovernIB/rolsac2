@@ -162,7 +162,7 @@ public class UAResource {
 	}
 
 	private RespuestaUA getRespuesta(UnidadAdministrativaFiltro fg) throws DelegateException {
-		Pagina<UnidadAdministrativaGridDTO> resultadoBusqueda = unidadAdministrativaService.findByFiltro(fg);
+		Pagina<UnidadAdministrativaGridDTO> resultadoBusqueda = unidadAdministrativaService.findByFiltro(fg, true);
 		List<UnidadAdministrativa> lista = new ArrayList<>();
 		UnidadAdministrativa elemento;
 

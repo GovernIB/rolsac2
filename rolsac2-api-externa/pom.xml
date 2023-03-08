@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>rolsac2</artifactId>
@@ -44,16 +45,16 @@
         </dependency>
 
         <dependency>
-      		<groupId>org.microprofile-ext.openapi-ext</groupId>
-      		<artifactId>openapi-ui</artifactId>
-      		<scope>provided</scope>
-   		</dependency>
+            <groupId>org.microprofile-ext.openapi-ext</groupId>
+            <artifactId>openapi-ui</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-   		<dependency>
-    		<groupId>commons-lang</groupId>
-    		<artifactId>commons-lang</artifactId>
-    		<version>2.6</version>
-		</dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
 
         <!-- Dependències de test -->
         <dependency>
@@ -98,23 +99,38 @@
             <scope>test</scope>
         </dependency>
 
-<!--         Swagger -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>io.springfox</groupId> -->
-<!-- 			<artifactId>springfox-swagger-ui</artifactId> -->
-<!-- 			<version>2.7.0</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>io.springfox</groupId> -->
-<!-- 			<artifactId>springfox-swagger2</artifactId> -->
-<!-- 			<version>2.7.0</version> -->
-<!-- 		</dependency> -->
+        <!--         Swagger -->
+        <!-- 		<dependency> -->
+        <!-- 			<groupId>io.springfox</groupId> -->
+        <!-- 			<artifactId>springfox-swagger-ui</artifactId> -->
+        <!-- 			<version>2.7.0</version> -->
+        <!-- 		</dependency> -->
+        <!-- 		<dependency> -->
+        <!-- 			<groupId>io.springfox</groupId> -->
+        <!-- 			<artifactId>springfox-swagger2</artifactId> -->
+        <!-- 			<version>2.7.0</version> -->
+        <!-- 		</dependency> -->
 
     </dependencies>
 
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                    <webResources>
+                        <webResource>
+                            <directory>src\main\jboss\${webXml.loginConfig.authMethod}</directory>
+                            <targetPath>/WEB-INF</targetPath>
+                        </webResource>
+                    </webResources>
+                </configuration>
+
+
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -141,11 +157,13 @@
                             <application>es.caib.rolsac2.api.externa.JAXRSConfiguration</application>
                             <endpointClasses>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.PersonalResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoBoletinResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoBoletinResource
+                                </endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.UAResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.NormativaResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.ServiciosResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.ProcedimientosResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.ProcedimientosResource
+                                </endpointClass>
                             </endpointClasses>
                             <output>${project.build.directory}/openapi/openapi.json</output>
                             <info>
@@ -164,9 +182,9 @@
         <!-- Profile per incloure swagger-ui dins el mòdul -->
         <profile>
             <id>swagger-ui</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <!-- La darrera versió disponible: https://github.com/swagger-api/swagger-ui/releases -->
                 <swagger-ui.version>3.35.1</swagger-ui.version>
@@ -186,7 +204,9 @@
                                 </goals>
                                 <configuration>
                                     <skipCache>true</skipCache>
-                                    <url>https://github.com/swagger-api/swagger-ui/archive/v${swagger-ui.version}.tar.gz</url>
+                                    <url>
+                                        https://github.com/swagger-api/swagger-ui/archive/v${swagger-ui.version}.tar.gz
+                                    </url>
                                     <unpack>true</unpack>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
                                 </configuration>
@@ -221,7 +241,8 @@
                         <configuration>
                             <webResources combine.children="append">
                                 <resource>
-                                    <directory>${project.build.directory}/swagger-ui-${swagger-ui.version}/dist</directory>
+                                    <directory>${project.build.directory}/swagger-ui-${swagger-ui.version}/dist
+                                    </directory>
                                 </resource>
                             </webResources>
                         </configuration>

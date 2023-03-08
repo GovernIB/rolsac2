@@ -115,7 +115,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
                         filtro.setOrderBy(sortField);
                     }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    Pagina<UnidadAdministrativaGridDTO> pagina = unidadAdministrativaService.findByFiltro(filtro);
+                    Pagina<UnidadAdministrativaGridDTO> pagina = unidadAdministrativaService.findByFiltro(filtro, false);
                     setRowCount((int) pagina.getTotal());
 
                     return pagina.getItems();

@@ -51,7 +51,7 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
 
     public void load() {
         LOG.debug("init");
-
+        this.setearIdioma();
         tema = (TemaDTO) UtilJSF.getValorMochilaByKey("tema");
         esCabecera = Boolean.parseBoolean((String) UtilJSF.getDialogParam("esCabecera"));
         root = new LazyLoadingTreeNode();

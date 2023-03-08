@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.converter;
 import es.caib.rolsac2.persistence.model.JTema;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUsuario;
+import es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
 import es.caib.rolsac2.service.model.*;
 import org.mapstruct.*;
@@ -204,6 +205,21 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
                 temaGridDTO.setIdentificador(tema.getIdentificador());
                 temaGridDTO.setEntidad(tema.getEntidad().getCodigo());
                 temaGridDTO.setMathPath(tema.getMathPath());
+
+                Literal resultado = null;
+                if(tema.getDescripcion() != null) {
+                    resultado = new Literal();
+                    resultado.setCodigo(tema.getDescripcion().stream().map(t -> t.getTema().getCodigo()).findFirst()
+                            .orElse(null));
+                    for(JTemaTraduccion trad : tema.getDescripcion()) {
+                        Traduccion traduccion = new Traduccion();
+                        traduccion.setCodigo(trad.getCodigo());
+                        traduccion.setIdioma(trad.getIdioma());
+                        traduccion.setLiteral(trad.getDescripcion());
+                        resultado.add(traduccion);
+                    }
+                }
+                temaGridDTO.setDescripcion(resultado);
                 if(tema.getTemaPadre() != null) {
                     temaGridDTO.setTemaPadre(tema.getTemaPadre().getIdentificador());
                 }

@@ -16,14 +16,14 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     Optional<JUnidadAdministrativa> findById(String id);
 
-    List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro);
+    List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest);
 
     List<JUnidadAdministrativa> getHijos(Long idUnitat, String idioma);
 
 
     Long getCountHijos(Long parentId);
 
-    long countByFiltro(UnidadAdministrativaFiltro filtro);
+    long countByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest);
 
     List<JTipoUnidadAdministrativa> getTipo(Long idUnitat, String idioma);
 

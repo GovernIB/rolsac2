@@ -188,12 +188,6 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
         converter.mergeEntity(jUsuario, dto);
         usuarioRepository.update(jUsuario);
-
-        List<Long> idEntidades = new ArrayList<>();
-        for(EntidadGridDTO entidad : dto.getEntidades()) {
-            idEntidades.add(entidad.getCodigo());
-        }
-        usuarioRepository.mergeUsuarioEntidad(jUsuario, idEntidades);
     }
 
     @Override

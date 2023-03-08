@@ -123,6 +123,7 @@ public class DialogEntidad extends AbstractController implements Serializable {
             sessionBean.actualizarEntidades();
         } else {
             administracionSupServiceFacade.updateEntidad(this.data);
+            sessionBean.actualizarEntidades();
         }
 
         // Cerramos y retornamos resultado

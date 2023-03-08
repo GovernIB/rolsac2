@@ -79,9 +79,10 @@ public interface UnidadAdministrativaServiceFacade {
      * Devuelve una página con el ua relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
+     * @param isApiRest llamada desde Api Rest
      * @return una pagina con el numero total de ua y la lista de uas por el rango indicado.
      */
-    Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro);
+    Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest);
 
     /**
      * Devuelve el total de uas relacionado con los parámetros del filtro.

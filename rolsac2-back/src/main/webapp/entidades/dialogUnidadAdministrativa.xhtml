@@ -381,7 +381,7 @@
                                                         styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
                                             </div>
                                         </div>
-                                        <h:outputText value="#{td.identificador}"/>
+                                        <h:outputText value="#{td.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}"/>
                                     </p:column>
 
                                 </p:treeTable>

@@ -151,7 +151,6 @@ public class SessionBean implements Serializable {
             List<Long> idEntidades = new ArrayList<>();
             for (EntidadGridDTO entidad : usuario.getEntidades()) {
                 if (entidad.getActiva()) {
-                    entidades.add(entidad);
                     idEntidades.add(entidad.getCodigo());
                 }
             }
@@ -168,8 +167,8 @@ public class SessionBean implements Serializable {
                     checkUaGestor(unidadActiva);
                 }
                 actualizarPerfiles();
+                actualizarEntidades();
                 lang = sesion.getIdioma();
-
                 sesion.setFechaUltimaSesion(new Date());
                 systemServiceBean.updateSesion(sesion);
             } else {
@@ -185,6 +184,7 @@ public class SessionBean implements Serializable {
                     checkPerfilPosible();
                     actualizarPerfiles();
                     actualizarUnidadAdministrativa(usuario);
+                    actualizarEntidades();
                     sesionDTO.setIdEntidad(this.entidad.getCodigo());
                     sesionDTO.setIdUa(this.unidadActiva.getCodigo());
                     sesionDTO.setPerfil(this.perfil.toString());
@@ -228,6 +228,9 @@ public class SessionBean implements Serializable {
             if(this.perfil.equals(TypePerfiles.GESTOR)) {
                 checkUaGestor(unidadActiva);
             }
+            actualizarEntidades();
+            reload();
+            reloadPerfil();
         } else {
             entidad = null;
             unidadActiva = null;
@@ -242,7 +245,7 @@ public class SessionBean implements Serializable {
     }
 
     /**
-     * Comprueba si hay algún perfil del usuario que se pueda setear por defecto
+     * Comprueba si hay algún perfil del usuario que se pueda setear por defecto.
      */
     private void checkPerfilPosible() {
         Boolean perfilPosible = Boolean.FALSE;
@@ -259,19 +262,21 @@ public class SessionBean implements Serializable {
     }
 
     /**
-     * Dado un perfil, comprueba si este es adecuado en alguna entidad.
+     * Dado un perfil, comprueba si este es adecuado en alguna entidad de las que tiene el
+     * y setea la variable entidad y el perfil del SessionBean en caso de que haya conincidencia.
      *
      * @param perfilActivo
      * @return
      */
     private Boolean checkPermisosPerfil(TypePerfiles perfilActivo) {
         Boolean perfilCorrecto = Boolean.FALSE;
+        UsuarioDTO usuario = obtenerUsuarioAutenticado();
         switch (perfilActivo) {
             case ADMINISTRADOR_ENTIDAD: {
                 for (String rol : roles) {
                     if (!perfilCorrecto) {
                         if (entidad == null) {
-                            for (EntidadGridDTO entidadPosible : entidades) {
+                            for (EntidadGridDTO entidadPosible : usuario.getEntidades()) {
                                 if (rol.equals(entidadPosible.getRolAdmin())) {
                                     this.entidad = administracionSupServiceFacade.findEntidadById(entidadPosible.getCodigo());
                                     this.perfil = TypePerfiles.ADMINISTRADOR_ENTIDAD;
@@ -295,7 +300,7 @@ public class SessionBean implements Serializable {
                 for (String rol : roles) {
                     if (!perfilCorrecto) {
                         if (entidad == null) {
-                            for (EntidadGridDTO entidadPosible : entidades) {
+                            for (EntidadGridDTO entidadPosible : usuario.getEntidades()) {
                                 if (rol.equals(entidadPosible.getRolAdminContenido())) {
                                     this.entidad = administracionSupServiceFacade.findEntidadById(entidadPosible.getCodigo());
                                     this.perfil = TypePerfiles.ADMINISTRADOR_CONTENIDOS;
@@ -320,7 +325,7 @@ public class SessionBean implements Serializable {
                 for (String rol : roles) {
                     if (!perfilCorrecto) {
                         if (entidad == null) {
-                            for (EntidadGridDTO entidadPosible : entidades) {
+                            for (EntidadGridDTO entidadPosible : usuario.getEntidades()) {
                                 if (rol.equals(entidadPosible.getRolGestor())) {
                                     this.entidad = administracionSupServiceFacade.findEntidadById(entidadPosible.getCodigo());
                                     this.perfil = TypePerfiles.GESTOR;
@@ -345,7 +350,7 @@ public class SessionBean implements Serializable {
                 for (String rol : roles) {
                     if (!perfilCorrecto) {
                         if (entidad == null) {
-                            for (EntidadGridDTO entidadPosible : entidades) {
+                            for (EntidadGridDTO entidadPosible : usuario.getEntidades()) {
                                 if (rol.equals(entidadPosible.getRolInformador())) {
                                     this.entidad = administracionSupServiceFacade.findEntidadById(entidadPosible.getCodigo());
                                     this.perfil = TypePerfiles.INFORMADOR;
@@ -363,11 +368,56 @@ public class SessionBean implements Serializable {
                         break;
                     }
                 }
-                opcion = "viewProcedimientos.titulo";
                 break;
             }
         }
         return perfilCorrecto;
+    }
+
+    /**
+     *  Método que comprueba si para una entidad determinada, el perfil que se pasa por parámetro
+     *  se puede utilizar en la entidad.
+     * @param entidad
+     * @param perfil
+     * @return
+     */
+    private Boolean checkPermisosPerfilEntidad(EntidadGridDTO entidad, TypePerfiles perfil) {
+        Boolean permiso = Boolean.FALSE;
+        switch (perfil) {
+            case SUPER_ADMINISTRADOR: {
+                break;
+            }
+            case ADMINISTRADOR_ENTIDAD: {
+                if(roles.contains(entidad.getRolAdmin())) {
+                    permiso = Boolean.TRUE;
+                }
+                break;
+            }
+            case ADMINISTRADOR_CONTENIDOS: {
+                if(roles.contains(entidad.getRolAdminContenido())) {
+                    permiso = Boolean.TRUE;
+                }
+                break;
+            }
+            case GESTOR: {
+                if(roles.contains(entidad.getRolGestor())) {
+                    permiso = Boolean.TRUE;
+                }
+                break;
+            }
+            case INFORMADOR: {
+                if(roles.contains(entidad.getRolInformador())) {
+                    permiso = Boolean.TRUE;
+                }
+                break;
+            }
+        }
+        return permiso;
+    }
+
+    private Boolean tieneRolEntidadRelacionada(EntidadGridDTO entidad) {
+        return roles.contains(entidad.getRolAdminContenido()) || roles.contains(entidad.getRolAdmin())
+                || roles.contains(entidad.getRolGestor()) ||roles.contains(entidad.getRolInformador());
     }
 
     public void actualizarPerfiles() {
@@ -444,9 +494,26 @@ public class SessionBean implements Serializable {
             sesionDTO.setIdEntidad(entidad.getCodigo());
             sesionDTO.setIdUa(unidadActiva.getCodigo());
             sesionDTO.setFechaUltimaSesion(new Date());
+            actualizarPerfiles();
+            if(!checkPermisosPerfilEntidad(ent, this.perfil)) {
+                Boolean perfilAdecuado = Boolean.FALSE;
+                for(TypePerfiles perfil : perfiles) {
+                    if(checkPermisosPerfilEntidad(ent, perfil)) {
+                        this.perfil = perfil;
+                        sesionDTO.setPerfil(perfil.toString());
+                        perfilAdecuado = Boolean.TRUE;
+                        reload();
+                        reloadPerfil();
+                    }
+                }
+                if(!perfilAdecuado) {
+                    //Redirigimos a página de error (está asociado a una entidad pero no tiene ningún perfil con los roles adecuados.
+                }
+            }
+
             systemServiceBean.updateSesion(sesionDTO);
         }
-        actualizarPerfiles();
+        reload();
     }
 
     /**
@@ -454,8 +521,9 @@ public class SessionBean implements Serializable {
      */
     public void actualizarEntidades() {
         UsuarioDTO usuario = obtenerUsuarioAutenticado();
+        entidades.clear();
         for (EntidadGridDTO entidad : usuario.getEntidades()) {
-            if (entidad.getActiva()) {
+            if (entidad.getActiva() && tieneRolEntidadRelacionada(entidad)) {
                 entidades.add(entidad);
             }
         }
@@ -633,7 +701,7 @@ public class SessionBean implements Serializable {
         UtilJSF.redirectJsfDefaultPagePerfil(perfil);
         switch (this.perfil) {
             case ADMINISTRADOR_CONTENIDOS:
-                opcion = "viewUnidadAdministrativa.titulo";
+                opcion = "viewProcedimientos.titulo";
                 break;
             case ADMINISTRADOR_ENTIDAD:
                 opcion = "viewConfiguracionEntidad.titulo";
@@ -686,9 +754,9 @@ public class SessionBean implements Serializable {
         String rolsac2back = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
         switch (this.perfil) {
             case ADMINISTRADOR_CONTENIDOS:
-                opcion = "viewUnidadAdministrativa.titulo";
+                opcion = "viewProcedimientos.titulo";
                 context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace('" + rolsac2back + "/entidades/viewUnidadAdministrativa.xhtml')");
+                        .add("location.replace('" + rolsac2back + "/maestras/viewProcedimientos.xhtml')");
                 break;
             case ADMINISTRADOR_ENTIDAD:
                 opcion = "viewConfiguracionEntidad.titulo";

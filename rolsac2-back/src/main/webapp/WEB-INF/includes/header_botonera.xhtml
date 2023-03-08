@@ -21,7 +21,7 @@
                         <p:repeat value="#{sessionBean.entidades}" var="entidad">
                             <p:commandLink styleClass="dropdown-item mobil" hreflang="#{entidad}"
                                            value="#{entidad.descripcion.getTraduccion(sessionBean.getLang())}">
-                                <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}" oncomplete="window.location.replace(window.location)"/>
+                                <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}"/>
                             </p:commandLink>
                         </p:repeat>
                     </div>
@@ -47,7 +47,7 @@
                 </div>
             </li>
             <li class="nav-item dropdown colorRojo">
-                <a class="nav-link dropdown mobil" title="#{labels['idioma_link']}" href="#" id="idiomas"
+                <a class="nav-link dropdown mobil" title="#{labels['dict.configuracion']}" href="#" id="idiomas"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
                                           aria-hidden="true"></span>
