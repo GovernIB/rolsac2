@@ -171,7 +171,24 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
-    public void returnDialogoUA(final SelectEvent event) {
+
+    public void returnDialogoUAInstr(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        // Verificamos si se ha modificado
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
+            if (uaSeleccionada != null) {
+                this.data.setUaInstructor(uaSeleccionada);
+                uaRaiz = Boolean.valueOf(uaSeleccionada.esRaiz()).toString();
+                if (!uaSeleccionada.esRaiz()) {
+                    this.data.setComun(0); //Es raro que lo estuviese como comun pero por si acaso
+                }
+            }
+        }
+    }
+
+    public void returnDialogoUAResp(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
@@ -187,7 +204,15 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
-    public void abrirVentanaUA() {
+    public void abrirVentanaUAResp() {
+        abrirVentanaUAInstr(this.data.getUaResponsable());
+    }
+
+    public void abrirVentanaUAInstr() {
+        abrirVentanaUAInstr(this.data.getUaInstructor());
+    }
+
+    private void abrirVentanaUAInstr(UnidadAdministrativaDTO ua) {
         final Map<String, String> params = new HashMap<>();
         /*
          * if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso ==
@@ -198,7 +223,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         params.put(TypeParametroVentana.MODO_ACCESO.toString(), this.getModoAcceso());
         String direccion = "/comun/dialogSeleccionarUA";
 
-        UtilJSF.anyadirMochila("ua", data.getUaResponsable());
+        UtilJSF.anyadirMochila("ua", ua);
         //params.put("esCabecera", null);
         UtilJSF.openDialog(direccion, TypeModoAcceso.valueOf(this.getModoAcceso()), params, true, 850, 575);
     }

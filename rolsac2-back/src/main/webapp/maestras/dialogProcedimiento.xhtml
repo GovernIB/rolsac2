@@ -128,12 +128,12 @@
                           <p:outputLabel id="labelSelectComun" value="#{labels['dict.tipo']}:"  styleClass="pt-0"/>
 
                             <p:selectOneMenu id="selectComun" value="#{dialogProcedimiento.data.comun}"
-                                              autoWidth="false"
+                                              autoWidth="false" styleClass="w100px"
                                              disabled="#{dialogProcedimiento.isModoConsulta() or dialogProcedimiento.isGestor()}"
                                              converter="javax.faces.Integer">
                                 <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
                                 <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1" />
-                                <p:ajax event="change"  update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun" process="@this"  />
+                                <p:ajax event="change"  update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun formDialog:panelComunInstr labelComunInstr" process="@this"  />
                             </p:selectOneMenu>
 
 
@@ -300,7 +300,7 @@
                                                         <p:inputText id="txtOrgCompRaiz" styleClass="ocultar"
                                                                      value="#{dialogProcedimiento.uaRaiz}"
                                                                         />
-                                                        <p:commandButton  action="#{dialogProcedimiento.abrirVentanaUA()}"
+                                                        <p:commandButton  action="#{dialogProcedimiento.abrirVentanaUAResp()}"
                                                                           icon="pi pi-sitemap"
                                                                           value=" "
                                                                           styleClass="w45px h25px iconoUAselector"
@@ -309,12 +309,57 @@
                                                                           disabled="#{dialogProcedimiento.isModoConsulta()}"
                                                                           id="btnAbrirUA"
                                                         >
-                                                            <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogoUA}" process="@this"
+                                                            <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogoUAResp}" process="@this"
                                                                     update="formDialog:txtOrgComp formDialog:txtOrgCompRaiz formDialog:selectComun" oncomplete="checkUAraiz()" />
                                                         </p:commandButton>
 
 
                                                 </span>
+
+                                            </h:panelGroup>
+
+                                        </p>
+                                    </div>
+                                    <div  class="form-group col-md-3">
+
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-9">
+                                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.organoInstructor']}:"
+                                                       for="txtOrgInstr" />
+                                        <p>
+
+                                            <h:panelGroup id="panelComunInstr">
+
+                                                                 <span style="white-space:nowrap" >
+                                                                        <p:inputText id="labelComunInstr" value="#{dialogProcedimiento.comunUA}"
+                                                                                     rendered="#{dialogProcedimiento.data.esComun()}"
+                                                                                     styleClass="w95"
+                                                                                     disabled="true" />
+                                                                        <p:inputText id="txtOrgInstr"
+                                                                                     rendered="#{!dialogProcedimiento.data.esComun()}"
+                                                                                     value="#{dialogProcedimiento.data.uaInstructor.nombre.getTraduccion(dialogProcedimiento.idioma)}"
+                                                                                     styleClass="w90 mr-1" disabled="true"/>
+                                                                        <p:inputText id="txtOrgCompRaizInstr" styleClass="ocultar"
+                                                                                     value="#{dialogProcedimiento.uaRaiz}"
+                                                                        />
+                                                                        <p:commandButton  action="#{dialogProcedimiento.abrirVentanaUAInstr()}"
+                                                                                          icon="pi pi-sitemap"
+                                                                                          value=" "
+                                                                                          styleClass="w45px h25px iconoUAselector"
+                                                                                          process="@this"
+                                                                                          rendered="#{!dialogProcedimiento.data.esComun()}"
+                                                                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                                                                          id="btnAbrirUAInstr"
+                                                                        >
+                                                                            <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogoUAInstr}" process="@this"
+                                                                                    update="formDialog:txtOrgInstr formDialog:txtOrgCompRaizInstr formDialog:selectComun" oncomplete="checkUAraiz()" />
+                                                                        </p:commandButton>
+
+
+                                                                </span>
 
                                             </h:panelGroup>
 
@@ -768,7 +813,7 @@
                                                     styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
                                         </div>
                                     </div>
-                                    <h:outputText value="#{td.identificador}"/>
+                                    <h:outputText value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
                                 </p:column>
 
                             </p:treeTable>

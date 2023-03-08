@@ -124,7 +124,7 @@
                         <p:outputLabel id="labelSelectComun" value="#{labels['dict.tipo']}:"  styleClass="pt-0"/>
 
                         <p:selectOneMenu id="selectComun" value="#{dialogServicio.data.comun}"
-                                         autoWidth="false"
+                                         autoWidth="false" styleClass="w100px"
                                          disabled="#{dialogServicio.isModoConsulta() or dialogServicio.isGestor()}"
                                          converter="javax.faces.Integer">
                             <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
@@ -781,7 +781,7 @@
                                                     styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
                                         </div>
                                     </div>
-                                    <h:outputText value="#{td.identificador}"/>
+                                    <h:outputText value="#{td.descripcion.getTraduccion(dialogServicio.idioma)}"/>
                                 </p:column>
 
                             </p:treeTable>
