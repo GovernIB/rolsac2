@@ -186,6 +186,9 @@ public class SessionBean implements Serializable {
                     actualizarPerfiles();
                     actualizarUnidadAdministrativa(usuario);
                     actualizarEntidades();
+                    if(perfil.equals(TypePerfiles.GESTOR)) {
+                        checkUaGestor(unidadActiva);
+                    }
                     sesionDTO.setIdEntidad(this.entidad.getCodigo());
                     sesionDTO.setIdUa(this.unidadActiva.getCodigo());
                     sesionDTO.setPerfil(this.perfil.toString());
