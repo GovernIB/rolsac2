@@ -2,7 +2,9 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.TipoSilencioAdministrativoConverter;
 import es.caib.rolsac2.persistence.model.JTipoSilencioAdministrativo;
+import es.caib.rolsac2.persistence.model.JTipoSilencioAdministrativo;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
 import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
 import es.caib.rolsac2.service.model.TipoSilencioAdministrativoGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
@@ -39,37 +41,40 @@ public class TipoSilencioAdministrativoRepositoryBean extends AbstractCrudReposi
 
     @Override
     public List<TipoSilencioAdministrativoGridDTO> findPagedByFiltro(TipoSilencioAdministrativoFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
         List<Object[]> jTipoSilencioAdministrativo = query.getResultList();
-        List<TipoSilencioAdministrativoGridDTO> tipoNormativa = new ArrayList<>();
+        List<TipoSilencioAdministrativoGridDTO> tipoSilencioAdministrativo = new ArrayList<>();
         if (jTipoSilencioAdministrativo != null) {
             for (Object[] jtipoNom : jTipoSilencioAdministrativo) {
-                TipoSilencioAdministrativoGridDTO tipoNormativaGridDTO = new TipoSilencioAdministrativoGridDTO();
-                tipoNormativaGridDTO.setCodigo((Long) jtipoNom[0]);
-                tipoNormativaGridDTO.setIdentificador((String) jtipoNom[1]);
+                TipoSilencioAdministrativoGridDTO tipoSilencioAdministrativoGridDTO = new TipoSilencioAdministrativoGridDTO();
+                tipoSilencioAdministrativoGridDTO.setCodigo((Long) jtipoNom[0]);
+                tipoSilencioAdministrativoGridDTO.setIdentificador((String) jtipoNom[1]);
                 Literal literal = new Literal();
                 literal.add(new Traduccion(filtro.getIdioma(), (String) jtipoNom[2]));
-                tipoNormativaGridDTO.setDescripcion(literal);
+                tipoSilencioAdministrativoGridDTO.setDescripcion(literal);
 
-                tipoNormativa.add(tipoNormativaGridDTO);
+                tipoSilencioAdministrativo.add(tipoSilencioAdministrativoGridDTO);
             }
         }
-        return tipoNormativa;
+        return tipoSilencioAdministrativo;
     }
 
     @Override
     public long countByFiltro(TipoSilencioAdministrativoFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
-    private Query getQuery(boolean isTotal, TipoSilencioAdministrativoFiltro filtro) {
+    private Query getQuery(boolean isTotal, TipoSilencioAdministrativoFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JTipoSilencioAdministrativo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
+        } else if (isRest) {
+        	sql = new StringBuilder(
+                    "SELECT j FROM JTipoSilencioAdministrativo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder("SELECT j.codigo, j.identificador, t.descripcion FROM JTipoSilencioAdministrativo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
         }
@@ -78,6 +83,9 @@ public class TipoSilencioAdministrativoRepositoryBean extends AbstractCrudReposi
         //        }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro)");
+        }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
@@ -93,6 +101,9 @@ public class TipoSilencioAdministrativoRepositoryBean extends AbstractCrudReposi
 
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
+        }
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -136,4 +147,22 @@ public class TipoSilencioAdministrativoRepositoryBean extends AbstractCrudReposi
         }
         return tipoSilencioAdministrativoDTOS;
     }
+
+	@Override
+	public List<TipoSilencioAdministrativoDTO> findPagedByFiltroRest(TipoSilencioAdministrativoFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
+
+        List<JTipoSilencioAdministrativo> jtipoSilencioAdministrativoes = query.getResultList();
+        List<TipoSilencioAdministrativoDTO> tipoSilencioAdministrativoes = new ArrayList<>();
+        if (jtipoSilencioAdministrativoes != null) {
+            for (JTipoSilencioAdministrativo jtipoSilencioAdministrativo : jtipoSilencioAdministrativoes) {
+                TipoSilencioAdministrativoDTO tipoSilencioAdministrativo = converter.createDTO(jtipoSilencioAdministrativo);
+
+                tipoSilencioAdministrativoes.add(tipoSilencioAdministrativo);
+            }
+        }
+        return tipoSilencioAdministrativoes;
+	}
 }

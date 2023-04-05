@@ -20,4 +20,6 @@ public interface TipoSexoRepository extends CrudRepository<JTipoSexo, Long> {
 
   List<TipoSexoDTO> findAll();
 
+List<TipoSexoDTO> findPagedByFiltroRest(TipoSexoFiltro filtro);
+
 }

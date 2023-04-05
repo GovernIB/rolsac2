@@ -6,13 +6,11 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
-import es.caib.rolsac2.service.model.UsuarioDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.utils.UtilComparador;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -53,6 +51,10 @@ public class DialogUsuario extends AbstractController implements Serializable {
     @EJB
     private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
+    private EntidadGridDTO entidadSeleccionada;
+
+    private List<EntidadGridDTO> entidades;
+
     public void load() {
         LOG.debug("init");
 
@@ -61,9 +63,13 @@ public class DialogUsuario extends AbstractController implements Serializable {
         if (this.isModoAlta()) {
             data = new UsuarioDTO();
             data.setEntidades(new ArrayList<>());
-            data.getEntidades().add(sessionBean.getEntidad().toGridDTO());
+
             data.setObservaciones(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-            data.setUnidadesAdministrativas(new ArrayList<>());
+            if (sessionBean.getPerfil() != TypePerfiles.SUPER_ADMINISTRADOR) {
+                data.getEntidades().add(sessionBean.getEntidad().toGridDTO());
+                data.setUnidadesAdministrativas(new ArrayList<>());
+            }
+
             dataOriginal = data.clone();
             dataOriginal.setUnidadesAdministrativas(new ArrayList<>());
             unidadesAdministrativasEntidad = new ArrayList<>();
@@ -71,10 +77,12 @@ public class DialogUsuario extends AbstractController implements Serializable {
             data = administracionEntService.findUsuarioById(Long.valueOf(id));
             this.identificadorOld = data.getIdentificador();
             dataOriginal = data.clone();
-            dataOriginal.setUnidadesAdministrativas(new ArrayList<>(data.getUnidadesAdministrativas()));
-            unidadesAdministrativasEntidad = this.data.getUnidadesAdministrativas().stream()
-                    .filter(ua -> ua.getIdEntidad().compareTo(sessionBean.getEntidad().getCodigo()) == 0)
-                    .collect(Collectors.toList());
+            if (sessionBean.getPerfil() != TypePerfiles.SUPER_ADMINISTRADOR) {
+                dataOriginal.setUnidadesAdministrativas(new ArrayList<>(data.getUnidadesAdministrativas()));
+                unidadesAdministrativasEntidad = this.data.getUnidadesAdministrativas().stream()
+                        .filter(ua -> ua.getIdEntidad().compareTo(sessionBean.getEntidad().getCodigo()) == 0)
+                        .collect(Collectors.toList());
+            }
         }
     }
 
@@ -98,7 +106,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
     public void checkUsuario() {
         if(this.data.getCodigo() == null) {
             if(administracionEntService.checkIdentificadorUsuario(this.data.getIdentificador())) {
-                if(administracionEntService.checkIdentificadorUsuario(this.data.getIdentificador())) {
+                if(!isModoAlta()) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
                 } else {
                     PrimeFaces.current().executeScript("PF('usuarioAlta').show()");
@@ -241,6 +249,62 @@ public class DialogUsuario extends AbstractController implements Serializable {
         }
     }
 
+    /*
+    * SELECCION ENTIDAD
+    *
+    * */
+
+    public void abrirDialogSelecEnti(TypeModoAcceso modoAcceso) {
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso) && entidadSeleccionada != null) {
+            final Map<String, String> params = new HashMap<>();
+            params.put(TypeParametroVentana.ID.toString(), entidadSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("/superadministrador/dialogEntidad", modoAcceso, params, true, 700, 300);
+        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+            UtilJSF.anyadirMochila("entidadesSeleccionada", data.getEntidades());
+            final Map<String, String> params = new HashMap<>();
+            UtilJSF.openDialog("dialogSeleccionEntidad", modoAcceso, params, true, 1040, 460);
+        }
+    }
+
+    public void returnDialogEntidad(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            List<EntidadGridDTO> entidadesSeleccionadas = (List<EntidadGridDTO>) respuesta.getResult();
+            if (entidadesSeleccionadas == null) {
+                data.setEntidades(new ArrayList<>());
+            } else {
+                if (data.getEntidades() == null) {
+                    data.setEntidades(new ArrayList<>());
+                }
+                data.setEntidades(new ArrayList<>());
+                data.getEntidades().addAll(entidadesSeleccionadas);
+
+            }
+        }
+    }
+
+    public void anyadirEntidades() {
+        abrirDialogSelecEnti(TypeModoAcceso.ALTA);
+    }
+
+    public void consultarEntidad() {
+        if (entidadSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogSelecEnti(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    public void borrarEntidad() {
+        if (entidadSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getEntidades().remove(entidadSeleccionada);
+            entidadSeleccionada = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
     /**
      * Método para dar de alta UAs en un usuario
      */
@@ -267,6 +331,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
             data.getUnidadesAdministrativas().remove(uaSeleccionada);
+            unidadesAdministrativasEntidad.remove(uaSeleccionada);
             uaSeleccionada = null;
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
         }
@@ -303,5 +368,21 @@ public class DialogUsuario extends AbstractController implements Serializable {
 
     public void setUnidadesAdministrativasEntidad(List<UnidadAdministrativaGridDTO> unidadesAdministrativasEntidad) {
         this.unidadesAdministrativasEntidad = unidadesAdministrativasEntidad;
+    }
+
+    public EntidadGridDTO getEntidadSeleccionada() {
+        return entidadSeleccionada;
+    }
+
+    public void setEntidadSeleccionada(EntidadGridDTO entidadSeleccionada) {
+        this.entidadSeleccionada = entidadSeleccionada;
+    }
+
+    public List<EntidadGridDTO> getEntidades() {
+        return entidades;
+    }
+
+    public void setEntidades(List<EntidadGridDTO> entidades) {
+        this.entidades = entidades;
     }
 }

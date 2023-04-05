@@ -2,6 +2,7 @@ package es.caib.rolsac2.commons.plugins.indexacion.api.model;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumIdiomas;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,5 +54,14 @@ public class MultilangLiteral {
             }
         }
         return resultado;
+    }
+
+    /**
+     * Obtener idiomas
+     *
+     * @return
+     */
+    public List<String> getIdiomas() {
+        return new ArrayList(this.valores.keySet());
     }
 }

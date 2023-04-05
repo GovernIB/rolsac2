@@ -68,6 +68,8 @@ public class DialogTema extends AbstractController implements Serializable {
             if(idPadre != null) {
                 TemaDTO padreDefecto = temaServiceFacade.findById(Long.valueOf(idPadre));
                 data.setTemaPadre(padreDefecto);
+            } else {
+                data.setTemaPadre(new TemaDTO());
             }
             dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {

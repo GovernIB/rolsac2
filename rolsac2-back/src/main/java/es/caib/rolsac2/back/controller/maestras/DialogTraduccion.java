@@ -190,14 +190,14 @@ public class DialogTraduccion extends AbstractController implements Serializable
                             try {
 
                                 if (field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("set", ""))
-                                && !field.getName().toLowerCase(Locale.ROOT).contains("url")) {
+                                        && !field.getName().toLowerCase(Locale.ROOT).contains("url")) {
                                     if (literales.size() > cont) {
                                         m.invoke(data, literales.get(cont));
                                         cont++;
                                     }
                                 }
                             } catch (IllegalAccessException | IllegalArgumentException
-                                     | InvocationTargetException e) {
+                                    | InvocationTargetException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -338,7 +338,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
                             }
 
                         } catch (IllegalAccessException | IllegalArgumentException
-                                 | InvocationTargetException e) {
+                                | InvocationTargetException e) {
                             e.printStackTrace();
                         }
                     }

@@ -83,6 +83,19 @@ public class JUsuario extends BaseEntity {
     private Set<JUnidadAdministrativa> unidadesAdministrativas;
 
     /**
+     * Entidades
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "RS2_USENTI",
+            joinColumns = {
+                    @JoinColumn(name = "USEN_CODUSER")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "USEN_CODENTI")
+            })
+    private Set<JEntidad> entidades;
+
+    /**
      * Obtiene codigo.
      *
      * @return  codigo
@@ -180,6 +193,14 @@ public class JUsuario extends BaseEntity {
         this.unidadesAdministrativas = unidadesAdministrativas;
     }
 
+    public Set<JEntidad> getEntidades() {
+        return entidades;
+    }
+
+    public void setEntidades(Set<JEntidad> entidades) {
+        this.entidades = entidades;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -204,6 +225,7 @@ public class JUsuario extends BaseEntity {
                 ", email='" + email + '\'' +
                 ", traducciones=" + traducciones +
                 ", unidadesAdministrativas=" + unidadesAdministrativas +
+                ", entidades=" + entidades +
                 '}';
     }
 }

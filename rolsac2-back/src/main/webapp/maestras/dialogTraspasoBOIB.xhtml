@@ -102,7 +102,7 @@
                         <p:column sortBy="#{edicto.fechaBoletin}" headerText="#{labels['dialogTraspasoBOIB.fechaBoletin']}">
                             <f:facet name="header"/>
                             <h:outputText value="#{edicto.fechaBoletin}">
-                                    <f:convertDateTime type="localDate" pattern="dd-MM-yyyy"></f:convertDateTime>
+                                    <f:convertDateTime type="localDate" pattern="dd/MM/yyyy"></f:convertDateTime>
                             </h:outputText>
                         </p:column>
                     </p:dataTable>

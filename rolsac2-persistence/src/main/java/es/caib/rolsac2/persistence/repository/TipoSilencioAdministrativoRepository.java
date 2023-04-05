@@ -24,4 +24,6 @@ public interface TipoSilencioAdministrativoRepository extends CrudRepository<JTi
     Boolean checkIdentificador(String identificador);
 
     List<TipoSilencioAdministrativoDTO> findAllTipoSilencio();
+
+	List<TipoSilencioAdministrativoDTO> findPagedByFiltroRest(TipoSilencioAdministrativoFiltro filtro);
 }

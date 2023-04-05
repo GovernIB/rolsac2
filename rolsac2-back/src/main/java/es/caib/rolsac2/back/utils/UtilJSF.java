@@ -77,6 +77,8 @@ public class UtilJSF {
         options.put("modal", modal);
         options.put("width", width);
         options.put("height", heigth);
+        options.put("responsive", "true");
+        options.put("styleClass", "max-width");
         options.put("contentWidth", "100%");
         options.put("contentHeight", "100%");
         options.put("headerElement", "customheader");

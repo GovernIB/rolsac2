@@ -1,12 +1,8 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.converter.TipoFormaInicioConverter;
-import es.caib.rolsac2.persistence.model.JTipoFormaInicio;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
-import es.caib.rolsac2.service.model.TipoFormaInicioGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.filtro.TipoFormaInicioFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -15,9 +11,14 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import es.caib.rolsac2.persistence.converter.TipoFormaInicioConverter;
+import es.caib.rolsac2.persistence.model.JTipoFormaInicio;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
+import es.caib.rolsac2.service.model.TipoFormaInicioGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.TipoFormaInicioFiltro;
 
 /**
  * Implementación del repositorio de tipo de forma de inicio.
@@ -39,7 +40,7 @@ public class TipoFormaInicioRepositoryBean extends AbstractCrudRepository<JTipoF
 
     @Override
     public List<TipoFormaInicioGridDTO> findPagedByFiltro(TipoFormaInicioFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -62,7 +63,7 @@ public class TipoFormaInicioRepositoryBean extends AbstractCrudRepository<JTipoF
 
     @Override
     public long countByFiltro(TipoFormaInicioFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
     @Override
@@ -73,12 +74,15 @@ public class TipoFormaInicioRepositoryBean extends AbstractCrudRepository<JTipoF
         return resultado > 0;
     }
 
-    private Query getQuery(boolean isTotal, TipoFormaInicioFiltro filtro) {
+    private Query getQuery(boolean isTotal, TipoFormaInicioFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder(
                     "SELECT count(j) FROM JTipoFormaInicio j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+        } else if (isRest) {
+        	sql = new StringBuilder(
+                    "SELECT j FROM JTipoFormaInicio j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             // sql = new StringBuilder("SELECT j.codigo, j.identificador, j.descripcion FROM JTipoFormaInicio j where 1 = 1
             // ");
@@ -88,6 +92,9 @@ public class TipoFormaInicioRepositoryBean extends AbstractCrudRepository<JTipoF
 
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.id as string) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro  OR LOWER(t.descripcion) LIKE :filtro)");
+        }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
@@ -100,6 +107,9 @@ public class TipoFormaInicioRepositoryBean extends AbstractCrudRepository<JTipoF
 
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
+        }
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -135,4 +145,22 @@ public class TipoFormaInicioRepositoryBean extends AbstractCrudRepository<JTipoF
         }
         return tipoFormaInicioDTOS;
     }
+
+	@Override
+	public List<TipoFormaInicioDTO> findPagedByFiltroRest(TipoFormaInicioFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
+
+        List<JTipoFormaInicio> jtipoFormaInicioes = query.getResultList();
+        List<TipoFormaInicioDTO> tipoFormaInicioes = new ArrayList<>();
+        if (jtipoFormaInicioes != null) {
+            for (JTipoFormaInicio jtipoFormaInicio : jtipoFormaInicioes) {
+                TipoFormaInicioDTO tipoFormaInicio = converter.createDTO(jtipoFormaInicio);
+
+                tipoFormaInicioes.add(tipoFormaInicio);
+            }
+        }
+        return tipoFormaInicioes;
+	}
 }

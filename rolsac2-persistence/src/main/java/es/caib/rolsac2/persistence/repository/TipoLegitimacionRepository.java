@@ -20,4 +20,6 @@ public interface TipoLegitimacionRepository extends CrudRepository<JTipoLegitima
 
   List<TipoLegitimacionDTO> findAllTipoLegitimacion();
 
+List<TipoLegitimacionDTO> findPagedByFiltroRest(TipoLegitimacionFiltro filtro);
+
 }

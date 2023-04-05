@@ -17,7 +17,11 @@ public interface UsuarioRepository extends CrudRepository<JUsuario, Long> {
 
     List<UsuarioGridDTO> findPagedByFiltro(UsuarioFiltro filtro);
 
+    List<UsuarioGridDTO> findAllUsuariosByFiltro(UsuarioFiltro filtro);
+
     long countByFiltro(UsuarioFiltro filtro);
+
+    long countAllUsuariosByFiltro(UsuarioFiltro filtro);
 
     Boolean checkIdentificador(String identificador);
 

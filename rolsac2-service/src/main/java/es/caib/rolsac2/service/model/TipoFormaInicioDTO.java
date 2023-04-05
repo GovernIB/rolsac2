@@ -28,7 +28,6 @@ public class TipoFormaInicioDTO extends ModelApi implements Cloneable {
      * Descripción
      */
     private Literal descripcion;
-    // private Long descripcion;
 
     /**
      * Instancia un nuevo Tipo forma inicio dto.

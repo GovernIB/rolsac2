@@ -10,7 +10,7 @@ import java.util.Objects;
  * El tipo Tipo media ficha dto.
  */
 @Schema(name = "TipoMediaFicha")
-public class TipoMediaFichaDTO {
+public class TipoMediaFichaDTO extends ModelApi implements Cloneable {
 
     /**
      * Codigo

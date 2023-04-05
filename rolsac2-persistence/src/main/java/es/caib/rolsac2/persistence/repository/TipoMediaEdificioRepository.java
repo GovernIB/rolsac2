@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoMediaEdificio;
+import es.caib.rolsac2.service.model.TipoMediaEdificioDTO;
 import es.caib.rolsac2.service.model.TipoMediaEdificioGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoMediaEdificioFiltro;
 
@@ -16,4 +17,6 @@ public interface TipoMediaEdificioRepository extends CrudRepository<JTipoMediaEd
     long countByFiltro(TipoMediaEdificioFiltro filtro);
 
     boolean existeIdentificador(String identificador, Long idEntidad);
+
+	List<TipoMediaEdificioDTO> findPagedByFiltroRest(TipoMediaEdificioFiltro filtro);
 }

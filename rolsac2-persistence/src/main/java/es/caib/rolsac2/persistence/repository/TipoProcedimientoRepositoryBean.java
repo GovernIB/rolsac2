@@ -1,12 +1,8 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.converter.TipoProcedimientoConverter;
-import es.caib.rolsac2.persistence.model.JTipoProcedimiento;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoProcedimientoDTO;
-import es.caib.rolsac2.service.model.TipoProcedimientoGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.filtro.TipoProcedimientoFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -15,9 +11,14 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import es.caib.rolsac2.persistence.converter.TipoProcedimientoConverter;
+import es.caib.rolsac2.persistence.model.JTipoProcedimiento;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoProcedimientoDTO;
+import es.caib.rolsac2.service.model.TipoProcedimientoGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.TipoProcedimientoFiltro;
 
 @Stateless
 @Local(TipoSexoRepository.class)
@@ -33,7 +34,7 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
 
     @Override
     public List<TipoProcedimientoGridDTO> findPagedByFiltro(TipoProcedimientoFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -55,7 +56,7 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
 
     @Override
     public long countByFiltro(TipoProcedimientoFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
     @Override
@@ -80,18 +81,26 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
         return tipos;
     }
 
-    private Query getQuery(boolean isTotal, TipoProcedimientoFiltro filtro) {
+    private Query getQuery(boolean isTotal, TipoProcedimientoFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder(
-                    "SELECT count(j) FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 and j.entidad.codigo = :idEntidad ");
+                    "SELECT count(j) FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+        } else if (isRest) {
+        	sql = new StringBuilder("SELECT j FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder(
-                    "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where t.idioma = :idioma and j.entidad.codigo = :idEntidad ");
+                    "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro )");
+        }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
+        }
+        if (filtro.isRellenoEntidad()) {
+        	sql.append(" and j.entidad.codigo = :idEntidad ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -100,13 +109,19 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
         }
 
         Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("idEntidad", filtro.getIdEntidad());
+
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
 
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
+        }
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
+        }
+        if (filtro.isRellenoEntidad()) {
+        	query.setParameter("idEntidad", filtro.getIdEntidad());
         }
 
         return query;
@@ -139,4 +154,22 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
         }
         return tipos;
     }
+
+	@Override
+	public List<TipoProcedimientoDTO> findPagedByFiltroRest(TipoProcedimientoFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+		query.setFirstResult(filtro.getPaginaFirst());
+		query.setMaxResults(filtro.getPaginaTamanyo());
+
+		List<JTipoProcedimiento> jtipoProcedimientoes = query.getResultList();
+		List<TipoProcedimientoDTO> tipoProcedimientoes = new ArrayList<>();
+		if (jtipoProcedimientoes != null) {
+			for (JTipoProcedimiento jtipoProcedimiento : jtipoProcedimientoes) {
+				TipoProcedimientoDTO tipoProcedimiento = converter.createDTO(jtipoProcedimiento);
+
+				tipoProcedimientoes.add(tipoProcedimiento);
+			}
+		}
+		return tipoProcedimientoes;
+	}
 }

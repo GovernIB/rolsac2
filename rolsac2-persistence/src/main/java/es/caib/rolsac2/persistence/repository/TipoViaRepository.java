@@ -19,4 +19,6 @@ public interface TipoViaRepository extends CrudRepository<JTipoVia, Long> {
     boolean existeIdentificador(String identificador);
 
     List<TipoViaDTO> findAll();
+
+	List<TipoViaDTO> findPagedByFiltroRest(TipoViaFiltro filtro);
 }

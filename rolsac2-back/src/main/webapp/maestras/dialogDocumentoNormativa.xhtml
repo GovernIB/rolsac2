@@ -61,7 +61,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <my:literalComponent id="txtTitulo"
                                          literal="#{dialogDocumentoNormativa.data.titulo}"
                                          soloLecture="#{dialogDocumentoNormativa.isModoConsulta()}"
-                                         required="true"
+                                         required="#{empty param['formDialog:closeButton']}"
                                          idioma="#{dialogDocumentoNormativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"

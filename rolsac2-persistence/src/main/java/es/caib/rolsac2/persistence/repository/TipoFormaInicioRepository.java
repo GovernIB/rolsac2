@@ -24,4 +24,6 @@ public interface TipoFormaInicioRepository extends CrudRepository<JTipoFormaInic
   boolean existeIdentificador(String identificador);
 
   List<TipoFormaInicioDTO> findAllTipoFormaInicio();
+
+List<TipoFormaInicioDTO> findPagedByFiltroRest(TipoFormaInicioFiltro filtro);
 }

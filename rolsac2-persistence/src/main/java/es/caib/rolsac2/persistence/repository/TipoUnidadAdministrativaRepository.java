@@ -24,4 +24,6 @@ public interface TipoUnidadAdministrativaRepository extends CrudRepository<JTipo
     Boolean checkIdentificador(String identificador, Long idEntidad);
 
     List<TipoUnidadAdministrativaDTO> findTipo();
+
+	List<TipoUnidadAdministrativaDTO> findPagedByFiltroRest(TipoUnidadAdministrativaFiltro filtro);
 }

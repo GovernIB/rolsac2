@@ -22,4 +22,6 @@ public interface TipoProcedimientoRepository extends CrudRepository<JTipoProcedi
 
     List<TipoProcedimientoDTO> findAll(Long codigoEntidad);
 
+	List<TipoProcedimientoDTO> findPagedByFiltroRest(TipoProcedimientoFiltro filtro);
+
 }

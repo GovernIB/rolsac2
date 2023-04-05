@@ -131,7 +131,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <my:literalComponent id="txtUAComun" styleClass="w95"
                                                  value="#{viewConfiguracionEntidad.data.uaComun}"
                                                  soloLecture="#{viewLOPD.isModoConsulta()}"
-                                                 required="true"
+                                                 required="#{empty param['formDialog:closeButton']}"
                                                  idiomasObligatorios="#{viewConfiguracionEntidad.data.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
                                                  idioma="#{viewConfiguracionEntidad.idioma}"

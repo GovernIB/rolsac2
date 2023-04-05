@@ -1,18 +1,11 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.io.IOException;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.TipoBoletinDTO;
@@ -25,7 +18,7 @@ import es.caib.rolsac2.service.model.TipoBoletinDTO;
  */
 @XmlRootElement
 @Schema(name = "TipoBoletin", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_BOLETINES)
-public class TipoBoletin extends EntidadBase {
+public class TipoBoletin extends EntidadBase<TipoBoletin> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TipoBoletin.class);
 
@@ -40,8 +33,8 @@ public class TipoBoletin extends EntidadBase {
 	private String url;
 
 	/** codigo **/
-	@Schema(description = "codigo", name = "codigo", type = SchemaType.NUMBER, required = false)
-	private long codigo;
+	@Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+	private Long codigo;
 
 	/** nombre **/
 	@Schema(description = "nombre", name = "nombre", type = SchemaType.STRING, required = false)
@@ -53,36 +46,6 @@ public class TipoBoletin extends EntidadBase {
 
 	public TipoBoletin() {
 		super();
-	}
-
-	@Override
-	public void generaLinks(String urlBase) {
-
-	}
-
-	public static TipoBoletin valueOf(final String json) {
-		final ObjectMapper objectMapper = new ObjectMapper();
-		final TypeReference<TipoBoletin> typeRef = new TypeReference<TipoBoletin>() {
-		};
-		TipoBoletin obj;
-		try {
-			obj = (TipoBoletin) objectMapper.readValue(json, typeRef);
-		} catch (final IOException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
-		return obj;
-	}
-
-	public String toJson() {
-		try {
-			final ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false);
-			return objectMapper.writeValueAsString(this);
-		} catch (final JsonProcessingException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Override
@@ -169,4 +132,7 @@ public class TipoBoletin extends EntidadBase {
 		this.identificador = identificador;
 	}
 
+	@Override
+	protected void generaLinks(String urlBase) {
+	}
 }

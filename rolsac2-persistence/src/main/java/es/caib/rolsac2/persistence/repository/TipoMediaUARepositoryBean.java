@@ -1,8 +1,12 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.TipoMediaUAConverter;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JTipoMediaUA;
+import es.caib.rolsac2.persistence.model.JTipoMediaUA;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoMediaUADTO;
+import es.caib.rolsac2.service.model.TipoMediaUADTO;
 import es.caib.rolsac2.service.model.TipoMediaUAGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.TipoMediaUAFiltro;
@@ -11,6 +15,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -22,13 +27,16 @@ import java.util.Optional;
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMediaUA, Long> implements TipoMediaUARepository {
 
+    @Inject
+    private TipoMediaUAConverter converter;
+
     protected TipoMediaUARepositoryBean() {
         super(JTipoMediaUA.class);
     }
 
     @Override
     public List<TipoMediaUAGridDTO> findPagedByFiltro(TipoMediaUAFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -51,7 +59,7 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
 
     @Override
     public long countByFiltro(TipoMediaUAFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
     @Override
@@ -63,12 +71,14 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
         return resultado > 0;
     }
 
-    private Query getQuery(boolean isTotal, TipoMediaUAFiltro filtro) {
+    private Query getQuery(boolean isTotal, TipoMediaUAFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder(
                     "SELECT count(j) FROM JTipoMediaUA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+        } else if (isRest) {
+        	sql = new StringBuilder("SELECT j FROM JTipoMediaUA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder(
                     "SELECT j.codigo, j.entidad, j.identificador, t.descripcion FROM JTipoMediaUA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where t.idioma = :idioma");
@@ -79,6 +89,9 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
         if (filtro.isRellenoEntidad()) {
             sql.append(
                     " and j.entidad.id = :entidad");
+        }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -96,6 +109,9 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
         }
         if (filtro.isRellenoEntidad()) {
             query.setParameter("entidad", filtro.getIdEntidad());
+        }
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -116,4 +132,22 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
         List<JTipoMediaUA> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
+
+	@Override
+	public List<TipoMediaUADTO> findPagedByFiltroRest(TipoMediaUAFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+		query.setFirstResult(filtro.getPaginaFirst());
+		query.setMaxResults(filtro.getPaginaTamanyo());
+
+		List<JTipoMediaUA> jtipoMediaUAes = query.getResultList();
+		List<TipoMediaUADTO> tipoMediaUAes = new ArrayList<>();
+		if (jtipoMediaUAes != null) {
+			for (JTipoMediaUA jtipoMediaUA : jtipoMediaUAes) {
+				TipoMediaUADTO tipoMediaUA = converter.createDTO(jtipoMediaUA);
+
+				tipoMediaUAes.add(tipoMediaUA);
+			}
+		}
+		return tipoMediaUAes;
+	}
 }

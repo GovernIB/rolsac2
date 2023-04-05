@@ -90,18 +90,16 @@ public class DialogPlugins extends AbstractController implements Serializable {
 
 
     public void guardar() {
-
-        boolean existe = administracionEntService.existePluginTipo(this.data.getCodigo(), this.data.getTipo());
-        if (existe) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogPlugins.error.yaExisteTipo"), true);
-            return;
-        }
-
         if(this.data.getTipo().equals(TypePluginEntidad.BOLETIN.toString())) {
             this.altaPropiedadNormativa();
         }
 
         if (this.data.getCodigo() == null) {
+            boolean existe = administracionEntService.existePluginTipoByEntidad(this.data.getEntidad().getCodigo(), this.data.getTipo());
+            if (existe) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogPlugins.error.yaExisteTipo"), true);
+                return;
+            }
             administracionEntService.createPlugin(this.data);
         } else {
             administracionEntService.updatePlugin(this.data);

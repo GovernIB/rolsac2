@@ -313,10 +313,10 @@ public class UtilComparador {
 
 
     public static int compareTo(Literal dato, Literal dato2) {
-        if (dato == null && dato2 == null) {
+        if ((dato == null || dato.estaVacio()) && (dato2 == null || dato2.estaVacio())) {
             return 0;
         }
-        if ((dato == null || dato.getTraducciones() == null) && (dato2 != null || dato2.getTraducciones() != null)) {
+        if ((dato == null || dato.estaVacio()) && (dato2 != null && !dato2.estaVacio())) {
             return -1;
         }
         if ((dato != null && dato.getTraducciones() != null) && (dato2 == null || dato2.getTraducciones() == null)) {

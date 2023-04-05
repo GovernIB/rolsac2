@@ -65,7 +65,7 @@ Página con el detalle de un edificio
                     <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <my:literalComponent id="inputDescripcion" required="true" literal="#{dialogEdificio.data.descripcion}"
+                    <my:literalComponent id="inputDescripcion" required="#{empty param['formDialog:closeButton']}" literal="#{dialogEdificio.data.descripcion}"
                                          soloLecture="#{dialogEdificio.isModoConsulta()}"
                                          idioma="#{dialogEdificio.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
@@ -80,7 +80,7 @@ Página con el detalle de un edificio
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtDireccion" value="#{dialogEdificio.data.direccion}"
                                  styleClass="w95"
-                                 required="true" disabled="#{dialogEdificio.isModoConsulta()}"/>
+                                 required="#{empty param['formDialog:closeButton']}" disabled="#{dialogEdificio.isModoConsulta()}"/>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['dialogEdificio.poblacion']}:" for="txtPoblacion"/>

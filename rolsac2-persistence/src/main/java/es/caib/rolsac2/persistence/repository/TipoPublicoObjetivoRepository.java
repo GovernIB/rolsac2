@@ -24,4 +24,6 @@ public interface TipoPublicoObjetivoRepository extends CrudRepository<JTipoPubli
     Boolean checkIdentificador(String identificador);
 
     List<TipoPublicoObjetivoDTO> findAll();
+
+	List<TipoPublicoObjetivoDTO> findPagedByFiltroRest(TipoPublicoObjetivoFiltro filtro);
 }

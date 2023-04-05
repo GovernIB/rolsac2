@@ -27,4 +27,6 @@ public interface TipoNormativaRepository extends CrudRepository<JTipoNormativa, 
     Boolean checkIdentificador(String identificador);
 
     List<TipoNormativaDTO> findAll();
+
+	List<TipoNormativaDTO> findPagedByFiltroRest(TipoNormativaFiltro fg);
 }

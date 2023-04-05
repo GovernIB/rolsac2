@@ -68,7 +68,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <div class="ui-g-12 ui-md-10 ui-lg-5">
           <p:inputText id="txtIdentificador" value="#{dialogTipoMediaEdificio.data.identificador}"
                        styleClass="w95"  onblur="this.value = this.value.toUpperCase();"
-                       required="true" disabled="#{dialogTipoMediaEdificio.isModoConsulta()}" maxlength="50">
+                       required="#{empty param['formDialog:closeButton']}" disabled="#{dialogTipoMediaEdificio.isModoConsulta()}" maxlength="50">
                 <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                 <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
                 <p:ajax event="keyup" listener="#{dialogTipoMediaEdificio.actualizadoComponente()}"   />
@@ -82,7 +82,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
           <my:literalComponent id="inputDescripcion" literal="#{dialogTipoMediaEdificio.data.descripcion}"
                                vista="#{dialogTipoMediaEdificio}"
                                soloLecture="#{dialogTipoMediaEdificio.isModoConsulta()}"
-                               idioma="#{dialogTipoMediaEdificio.idioma}" required="true"
+                               idioma="#{dialogTipoMediaEdificio.idioma}" required="#{empty param['formDialog:closeButton']}"
                                idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                nombreLiteral="#{labels['dict.descripcion']}"/>

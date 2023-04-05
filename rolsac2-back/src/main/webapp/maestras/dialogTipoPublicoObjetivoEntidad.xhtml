@@ -63,7 +63,7 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                     <p:inputText id="ident" value="#{dialogTipoPublicoObjetivoEntidad.data.identificador}"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  styleClass="w95" maxlength="50" onblur="this.value = this.value.toUpperCase();"
-                                 required="true" disabled="#{dialogTipoPublicoObjetivoEntidad.modoConsultaCheck()}">
+                                 required="#{empty param['formDialog:closeButton']}" disabled="#{dialogTipoPublicoObjetivoEntidad.modoConsultaCheck()}">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$" />
                         <f:validateBean disabled="true" />
@@ -72,14 +72,15 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogPublicoObjetivoEntidad.tipoPublicoObjetivo']}:"
+                    <p:outputLabel value="#{labels['dialogPublicoObjetivoEntidad.tipoPublicoObjetivo']}:"
                                   for="tipoPubObjetivo"
                     />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:selectOneMenu id="tipoPubObjetivo"
                                      value="#{dialogTipoPublicoObjetivoEntidad.data.tipo}"
-                                     styleClass="w95" required="true"
+                                     styleClass="w95" required="#{empty param['formDialog:closeButton']}"
+                                     requiredMessage="#{labels['dict.obligatorio.publico']}"
                                      disabled="#{dialogTipoPublicoObjetivoEntidad.isModoConsulta()}"
                                      converter="#{tipoPublicoObjetivoConverter}">
                         <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
@@ -99,7 +100,7 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                     <my:literalComponent id="inputDescripcion"
                                          literal="#{dialogTipoPublicoObjetivoEntidad.data.descripcion}"
                                          idioma="#{dialogTipoPublicoObjetivoEntidad.idioma}"
-                                         required="true"
+                                         required="#{empty param['formDialog:closeButton']}"
                                          soloLecture="#{dialogTipoPublicoObjetivoEntidad.isModoConsulta()}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"

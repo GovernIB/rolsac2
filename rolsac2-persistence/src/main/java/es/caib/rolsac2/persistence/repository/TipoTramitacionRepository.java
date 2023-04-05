@@ -28,4 +28,6 @@ public interface TipoTramitacionRepository extends CrudRepository<JTipoTramitaci
     JTipoTramitacion crearActualizar(JTipoTramitacion jTipoTramitacion);
 
     void borrar(Long codigo);
+
+	List<TipoTramitacionDTO> findPagedByFiltroRest(TipoTramitacionFiltro filtro);
 }

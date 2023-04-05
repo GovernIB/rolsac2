@@ -1,12 +1,8 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.converter.TipoViaConverter;
-import es.caib.rolsac2.persistence.model.JTipoVia;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoViaDTO;
-import es.caib.rolsac2.service.model.TipoViaGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.filtro.TipoViaFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -15,9 +11,14 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import es.caib.rolsac2.persistence.converter.TipoViaConverter;
+import es.caib.rolsac2.persistence.model.JTipoVia;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoViaDTO;
+import es.caib.rolsac2.service.model.TipoViaGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.TipoViaFiltro;
 
 @Stateless
 @Local(TipoViaRepository.class)
@@ -33,7 +34,7 @@ public class TipoViaRepositoryBean extends AbstractCrudRepository<JTipoVia, Long
 
     @Override
     public List<TipoViaGridDTO> findPagedByFiltro(TipoViaFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -55,7 +56,7 @@ public class TipoViaRepositoryBean extends AbstractCrudRepository<JTipoVia, Long
 
     @Override
     public long countByFiltro(TipoViaFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
     @Override
@@ -80,18 +81,23 @@ public class TipoViaRepositoryBean extends AbstractCrudRepository<JTipoVia, Long
         return tipos;
     }
 
-    private Query getQuery(boolean isTotal, TipoViaFiltro filtro) {
+    private Query getQuery(boolean isTotal, TipoViaFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder(
                     "SELECT count(j) FROM JTipoVia j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+        } else if (isRest) {
+        	sql = new StringBuilder("SELECT j FROM JTipoVia j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder(
                     "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoVia j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where t.idioma = :idioma");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro)");
+        }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -106,6 +112,9 @@ public class TipoViaRepositoryBean extends AbstractCrudRepository<JTipoVia, Long
 
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
+        }
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -123,4 +132,22 @@ public class TipoViaRepositoryBean extends AbstractCrudRepository<JTipoVia, Long
         List<JTipoVia> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
+
+	@Override
+	public List<TipoViaDTO> findPagedByFiltroRest(TipoViaFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+		query.setFirstResult(filtro.getPaginaFirst());
+		query.setMaxResults(filtro.getPaginaTamanyo());
+
+		List<JTipoVia> jtipoViaes = query.getResultList();
+		List<TipoViaDTO> tipoViaes = new ArrayList<>();
+		if (jtipoViaes != null) {
+			for (JTipoVia jtipoVia : jtipoViaes) {
+				TipoViaDTO tipoVia = converter.createDTO(jtipoVia);
+
+				tipoViaes.add(tipoVia);
+			}
+		}
+		return tipoViaes;
+	}
 }

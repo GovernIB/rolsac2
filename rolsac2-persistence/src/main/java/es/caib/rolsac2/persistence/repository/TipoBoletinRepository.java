@@ -19,4 +19,6 @@ public interface TipoBoletinRepository extends CrudRepository<JTipoBoletin, Long
     boolean checkIdentificadorTipoBoletin(String identificador);
 
     List<TipoBoletinDTO> findAll();
+
+	List<TipoBoletinDTO> findPagedByFiltroRest(TipoBoletinFiltro filtro);
 }

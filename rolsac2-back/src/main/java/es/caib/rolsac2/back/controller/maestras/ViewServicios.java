@@ -2,6 +2,7 @@ package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
+import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
@@ -155,6 +156,24 @@ public class ViewServicios extends AbstractController implements Serializable {
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
             abrirVentana(TypeModoAcceso.EDICION, serv);
 
+        }
+    }
+
+    public void abrirMensajes(Long codigo) {
+        final Map<String, String> params = new HashMap<>();
+        String mensajes = procedimientoService.getMensajesByCodigo(codigo);
+        UtilJSF.anyadirMochila("mensajes", mensajes);
+        params.put("SOLO_MENSAJES", "S");
+        params.put("ID", codigo.toString());
+        //params.put("ESTADO", data.getEstado().toString());
+        UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
+    }
+
+    public void returnDialogMensajes(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
+            procedimientoService.actualizarMensajes(Long.valueOf(respuestaFlujo.getCodigoProcedimiento()), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
         }
     }
 

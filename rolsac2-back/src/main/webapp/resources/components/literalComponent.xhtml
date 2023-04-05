@@ -72,7 +72,7 @@
 				 		    content_css : "/rolsac2back/javax.faces.resource/css/tinymce_style_editor.css.xhtml",
 				 		   	readonly: #{cc.isModoConsulta()},
 				 		   	setup: function (editor) {
-					            editor.on('keyup', function (e) {
+					            editor.on('change', function (e) {
 					                document.getElementById(editor.id+'HTML').value=editor.getContent();
 					                document.getElementById(editor.id+'HTMLprocess').click();
 					            });

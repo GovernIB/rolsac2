@@ -45,6 +45,9 @@
                             update="tradLiteral selectId1 selectId2"/>
                 </p:selectOneMenu>
                 <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2"/>
+
+            </div>
+            <div class="d-flex justify-content-center align-content-center h25px mt-2">
                 <p:selectBooleanCheckbox value="#{dialogTraduccion.sustitucion}" styleClass="ml-2"
                                          itemLabel="#{labels['dialogTraduccion.sustituirValor']}"/>
             </div>
@@ -114,7 +117,7 @@
                         content_css : "/rolsac2back/javax.faces.resource/css/tinymce_style_editor.css.xhtml",
                         readonly:#{dialogTraduccion.isModoConsulta()},
                         setup: function (editor) {
-                        editor.on('keyup', function (e) {
+                        editor.on('change', function (e) {
                           document.getElementById(editor.id+'Input').value=editor.getContent();
                           document.getElementById(editor.id+'Btn').click();
                         });

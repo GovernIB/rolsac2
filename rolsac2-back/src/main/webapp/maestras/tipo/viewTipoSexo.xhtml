@@ -32,42 +32,37 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewTipoSexo.buscar}" update="dataTable"/>
 
-            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
-                     widgetVar="panel" collapsed="true">
-                <f:facet name="header">
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <h:outputFormat value="#{labels['dict.filtro']}:"  styleClass="mr-2"/>
-                            <p:inputText value="#{viewTipoSexo.filtro.texto}" styleClass="mr-2"/>
-                            <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
-                                             update="messages dataTable" actionListener="#{viewTipoSexo.buscar}"
-                                             process="@form" styleClass="mr-2"/>
-                            <!-- NO ES NECESARIO LA BUSQ. AVANZADA <p:commandButton type="button" value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus" iconPos="top" /> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
-                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" styleClass="mr-2"
-                                             iconPos="top" actionListener="#{viewTipoSexo.nuevoTipoSexo()}"
-                                             process="@this">
-                                <p:ajax event="dialogReturn" listener="#{viewTipoSexo.returnDialogo}"
-                                        update="messages dataTable"/>
-                            </p:commandButton>
-                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
-                                             iconPos="top" actionListener="#{viewTipoSexo.editarTipoSexo}"
-                                             process="@form" update="messages">
-                                <p:ajax event="dialogReturn" listener="#{viewTipoSexo.returnDialogo}"
-                                        update="messages dataTable"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" styleClass="mr-2"
-                                             iconPos="top" action="#{viewTipoSexo.borrarTipoSexo}" process="@form"
-                                             update="messages dataTable">
-                              <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
-                            </p:commandButton>
-                          <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                           action="#{viewTipoSexo.ayuda}" process="@this" update="messages"/>
-                        </div>
-                    </div>
-                </f:facet>
-            </p:panel>
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <h:outputFormat value="#{labels['dict.filtro']}:"  styleClass="mr-2"/>
+                    <p:inputText value="#{viewTipoSexo.filtro.texto}" styleClass="mr-2"/>
+                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
+                                     update="messages dataTable" actionListener="#{viewTipoSexo.buscar}"
+                                     process="@form" styleClass="mr-2"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" styleClass="mr-2"
+                                     iconPos="top" actionListener="#{viewTipoSexo.nuevoTipoSexo()}"
+                                     process="@this">
+                        <p:ajax event="dialogReturn" listener="#{viewTipoSexo.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
+                                     iconPos="top" actionListener="#{viewTipoSexo.editarTipoSexo}"
+                                     process="@form" update="messages">
+                        <p:ajax event="dialogReturn" listener="#{viewTipoSexo.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" styleClass="mr-2"
+                                     iconPos="top" action="#{viewTipoSexo.borrarTipoSexo}" process="@form"
+                                     update="messages dataTable">
+                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                     action="#{viewTipoSexo.ayuda}" process="@this" update="messages"/>
+                </p:toolbarGroup>
+            </p:toolbar>
+
           <p:dataTable id="dataTable" value="#{viewTipoSexo.lazyModel}" var="tipoSexo"
                        paginator="true" lazy="true" filterDelay="300" widgetVar="tipoSexoTable"
                        rows="#{viewTipoSexo.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"

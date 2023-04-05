@@ -2,6 +2,8 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
 import es.caib.rolsac2.persistence.model.JTipoTramitacion;
+import es.caib.rolsac2.persistence.model.JTipoTramitacion;
+import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
@@ -37,7 +39,7 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
 
     @Override
     public List<TipoTramitacionGridDTO> findPagedByFiltro(TipoTramitacionFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -63,7 +65,7 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
 
     @Override
     public long countByFiltro(TipoTramitacionFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
     @Override
@@ -108,11 +110,13 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
     }
 
 
-    private Query getQuery(boolean isTotal, TipoTramitacionFiltro filtro) {
+    private Query getQuery(boolean isTotal, TipoTramitacionFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JTipoTramitacion j JOIN j.codPlatTramitacion p where 1 = 1 ");
+        } else if (isRest) {
+        	sql = new StringBuilder("SELECT j FROM JTipoTramitacion j JOIN j.codPlatTramitacion p where 1 = 1 ");
         } else {
             // sql = new StringBuilder("SELECT j.codigo, j.identificador, j.descripcion FROM JTipoTramitacion j where 1
             // = 1 ");
@@ -144,6 +148,9 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         if (filtro.isRellenoTipoPlantilla()) {
             sql.append(" and j.plantilla = :plantilla ");
         }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
+        }
 
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
@@ -160,6 +167,9 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         }
         if (filtro.isRellenoTipoPlantilla()) {
             query.setParameter("plantilla", filtro.getTipoPlantilla());
+        }
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -178,4 +188,22 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         List<JTipoTramitacion> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
+
+	@Override
+	public List<TipoTramitacionDTO> findPagedByFiltroRest(TipoTramitacionFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+		query.setFirstResult(filtro.getPaginaFirst());
+		query.setMaxResults(filtro.getPaginaTamanyo());
+
+		List<JTipoTramitacion> jtipoTramitaciones = query.getResultList();
+		List<TipoTramitacionDTO> tipoTramitaciones = new ArrayList<>();
+		if (jtipoTramitaciones != null) {
+			for (JTipoTramitacion jtipoTramitacion : jtipoTramitaciones) {
+				TipoTramitacionDTO tipoTramitacion = converter.createDTO(jtipoTramitacion);
+
+				tipoTramitaciones.add(tipoTramitacion);
+			}
+		}
+		return tipoTramitaciones;
+	}
 }

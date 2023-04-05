@@ -71,7 +71,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <my:literalComponent id="inputDescripcion" styleClass="w95"
                                          value="#{dialogTipoTramitacion.data.descripcion}"
                                          soloLecture="#{dialogTipoTramitacion.isModoConsulta()}"
-                                         required="true"
+                                         required="#{empty param['formDialog:closeButton']}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                          idioma="#{dialogTipoTramitacion.idioma}"
@@ -88,7 +88,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:inputText id="txtTramiteId" value="#{dialogTipoTramitacion.data.tramiteId}" styleClass="w95"
                                  onblur="this.value = this.value.toUpperCase();"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 required="true"
+                                 required="#{empty param['formDialog:closeButton']}"
                                   disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[0-9_-a-zA-Z\.]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[0-9_-a-zA-Z\.]{1,50}$" />
@@ -101,7 +101,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:inputNumber id="txtTramiteVersion" value="#{dialogTipoTramitacion.data.tramiteVersion}"
                                    styleClass="w95"
                                    requiredMessage="#{labels['dict.obligatorio.version']}"
-                                   required="true"
+                                   required="#{empty param['formDialog:closeButton']}"
                                     disabled="#{dialogTipoTramitacion.isModoConsulta()}" minValue="0"
                                    maxValue="999" decimalPlaces="0"/>
                 </div>
@@ -125,7 +125,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-8 ui-lg-4">
                     <p:selectOneMenu id="faseProc"
-                                     required="true"
+                                     required="#{empty param['formDialog:closeButton']}"
                                      requiredMessage="#{labels['dict.obligatorio.fase']}"
                                      value="#{dialogTipoTramitacion.data.faseProc}"
                                      styleClass="w35" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
@@ -146,7 +146,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtTramiteParametros" value="#{dialogTipoTramitacion.data.tramiteParametros}"
                                  requiredMessage="#{labels['dict.obligatorio.parametros']}"
-                                 styleClass="w95" required="true"
+                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
                                   disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="500"/>
                 </div>
 

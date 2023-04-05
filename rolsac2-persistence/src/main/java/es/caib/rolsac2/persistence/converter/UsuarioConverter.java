@@ -24,17 +24,20 @@ public interface UsuarioConverter extends Converter<JUsuario, UsuarioDTO> {
 
     @Named("createDTOSinUsuarioUnidadAdministrativa")
     @Mapping(target = "unidadesAdministrativas", ignore = true)
+    @Mapping(target = "entidades", ignore = true)
     @Mapping(target = "observaciones", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observaciones\"))")
     UsuarioDTO createDTOSinUsuarioUnidadAdministrativa(JUsuario entity);
 
     @Override
     @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(jUsuario, dto))")
     @Mapping(target = "unidadesAdministrativas", ignore = true)
+    @Mapping(target = "entidades", ignore = true)
     JUsuario createEntity(UsuarioDTO dto);
 
     @Override
     @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(entity, dto))")
     @Mapping(target = "unidadesAdministrativas", ignore = true)
+    @Mapping(target = "entidades", ignore = true)
     void mergeEntity(@MappingTarget JUsuario entity, UsuarioDTO dto);
 
     default List<JUsuarioTraduccion> convierteLiteralToTraduccion(JUsuario jUsuario, UsuarioDTO usuarioDTO) {

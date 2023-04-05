@@ -10,6 +10,10 @@ body {
 	background-color: #eaeaea;
 }
 
+.max-width{
+	max-width: 100vw !important;
+}
+
 .ui-widget button {
 	font: normal 100% 'Bariol Regular', Arial, Helvetica, sans-serif !important;
 }

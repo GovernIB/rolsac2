@@ -32,4 +32,18 @@ public class TipoFormaInicioFiltro extends AbstractFiltro {
   protected String getDefaultOrder() {
     return "id";
   }
+
+  private Long codigo;
+
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
+	}
+
+	public boolean isRellenoCodigo() {
+		 return codigo != null ;
+	}
 }

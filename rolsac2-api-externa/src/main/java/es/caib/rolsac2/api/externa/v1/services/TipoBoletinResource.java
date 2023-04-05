@@ -25,12 +25,17 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
 import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.TipoBoletin;
+import es.caib.rolsac2.api.externa.v1.model.filters.FiltroNormativas;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroPaginacion;
+import es.caib.rolsac2.api.externa.v1.model.filters.FiltroTipoBoletin;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaTipoBoletin;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoBoletinDTO;
+import es.caib.rolsac2.service.model.TipoBoletinGridDTO;
+import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoBoletinFiltro;
 
 @Path("/v1/" + Constantes.ENTIDAD_BOLETINES)
@@ -54,16 +59,19 @@ public class TipoBoletinResource {
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoBoletin.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response llistarBoletines(
-	@RequestBody(description = "Filtro de paginación: " + FiltroPaginacion.SAMPLE, name = "filtroPaginacion", content = @Content(example = FiltroPaginacion.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroPaginacion.class))) FiltroPaginacion filtroPaginacion)
+	@RequestBody(description = "Filtro: " + FiltroTipoBoletin.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoBoletin.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoBoletin.class))) FiltroTipoBoletin filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
-		TipoBoletinFiltro fg = new TipoBoletinFiltro();
+		if (filtro == null) {
+			filtro = new FiltroTipoBoletin();
+		}
 
-		// si no vienen los filtros se completan con los datos por defecto (los
-		// definidos dentro de Filtro generico)
-		if (filtroPaginacion != null) {
-			fg.setPaginaTamanyo(filtroPaginacion.getSize());
-			fg.setPaginaFirst(filtroPaginacion.getPage());
+		TipoBoletinFiltro fg = filtro.toTipoBoletinFiltro();
+
+		// si no vienen los filtros se completan con los datos por defecto
+		if(filtro.getFiltroPaginacion() != null) {
+			fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
+			fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
 		}
 
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
@@ -89,37 +97,37 @@ public class TipoBoletinResource {
 			throws Exception, ValidationException {
 
 		TipoBoletinFiltro fg = new TipoBoletinFiltro();
-		fg.setIdEntidad(new Long(codigo));
+		fg.setCodigo(new Long(codigo));
 
-		return Response.ok(getRespuestaSimple(fg), MediaType.APPLICATION_JSON).build();
+		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
 	}
 
 	private RespuestaTipoBoletin getRespuesta(TipoBoletinFiltro fg) throws DelegateException {
-		List<TipoBoletinDTO> resultadoBusqueda = tipoBoletinService.findBoletines();
+		Pagina<TipoBoletinDTO> resultadoBusqueda = tipoBoletinService.findByFiltroRest(fg);
 
 		List<TipoBoletin> lista = new ArrayList<TipoBoletin>();
 		TipoBoletin elemento = null;
 
-		for (TipoBoletinDTO nodo : resultadoBusqueda) {
+		for (TipoBoletinDTO nodo : resultadoBusqueda.getItems()) {
 			elemento = new TipoBoletin(nodo, null, fg.getIdioma(), true);
 			lista.add(elemento);
 		}
 
 		return new RespuestaTipoBoletin(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()),
-				resultadoBusqueda.size(), lista);
+				resultadoBusqueda.getTotal(), lista);
 	}
 
-	private RespuestaTipoBoletin getRespuestaSimple(TipoBoletinFiltro fg) throws DelegateException {
-		TipoBoletinDTO resultadoBusqueda = tipoBoletinService.findTipoBoletinById(fg.getIdEntidad());
-
-		List<TipoBoletin> lista = new ArrayList<TipoBoletin>();
-
-		if (resultadoBusqueda != null) {
-			lista.add(new TipoBoletin(resultadoBusqueda, null, fg.getIdioma(), true));
-		}
-
-		return new RespuestaTipoBoletin(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), 1,
-				lista);
-	}
+//	private RespuestaTipoBoletin getRespuestaSimple(TipoBoletinFiltro fg) throws DelegateException {
+//		TipoBoletinDTO resultadoBusqueda = tipoBoletinService.findTipoBoletinById(fg.getIdEntidad());
+//
+//		List<TipoBoletin> lista = new ArrayList<TipoBoletin>();
+//
+//		if (resultadoBusqueda != null) {
+//			lista.add(new TipoBoletin(resultadoBusqueda, null, fg.getIdioma(), true));
+//		}
+//
+//		return new RespuestaTipoBoletin(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), 1,
+//				lista);
+//	}
 
 }

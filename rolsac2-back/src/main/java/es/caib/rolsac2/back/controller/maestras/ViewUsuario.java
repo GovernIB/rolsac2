@@ -11,6 +11,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -57,9 +58,11 @@ public class ViewUsuario extends AbstractController implements Serializable {
         LOG.debug("load");
         permisoAccesoVentana(ViewUsuario.class);
         filtro = new UsuarioFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
-        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        if (sessionBean.getPerfil() != TypePerfiles.SUPER_ADMINISTRADOR) {
+            filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+            filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        }
 
         buscar();
     }
@@ -96,7 +99,13 @@ public class ViewUsuario extends AbstractController implements Serializable {
                         filtro.setOrderBy(sortField);
                     }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    Pagina<UsuarioGridDTO> pagina = administracionEntService.findByFiltro(filtro);
+                    Pagina<UsuarioGridDTO> pagina = null;
+                    if (sessionBean.getPerfil() != TypePerfiles.SUPER_ADMINISTRADOR) {
+                        pagina = administracionEntService.findByFiltro(filtro);
+                    } else {
+                        pagina = administracionEntService.findAllUsuariosByFiltro(filtro);
+                    }
+
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 } catch (Exception e) {
@@ -150,7 +159,11 @@ public class ViewUsuario extends AbstractController implements Serializable {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "Seleccione un elemento");// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
-            administracionEntService.deleteUsuarioEntidad(datoSeleccionado.getCodigo(), sessionBean.getEntidad().getCodigo());
+            if (sessionBean.getPerfil() != TypePerfiles.SUPER_ADMINISTRADOR) {
+                administracionEntService.deleteUsuarioEntidad(datoSeleccionado.getCodigo(), sessionBean.getEntidad().getCodigo());
+            } else {
+                administracionEntService.deleteUsuario(datoSeleccionado.getCodigo());
+            }
         }
     }
 

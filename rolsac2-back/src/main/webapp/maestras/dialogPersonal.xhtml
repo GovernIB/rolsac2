@@ -47,14 +47,14 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                      <p:outputLabel value="#{labels['dict.nombre']}:" for="txtNombre" />
                                  </div>
                                  <div class="ui-g-12 ui-md-9 ui-lg-4">
-                                     <p:inputText id="txtNombre" value="#{dialogPersonal.data.nombre}" styleClass="w95" required="true"  disabled="#{dialogPersonal.isModoConsulta()}"  />
+                                     <p:inputText id="txtNombre" value="#{dialogPersonal.data.nombre}" styleClass="w95" required="#{empty param['formDialog:closeButton']}"  disabled="#{dialogPersonal.isModoConsulta()}"  />
                                  </div>
 
                                  <div class="ui-g-12 ui-md-3 ui-lg-2">
                                      <p:outputLabel value="#{labels['dict.identificador']}:"  for="txtIdentificador" />
                                  </div>
                                  <div class="ui-g-12 ui-md-9 ui-lg-4">
-                                     <p:inputText id="txtIdentificador" value="#{dialogPersonal.data.identificador}" styleClass="w95"  required="true" disabled="#{dialogPersonal.isModoConsulta()}" maxlength="50"  />
+                                     <p:inputText id="txtIdentificador" value="#{dialogPersonal.data.identificador}" styleClass="w95"  required="#{empty param['formDialog:closeButton']}" disabled="#{dialogPersonal.isModoConsulta()}" maxlength="50"  />
                                  </div>
 
                                  <div class="ui-g-12 ui-md-3 ui-lg-2">

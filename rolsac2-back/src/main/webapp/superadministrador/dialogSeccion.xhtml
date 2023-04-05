@@ -43,7 +43,7 @@
                     <my:literalComponent id="txtNombre" styleClass="w95"
                                          value="#{dialogSeccion.data.nombre}"
                                          disabled="#{dialogSeccion.isModoConsulta()}"
-                                         required="true"
+                                         required="#{empty param['formDialog:closeButton']}"
                                          idioma="#{dialogSeccion.idioma}"/>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
@@ -51,7 +51,7 @@
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:selectOneMenu id="selectEntidad" value="#{dialogSeccion.data.entidad}"
-                                     styleClass="w95" required="true"
+                                     styleClass="w95" required="#{empty param['formDialog:closeButton']}"
                                      disabled="#{dialogSeccion.isModoConsulta()}"
                                      converter="#{entidadConverter}">
                         <f:selectItem itemLabel="#{labels['dict.selecciona.entidad']}" itemValue="#{null}"/>
@@ -75,7 +75,7 @@
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtSec" value="#{dialogSeccion.textoValor}"
-                                 styleClass="w95" required="true"
+                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
                                  disabled="true"/>
                     <p:commandButton actionListener="#{dialogSeccion.abrirDialogSelect()}"
                                      icon="pi pi-sitemap"
@@ -92,7 +92,7 @@
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtIdentificador" value="#{dialogSeccion.data.identificador}"
-                                 styleClass="w95" required="true"
+                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
                                  disabled="#{dialogSeccion.isModoConsulta()}"/>
                 </div>
             </div>

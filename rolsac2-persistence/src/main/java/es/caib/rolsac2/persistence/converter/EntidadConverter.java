@@ -2,6 +2,7 @@ package es.caib.rolsac2.persistence.converter;
 
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JFicheroExterno;
+import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
@@ -12,6 +13,7 @@ import org.mapstruct.MappingTarget;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Conversor entre JEntidad y EntidadDTO. La implementacion se generará automaticamente por MapStruct
@@ -143,5 +145,9 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
         ficheroDTO.setReferencia(jFicheroExterno.getReferencia());
 
         return ficheroDTO;
+    }
+
+    default List<EntidadDTO> toDTOs(List<JEntidad> entities) {
+        return entities.stream().map(e -> createDTO(e)).collect(Collectors.toList());
     }
 }

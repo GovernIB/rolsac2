@@ -34,6 +34,13 @@ public final class Mensaje extends ModelApi implements Comparable {
     private Boolean admContenido;
 
     /**
+     * Mensajes pendientes
+     */
+    private boolean pendienteMensajesGestor = false;
+    private boolean pendienteMensajesSupervisor = false;
+
+
+    /**
      * Obtiene usuario.
      *
      * @return usuario
@@ -109,6 +116,22 @@ public final class Mensaje extends ModelApi implements Comparable {
 
     public Boolean getAdmContenido() {
         return admContenido;
+    }
+
+    public boolean isPendienteMensajesGestor() {
+        return pendienteMensajesGestor;
+    }
+
+    public void setPendienteMensajesGestor(boolean pendienteMensajesGestor) {
+        this.pendienteMensajesGestor = pendienteMensajesGestor;
+    }
+
+    public boolean isPendienteMensajesSupervisor() {
+        return pendienteMensajesSupervisor;
+    }
+
+    public void setPendienteMensajesSupervisor(boolean pendienteMensajesSupervisor) {
+        this.pendienteMensajesSupervisor = pendienteMensajesSupervisor;
     }
 
     @Override

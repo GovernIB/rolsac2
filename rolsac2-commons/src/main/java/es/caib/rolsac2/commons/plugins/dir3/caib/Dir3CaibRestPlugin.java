@@ -64,8 +64,10 @@ public class Dir3CaibRestPlugin extends AbstractPluginProperties implements IPlu
                     .request(MediaType.APPLICATION_JSON).get();
             List<UnidadOrganicaResponse> unidades = response.readEntity(new GenericType<List<UnidadOrganicaResponse>>(){});
             List<UnidadOrganica> unidadesOrganicas = new ArrayList<>();
-            for(UnidadOrganicaResponse unidad : unidades) {
-                unidadesOrganicas.add(unidad.createUnidadOrganica());
+            if(unidades != null) {
+                for(UnidadOrganicaResponse unidad : unidades) {
+                    unidadesOrganicas.add(unidad.createUnidadOrganica());
+                }
             }
             return unidadesOrganicas;
         } catch (Exception e) {

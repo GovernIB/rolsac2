@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import es.caib.rolsac2.persistence.model.JTipoAfectacion;
+import es.caib.rolsac2.service.model.TipoAfectacionDTO;
 import es.caib.rolsac2.service.model.TipoAfectacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoAfectacionFiltro;
 
@@ -23,4 +24,6 @@ public interface TipoAfectacionRepository extends CrudRepository<JTipoAfectacion
   boolean existeIdentificador(String identificador);
 
   List<JTipoAfectacion> listTipoAfectaciones();
+
+List<TipoAfectacionDTO> findPagedByFiltroRest(TipoAfectacionFiltro filtro);
 }

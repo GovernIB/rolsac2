@@ -3,7 +3,9 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.converter.TipoUnidadAdministrativaObjetivoConverter;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
+import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.TipoUnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
@@ -40,7 +42,7 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
 
     @Override
     public List<TipoUnidadAdministrativaGridDTO> findPagedByFiltro(TipoUnidadAdministrativaFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -76,16 +78,19 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
 
     @Override
     public long countByFiltro(TipoUnidadAdministrativaFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
-    private Query getQuery(boolean isTotal, TipoUnidadAdministrativaFiltro filtro) {
+    private Query getQuery(boolean isTotal, TipoUnidadAdministrativaFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder(
                     "SELECT count(j) FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
-        } else {
+        	} else if (isRest) {
+            	sql = new StringBuilder(
+            			"SELECT j FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
+            } else {
             sql = new StringBuilder(
                     "SELECT j.codigo, j.identificador, j.entidad, t.descripcion, t.cargoMasculino, t.cargoFemenino, t.tratamientoMasculino, t.tratamientoFemenino "
                             + " FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1  ");
@@ -103,6 +108,9 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
         if (filtro.isRellenoEntidad()) {
             sql.append(" and j.entidad.id = :entidad ");
         }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
+        }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -119,6 +127,9 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
 
         if (filtro.isRellenoEntidad()) {
             query.setParameter("entidad", filtro.getIdEntidad());
+        }
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -171,5 +182,23 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
         query.setParameter("entidad", idEntidad);
         return query.getSingleResult() > 0;
     }
+
+	@Override
+	public List<TipoUnidadAdministrativaDTO> findPagedByFiltroRest(TipoUnidadAdministrativaFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
+
+        List<JTipoUnidadAdministrativa> jtipoUnidadAdministrativaes = query.getResultList();
+        List<TipoUnidadAdministrativaDTO> tipoUnidadAdministrativaes = new ArrayList<>();
+        if (jtipoUnidadAdministrativaes != null) {
+            for (JTipoUnidadAdministrativa jtipoUnidadAdministrativa : jtipoUnidadAdministrativaes) {
+                TipoUnidadAdministrativaDTO tipoUnidadAdministrativa = converter.createDTO(jtipoUnidadAdministrativa);
+
+                tipoUnidadAdministrativaes.add(tipoUnidadAdministrativa);
+            }
+        }
+        return tipoUnidadAdministrativaes;
+	}
 
 }

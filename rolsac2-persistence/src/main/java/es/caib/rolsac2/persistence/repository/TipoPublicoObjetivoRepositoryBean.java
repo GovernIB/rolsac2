@@ -2,7 +2,9 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.TipoPublicoObjetivoConverter;
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
+import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
@@ -39,7 +41,7 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
 
     @Override
     public List<TipoPublicoObjetivoGridDTO> findPagedByFiltro(TipoPublicoObjetivoFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -62,15 +64,17 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
 
     @Override
     public long countByFiltro(TipoPublicoObjetivoFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
-    private Query getQuery(boolean isTotal, TipoPublicoObjetivoFiltro filtro) {
+    private Query getQuery(boolean isTotal, TipoPublicoObjetivoFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder(
-                    "SELECT count(j) FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1  ");
+                    "SELECT count(j) FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+        } else if (isRest) {
+        	sql = new StringBuilder("SELECT j FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder(
                     "SELECT j.codigo, j.identificador, t.descripcion, j.empleadoPublico FROM JTipoPublicoObjetivo j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  where 1 = 1  ");
@@ -80,6 +84,9 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
         // }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro)");
+        }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
@@ -95,6 +102,10 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
 
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
+        }
+
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -133,4 +144,22 @@ public class TipoPublicoObjetivoRepositoryBean extends AbstractCrudRepository<JT
                 entityManager.createQuery("SELECT j FROM JTipoPublicoObjetivo j", JTipoPublicoObjetivo.class);
         return converter.createTipPubDTOs(query.getResultList());
     }
+
+	@Override
+	public List<TipoPublicoObjetivoDTO> findPagedByFiltroRest(TipoPublicoObjetivoFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+		query.setFirstResult(filtro.getPaginaFirst());
+		query.setMaxResults(filtro.getPaginaTamanyo());
+
+		List<JTipoPublicoObjetivo> jtipoPublicoObjetivoes = query.getResultList();
+		List<TipoPublicoObjetivoDTO> tipoPublicoObjetivoes = new ArrayList<>();
+		if (jtipoPublicoObjetivoes != null) {
+			for (JTipoPublicoObjetivo jtipoPublicoObjetivo : jtipoPublicoObjetivoes) {
+				TipoPublicoObjetivoDTO tipoPublicoObjetivo = converter.createDTO(jtipoPublicoObjetivo);
+
+				tipoPublicoObjetivoes.add(tipoPublicoObjetivo);
+			}
+		}
+		return tipoPublicoObjetivoes;
+	}
 }

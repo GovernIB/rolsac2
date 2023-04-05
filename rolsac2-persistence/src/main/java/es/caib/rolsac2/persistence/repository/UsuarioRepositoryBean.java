@@ -63,10 +63,72 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
         return usuario;
     }
 
+    @Override
+    public List<UsuarioGridDTO> findAllUsuariosByFiltro(UsuarioFiltro filtro) {
+        Query query = findAllUsusarios(false, filtro);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
+
+        List<Object[]> jUsuarios = query.getResultList();
+        List<UsuarioGridDTO> usuario = new ArrayList<>();
+        if (jUsuarios != null) {
+            for (Object[] jUsuario : jUsuarios) {
+                UsuarioGridDTO usuarioGridDTO = new UsuarioGridDTO();
+                usuarioGridDTO.setCodigo((Long) jUsuario[0]);
+                usuarioGridDTO.setIdentificador((String) jUsuario[1]);
+                usuarioGridDTO.setNombre((String) jUsuario[2]);
+                if (jUsuario[3] != null) {
+                    usuarioGridDTO.setEmail((String) jUsuario[3]);
+                }
+                usuario.add(usuarioGridDTO);
+            }
+        }
+        return usuario;
+    }
 
     @Override
     public long countByFiltro(UsuarioFiltro filtro) {
         return (long) getQuery(true, filtro).getSingleResult();
+    }
+
+    @Override
+    public long countAllUsuariosByFiltro(UsuarioFiltro filtro) {
+        return (long) findAllUsusarios(true, filtro).getSingleResult();
+    }
+
+    private Query findAllUsusarios(boolean isTotal, UsuarioFiltro filtro) {
+        StringBuilder sql;
+        if (isTotal) {
+            sql = new StringBuilder("SELECT count(j) FROM JUsuario j where 1 = 1 ");
+        } else {
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, j.nombre, j.email FROM JUsuario j where 1 = 1 ");
+        }
+        if (filtro.isRellenoTexto()) {
+            sql.append(" and ( cast(j.codigo as string) LIKE :filtro OR LOWER(j.nombre) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(j.email) LIKE :filtro ) ");
+        }
+        /*if (filtro.isRellenoId()) {
+            sql.append(" and LOWER(j.codigo) like :id ");
+        }*/
+        /*if (filtro.isRellenoIdentificador()) {
+            sql.append(" and LOWER(j.identificador) like :identificador ");
+        }*/
+        if (filtro.getOrderBy() != null) {
+            sql.append(" order by " + getOrden(filtro.getOrderBy()));
+            sql.append(filtro.isAscendente() ? " asc " : " desc ");
+        }
+
+        Query query = entityManager.createQuery(sql.toString());
+
+        if (filtro.isRellenoTexto()) {
+            query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoId()) {
+            query.setParameter("id", "%" + filtro.getCodigo());
+        }
+        if (filtro.isRellenoIdentificador()) {
+            query.setParameter("identificador", "%" + filtro.getIdentificador().toLowerCase() + "%");
+        }
+        return query;
     }
 
     private Query getQuery(boolean isTotal, UsuarioFiltro filtro) {
@@ -81,7 +143,7 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
             sql.append(" and LOWER(j.nombre) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(j.email) LIKE :filtro");
         }
         if (filtro.isRellenoId()) {
-            sql.append(" and LOWER(j.id) like :id ");
+            sql.append(" and LOWER(j.codigo) like :id ");
         }
         if (filtro.isRellenoIdentificador()) {
             sql.append(" and LOWER(j.identificador) like :identificador ");

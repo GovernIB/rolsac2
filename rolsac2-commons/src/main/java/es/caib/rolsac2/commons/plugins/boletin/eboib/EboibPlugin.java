@@ -16,10 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class EboibPlugin extends AbstractPluginProperties implements IPluginBoletin {
@@ -34,6 +31,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Constructor del plugin de Eboib
+     *
      * @param prefijoPropiedades
      * @param properties
      */
@@ -58,6 +56,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Método utilizado para realizar una búsqueda RDF dados los siguientes parámetros.
+     *
      * @param numeroBoletin
      * @param fechaBoletin
      * @param numeroEdicto
@@ -74,7 +73,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
          */
 
         final List<ResultadoBoib> boibRdfUrls = this.getBoibRdfUrls(numeroBoletin, fechaBoletin);
-        final String numRegBoib = numeroEdicto.isEmpty() ?  "" : numeroEdicto;
+        final String numRegBoib = numeroEdicto.isEmpty() ? "" : numeroEdicto;
         List<Edicto> listadoEdictos = new ArrayList<>();
         Normativa normativa = new Normativa();
 
@@ -88,11 +87,9 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
         boolean abortar = false;
         for (final ResultadoBoib rdf : boibRdfUrls) {
-            if (abortar)
-                break;
+            if (abortar) break;
             for (final String enviamentUrl : rdf.getEnviaments()) {
-                if (abortar)
-                    break;
+                if (abortar) break;
                 try {
                     normativa = getEnviament(rdf, enviamentUrl);
                 } catch (final Exception exception) {
@@ -142,6 +139,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Método que crea un objeto de Normativa ja partir de un RDF y de un nombre de fichero.
+     *
      * @param rdf
      * @param inputFileName
      * @return
@@ -160,12 +158,11 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
         normativa.setValorRegistro("" + res.getProperty(RdfProperties.NUM_REGISTRE).getString());
         normativa.setIdTipoNormativa(extraerIdTipoNormativa(res.getProperty(RdfProperties.TIPUS_PUBLICACIO).getResource().getURI()));
 
-        final java.text.SimpleDateFormat anyosMedia = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        final java.text.SimpleDateFormat anyosMedia = new java.text.SimpleDateFormat("dd/MM/yyyy");
         try {
             normativa.setFechaBoletin(anyosMedia.parse(res.getProperty(RdfProperties.DATE).getString()));
         } catch (final ParseException e) {
-            throw new IllegalArgumentException(
-                    "Data: " + res.getProperty(RdfProperties.DATE).getString() + " incorrecta");
+            throw new IllegalArgumentException("Data: " + res.getProperty(RdfProperties.DATE).getString() + " incorrecta");
         }
 
         // CATALÁN
@@ -199,6 +196,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * A partir de un nombre de fichero creamos un Modelo RDF
+     *
      * @param inputFileName
      * @return
      */
@@ -220,7 +218,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
     }
 
     /**
-     *   Buscar el BOIB por fecha o número en RSS<br/>
+     * Buscar el BOIB por fecha o número en RSS<br/>
      * - buscar por número:
      * /filtrerss.do?lang=ca&resultados=20&num_ini=1&num_fin=1&any_ini=2009&any_fin=2009<br/>
      * - buscar por fecha:
@@ -275,6 +273,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Método utilizado para añadir los parámetros necesarios al objeto ResultadoBoib
+     *
      * @param rdf2
      */
     private void populateResultadoBoib(final ResultadoBoib rdf2) {
@@ -306,6 +305,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Se utiliza para limpiar el sumario del contenido del Edicto
+     *
      * @param string
      * @return
      */
@@ -339,6 +339,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Obtiene el id de una sección en catalán
+     *
      * @param rdfId
      * @return
      */
@@ -351,6 +352,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Obtiene el id de una sección en español
+     *
      * @param rdfId
      * @return
      */
@@ -363,6 +365,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Obtiene el id de una sección
+     *
      * @param rdfId
      * @return
      */
@@ -379,6 +382,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Obtiene el id de una publicación en catalán
+     *
      * @param rdfId
      * @return
      */
@@ -392,6 +396,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Obtiene el id de una publicación en español
+     *
      * @param rdfId
      * @return
      */
@@ -405,6 +410,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
     /**
      * Obtiene el id de una publicación en catalán
+     *
      * @param rdfId
      * @return
      */
@@ -433,7 +439,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
         Edicto edicto = new Edicto();
         edicto.setBoletinFecha(normativa.getFechaBoletin());
         edicto.setBoletinTipo(normativa.getNombreBoletin());
-        if(normativa.getNumeroBoib().length() == 7) {
+        if (normativa.getNumeroBoib().length() == 7) {
             String numeroBoibFormateado = normativa.getNumeroBoib().substring(4, 7) + "/" + normativa.getNumeroBoib().substring(0, 4);
             edicto.setBoletinNumero(numeroBoibFormateado);
         } else {
@@ -474,10 +480,12 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
         return retorno;
     }
 
-    public Integer getNumeroNormativas() { return parametrosEBoib.getNumeroRegistros(); }
+    public Integer getNumeroNormativas() {
+        return parametrosEBoib.getNumeroRegistros();
+    }
 
     private boolean isUrlHack() {
-        if(getProperty(EBOIB_URL_HACK) != null) {
+        if (getProperty(EBOIB_URL_HACK) != null) {
             return getProperty(EBOIB_URL_HACK).equals("true");
         } else {
             return false;

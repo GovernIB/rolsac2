@@ -42,7 +42,7 @@
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:selectOneMenu id="txtTipo" requiredMessage="#{labels['dict.obligatorio.tipo']}"
-                                     required="true" value="#{dialogPlugins.data.tipo}"
+                                     required="#{empty param['formDialog:closeButton']}" value="#{dialogPlugins.data.tipo}"
                                      disabled="#{dialogPlugins.isModoConsulta()}">
                         <f:selectItem itemValue="" itemLabel="#{labels['dialogPlugins.sinPlugin']}"/>
                         <!--<f:selectItem itemValue="BOL" itemLabel="#{labels['dialogPlugins.plugin.BOL']}"/>
@@ -61,7 +61,7 @@
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtDescripcion" value="#{dialogPlugins.data.descripcion}"
                                  requiredMessage="#{labels['dict.obligatorio.descripcion']}"
-                                 styleClass="w95" required="true"
+                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
                                  disabled="#{dialogPlugins.isModoConsulta()}" maxlength="50"/>
                 </div>
 
@@ -86,7 +86,7 @@
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputTextarea id="txtClassname" value="#{dialogPlugins.data.classname}"
                                      requiredMessage="#{labels['dict.obligatorio.classname']}"
-                                     styleClass="w95" required="true"
+                                     styleClass="w95" required="#{empty param['formDialog:closeButton']}"
                                      rows="3" autoResize="false"
                                      disabled="#{dialogPlugins.isModoConsulta()}" maxlength="1000"/>
                 </div>
@@ -108,7 +108,7 @@
                         </div>
                         <div class="ui-g-12 ui-md-10 ui-lg-5">
                             <p:selectOneMenu id="selectTipoBoletin" value="#{dialogPlugins.boletinSeleccionado}"
-                                             required="true"
+                                             required="#{empty param['formDialog:closeButton']}"
                                              requiredMessage="#{labels['dict.obligatorio.boletinOficial']}"
                                              disabled="#{dialogPlugins.isModoConsulta()}"
                                              converter="#{boletinOficialConverter}">
@@ -127,7 +127,7 @@
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['dialogPlugins.propiedades']}:" for="dataTablePropiedades"/>
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5 d-flex w80">
+                <div class="ui-g-12 ui-md-10 ui-lg-5 d-flex">
                     <p:dataTable id="dataTablePropiedades" var="td" value="#{dialogPlugins.data.propiedades}"
                                  rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1;"
                                  paginator="false" selectionMode="single"

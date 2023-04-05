@@ -7,6 +7,8 @@ public class TipoBoletinFiltro extends AbstractFiltro {
    **/
   private String texto;
 
+  private Long codigo;
+
   public String getTexto() {
     return texto;
   }
@@ -28,4 +30,16 @@ public class TipoBoletinFiltro extends AbstractFiltro {
   protected String getDefaultOrder() {
     return "id";
   }
+
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
+	}
+
+	public boolean isRellenoCodigo() {
+		 return codigo != null ;
+	}
 }

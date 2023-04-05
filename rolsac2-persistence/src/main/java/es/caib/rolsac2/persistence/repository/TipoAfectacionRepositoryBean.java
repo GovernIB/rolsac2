@@ -1,20 +1,24 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.model.JTipoAfectacion;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoAfectacionGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.filtro.TipoAfectacionFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import es.caib.rolsac2.persistence.converter.TipoAfectacionConverter;
+import es.caib.rolsac2.persistence.model.JTipoAfectacion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoAfectacionDTO;
+import es.caib.rolsac2.service.model.TipoAfectacionGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.TipoAfectacionFiltro;
 
 /**
  * Implementación del repositorio de tipo de afectación.
@@ -27,13 +31,16 @@ import java.util.Optional;
 public class TipoAfectacionRepositoryBean extends AbstractCrudRepository<JTipoAfectacion, Long>
         implements TipoAfectacionRepository {
 
+    @Inject
+    private TipoAfectacionConverter converter;
+
     protected TipoAfectacionRepositoryBean() {
         super(JTipoAfectacion.class);
     }
 
     @Override
     public List<TipoAfectacionGridDTO> findPagedByFiltro(TipoAfectacionFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -55,7 +62,7 @@ public class TipoAfectacionRepositoryBean extends AbstractCrudRepository<JTipoAf
 
     @Override
     public long countByFiltro(TipoAfectacionFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
     @Override
@@ -66,17 +73,22 @@ public class TipoAfectacionRepositoryBean extends AbstractCrudRepository<JTipoAf
         return resultado > 0;
     }
 
-    private Query getQuery(boolean isTotal, TipoAfectacionFiltro filtro) {
+    private Query getQuery(boolean isTotal, TipoAfectacionFiltro filtro, boolean isRest) {
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder(
                     "SELECT count(j) FROM JTipoAfectacion j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+        } else if (isRest) {
+        	sql = new StringBuilder("SELECT j FROM JTipoAfectacion j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder(
                     "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoAfectacion j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.codigo as string) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro  OR LOWER(t.descripcion) LIKE :filtro)");
+        }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
@@ -90,6 +102,9 @@ public class TipoAfectacionRepositoryBean extends AbstractCrudRepository<JTipoAf
 
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
+        }
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -118,4 +133,22 @@ public class TipoAfectacionRepositoryBean extends AbstractCrudRepository<JTipoAf
         List<JTipoAfectacion> result = query.getResultList();
         return result;
     }
+
+	@Override
+	public List<TipoAfectacionDTO> findPagedByFiltroRest(TipoAfectacionFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+		query.setFirstResult(filtro.getPaginaFirst());
+		query.setMaxResults(filtro.getPaginaTamanyo());
+
+		List<JTipoAfectacion> jtipoAfectaciones = query.getResultList();
+		List<TipoAfectacionDTO> tipoAfectaciones = new ArrayList<>();
+		if (jtipoAfectaciones != null) {
+			for (JTipoAfectacion jtipoAfectacion : jtipoAfectaciones) {
+				TipoAfectacionDTO tipoAfectacion = converter.createDTO(jtipoAfectacion);
+
+				tipoAfectaciones.add(tipoAfectacion);
+			}
+		}
+		return tipoAfectaciones;
+	}
 }

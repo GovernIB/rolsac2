@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JEntidad;
+import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.EntidadGridDTO;
 import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 
@@ -25,4 +26,8 @@ public interface EntidadRepository extends CrudRepository<JEntidad, Long> {
     long countByFiltro(EntidadFiltro filtro);
 
     boolean existeIdentificadorEntidad(String identificador);
+
+	List<JEntidad> findAll();
+
+	List<EntidadDTO> findPagedByFiltroRest(EntidadFiltro filtro);
 }

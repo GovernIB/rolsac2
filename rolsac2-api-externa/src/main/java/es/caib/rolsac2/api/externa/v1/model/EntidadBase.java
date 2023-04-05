@@ -1,5 +1,6 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,11 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.api.externa.v1.utils.Utiles;
@@ -24,7 +30,7 @@ import es.caib.rolsac2.api.externa.v1.utils.Utiles;
  */
 @XmlRootElement
 @Schema(name = "EntidadBase", description = "Entidad Base")
-public abstract class EntidadBase {
+public abstract class EntidadBase<V> extends EntidadJson<V> {
 
 	protected List<String> SETTERS_INVALIDS = new ArrayList<String>() {
 		private static final long serialVersionUID = 1L;
@@ -162,5 +168,4 @@ public abstract class EntidadBase {
 	 * @param codigo (id)s
 	 */
 	public abstract void setId(Long codigo);
-
 }

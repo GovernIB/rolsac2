@@ -84,6 +84,24 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     private TipoNormativaConverter tipoNormativaConverter;
 
     @Inject
+    private TipoMediaFichaRepository tipoMediaFichaRepository;
+
+    @Inject
+    private TipoMediaFichaConverter tipoMediaFichaConverter;
+
+    @Inject
+    private TipoMediaUARepository tipoMediaUARepository;
+
+    @Inject
+    private TipoMediaUAConverter tipoMediaUAConverter;
+
+    @Inject
+    private TipoMediaEdificioRepository tipoMediaEdificioRepository;
+
+    @Inject
+    private TipoMediaEdificioConverter tipoMediaEdificioConverter;
+
+    @Inject
     private TipoPublicoObjetivoRepository tipoPublicoObjetivoRepository;
 
     @Inject
@@ -100,6 +118,9 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Inject
     private TipoTramitacionConverter tipoTramitacionConverter;
+
+    @Inject
+    private TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
 
     @Inject
     private PlatTramitElectronicaRepository platTramitElectronicaRepository;
@@ -238,7 +259,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoBoletinDTO> findBoletines() {
         try {
             List<TipoBoletinDTO> items = tipoBoletinRepository.findAll();
@@ -247,6 +268,102 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             LOG.error("Error: ", e);
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public Pagina<TipoBoletinDTO> findByFiltroRest(TipoBoletinFiltro filtro) {
+        try {
+            List<TipoBoletinDTO> items = tipoBoletinRepository.findPagedByFiltroRest(filtro);
+            long total = tipoBoletinRepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error(ERROR_LITERAL, e);
+            List<TipoBoletinDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public Pagina<TipoAfectacionDTO> findByFiltroRest(TipoAfectacionFiltro filtro) {
+    	 try {
+             List<TipoAfectacionDTO> items = tipoAfectacionRepository.findPagedByFiltroRest(filtro);
+             long total = tipoAfectacionRepository.countByFiltro(filtro);
+             return new Pagina<>(items, total);
+         } catch (Exception e) {
+             LOG.error(ERROR_LITERAL, e);
+             List<TipoAfectacionDTO> items = new ArrayList<>();
+             long total = items.size();
+             return new Pagina<>(items, total);
+         }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public Pagina<TipoFormaInicioDTO> findByFiltroRest(TipoFormaInicioFiltro filtro) {
+    	 try {
+             List<TipoFormaInicioDTO> items = tipoFormaInicioRepository.findPagedByFiltroRest(filtro);
+             long total = tipoFormaInicioRepository.countByFiltro(filtro);
+             return new Pagina<>(items, total);
+         } catch (Exception e) {
+             LOG.error(ERROR_LITERAL, e);
+             List<TipoFormaInicioDTO> items = new ArrayList<>();
+             long total = items.size();
+             return new Pagina<>(items, total);
+         }
+    }
+
+	@Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public Pagina<TipoNormativaDTO> findByFiltroRest(TipoNormativaFiltro fg) {
+    	 try {
+             List<TipoNormativaDTO> items = tipoNormativaRepository.findPagedByFiltroRest(fg);
+             long total = tipoNormativaRepository.countByFiltro(fg);
+             return new Pagina<>(items, total);
+         } catch (Exception e) {
+             LOG.error(ERROR_LITERAL, e);
+             List<TipoNormativaDTO> items = new ArrayList<>();
+             long total = items.size();
+             return new Pagina<>(items, total);
+         }
+    }
+
+	@Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public Pagina<TipoSilencioAdministrativoDTO> findByFiltroRest(TipoSilencioAdministrativoFiltro fg) {
+    	 try {
+             List<TipoSilencioAdministrativoDTO> items = tipoSilencioAdministrativoRepository.findPagedByFiltroRest(fg);
+             long total = tipoSilencioAdministrativoRepository.countByFiltro(fg);
+             return new Pagina<>(items, total);
+         } catch (Exception e) {
+             LOG.error(ERROR_LITERAL, e);
+             List<TipoSilencioAdministrativoDTO> items = new ArrayList<>();
+             long total = items.size();
+             return new Pagina<>(items, total);
+         }
+    }
+
+	@Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public Pagina<TipoUnidadAdministrativaDTO> findByFiltroRest(TipoUnidadAdministrativaFiltro fg) {
+    	 try {
+             List<TipoUnidadAdministrativaDTO> items = tipoUnidadAdministrativaRepository.findPagedByFiltroRest(fg);
+             long total = tipoUnidadAdministrativaRepository.countByFiltro(fg);
+             return new Pagina<>(items, total);
+         } catch (Exception e) {
+             LOG.error(ERROR_LITERAL, e);
+             List<TipoUnidadAdministrativaDTO> items = new ArrayList<>();
+             long total = items.size();
+             return new Pagina<>(items, total);
+         }
     }
 
     @Override
@@ -1189,6 +1306,190 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             return new ArrayList<>();
         }
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoViaDTO> findByFiltroRest(TipoViaFiltro filtro) {
+		 try {
+	            List<TipoViaDTO> items = tipoViaRepository.findPagedByFiltroRest(filtro);
+	            long total = tipoViaRepository.countByFiltro(filtro);
+	            return new Pagina<>(items, total);
+	        } catch (Exception e) {
+	            LOG.error(ERROR_LITERAL, e);
+	            List<TipoViaDTO> items = new ArrayList<>();
+	            long total = items.size();
+	            return new Pagina<>(items, total);
+	        }
+	}
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoSexoDTO> findByFiltroRest(TipoSexoFiltro filtro) {
+		 try {
+	            List<TipoSexoDTO> items = tipoSexoRepository.findPagedByFiltroRest(filtro);
+	            long total = tipoSexoRepository.countByFiltro(filtro);
+	            return new Pagina<>(items, total);
+	        } catch (Exception e) {
+	            LOG.error(ERROR_LITERAL, e);
+	            List<TipoSexoDTO> items = new ArrayList<>();
+	            long total = items.size();
+	            return new Pagina<>(items, total);
+	        }
+	}
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoPublicoObjetivoDTO> findByFiltroRest(TipoPublicoObjetivoFiltro filtro) {
+		 try {
+	            List<TipoPublicoObjetivoDTO> items = tipoPublicoObjetivoRepository.findPagedByFiltroRest(filtro);
+	            long total = tipoPublicoObjetivoRepository.countByFiltro(filtro);
+	            return new Pagina<>(items, total);
+	        } catch (Exception e) {
+	            LOG.error(ERROR_LITERAL, e);
+	            List<TipoPublicoObjetivoDTO> items = new ArrayList<>();
+	            long total = items.size();
+	            return new Pagina<>(items, total);
+	        }
+	}
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoMateriaSIADTO> findByFiltroRest(TipoMateriaSIAFiltro filtro) {
+		 try {
+	            List<TipoMateriaSIADTO> items = tipoMateriaSIARepository.findPagedByFiltroRest(filtro);
+	            long total = tipoMateriaSIARepository.countByFiltro(filtro);
+	            return new Pagina<>(items, total);
+	        } catch (Exception e) {
+	            LOG.error(ERROR_LITERAL, e);
+	            List<TipoMateriaSIADTO> items = new ArrayList<>();
+	            long total = items.size();
+	            return new Pagina<>(items, total);
+	        }
+	}
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoLegitimacionDTO> findByFiltroRest(TipoLegitimacionFiltro filtro) {
+		try {
+			List<TipoLegitimacionDTO> items = tipoLegitimacionRepository.findPagedByFiltroRest(filtro);
+			long total = tipoLegitimacionRepository.countByFiltro(filtro);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error(ERROR_LITERAL, e);
+			List<TipoLegitimacionDTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoMediaFichaDTO> findByFiltroRest(TipoMediaFichaFiltro filtro) {
+		try {
+			List<TipoMediaFichaDTO> items = tipoMediaFichaRepository.findPagedByFiltroRest(filtro);
+			long total = tipoMediaFichaRepository.countByFiltro(filtro);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error(ERROR_LITERAL, e);
+			List<TipoMediaFichaDTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoProcedimientoDTO> findByFiltroRest(TipoProcedimientoFiltro filtro) {
+		try {
+			List<TipoProcedimientoDTO> items = tipoProcedimientoRepository.findPagedByFiltroRest(filtro);
+			long total = tipoProcedimientoRepository.countByFiltro(filtro);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error(ERROR_LITERAL, e);
+			List<TipoProcedimientoDTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
+
+	@Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoMediaUADTO> findByFiltroRest(TipoMediaUAFiltro filtro) {
+		try {
+			List<TipoMediaUADTO> items = tipoMediaUARepository.findPagedByFiltroRest(filtro);
+			long total = tipoMediaUARepository.countByFiltro(filtro);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error(ERROR_LITERAL, e);
+			List<TipoMediaUADTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoMediaEdificioDTO> findByFiltroRest(TipoMediaEdificioFiltro filtro) {
+		try {
+			List<TipoMediaEdificioDTO> items = tipoMediaEdificioRepository.findPagedByFiltroRest(filtro);
+			long total = tipoMediaEdificioRepository.countByFiltro(filtro);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error(ERROR_LITERAL, e);
+			List<TipoMediaEdificioDTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoTramitacionDTO> findByFiltroRest(TipoTramitacionFiltro filtro) {
+		try {
+			List<TipoTramitacionDTO> items = tipoTramitacionRepository.findPagedByFiltroRest(filtro);
+			long total = tipoTramitacionRepository.countByFiltro(filtro);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error(ERROR_LITERAL, e);
+			List<TipoTramitacionDTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
+
+	public PlatTramitElectronicaConverter getPlatTramitElectronicaConverter() {
+		return platTramitElectronicaConverter;
+	}
+
+	public void setPlatTramitElectronicaConverter(PlatTramitElectronicaConverter platTramitElectronicaConverter) {
+		this.platTramitElectronicaConverter = platTramitElectronicaConverter;
+	}
+
+	public TipoMediaFichaConverter getTipoMediaFichaConverter() {
+		return tipoMediaFichaConverter;
+	}
+
+	public void setTipoMediaFichaConverter(TipoMediaFichaConverter tipoMediaFichaConverter) {
+		this.tipoMediaFichaConverter = tipoMediaFichaConverter;
+	}
+
+	public TipoMediaUAConverter getTipoMediaUAConverter() {
+		return tipoMediaUAConverter;
+	}
+
+	public void setTipoMediaUAConverter(TipoMediaUAConverter tipoMediaUAConverter) {
+		this.tipoMediaUAConverter = tipoMediaUAConverter;
+	}
 
 
 }
