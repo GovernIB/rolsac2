@@ -3,8 +3,7 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 
 import java.util.List;
@@ -47,5 +46,15 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     List<Long> getListaHijosRecursivo(Long codigoUA);
 
-    PathUA getPath(UnidadAdministrativaDTO uaInstructor);
+    PathUA getPath(UnidadAdministrativaGridDTO uaInstructor);
+
+    UnidadOrganicaDTO obtenerUnidadRaiz(Long idEntidad);
+
+    List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad);
+
+    Pagina<IndexacionDTO> getUAsParaIndexacion(Long idEntidad);
+
+    boolean isVisibleUA(UnidadAdministrativaDTO uaInstructor);
+
+    String obtenerCodigoDIR3(Long codigoUA);
 }

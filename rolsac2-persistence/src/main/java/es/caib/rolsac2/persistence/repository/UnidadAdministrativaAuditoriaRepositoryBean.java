@@ -28,6 +28,11 @@ public class UnidadAdministrativaAuditoriaRepositoryBean extends AbstractCrudRep
         super(JUnidadAdministrativaAuditoria.class);
     }
 
+    @Override
+    public void guardar(JUnidadAdministrativaAuditoria jUnidadAdministrativaAuditoria) {
+        entityManager.persist(jUnidadAdministrativaAuditoria);
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(UnidadAdministrativaAuditoriaRepository.class);
 
     @Override
@@ -59,6 +64,7 @@ public class UnidadAdministrativaAuditoriaRepositoryBean extends AbstractCrudRep
 
                 registroAuditoria.setUsuario((String) resultado[4]);
                 registroAuditoria.setUsuarioPerfil((String) resultado[5]);
+                registroAuditoria.setLiteralFlujo((String) resultado[6]);
                 auditorias.add(registroAuditoria);
             }
         }
@@ -117,7 +123,7 @@ public class UnidadAdministrativaAuditoriaRepositoryBean extends AbstractCrudRep
             sql = new StringBuilder("SELECT count(j) FROM JUnidadAdministrativaAuditoria where 1 = 1 ");
         } else {
             sql = new StringBuilder(
-                    "SELECT j.codigo, j.unidadAdministrativa.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil  FROM JUnidadAdministrativaAuditoria j where 1 = 1 ");
+                    "SELECT j.codigo, j.unidadAdministrativa.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil, j.literalFlujo  FROM JUnidadAdministrativaAuditoria j where 1 = 1 ");
         }
 
 

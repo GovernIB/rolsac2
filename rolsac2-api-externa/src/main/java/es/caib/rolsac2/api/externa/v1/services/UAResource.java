@@ -78,9 +78,9 @@ public class UAResource {
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
-		if (filtro != null) {
-			fg.setPaginaTamanyo(filtro.getSize());
-			fg.setPaginaFirst(filtro.getPage());
+		if(filtro.getFiltroPaginacion() != null) {
+			fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
+			fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
 		}
 
 		// si viene el orden intentamos rellenarlo

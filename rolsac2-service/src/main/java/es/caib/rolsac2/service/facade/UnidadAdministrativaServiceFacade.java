@@ -1,10 +1,8 @@
 package es.caib.rolsac2.service.facade;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.TipoSexoDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -27,6 +25,13 @@ public interface UnidadAdministrativaServiceFacade {
      */
     List<UnidadAdministrativaDTO> getHijos(Long idUnitat, String idioma);
 
+    /**
+     * Obtiene los hijos de una UA en un modelo más simple
+     *
+     * @param idUnitat
+     * @param idioma
+     * @return
+     */
     List<UnidadAdministrativaGridDTO> getHijosGrid(Long idUnitat, String idioma);
 
 
@@ -47,7 +52,7 @@ public interface UnidadAdministrativaServiceFacade {
      * @param dto datos de la UA
      * @return EL identificador de la nueva UA
      */
-    Long create(UnidadAdministrativaDTO dto);
+    Long create(UnidadAdministrativaDTO dto, TypePerfiles perfil);
 
     /**
      * Actualiza los datos de una UA a la base de datos.
@@ -78,7 +83,7 @@ public interface UnidadAdministrativaServiceFacade {
     /**
      * Devuelve una página con el ua relacionado con los parámetros del filtro
      *
-     * @param filtro filtro de la búsqueda
+     * @param filtro    filtro de la búsqueda
      * @param isApiRest llamada desde Api Rest
      * @return una pagina con el numero total de ua y la lista de uas por el rango indicado.
      */
@@ -103,13 +108,6 @@ public interface UnidadAdministrativaServiceFacade {
     List<UnidadAdministrativaDTO> getHijosSimple(Long codigo, String idioma, UnidadAdministrativaDTO padre);
 
     List<AuditoriaGridDTO> findUaAuditoriasById(Long id);
-
-    /**
-     * Devuelve un listado de UAs relacionadas a un usuario
-     *
-     * @param usuarioId
-     * @return listado de UAs
-     */
 
     /**
      * Retorna las UAs relacionadas a un usuario
@@ -144,5 +142,65 @@ public interface UnidadAdministrativaServiceFacade {
      */
     List<Long> getListaHijosRecursivo(Long codigoUA);
 
+    /**
+     * Obtiene las unidades hijas asociadas a una unidad orgánica del organigrama de DIR3
+     *
+     * @param codigoDir3
+     * @return
+     */
 
+    List<UnidadOrganicaDTO> obtenerUnidadesHijasDir3(String codigoDir3, Long idEntidad);
+
+
+    /**
+     * Obtiene las unidades hijas asociadas a una unidad orgánica del organigrama de ROLSAC2
+     *
+     * @param codigoDir3
+     * @return
+     */
+    List<UnidadOrganicaDTO> obtenerUnidadesHijasRolsac(String codigoDir3, Long idEntidad);
+
+    /**
+     * Obtiene la unidad raíz del organigrama de DIR3
+     *
+     * @return
+     */
+    UnidadOrganicaDTO obtenerUnidadRaizDir3(Long idEntidad);
+
+    /**
+     * Obtiene la unidad raíz del organigrama de ROLSAC2
+     *
+     * @return
+     */
+    UnidadOrganicaDTO obtenerUnidadRaizRolsac(Long idEntidad);
+
+    /**
+     * Elimina el organigrama DIR3
+     */
+    void eliminarOrganigrama(Long idEntidad);
+
+    /**
+     * Crea el organigrama DIR3
+     *
+     * @param unidades
+     */
+    void crearOrganigrama(List<UnidadOrganicaDTO> unidades, Long idEntidad);
+
+    /**
+     * Obtiene el procedimientoSolrDTO
+     *
+     * @param codElemento
+     * @return
+     */
+    ProcedimientoSolrDTO findDataIndexacionUAById(Long codElemento);
+
+    Pagina<IndexacionDTO> getUAsParaIndexacion(Long idEntidad);
+
+    void actualizarSolr(IndexacionDTO indexacionDTO, ResultadoAccion resultadoAccion);
+
+    boolean isVisibleUA(UnidadAdministrativaDTO uaInstructor);
+
+    String obtenerCodigoDIR3(Long codigoUA);
+
+    EntidadRaizDTO getUaRaiz(Long codigoUA);
 }

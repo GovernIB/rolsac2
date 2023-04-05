@@ -4,6 +4,7 @@ import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.utils.AuditoriaUtil;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -74,6 +75,11 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
     private Integer orden;
 
     /**
+     * Versión de la UA
+     */
+    private Integer version;
+
+    /**
      * Nombre
      */
     private Literal nombre;
@@ -117,7 +123,7 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
     public UnidadAdministrativaDTO() {
     }
 
-    public UnidadAdministrativaDTO(UnidadAdministrativaDTO otro){
+    public UnidadAdministrativaDTO(UnidadAdministrativaDTO otro) {
         this.codigo = otro.codigo;
         this.codigoDIR3 = otro.codigoDIR3;
         this.identificador = otro.identificador;
@@ -623,6 +629,14 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
         this.usuarioAuditoria = usuarioAuditoria;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     /**
      * Se hace a este nivel manualmente el clonar.
      *
@@ -753,5 +767,23 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
         AuditoriaUtil.auditar(data.getTipo(), dataOriginal.getTipo(), cambios, "auditoria.uas.tipo");
 
         return cambios;
+    }
+
+    /**
+     * Cast super basico
+     *
+     * @return
+     */
+    public UnidadAdministrativaGridDTO getUAGrid() {
+        UnidadAdministrativaGridDTO uaGrid = new UnidadAdministrativaGridDTO();
+        uaGrid.setCodigo(this.getCodigo());
+        if (uaGrid.getPadre() != null) {
+            UnidadAdministrativaGridDTO uaGridPadre = new UnidadAdministrativaGridDTO();
+            uaGridPadre.setCodigo(uaGrid.getPadre().getCodigo());
+            uaGridPadre.setNombre(uaGrid.getPadre().getNombre());
+            uaGrid.setPadre(uaGridPadre);
+        }
+        uaGrid.setNombre(this.getNombre());
+        return uaGrid;
     }
 }

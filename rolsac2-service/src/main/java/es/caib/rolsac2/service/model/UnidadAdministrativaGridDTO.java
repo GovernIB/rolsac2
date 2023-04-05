@@ -34,16 +34,11 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
      * Tipo
      */
     private String tipo;
-    //private List<UnidadAdministrativaDTO> hijos;
-    //private String identificador;
-    //private String abreviatura;
-    //private String telefono;
-    //private String fax;
-    //private String email;
-    //private String dominio;
-    //private String responsableNombre;
-    //private String responsableSexo;
-    //private String responsableEmail;
+
+    /**
+     * Padre
+     **/
+    private UnidadAdministrativaGridDTO padre;
 
     /**
      * Orden
@@ -67,7 +62,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Obtiene id string.
      *
-     * @return  id string
+     * @return id string
      */
     public String getIdString() {
         if (codigo == null) {
@@ -80,7 +75,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Establece id string.
      *
-     * @param idString  codigo to set
+     * @param idString codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -93,7 +88,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -102,7 +97,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -127,7 +122,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Obtiene nombre padre.
      *
-     * @return  nombre padre
+     * @return nombre padre
      */
     public Literal getNombrePadre() {
         return nombrePadre;
@@ -136,7 +131,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Establece nombre padre.
      *
-     * @param nombrePadre  nombre padre
+     * @param nombrePadre nombre padre
      */
     public void setNombrePadre(Literal nombrePadre) {
         this.nombrePadre = nombrePadre;
@@ -145,7 +140,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Obtiene tipo.
      *
-     * @return  tipo
+     * @return tipo
      */
     public String getTipo() {
         return tipo;
@@ -154,7 +149,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Establece tipo.
      *
-     * @param tipo  tipo
+     * @param tipo tipo
      */
     public void setTipo(String tipo) {
         this.tipo = tipo;
@@ -163,7 +158,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Obtiene nombre.
      *
-     * @return  nombre
+     * @return nombre
      */
     public Literal getNombre() {
         return nombre;
@@ -172,7 +167,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Establece nombre.
      *
-     * @param nombre  nombre
+     * @param nombre nombre
      */
     public void setNombre(Literal nombre) {
         this.nombre = nombre;
@@ -181,7 +176,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Obtiene orden.
      *
-     * @return  orden
+     * @return orden
      */
     public Integer getOrden() {
         return orden;
@@ -190,7 +185,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Establece orden.
      *
-     * @param orden  orden
+     * @param orden orden
      */
     public void setOrden(Integer orden) {
         this.orden = orden;
@@ -199,7 +194,7 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Obtiene codigo dir 3.
      *
-     * @return  codigo dir 3
+     * @return codigo dir 3
      */
     public String getCodigoDIR3() {
         return codigoDIR3;
@@ -208,10 +203,22 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     /**
      * Establece codigo dir 3.
      *
-     * @param codigoDIR3  codigo dir 3
+     * @param codigoDIR3 codigo dir 3
      */
     public void setCodigoDIR3(String codigoDIR3) {
         this.codigoDIR3 = codigoDIR3;
+    }
+
+    public UnidadAdministrativaGridDTO getPadre() {
+        return padre;
+    }
+
+    public void setPadre(UnidadAdministrativaGridDTO padre) {
+        this.padre = padre;
+    }
+
+    public boolean esRaiz() {
+        return this.padre == null;
     }
 
     @Override

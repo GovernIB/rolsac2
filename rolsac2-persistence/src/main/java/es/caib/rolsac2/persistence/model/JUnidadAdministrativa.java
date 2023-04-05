@@ -78,6 +78,9 @@ public class JUnidadAdministrativa extends BaseEntity {
     @Column(name = "UNAD_ORDEN", nullable = false, length = 3)
     private Integer orden;
 
+    @Column(name = "UNAD_VERSION", nullable = false, length = 3)
+    private Integer version;
+
     @OneToMany(mappedBy = "unidadAdministrativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JUnidadAdministrativaTraduccion> traducciones;
 
@@ -223,6 +226,14 @@ public class JUnidadAdministrativa extends BaseEntity {
         this.orden = unadOrden;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     public JTipoSexo getResponsableSexo() {
         return responsableSexo;
     }
@@ -298,6 +309,7 @@ public class JUnidadAdministrativa extends BaseEntity {
                 ", responsableEmail='" + responsableEmail + '\'' +
                 ", responsableSexo=" + responsableSexo +
                 ", orden=" + orden +
+                ", version=" + version +
                 '}';
     }
 
@@ -309,6 +321,7 @@ public class JUnidadAdministrativa extends BaseEntity {
         ua.setOrden(this.getOrden());
         ua.setAbreviatura(this.getAbreviatura());
         ua.setDominio(this.getDominio());
+        ua.setVersion(this.getVersion());
 
         if (padre != null) {
             UnidadAdministrativaDTO uaPadre = new UnidadAdministrativaDTO();
@@ -338,6 +351,7 @@ public class JUnidadAdministrativa extends BaseEntity {
         ua.setUrl(url);
         ua.setPresentacion(presentacion);
         ua.setResponsable(responsableCV);
+
         return ua;
     }
 }

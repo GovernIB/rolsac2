@@ -1,7 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.io.IOException;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -10,13 +8,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
 
@@ -102,9 +94,9 @@ public class UnidadAdministrativa extends EntidadBase {
 	@Schema(description = "url", type = SchemaType.STRING, required = false)
 	private String url;
 
-	/**  **/
-	@Schema(description = "idioma", type = SchemaType.STRING, required = false)
-	private String idioma;
+//	/**  **/
+//	@Schema(description = "idioma", type = SchemaType.STRING, required = false)
+//	private String idioma;
 
 	// -- LINKS--//
 	// -- se duplican las entidades para poder generar la clase link en funcion de
@@ -113,8 +105,8 @@ public class UnidadAdministrativa extends EntidadBase {
 	/**
 	 * Tipo de UA
 	 **/
-	@Schema(description = "tipo", required = false)
-	private TipoUnidadAdministrativaDTO tipo;
+	@Schema(description = "tipo", type = SchemaType.INTEGER, required = false)
+	private Long tipo;
 	/**
 	 * Hijos.
 	 **/
@@ -130,7 +122,17 @@ public class UnidadAdministrativa extends EntidadBase {
 
 	public UnidadAdministrativa(UnidadAdministrativaGridDTO nodo, String urlBase, String idioma,
 			boolean hateoasEnabled) {
-		super(nodo, urlBase, idioma, hateoasEnabled);
+		if(nodo != null) {
+			this.codigo = nodo.getCodigo();
+			this.codigoDIR3 = nodo.getCodigoDIR3();
+			this.identificador = nodo.getIdentificador();
+			this.hateoasEnabled = true;
+			generaLinks(urlBase);
+			this.nombre = nodo.getNombre() == null ? null : nodo.getNombre().getTraduccion(idioma);
+			this.orden = nodo.getOrden() == null ? null : nodo.getOrden().longValue();
+		}
+//		super(nodo, urlBase, idioma, hateoasEnabled);
+
 	}
 
 	public UnidadAdministrativa() {
@@ -138,7 +140,31 @@ public class UnidadAdministrativa extends EntidadBase {
 	}
 
 	public UnidadAdministrativa(UnidadAdministrativaDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-		super(nodo, urlBase, idioma, hateoasEnabled);
+//		super(nodo, urlBase, idioma, hateoasEnabled);
+		if(nodo != null) {
+			this.abreviatura = nodo.getAbreviatura();
+			this.codigo = nodo.getCodigo();
+			this.codigoDIR3 = nodo.getCodigoDIR3();
+			this.dominio = nodo.getDominio();
+			this.email = nodo.getEmail();
+			this.entidad = nodo.getEntidad() == null ? null : nodo.getEntidad().getCodigo();
+			this.fax = nodo.getFax();
+			this.identificador = nodo.getIdentificador();
+			this.hateoasEnabled = true;
+			this.nombre = nodo.getNombre() == null ? null : nodo.getNombre().getTraduccion(idioma);
+			this.orden = nodo.getOrden() == null ? null : nodo.getOrden().longValue();
+			this.padre = nodo.getPadre() == null ? null : nodo.getPadre().getCodigo();
+			this.presentacion = nodo.getPresentacion() == null ? null : nodo.getPresentacion().getTraduccion(idioma);
+			this.responsableEmail = nodo.getResponsableEmail();
+			this.responsableNombre = nodo.getResponsableNombre();
+			this.responsableSexo = nodo.getResponsableSexo() == null ? null : nodo.getResponsableSexo().getCodigo().intValue();
+			this.telefono = nodo.getTelefono();
+			this.tipo = nodo.getTipo() == null ? null : nodo.getTipo().getCodigo();
+			this.url = nodo.getUrl() == null ? null : nodo.getUrl().getTraduccion(idioma);
+			this.usuarioAuditoria = nodo.getUsuarioAuditoria();
+			generaLinks(urlBase);
+		}
+
 	}
 
 	/**
@@ -152,52 +178,33 @@ public class UnidadAdministrativa extends EntidadBase {
 //		}
 	}
 
-	@Override
-	public <T> void fill(T ua, String urlBase, String idioma, boolean hateoasEnabled) {
-		super.fill(ua, urlBase, idioma, hateoasEnabled);
-
-		// copiamos los datos que no tienen la misma estructura:
-//		if(((org.ibit.rol.sac.model.UnidadAdministrativa)ua).getTratamiento()!=null ) {
-//			this.tratamiento = new Tratamiento(((org.ibit.rol.sac.model.UnidadAdministrativa)ua).getTratamiento(),urlBase,idioma,hateoasEnabled);
+//	@Override
+//	public <T> void fill(T ua, String urlBase, String idioma, boolean hateoasEnabled) {
+//		super.fill(ua, urlBase, idioma, hateoasEnabled);
+//
+//		// copiamos los datos que no tienen la misma estructura:
+////		if(((org.ibit.rol.sac.model.UnidadAdministrativa)ua).getTratamiento()!=null ) {
+////			this.tratamiento = new Tratamiento(((org.ibit.rol.sac.model.UnidadAdministrativa)ua).getTratamiento(),urlBase,idioma,hateoasEnabled);
+////		}
+//
+//		// si el padre es null lo convertimos a -1
+//		if (this.padre == null) {
+//			this.padre = new Long(-1);
 //		}
+//
+//	}
 
-		// si el padre es null lo convertimos a -1
-		if (this.padre == null) {
-			this.padre = new Long(-1);
-		}
-
-	}
+//	public <T> void fill(T tr, String urlBase, String idioma, boolean hateoasEnabled) {
+//		setHateoasEnabled(hateoasEnabled);
+//		copiaPropiedadesDeEntity(tr, idioma);
+//		generaLinks(urlBase);
+//	}
 
 	@Override
 	protected void generaLinks(String urlBase) {
 		linkPadre = this.generaLink(this.padre, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
 		linkEntidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
 				null);
-	}
-
-	public static UnidadAdministrativa valueOf(final String json) {
-		final ObjectMapper objectMapper = new ObjectMapper();
-		final TypeReference<UnidadAdministrativa> typeRef = new TypeReference<UnidadAdministrativa>() {
-		};
-		UnidadAdministrativa obj;
-		try {
-			obj = (UnidadAdministrativa) objectMapper.readValue(json, typeRef);
-		} catch (final IOException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
-		return obj;
-	}
-
-	public String toJson() {
-		try {
-			final ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false);
-			return objectMapper.writeValueAsString(this);
-		} catch (final JsonProcessingException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
@@ -374,19 +381,19 @@ public class UnidadAdministrativa extends EntidadBase {
 		this.url = url;
 	}
 
-	/**
-	 * @return the idioma
-	 */
-	public String getIdioma() {
-		return idioma;
-	}
+//	/**
+//	 * @return the idioma
+//	 */
+//	public String getIdioma() {
+//		return idioma;
+//	}
 
-	/**
-	 * @param idioma the idioma to set
-	 */
-	public void setIdioma(String idioma) {
-		this.idioma = idioma;
-	}
+//	/**
+//	 * @param idioma the idioma to set
+//	 */
+//	public void setIdioma(String idioma) {
+//		this.idioma = idioma;
+//	}
 
 	/**
 	 * @return the codigoDIR3
@@ -442,11 +449,11 @@ public class UnidadAdministrativa extends EntidadBase {
 		this.responsableSexo = responsableSexo;
 	}
 
-	public TipoUnidadAdministrativaDTO getTipo() {
+	public Long getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(TipoUnidadAdministrativaDTO tipo) {
+	public void setTipo(Long tipo) {
 		this.tipo = tipo;
 	}
 

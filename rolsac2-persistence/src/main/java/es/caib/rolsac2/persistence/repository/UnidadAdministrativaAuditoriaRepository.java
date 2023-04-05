@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface UnidadAdministrativaAuditoriaRepository extends CrudRepository<JUnidadAdministrativaAuditoria, Long> {
 
+    void guardar (JUnidadAdministrativaAuditoria jUaAudit);
+
     /**
      * Devuelve una lista de procedimento auditorias.
      *

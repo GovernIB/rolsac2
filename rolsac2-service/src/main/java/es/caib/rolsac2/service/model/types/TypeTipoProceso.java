@@ -7,7 +7,15 @@ public enum TypeTipoProceso {
 
     TEST("TEST"),
 
-    SOLR("SOLR");
+    SOLR("SOLR"),
+
+    SOLR_PUNT("SOLR_PUNT"),
+
+    SIA("SIA"),
+
+    SIA_PUNT("SIA_PUNT"),
+
+    DIR3("DIR3");
 
 
     /**

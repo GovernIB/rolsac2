@@ -1,10 +1,15 @@
 package es.caib.rolsac2.ejb.facade;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
+import es.caib.rolsac2.ejb.facade.procesos.solr.CastUtil;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.ejb.util.JSONUtil;
 import es.caib.rolsac2.ejb.util.JSONUtilException;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
+import es.caib.rolsac2.persistence.converter.UnidadOrganicaConverter;
 import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.AuditoriaException;
@@ -14,9 +19,9 @@ import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
-import es.caib.rolsac2.service.model.auditoria.ProcedimientoAuditoria;
-import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
+import es.caib.rolsac2.service.model.types.TypeEstadoDir3;
+import es.caib.rolsac2.service.model.types.TypeIndexacion;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +57,11 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     private UnidadAdministrativaRepository unidadAdministrativaRepository;
 
     @Inject
+    private EntidadRaizRepository entidadRaizRepository;
+    @Inject
+    private IndexacionRepository indexacionRepository;
+
+    @Inject
     private EntidadRepository entidadRepository;
 
     @Inject
@@ -73,6 +83,12 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Inject
     private UnidadAdministrativaAuditoriaRepository auditoriaRepository;
 
+    @Inject
+    private UnidadOrganicaRepository unidadOrganicaRepository;
+
+    @Inject
+    private UnidadOrganicaConverter unidadOrganicaConverter;
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -88,7 +104,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     public List<UnidadAdministrativaGridDTO> getHijosGrid(Long idUnitat, String idioma) {
         List<JUnidadAdministrativa> jUaHijas = unidadAdministrativaRepository.getHijos(idUnitat, idioma);
         List<UnidadAdministrativaGridDTO> uaHijas = new ArrayList<>();
-        for(JUnidadAdministrativa ua : jUaHijas) {
+        for (JUnidadAdministrativa ua : jUaHijas) {
             uaHijas.add(unidadAdministrativaRepository.modelToGridDTO(ua));
         }
         return uaHijas;
@@ -103,6 +119,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
     @Override
+
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String obtenerPadreDir3(Long codigoUA, String idioma) {
@@ -126,7 +143,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(UnidadAdministrativaDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
+    public Long create(UnidadAdministrativaDTO dto, TypePerfiles perfil) throws RecursoNoEncontradoException, DatoDuplicadoException {
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
@@ -159,6 +176,12 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         jUnidadAdministrativa.setTemas(temas);
 
         unidadAdministrativaRepository.create(jUnidadAdministrativa);
+        indexacionRepository.guardarIndexar(jUnidadAdministrativa.getCodigo(), TypeIndexacion.UNIDAD_ADMINISTRATIVA, jUnidadAdministrativa.getEntidad().getCodigo(), 1);
+
+        dto.setCodigo(jUnidadAdministrativa.getCodigo());
+        UnidadAdministrativaDTO dtoAntiguo = UnidadAdministrativaDTO.createInstance();
+        crearAuditoria(dtoAntiguo, dto, perfil, "auditoria.flujo.CREAR");
+
         return jUnidadAdministrativa.getCodigo();
     }
 
@@ -213,7 +236,8 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
         converter.mergeEntity(jUnidadAdministrativa, dto);
         unidadAdministrativaRepository.update(jUnidadAdministrativa);
-        this.crearAuditoria(dtoAntiguo,dto, perfil);
+        indexacionRepository.guardarIndexar(jUnidadAdministrativa.getCodigo(), TypeIndexacion.UNIDAD_ADMINISTRATIVA, jUnidadAdministrativa.getEntidad().getCodigo(), 1);
+        crearAuditoria(dtoAntiguo, dto, perfil, null);
     }
 
     @Override
@@ -221,6 +245,8 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void delete(Long id) throws RecursoNoEncontradoException {
         JUnidadAdministrativa jUnidadAdministrativa = unidadAdministrativaRepository.getReference(id);
+        //Marcar para borrar
+        indexacionRepository.guardarIndexar(jUnidadAdministrativa.getCodigo(), TypeIndexacion.UNIDAD_ADMINISTRATIVA, jUnidadAdministrativa.getEntidad().getCodigo(), 2);
         unidadAdministrativaRepository.delete(jUnidadAdministrativa);
     }
 
@@ -309,7 +335,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     public List<UnidadAdministrativaDTO> getUnidadesAdministrativaByEntidadId(Long entidadId, String idioma) {
         List<JUnidadAdministrativa> jUnidades = unidadAdministrativaRepository.getUnidadesAdministrativaByEntidadId(entidadId, idioma);
         List<UnidadAdministrativaDTO> unidades = new ArrayList<>();
-        for(JUnidadAdministrativa unidad : jUnidades) {
+        for (JUnidadAdministrativa unidad : jUnidades) {
             unidades.add(converter.createDTO(unidad));
         }
         return unidades;
@@ -329,14 +355,78 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         return unidadesAdministrativas;
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<UnidadOrganicaDTO> obtenerUnidadesHijasDir3(String codigoDir3, Long idEntidad) {
+        List<JUnidadOrganica> jUnidadesHijas = unidadOrganicaRepository.listarUnidadesHijas(codigoDir3, idEntidad);
+        List<UnidadOrganicaDTO> unidadesHijasRolsac = obtenerUnidadesHijasRolsac(codigoDir3, idEntidad);
+        List<UnidadOrganicaDTO> unidadesHijasDir3 = new ArrayList<>();
+        for (JUnidadOrganica unidad : jUnidadesHijas) {
+            unidadesHijasDir3.add(unidadOrganicaConverter.createDTO(unidad));
+        }
+        compararUnidadesOrganicasDir3(unidadesHijasDir3, unidadesHijasRolsac);
+        return unidadesHijasDir3;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<UnidadOrganicaDTO> obtenerUnidadesHijasRolsac(String codigoDir3, Long idEntidad) {
+        List<UnidadOrganicaDTO> unidadesHijasRolsac = unidadAdministrativaRepository.obtenerUnidadesHijas(codigoDir3, idEntidad);
+        List<JUnidadOrganica> jUnidadesHijas = unidadOrganicaRepository.listarUnidadesHijas(codigoDir3, idEntidad);
+        List<UnidadOrganicaDTO> unidadesHijasDir3 = new ArrayList<>();
+        for (JUnidadOrganica unidad : jUnidadesHijas) {
+            unidadesHijasDir3.add(unidadOrganicaConverter.createDTO(unidad));
+        }
+        compararUnidadesOrganicasRolsac(unidadesHijasDir3, unidadesHijasRolsac);
+        return unidadesHijasRolsac;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public UnidadOrganicaDTO obtenerUnidadRaizDir3(Long idEntidad) {
+        return unidadOrganicaConverter.createDTO(unidadOrganicaRepository.obtenerUnidadRaiz(idEntidad));
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public UnidadOrganicaDTO obtenerUnidadRaizRolsac(Long idEntidad) {
+        return unidadAdministrativaRepository.obtenerUnidadRaiz(idEntidad);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void eliminarOrganigrama(Long idEntidad) {
+        unidadOrganicaRepository.eliminarRegistros(idEntidad);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void crearOrganigrama(List<UnidadOrganicaDTO> unidades, Long idEntidad) {
+        JEntidad entidad = entidadRepository.getReference(idEntidad);
+        for (UnidadOrganicaDTO unidad : unidades) {
+            JUnidadOrganica jUnidadOrganica = unidadOrganicaConverter.createEntity(unidad);
+            jUnidadOrganica.setEntidad(entidad);
+            unidadOrganicaRepository.create(jUnidadOrganica);
+        }
+    }
+
+    /*******************************************************************************************************************
+     * Funciones privadas
+     ******************************************************************************************************************/
+
     /**
      * Crear auditoria
      *
      * @param uaAntigua
      * @param uaNueva
-     *
      */
-    private void crearAuditoria(final UnidadAdministrativaDTO uaAntigua, final UnidadAdministrativaDTO uaNueva, TypePerfiles perfil) {
+    private void crearAuditoria(final UnidadAdministrativaDTO uaAntigua, final UnidadAdministrativaDTO uaNueva, TypePerfiles perfil, String literalFlujo) {
 
         List<AuditoriaCambio> cambios = new ArrayList<>();
         AuditoriaCambio cambio = null;
@@ -353,11 +443,101 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
                 jUniAdminAuditoria.setListaModificaciones(auditoriaJson);
                 jUniAdminAuditoria.setUsuarioModificacion(uaNueva.getUsuarioAuditoria());
                 jUniAdminAuditoria.setUsuarioPerfil(perfil.toString());
-                this.auditoriaRepository.create(jUniAdminAuditoria);
+                jUniAdminAuditoria.setLiteralFlujo(literalFlujo);
+                this.auditoriaRepository.guardar(jUniAdminAuditoria);
 
             } catch (final JSONUtilException e) {
                 throw new AuditoriaException(e);
             }
         }
+    }
+
+    private void compararUnidadesOrganicasDir3(List<UnidadOrganicaDTO> unidadesDir3, List<UnidadOrganicaDTO> unidadesRolsac) {
+        if (!unidadesRolsac.containsAll(unidadesDir3)) {
+            for (UnidadOrganicaDTO unidadDir3 : unidadesDir3) {
+                if (!unidadesRolsac.contains(unidadDir3)) {
+                    //De las hijas de Rolsac, filtramos para ver si hay alguna que tenga el DIR3 igual
+                    UnidadOrganicaDTO unidadFiltrada = unidadesRolsac.stream()
+                            .filter(uo -> uo.getCodigoDir3().equals(unidadDir3.getCodigoDir3())).findFirst().orElse(null);
+                    //En caso de que no haya ninguna, significa que la unidad es completamente nueva (cod DIR3 nuevo)
+                    if (unidadFiltrada == null) {
+                        unidadDir3.setEstado(TypeEstadoDir3.NUEVO);
+                    } else {
+                        //Si accedemos aquí, es que tiene la denominación o la versión diferente
+                        unidadDir3.setEstado(TypeEstadoDir3.EXISTE_MODIFICADA);
+                    }
+                }
+            }
+        }
+    }
+
+    private void compararUnidadesOrganicasRolsac(List<UnidadOrganicaDTO> unidadesDir3, List<UnidadOrganicaDTO> unidadesRolsac) {
+        if (!unidadesDir3.containsAll(unidadesRolsac)) {
+            for (UnidadOrganicaDTO unidadRolsac : unidadesRolsac) {
+                if (!unidadesDir3.contains(unidadRolsac)) {
+                    //De las hijas de Dir3, filtramos para ver si hay alguna que tenga el DIR3 igual
+                    UnidadOrganicaDTO unidadFiltrada = unidadesDir3.stream()
+                            .filter(uo -> uo.getCodigoDir3().equals(unidadRolsac.getCodigoDir3())).findFirst().orElse(null);
+                    //En caso de que no haya ninguna, significa que la unidad ha evolucionado a otra
+                    if (unidadFiltrada == null) {
+                        unidadRolsac.setEstado(TypeEstadoDir3.ELIMINADO);
+                    } else {
+                        //Si accedemos aquí, es que tiene la denominación o la versión diferente
+                        unidadRolsac.setEstado(TypeEstadoDir3.EXISTE_MODIFICADA);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public ProcedimientoSolrDTO findDataIndexacionUAById(Long codElemento) {
+        UnidadAdministrativaDTO uaDTO = (UnidadAdministrativaDTO) this.findById(codElemento);
+        PathUA pathUA = unidadAdministrativaRepository.getPath(uaDTO.getUAGrid());
+
+        DataIndexacion dataIndexacion = CastUtil.getDataIndexacion(uaDTO, pathUA);
+        ProcedimientoSolrDTO data = new ProcedimientoSolrDTO();
+        data.setDataIndexacion(dataIndexacion);
+        data.setUnidadAdministrativaDTO(uaDTO);
+        data.setPathUA(pathUA);
+        return data;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Pagina<IndexacionDTO> getUAsParaIndexacion(Long idEntidad) {
+        return unidadAdministrativaRepository.getUAsParaIndexacion(idEntidad);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void actualizarSolr(IndexacionDTO indexacionDTO, ResultadoAccion resultadoAccion) {
+        indexacionRepository.actualizarDato(indexacionDTO, resultadoAccion);
+        //unidadAdministrativaRepository.actualizarSolr(indexacionDTO, resultadoAccion);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean isVisibleUA(UnidadAdministrativaDTO uaInstructor) {
+        return unidadAdministrativaRepository.isVisibleUA(uaInstructor);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public String obtenerCodigoDIR3(Long uaInstructor) {
+        return unidadAdministrativaRepository.obtenerCodigoDIR3(uaInstructor);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public EntidadRaizDTO getUaRaiz(Long codigoUA) {
+        return entidadRaizRepository.getEntidadRaizByUA(codigoUA);
     }
 }

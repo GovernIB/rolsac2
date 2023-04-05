@@ -150,7 +150,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         }
 
         if (this.data.getCodigo() == null) {
-            unidadAdministrativaServiceFacade.create(this.data);
+            unidadAdministrativaServiceFacade.create(this.data, sessionBean.getPerfil());
         } else {
             unidadAdministrativaServiceFacade.update(this.data, this.dataAntigua, sessionBean.getPerfil());
         }
