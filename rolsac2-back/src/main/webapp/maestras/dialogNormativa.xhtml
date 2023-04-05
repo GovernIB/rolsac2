@@ -58,11 +58,11 @@
                         <my:literalComponent id="txtNombre"
                                              literal="#{dialogNormativa.data.nombre}"
                                              soloLecture="#{dialogNormativa.isModoConsulta()}"
-                                             required="true"
+                                             required="#{empty param['formDialog:closeButton']}"
                                              idioma="#{dialogNormativa.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                             nombreLiteral="#{labels['dict.descripcion']}">
+                                             nombreLiteral="#{labels['dict.titulo']}">
                             <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                         </my:literalComponent>
                     </div>
@@ -79,7 +79,7 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.tipoNormativa']}:"
                                        for="selectTipoNormativa"/>
                         <p:selectOneMenu id="selectTipoNormativa" value="#{dialogNormativa.data.tipoNormativa}"
-                                         styleClass="w95" required="true"
+                                         styleClass="w95" required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.tipoNormativa']}"
                                          disabled="#{dialogNormativa.isModoConsulta()}"
                                          converter="#{tipoNormativaConverter}">
@@ -107,7 +107,7 @@
                         </p>
                         <p:calendar id="txtFechaAprobacion" disabled="#{dialogNormativa.isModoConsulta()}"
                                     requiredMessage="#{labels['dict.obligatorio.fechaAprobacion']}"
-                                    required="true" showOn="button"
+                                    required="#{empty param['formDialog:closeButton']}" showOn="button"
                                     value="#{dialogNormativa.data.fechaAprobacion}" pattern="dd/MM/yyyy"/>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
                                        for="selectBoletinOficial"/>
 
                         <p:selectOneMenu id="selectBoletinOficial" value="#{dialogNormativa.data.boletinOficial}"
-                                         styleClass="w95" required="true"
+                                         styleClass="w95" required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.boletinOficial']}"
                                          disabled="#{dialogNormativa.isModoConsulta()}"
                                          converter="#{boletinOficialConverter}">
@@ -132,11 +132,9 @@
                         </p:selectOneMenu>
                     </div>
                     <div class="form-group col-md-4">
-                        <p class="mb-1">
-                            <h:outputText value="#{labels['dialogNormativa.numeroBoletin']}:" for="txtNumeroBoletin"/>
-                        </p>
+                        <p:outputLabel value="#{labels['dialogNormativa.numeroBoletin']}:" for="txtNumeroBoletin" styleClass="mr-2 mb-1 pt-0"/>
                         <p:inputText id="txtNumeroBoletin" value="#{dialogNormativa.data.numeroBoletin}"
-                                     styleClass="w95" required="true"
+                                     styleClass="w95"
                                      disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
                     </div>
                     <div class="form-group col-md-4">
@@ -157,7 +155,7 @@
                         <my:literalComponent id="txtUrlBoletin"
                                              literal="#{dialogNormativa.data.urlBoletin}"
                                              soloLecture="#{dialogNormativa.isModoConsulta()}"
-                                             required="true"
+                                             required="#{empty param['formDialog:closeButton']}"
                                              idioma="#{dialogNormativa.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"

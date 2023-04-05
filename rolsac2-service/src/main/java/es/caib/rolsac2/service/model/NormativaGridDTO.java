@@ -3,10 +3,9 @@ package es.caib.rolsac2.service.model;
 import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 import java.util.Objects;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The type Normativa grid dto.
@@ -319,10 +318,12 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
             for (NormativaGridDTO tipo : dato) {
                 boolean existe = false;
                 for (NormativaGridDTO tipo2 : dato2) {
-                    if (tipo.getOrden().compareTo(tipo2.getOrden()) != 0) {
-                        return tipo.getOrden().compareTo(tipo2.getOrden());
+                    if (tipo2.getCodigo() != null && tipo.getCodigo() != null && tipo.getCodigo().compareTo(tipo2.getCodigo()) == 0) {
+                        if (tipo.getOrden().compareTo(tipo2.getOrden()) != 0) {
+                            return tipo.getOrden().compareTo(tipo2.getOrden());
+                        }
+                        existe = true;
                     }
-                    existe = true;
                 }
                 if (!existe) {
                     return 1;

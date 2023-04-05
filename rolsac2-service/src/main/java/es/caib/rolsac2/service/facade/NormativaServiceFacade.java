@@ -1,9 +1,14 @@
 package es.caib.rolsac2.service.facade;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 public interface NormativaServiceFacade {
@@ -59,6 +64,7 @@ public interface NormativaServiceFacade {
 
     /**
      * Muestra las afectaciones relacioandas a una normativa.
+     *
      * @param idNormativa
      * @return
      */
@@ -129,6 +135,7 @@ public interface NormativaServiceFacade {
 
     /**
      * Devuelve el listado de procedimientos que tienen asociada la normativa
+     *
      * @param idNormativa
      * @return
      */
@@ -136,6 +143,7 @@ public interface NormativaServiceFacade {
 
     /**
      * Devuelve el listado de servicios que tienen asociada la normativa
+     *
      * @param idNormativa
      * @return
      */
@@ -148,5 +156,19 @@ public interface NormativaServiceFacade {
     void deleteAfectacion(Long idAfectacion);
 
 
+    ProcedimientoSolrDTO findDataIndexacionNormById(Long idNormativa);
 
+    IndexFile findDataIndexacionDocNormById(NormativaDTO normativaDTO, DocumentoNormativaDTO doc, DocumentoTraduccion docTraduccion, List<PathUA> pathUAs);
+
+    /**
+     * Devuelve todas las normativas para indexar en solr/elastic
+     *
+     * @param idEntidad
+     * @return
+     */
+    Pagina<IndexacionDTO> getNormativasParaIndexacion(Long idEntidad);
+
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    void actualizarSolr(IndexacionDTO proc, ResultadoAccion resultadoAccion);
 }

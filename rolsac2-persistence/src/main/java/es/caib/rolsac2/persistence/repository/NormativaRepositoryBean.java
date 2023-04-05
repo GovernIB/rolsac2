@@ -4,10 +4,9 @@ import es.caib.rolsac2.persistence.model.JNormativa;
 import es.caib.rolsac2.persistence.model.JTipoBoletin;
 import es.caib.rolsac2.persistence.model.JTipoNormativa;
 import es.caib.rolsac2.persistence.util.Utils;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.NormativaGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
+import es.caib.rolsac2.service.model.types.TypeIndexacion;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -17,14 +16,14 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Stateless
 @Local(NormativaRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, Long>
-        implements NormativaRepository {
+public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, Long> implements NormativaRepository {
 
     protected NormativaRepositoryBean() {
         super(JNormativa.class);
@@ -34,20 +33,12 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder(
-                    "select count(j) from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
-                            + " LEFT OUTER JOIN j.unidadesAdministrativas u"
-                            + " where 1 = 1 ");
+            sql = new StringBuilder("select count(j) from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.unidadesAdministrativas u" + " where 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion " +
-                            "FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " +
-                            "LEFT OUTER JOIN j.unidadesAdministrativas u WHERE 1 = 1 ");
+            sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion " + "FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + "LEFT OUTER JOIN j.unidadesAdministrativas u WHERE 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and (LOWER(t.titulo) LIKE :filtro OR LOWER(j.tipoNormativa.identificador) LIKE :filtro " +
-                    " OR LOWER(cast(j.numero as string)) LIKE :filtro OR LOWER(j.boletinOficial.nombre) LIKE :filtro " +
-                    " OR LOWER(cast (j.fechaAprobacion as string)) LIKE :filtro ) ");
+            sql.append(" and (LOWER(t.titulo) LIKE :filtro OR LOWER(j.tipoNormativa.identificador) LIKE :filtro " + " OR LOWER(cast(j.numero as string)) LIKE :filtro OR LOWER(j.boletinOficial.nombre) LIKE :filtro " + " OR LOWER(cast (j.fechaAprobacion as string)) LIKE :filtro ) ");
         }
 
         if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUnidadesOrganicas()) {
@@ -172,8 +163,7 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
     @Override
     public boolean existeTipoNormativa(Long codigoTipoNor) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JNormativa j where j.tipoNormativa.codigo = :codigoTipoNor ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JNormativa j where j.tipoNormativa.codigo = :codigoTipoNor ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoTipoNor", codigoTipoNor);
         Long resultado = (Long) query.getSingleResult();
@@ -182,12 +172,35 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
     @Override
     public boolean existeBoletin(Long codigoBol) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JNormativa j where j.boletinOficial.codigo = :codigoBol ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JNormativa j where j.boletinOficial.codigo = :codigoBol ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoBol", codigoBol);
         Long resultado = (Long) query.getSingleResult();
         return resultado > 0;
+    }
+
+    @Override
+    public Pagina<IndexacionDTO> getNormativasParaIndexacion(Long idEntidad) {
+        String sql = "SELECT j.codigo FROM JNormativa j WHERE J.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        List<Long> datos = query.getResultList();
+        Pagina<IndexacionDTO> resultado = null;
+        if (datos == null || datos.isEmpty()) {
+            resultado = new Pagina<>(new ArrayList<>(), 0);
+        } else {
+            List<IndexacionDTO> indexacionDTOS = new ArrayList<>();
+            for (Long dato : datos) {
+                IndexacionDTO indexacionDTO = new IndexacionDTO();
+                indexacionDTO.setTipo(TypeIndexacion.NORMATIVA.toString());
+                indexacionDTO.setCodElemento(dato);
+                indexacionDTO.setFechaCreacion(new Date());
+                indexacionDTO.setAccion(1); //Indexar
+                indexacionDTOS.add(indexacionDTO);
+            }
+            resultado = new Pagina<>(indexacionDTOS, indexacionDTOS.size());
+        }
+        return resultado;
     }
 
     private String getOrden(String order) {

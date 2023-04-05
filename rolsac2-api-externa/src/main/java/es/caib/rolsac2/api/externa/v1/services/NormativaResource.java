@@ -37,8 +37,6 @@ import es.caib.rolsac2.service.facade.TipoNormativaServiceFacade;
 import es.caib.rolsac2.service.model.NormativaDTO;
 import es.caib.rolsac2.service.model.NormativaGridDTO;
 import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.TipoBoletinDTO;
-import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 
 @Path("/v1/" + Constantes.ENTIDAD_NORMATIVAS)
@@ -77,26 +75,17 @@ public class NormativaResource {
 			filtro = new FiltroNormativas();
 		}
 
-		TipoNormativaDTO tipoNormativa = null;
-		TipoBoletinDTO tipoBoletin = null;
-
-		if (filtro.getTipoPublicacion() != null) {
-			tipoNormativa = tipoNormativaService.findTipoNormativaByCodigo(filtro.getTipoPublicacion().longValue());
-		}
-
-		if (filtro.getTipoPublicacion() != null) {
-			tipoBoletin = tipoBoletinService.findTipoBoletinById(filtro.getTipoPublicacion().longValue());
-		}
-
-		NormativaFiltro fg = filtro.toNormativaFiltro(tipoNormativa, tipoBoletin);
+		NormativaFiltro fg = filtro.toNormativaFiltro();
 
 		if (lang != null) {
 			fg.setIdioma(lang);
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
-		fg.setPaginaTamanyo(filtro.getSize());
-		fg.setPaginaFirst(filtro.getPage());
+		if(filtro.getFiltroPaginacion() != null) {
+			fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
+			fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
+		}
 
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
 	}

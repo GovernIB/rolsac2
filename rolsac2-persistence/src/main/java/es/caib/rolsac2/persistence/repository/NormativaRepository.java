@@ -1,7 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JNormativa;
+import es.caib.rolsac2.service.model.IndexacionDTO;
 import es.caib.rolsac2.service.model.NormativaGridDTO;
+import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 
 import java.util.List;
@@ -17,4 +19,6 @@ public interface NormativaRepository extends CrudRepository<JNormativa, Long> {
     boolean existeTipoNormativa(Long codigoTipoNor);
 
     boolean existeBoletin(Long codigoBol);
+
+    Pagina<IndexacionDTO> getNormativasParaIndexacion(Long idEntidad);
 }
