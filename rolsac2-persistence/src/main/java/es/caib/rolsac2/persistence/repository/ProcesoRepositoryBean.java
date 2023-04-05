@@ -148,11 +148,12 @@ public class ProcesoRepositoryBean extends AbstractCrudRepository<JProceso, Long
     }
 
     @Override
-    public ProcesoDTO obtenerProcesoPorIdentificador(final String identificador) {
+    public ProcesoDTO obtenerProcesoPorIdentificador(final String identificador, final Long idEntidad) {
         ProcesoDTO proceso = null;
-        final String sql = "SELECT P FROM JProceso P WHERE P.identificadorProceso = :identificador";
+        final String sql = "SELECT P FROM JProceso P WHERE P.identificadorProceso = :identificador AND P.entidad.codigo = :idEntidad";
         final Query query = entityManager.createQuery(sql);
         query.setParameter("identificador", identificador);
+        query.setParameter("idEntidad", idEntidad);
         final List resultList = query.getResultList();
         if (!resultList.isEmpty()) {
             final JProceso jpeticion = (JProceso) resultList.get(0);

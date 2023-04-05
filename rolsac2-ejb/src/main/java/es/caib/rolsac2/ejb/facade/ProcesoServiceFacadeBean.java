@@ -2,16 +2,15 @@ package es.caib.rolsac2.ejb.facade;
 
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
-import es.caib.rolsac2.persistence.repository.ProcedimientoRepository;
+import es.caib.rolsac2.persistence.repository.IndexacionRepository;
+import es.caib.rolsac2.persistence.repository.IndexacionSIARepository;
 import es.caib.rolsac2.persistence.repository.ProcesoRepository;
 import es.caib.rolsac2.service.exception.ProcesoNoExistenteException;
 import es.caib.rolsac2.service.facade.ProcesoServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.ProcesoDTO;
-import es.caib.rolsac2.service.model.ProcesoGridDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
+import es.caib.rolsac2.service.model.filtro.ProcesoSIAFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
-import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 
 import javax.annotation.security.RolesAllowed;
@@ -45,7 +44,13 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
     private ProcesoRepository procesoRepository;
 
     @Inject
-    private ProcedimientoRepository procedimientoRepository;
+    private IndexacionRepository procedimientoRepository;
+
+    @Inject
+    private IndexacionRepository indexacionRepository;
+
+    @Inject
+    private IndexacionSIARepository indexacionSIARepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -118,13 +123,26 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Pagina<ProcedimientoBaseSolr> findSolrByFiltro(ProcesoSolrFiltro filtro) {
+    public Pagina<IndexacionDTO> findSolrByFiltro(ProcesoSolrFiltro filtro) {
         try {
-            List<ProcedimientoBaseSolr> items = procedimientoRepository.obtenerPendientesIndexar(true, null, filtro);
-            long total = procedimientoRepository.obtenerCountPendientesIndexar(true, null, filtro).longValue();
+            List<IndexacionDTO> items = indexacionRepository.findPagedByFiltro(filtro);
+            long total = indexacionRepository.countByFiltro(filtro);
             return new Pagina<>(items, total);
         } catch (Exception e) {
-            List<ProcedimientoBaseSolr> items = new ArrayList<>();
+            List<IndexacionDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
+
+    @Override
+    public Pagina<IndexacionSIADTO> findSIAByFiltro(ProcesoSIAFiltro filtro) {
+        try {
+            List<IndexacionSIADTO> items = indexacionSIARepository.findPagedByFiltro(filtro);
+            long total = indexacionSIARepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            List<IndexacionSIADTO> items = new ArrayList<>();
             long total = items.size();
             return new Pagina<>(items, total);
         }

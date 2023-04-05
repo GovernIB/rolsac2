@@ -17,7 +17,7 @@ public interface ProcesosExecComponentFacade {
      *
      * @return procesos que deben ejecutarse.
      */
-    List<String> calcularProcesosEjecucion();
+    List<String> calcularProcesosEjecucion(Long idEntidad);
 
     /**
      * Obtiene parámetros ejecución proceso.
@@ -25,7 +25,7 @@ public interface ProcesosExecComponentFacade {
      * @param idProceso Id proceso
      * @return parámetros ejecución proceso.
      */
-    List<Propiedad> obtenerParametrosProceso(final String idProceso);
+    List<Propiedad> obtenerParametrosProceso(final String idProceso, final Long idEntidad);
 
     /**
      * Audita inicio proceso.
@@ -33,7 +33,7 @@ public interface ProcesosExecComponentFacade {
      * @param idProceso id proceso
      * @return instancia proceso
      */
-    Long auditarInicioProceso(String idProceso);
+    Long auditarInicioProceso(String idProceso, Long idEntidad);
 
     /**
      * Audita fin proceso.
@@ -52,11 +52,4 @@ public interface ProcesosExecComponentFacade {
      */
     boolean verificarMaestro(String instanciaId);
 
-    /**
-     * Obtener entidad.
-     *
-     * @param idProceso
-     * @return
-     */
-    Long obtenerEntidad(String idProceso);
 }

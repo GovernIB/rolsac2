@@ -3,6 +3,9 @@ package es.caib.rolsac2.commons.plugins.indexacion.api.model;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumAplicacionId;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumCategoria;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumIdiomas;
+import es.caib.solr.api.model.IndexData;
+import es.caib.solr.api.model.MultilangLiteral;
+import es.caib.solr.api.model.PathUO;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +46,11 @@ public class DataIndexacion {
      * Descripcion.
      */
     private LiteralMultilang descripcion;
+
+    /**
+     * Descripcion.
+     */
+    private LiteralMultilang descripcionHTML;
 
     /**
      * Url acceso.
@@ -724,6 +732,100 @@ public class DataIndexacion {
      */
     public void setScore(Float score) {
         this.score = score;
+    }
+
+    public LiteralMultilang getDescripcionHTML() {
+        return descripcionHTML;
+    }
+
+    public void setDescripcionHTML(LiteralMultilang descripcionHTML) {
+        this.descripcionHTML = descripcionHTML;
+    }
+
+    public Boolean getInterno() {
+        return interno;
+    }
+
+    /**
+     * Cast al modelo de comunicacion con solrapi
+     *
+     * @return
+     */
+    public es.caib.solr.api.model.IndexData cast() {
+        es.caib.solr.api.model.IndexData id = new IndexData();
+        id.setElementoId(this.getElementoId());
+        id.setAplicacionId(getAplicacionId(this.getAplicacionId()));
+        id.setCategoria(getCategoria(this.getCategoria()));
+        id.setTitulo(getMultiLangLiteral(this.getTitulo()));
+
+        id.setSearchText(getMultiLangLiteral(this.getSearchText()));
+        id.setSearchTextOptional(getMultiLangLiteral(this.getSearchTextOptional()));
+        id.setIdiomas(getIdiomas(this.getIdiomas()));
+        id.setDescripcion(getMultiLangLiteral(this.getDescripcion()));
+        id.setUrl(getMultiLangLiteral(this.getUrl()));
+        id.setCategoriaPadre(getCategoria(this.getCategoriaPadre()));
+        id.setDescripcionPadre(getMultiLangLiteral(this.getDescripcionPadre()));
+        id.setUrlPadre(getMultiLangLiteral(this.getUrlPadre()));
+        id.setFechaActualizacion(this.getFechaActualizacion());
+        id.setFechaPublicacion(this.getFechaPublicacion());
+        id.setFechaCaducidad(this.getFechaCaducidad());
+        id.setFechaPlazoIni(this.getFechaPlazoIni());
+        id.setFechaPlazoFin(this.getFechaPlazoFin());
+        id.setUrlFoto(this.getUrlFoto());
+        id.setExtension(getMultiLangLiteral(this.getExtension()));
+        id.setUos(getUos(this.getUos()));
+        id.setFamiliaId(this.getFamiliaId());
+        id.setMateriaId(this.getMateriaId());
+        id.setPublicoId(this.getPublicoId());
+        id.setTelematico(this.getTelematico());
+        id.setElementoIdRaiz(this.getElementoIdRaiz());
+        id.setInterno(this.isInterno());
+        id.setElementoIdPadre(this.getElementoIdPadre());
+        id.setCategoriaRaiz(getCategoria(this.getCategoriaRaiz()));
+        id.setScore(this.getScore());
+
+        return id;
+    }
+
+
+    private List<PathUO> getUos(List<PathUA> uos) {
+        List<PathUO> pathUOs = new ArrayList<>();
+        for (PathUA ua : uos) {
+            PathUO uo = new PathUO();
+            uo.setPath(ua.getPath());
+            pathUOs.add(uo);
+        }
+
+        return pathUOs;
+    }
+
+    private List<es.caib.solr.api.model.types.EnumIdiomas> getIdiomas(List<EnumIdiomas> idiomas) {
+        List<es.caib.solr.api.model.types.EnumIdiomas> retorno = new ArrayList<>();
+        for (EnumIdiomas idioma : idiomas) {
+            retorno.add(es.caib.solr.api.model.types.EnumIdiomas.fromString(idioma.toString()));
+        }
+        return retorno;
+    }
+
+
+    private es.caib.solr.api.model.types.EnumAplicacionId getAplicacionId(EnumAplicacionId aplicacionId) {
+        return aplicacionId == null ? null : es.caib.solr.api.model.types.EnumAplicacionId.fromString(aplicacionId.toString());
+    }
+
+    private es.caib.solr.api.model.MultilangLiteral getMultiLangLiteral(LiteralMultilang valor) {
+        if (valor == null) {
+            return null;
+        }
+        es.caib.solr.api.model.MultilangLiteral literal = new MultilangLiteral();
+        List<String> idiomas = valor.getIdiomas();
+        for (String idioma : idiomas) {
+            literal.addIdioma(es.caib.solr.api.model.types.EnumIdiomas.fromString(idioma), valor.get(EnumIdiomas.fromString(idioma)));
+        }
+        return literal;
+    }
+
+    private es.caib.solr.api.model.types.EnumCategoria getCategoria(EnumCategoria categoria) {
+        return categoria == null ? null : es.caib.solr.api.model.types.EnumCategoria.fromString(categoria.toString());
     }
 
 }

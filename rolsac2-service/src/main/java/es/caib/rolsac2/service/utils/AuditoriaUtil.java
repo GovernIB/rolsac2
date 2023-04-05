@@ -29,7 +29,7 @@ public final class AuditoriaUtil {
             return "nul";
         }
         if (objeto instanceof Date) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
             String fecha = dateFormat.format((Date) objeto);
             return fecha;
         }
@@ -206,8 +206,7 @@ public final class AuditoriaUtil {
      * @return
      */
 
-    public static final AuditoriaCambio auditarCampoCadena(final String valorPublicado, final String valorModificado, List<AuditoriaCambio> cambios, final String idCampo,
-                                                           final AuditoriaIdioma idioma) {
+    public static final AuditoriaCambio auditarCampoCadena(final String valorPublicado, final String valorModificado, List<AuditoriaCambio> cambios, final String idCampo, final AuditoriaIdioma idioma) {
         AuditoriaCambio cambio = null;
 
         if (valorPublicado != null && valorModificado != null) {
@@ -215,8 +214,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, valorPublicado, valorModificado, idCampo);
             }
         } else if (valorPublicado != null || valorModificado != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, getValor(valorPublicado), getValor(valorModificado), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, getValor(valorPublicado), getValor(valorModificado), idCampo);
 
         }
 
@@ -366,7 +364,7 @@ public final class AuditoriaUtil {
             }
         } else {
 
-            AuditoriaUtil.auditar(valorPublicado.getIdentificador(), valorModificado.getIdentificador(), cambios, idCampo);
+            AuditoriaUtil.auditar(valorPublicado == null ? null : valorPublicado.getIdentificador(), valorModificado == null ? null : valorModificado.getIdentificador(), cambios, idCampo);
 
         }
     }
@@ -1064,8 +1062,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, fechaAnterior, fechaNueva, idCampo);
             }
         } else if (fechaAnterior != null || fechaNueva != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, fechaAnterior, fechaNueva, idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, fechaAnterior, fechaNueva, idCampo);
 
         }
 
@@ -1083,8 +1080,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, textoAnterior, textoNuevo, idCampo);
             }
         } else if (textoAnterior != null || textoNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, textoAnterior, textoNuevo, idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, textoAnterior, textoNuevo, idCampo);
 
         }
 
@@ -1102,8 +1098,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, valorAnterior.toString(), valorNuevo.toString(), idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.toString(), valorNuevo == null ? "nul" : valorNuevo.toString(), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.toString(), valorNuevo == null ? "nul" : valorNuevo.toString(), idCampo);
 
         }
 
@@ -1121,8 +1116,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, valorAnterior.toString(), valorNuevo.toString(), idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.toString(), valorNuevo == null ? "nul" : valorNuevo.toString(), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.toString(), valorNuevo == null ? "nul" : valorNuevo.toString(), idCampo);
 
         }
 
@@ -1141,8 +1135,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
 
         }
 
@@ -1161,8 +1154,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
 
         }
 
@@ -1181,8 +1173,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, getValor(valorAnterior), getValor(valorNuevo), idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, getValor(valorAnterior), getValor(valorNuevo), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, getValor(valorAnterior), getValor(valorNuevo), idCampo);
 
         }
 
@@ -1201,8 +1192,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
 
         }
 
@@ -1221,8 +1211,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
 
         }
 
@@ -1241,8 +1230,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
 
         }
 
@@ -1260,8 +1248,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
 
         }
 
@@ -1279,8 +1266,7 @@ public final class AuditoriaUtil {
                 cambio = agregarAuditoriaValorCampo(idioma, valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio =
-                    agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.getDescripcion().getTraduccion("ca"), valorNuevo == null ? "nul" : valorNuevo.getDescripcion().getTraduccion("ca"), idCampo);
 
         }
 
@@ -1295,7 +1281,7 @@ public final class AuditoriaUtil {
 
         final AuditoriaValorCampo valorCampo = new AuditoriaValorCampo();
         valorCampo.setIdioma(idioma);
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         if (valorAnterior == null) {
             valorCampo.setValorAnterior("nul");
         } else {

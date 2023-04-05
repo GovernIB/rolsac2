@@ -34,7 +34,7 @@ public interface IPluginIndexacion extends IPlugin {
      *                          idioma establecido.
      * @throws IPluginIndexacionExcepcion
      */
-    ResultadoAccion indexarFichero(FicheroIndexacion ficheroIndexacion) throws IPluginIndexacionExcepcion;
+    ResultadoAccion indexarFichero(IndexFile ficheroIndexacion) throws IPluginIndexacionExcepcion;
 
     /**
      * Desindexa elementos caducados.

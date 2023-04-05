@@ -24,7 +24,7 @@ public interface ProcesoRepository extends CrudRepository<JProceso, Long>{
 
     List<ProcesoGridDTO> listar(final String idioma, final String tipo);
 
-    ProcesoDTO obtenerProcesoPorIdentificador(final String identificador);
+    ProcesoDTO obtenerProcesoPorIdentificador(final String identificador, final Long idEntidad);
 
     ProcesoDTO convertProceso(JProceso jProceso);
 }

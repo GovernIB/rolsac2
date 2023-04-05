@@ -70,7 +70,7 @@ public class Constantes {
 	public static final String URL_BOLETINES = ENTIDAD_BOLETINES + "/{0}";
 
 	public static final String ENTIDAD_ENTIDADES = "entidades";
-	public static final String URL_ENTIDADES = ENTIDAD_BOLETINES + "/{0}";
+	public static final String URL_ENTIDADES = ENTIDAD_ENTIDADES + "/{0}";
 
 	public static final String ENTIDAD_CATALOGO_DOCUMENTOS = "catalogo_documentos";
 	public static final String URL_CATALOGO_DOCUMENTOS = ENTIDAD_CATALOGO_DOCUMENTOS + "/{0}";
@@ -86,6 +86,9 @@ public class Constantes {
 
 	public static final String ENTIDAD_PROCEDIMIENTO = "procedimientos";
 	public static final String URL_PROCEDIMIENTO = ENTIDAD_PROCEDIMIENTO + "/{0}";
+
+	public static final String ENTIDAD_SERVICIO = "servicios";
+	public static final String URL_SERVICIO = ENTIDAD_SERVICIO + "/{0}";
 
 	public static final String ENTIDAD_FICHA = "fichas";
 	public static final String URL_FICHA = ENTIDAD_FICHA + "/{0}";
@@ -120,6 +123,48 @@ public class Constantes {
 	public static final String ENTIDAD_TIPO_AFECTACION = "tipos_afectacion";
 	public static final String URL_TIPO_AFECTACION = ENTIDAD_TIPO_AFECTACION + "/{0}";
 
+	public static final String ENTIDAD_TIPO_NORMATIVA = "tipos_normativa";
+	public static final String URL_TIPO_NORMATIVA = ENTIDAD_TIPO_NORMATIVA + "/{0}";
+
+	public static final String ENTIDAD_TIPO_SILENCIO = "tipos_silencio";
+	public static final String URL_TIPO_SILENCIO = ENTIDAD_TIPO_SILENCIO + "/{0}";
+
+	public static final String ENTIDAD_TIPO_UNIDAD = "tipos_unidad";
+	public static final String URL_TIPO_UNIDAD = ENTIDAD_TIPO_UNIDAD + "/{0}";
+
+	public static final String ENTIDAD_TIPO_FORMA = "tipos_forma";
+	public static final String URL_TIPO_FORMA = ENTIDAD_TIPO_FORMA + "/{0}";
+
+	public static final String ENTIDAD_TIPO_LEGITIMACION = "tipos_legitimacion";
+	public static final String URL_TIPO_LEGITIMACION = ENTIDAD_TIPO_LEGITIMACION + "/{0}";
+
+	public static final String ENTIDAD_TIPO_SEXO = "tipos_sexo";
+	public static final String URL_TIPO_SEXO = ENTIDAD_TIPO_SEXO + "/{0}";
+
+	public static final String ENTIDAD_TIPO_TRAMITACION = "tipos_tramitacion";
+	public static final String URL_TIPO_TRAMITACION = ENTIDAD_TIPO_TRAMITACION + "/{0}";
+
+	public static final String ENTIDAD_TIPO_MATERIA = "tipos_materia";
+	public static final String URL_TIPO_MATERIA = ENTIDAD_TIPO_MATERIA + "/{0}";
+
+	public static final String ENTIDAD_TIPO_MEDIA_FICHA = "tipos_media_ficha";
+	public static final String URL_TIPO_MEDIA_FICHA = ENTIDAD_TIPO_MEDIA_FICHA + "/{0}";
+
+	public static final String ENTIDAD_TIPO_PROCEDIMIENTO = "tipos_procedimiento";
+	public static final String URL_TIPO_PROCEDIMIENTO = ENTIDAD_TIPO_PROCEDIMIENTO + "/{0}";
+
+	public static final String ENTIDAD_TIPO_MEDIA_UA = "tipos_media_ua";
+	public static final String URL_TIPO_MEDIA_UA = ENTIDAD_TIPO_MEDIA_UA + "/{0}";
+
+	public static final String ENTIDAD_TIPO_VIA = "tipos_via";
+	public static final String URL_TIPO_VIA = ENTIDAD_TIPO_VIA + "/{0}";
+
+	public static final String ENTIDAD_TIPO_PUBLICO = "tipos_publico";
+	public static final String URL_TIPO_PUBLICO = ENTIDAD_TIPO_PUBLICO + "/{0}";
+
+	public static final String ENTIDAD_TIPO_MEDIA_EDIFICIO = "tipos_media_edificio";
+	public static final String URL_TIPO_MEDIA_EDIFICIO = ENTIDAD_TIPO_MEDIA_EDIFICIO + "/{0}";
+
 	public static final String ENTIDAD_UNIDAD_MATERIA = "unidades_materias";
 	public static final String URL_UNIDAD_MATERIA = ENTIDAD_UNIDAD_MATERIA + "/{0}";
 
@@ -134,6 +179,9 @@ public class Constantes {
 
 	public static final String ENTIDAD_ENLACE_TELEMATICO = "enlaceTelematico";
 	public static final String URL_ENLACE_TELEMATICO = ENTIDAD_ENLACE_TELEMATICO + "/{0}";
+
+	public static final String ENTIDAD_FICHERO = "fichero";
+	public static final String URL_FICHERO = ENTIDAD_FICHERO + "/{0}";
 
 	public static final String ENTIDAD_HECHOS_VITALES = "hechos_vitales";
 	public static final String URL_HECHOS_VITALES = ENTIDAD_HECHOS_VITALES + "/{0}";

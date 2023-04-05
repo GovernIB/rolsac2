@@ -11,6 +11,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import es.caib.rolsac2.service.facade.ProcesoTimerServiceFacade;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -38,6 +39,9 @@ public class ViewProcesos extends AbstractController implements Serializable {
 
     @EJB
     private ProcesoServiceFacade procesoServiceFacade;
+
+    @EJB
+    ProcesoTimerServiceFacade procesoTimerServiceFacade;
 
     private LazyDataModel<ProcesoGridDTO> lazyModel;
 
@@ -147,7 +151,12 @@ public class ViewProcesos extends AbstractController implements Serializable {
                 && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogProceso", modoAcceso, params, true, 645, 520);
+        UtilJSF.openDialog("dialogProceso", modoAcceso, params, true, 745, 520);
+    }
+
+    public void procesadoManual() {
+        procesoTimerServiceFacade.procesadoManual(this.datoSeleccionado.getIdentificadorProceso(), sessionBean.getEntidad().getCodigo());
+        UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcesos.procesoLanzado"));
     }
 
     public ProcesoGridDTO getDatoSeleccionado() {

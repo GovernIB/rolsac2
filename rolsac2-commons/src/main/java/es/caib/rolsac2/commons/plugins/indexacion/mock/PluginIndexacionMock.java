@@ -41,7 +41,7 @@ public class PluginIndexacionMock extends AbstractPluginProperties implements IP
     }
 
     @Override
-    public ResultadoAccion indexarFichero(FicheroIndexacion ficheroIndexacion) throws IPluginIndexacionExcepcion {
+    public ResultadoAccion indexarFichero(IndexFile ficheroIndexacion) throws IPluginIndexacionExcepcion {
         return getResultadoCorrecto();
     }
 

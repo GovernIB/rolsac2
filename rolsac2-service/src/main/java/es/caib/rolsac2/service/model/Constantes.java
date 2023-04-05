@@ -56,4 +56,19 @@ public class Constantes {
     public static final boolean PROCEDIMIENTO_ENMODIFICACION = true;
     public static final String SERVICIO = "S";
 
+    /**
+     * Indexar pendientes
+     **/
+    public static final String INDEXAR_SOLR_NORMATIVAS = "normativas";
+    public static final String INDEXAR_SOLR_PROCEDIMIENTOS = "procedimientos";
+    public static final String INDEXAR_SOLR_SERVICIOS = "servicios";
+    public static final String INDEXAR_SOLR_PROCEDIMIENTOS_SERVICIOS = "procedimientosServicios";
+    public static final String INDEXAR_SOLR_PENDIENTES = "pendientes";
+    public static final String INDEXAR_SOLR_BORRAR_TODO = "borrarTodo";
+    public static final String INDEXAR_SOLR_BORRAR_CADUCADAS = "caducadas";
+    public static final String INDEXAR_SOLR_UAS = "uas";
+
+
+    public static final String INDEXAR_SIA_PENDIENTES = "pendientes";
+    public static final String INDEXAR_SIA_COMPLETO = "completo";
 }

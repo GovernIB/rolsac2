@@ -1,9 +1,13 @@
 package es.caib.rolsac2.ejb.facade;
 
 
+import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.ProcesoTimerServiceFacade;
 import es.caib.rolsac2.service.facade.ProcesosExecServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
+import es.caib.rolsac2.service.model.EntidadDTO;
+import es.caib.rolsac2.service.model.EntidadGridDTO;
+import es.caib.rolsac2.service.model.ListaPropiedades;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.slf4j.Logger;
@@ -38,6 +42,9 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
     @Inject
     private SystemServiceFacade systemServiceFacade;
 
+    @Inject
+    private AdministracionSupServiceFacade administracionSupServiceFacade;
+
     @Resource
     TimerService timerService;
 
@@ -61,13 +68,16 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
         LOG.info("Procesos ROLSAC2 desde EJB");
         if (procesosExecServiceFacade.verificarMaestro(this.idInstancia)) {
             LOG.debug("Es maestro. Recupera procesos a lanzar..,");
-            final List<String> procesos = procesosExecServiceFacade.calcularProcesosEjecucion();
-            for (final String p : procesos) {
-                try {
-                    LOG.debug("Lanza proceso " + p);
-                    procesosExecServiceFacade.ejecutarProceso(p);
-                } catch (final Exception ex) {
-                    LOG.error("Error al lanzar proceso " + p + ": " + ex.getMessage());
+            final List<EntidadDTO> entidades = administracionSupServiceFacade.findEntidadActivas();
+            for(EntidadDTO entidad : entidades) {
+                final List<String> procesos = procesosExecServiceFacade.calcularProcesosEjecucion(entidad.getCodigo());
+                for (final String p : procesos) {
+                    try {
+                        LOG.debug("Lanza proceso " + p);
+                        procesosExecServiceFacade.ejecutarProceso(p, entidad.getCodigo());
+                    } catch (final Exception ex) {
+                        LOG.error("Error al lanzar proceso " + p + ": " + ex.getMessage());
+                    }
                 }
             }
         } else {
@@ -81,18 +91,33 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void procesadoManual(String proceso) {
+    public void procesadoManual(String proceso, Long idEntidad) {
         try {
             LOG.debug("Lanza proceso " + proceso);
-            procesosExecServiceFacade.ejecutarProceso(proceso);
+            procesosExecServiceFacade.ejecutarProceso(proceso, idEntidad);
         } catch (final Exception ex) {
             LOG.error("Error al lanzar proceso " + proceso + ": " + ex.getMessage());
         }
     }
 
+    /**
+     * Método utilizado para el procesado manual de los procesos
+     */
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void procesadoManual(String proceso, ListaPropiedades listaPropiedades, Long idEntidad) {
+        try {
+            LOG.debug("Lanza proceso " + proceso);
+            procesosExecServiceFacade.ejecutarProceso(proceso, listaPropiedades, idEntidad);
+        } catch (final Exception ex) {
+            LOG.error("Error al lanzar proceso " + proceso + ": " + ex.getMessage());
+        }
+    }
 
     /**
      * Se utiliza para parsear la expresión cron definida por properties y convertirla en
+     *
      * @param cron
      * @return ScheduleExpression intérvalo de tiempo en el que se lanzan los procesos automáticos
      */
@@ -110,7 +135,7 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
             sc.second(crons[0]);
             sc.minute(crons[1]);
             sc.hour(crons[2]);
-            sc.dayOfMonth(crons[2]);
+            sc.dayOfMonth(crons[3]);
             sc.month(crons[4]);
             sc.dayOfWeek(crons[5]);
             return sc;
@@ -120,7 +145,11 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
         }
     }
 
-    public String getIdInstancia() { return idInstancia; }
+    public String getIdInstancia() {
+        return idInstancia;
+    }
 
-    public void setIdInstancia(final String idInstancia) { this.idInstancia = idInstancia; }
+    public void setIdInstancia(final String idInstancia) {
+        this.idInstancia = idInstancia;
+    }
 }

@@ -1,13 +1,12 @@
 package es.caib.rolsac2.ejb.facade.procesos.solr;
 
-import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
-import es.caib.rolsac2.commons.plugins.indexacion.api.model.LiteralMultilang;
-import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.*;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumAplicacionId;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumCategoria;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumIdiomas;
 import es.caib.rolsac2.service.model.*;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +56,7 @@ public class CastUtil {
                 titulo.addIdioma(enumIdioma, tramite.getNombre().getTraduccion(keyIdioma));
                 descripcion.addIdioma(enumIdioma, tramite.getObservacion().getTraduccion(keyIdioma)); // solrIndexer.htmlToText(tramite.getObservaciones()));
                 if (procedimiento.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma) != null) {
-                    descripcionPadre.addIdioma(enumIdioma,
-                            procedimiento.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma));
+                    descripcionPadre.addIdioma(enumIdioma, procedimiento.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma));
                 }
                 searchText.addIdioma(enumIdioma, tramite.getNombre().getTraduccion(keyIdioma) + " " + tramite.getObservacion().getTraduccion(keyIdioma));
                 searchTextOptional.addIdioma(enumIdioma, tramite.getDocumentacion().getTraduccion(keyIdioma));
@@ -74,10 +72,8 @@ public class CastUtil {
                         idPublicoObjetivo = publicoObjectivo.getCodigo().toString();
                     }
 
-                    urlsPadre.addIdioma(enumIdioma, "/seucaib/" + keyIdioma + "/" + idPublicoObjetivo + "/"
-                            + nombrePubObjetivox + "/tramites/tramite/" + procedimiento.getCodigo());
-                    urls.addIdioma(enumIdioma, "/seucaib/" + keyIdioma + "/" + idPublicoObjetivo + "/"
-                            + nombrePubObjetivox + "/tramites/tramite/" + procedimiento.getCodigo());
+                    urlsPadre.addIdioma(enumIdioma, "/seucaib/" + keyIdioma + "/" + idPublicoObjetivo + "/" + nombrePubObjetivox + "/tramites/tramite/" + procedimiento.getCodigo());
+                    urls.addIdioma(enumIdioma, "/seucaib/" + keyIdioma + "/" + idPublicoObjetivo + "/" + nombrePubObjetivox + "/tramites/tramite/" + procedimiento.getCodigo());
                 }
             }
 
@@ -213,8 +209,7 @@ public class CastUtil {
                 }
 
                 // UO
-                if (servicio.getUaInstructor() != null
-                        && servicio.getUaInstructor().getNombre().getTraduccion(keyIdioma) != null) {
+                if (servicio.getUaInstructor() != null && servicio.getUaInstructor().getNombre().getTraduccion(keyIdioma) != null) {
                     textoOptional.append(" ");
                     textoOptional.append(servicio.getUaInstructor().getNombre().getTraduccion(keyIdioma));
 
@@ -227,22 +222,17 @@ public class CastUtil {
 
                 }
 
-                searchTextOptional.addIdioma(enumIdioma, servicio.getObjeto().getTraduccion(keyIdioma) + " "
-                        + servicio.getObservaciones().getTraduccion(keyIdioma) + " " + textoOptional.toString());
+                searchTextOptional.addIdioma(enumIdioma, servicio.getObjeto().getTraduccion(keyIdioma) + " " + servicio.getObservaciones().getTraduccion(keyIdioma) + " " + textoOptional.toString());
 
                 if (esProcSerInterno) {
                     // Si es interno usamos la url especifica para los Servicios internos
 
-                    final String url = getPropiedadPOInternoUrlProc()
-                            .replace("{idioma}", keyIdioma).replace("{idPublicoObjetivo}", idPubObjetivo)
-                            .replace("{nombrePubObjetivo}", nombrePubObjetivo)
-                            .replace("{idServicio}", servicio.getCodigo().toString());
+                    final String url = getPropiedadPOInternoUrlProc().replace("{idioma}", keyIdioma).replace("{idPublicoObjetivo}", idPubObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idServicio}", servicio.getCodigo().toString());
                     urls.addIdioma(enumIdioma, url);
 
                 } else {
                     // Si no es interno
-                    urls.addIdioma(enumIdioma, "/seucaib/" + keyIdioma + "/" + idPubObjetivo + "/"
-                            + nombrePubObjetivo + "/tramites/servicio/" + servicio.getCodigo());
+                    urls.addIdioma(enumIdioma, "/seucaib/" + keyIdioma + "/" + idPubObjetivo + "/" + nombrePubObjetivo + "/tramites/servicio/" + servicio.getCodigo());
                 }
 
             }
@@ -291,6 +281,426 @@ public class CastUtil {
 
         indexData.setFamiliaId("none");
         return indexData;
+    }
+
+    public static DataIndexacion getDataIndexacion(UnidadAdministrativaDTO uaDTO, PathUA pathUA) {
+        DataIndexacion indexData = new DataIndexacion();
+        indexData.setCategoria(EnumCategoria.ROLSAC_UNIDAD_ADMINISTRATIVA);
+        indexData.setAplicacionId(EnumAplicacionId.ROLSAC);
+        indexData.setElementoId(uaDTO.getCodigo().toString());
+        indexData.setCategoriaRaiz(EnumCategoria.ROLSAC_UNIDAD_ADMINISTRATIVA);
+        indexData.setElementoIdRaiz(uaDTO.getCodigo().toString());
+        indexData.getUos().add(pathUA);
+        //indexData.setFechaPublicacion(java.util.Date.from(uaDTO.getFechaActualizacion().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        // Iteramos las traducciones
+        final LiteralMultilang titulo = new LiteralMultilang();
+        final LiteralMultilang descripcion = new LiteralMultilang();
+        final LiteralMultilang urls = new LiteralMultilang();
+        final LiteralMultilang searchText = new LiteralMultilang();
+        final LiteralMultilang searchTextOptional = new LiteralMultilang();
+        final List<EnumIdiomas> idiomas = new ArrayList<EnumIdiomas>();
+
+        // Recorremos las traducciones
+        for (final String keyIdioma : uaDTO.getNombre().getIdiomas()) {
+            final EnumIdiomas enumIdioma = EnumIdiomas.fromString(keyIdioma);
+            if (enumIdioma != null) {
+                //Para saltarse los idiomas sin titulo
+                if (uaDTO.getNombre().getTraduccion(keyIdioma) == null || uaDTO.getNombre().getTraduccion(keyIdioma).isEmpty()) {
+                    continue;
+                }
+
+                //Anyadimos idioma al enumerado.
+                idiomas.add(enumIdioma);
+
+                // Seteamos los primeros campos multiidiomas: Titulo, Descripción y el search
+                // text.
+                titulo.addIdioma(enumIdioma, uaDTO.getNombre().getTraduccion(keyIdioma));
+                descripcion.addIdioma(enumIdioma, uaDTO.getPresentacion().getTraduccion(keyIdioma));
+
+
+                searchText.addIdioma(enumIdioma, uaDTO.getNombre().getTraduccion(keyIdioma) + " " + uaDTO.getResponsable().getTraduccion(keyIdioma) + " " + uaDTO.getResponsableNombre());
+
+
+                final StringBuffer textoOptional = new StringBuffer();
+                //TODO Revisar
+                //textoOptional.append(IndexacionUtil.calcularPathTextUO(UA, keyIdioma));
+
+                searchTextOptional.addIdioma(enumIdioma, textoOptional.toString());
+                urls.addIdioma(enumIdioma, "/govern/organigrama/area.do?lang=" + keyIdioma + "&coduo=" + uaDTO.getCodigo());
+            }
+        }
+
+        // Seteamos datos multidioma.
+        indexData.setTitulo(titulo);
+        indexData.setDescripcionHTML(descripcion);
+        indexData.setUrl(urls);
+        indexData.setSearchText(searchText);
+        indexData.setSearchTextOptional(searchTextOptional);
+        indexData.setIdiomas(idiomas);
+
+        return indexData;
+    }
+
+    public static DataIndexacion getDataIndexacion(NormativaDTO norm, List<PathUA> pathUAs) {
+        DataIndexacion indexData = new DataIndexacion();
+        indexData.setCategoria(EnumCategoria.ROLSAC_NORMATIVA);
+        indexData.setAplicacionId(EnumAplicacionId.ROLSAC);
+        indexData.setElementoId(norm.getCodigo().toString());
+        indexData.setCategoriaRaiz(EnumCategoria.ROLSAC_NORMATIVA);
+        indexData.setElementoIdRaiz(norm.getCodigo().toString());
+        indexData.getUos().addAll(pathUAs);
+        if (norm.getFechaBoletin() != null) {
+            indexData.setFechaPublicacion(java.util.Date.from(norm.getFechaBoletin().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        }
+        // Iteramos las traducciones
+        final LiteralMultilang titulo = new LiteralMultilang();
+        final LiteralMultilang descripcion = new LiteralMultilang();
+        final LiteralMultilang urls = new LiteralMultilang();
+        final LiteralMultilang searchText = new LiteralMultilang();
+        final LiteralMultilang searchTextOptional = new LiteralMultilang();
+        final List<EnumIdiomas> idiomas = new ArrayList<EnumIdiomas>();
+        String urlCAT = "";
+        if (norm.getUrlBoletin() != null && !norm.getUrlBoletin().getTraduccion("ca").isEmpty()) {
+            urlCAT = norm.getUrlBoletin().getTraduccion("ca");
+        }
+        // Recorremos las traducciones
+        for (final String keyIdioma : norm.getNombre().getIdiomas()) {
+            final EnumIdiomas enumIdioma = EnumIdiomas.fromString(keyIdioma);
+            if (enumIdioma != null) {
+                //Para saltarse los idiomas sin titulo
+                if (norm.getNombre().getTraduccion(keyIdioma) == null || norm.getNombre().getTraduccion(keyIdioma).isEmpty()) {
+                    continue;
+                }
+
+                //Anyadimos idioma al enumerado.
+                idiomas.add(enumIdioma);
+
+                // Seteamos los primeros campos multiidiomas: Titulo, Descripción y el search
+                // text.
+                titulo.addIdioma(enumIdioma, norm.getNombre().getTraduccion(keyIdioma));
+                descripcion.addIdioma(enumIdioma, norm.getNombre().getTraduccion(keyIdioma));
+
+
+                String tipoNormativaNombre = "";
+                if (norm.getTipoNormativa() != null && norm.getTipoNormativa().getDescripcion() != null && norm.getTipoNormativa().getDescripcion().getTraduccion(keyIdioma) != null) {
+                    tipoNormativaNombre = norm.getTipoNormativa().getDescripcion().getTraduccion(keyIdioma);
+                }
+                searchText.addIdioma(enumIdioma, norm.getNombre().getTraduccion(keyIdioma) + " " + norm.getNumero() + " " + tipoNormativaNombre);
+
+
+                final StringBuffer textoOptional = new StringBuffer();
+                //TODO Revisar
+                //textoOptional.append(" " + norm.getObservaciones());
+                //textoOptional.append(IndexacionUtil.calcularPathTextUO(UA, keyIdioma));
+
+                searchTextOptional.addIdioma(enumIdioma, textoOptional.toString());
+                if (norm.getUrlBoletin() != null && !norm.getUrlBoletin().getTraduccion(keyIdioma).isEmpty()) {
+                    urls.addIdioma(enumIdioma, norm.getUrlBoletin().getTraduccion(keyIdioma));
+                } else {
+                    //En caso de url vacio, cogemos la de catalan.
+                    urls.addIdioma(enumIdioma, urlCAT);
+                }
+            }
+        }
+
+        // Seteamos datos multidioma.
+        indexData.setTitulo(titulo);
+        indexData.setDescripcion(descripcion);
+        indexData.setUrl(urls);
+        indexData.setSearchText(searchText);
+        indexData.setSearchTextOptional(searchTextOptional);
+        indexData.setIdiomas(idiomas);
+        return indexData;
+    }
+
+    public static IndexFile getDataIndexacion(ProcedimientoDTO proc, ProcedimientoDocumentoDTO doc, DocumentoTraduccion docIdioma, FicheroDTO ficheroDTO, String idioma, PathUA pathUA) {
+        IndexFile indexData = new IndexFile();
+        indexData.setCategoria(EnumCategoria.ROLSAC_PROCEDIMIENTO_DOCUMENTO);
+        indexData.setAplicacionId(EnumAplicacionId.ROLSAC);
+        indexData.setElementoId(doc.getCodigo().toString());
+
+        if (proc.getTipo().equals(Constantes.PROCEDIMIENTO)) {
+            indexData.setCategoriaRaiz(EnumCategoria.ROLSAC_PROCEDIMIENTO);
+            indexData.setCategoriaPadre(EnumCategoria.ROLSAC_PROCEDIMIENTO);
+        } else {
+            indexData.setCategoriaRaiz(EnumCategoria.ROLSAC_SERVICIO);
+            indexData.setCategoriaPadre(EnumCategoria.ROLSAC_SERVICIO);
+        }
+        indexData.setElementoIdRaiz(proc.getCodigo().toString());
+        indexData.setElementoIdPadre(proc.getCodigo().toString());
+        indexData.getUos().add(pathUA.convertirUOS());
+        final boolean esProcSerInterno = contienePOInterno(proc.getPublicosObjetivo());
+
+        // Iteramos las traducciones
+        final MultilangLiteral titulo = new MultilangLiteral();
+        final MultilangLiteral descripcion = new MultilangLiteral();
+        final MultilangLiteral descripcionPadre = new MultilangLiteral();
+        final MultilangLiteral urls = new MultilangLiteral();
+        final MultilangLiteral urlsPadre = new MultilangLiteral();
+        final StringBuffer textoOptional = new StringBuffer();
+
+        final MultilangLiteral extension = new MultilangLiteral();
+        final List<EnumIdiomas> idiomas = new ArrayList<EnumIdiomas>();
+
+        // Recorremos las traducciones
+
+        final EnumIdiomas enumIdioma = EnumIdiomas.fromString(idioma);
+        if (enumIdioma != null) {
+            //Para saltarse los idiomas sin titulo
+            if (doc.getTitulo().getTraduccion(idioma) == null || doc.getTitulo().getTraduccion(idioma).isEmpty()) {
+                return null;
+            }
+
+            //Anyadimos idioma al enumerado.
+            idiomas.add(enumIdioma);
+
+
+            // materia
+            for (final TipoMateriaSIAGridDTO materia : proc.getMateriasSIA()) {
+                textoOptional.append(" ");
+                textoOptional.append(materia.getCodigo());
+                textoOptional.append(" ");
+                textoOptional.append(materia.getIdentificador());
+                textoOptional.append(" ");
+                textoOptional.append(materia.getDescripcion().getTraduccion(idioma));
+
+            }
+
+            // Servicio Responsable
+            if (proc.getUaResponsable() != null && proc.getUaResponsable().getNombre() != null && proc.getUaResponsable().getNombre().getTraduccion(idioma) != null) {
+                textoOptional.append(" ");
+                textoOptional.append(proc.getUaResponsable().getNombre().getTraduccion(idioma));
+            }
+
+            titulo.addIdioma(enumIdioma, doc.getTitulo().getTraduccion(idioma));
+            descripcion.addIdioma(enumIdioma, ficheroDTO.getFilename());
+            descripcionPadre.addIdioma(enumIdioma, proc.getObjeto().getTraduccion(idioma));
+            extension.addIdioma(enumIdioma, IndexacionUtil.calcularExtensionArchivo(ficheroDTO.getFilename()));
+            indexData.setFileContent(ficheroDTO.getContenido());
+
+            urls.addIdioma(enumIdioma, "/govern/rest/arxiu/" + ficheroDTO.getCodigo());
+
+
+            // Publico objetivo, para extraer el nombre del publico objetivo
+            String nombrePubObjetivo = "persones";
+            String idPublicoObjetivo = "200";
+
+            if (proc.getPublicosObjetivo() != null && !proc.getPublicosObjetivo().isEmpty()) {
+                final TipoPublicoObjetivoEntidadGridDTO publicoObjectivo = proc.getPublicosObjetivo().get(0);
+                nombrePubObjetivo = publicoObjectivo.getIdentificador().toLowerCase();
+                idPublicoObjetivo = publicoObjectivo.getCodigo().toString();
+            }
+            if (esProcSerInterno) {
+                // Si es interno usamos la url especifica para los procedimientos internos
+
+                final String url = getPropiedadPOInternoUrlProc().replace("{idioma}", idioma).replace("{idPublicoObjetivo}", idPublicoObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idProcedimiento}", proc.getCodigo().toString());
+                urls.addIdioma(enumIdioma, url);
+
+            } else {
+                // Si no es interno
+                urls.addIdioma(enumIdioma, "/seucaib/" + idioma + "/" + idPublicoObjetivo + "/" + nombrePubObjetivo + "/tramites/tramite/" + proc.getCodigo());
+            }
+        }
+
+
+        // Seteamos datos multidioma.
+        indexData.setTitulo(titulo);
+        indexData.setDescripcion(descripcion);
+        indexData.setUrl(urls);
+        indexData.setUrlPadre(urlsPadre);
+        indexData.setFechaActualizacion(proc.getFechaActualizacion());
+        indexData.setFechaPublicacion(proc.getFechaPublicacion());
+        indexData.setFechaCaducidad(proc.getFechaCaducidad());
+        indexData.setExtension(extension);
+        MultilangLiteral searchTextOpcional = new MultilangLiteral();
+        searchTextOpcional.addIdioma(EnumIdiomas.fromString(idioma), textoOptional.toString());
+        indexData.setSearchTextOptional(searchTextOpcional);
+
+        indexData.setIdioma(enumIdioma);
+        return indexData;
+    }
+
+
+    public static IndexFile getDataIndexacion(ProcedimientoDTO proc, ProcedimientoTramiteDTO tramite, ProcedimientoDocumentoDTO doc, DocumentoTraduccion docIdioma, FicheroDTO ficheroDTO, String idioma, PathUA pathUA) {
+
+        IndexFile indexData = new IndexFile();
+        indexData.setCategoria(EnumCategoria.ROLSAC_PROCEDIMIENTO_DOCUMENTO);
+        indexData.setAplicacionId(EnumAplicacionId.ROLSAC);
+        indexData.setElementoId(doc.getCodigo().toString());
+
+        indexData.setCategoriaRaiz(EnumCategoria.ROLSAC_PROCEDIMIENTO);
+        indexData.setCategoriaPadre(EnumCategoria.ROLSAC_TRAMITE);
+
+        indexData.setElementoIdRaiz(proc.getCodigo().toString());
+        indexData.setElementoIdPadre(tramite.getCodigo().toString());
+        indexData.getUos().add(pathUA.convertirUOS());
+        final boolean esProcSerInterno = contienePOInterno(proc.getPublicosObjetivo());
+
+        // Iteramos las traducciones
+        final MultilangLiteral titulo = new MultilangLiteral();
+        final MultilangLiteral descripcion = new MultilangLiteral();
+        final MultilangLiteral descripcionPadre = new MultilangLiteral();
+        final MultilangLiteral urls = new MultilangLiteral();
+        final MultilangLiteral urlsPadre = new MultilangLiteral();
+        final StringBuffer textoOptional = new StringBuffer();
+
+        final MultilangLiteral extension = new MultilangLiteral();
+        final List<EnumIdiomas> idiomas = new ArrayList<EnumIdiomas>();
+
+        // Recorremos las traducciones
+
+        final EnumIdiomas enumIdioma = EnumIdiomas.fromString(idioma);
+        if (enumIdioma != null) {
+            //Para saltarse los idiomas sin titulo
+            if (doc.getTitulo().getTraduccion(idioma) == null || doc.getTitulo().getTraduccion(idioma).isEmpty()) {
+                return null;
+            }
+
+            //Anyadimos idioma al enumerado.
+            idiomas.add(enumIdioma);
+
+
+            // materia
+            for (final TipoMateriaSIAGridDTO materia : proc.getMateriasSIA()) {
+                textoOptional.append(" ");
+                textoOptional.append(materia.getCodigo());
+                textoOptional.append(" ");
+                textoOptional.append(materia.getIdentificador());
+                textoOptional.append(" ");
+                textoOptional.append(materia.getDescripcion().getTraduccion(idioma));
+
+            }
+
+            // Servicio Responsable
+            if (proc.getUaResponsable() != null && proc.getUaResponsable().getNombre() != null && proc.getUaResponsable().getNombre().getTraduccion(idioma) != null) {
+                textoOptional.append(" ");
+                textoOptional.append(proc.getUaResponsable().getNombre().getTraduccion(idioma));
+            }
+
+            titulo.addIdioma(enumIdioma, doc.getTitulo().getTraduccion(idioma));
+            descripcion.addIdioma(enumIdioma, ficheroDTO.getFilename());
+            descripcionPadre.addIdioma(enumIdioma, proc.getObjeto().getTraduccion(idioma));
+            extension.addIdioma(enumIdioma, IndexacionUtil.calcularExtensionArchivo(ficheroDTO.getFilename()));
+            indexData.setFileContent(ficheroDTO.getContenido());
+
+            urls.addIdioma(enumIdioma, "/govern/rest/arxiu/" + ficheroDTO.getCodigo());
+
+
+            // Publico objetivo, para extraer el nombre del publico objetivo
+            String nombrePubObjetivo = "persones";
+            String idPublicoObjetivo = "200";
+
+            if (proc.getPublicosObjetivo() != null && !proc.getPublicosObjetivo().isEmpty()) {
+                final TipoPublicoObjetivoEntidadGridDTO publicoObjectivo = proc.getPublicosObjetivo().get(0);
+                nombrePubObjetivo = publicoObjectivo.getIdentificador().toLowerCase();
+                idPublicoObjetivo = publicoObjectivo.getCodigo().toString();
+            }
+            if (esProcSerInterno) {
+                // Si es interno usamos la url especifica para los procedimientos internos
+
+                final String url = getPropiedadPOInternoUrlProc().replace("{idioma}", idioma).replace("{idPublicoObjetivo}", idPublicoObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idProcedimiento}", proc.getCodigo().toString());
+                urls.addIdioma(enumIdioma, url);
+
+            } else {
+                // Si no es interno
+                urls.addIdioma(enumIdioma, "/seucaib/" + idioma + "/" + idPublicoObjetivo + "/" + nombrePubObjetivo + "/tramites/tramite/" + proc.getCodigo());
+            }
+        }
+
+
+        // Seteamos datos multidioma.
+        indexData.setTitulo(titulo);
+        indexData.setDescripcion(descripcion);
+        indexData.setUrl(urls);
+        indexData.setUrlPadre(urlsPadre);
+        indexData.setFechaActualizacion(proc.getFechaActualizacion());
+        indexData.setFechaPublicacion(proc.getFechaPublicacion());
+        indexData.setFechaCaducidad(proc.getFechaCaducidad());
+        indexData.setExtension(extension);
+        MultilangLiteral searchTextOpcional = new MultilangLiteral();
+        searchTextOpcional.addIdioma(EnumIdiomas.fromString(idioma), textoOptional.toString());
+        indexData.setSearchTextOptional(searchTextOpcional);
+
+        indexData.setIdioma(enumIdioma);
+        return indexData;
+    }
+
+    public static IndexFile getDataIndexacion(NormativaDTO norm, DocumentoNormativaDTO doc, DocumentoTraduccion docIdioma, FicheroDTO ficheroDTO, String idioma, List<PathUA> pathUAs) {
+        IndexFile indexData = new IndexFile();
+        indexData.setCategoria(EnumCategoria.ROLSAC_NORMATIVA_DOCUMENTO);
+        indexData.setAplicacionId(EnumAplicacionId.ROLSAC);
+        indexData.setElementoId(doc.getCodigo().toString());
+        indexData.setCategoriaRaiz(EnumCategoria.ROLSAC_NORMATIVA);
+        indexData.setElementoIdRaiz(norm.getCodigo().toString());
+        indexData.setCategoriaPadre(EnumCategoria.ROLSAC_NORMATIVA);
+        indexData.setElementoIdPadre(norm.getCodigo().toString());
+        indexData.setUos(getUos(pathUAs));
+        if (norm.getFechaBoletin() != null) {
+            indexData.setFechaPublicacion(java.util.Date.from(norm.getFechaBoletin().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        }
+        // Iteramos las traducciones
+        final MultilangLiteral titulo = new MultilangLiteral();
+        final MultilangLiteral descripcion = new MultilangLiteral();
+        final MultilangLiteral descripcionPadre = new MultilangLiteral();
+        final MultilangLiteral urls = new MultilangLiteral();
+        final MultilangLiteral urlsPadre = new MultilangLiteral();
+
+        final MultilangLiteral extension = new MultilangLiteral();
+        final List<EnumIdiomas> idiomas = new ArrayList<EnumIdiomas>();
+        String urlCAT = "";
+        if (norm.getUrlBoletin() != null && !norm.getUrlBoletin().getTraduccion("ca").isEmpty()) {
+            urlCAT = norm.getUrlBoletin().getTraduccion("ca");
+        }
+        // Recorremos las traducciones
+
+        final EnumIdiomas enumIdioma = EnumIdiomas.fromString(idioma);
+        if (enumIdioma != null) {
+            //Para saltarse los idiomas sin titulo
+            if (doc.getTitulo().getTraduccion(idioma) == null || doc.getTitulo().getTraduccion(idioma).isEmpty()) {
+                return null;
+            }
+
+            //Anyadimos idioma al enumerado.
+            idiomas.add(enumIdioma);
+
+            // Seteamos los primeros campos multiidiomas: Titulo, Descripción y el search
+            // text.
+            titulo.addIdioma(enumIdioma, doc.getTitulo().getTraduccion(idioma));
+            descripcion.addIdioma(enumIdioma, ficheroDTO.getFilename());
+            descripcionPadre.addIdioma(enumIdioma, norm.getNombre().getTraduccion(idioma));
+            extension.addIdioma(enumIdioma, IndexacionUtil.calcularExtensionArchivo(ficheroDTO.getFilename()));
+            indexData.setFileContent(ficheroDTO.getContenido());
+
+            urls.addIdioma(enumIdioma, "/normativa/archivo.do?id=" + ficheroDTO.getCodigo() + "&lang=" + idioma);
+            if (norm.getUrlBoletin() != null && !norm.getUrlBoletin().getTraduccion(idioma).isEmpty()) {
+                urlsPadre.addIdioma(enumIdioma, norm.getUrlBoletin().getTraduccion(idioma));
+            } else {
+                //En caso de url vacio, cogemos la de catalan.
+                urlsPadre.addIdioma(enumIdioma, urlCAT);
+            }
+        }
+
+
+        // Seteamos datos multidioma.
+        indexData.setTitulo(titulo);
+        indexData.setDescripcion(descripcion);
+        indexData.setUrl(urls);
+        indexData.setUrlPadre(urlsPadre);
+        indexData.setExtension(extension);
+        indexData.setIdioma(enumIdioma);
+        return indexData;
+    }
+
+    private static List<PathUO> getUos(List<PathUA> uas) {
+        List<PathUO> pathUOs = new ArrayList<>();
+        for (PathUA ua : uas) {
+            PathUO uo = new PathUO();
+            uo.setPath(ua.getPath());
+            pathUOs.add(uo);
+        }
+
+        return pathUOs;
     }
 
     public static DataIndexacion getDataIndexacion(ProcedimientoDTO proc, PathUA pathUA) {
@@ -366,8 +776,7 @@ public class CastUtil {
                 }
 
                 // UO
-                if (proc.getUaInstructor() != null
-                        && proc.getUaInstructor().getNombre().getTraduccion(keyIdioma) != null) {
+                if (proc.getUaInstructor() != null && proc.getUaInstructor().getNombre().getTraduccion(keyIdioma) != null) {
                     textoOptional.append(" ");
                     textoOptional.append(proc.getUaInstructor().getNombre().getTraduccion(keyIdioma));
                 }
@@ -388,16 +797,12 @@ public class CastUtil {
                 if (esProcSerInterno) {
                     // Si es interno usamos la url especifica para los procedimientos internos
 
-                    final String url = getPropiedadPOInternoUrlProc()
-                            .replace("{idioma}", keyIdioma).replace("{idPublicoObjetivo}", idPublicoObjetivo)
-                            .replace("{nombrePubObjetivo}", nombrePubObjetivo)
-                            .replace("{idProcedimiento}", proc.getCodigo().toString());
+                    final String url = getPropiedadPOInternoUrlProc().replace("{idioma}", keyIdioma).replace("{idPublicoObjetivo}", idPublicoObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idProcedimiento}", proc.getCodigo().toString());
                     urls.addIdioma(enumIdioma, url);
 
                 } else {
                     // Si no es interno
-                    urls.addIdioma(enumIdioma, "/seucaib/" + keyIdioma + "/" + idPublicoObjetivo + "/"
-                            + nombrePubObjetivo + "/tramites/tramite/" + proc.getCodigo());
+                    urls.addIdioma(enumIdioma, "/seucaib/" + keyIdioma + "/" + idPublicoObjetivo + "/" + nombrePubObjetivo + "/tramites/tramite/" + proc.getCodigo());
                 }
             }
         }
@@ -459,7 +864,7 @@ public class CastUtil {
         return indexData;
     }
 
-    private static boolean contienePOInterno(List<TipoPublicoObjetivoEntidadGridDTO> publicosObjetivo) {
+    public static boolean contienePOInterno(List<TipoPublicoObjetivoEntidadGridDTO> publicosObjetivo) {
         boolean contiene = false;
         if (publicosObjetivo != null) {
             for (TipoPublicoObjetivoEntidadGridDTO tipo : publicosObjetivo) {

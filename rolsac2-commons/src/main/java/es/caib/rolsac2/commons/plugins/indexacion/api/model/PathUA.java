@@ -63,4 +63,9 @@ public class PathUA {
         this.activaBusquedaDescendientes = activaBusquedaDescendientes;
     }
 
+    public PathUO convertirUOS() {
+        PathUO pathUO = new PathUO();
+        pathUO.setPath(this.path);
+        return pathUO;
+    }
 }

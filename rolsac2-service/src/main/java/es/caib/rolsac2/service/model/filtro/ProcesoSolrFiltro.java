@@ -1,9 +1,7 @@
 package es.caib.rolsac2.service.model.filtro;
 
-import es.caib.rolsac2.service.model.orden.ProcesoOrden;
-
 /**
- * ProcesoLog Filtro.
+ * ProcesoSolr Filtro.
  *
  * @author Indra
  */
@@ -31,6 +29,18 @@ public class ProcesoSolrFiltro extends AbstractFiltro {
 
 
     /**
+     * Tipo
+     */
+    private String tipo;
+
+
+    /**
+     * Cod elemento
+     */
+    private Long codElemento;
+
+
+    /**
      * @return the codigo
      */
     public Long getCodigo() {
@@ -45,13 +55,13 @@ public class ProcesoSolrFiltro extends AbstractFiltro {
         this.codigo = codigo;
     }
 
-    /**
-     * Está relleno el código.
-     */
-    public boolean isRellenoCodigo() {
-        return this.getCodigo() != null;
+    public Long getCodElemento() {
+        return codElemento;
     }
 
+    public void setCodElemento(Long codElemento) {
+        this.codElemento = codElemento;
+    }
 
     /**
      * @return the idioma
@@ -69,10 +79,6 @@ public class ProcesoSolrFiltro extends AbstractFiltro {
         this.idioma = idioma;
     }
 
-    @Override
-    public String getDefaultOrder() {
-        return ProcesoOrden.CODIGO.toString();
-    }
 
     public String getTexto() {
         return texto;
@@ -81,4 +87,40 @@ public class ProcesoSolrFiltro extends AbstractFiltro {
     public void setTexto(String texto) {
         this.texto = texto;
     }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+
+    /**
+     * Está relleno el código.
+     */
+    public boolean isRellenoCodigo() {
+        return this.getCodigo() != null;
+    }
+
+    /**
+     * Está relleno el tipo.
+     */
+    public boolean isRellenoTipo() {
+        return this.getTipo() != null && !this.getTipo().isEmpty();
+    }
+
+    /**
+     * Está relleno el tipo.
+     */
+    public boolean isRellenoCodElemento() {
+        return this.getCodElemento() != null;
+    }
+
+    @Override
+    public String getDefaultOrder() {
+        return "codigo";
+    }
+
 }

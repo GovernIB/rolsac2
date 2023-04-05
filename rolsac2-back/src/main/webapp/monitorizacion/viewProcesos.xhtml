@@ -30,13 +30,19 @@ Pàgina amb el llistat de processos automàtics
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form prependId="false">
             <p:remoteCommand name="rc" update="dataTable @form" process="@this"  />
             <p:commandButton value="#{labels['viewProcesos.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewProcesos.buscar}"
                              update="dataTable"/>
             <p:toolbar id="toolbar">
                 <f:facet name="right">
+                    <p:commandButton value="#{labels['dialogProceso.procesadoManual']}"
+                                     id="btnLanzar"
+                                     icon="pi pi-arrow-right"
+                                     action="#{viewProcesos.procesadoManual()}"
+                                     process="@all"
+                                     update="messages" disabled="#{viewProcesos.datoSeleccionado == null}"/>
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewProcesos.nuevoProceso()}"
                                      process="@this">
@@ -78,6 +84,8 @@ Pàgina amb el llistat de processos automàtics
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"
                         global="false"/>
+                <p:ajax event="rowSelect" update="btnLanzar"/>
+
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>

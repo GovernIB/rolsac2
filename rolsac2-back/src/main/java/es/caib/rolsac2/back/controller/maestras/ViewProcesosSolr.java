@@ -3,21 +3,13 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.commons.plugins.indexacion.api.IPluginIndexacion;
-import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
-import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
-import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
-import es.caib.rolsac2.service.facade.ProcesoServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.ProcedimientoSolrDTO;
-import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
+import es.caib.rolsac2.service.facade.*;
+import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.filtro.ProcesoLogFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
-import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -47,13 +39,23 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
     @EJB
     private SystemServiceFacade systemServiceFacade;
 
-    private LazyDataModel<ProcedimientoBaseSolr> lazyModel;
+    @EJB
+    private ProcesoLogServiceFacade procesoLogServiceFacade;
 
-    private ProcedimientoBaseSolr datoSeleccionado;
+    @EJB
+    private ProcesoTimerServiceFacade procesoTimerServiceFacade;
+    private LazyDataModel<IndexacionDTO> lazyModel;
+
+    private LazyDataModel<ProcesoLogGridDTO> lazyModelLogs;
+
+
+    private IndexacionDTO datoSeleccionado;
+
 
     private ProcesoSolrFiltro filtro;
+    private ProcesoLogFiltro filtroLog;
 
-    public LazyDataModel<ProcedimientoBaseSolr> getLazyModel() {
+    public LazyDataModel<IndexacionDTO> getLazyModel() {
         return lazyModel;
     }
 
@@ -63,6 +65,13 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
         LOG.debug("load");
         filtro = new ProcesoSolrFiltro();
         filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        filtroLog = new ProcesoLogFiltro();
+        filtroLog.setIdioma(sessionBean.getLang());
+        filtroLog.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        filtroLog.setOrderBy("fechaInicio");
+        filtroLog.setAscendente(false);
+
         // Generamos una búsqueda
         buscar();
     }
@@ -73,10 +82,10 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
 
 
     public void buscar() {
-        lazyModel = new LazyDataModel<ProcedimientoBaseSolr>() {
+        lazyModel = new LazyDataModel<IndexacionDTO>() {
             @Override
-            public ProcedimientoBaseSolr getRowData(String rowKey) {
-                for (ProcedimientoBaseSolr pers : (List<ProcedimientoBaseSolr>) getWrappedData()) {
+            public IndexacionDTO getRowData(String rowKey) {
+                for (IndexacionDTO pers : (List<IndexacionDTO>) getWrappedData()) {
                     if (pers.getCodigo().toString().equals(rowKey))
                         return pers;
                 }
@@ -84,13 +93,13 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
             }
 
             @Override
-            public Object getRowKey(ProcedimientoBaseSolr pers) {
+            public Object getRowKey(IndexacionDTO pers) {
                 return pers.getCodigo().toString();
             }
 
             @Override
-            public List<ProcedimientoBaseSolr> load(int first, int pageSize, String sortField,
-                                                    SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<IndexacionDTO> load(int first, int pageSize, String sortField,
+                                            SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
@@ -98,12 +107,51 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
                     }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
-                    Pagina<ProcedimientoBaseSolr> pagina = procesoServiceFacade.findSolrByFiltro(filtro);
+                    Pagina<IndexacionDTO> pagina = procesoServiceFacade.findSolrByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 } catch (Exception e) {
                     LOG.error("Error llamando", e);
-                    Pagina<ProcedimientoBaseSolr> pagina = new Pagina(new ArrayList(), 0);
+                    Pagina<IndexacionDTO> pagina = new Pagina(new ArrayList(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
+            }
+
+        };
+
+        lazyModelLogs = new LazyDataModel<ProcesoLogGridDTO>() {
+            @Override
+            public ProcesoLogGridDTO getRowData(String rowKey) {
+                for (ProcesoLogGridDTO pers : (List<ProcesoLogGridDTO>) getWrappedData()) {
+                    if (pers.getCodigo().toString().equals(rowKey))
+                        return pers;
+                }
+                return null;
+            }
+
+            @Override
+            public Object getRowKey(ProcesoLogGridDTO pers) {
+                return pers.getCodigo().toString();
+            }
+
+            @Override
+            public List<ProcesoLogGridDTO> load(int first, int pageSize, String sortField,
+                                                SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+                try {
+                    filtroLog.setIdioma(sessionBean.getLang());
+                    if (sortField != null && !sortField.equals("filtroLog.orderBy") && !sortField.equals("filtro.orderBy")) {
+                        filtroLog.setOrderBy(sortField);
+                    }
+                    filtroLog.setTipo("SOLR_PUNT");
+                    filtroLog.setAscendente(false);
+                    filtroLog.setIdEntidad(sessionBean.getEntidad().getCodigo());
+                    Pagina<ProcesoLogGridDTO> pagina = procesoLogServiceFacade.findByFiltro(filtroLog);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<ProcesoLogGridDTO> pagina = new Pagina(new ArrayList(), 0);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
@@ -121,87 +169,50 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
         UtilJSF.openDialog("dialogMensajeSolr", TypeModoAcceso.CONSULTA, params, true, 645, 520);
     }
 
-    public void indexarProcedimientos() {
-        final List<ProcedimientoBaseSolr> idProcedimientos = procedimientoServiceFacade.obtenerPendientesIndexar(false, null);
-        indexarDatos(idProcedimientos);
+    private void generarIndexacion(String accion) {
+        ListaPropiedades listaPropiedades = new ListaPropiedades();
+        Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
+        listaPropiedades.addPropiedad("accion", accion);
+        procesoTimerServiceFacade.procesadoManual("SOLR_PUNT", listaPropiedades, idEntidad);
+        UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcesos.procesoLanzado"));
     }
 
-    private void indexarDatos(List<ProcedimientoBaseSolr> procedimientos) {
+    public void indexarProcedimientos() {
+        generarIndexacion(Constantes.INDEXAR_SOLR_PROCEDIMIENTOS);
+    }
 
-        IPluginIndexacion plugin = (IPluginIndexacion) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.INDEXACION, UtilJSF.getSessionBean().getEntidad().getCodigo());
+    public void indexarNormativas() {
+        generarIndexacion(Constantes.INDEXAR_SOLR_NORMATIVAS);
+    }
 
-        if (plugin == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, "No está especificado el plugin de indexación");
-            return;
-        }
+    public void indexarServicios() {
+        generarIndexacion(Constantes.INDEXAR_SOLR_SERVICIOS);
+    }
 
-        if (procedimientos != null) {
-            for (ProcedimientoBaseSolr proc : procedimientos) {
-                Long codigoWF = procedimientoServiceFacade.getCodigoPublicado(proc.getCodigo());
-                boolean publicado = codigoWF != null;
-                proc.setFechaIndexacion(new Date());
-                if (publicado) {
-                    try {
-                        boolean todoCorrecto = true;
-                        DataIndexacion dato;
-                        //Mandar a indexar
-                        proc.setMantenerIndexado(false);
-                        if (proc.esTipoProcedimiento()) {
-                            ProcedimientoSolrDTO procedimiento = procedimientoServiceFacade.findDataIndexacionProcById(codigoWF);
-                            ResultadoAccion resultado = plugin.indexarContenido(procedimiento.getDataIndexacion());
-                            if (resultado != null && resultado.isCorrecto()) {
-                                if (procedimiento.getProcedimientoDTO().getTramites() != null) {
-                                    for (ProcedimientoTramiteDTO tramite : procedimiento.getProcedimientoDTO().getTramites()) {
-                                        dato = procedimientoServiceFacade.findDataIndexacionTram(tramite, procedimiento.getProcedimientoDTO(), procedimiento.getPathUA());
-                                        ResultadoAccion resultadoTramite = plugin.indexarContenido(dato);
-                                        if (resultadoTramite != null && !resultadoTramite.isCorrecto()) {
-                                            proc.setMensajeError(resultadoTramite.getMensaje());
-                                            proc.setMantenerIndexado(false);
-                                            todoCorrecto = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                            } else {
-                                proc.setMensajeError(resultado.getMensaje());
-                                proc.setMantenerIndexado(false);
-                                todoCorrecto = false;
-                            }
-                        } else {
-                            ProcedimientoSolrDTO servicio = procedimientoServiceFacade.findDataIndexacionServById(codigoWF);
-                            ResultadoAccion resultado = plugin.indexarContenido(servicio.getDataIndexacion());
-                            if (resultado != null && resultado.isCorrecto()) {
-                                proc.setMensajeError(resultado.getMensaje());
-                                proc.setMantenerIndexado(false);
-                                todoCorrecto = true;
-                            }
-                        }
-                        plugin.commit();
 
-                        if (todoCorrecto) {
-                            proc.setMensajeError("El procediment s'ha indexat correctament");
-                            proc.setMantenerIndexado(false);
-                        } else {
-                            proc.setMantenerIndexado(true);
-                        }
-                        procedimientoServiceFacade.actualizarSolr(proc);
-                    } catch (Exception e) {
-                        proc.setMensajeError(e.getMessage());
-                        proc.setMantenerIndexado(true);
-                    }
-                    procedimientoServiceFacade.actualizarSolr(proc);
-                } else {
-                    proc.setMensajeError("El procediment no està publicat");
-                    proc.setMantenerIndexado(false);
-                    procedimientoServiceFacade.actualizarSolr(proc);
-                }
-            }
-        }
+    public void indexarUAs() {
+        generarIndexacion(Constantes.INDEXAR_SOLR_UAS);
+    }
+
+
+    public void desindexarTodo() {
+        generarIndexacion(Constantes.INDEXAR_SOLR_BORRAR_TODO);
+    }
+
+    public void desindexarCaducadas() {
+        generarIndexacion(Constantes.INDEXAR_SOLR_BORRAR_CADUCADAS);
     }
 
     public void indexarPendientes() {
-        final List<ProcedimientoBaseSolr> idProcedimientos = procedimientoServiceFacade.obtenerPendientesIndexar(true, null);
-        indexarDatos(idProcedimientos);
+
+        ListaPropiedades listaPropiedades = new ListaPropiedades();
+        Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
+        listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SOLR_PENDIENTES);
+        procesoTimerServiceFacade.procesadoManual("SOLR_PUNT", listaPropiedades, idEntidad);
+        UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcesos.procesoLanzado"));
+
+        //final List<ProcedimientoBaseSolr> idProcedimientos = procedimientoServiceFacade.obtenerPendientesIndexar(true, null);
+        //indexarDatos(idProcedimientos);
     }
 
 
@@ -222,11 +233,11 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
         }
     }
 
-    public ProcedimientoBaseSolr getDatoSeleccionado() {
+    public IndexacionDTO getDatoSeleccionado() {
         return datoSeleccionado;
     }
 
-    public void setDatoSeleccionado(ProcedimientoBaseSolr datoSeleccionado) {
+    public void setDatoSeleccionado(IndexacionDTO datoSeleccionado) {
         this.datoSeleccionado = datoSeleccionado;
     }
 
@@ -251,4 +262,23 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
         return "";
     }
 
+    public void setLazyModel(LazyDataModel<IndexacionDTO> lazyModel) {
+        this.lazyModel = lazyModel;
+    }
+
+    public LazyDataModel<ProcesoLogGridDTO> getLazyModelLogs() {
+        return lazyModelLogs;
+    }
+
+    public void setLazyModelLogs(LazyDataModel<ProcesoLogGridDTO> lazyModelLogs) {
+        this.lazyModelLogs = lazyModelLogs;
+    }
+
+    public ProcesoLogFiltro getFiltroLog() {
+        return filtroLog;
+    }
+
+    public void setFiltroLog(ProcesoLogFiltro filtroLog) {
+        this.filtroLog = filtroLog;
+    }
 }

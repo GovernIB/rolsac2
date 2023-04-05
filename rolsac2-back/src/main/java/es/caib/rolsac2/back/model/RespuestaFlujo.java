@@ -9,9 +9,16 @@ import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
  */
 public class RespuestaFlujo {
 
+    private String codigoProcedimiento;
     public String mensajes;
 
     public TypeProcedimientoEstado estadoDestino;
+
+    /**
+     * Indican si se han leido todos los mensajes por parte del gestor o supervisor
+     **/
+    private boolean pendienteMensajesSupervisor;
+    private boolean pendienteMensajesGestor;
 
     public String getMensajes() {
         return mensajes;
@@ -27,5 +34,29 @@ public class RespuestaFlujo {
 
     public void setEstadoDestino(TypeProcedimientoEstado estadoDestino) {
         this.estadoDestino = estadoDestino;
+    }
+
+    public boolean isPendienteMensajesSupervisor() {
+        return pendienteMensajesSupervisor;
+    }
+
+    public void setPendienteMensajesSupervisor(boolean pendienteMensajesSupervisor) {
+        this.pendienteMensajesSupervisor = pendienteMensajesSupervisor;
+    }
+
+    public boolean isPendienteMensajesGestor() {
+        return pendienteMensajesGestor;
+    }
+
+    public void setPendienteMensajesGestor(boolean pendienteMensajesGestor) {
+        this.pendienteMensajesGestor = pendienteMensajesGestor;
+    }
+
+    public String getCodigoProcedimiento() {
+        return codigoProcedimiento;
+    }
+
+    public void setCodigoProcedimiento(String codigoProcedimiento) {
+        this.codigoProcedimiento = codigoProcedimiento;
     }
 }

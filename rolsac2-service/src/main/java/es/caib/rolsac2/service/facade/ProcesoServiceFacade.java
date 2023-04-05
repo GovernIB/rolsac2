@@ -1,12 +1,10 @@
 package es.caib.rolsac2.service.facade;
 
 
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.ProcesoDTO;
-import es.caib.rolsac2.service.model.ProcesoGridDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
+import es.caib.rolsac2.service.model.filtro.ProcesoSIAFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
-import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
 
 import java.util.List;
 
@@ -56,6 +54,7 @@ public interface ProcesoServiceFacade {
 
     Pagina<ProcesoGridDTO> findByFiltro(ProcesoFiltro filtro);
 
-    Pagina<ProcedimientoBaseSolr> findSolrByFiltro(ProcesoSolrFiltro filtro);
+    Pagina<IndexacionDTO> findSolrByFiltro(ProcesoSolrFiltro filtro);
 
+    Pagina<IndexacionSIADTO> findSIAByFiltro(ProcesoSIAFiltro filtro);
 }

@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.model.ProcesoLogGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoLogFiltro;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,5 +47,7 @@ public interface ProcesoLogServiceFacade {
   List<ProcesoGridDTO> listarProceso(ProcesoFiltro filtro);
 
   Pagina<ProcesoLogGridDTO> findByFiltro(ProcesoLogFiltro filtro);
+
+  Date obtenerFechaUltimaEjecucionCorrecta(final String idProceso, final Long idEntidad);
 
 }

@@ -1,14 +1,12 @@
 package es.caib.rolsac2.ejb.facade;
 
+import es.caib.rolsac2.ejb.facade.procesos.ProcesoProgramadoFacade;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.repository.ProcesoLogRepository;
 import es.caib.rolsac2.persistence.repository.ProcesoRepository;
 import es.caib.rolsac2.service.facade.ProcesoLogServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.ProcesoGridDTO;
-import es.caib.rolsac2.service.model.ProcesoLogDTO;
-import es.caib.rolsac2.service.model.ProcesoLogGridDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoLogFiltro;
 
@@ -24,6 +22,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -102,4 +101,13 @@ public class ProcesoLogServiceFacadeBean implements ProcesoLogServiceFacade {
       return new Pagina<>(items, total);
     }
   }
+
+  @Override
+  @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+          TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+  public Date obtenerFechaUltimaEjecucionCorrecta(final String idProceso, final Long idEntidad) {
+    ProcesoDTO proceso = procesoRepository.obtenerProcesoPorIdentificador(idProceso, idEntidad);
+    return procesoLogRepository.obtenerUltimaEjecucionCorrecta(proceso.getCodigo());
+  }
+
 }

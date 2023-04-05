@@ -8,8 +8,10 @@ import java.util.Date;
 /**
  * The type Proceso log grid dto.
  */
-public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
-    /** Serial version UID. **/
+public class ProcesoLogGridDTO extends ProcesoLogBaseDTO {
+    /**
+     * Serial version UID.
+     **/
     private static final long serialVersionUID = 1L;
 
     /**
@@ -36,7 +38,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     private TypeEstadoProceso estadoProceso; // ESTADO PROCESO: INICIADO (I) / FINALIZADO OK (S) / FINALIZADO ERROR (N)
 
     /**
-     *Fecha de inicio
+     * Fecha de inicio
      */
     private Date fechaInicio;
 
@@ -69,16 +71,27 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Obtiene lista propiedades.
      *
-     * @return  lista propiedades
+     * @return lista propiedades
      */
     public ListaPropiedades getListaPropiedades() {
         return listaPropiedades;
     }
 
+    public String getListaPropiedadesPlano() {
+        if (this.listaPropiedades == null || this.listaPropiedades.getPropiedades() == null || this.listaPropiedades.getPropiedades().isEmpty()) {
+            return "";
+        }
+        StringBuilder resultado = new StringBuilder();
+        for (String clave : this.listaPropiedades.getPropiedades().keySet()) {
+            resultado.append(clave + ":" + this.listaPropiedades.getPropiedad(clave) + "\n");
+        }
+        return resultado.toString();
+    }
+
     /**
      * Establece lista propiedades.
      *
-     * @param listaPropiedades  lista propiedades
+     * @param listaPropiedades lista propiedades
      */
     public void setListaPropiedades(final ListaPropiedades listaPropiedades) {
         this.listaPropiedades = listaPropiedades;
@@ -87,7 +100,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Obtiene icon proceso.
      *
-     * @return  icon proceso
+     * @return icon proceso
      */
     public String getIconProceso() {
         return iconProceso;
@@ -96,7 +109,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Establece icon proceso.
      *
-     * @param iconProceso  icon proceso
+     * @param iconProceso icon proceso
      */
     public void setIconProceso(final String iconProceso) {
         this.iconProceso = iconProceso;
@@ -105,7 +118,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Obtiene estado proceso.
      *
-     * @return  estado proceso
+     * @return estado proceso
      */
     public TypeEstadoProceso getEstadoProceso() {
         return estadoProceso;
@@ -114,7 +127,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Establece estado proceso.
      *
-     * @param estadoProceso  estado proceso
+     * @param estadoProceso estado proceso
      */
     public void setEstadoProceso(final TypeEstadoProceso estadoProceso) {
         this.estadoProceso = estadoProceso;
@@ -123,7 +136,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Obtiene proceso.
      *
-     * @return  proceso
+     * @return proceso
      */
     public ProcesoDTO getProceso() {
         return proceso;
@@ -132,7 +145,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Establece proceso.
      *
-     * @param proceso  proceso
+     * @param proceso proceso
      */
     public void setProceso(final ProcesoDTO proceso) {
         this.proceso = proceso;
@@ -142,7 +155,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Obtiene fecha inicio.
      *
-     * @return  fecha inicio
+     * @return fecha inicio
      */
     public Date getFechaInicio() {
         return fechaInicio;
@@ -151,7 +164,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Establece fecha inicio.
      *
-     * @param fechaInicio  fecha inicio
+     * @param fechaInicio fecha inicio
      */
     public void setFechaInicio(final Date fechaInicio) {
         this.fechaInicio = fechaInicio;
@@ -160,7 +173,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Obtiene fecha fin.
      *
-     * @return  fecha fin
+     * @return fecha fin
      */
     public Date getFechaFin() {
         return fechaFin;
@@ -169,7 +182,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Establece fecha fin.
      *
-     * @param fechaFin  fecha fin
+     * @param fechaFin fecha fin
      */
     public void setFechaFin(final Date fechaFin) {
         this.fechaFin = fechaFin;
@@ -178,7 +191,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Obtiene mensaje error.
      *
-     * @return  mensaje error
+     * @return mensaje error
      */
     public String getMensajeError() {
         return mensajeError;
@@ -187,7 +200,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Establece mensaje error.
      *
-     * @param mensajeError  mensaje error
+     * @param mensajeError mensaje error
      */
     public void setMensajeError(final String mensajeError) {
         this.mensajeError = mensajeError;
@@ -196,7 +209,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Obtiene estado texto.
      *
-     * @return  estado texto
+     * @return estado texto
      */
     public String getEstadoTexto() {
         return estadoTexto;
@@ -205,7 +218,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Establece estado texto.
      *
-     * @param estadoTexto  estado texto
+     * @param estadoTexto estado texto
      */
     public void setEstadoTexto(String estadoTexto) {
         this.estadoTexto = estadoTexto;
@@ -214,7 +227,7 @@ public class ProcesoLogGridDTO extends ProcesoLogBaseDTO{
     /**
      * Castea un object[] en ProcesoGrid
      *
-     * @param resultado  resultado
+     * @param resultado resultado
      * @return proceso log grid dto
      */
     public static ProcesoLogGridDTO cast(final Object[] resultado) {

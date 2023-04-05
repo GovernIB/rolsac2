@@ -13,17 +13,19 @@ import java.util.List;
 
 public interface ProcesoLogRepository extends CrudRepository<JProcesoLog, Long> {
 
-  Long auditarInicioProceso(String idProceso);
+  Long auditarInicioProceso(String idProceso, Long idEntidad);
 
   void auditarFinProceso(String idProceso, Long instanciaProceso, ResultadoProcesoProgramado resultadoProceso);
 
-  Date obtenerUltimaEjecucion(String idProceso);
+  Date obtenerUltimaEjecucion(Long idProceso);
 
   Integer listarTotal(final ProcesoLogFiltro filtro);
 
   List<ProcesoLogGridDTO> listar(final ProcesoLogFiltro filtro);
 
   ProcesoLogDTO obtenerProcesoLogPorCodigo(final Long codigo);
+
+  Date obtenerUltimaEjecucionCorrecta(final Long idProceso);
 
   List<ProcesoLogGridDTO> listar(final String idioma, final String tipo);
 

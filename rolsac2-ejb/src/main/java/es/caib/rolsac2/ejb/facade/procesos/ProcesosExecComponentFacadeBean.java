@@ -70,15 +70,16 @@ public class ProcesosExecComponentFacadeBean implements ProcesosExecComponentFac
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<String> calcularProcesosEjecucion() {
+    public List<String> calcularProcesosEjecucion(Long idEntidad) {
         final ProcesoFiltro filtro = new ProcesoFiltro();
+        filtro.setIdEntidad(idEntidad);
         final List<ProcesoGridDTO> procesos = procesoRepository.listar(filtro);
 
 
         final List<String> result = new ArrayList<String>();
         for (final ProcesoGridDTO p : procesos) {
             if (p.getActivo() && !p.getCron().isBlank()) {
-                Date fechaUltimaEjecucion = procesoLogRepository.obtenerUltimaEjecucion(p.getIdentificadorProceso());
+                Date fechaUltimaEjecucion = procesoLogRepository.obtenerUltimaEjecucion(p.getCodigo());
                 if (fechaUltimaEjecucion == null) {
                     fechaUltimaEjecucion = fechaIniciacionProcesos;
                 }
@@ -97,9 +98,9 @@ public class ProcesosExecComponentFacadeBean implements ProcesosExecComponentFac
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<Propiedad> obtenerParametrosProceso(final String idProceso) {
+    public List<Propiedad> obtenerParametrosProceso(final String idProceso, final Long idEntidad) {
         List<Propiedad> res = null;
-        final ProcesoDTO proceso = procesoRepository.obtenerProcesoPorIdentificador(idProceso);
+        final ProcesoDTO proceso = procesoRepository.obtenerProcesoPorIdentificador(idProceso, idEntidad);
         if (proceso == null) {
             throw new ProcesoException("No existe proceso " + idProceso);
         }
@@ -107,20 +108,11 @@ public class ProcesosExecComponentFacadeBean implements ProcesosExecComponentFac
         return res;
     }
 
-
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long obtenerEntidad(String idProceso) {
-        final ProcesoDTO proceso = procesoRepository.obtenerProcesoPorIdentificador(idProceso);
-        return proceso.getEntidad().getCodigo();
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long auditarInicioProceso(final String idProceso) {
-        return procesoLogRepository.auditarInicioProceso(idProceso);
+    public Long auditarInicioProceso(final String idProceso, final Long idEntidad) {
+        return procesoLogRepository.auditarInicioProceso(idProceso, idEntidad);
     }
 
     @Override

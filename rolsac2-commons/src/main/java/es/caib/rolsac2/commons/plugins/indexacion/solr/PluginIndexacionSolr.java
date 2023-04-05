@@ -2,6 +2,7 @@ package es.caib.rolsac2.commons.plugins.indexacion.solr;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.IPluginIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.IPluginIndexacionExcepcion;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.*;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumAplicacionId;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumCategoria;
@@ -11,7 +12,6 @@ import es.caib.solr.api.SolrIndexer;
 import es.caib.solr.api.SolrSearcher;
 import es.caib.solr.api.exception.ExcepcionSolrApi;
 import es.caib.solr.api.model.FilterSearch;
-import es.caib.solr.api.model.IndexData;
 import es.caib.solr.api.model.MultilangLiteral;
 import es.caib.solr.api.model.PaginationSearch;
 import es.caib.solr.api.model.PathUO;
@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Plugin de indexacion SOLR / Elastic
+ */
 public class PluginIndexacionSolr extends AbstractPluginProperties implements IPluginIndexacion {
 
     private static final Logger LOG = LoggerFactory.getLogger(PluginIndexacionSolr.class);
@@ -44,52 +47,6 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         super(prefijoPropiedades, properties);
     }
 
-    public IndexData convertirDato(DataIndexacion dataIndexacion) {
-        IndexData id = new IndexData();
-        id.setElementoId(dataIndexacion.getElementoId());
-        id.setAplicacionId(getAplicacionId(dataIndexacion.getAplicacionId()));
-        id.setCategoria(getCategoria(dataIndexacion.getCategoria()));
-        id.setTitulo(getMultiLangLiteral(dataIndexacion.getTitulo()));
-
-        id.setSearchText(getMultiLangLiteral(dataIndexacion.getSearchText()));
-        id.setSearchTextOptional(getMultiLangLiteral(dataIndexacion.getSearchTextOptional()));
-        id.setIdiomas(getIdiomas(dataIndexacion.getIdiomas()));
-        id.setDescripcion(getMultiLangLiteral(dataIndexacion.getDescripcion()));
-        id.setUrl(getMultiLangLiteral(dataIndexacion.getUrl()));
-        id.setCategoriaPadre(getCategoria(dataIndexacion.getCategoriaPadre()));
-        id.setDescripcionPadre(getMultiLangLiteral(dataIndexacion.getDescripcionPadre()));
-        id.setUrlPadre(getMultiLangLiteral(dataIndexacion.getUrlPadre()));
-        id.setFechaActualizacion(dataIndexacion.getFechaActualizacion());
-        id.setFechaPublicacion(dataIndexacion.getFechaPublicacion());
-        id.setFechaCaducidad(dataIndexacion.getFechaCaducidad());
-        id.setFechaPlazoIni(dataIndexacion.getFechaPlazoIni());
-        id.setFechaPlazoFin(dataIndexacion.getFechaPlazoFin());
-        id.setUrlFoto(dataIndexacion.getUrlFoto());
-        id.setExtension(getMultiLangLiteral(dataIndexacion.getExtension()));
-        id.setUos(getUos(dataIndexacion.getUos()));
-        id.setFamiliaId(dataIndexacion.getFamiliaId());
-        id.setMateriaId(dataIndexacion.getMateriaId());
-        id.setPublicoId(dataIndexacion.getPublicoId());
-        id.setTelematico(dataIndexacion.getTelematico());
-        id.setElementoIdRaiz(dataIndexacion.getElementoIdRaiz());
-        id.setInterno(dataIndexacion.isInterno());
-        id.setElementoIdPadre(dataIndexacion.getElementoIdPadre());
-        id.setCategoriaRaiz(getCategoria(dataIndexacion.getCategoriaRaiz()));
-        id.setScore(dataIndexacion.getScore());
-
-        return id;
-    }
-
-    private List<PathUO> getUos(List<PathUA> uos) {
-        List<PathUO> pathUOs = new ArrayList<>();
-        for (PathUA ua : uos) {
-            PathUO uo = new PathUO();
-            uo.setPath(ua.getPath());
-            pathUOs.add(uo);
-        }
-
-        return pathUOs;
-    }
 
     private List<PathUA> getUas(List<PathUO> uos) {
         List<PathUA> pathUOs = new ArrayList<>();
@@ -120,8 +77,23 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         ResultadoAccion resultadoAccion = null;
         final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
                 urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+
+
+        //Es el unico momento para convertir el html de la descripcion en texto plano
+        if (dataIndexacion.getCategoria() == EnumCategoria.ROLSAC_UNIDAD_ADMINISTRATIVA && dataIndexacion.getDescripcionHTML() != null) {
+            LiteralMultilang descripcion = new LiteralMultilang();
+            for (String idioma : dataIndexacion.getDescripcionHTML().getIdiomas()) {
+                if (dataIndexacion.getDescripcionHTML().get(EnumIdiomas.fromString(idioma)) != null) {
+                    String textoHTML = dataIndexacion.getDescripcionHTML().get(EnumIdiomas.fromString(idioma));
+                    String texto = solrIndexer.htmlToText(textoHTML);
+                    descripcion.addIdioma(EnumIdiomas.fromString(idioma), texto);
+                }
+            }
+            dataIndexacion.setDescripcion(descripcion);
+        }
+
         try {
-            solrIndexer.indexarContenido(convertirDato(dataIndexacion));
+            solrIndexer.indexarContenido(dataIndexacion.cast());
             resultadoAccion = new ResultadoAccion(true, "");
         } catch (Exception e) {
             LOG.error("Error indexando contenido", e);
@@ -175,47 +147,269 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     }
 
     @Override
-    public ResultadoAccion indexarFichero(FicheroIndexacion ficheroIndexacion) throws IPluginIndexacionExcepcion {
-        return getResultadoCorrecto();
+    public ResultadoAccion indexarFichero(IndexFile ficheroIndexacion) throws IPluginIndexacionExcepcion {
+        String urlSolr = getPropiedadSolrUrl();
+        String index = "caib";
+        String userSolr = getPropiedadSolrUsr();
+        String passSolr = getPropiedadSolrPwd();
+
+        String urlElastic = getPropiedadElasticUrl();
+        String userElastic = getPropiedadElasticUsr();
+        String passElastic = getPropiedadElasticPwd();
+
+        boolean solrActivo = isPropiedadSolrActivo();
+        boolean elasticActivo = isPropiedadElasticActivo();
+
+        ResultadoAccion resultadoAccion = null;
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
+                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        try {
+            solrIndexer.indexarFichero(ficheroIndexacion.cast());
+            resultadoAccion = new ResultadoAccion(true, "");
+        } catch (Exception e) {
+            LOG.error("Error indexando contenido", e);
+            //throw new IPluginIndexacionExcepcion(e);
+            if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+            } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+            } else {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+            }
+        }
+
+        return resultadoAccion;
     }
 
-    private ResultadoAccion getResultadoCorrecto() {
-        return null;
-    }
 
     @Override
     public ResultadoAccion desindexarCaducados() throws IPluginIndexacionExcepcion {
-        return getResultadoCorrecto();
+        String urlSolr = getPropiedadSolrUrl();
+        String index = "caib";
+        String userSolr = getPropiedadSolrUsr();
+        String passSolr = getPropiedadSolrPwd();
+
+        String urlElastic = getPropiedadElasticUrl();
+        String userElastic = getPropiedadElasticUsr();
+        String passElastic = getPropiedadElasticPwd();
+
+        boolean solrActivo = isPropiedadSolrActivo();
+        boolean elasticActivo = isPropiedadElasticActivo();
+
+        ResultadoAccion resultadoAccion = null;
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
+                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        try {
+            solrIndexer.desindexarCaducados();
+            resultadoAccion = new ResultadoAccion(true, "");
+        } catch (Exception e) {
+            LOG.error("Error indexando contenido", e);
+            //throw new IPluginIndexacionExcepcion(e);
+            if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+            } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+            } else {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+            }
+        }
+
+        return resultadoAccion;
     }
 
     @Override
     public ResultadoAccion desindexar(String id, EnumCategoria categoria) throws IPluginIndexacionExcepcion {
-        return getResultadoCorrecto();
+        String urlSolr = getPropiedadSolrUrl();
+        String index = "caib";
+        String userSolr = getPropiedadSolrUsr();
+        String passSolr = getPropiedadSolrPwd();
+
+        String urlElastic = getPropiedadElasticUrl();
+        String userElastic = getPropiedadElasticUsr();
+        String passElastic = getPropiedadElasticPwd();
+
+        boolean solrActivo = isPropiedadSolrActivo();
+        boolean elasticActivo = isPropiedadElasticActivo();
+
+        ResultadoAccion resultadoAccion = null;
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
+                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        try {
+            solrIndexer.desindexar(id, es.caib.solr.api.model.types.EnumCategoria.fromString(categoria.toString()));
+            resultadoAccion = new ResultadoAccion(true, "");
+        } catch (Exception e) {
+            LOG.error("Error indexando contenido", e);
+            //throw new IPluginIndexacionExcepcion(e);
+            if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+            } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+            } else {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+            }
+        }
+
+        return resultadoAccion;
     }
 
     @Override
     public ResultadoAccion desindexarAplicacion() throws IPluginIndexacionExcepcion {
-        return getResultadoCorrecto();
+        String urlSolr = getPropiedadSolrUrl();
+        String index = "caib";
+        String userSolr = getPropiedadSolrUsr();
+        String passSolr = getPropiedadSolrPwd();
+
+        String urlElastic = getPropiedadElasticUrl();
+        String userElastic = getPropiedadElasticUsr();
+        String passElastic = getPropiedadElasticPwd();
+
+        boolean solrActivo = isPropiedadSolrActivo();
+        boolean elasticActivo = isPropiedadElasticActivo();
+
+        ResultadoAccion resultadoAccion = null;
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
+                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        try {
+            solrIndexer.desindexarAplicacion();
+            resultadoAccion = new ResultadoAccion(true, "");
+        } catch (Exception e) {
+            LOG.error("Error indexando contenido", e);
+            //throw new IPluginIndexacionExcepcion(e);
+            if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+            } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+            } else {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+            }
+        }
+
+        return resultadoAccion;
     }
 
     @Override
     public ResultadoAccion desindexarCategoria(EnumCategoria categoria) throws IPluginIndexacionExcepcion {
-        return getResultadoCorrecto();
+        String urlSolr = getPropiedadSolrUrl();
+        String index = "caib";
+        String userSolr = getPropiedadSolrUsr();
+        String passSolr = getPropiedadSolrPwd();
+
+        String urlElastic = getPropiedadElasticUrl();
+        String userElastic = getPropiedadElasticUsr();
+        String passElastic = getPropiedadElasticPwd();
+
+        boolean solrActivo = isPropiedadSolrActivo();
+        boolean elasticActivo = isPropiedadElasticActivo();
+
+        ResultadoAccion resultadoAccion = null;
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
+                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        try {
+            solrIndexer.desindexarCategoria(es.caib.solr.api.model.types.EnumCategoria.fromString(categoria.toString()));
+            resultadoAccion = new ResultadoAccion(true, "");
+        } catch (Exception e) {
+            LOG.error("Error indexando contenido", e);
+            //throw new IPluginIndexacionExcepcion(e);
+            if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+            } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+            } else {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+            }
+        }
+
+        return resultadoAccion;
     }
 
     @Override
     public ResultadoAccion desindexarRaiz(String idRaiz, EnumCategoria categoriaRaiz) throws IPluginIndexacionExcepcion {
-        return getResultadoCorrecto();
+        String urlSolr = getPropiedadSolrUrl();
+        String index = "caib";
+        String userSolr = getPropiedadSolrUsr();
+        String passSolr = getPropiedadSolrPwd();
+
+        String urlElastic = getPropiedadElasticUrl();
+        String userElastic = getPropiedadElasticUsr();
+        String passElastic = getPropiedadElasticPwd();
+
+        boolean solrActivo = isPropiedadSolrActivo();
+        boolean elasticActivo = isPropiedadElasticActivo();
+
+        ResultadoAccion resultadoAccion = null;
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
+                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        try {
+            solrIndexer.desindexarRaiz(idRaiz, es.caib.solr.api.model.types.EnumCategoria.fromString(categoriaRaiz.toString()));
+            resultadoAccion = new ResultadoAccion(true, "");
+        } catch (Exception e) {
+            LOG.error("Error indexando contenido", e);
+            //throw new IPluginIndexacionExcepcion(e);
+            if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+            } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+            } else {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+            }
+        }
+
+        return resultadoAccion;
     }
 
     @Override
     public ResultadoAccion commit() throws IPluginIndexacionExcepcion {
-        return getResultadoCorrecto();
+        String urlSolr = getPropiedadSolrUrl();
+        String index = "caib";
+        String userSolr = getPropiedadSolrUsr();
+        String passSolr = getPropiedadSolrPwd();
+
+        String urlElastic = getPropiedadElasticUrl();
+        String userElastic = getPropiedadElasticUsr();
+        String passElastic = getPropiedadElasticPwd();
+
+        boolean solrActivo = isPropiedadSolrActivo();
+        boolean elasticActivo = isPropiedadElasticActivo();
+
+        ResultadoAccion resultadoAccion = null;
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
+                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        try {
+            solrIndexer.commit();
+            resultadoAccion = new ResultadoAccion(true, "");
+        } catch (Exception e) {
+            LOG.error("Error indexando contenido", e);
+            //throw new IPluginIndexacionExcepcion(e);
+            if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+            } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+            } else {
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+            }
+        }
+
+        return resultadoAccion;
     }
 
     @Override
     public String htmlToText(String html) {
-        return html;
+        String urlSolr = getPropiedadSolrUrl();
+        String index = "caib";
+        String userSolr = getPropiedadSolrUsr();
+        String passSolr = getPropiedadSolrPwd();
+
+        String urlElastic = getPropiedadElasticUrl();
+        String userElastic = getPropiedadElasticUsr();
+        String passElastic = getPropiedadElasticPwd();
+
+        boolean solrActivo = isPropiedadSolrActivo();
+        boolean elasticActivo = isPropiedadElasticActivo();
+
+        ResultadoAccion resultadoAccion = null;
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
+                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        return solrIndexer.htmlToText(html);
     }
 
     @Override
@@ -328,26 +522,6 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     }
 
 
-    private List<es.caib.solr.api.model.types.EnumIdiomas> getIdiomas(List<EnumIdiomas> idiomas) {
-        List<es.caib.solr.api.model.types.EnumIdiomas> retorno = new ArrayList<>();
-        for (EnumIdiomas idioma : idiomas) {
-            retorno.add(es.caib.solr.api.model.types.EnumIdiomas.fromString(idioma.toString()));
-        }
-        return retorno;
-    }
-
-    private MultilangLiteral getMultiLangLiteral(LiteralMultilang valor) {
-        if (valor == null) {
-            return null;
-        }
-        MultilangLiteral literal = new MultilangLiteral();
-        List<String> idiomas = valor.getIdiomas();
-        for (String idioma : idiomas) {
-            literal.addIdioma(es.caib.solr.api.model.types.EnumIdiomas.fromString(idioma), valor.get(EnumIdiomas.fromString(idioma)));
-        }
-        return literal;
-    }
-
     private LiteralMultilang getLiteralMultiLang(MultilangLiteral valor) {
         if (valor == null) {
             return null;
@@ -360,16 +534,8 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         return literal;
     }
 
-    private es.caib.solr.api.model.types.EnumCategoria getCategoria(EnumCategoria categoria) {
-        return categoria == null ? null : es.caib.solr.api.model.types.EnumCategoria.fromString(categoria.toString());
-    }
-
     private EnumCategoria getCategoria(es.caib.solr.api.model.types.EnumCategoria categoria) {
         return categoria == null ? null : EnumCategoria.fromString(categoria.toString());
-    }
-
-    private es.caib.solr.api.model.types.EnumAplicacionId getAplicacionId(EnumAplicacionId aplicacionId) {
-        return aplicacionId == null ? null : es.caib.solr.api.model.types.EnumAplicacionId.fromString(aplicacionId.toString());
     }
 
     private EnumAplicacionId getAplicacionId(es.caib.solr.api.model.types.EnumAplicacionId aplicacionId) {
