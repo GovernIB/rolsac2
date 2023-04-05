@@ -26,7 +26,7 @@ public class PluginSIAMock extends AbstractPluginProperties implements IPluginSI
     }
 
     @Override
-    public ResultadoSIA enviarSIA(EnvioSIA envioSIA) throws IPluginSIAException {
+    public ResultadoSIA enviarSIA(EnvioSIA envioSIA, final boolean borrado, final boolean noactivo) throws IPluginSIAException {
         ResultadoSIA resultado = new ResultadoSIA();
         resultado.setResultado(ResultadoSIA.RESULTADO_OK);
         resultado.setCodSIA("SIA1");

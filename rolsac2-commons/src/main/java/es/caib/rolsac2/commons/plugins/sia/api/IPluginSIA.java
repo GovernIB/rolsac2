@@ -7,9 +7,11 @@ import org.fundaciobit.pluginsib.core.IPlugin;
 /**
  * Plugin integración SIA.
  */
-public interface IPluginSIA extends IPlugin{
+public interface IPluginSIA extends IPlugin {
 
-    /** Prefijo. */
+    /**
+     * Prefijo.
+     */
     public static final String TRADUCCION_BASE_PROPERTY = IPLUGINSIB_BASE_PROPERTIES + "sia.";
 
     /**
@@ -18,5 +20,5 @@ public interface IPluginSIA extends IPlugin{
      * @param envioSIA envio
      * @return resultado
      */
-    ResultadoSIA enviarSIA(final EnvioSIA envioSIA) throws IPluginSIAException;
+    ResultadoSIA enviarSIA(final EnvioSIA envioSIA, final boolean borrado, final boolean noactivo) throws IPluginSIAException;
 }

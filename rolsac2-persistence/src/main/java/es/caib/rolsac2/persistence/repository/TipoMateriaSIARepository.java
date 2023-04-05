@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import es.caib.rolsac2.persistence.model.JTipoMateriaSIA;
+import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
 import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoMateriaSIAFiltro;
 
@@ -21,4 +22,6 @@ public interface TipoMateriaSIARepository extends CrudRepository<JTipoMateriaSIA
   long countByFiltro(TipoMateriaSIAFiltro filtro);
 
   boolean existeIdentificador(String identificador);
+
+List<TipoMateriaSIADTO> findPagedByFiltroRest(TipoMateriaSIAFiltro filtro);
 }
