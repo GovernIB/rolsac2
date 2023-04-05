@@ -1,0 +1,164 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:my="http://java.sun.com/jsf/composite/components">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <!--<f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />-->
+            <f:viewAction action="#{viewOrganigramaDir3.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitle">
+        <h:outputFormat value="#{labels['viewOrganigrama.titulo']}"/>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="form">
+            <p:importConstants type="es.caib.rolsac2.service.model.types.TypeEstadoDir3" var="TypeEstadoDir3"/>
+            <p:remoteCommand name="rc" update="dataTable @form" process="@this"/>
+            <p:commandButton value="#{labels['viewUnidadAdministrativa.actualizar']}" id="actualizarBusqueda"
+                             widgetVar="actualizarBusqueda"
+                             style="display:none" ajax="false" action="#{viewUnidadAdministrativa.buscar}"
+                             update="dataTable"/>
+            <p:toolbar id="toolbar">
+                <f:facet name="left">
+                    <h:outputFormat value="#{labels['viewOrganigrama.fechaAct']}"/>:
+                    <p:inputText id="filtroBusqueda"
+                                 value="#{viewOrganigramaDir3.fechaUltimaActualizacion.toString()}"
+                                 disabled="true"/>
+                    <p:commandButton value="#{labels['viewOrganigrama.refrescar']}" styleClass="ml-2"
+                                     icon="pi pi-refresh"
+                                     update="messages dataTable"
+                                     actionListener="#{viewOrganigramaDir3.actualizarOrganigramaDir3()}"
+                                     process="@form">
+                        <p:confirm header="#{labels['viewOrganigrama.refrescar']}"
+                                   message="#{labels['viewOrganigrama.refrescoConfirm']}"
+                                   icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+                </f:facet>
+            </p:toolbar>
+            <h:panelGroup id="historico" styleClass="mb-2">
+                <p:panel header="#{labels['viewOrganigrama.historico']}" rendered="#{viewOrganigramaDir3.showHistorico}" toggleable="true" toggleSpeed="200" styleClass="mx-0">
+                    <div class="row mb-4 align-content-center justify-content-center align-items-center">
+                        <p:tree id="arbolHistoricos" value="#{viewOrganigramaDir3.arbolHistoricos}" var="evol"
+                                orientation="horizontal" rendered="#{viewOrganigramaDir3.showHistorico}" selection="#{viewOrganigramaDir3.datosSeleccionadosDir3}"
+                                selectionMode="multiple">
+                            <p:treeNode>
+                                <p class="text-center mb-0">#{evol.aplicacion}</p>
+                                <ul class="mb-0 pl-2">
+                                    <li>
+                                        <h:outputText value="#{evol.codigoDir3} - v#{evol.version}"/>
+                                    </li>
+                                    <li>
+                                        <h:outputText value="#{evol.denominacion}"/>
+                                    </li>
+                                </ul>
+                            </p:treeNode>
+                            <p:ajax event="select" listener="#{viewOrganigramaDir3.filtrarDir3()}" update="form:dataTable1"></p:ajax>
+                        </p:tree>
+                    </div>
+                </p:panel>
+            </h:panelGroup>
+
+            <h:panelGroup id="organigramas" styleClass="org-panel">
+                <div class="org-panel-btn">
+                    <p:commandButton id="btnCarga" widgetVar="btnCarga" title="#{labels['viewOrganigrama.cargarOrganigrama']}"
+                                     styleClass="text-center" value="#{labels['viewOrganigrama.cargarOrganigrama']}"
+                                     actionListener="#{viewOrganigramaDir3.cargarArbol()}" process="@this"
+                                     update="organigramas" rendered="#{!viewOrganigramaDir3.cargaArbol}" style="display: none;"/>
+                </div>
+                <div class="row mb-4 w100">
+                    <div class="col-12 col-lg-6">
+                        <p:treeTable id="dataTable" value="#{viewOrganigramaDir3.rootRolsac}" var="unidad"
+                                     emptyMessage="#{labels['dict.noHayDatos']}"
+                                     reflow="true"
+                                     scrollHeight="500"
+                                     scrollable="true"
+                                     selection="#{viewOrganigramaDir3.datoSeleccionadoRolsac}"
+                                     selectionMode="single" styleClass="org"
+                                     rendered="#{viewOrganigramaDir3.cargaArbol}">
+
+                            <f:facet name="{RowsPerPageLabel}">
+                                #{labels.dataTable_rowsPerPage}
+                            </f:facet>
+                            <p:column headerText="ROLSAC2"
+                                      filterBy="#{unidad.denominacionDir3}"
+                                      filterMatchMode="contains"
+                                      filterStyleClass="mt-2"
+                                      styleClass="w100 h35px #{unidad.estado.equals(TypeEstadoDir3.ELIMINADO) ? 'org-eliminada' :
+                                      unidad.estado.equals(TypeEstadoDir3.EXISTE_MODIFICADA) ? 'org-descr-nueva' : ''}">
+                                <f:facet name="header"/>
+                                <h:outputText value="#{unidad.denominacionDir3}"/>
+                                <p:commandButton icon="pi pi-eye" styleClass="float-right"
+                                                 actionListener="#{viewOrganigramaDir3.consultarHistorico(unidad)}"
+                                                 process="@this" update="messages form:historico"
+                                                 title="#{labels['viewOrganigrama.consultarHistorico']}"
+                                                 rendered="#{unidad.estado.equals(TypeEstadoDir3.ELIMINADO)}"/>
+                            </p:column>
+
+                        </p:treeTable>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <p:treeTable id="dataTable1" widgetVar="arbolDir3"
+                                     value="#{viewOrganigramaDir3.rootDir3}" var="unidad"
+                                     emptyMessage="#{labels['dict.noHayDatos']}"
+                                     reflow="true"
+                                     scrollable="true"
+                                     scrollHeight="500"
+                                     styleClass="org" rendered="#{viewOrganigramaDir3.cargaArbol}">
+                            <f:facet name="{RowsPerPageLabel}">
+                                #{labels.dataTable_rowsPerPage}
+                            </f:facet>
+                            <p:column headerText="DIR3"
+                                      id="dir3Col"
+                                      filterBy="#{unidad.denominacionDir3}"
+                                      filterFunction="#{viewOrganigramaDir3.filtroDir3Tree}"
+                                      filterStyleClass="mt-2"
+                                      styleClass="w100 h35px #{unidad.estado.equals(TypeEstadoDir3.NUEVO) ? 'org-nuevo' :
+                                      unidad.estado.equals(TypeEstadoDir3.EXISTE_MODIFICADA) ? 'org-descr-nueva' : ''}">
+                                <f:facet name="header"/>
+                                <h:outputText value="#{unidad.denominacionDir3}"/>
+                            </p:column>
+
+                        </p:treeTable>
+                    </div>
+                </div>
+            </h:panelGroup>
+            <p:blockUI block="form" trigger="btnCarga" widgetVar="timeSpinner" styleClass="">
+                <div class="spinner-border text-light spinner-large" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </p:blockUI>
+            <!--<p:dialog id="historicos" widgetVar="historico" header="#{labels['viewOrganigrama.historico']}"
+                      styleClass="hist" maximizable="true" responsive="true" onShow="PF('historico').initPosition()">
+                <div class="row mb-4 mx-auto">
+                    <p:tree id="arbolHistoricos" value="#{viewOrganigramaDir3.arbolHistoricos}" var="evol"
+                            orientation="horizontal">
+                        <p:treeNode>
+                            <h:outputText value="#{evol.denominacion} (#{evol.codigoDir3})"/>
+                        </p:treeNode>
+                    </p:tree>
+                </div>
+            </p:dialog>-->
+            <p:confirmDialog showEffect="fade" hideEffect="fade"
+                             update="messages form" responsive="true" width="450px">
+                <p:commandButton value="#{labels['dict.si']}" styleClass="ui-confirmdialog-yes" icon="pi pi-check"
+                                 actionListener="#{viewOrganigramaDir3.cargarArbol()}" process="@this"
+                                 oncomplete="PF('confirmCerrar').hide();"/>
+                <p:commandButton value="#{labels['dict.no']}" styleClass="ui-confirmdialog-no" icon="pi pi-times"
+                                 onclick="PF('confirmCerrar').hide();"/>
+            </p:confirmDialog>
+            <h:outputScript>
+                const filtrado = (dir3code) => {
+                    document.getElementById("form:dataTable1:dir3Col:filter").value = dir3code;
+                    PF('arbolDir3').filter();
+                }
+            </h:outputScript>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
