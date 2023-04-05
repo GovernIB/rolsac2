@@ -1,12 +1,13 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
+import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.persistence.model.JListaDocumentos;
 import es.caib.rolsac2.persistence.model.JProcedimiento;
 import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
-import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,14 +82,15 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      *
      * @param codigo
      * @param mensajes
+     * @param pendienteMensajeSupervisor
+     * @param pendienteMensajesGestor
      */
-    void actualizarMensajes(Long codigo, String mensajes);
+    void actualizarMensajes(Long codigo, String mensajes, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor);
 
     Long getCodigoByWF(Long codigo, boolean valor);
 
     JProcedimientoWorkflow getWFByCodigoWF(Long codigoWF);
 
-    List<ProcedimientoBaseSolr> obtenerPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro);
 
     Long obtenerCountPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro);
 
@@ -97,13 +99,47 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      *
      * @param proc
      */
-    void actualizarSolr(ProcedimientoBaseSolr proc);
+    void actualizarSolr(IndexacionDTO proc, ResultadoAccion resultadoAccion);
 
 
     /**
-     * Marca un procedimiento para indexar
+     * Actualiza la fecha de actualizacion del jprocedimiento
      *
      * @param codigo
      */
-    void marcarParaIndexar(Long codigo);
+
+    void actualizarFechaActualizacion(Long codigo);
+
+    /**
+     * Para obtener los mensajes de un procedimiento.
+     *
+     * @param codigo
+     * @return
+     */
+    String getMensajesByCodigo(Long codigo);
+
+    /**
+     * Obtiene todos los procedimientos en formato indexacion (para indexar todo)
+     *
+     * @param isTipoProcedimiento Si es tipo procedimiento (true) o servicio (false)
+     * @param idEntidad           Id de la entidad
+     * @return
+     */
+    Pagina<IndexacionDTO> getProcedimientosParaIndexacion(boolean isTipoProcedimiento, Long idEntidad);
+
+    /**
+     * Actualizar SIA
+     *
+     * @param siadto
+     * @param resultadoAccion
+     */
+    void actualizarSIA(IndexacionSIADTO siadto, ResultadoSIA resultadoAccion);
+
+    /**
+     * Obtiene todos los procedimientos para una indexacion SIA
+     *
+     * @param idEntidad
+     * @return
+     */
+    Pagina<IndexacionSIADTO> getProcedimientosParaIndexacionSIA(Long idEntidad);
 }

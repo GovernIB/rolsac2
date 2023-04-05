@@ -6,6 +6,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
+import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Mensaje;
 import es.caib.rolsac2.service.model.Propiedad;
@@ -70,6 +71,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
 
     String mensaje;
     TypeProcedimientoEstado typeEstadoActual;
+    private Long idProcedimiento;
 
     public void load() {
         LOG.debug("init");
@@ -77,6 +79,9 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         data = new RespuestaFlujo();
         mostrarEstados = true;
         mensaje = (String) UtilJSF.getValorMochilaByKey("mensajes");
+        if (id != null) {
+            idProcedimiento = Long.valueOf(id);
+        }
         if (mensaje != null && !mensaje.isEmpty()) {
             mensajes = (List<Mensaje>) UtilJSON.getMensaje(mensaje);
         }
@@ -132,10 +137,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                         estados.add(TypeProcedimientoEstado.PENDIENTE_RESERVAR);
                         estados.add(TypeProcedimientoEstado.PENDIENTE_BORRAR);
                     }
-                    if (typeEstadoActual != null && (typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_PUBLICAR
-                            || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_RESERVAR
-                            || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_BORRAR
-                    )) {
+                    if (typeEstadoActual != null && (typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_RESERVAR || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_BORRAR)) {
                         //Se puede tirar para atrás para poderlo volver a editar
                         estados.add(TypeProcedimientoEstado.MODIFICACION);
                         this.estadoSeleccionado = estados.get(0);
@@ -170,7 +172,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         }
 
         //Si el estado actual o seleccionado es pendiente, entonces es un cambio de un
-        if (typeEstadoActual.isEstadoPendiente() || estadoSeleccionado.isEstadoPendiente()) {
+        if ((typeEstadoActual != null && typeEstadoActual.isEstadoPendiente()) || (estadoSeleccionado != null && estadoSeleccionado.isEstadoPendiente())) {
             //if (sessionBean.getPerfil() == TypePerfiles.GESTOR && estadoSeleccionado.isEstadoPendiente()) {
             String literal = estadoSeleccionado.getLiteralMensajePendiente(sessionBean.getLang());
             String valorLiteral = null;
@@ -179,13 +181,20 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             }
             if (literal != null && valorLiteral != null && !valorLiteral.isEmpty()) {
                 Mensaje msg = new Mensaje();
-                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 String fecha = sdf.format((Date) Calendar.getInstance().getTime());
                 msg.setFecha(fecha);
                 msg.setFechaReal((Date) Calendar.getInstance().getTime());
                 String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
                 msg.setUsuario(usuario);
                 msg.setMensaje(valorLiteral);
+                if (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) {
+                    msg.setPendienteMensajesGestor(false);
+                    msg.setPendienteMensajesSupervisor(true);
+                } else {
+                    msg.setPendienteMensajesGestor(true);
+                    msg.setPendienteMensajesSupervisor(false);
+                }
                 msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
                 mensajes.add(0, msg);
             }
@@ -196,7 +205,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                 mensajes = new ArrayList<>();
             }
             Mensaje msg = new Mensaje();
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/dd/MM HH:mm");
+            final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             String fecha = sdf.format((Date) Calendar.getInstance().getTime());
             msg.setFecha(fecha);
             msg.setFechaReal((Date) Calendar.getInstance().getTime());
@@ -204,15 +213,61 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             msg.setUsuario(usuario);
             msg.setMensaje(mensajeNuevo);
             msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
+            if (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) {
+                msg.setPendienteMensajesGestor(true);
+                msg.setPendienteMensajesSupervisor(false);
+            } else {
+                msg.setPendienteMensajesGestor(false);
+                msg.setPendienteMensajesSupervisor(true);
+            }
             mensajes.add(0, msg);
         }
 
         data.setMensajes(UtilJSON.toJSON(mensajes));
         data.setEstadoDestino(this.estadoSeleccionado);
+        data.setPendienteMensajesSupervisor(getLeidoSupervisor());
+        data.setPendienteMensajesGestor(getLeidoGestor());
+        data.setCodigoProcedimiento(id);
         result.setResult(data);
         UtilJSF.closeDialog(result);
     }
 
+    @EJB
+    private ProcedimientoServiceFacade procedimientoService;
+
+    public void marcarComoLeido(Integer posicion) {
+
+
+        if (this.isGestor()) {
+            this.mensajes.get(posicion).setPendienteMensajesGestor(false);
+        } else {
+            this.mensajes.get(posicion).setPendienteMensajesSupervisor(false);
+        }
+        String mensajesJSON = UtilJSON.toJSON(mensajes);
+        procedimientoService.actualizarMensajes(idProcedimiento, mensajesJSON, getLeidoSupervisor(), getLeidoGestor());
+    }
+
+    private boolean getLeidoSupervisor() {
+        boolean pendiente = false;
+        for (Mensaje mensaje : mensajes) {
+            if (mensaje.isPendienteMensajesSupervisor()) {
+                pendiente = true;
+                break;
+            }
+        }
+        return pendiente;
+    }
+
+    private boolean getLeidoGestor() {
+        boolean pendiente = false;
+        for (Mensaje mensaje : mensajes) {
+            if (mensaje.isPendienteMensajesGestor()) {
+                pendiente = true;
+                break;
+            }
+        }
+        return pendiente;
+    }
 
     public void cerrar() {
         final DialogResult result = new DialogResult();

@@ -8,93 +8,14 @@
 >
 <ui:composition>
 
-    <nav class="navbar navbar-light navbar-expand-sm flex-column justify-content-start align-items-start">
+    <nav class="navbar navbar-light navbar-expand-lg flex-column justify-content-start align-items-start">
 
 
         <div class="d-flex flex-column mt-3">
             <c:if test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR}">
-                <h:panelGroup id="panelMolla">
-                    <ul class="mollaPa">
-                        <li>
-                            <div class="btn-group">
-                                <p:commandButton styleClass="btn btn-danger btn-molla" process="@this"
-                                                 actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
-                                                 value="#{sessionBean.unidadActivaAux.nombre.getTraduccion(sessionBean.lang)}"
-                                                 update="panelMolla">
-                                </p:commandButton>
-                                <button type="button"
-                                        class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                </button>
-                                <div class="dropdown-menu">
-                                    <c:forEach
-                                            items="#{sessionBean.obtenerUasEntidad()}"
-                                            var="ua">
-                                        <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
-                                                         actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
-                                                         update="panelMolla">
-                                            <f:actionListener binding="#{sessionBean.cambiarUaActivaAux(ua)}" />
-                                        </p:commandButton>
-                                    </c:forEach>
-                                </div>
-                            </div>
-                        </li>
-                        <c:if test="#{!sessionBean.getUnidadesActivasGestor().isEmpty()}">
-                            <c:forEach var="ua" items="#{sessionBean.getUnidadesActivasGestor()}">
-                                <li>
-                                    <div class="btn-group">
-                                        <p:commandButton styleClass="btn btn-danger btn-molla" process="@this"
-                                                         actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
-                                                         update="panelMolla">
-                                        </p:commandButton>
-                                        <button type="button"
-                                                class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <c:forEach
-                                                    items="#{sessionBean.getUnidadesHijasUA(ua.padre.codigo)}"
-                                                    var="ua">
-                                                <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
-                                                                 actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                                 value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
-                                                                 update="panelMolla">
-                                                </p:commandButton>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-                                </li>
-                            </c:forEach>
-                        </c:if>
-                        <c:if test="#{!sessionBean.getUnidadesHijasActiva().isEmpty()}">
-                            <li>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-danger btn-molla"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        #{labels['msg.seleccion.uas']}
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <c:forEach
-                                                items="#{sessionBean.getUnidadesHijasActiva()}"
-                                                var="ua">
-                                            <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
-                                                             actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                             value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
-                                                             update="panelMolla">
-                                            </p:commandButton>
-                                        </c:forEach>
-                                    </div>
-                                </div>
-                            </li>
-                        </c:if>
-                    </ul>
-                </h:panelGroup>
+                <ui:insert name="mollaPaGestor"></ui:insert>
+
+
             </c:if>
             <div id="bread" class="d-flex">
                 <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.INFORMADOR) or (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD) }">
@@ -148,6 +69,12 @@
 										<span class="mb-0 float-right #{view.viewId eq '/superadministrador/viewConfiguracionesGlobales.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
 											#{labels['viewConfigGlobales.titulo']}</span>
                                     </p:link></li>
+                                    <li class="nav-item mt-3 mb-1 opcion-menu"><p:link id="viewUsuario"
+                                                                                       outcome="/entidades/viewUsuario.xhtml"
+                                                                                       title="#{labels['viewUsuario.titulo']}">
+                                        <span class="mb-0 float-right #{view.viewId eq '/entidades/viewUsuario.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
+											#{labels['viewUsuario.titulo']}</span>
+                                    </p:link></li>
                                     <!-- Las tablas maeastras de color amarillo -->
 
                                     <!--En sessionBean hacer String value = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("param"); -->
@@ -171,6 +98,21 @@
                                         </li>
 
                                         <div class="menuTipos mt-4" id="menuTipos">
+                                            <p:link id="viewTipoMateriaSIA" styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/maestras/tipo/viewTipoMateriaSIA.xhtml"
+                                                    title="#{labels['viewTipoMateriaSIA.titulo']}">
+                                                <span class="mb-0 float-right">#{labels['viewTipoMateriaSIA.titulo']}</span>
+                                            </p:link>
+                                            <p:link id="viewTipoSexo" styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/maestras/tipo/viewTipoSexo.xhtml"
+                                                    title="#{labels['viewTipoSexo.titulo']}">
+                                                <span class="mb-0 float-right ">#{labels['viewTipoSexo.titulo']}</span>
+                                            </p:link>
+                                            <p:link id="viewTipoPublicoObjetivo" styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/maestras/tipo/viewTipoPublicoObjetivo.xhtml"
+                                                    title="#{labels['viewTipoPublicoObjetivo.titulo']}">
+                                                <span class="mb-0 float-right">#{labels['viewTipoPublicoObjetivo.titulo']}</span>
+                                            </p:link>
                                             <p:outputLabel
                                                     styleClass="font-weight-bold dropdown-item mobil mb-0 dropdown-label"
                                                     value="#{labels['menu.label.superadm.normativas']}"></p:outputLabel>
@@ -214,24 +156,8 @@
                                                     title="#{labels['viewTipoLegitimacion.titulo']}">
                                                 <span class="mb-0 float-right">#{labels['viewTipoLegitimacion.titulo']}</span>
                                             </p:link>
-                                            <p:link styleClass="pb-3 dropdown-item mobil">
-                                                <span> </span>
-                                            </p:link>
-                                            <p:link id="viewTipoMateriaSIA" styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoMateriaSIA.xhtml"
-                                                    title="#{labels['viewTipoMateriaSIA.titulo']}">
-                                                <span class="mb-0 float-right">#{labels['viewTipoMateriaSIA.titulo']}</span>
-                                            </p:link>
-                                            <p:link id="viewTipoSexo" styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoSexo.xhtml"
-                                                    title="#{labels['viewTipoSexo.titulo']}">
-                                                <span class="mb-0 float-right ">#{labels['viewTipoSexo.titulo']}</span>
-                                            </p:link>
-                                            <p:link id="viewTipoPublicoObjetivo" styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/maestras/tipo/viewTipoPublicoObjetivo.xhtml"
-                                                    title="#{labels['viewTipoPublicoObjetivo.titulo']}">
-                                                <span class="mb-0 float-right">#{labels['viewTipoPublicoObjetivo.titulo']}</span>
-                                            </p:link>
+
+
 
                                         </div>
                                     </div>
@@ -400,16 +326,36 @@
                                                 <span class="mb-0 float-right">#{labels['viewProcesos.titulo.pagina']}</span>
                                             </p:link>
                                             <p:link id="viewProcesosLog"
-                                                    styleClass="pb-4 dropdown-item mobil"
+                                                    styleClass="pb-5 dropdown-item mobil"
                                                     outcome="/monitorizacion/viewProcesosLog.xhtml"
                                                     title="#{labels['viewProcesosLog.titulo.pagina']}">
                                                 <span class="mb-0 float-right">#{labels['viewProcesosLog.titulo.pagina']}</span>
                                             </p:link>
+                                            <p:outputLabel
+                                                    styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
+                                                    value="#{labels['menu.label.mon.entidad.reiniciarIndices']}"></p:outputLabel>
                                             <p:link id="viewProcesosSolr"
-                                                    styleClass="pb-4 dropdown-item mobil"
+                                                    styleClass="pb-5  dropdown-item mobil"
                                                     outcome="/monitorizacion/viewProcesosSolr.xhtml"
                                                     title="#{labels['viewProcesosSolr.titulo.pagina']}">
                                                 <span class="mb-0 float-right">#{labels['viewProcesosSolr.titulo.pagina']}</span>
+                                            </p:link>
+
+                                            <p:outputLabel
+                                                    styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
+                                                    value="#{labels['menu.label.mon.entidad.sia']}"></p:outputLabel>
+
+                                            <p:link id="viewProcesosSIA"
+                                                    styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/monitorizacion/viewProcesosSIA.xhtml"
+                                                    title="#{labels['viewProcesosSIA.titulo.pagina']}">
+                                                <span class="mb-0 float-right">#{labels['viewProcesosSIA.titulo.pagina']}</span>
+                                            </p:link>
+                                            <p:link id="viewEntidadRaiz"
+                                                    styleClass="pb-5 dropdown-item mobil"
+                                                    outcome="/entidades/viewEntidadRaiz.xhtml"
+                                                    title="#{labels['viewEntidadRaiz.titulo']}">
+                                                <span class="mb-0 float-right">#{labels['viewEntidadRaiz.titulo']}</span>
                                             </p:link>
                                         </div>
                                     </li>
@@ -439,6 +385,12 @@
                                                     outcome="/entidades/viewUnidadAdministrativa.xhtml"
                                                     title="#{labels['viewUnidadAdministrativa.titulo']}">
                                                 <span class="mb-0 float-right ">#{labels['viewUnidadAdministrativa.titulo']}</span>
+                                            </p:link>
+                                            <p:link id="viewOrganigrama"
+                                                    styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/entidades/viewOrganigramaDir3.xhtml"
+                                                    title="#{labels['viewOrganigrama.titulo.titulo']}">
+                                                <span class="mb-0 float-right">#{labels['viewOrganigrama.titulo']}</span>
                                             </p:link>
 
                                         </div>

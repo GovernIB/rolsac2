@@ -1,21 +1,25 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
+import es.caib.rolsac2.persistence.model.JEntidad;
+import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
+import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
 
 /**
  * Implementación del repositorio de una plataforma de tramitación electrónica
@@ -27,6 +31,9 @@ import java.util.Optional;
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<JPlatTramitElectronica, Long>
         implements PlatTramitElectronicaRepository {
+
+    @Inject
+    private PlatTramitElectronicaConverter converter;
 
     protected PlatTramitElectronicaRepositoryBean() {
         super(JPlatTramitElectronica.class);
@@ -41,11 +48,13 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
 
-    private Query getQuery(boolean isTotal, PlatTramitElectronicaFiltro filtro) {
+    private Query getQuery(boolean isTotal, PlatTramitElectronicaFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JPlatTramitElectronica j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma WHERE 1 = 1 ");
+        } else if (isRest) {
+        	sql = new StringBuilder("SELECT j FROM JPlatTramitElectronica j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma WHERE 1 = 1 ");
         } else {
             sql = new StringBuilder("SELECT j.codigo, j.identificador, j.codEntidad, t.descripcion, t.urlAcceso"
                     + " FROM JPlatTramitElectronica j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma WHERE t.idioma=:idioma");
@@ -57,6 +66,9 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
         if(filtro.isRellenoEntidad()) {
             sql.append(" and j.codEntidad.codigo =:idEntidad");
         }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
+        }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -66,17 +78,20 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
-        if (filtro.isRellenoCodigo()) {
-            query.setParameter("codigo", "%" + filtro.getCodigo());
-        }
-        if (filtro.isRellenoIdentificador()) {
-            query.setParameter("identificador", "%" + filtro.getIdentificador().toLowerCase() + "%");
-        }
+//        if (filtro.isRellenoCodigo()) {
+//            query.setParameter("codigo", "%" + filtro.getCodigo());
+//        }
+//        if (filtro.isRellenoIdentificador()) {
+//            query.setParameter("identificador", "%" + filtro.getIdentificador().toLowerCase() + "%");
+//        }
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
         }
         if(filtro.isRellenoEntidad()) {
             query.setParameter("idEntidad", filtro.getIdEntidad());
+        }
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
         }
 
 
@@ -94,7 +109,7 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
 
     @Override
     public List<PlatTramitElectronicaGridDTO> findPagedByFiltro(PlatTramitElectronicaFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -125,7 +140,7 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
 
     @Override
     public Long countByFiltro(PlatTramitElectronicaFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
     @Override
@@ -143,4 +158,22 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
         }
         return "j." + order;
     }
+
+	@Override
+	public List<PlatTramitElectronicaDTO> findPagedByFiltroRest(PlatTramitElectronicaFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+		query.setFirstResult(filtro.getPaginaFirst());
+		query.setMaxResults(filtro.getPaginaTamanyo());
+
+		List<JPlatTramitElectronica> jentidades = query.getResultList();
+		List<PlatTramitElectronicaDTO> entidades = new ArrayList<>();
+		if (jentidades != null) {
+			for (JPlatTramitElectronica jentidad : jentidades) {
+				PlatTramitElectronicaDTO entidad = converter.createDTO(jentidad);
+
+				entidades.add(entidad);
+			}
+		}
+		return entidades;
+	}
 }

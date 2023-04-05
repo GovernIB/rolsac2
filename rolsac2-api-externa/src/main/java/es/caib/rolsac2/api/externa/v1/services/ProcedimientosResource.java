@@ -30,7 +30,6 @@ import es.caib.rolsac2.api.externa.v1.model.Procedimientos;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroProcedimientos;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroUA;
 import es.caib.rolsac2.api.externa.v1.model.order.CampoOrden;
-import es.caib.rolsac2.api.externa.v1.model.order.Orden;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaProcedimientos;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
@@ -83,20 +82,31 @@ public class ProcedimientosResource {
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
-		fg.setPaginaTamanyo(filtro.getSize());
-		fg.setPaginaFirst(filtro.getPage());
+		if(filtro.getFiltroPaginacion() != null) {
+			fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
+			fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
+		}
 
 		// si viene el orden intentamos rellenarlo
+//		if (filtro.getListaOrden() != null && !filtro.getListaOrden().isEmpty()) {
+//			final List<CampoOrden> ord = filtro.getListaOrden();
+//			if (ord != null && ord.size() > 0) {
+//				for (final CampoOrden campoOrden : ord) {
+//					if (campoOrden.getCampo().equals(Orden.CAMPO_ORD_PROCEDIMIENTO_CODIGO)
+//							|| campoOrden.getCampo().equals(Orden.CAMPO_ORD_PROCEDIMIENTO_FECHA_ACTUALIZACION)
+//							|| campoOrden.getCampo().equals(Orden.CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION)) {
+////						fg.addOrden(campoOrden.getCampo(), campoOrden.getTipoOrden());
+//					}
+//				}
+//			}
+//		}
+		// si viene el orden intentamos rellenarlo
 		if (filtro.getListaOrden() != null && !filtro.getListaOrden().isEmpty()) {
-			final List<CampoOrden> ord = filtro.getListaOrden();
-			if (ord != null && ord.size() > 0) {
-				for (final CampoOrden campoOrden : ord) {
-					if (campoOrden.getCampo().equals(Orden.CAMPO_ORD_PROCEDIMIENTO_CODIGO)
-							|| campoOrden.getCampo().equals(Orden.CAMPO_ORD_PROCEDIMIENTO_FECHA_ACTUALIZACION)
-							|| campoOrden.getCampo().equals(Orden.CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION)) {
-//						fg.addOrden(campoOrden.getCampo(), campoOrden.getTipoOrden());
-					}
-				}
+			List<CampoOrden> ord = filtro.getListaOrden();
+			if (ord != null && !ord.isEmpty()) {
+				CampoOrden campoOrden = ord.get(0);
+				fg.setOrderBy(campoOrden.getCampo());
+				fg.setAscendente(campoOrden.getTipoOrden().compareTo("ASC") == 0);
 			}
 		}
 
@@ -130,16 +140,16 @@ public class ProcedimientosResource {
 		}
 		fg.setIdEntidad(new Long(codigo));
 
-		final RespuestaProcedimientos respuesta = getRespuesta(fg);
-		if (respuesta.getResultado() != null && !respuesta.getResultado().isEmpty()) {
-			String cabecera;
-			if ("ca".equals(lang)) {
-				cabecera = System.getProperty("es.caib.rolsac.lopd.cabecera.ca");
-			} else {
-				cabecera = System.getProperty("es.caib.rolsac.lopd.cabecera.es");
-			}
-			respuesta.getResultado().get(0).setLopdCabecera(cabecera);
-		}
+//		final RespuestaProcedimientos respuesta = getRespuesta(fg);
+//		if (respuesta.getResultado() != null && !respuesta.getResultado().isEmpty()) {
+//			String cabecera;
+//			if ("ca".equals(lang)) {
+//				cabecera = System.getProperty("es.caib.rolsac.lopd.cabecera.ca");
+//			} else {
+//				cabecera = System.getProperty("es.caib.rolsac.lopd.cabecera.es");
+//			}
+//			respuesta.getResultado().get(0).setLopdCabecera(cabecera);
+//		}
 
 		return Response.ok(getRespuestaSimple(fg), MediaType.APPLICATION_JSON).build();
 	}
@@ -160,7 +170,7 @@ public class ProcedimientosResource {
 	}
 
 	private RespuestaProcedimientos getRespuestaSimple(ProcedimientoFiltro filtro) throws DelegateException {
-		ProcedimientoDTO resultadoBusqueda = procedimientoService.findProcedimientoById(filtro.getIdEntidad());
+		ProcedimientoDTO resultadoBusqueda = procedimientoService.findProcedimientoByCodigo(filtro.getIdEntidad());
 
 		List<Procedimientos> lista = new ArrayList<>();
 

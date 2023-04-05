@@ -59,7 +59,7 @@
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputTextarea id="txtDescripcion" value="#{dialogProceso.data.descripcion}"
                                      requiredMessage="#{labels['dict.obligatorio.descripcion']}"
-                                     styleClass="w95" required="true" autoResize="false" rows="3"
+                                     styleClass="w95" required="#{empty param['formDialog:closeButton']}" autoResize="false" rows="3"
                                  disabled="#{dialogProceso.isModoConsulta()}" maxlength="1000"/>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
@@ -68,7 +68,7 @@
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtClassname" value="#{dialogProceso.data.cron}"
                                  requiredMessage="#{labels['dict.obligatorio.expresionActivacion']}"
-                                 styleClass="w95" required="true"
+                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
                                      disabled="#{dialogProceso.isModoConsulta()}" maxlength="1000"/>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
@@ -81,7 +81,7 @@
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['dialogProceso.parametrosInvocacion']}:" for="dataTablePropiedades"/>
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5 d-flex w80">
+                <div class="ui-g-12 ui-md-10 ui-lg-5 d-flex">
                     <p:dataTable id="dataTablePropiedades" var="td" value="#{dialogProceso.data.parametrosInvocacion}"
                                  rows="25" scrollable="true" style=" margin-right:0px !important;  flex: 1;"
                                  paginator="false" selectionMode="single"
@@ -154,15 +154,6 @@
                 document.getElementById("formDialog:btnEliminarPropiedad").click();
             }
         </h:outputScript>
-    </ui:define>
-    <ui:define name="contentFooterDialogLeft">
-        <c:if test="#{!dialogProceso.isModoAlta()}">
-            <p:commandButton value="#{labels['dialogProceso.procesadoManual']}"
-                             icon="pi pi-arrow-right"
-                             action="#{dialogProceso.procesadoManual()}"
-                             process="@all"
-                             update="messagesDialog"/>
-        </c:if>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogProceso.ayuda}"

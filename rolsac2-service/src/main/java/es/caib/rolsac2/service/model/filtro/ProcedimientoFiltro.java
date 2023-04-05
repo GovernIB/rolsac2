@@ -47,6 +47,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private PlatTramitElectronicaDTO plataforma;
     private String comun;
 
+    private String mensajesPendiente;
+
     public Integer getCodigoProc() {
         return codigoProc;
     }
@@ -316,6 +318,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.idUAsHijas = idUAsHijas;
     }
 
+    public String getMensajesPendiente() {
+        return mensajesPendiente;
+    }
+
+    public void setMensajesPendiente(String mensajesPendiente) {
+        this.mensajesPendiente = mensajesPendiente;
+    }
+
     /**
      * Esta relleno el texto
      *
@@ -421,6 +431,9 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return comun != null && !comun.isEmpty();
     }
 
+    public boolean isRellenoMensajesPendientes() {
+        return mensajesPendiente != null && !mensajesPendiente.isEmpty();
+    }
 
     @Override
     protected String getDefaultOrder() {

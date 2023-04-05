@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
+import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
 import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
 
@@ -23,4 +24,6 @@ public interface PlatTramitElectronicaRepository extends CrudRepository<JPlatTra
     Long countByFiltro(PlatTramitElectronicaFiltro filtro);
 
     Boolean checkIdentificador(String identificador);
+
+	List<PlatTramitElectronicaDTO> findPagedByFiltroRest(PlatTramitElectronicaFiltro filtro);
 }

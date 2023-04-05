@@ -11,6 +11,7 @@ import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.EdificioFiltro;
+import es.caib.rolsac2.service.model.filtro.EntidadRaizFiltro;
 import es.caib.rolsac2.service.model.filtro.PluginFiltro;
 import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -67,6 +68,12 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
     @Inject
     private UnidadAdministrativaRepository unidadAdministrativaRepository;
+
+    @Inject
+    private EntidadRaizConverter entidadRaizConverter;
+
+    @Inject
+    private EntidadRaizRepository entidadRaizRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
@@ -145,13 +152,23 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
             }
         }
         jUsuario.setUnidadesAdministrativas(unidadesAdministrativas);
+
+        Set<JEntidad> entidades = new HashSet<>();
+        if (dto.getEntidades() != null) {
+            JEntidad jEntidad;
+            for (EntidadGridDTO ent : dto.getEntidades()) {
+                jEntidad = entidadRepository.getReference(ent.getCodigo());
+                entidades.add(jEntidad);
+            }
+        }
+        jUsuario.setEntidades(entidades);
         usuarioRepository.create(jUsuario);
 
         //Añadir en la tabla de JUsuarioEntidad el valor adecuado.
         // Al ser la creación de este usuario, se da de alta en una entidad
         // por lo que solo debería tener una entidad en el listado.
-        EntidadGridDTO entidad = dto.getEntidades().get(0);
-        usuarioRepository.anyadirNuevoUsuarioEntidad(jUsuario, entidad.getCodigo());
+       /* EntidadGridDTO entidad = dto.getEntidades().get(0);
+        usuarioRepository.anyadirNuevoUsuarioEntidad(jUsuario, entidad.getCodigo());*/
 
 
         return jUsuario.getCodigo();
@@ -185,6 +202,18 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
         jUsuario.getUnidadesAdministrativas().clear();
         jUsuario.getUnidadesAdministrativas().addAll(unidadesAdministrativas);
+
+        Set<JEntidad> entidades = new HashSet<>();
+        if (dto.getEntidades() != null) {
+            JEntidad jEntidad;
+            for (EntidadGridDTO ent : dto.getEntidades()) {
+                jEntidad = entidadRepository.getReference(ent.getCodigo());
+                entidades.add(jEntidad);
+            }
+        }
+
+        jUsuario.getEntidades().clear();
+        jUsuario.getEntidades().addAll(entidades);
 
         converter.mergeEntity(jUsuario, dto);
         usuarioRepository.update(jUsuario);
@@ -278,6 +307,22 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Pagina<UsuarioGridDTO> findAllUsuariosByFiltro(UsuarioFiltro filtro) {
+        try {
+            List<UsuarioGridDTO> items = usuarioRepository.findAllUsuariosByFiltro(filtro);
+            long total = usuarioRepository.countAllUsuariosByFiltro(filtro);
+
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            List<UsuarioGridDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
+
+    @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Boolean checkIdentificadorUsuario(String identificador) {
@@ -355,4 +400,60 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     public boolean existePluginTipoByEntidad(Long idEntidad, String tipo) {
         return pluginRepository.existePluginTipoByEntidad(idEntidad, tipo);
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long createEntidadRaiz(EntidadRaizDTO dto) throws RecursoNoEncontradoException {
+        if (dto.getCodigo() != null) {
+            throw new DatoDuplicadoException(dto.getCodigo());
+        }
+        JEntidadRaiz jEntidadRaiz = entidadRaizConverter.createEntity(dto);
+        JUnidadAdministrativa jUnidadAdministrativa = unidadAdministrativaRepository.findById(dto.getUa().getCodigo());
+        jEntidadRaiz.setUa(jUnidadAdministrativa);
+        entidadRaizRepository.create(jEntidadRaiz);
+        return jEntidadRaiz.getCodigo();
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void updateEntidadRaiz(EntidadRaizDTO dto) throws RecursoNoEncontradoException {
+        JUnidadAdministrativa jUnidadAdministrativa = unidadAdministrativaRepository.getReference(dto.getUa().getCodigo());
+        JEntidadRaiz jEntidadRaiz = entidadRaizRepository.getReference(dto.getCodigo());
+        jEntidadRaiz.setUa(jUnidadAdministrativa);
+        entidadRaizConverter.mergeEntity(jEntidadRaiz, dto);
+        entidadRaizRepository.update(jEntidadRaiz);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void deleteEntidadRaiz(Long id) throws RecursoNoEncontradoException {
+        JEntidadRaiz jEntidadRaiz = entidadRaizRepository.getReference(id);
+        entidadRaizRepository.delete(jEntidadRaiz);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public EntidadRaizDTO findEntidadRaizById(Long id) {
+        JEntidadRaiz jEntidadRaiz = entidadRaizRepository.getReference(id);
+        EntidadRaizDTO entidadRaizDTO = entidadRaizConverter.createDTO(jEntidadRaiz);
+        return entidadRaizDTO;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Pagina<EntidadRaizGridDTO> findByFiltro(EntidadRaizFiltro filtro) {
+        try {
+            List<EntidadRaizGridDTO> items = entidadRaizRepository.findPageByFiltro(filtro);
+            long total = entidadRaizRepository.countByFiltro(filtro);
+
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            List<EntidadRaizGridDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
+
+
 }

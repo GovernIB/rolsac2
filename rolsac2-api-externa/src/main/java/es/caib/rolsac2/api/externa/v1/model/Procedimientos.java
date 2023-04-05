@@ -1,10 +1,12 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.api.externa.v1.utils.Utiles;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
 
@@ -31,106 +34,106 @@ public class Procedimientos extends EntidadBase {
 	private static final Logger LOG = LoggerFactory.getLogger(Procedimientos.class);
 
 	/** codigo **/
-	@Schema(description = "codigo", required = false)
+	@Schema(description = "codigo", type = SchemaType.INTEGER, required = false)
 	private long codigo;
 
 	/**  **/
-	@Schema(description = "destinatarios", required = false)
-	private java.lang.String destinatarios;
+	@Schema(description = "destinatarios", type = SchemaType.STRING, required = false)
+	private String destinatarios;
 
 	/**  **/
 	@Schema(description = "fechaActualizacion", required = false)
-	private java.util.Calendar fechaActualizacion;
+	private Calendar fechaActualizacion;
 
 	/**  **/
 	@Schema(description = "fechaCaducidad", required = false)
-	private java.util.Calendar fechaCaducidad;
+	private Calendar fechaCaducidad;
 
 	/**  **/
 	@Schema(description = "fechaPublicacion", required = false)
-	private java.util.Calendar fechaPublicacion;
+	private Calendar fechaPublicacion;
 
 	/**  **/
-	@Schema(description = "indicador", required = false)
+	@Schema(description = "indicador", type = SchemaType.BOOLEAN, required = false)
 	private boolean indicador;
 
 	/**  **/
-	@Schema(description = "dirElectronica", required = false)
-	private java.lang.String dirElectronica;
+	@Schema(description = "dirElectronica", type = SchemaType.STRING, required = false)
+	private String dirElectronica;
 
 	/**  **/
-	@Schema(description = "lugar", required = false)
-	private java.lang.String lugar;
+	@Schema(description = "lugar", type = SchemaType.STRING, required = false)
+	private String lugar;
 
 	/**  **/
-	@Schema(description = "nombre", required = false)
-	private java.lang.String nombre;
+	@Schema(description = "nombre", type = SchemaType.STRING, required = false)
+	private String nombre;
 
 	/**  **/
-	@Schema(description = "notificacion", required = false)
-	private java.lang.String notificacion;
+	@Schema(description = "notificacion", type = SchemaType.STRING, required = false)
+	private String notificacion;
 
 	/**  **/
-	@Schema(description = "observaciones", required = false)
-	private java.lang.String observaciones;
+	@Schema(description = "observaciones", type = SchemaType.STRING, required = false)
+	private String observaciones;
 
 	/**  **/
-	@Schema(description = "plazos", required = false)
-	private java.lang.String plazos;
+	@Schema(description = "plazos", type = SchemaType.STRING, required = false)
+	private String plazos;
 
 	/**  **/
-	@Schema(description = "recursos", required = false)
-	private java.lang.String recursos;
+	@Schema(description = "recursos", type = SchemaType.STRING, required = false)
+	private String recursos;
 
 	/**  **/
-	@Schema(description = "requisitos", required = false)
-	private java.lang.String requisitos;
+	@Schema(description = "requisitos", type = SchemaType.STRING, required = false)
+	private String requisitos;
 
 	/**  **/
-	@Schema(description = "resolucion", required = false)
-	private java.lang.String resolucion;
+	@Schema(description = "resolucion", type = SchemaType.STRING, required = false)
+	private String resolucion;
 
 	/**  **/
-	@Schema(description = "responsable", required = false)
-	private java.lang.String responsable;
+	@Schema(description = "responsable", type = SchemaType.STRING, required = false)
+	private String responsable;
 
 	/**  **/
-	@Schema(description = "resumen", required = false)
-	private java.lang.String resumen;
+	@Schema(description = "resumen", type = SchemaType.STRING, required = false)
+	private String resumen;
 
 	/**  **/
-	@Schema(description = "signatura", required = false)
-	private java.lang.String signatura;
+	@Schema(description = "signatura", type = SchemaType.STRING, required = false)
+	private String signatura;
 
 	/**  **/
-	@Schema(description = "signatura", required = false)
+	@Schema(description = "signatura", type = SchemaType.BOOLEAN, required = false)
 	private boolean taxa;
 
 	/**  **/
-	@Schema(description = "url", required = false)
-	private java.lang.String url;
+	@Schema(description = "url", type = SchemaType.STRING, required = false)
+	private String url;
 
 	/**  **/
-	@Schema(description = "validacion", required = false)
-	private java.lang.Integer validacion;
+	@Schema(description = "validacion", type = SchemaType.INTEGER, required = false)
+	private Integer validacion;
 
 	/**  **/
-	@Schema(description = "codigoSIA", required = false)
-	private java.lang.String codigoSIA;
+	@Schema(description = "codigoSIA", type = SchemaType.STRING, required = false)
+	private String codigoSIA;
 
 	/**  **/
-	@Schema(description = "estadoSIA", required = false)
-	private java.lang.String estadoSIA;
+	@Schema(description = "estadoSIA", type = SchemaType.STRING, required = false)
+	private String estadoSIA;
 
 	/**  **/
 	@Schema(description = "fechaSIA", required = false)
-	private java.util.Calendar fechaSIA;
+	private Calendar fechaSIA;
 
-	@Schema(description = "tramite", required = false)
-	private java.lang.String tramite;
+	@Schema(description = "tramite", type = SchemaType.STRING, required = false)
+	private String tramite;
 
-	@Schema(description = "version", required = false)
-	private java.lang.Long version;
+	@Schema(description = "version", type = SchemaType.INTEGER, required = false)
+	private Long version;
 
 	/*
 	 * private java.lang.String resultat; private boolean ventanillaUnica;
@@ -139,30 +142,30 @@ public class Procedimientos extends EntidadBase {
 	// -- LINKS--//
 	// -- se duplican las entidades para poder generar la clase link en funcion de
 	// la propiedad principal (sin "link_")
-	/** servicioResponsable **/
-	@Schema(description = "linkServicioResponsable", required = false)
-	private Link linkServicioResponsable;
+//	/** servicioResponsable **/
+//	@Schema(description = "linkServicioResponsable", required = false)
+//	private Link linkServicioResponsable;
 	@Schema(hidden = true)
 	@XmlTransient
 	private Long servicioResponsable;
 
-	/** unidadAdministrativa **/
-	@Schema(description = "linkUnidadAdministrativa", required = false)
-	private Link linkUnidadAdministrativa;
+//	/** unidadAdministrativa **/
+//	@Schema(description = "linkUnidadAdministrativa", required = false)
+//	private Link linkUnidadAdministrativa;
 	@Schema(hidden = true)
 	@XmlTransient
 	private Long unidadAdministrativa;
 
-	/** organResolutori **/
-	@Schema(description = "linkOrganResolutori", required = false)
-	private Link linkOrganResolutori;
+//	/** organResolutori **/
+//	@Schema(description = "linkOrganResolutori", required = false)
+//	private Link linkOrganResolutori;
 	@Schema(hidden = true)
 	@XmlTransient
 	private Long organResolutori;
 
-	/** familia **/
-	@Schema(description = "linkFamilia", required = false)
-	private Link linkFamilia;
+//	/** familia **/
+//	@Schema(description = "linkFamilia", required = false)
+//	private Link linkFamilia;
 	@Schema(hidden = true)
 	@XmlTransient
 	private Long familia;
@@ -177,39 +180,97 @@ public class Procedimientos extends EntidadBase {
 //	private Iniciacions iniciacion;
 
 	/** es comun **/
-	@Schema(description = "comun", required = false)
-	private boolean comun;
+	@Schema(description = "comun", type = SchemaType.BOOLEAN, required = false)
+	private int comun;
 
 //	@Schema
 //	private LopdLegitimacion lopdLegitimacion;
 
-	/** Info Adicional **/
-	@Schema(description = "linkLopdInfoAdicional", required = false)
-	private Link linkLopdInfoAdicional;
+//	/** Info Adicional **/
+//	@Schema(description = "linkLopdInfoAdicional", required = false)
+//	private Link linkLopdInfoAdicional;
 	@Schema(hidden = true)
 	@XmlTransient
-	private java.lang.Long lopdInfoAdicional;
+	private String lopdInfoAdicional;
 
-	@Schema(description = "lopdResponsable", required = false)
+	@Schema(description = "lopdResponsable", type = SchemaType.STRING, required = false)
 	private String lopdResponsable;
 
-	@Schema(description = "lopdFinalidad", required = false)
+	@Schema(description = "lopdFinalidad", type = SchemaType.STRING, required = false)
 	private String lopdFinalidad;
 
-	@Schema(description = "lopdDestinatario", required = false)
+	@Schema(description = "lopdDestinatario", type = SchemaType.STRING, required = false)
 	private String lopdDestinatario;
 
-	@Schema(description = "lopdDerechos", required = false)
+	@Schema(description = "lopdDerechos", type = SchemaType.STRING, required = false)
 	private String lopdDerechos;
 
-	@Schema(description = "lopdCabecera", required = false)
+	@Schema(description = "lopdCabecera", type = SchemaType.STRING, required = false)
 	private String lopdCabecera;
 
-	@Schema(description = "disponibleApoderadoHabilitado", required = false)
+	@Schema(description = "disponibleApoderadoHabilitado", type = SchemaType.BOOLEAN, required = false)
 	private boolean disponibleApoderadoHabilitado;
 
-	@Schema(description = "disponibleFuncionarioHabilitado", required = false)
+	@Schema(description = "disponibleFuncionarioHabilitado", type = SchemaType.BOOLEAN, required = false)
 	private boolean disponibleFuncionarioHabilitado;
+
+	@Schema(description = "lopdCabecera", type = SchemaType.INTEGER, required = false)
+    private Long codigoWF;
+
+	@Schema(description = "tipo", type = SchemaType.STRING, required = false)
+    private String tipo;
+	@Schema(description = "workflow", type = SchemaType.STRING, required = false)
+    private String workflow;
+	@Schema(description = "estado", type = SchemaType.STRING, required = false)
+    private String estado;
+	@Schema(description = "interno", type = SchemaType.BOOLEAN, required = false)
+    private boolean interno;
+	@Schema(description = "publicado", type = SchemaType.BOOLEAN, required = false)
+    private boolean publicado;
+
+	@Schema(description = "datosPersonalesLegitimacion", type = SchemaType.INTEGER, required = false)
+    private Long datosPersonalesLegitimacion;
+	@Schema(description = "uaResponsable", type = SchemaType.INTEGER, required = false)
+    private Long uaResponsable;
+	@Schema(description = "uaInstructor", type = SchemaType.INTEGER, required = false)
+    private Long uaInstructor;
+	@Schema(description = "iniciacion", type = SchemaType.INTEGER, required = false)
+    private Long iniciacion;
+
+	@Schema(description = "silencio", type = SchemaType.INTEGER, required = false)
+    private Long silencio;
+	@Schema(description = "tipoProcedimiento", type = SchemaType.INTEGER, required = false)
+    private Long tipoProcedimiento;
+	@Schema(description = "tipoVia", type = SchemaType.INTEGER, required = false)
+    private Long tipoVia;
+	@Schema(description = "habilitadoApoderado", type = SchemaType.BOOLEAN, required = false)
+    private boolean habilitadoApoderado;
+	@Schema(description = "habilitadoFuncionario", type = SchemaType.STRING, required = false)
+    private String habilitadoFuncionario;
+	@Schema(description = "tieneTasa", type = SchemaType.BOOLEAN, required = false)
+    private boolean tieneTasa = false;
+	@Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
+    private String responsableEmail;
+	@Schema(description = "responsableTelefono", type = SchemaType.STRING, required = false)
+    private String responsableTelefono;
+	@Schema(description = "nombreProcedimientoWorkFlow", type = SchemaType.STRING, required = false)
+    private String nombreProcedimientoWorkFlow;
+	@Schema(description = "datosPersonalesFinalidad", type = SchemaType.STRING, required = false)
+    private String datosPersonalesFinalidad;
+	@Schema(description = "datosPersonalesDestinatario", type = SchemaType.STRING, required = false)
+    private String datosPersonalesDestinatario;
+	@Schema(description = "terminoResolucion", type = SchemaType.STRING, required = false)
+    private String terminoResolucion;
+	@Schema(description = "mensajes", type = SchemaType.STRING, required = false)
+    private String mensajes;
+	@Schema(description = "usuarioAuditoria", type = SchemaType.STRING, required = false)
+    private String usuarioAuditoria;
+	@Schema(description = "pendienteIndexar", type = SchemaType.BOOLEAN, required = false)
+    private boolean pendienteIndexar = false;
+	@Schema(description = "pendienteMensajesGestor", type = SchemaType.BOOLEAN, required = false)
+    private boolean pendienteMensajesGestor = false;
+	@Schema(description = "pendienteMensajesSupervisor", type = SchemaType.BOOLEAN, required = false)
+    private boolean pendienteMensajesSupervisor = false;
 
 	/**
 	 * Constructor
@@ -221,7 +282,53 @@ public class Procedimientos extends EntidadBase {
 	 */
 	public Procedimientos(final ProcedimientoDTO elem, final String urlBase, final String idioma,
 			final boolean hateoasEnabled) {
-		super(elem, urlBase, idioma, hateoasEnabled);
+//		super(elem, urlBase, idioma, hateoasEnabled);
+		if(elem != null) {
+			this.codigo = elem.getCodigo();
+			this.comun = elem.getComun();
+			this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA().toString();
+			this.codigoWF = elem.getCodigoWF();
+			this.datosPersonalesDestinatario = elem.getDatosPersonalesDestinatario() == null ? null : elem.getDatosPersonalesDestinatario().getTraduccion(idioma);
+			this.datosPersonalesFinalidad = elem.getDatosPersonalesFinalidad() == null ? null : elem.getDatosPersonalesFinalidad().getTraduccion(idioma);
+			this.datosPersonalesLegitimacion = elem.getDatosPersonalesLegitimacion() == null ? null : elem.getDatosPersonalesLegitimacion().getCodigo();
+			this.destinatarios = elem.getDestinatarios() == null ? null : elem.getDestinatarios().getTraduccion(idioma);
+			this.estado = elem.getEstado() == null ? null : elem.getEstado().name();
+			this.estadoSIA = elem.getEstadoSIA() == null ? null : elem.getEstadoSIA().toString();
+			this.fechaActualizacion = elem.getFechaActualizacion() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaActualizacion());
+			this.fechaCaducidad = elem.getFechaCaducidad() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaCaducidad());
+			this.fechaSIA = elem.getFechaSIA() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaSIA());
+			this.habilitadoApoderado = elem.isHabilitadoApoderado();
+			this.habilitadoFuncionario = elem.getHabilitadoFuncionario();
+			this.iniciacion = elem.getIniciacion() == null ? null : elem.getIniciacion().getCodigo();
+			this.interno = elem.isInterno();
+			this.lopdDerechos = elem.getLopdDerechos() == null ? null : elem.getLopdDerechos().getTraduccion(idioma);
+			this.lopdDestinatario = elem.getLopdDestinatario() == null ? null : elem.getLopdDestinatario().getTraduccion(idioma);
+			this.lopdFinalidad = elem.getLopdFinalidad() == null ? null : elem.getLopdFinalidad().getTraduccion(idioma);
+			this.lopdInfoAdicional = elem.getLopdInfoAdicional() == null ? null : elem.getLopdInfoAdicional().getTraduccion(idioma);
+			this.lopdResponsable = elem.getLopdResponsable();
+			this.mensajes = elem.getMensajes();
+			this.nombreProcedimientoWorkFlow = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccion(idioma);
+			this.observaciones = elem.getObservaciones() == null ? null : elem.getObservaciones().getTraduccion(idioma);
+			this.pendienteIndexar = elem.isPendienteIndexar();
+			this.pendienteMensajesGestor = elem.isPendienteMensajesGestor();
+			this.pendienteMensajesSupervisor = elem.isPendienteMensajesSupervisor();
+			this.publicado = elem.isPublicado();
+			this.requisitos = elem.getRequisitos() == null ? null : elem.getRequisitos().getTraduccion(idioma);
+			this.responsable = elem.getResponsable();
+			this.responsableEmail = elem.getResponsableEmail();
+			this.responsableTelefono = elem.getResponsableTelefono();
+			this.silencio = elem.getSilencio() == null ? null : elem.getSilencio().getCodigo();
+			this.terminoResolucion = elem.getTerminoResolucion() == null ? null : elem.getTerminoResolucion().getTraduccion(idioma);
+			this.tieneTasa = elem.isTieneTasa();
+			this.tipo = elem.getTipo();
+			this.tipoProcedimiento = elem.getTipoProcedimiento() == null ? null : elem.getTipoProcedimiento().getCodigo();
+			this.tipoVia = elem.getTipoVia() == null ? null : elem.getTipoVia().getCodigo();
+			this.uaInstructor = elem.getUaInstructor() == null ? null : elem.getUaInstructor().getCodigo();
+			this.uaResponsable = elem.getUaResponsable() == null ? null : elem.getUaResponsable().getCodigo();
+			this.usuarioAuditoria = elem.getUsuarioAuditoria();
+			this.workflow = elem.getWorkflow() == null ? null : elem.getWorkflow().name();
+		}
+
 
 //		try {
 //			// copiamos los datos que no tienen la misma estructura:
@@ -267,7 +374,16 @@ public class Procedimientos extends EntidadBase {
 
 	public Procedimientos(final ProcedimientoGridDTO elem, final String urlBase, final String idioma,
 			final boolean hateoasEnabled) {
-		super(elem, urlBase, idioma, hateoasEnabled);
+//		super(elem, urlBase, idioma, hateoasEnabled);
+		if(elem != null) {
+			this.codigo = elem.getCodigo();
+			this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA().toString();
+			this.estado = elem.getEstado();
+			this.estadoSIA = elem.getEstadoSIA() == null ? null : elem.getEstadoSIA().toString();
+			this.tipo = elem.getTipo();
+			this.nombre = elem.getNombre();
+			this.codigoWF = elem.getCodigoWFPub();
+		}
 	}
 
 	@Override
@@ -281,31 +397,6 @@ public class Procedimientos extends EntidadBase {
 //		linkFamilia = this.generaLink(this.familia, Constantes.ENTIDADFAMILIA, Constantes.URLFAMILIA, urlBase, null);
 //		linkLopdInfoAdicional = this.generaLinkArchivo(this.lopdInfoAdicional, urlBase, null);
 
-	}
-
-	public static Procedimientos valueOf(final String json) {
-		final ObjectMapper objectMapper = new ObjectMapper();
-		final TypeReference<Procedimientos> typeRef = new TypeReference<Procedimientos>() {
-		};
-		Procedimientos obj;
-		try {
-			obj = (Procedimientos) objectMapper.readValue(json, typeRef);
-		} catch (final IOException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
-		return obj;
-	}
-
-	public String toJson() {
-		try {
-			final ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false);
-			return objectMapper.writeValueAsString(this);
-		} catch (final JsonProcessingException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Override
@@ -675,19 +766,19 @@ public class Procedimientos extends EntidadBase {
 		this.fechaSIA = fechaSIA;
 	}
 
-	/**
-	 * @return the linkServicioResponsable
-	 */
-	public Link getLinkServicioResponsable() {
-		return linkServicioResponsable;
-	}
+//	/**
+//	 * @return the linkServicioResponsable
+//	 */
+//	public Link getLinkServicioResponsable() {
+//		return linkServicioResponsable;
+//	}
 
-	/**
-	 * @param linkServicioResponsable the linkServicioResponsable to set
-	 */
-	public void setLinkServicioResponsable(final Link linkServicioResponsable) {
-		this.linkServicioResponsable = linkServicioResponsable;
-	}
+//	/**
+//	 * @param linkServicioResponsable the linkServicioResponsable to set
+//	 */
+//	public void setLinkServicioResponsable(final Link linkServicioResponsable) {
+//		this.linkServicioResponsable = linkServicioResponsable;
+//	}
 
 	/**
 	 * @return the servicioResponsable
@@ -704,19 +795,19 @@ public class Procedimientos extends EntidadBase {
 		this.servicioResponsable = servicioResponsable;
 	}
 
-	/**
-	 * @return the linkUnidadAdministrativa
-	 */
-	public Link getLinkUnidadAdministrativa() {
-		return linkUnidadAdministrativa;
-	}
-
-	/**
-	 * @param linkUnidadAdministrativa the linkUnidadAdministrativa to set
-	 */
-	public void setLinkUnidadAdministrativa(final Link linkUnidadAdministrativa) {
-		this.linkUnidadAdministrativa = linkUnidadAdministrativa;
-	}
+//	/**
+//	 * @return the linkUnidadAdministrativa
+//	 */
+//	public Link getLinkUnidadAdministrativa() {
+//		return linkUnidadAdministrativa;
+//	}
+//
+//	/**
+//	 * @param linkUnidadAdministrativa the linkUnidadAdministrativa to set
+//	 */
+//	public void setLinkUnidadAdministrativa(final Link linkUnidadAdministrativa) {
+//		this.linkUnidadAdministrativa = linkUnidadAdministrativa;
+//	}
 
 	/**
 	 * @return the unidadAdministrativa
@@ -733,19 +824,19 @@ public class Procedimientos extends EntidadBase {
 		this.unidadAdministrativa = unidadAdministrativa;
 	}
 
-	/**
-	 * @return the linkOrganResolutori
-	 */
-	public Link getLinkOrganResolutori() {
-		return linkOrganResolutori;
-	}
+//	/**
+//	 * @return the linkOrganResolutori
+//	 */
+//	public Link getLinkOrganResolutori() {
+//		return linkOrganResolutori;
+//	}
 
-	/**
-	 * @param linkOrganResolutori the linkOrganResolutori to set
-	 */
-	public void setLinkOrganResolutori(final Link linkOrganResolutori) {
-		this.linkOrganResolutori = linkOrganResolutori;
-	}
+//	/**
+//	 * @param linkOrganResolutori the linkOrganResolutori to set
+//	 */
+//	public void setLinkOrganResolutori(final Link linkOrganResolutori) {
+//		this.linkOrganResolutori = linkOrganResolutori;
+//	}
 
 	/**
 	 * @return the organResolutori
@@ -762,19 +853,19 @@ public class Procedimientos extends EntidadBase {
 		this.organResolutori = organResolutori;
 	}
 
-	/**
-	 * @return the linkFamilia
-	 */
-	public Link getLinkFamilia() {
-		return linkFamilia;
-	}
+//	/**
+//	 * @return the linkFamilia
+//	 */
+//	public Link getLinkFamilia() {
+//		return linkFamilia;
+//	}
 
-	/**
-	 * @param linkFamilia the linkFamilia to set
-	 */
-	public void setLinkFamilia(final Link linkFamilia) {
-		this.linkFamilia = linkFamilia;
-	}
+//	/**
+//	 * @param linkFamilia the linkFamilia to set
+//	 */
+//	public void setLinkFamilia(final Link linkFamilia) {
+//		this.linkFamilia = linkFamilia;
+//	}
 
 	/**
 	 * @return the familia
@@ -822,42 +913,42 @@ public class Procedimientos extends EntidadBase {
 	/**
 	 * @return the comun
 	 */
-	public boolean isComun() {
+	public int getComun() {
 		return comun;
 	}
 
 	/**
 	 * @param comun the comun to set
 	 */
-	public void setComun(final boolean comun) {
+	public void setComun(final int comun) {
 		this.comun = comun;
 	}
 
-	/**
-	 * @return the linkLopdInfoAdicional
-	 */
-	public Link getLinkLopdInfoAdicional() {
-		return linkLopdInfoAdicional;
-	}
+//	/**
+//	 * @return the linkLopdInfoAdicional
+//	 */
+//	public Link getLinkLopdInfoAdicional() {
+//		return linkLopdInfoAdicional;
+//	}
 
-	/**
-	 * @param linkLopdInfoAdicional the linkLopdInfoAdicional to set
-	 */
-	public void setLinkLopdInfoAdicional(final Link linkLopdInfoAdicional) {
-		this.linkLopdInfoAdicional = linkLopdInfoAdicional;
-	}
+//	/**
+//	 * @param linkLopdInfoAdicional the linkLopdInfoAdicional to set
+//	 */
+//	public void setLinkLopdInfoAdicional(final Link linkLopdInfoAdicional) {
+//		this.linkLopdInfoAdicional = linkLopdInfoAdicional;
+//	}
 
 	/**
 	 * @return the lopdInfoAdicional
 	 */
-	public java.lang.Long getLopdInfoAdicional() {
+	public String getLopdInfoAdicional() {
 		return lopdInfoAdicional;
 	}
 
 	/**
 	 * @param lopdInfoAdicional the lopdInfoAdicional to set
 	 */
-	public void setLopdInfoAdicional(final java.lang.Long lopdInfoAdicional) {
+	public void setLopdInfoAdicional(final String lopdInfoAdicional) {
 		this.lopdInfoAdicional = lopdInfoAdicional;
 	}
 
@@ -944,6 +1035,222 @@ public class Procedimientos extends EntidadBase {
 	 */
 	public void setDisponibleFuncionarioHabilitado(boolean disponibleFuncionarioHabilitado) {
 		this.disponibleFuncionarioHabilitado = disponibleFuncionarioHabilitado;
+	}
+
+	public Long getCodigoWF() {
+		return codigoWF;
+	}
+
+	public void setCodigoWF(Long codigoWF) {
+		this.codigoWF = codigoWF;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public String getWorkflow() {
+		return workflow;
+	}
+
+	public void setWorkflow(String workflow) {
+		this.workflow = workflow;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public boolean isInterno() {
+		return interno;
+	}
+
+	public void setInterno(boolean interno) {
+		this.interno = interno;
+	}
+
+	public boolean isPublicado() {
+		return publicado;
+	}
+
+	public void setPublicado(boolean publicado) {
+		this.publicado = publicado;
+	}
+
+	public Long getDatosPersonalesLegitimacion() {
+		return datosPersonalesLegitimacion;
+	}
+
+	public void setDatosPersonalesLegitimacion(Long datosPersonalesLegitimacion) {
+		this.datosPersonalesLegitimacion = datosPersonalesLegitimacion;
+	}
+
+	public Long getUaResponsable() {
+		return uaResponsable;
+	}
+
+	public void setUaResponsable(Long uaResponsable) {
+		this.uaResponsable = uaResponsable;
+	}
+
+	public Long getUaInstructor() {
+		return uaInstructor;
+	}
+
+	public void setUaInstructor(Long uaInstructor) {
+		this.uaInstructor = uaInstructor;
+	}
+
+	public Long getIniciacion() {
+		return iniciacion;
+	}
+
+	public void setIniciacion(Long iniciacion) {
+		this.iniciacion = iniciacion;
+	}
+
+	public Long getSilencio() {
+		return silencio;
+	}
+
+	public void setSilencio(Long silencio) {
+		this.silencio = silencio;
+	}
+
+	public Long getTipoProcedimiento() {
+		return tipoProcedimiento;
+	}
+
+	public void setTipoProcedimiento(Long tipoProcedimiento) {
+		this.tipoProcedimiento = tipoProcedimiento;
+	}
+
+	public Long getTipoVia() {
+		return tipoVia;
+	}
+
+	public void setTipoVia(Long tipoVia) {
+		this.tipoVia = tipoVia;
+	}
+
+	public boolean isHabilitadoApoderado() {
+		return habilitadoApoderado;
+	}
+
+	public void setHabilitadoApoderado(boolean habilitadoApoderado) {
+		this.habilitadoApoderado = habilitadoApoderado;
+	}
+
+	public String getHabilitadoFuncionario() {
+		return habilitadoFuncionario;
+	}
+
+	public void setHabilitadoFuncionario(String habilitadoFuncionario) {
+		this.habilitadoFuncionario = habilitadoFuncionario;
+	}
+
+	public boolean isTieneTasa() {
+		return tieneTasa;
+	}
+
+	public void setTieneTasa(boolean tieneTasa) {
+		this.tieneTasa = tieneTasa;
+	}
+
+	public String getResponsableEmail() {
+		return responsableEmail;
+	}
+
+	public void setResponsableEmail(String responsableEmail) {
+		this.responsableEmail = responsableEmail;
+	}
+
+	public String getResponsableTelefono() {
+		return responsableTelefono;
+	}
+
+	public void setResponsableTelefono(String responsableTelefono) {
+		this.responsableTelefono = responsableTelefono;
+	}
+
+	public String getNombreProcedimientoWorkFlow() {
+		return nombreProcedimientoWorkFlow;
+	}
+
+	public void setNombreProcedimientoWorkFlow(String nombreProcedimientoWorkFlow) {
+		this.nombreProcedimientoWorkFlow = nombreProcedimientoWorkFlow;
+	}
+
+	public String getDatosPersonalesFinalidad() {
+		return datosPersonalesFinalidad;
+	}
+
+	public void setDatosPersonalesFinalidad(String datosPersonalesFinalidad) {
+		this.datosPersonalesFinalidad = datosPersonalesFinalidad;
+	}
+
+	public String getDatosPersonalesDestinatario() {
+		return datosPersonalesDestinatario;
+	}
+
+	public void setDatosPersonalesDestinatario(String datosPersonalesDestinatario) {
+		this.datosPersonalesDestinatario = datosPersonalesDestinatario;
+	}
+
+	public String getTerminoResolucion() {
+		return terminoResolucion;
+	}
+
+	public void setTerminoResolucion(String terminoResolucion) {
+		this.terminoResolucion = terminoResolucion;
+	}
+
+	public String getMensajes() {
+		return mensajes;
+	}
+
+	public void setMensajes(String mensajes) {
+		this.mensajes = mensajes;
+	}
+
+	public String getUsuarioAuditoria() {
+		return usuarioAuditoria;
+	}
+
+	public void setUsuarioAuditoria(String usuarioAuditoria) {
+		this.usuarioAuditoria = usuarioAuditoria;
+	}
+
+	public boolean isPendienteIndexar() {
+		return pendienteIndexar;
+	}
+
+	public void setPendienteIndexar(boolean pendienteIndexar) {
+		this.pendienteIndexar = pendienteIndexar;
+	}
+
+	public boolean isPendienteMensajesGestor() {
+		return pendienteMensajesGestor;
+	}
+
+	public void setPendienteMensajesGestor(boolean pendienteMensajesGestor) {
+		this.pendienteMensajesGestor = pendienteMensajesGestor;
+	}
+
+	public boolean isPendienteMensajesSupervisor() {
+		return pendienteMensajesSupervisor;
+	}
+
+	public void setPendienteMensajesSupervisor(boolean pendienteMensajesSupervisor) {
+		this.pendienteMensajesSupervisor = pendienteMensajesSupervisor;
 	}
 
 }

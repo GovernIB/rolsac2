@@ -3,6 +3,7 @@ package es.caib.rolsac2.service.facade;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.EdificioFiltro;
+import es.caib.rolsac2.service.model.filtro.EntidadRaizFiltro;
 import es.caib.rolsac2.service.model.filtro.PluginFiltro;
 import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
 
@@ -122,6 +123,14 @@ public interface AdministracionEntServiceFacade {
     Pagina<UsuarioGridDTO> findByFiltro(UsuarioFiltro filtro);
 
     /**
+     * Devuelve una página con todos los usuarios con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return una página con el número total de usuarios y una lista con el rango indicado
+     */
+    Pagina<UsuarioGridDTO> findAllUsuariosByFiltro(UsuarioFiltro filtro);
+
+    /**
      * Devuelve si existe el identificador en la entidad
      *
      * @param identificador identificador a comprobar
@@ -199,4 +208,49 @@ public interface AdministracionEntServiceFacade {
      * @return
      */
     boolean existePluginTipoByEntidad(Long idEntidad, String tipo);
+
+    /**************************************************
+     **************** ENTIDAD RAIZ ************************
+     **************************************************/
+
+    /**
+     * Crea un nuevo plugin a la base de datos relacionada con la unidad indicada.
+     *
+     * @param dto datos del tipo de EntidadRaiz
+     * @return EL identificador de la nueva EntidadRaiz
+     * @throws RecursoNoEncontradoException si la EntidadRaiz no existe
+     */
+    Long createEntidadRaiz(EntidadRaizDTO dto) throws RecursoNoEncontradoException;
+
+    /**
+     * Actualiza los datos de una EntidadRaiz a la base de datos.
+     *
+     * @param dto nuevos datos de la EntidadRaiz
+     * @throws RecursoNoEncontradoException si la EntidadRaiz con el id no existe.
+     */
+    void updateEntidadRaiz(EntidadRaizDTO dto) throws RecursoNoEncontradoException;
+
+    /**
+     * Borra una EntidadRaiz de la bbdd
+     *
+     * @param id identificador de la EntidadRaiz a borrar
+     * @throws RecursoNoEncontradoException si la EntidadRaiz con el id no existe.
+     */
+    void deleteEntidadRaiz(Long id) throws RecursoNoEncontradoException;
+
+    /**
+     * Retorna un opcional con la EntidadRaiz indicada por el identificador
+     *
+     * @param id identificador de la EntidadRaiz a buscar
+     * @return un opcional con los datos de la EntidadRaiz indicada o vacío si no existe
+     */
+    EntidadRaizDTO findEntidadRaizById(Long id);
+
+    /**
+     * Devuelve una página con la EntidadRaiz relacionada con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return una página con el número total de EntidadRaiz y la lista EntidadRaiz con el rango indicado
+     */
+    Pagina<EntidadRaizGridDTO> findByFiltro(EntidadRaizFiltro filtro);
 }

@@ -10,10 +10,14 @@ import es.caib.rolsac2.persistence.repository.PlatTramitElectronicaRepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
+import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
+import es.caib.rolsac2.service.model.TipoTramitacionDTO;
+import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
+import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +48,7 @@ import java.util.List;
 public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectronicaServiceFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlatTramitElectronicaServiceFacadeBean.class);
+	private static final String ERROR_LITERAL = "Error";
 
     @Inject
     private PlatTramitElectronicaRepository platTramitElectronicaRepository;
@@ -126,4 +131,21 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
     public Boolean checkIdentificador(String identificador) {
         return platTramitElectronicaRepository.checkIdentificador(identificador);
     }
+
+    @Override
+	@RolesAllowed({ TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+			TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR,
+			TypePerfiles.RESTAPI_VALOR })
+	public Pagina<PlatTramitElectronicaDTO> findByFiltroRest(PlatTramitElectronicaFiltro filtro) {
+		try {
+			List<PlatTramitElectronicaDTO> items = platTramitElectronicaRepository.findPagedByFiltroRest(filtro);
+			long total = platTramitElectronicaRepository.countByFiltro(filtro);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error(ERROR_LITERAL, e);
+			List<PlatTramitElectronicaDTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
 }

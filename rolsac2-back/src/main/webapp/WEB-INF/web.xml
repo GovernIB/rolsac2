@@ -121,6 +121,14 @@
         <location>/error/accessException.xhtml</location>
     </error-page>
     <error-page>
+        <exception-type>es.caib.rolsac2.back.exception.GestorSinUAExcepcion</exception-type>
+        <location>/error/uaRelacionadaException.xhtml</location>
+    </error-page>
+    <error-page>
+        <exception-type>es.caib.rolsac2.back.exception.PerfilException</exception-type>
+        <location>/error/perfilException.xhtml.xhtml</location>
+    </error-page>
+    <error-page>
         <exception-type>javax.ejb.EJBAccessException</exception-type>
         <location>/error/accessException.xhtml</location>
     </error-page>

@@ -36,8 +36,8 @@ import es.caib.rolsac2.service.model.ServicioDTO;
 import es.caib.rolsac2.service.model.ServicioGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 
-@Path("/v1/" + Constantes.ENTIDAD_PROCEDIMIENTO)
-@Tag(description = "/v1/" + Constantes.ENTIDAD_PROCEDIMIENTO, name = Constantes.ENTIDAD_PROCEDIMIENTO)
+@Path("/v1/" + Constantes.ENTIDAD_SERVICIO)
+@Tag(description = "/v1/" + Constantes.ENTIDAD_SERVICIO, name = Constantes.ENTIDAD_SERVICIO)
 public class ServiciosResource {
 
 	@EJB
@@ -77,8 +77,10 @@ public class ServiciosResource {
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
-		fg.setPaginaTamanyo(filtro.getSize());
-		fg.setPaginaFirst(filtro.getPage());
+		if(filtro.getFiltroPaginacion() != null) {
+			fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
+			fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
+		}
 
 		// si viene el orden intentamos rellenarlo
 //		if (orden != null) {
@@ -122,16 +124,16 @@ public class ServiciosResource {
 		}
 		fg.setIdEntidad(new Long(codigo));
 
-		final RespuestaServicios respuesta = getRespuesta(fg);
-		if (respuesta.getResultado() != null && !respuesta.getResultado().isEmpty()) {
-			String cabecera;
-			if ("ca".equals(lang)) {
-				cabecera = System.getProperty("es.caib.rolsac.lopd.cabecera.ca");
-			} else {
-				cabecera = System.getProperty("es.caib.rolsac.lopd.cabecera.es");
-			}
-			respuesta.getResultado().get(0).setLopdCabecera(cabecera);
-		}
+//		final RespuestaServicios respuesta = getRespuesta(fg);
+//		if (respuesta.getResultado() != null && !respuesta.getResultado().isEmpty()) {
+//			String cabecera;
+//			if ("ca".equals(lang)) {
+//				cabecera = System.getProperty("es.caib.rolsac.lopd.cabecera.ca");
+//			} else {
+//				cabecera = System.getProperty("es.caib.rolsac.lopd.cabecera.es");
+//			}
+//			respuesta.getResultado().get(0).setLopdCabecera(cabecera);
+//		}
 
 		return Response.ok(getRespuestaSimple(fg), MediaType.APPLICATION_JSON).build();
 	}
@@ -152,7 +154,7 @@ public class ServiciosResource {
 	}
 
 	private RespuestaServicios getRespuestaSimple(ProcedimientoFiltro filtro) throws DelegateException {
-		ServicioDTO resultadoBusqueda = servicioService.findServicioById(filtro.getIdEntidad());
+		ServicioDTO resultadoBusqueda = servicioService.findServicioByCodigo(filtro.getIdEntidad());
 
 		List<Servicios> lista = new ArrayList<>();
 
@@ -162,37 +164,37 @@ public class ServiciosResource {
 				lista);
 	}
 
-	/**
-	 * Para obtener el enlace.
-	 *
-	 * @param idioma
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	@POST
-	@Path("/enlaceTelematico/{codigo}")
-	@Operation(operationId = "getEnlaceTelematico", summary = "Obtiene un enlace telematico", description = "Obtiene el enlace con el id (código) indicado y su idioma")
-	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
-	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response getEnlaceTelematico(
-			@Parameter(description = "Código servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo,
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang)
-			throws Exception, ValidationException {
-
-//		ServicioDTO resultadoBusqueda = servicioService.findServicioById(codigo);
-
-//		if (resultadoBusqueda != null) {
+//	/**
+//	 * Para obtener el enlace.
+//	 *
+//	 * @param idioma
+//	 * @param id
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	@POST
+//	@Path("/enlaceTelematico/{codigo}")
+//	@Operation(operationId = "getEnlaceTelematico", summary = "Obtiene un enlace telematico", description = "Obtiene el enlace con el id (código) indicado y su idioma")
+//	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
+//	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
+//	public Response getEnlaceTelematico(
+//			@Parameter(description = "Código servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo,
+//			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang)
+//			throws Exception, ValidationException {
 //
-//		}
-
-//		final String url = DelegateUtil.getServicioDelegate().getEnlaceTelematico(Long.valueOf(codigo), lang);
-		final String url = "";
-
-		final RespuestaServicios respuesta = new RespuestaServicios();
-		respuesta.setUrl(url);
-
-		return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
-	}
+////		ServicioDTO resultadoBusqueda = servicioService.findServicioById(codigo);
+//
+////		if (resultadoBusqueda != null) {
+////
+////		}
+//
+////		final String url = DelegateUtil.getServicioDelegate().getEnlaceTelematico(Long.valueOf(codigo), lang);
+//		final String url = "";
+//
+//		final RespuestaServicios respuesta = new RespuestaServicios();
+//		respuesta.setUrl(url);
+//
+//		return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+//	}
 
 }

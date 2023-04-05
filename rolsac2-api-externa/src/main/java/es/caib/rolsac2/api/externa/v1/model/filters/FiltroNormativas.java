@@ -1,6 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.model.filters;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -11,14 +10,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
+import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.TipoBoletinDTO;
-import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 
 /**
@@ -29,37 +22,39 @@ import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
  */
 @XmlRootElement
 @Schema(name = "FiltroNormativas", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
-public class FiltroNormativas extends FiltroPaginacion {
+public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FiltroNormativas.class);
 
 	public static final String SAMPLE = Constantes.SALTO_LINEA +
-			"{\"codigoUA\":\"0\"," 					+ Constantes.SALTO_LINEA +
+			"{"	+
+//			"\"codigoUA\":\"0\"," 					+ Constantes.SALTO_LINEA +
 			"\"fechaBoletin\":\"DD/MM/YYYY\"," 		+ Constantes.SALTO_LINEA +
 			"\"codigoProcedimiento\":\"0\"," 		+ Constantes.SALTO_LINEA +
 			"\"codigoServicio\":\"0\"," 			+ Constantes.SALTO_LINEA +
 			"\"numNorma\":\"0\"," 					+ Constantes.SALTO_LINEA +
 			"\"fechaPublicacion\":\"DD/MM/YYYY\"," 	+ Constantes.SALTO_LINEA +
-			"\"tipoPublicacion\":\"0\"," 			+ Constantes.SALTO_LINEA +
+//			"\"tipoPublicacion\":\"0\"," 			+ Constantes.SALTO_LINEA +
 			"\"texto\":\"0\"," 						+ Constantes.SALTO_LINEA +
-			"\"page\":\"1\",\"size\":\"30\""		+
+			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
 			"}";
 
 	public static final String SAMPLE_JSON =
-			"{\"codigoUA\":\"0\"," 					+
-			"\"fechaBoletin\":\"DD/MM/YYYY\"," 		+
-			"\"codigoProcedimiento\":\"0\"," 		+
-			"\"codigoServicio\":\"0\"," 			+
-			"\"numNorma\":\"0\"," 					+
-			"\"fechaPublicacion\":\"DD/MM/YYYY\"," 	+
-			"\"tipoPublicacion\":\"0\"," 			+
-			"\"texto\":\"0\"," 						+
-			"\"page\":\"1\",\"size\":\"30\""		+
+			"{" +
+//			"\"codigoUA\":\"0\"," 					+
+			"\"fechaBoletin\":null," 		+
+			"\"codigoProcedimiento\":null," 		+
+			"\"codigoServicio\":null," 			+
+			"\"numNorma\":null," 					+
+			"\"fechaPublicacion\":null," 	+
+//			"\"tipoPublicacion\":\"0\"," 			+
+			"\"texto\":null," 						+
+			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
 			"}";
 
-	/** codigoUA. **/
-	@Schema(name = "codigoUA", description = "codigoUA", type = SchemaType.INTEGER, required = false)
-	private Integer codigoUA;
+//	/** codigoUA. **/
+//	@Schema(name = "codigoUA", description = "codigoUA", type = SchemaType.INTEGER, required = false)
+//	private Integer codigoUA;
 
 	/** fechaBoletin. **/
 	@Schema(name = "fechaBoletin", description = "fechaBoletin", type = SchemaType.STRING, required = false)
@@ -81,89 +76,56 @@ public class FiltroNormativas extends FiltroPaginacion {
 	@Schema(name = "fechaPublicacion", description = "fechaPublicacion", type = SchemaType.STRING, required = false)
 	private String fechaPublicacion;
 
-	/** tipoPublicacion. **/
-	@Schema(name = "tipoPublicacion", description = "tipoPublicacion", type = SchemaType.INTEGER, required = false)
-	private Integer tipoPublicacion;
+//	/** tipoPublicacion. **/
+//	@Schema(name = "tipoPublicacion", description = "tipoPublicacion", type = SchemaType.INTEGER, required = false)
+//	private Integer tipoPublicacion;
+
+	/** FiltroPaginacion. **/
+	@Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+	private FiltroPaginacion filtroPaginacion;
 
 	/** texto. **/
 	@Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
 	private String texto;
 
-	public FiltroGenerico toFiltroGenerico() {
-		FiltroGenerico fg = new FiltroGenerico();
+//	public static FiltroNormativas valueOf(final String json) {
+//		final ObjectMapper objectMapper = new ObjectMapper();
+//		final TypeReference<FiltroNormativas> typeRef = new TypeReference<FiltroNormativas>() {
+//		};
+//		FiltroNormativas obj;
+//		try {
+//			obj = (FiltroNormativas) objectMapper.readValue(json, typeRef);
+//		} catch (final IOException e) {
+//			LOG.error(e.getMessage(), e);
+//			throw new RuntimeException(e);
+//		}
+//		return obj;
+//	}
+//
+//	public String toJson() {
+//		try {
+//			final ObjectMapper objectMapper = new ObjectMapper();
+//			objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false);
+//			return objectMapper.writeValueAsString(this);
+//		} catch (final JsonProcessingException e) {
+//			LOG.error(e.getMessage(), e);
+//			throw new RuntimeException(e);
+//		}
+//	}
 
-		if (this.codigoUA != null) {
-			fg.addFiltro(FiltroGenerico.FILTRO_NORMATIVA_UA, this.codigoUA + "");
-		}
+//	/**
+//	 * @return the codigoUA
+//	 */
+//	public Integer getCodigoUA() {
+//		return codigoUA;
+//	}
 
-		if (this.fechaBoletin != null) {
-			fg.addFiltro(FiltroGenerico.FILTRO_NORMATIVA_FECHABOLETIN, this.fechaBoletin + "");
-		}
-
-		if (this.codigoProcedimiento != null) {
-			fg.addFiltro(FiltroGenerico.FILTRO_NORMATIVA_PROCEDIMIENTO, this.codigoProcedimiento + "");
-		}
-
-		if (this.codigoServicio != null) {
-			fg.addFiltro(FiltroGenerico.FILTRO_NORMATIVA_SERVICIO, this.codigoServicio + "");
-		}
-
-		if (this.numNorma != null) {
-			fg.addFiltro(FiltroGenerico.FILTRO_NORMATIVA_NUMERO_NORMA, this.numNorma + "");
-		}
-
-		if (this.fechaPublicacion != null) {
-			fg.addFiltro(FiltroGenerico.FILTRO_NORMATIVA_FECHA_PUBLICACION, this.fechaPublicacion + "");
-		}
-		if (this.tipoPublicacion != null) {
-			fg.addFiltro(FiltroGenerico.FILTRO_NORMATIVA_TIPO_PUBLICACION, this.tipoPublicacion + "");
-		}
-
-		if (this.texto != null) {
-			fg.addFiltro(FiltroGenerico.FILTRO_NORMATIVA_TEXTO, this.texto + "");
-		}
-
-		return fg;
-	}
-
-	public static FiltroNormativas valueOf(final String json) {
-		final ObjectMapper objectMapper = new ObjectMapper();
-		final TypeReference<FiltroNormativas> typeRef = new TypeReference<FiltroNormativas>() {
-		};
-		FiltroNormativas obj;
-		try {
-			obj = (FiltroNormativas) objectMapper.readValue(json, typeRef);
-		} catch (final IOException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
-		return obj;
-	}
-
-	public String toJson() {
-		try {
-			final ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false);
-			return objectMapper.writeValueAsString(this);
-		} catch (final JsonProcessingException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * @return the codigoUA
-	 */
-	public Integer getCodigoUA() {
-		return codigoUA;
-	}
-
-	/**
-	 * @param codigoUA the codigoUA to set
-	 */
-	public void setCodigoUA(Integer codigoUA) {
-		this.codigoUA = codigoUA;
-	}
+//	/**
+//	 * @param codigoUA the codigoUA to set
+//	 */
+//	public void setCodigoUA(Integer codigoUA) {
+//		this.codigoUA = codigoUA;
+//	}
 
 	/**
 	 * @return the fechaBoletin
@@ -235,19 +197,19 @@ public class FiltroNormativas extends FiltroPaginacion {
 		this.fechaPublicacion = fechaPublicacion;
 	}
 
-	/**
-	 * @return the tipoPublicacion
-	 */
-	public Integer getTipoPublicacion() {
-		return tipoPublicacion;
-	}
+//	/**
+//	 * @return the tipoPublicacion
+//	 */
+//	public Integer getTipoPublicacion() {
+//		return tipoPublicacion;
+//	}
 
-	/**
-	 * @param tipoPublicacion the tipoPublicacion to set
-	 */
-	public void setTipoPublicacion(Integer tipoPublicacion) {
-		this.tipoPublicacion = tipoPublicacion;
-	}
+//	/**
+//	 * @param tipoPublicacion the tipoPublicacion to set
+//	 */
+//	public void setTipoPublicacion(Integer tipoPublicacion) {
+//		this.tipoPublicacion = tipoPublicacion;
+//	}
 
 	/**
 	 * @return the texto
@@ -263,17 +225,14 @@ public class FiltroNormativas extends FiltroPaginacion {
 		this.texto = texto;
 	}
 
-	public NormativaFiltro toNormativaFiltro(TipoNormativaDTO tipoNormativa, TipoBoletinDTO tipoBoletin) {
+	public NormativaFiltro toNormativaFiltro() {
 		NormativaFiltro resultado = new NormativaFiltro();
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 
-		if (this.codigoUA != null) {
-//			List<Long> idUAsHijas = new ArrayList<>();
-//			idUAsHijas.add(codigoUA.longValue());
+//		if (this.codigoUA != null) {
 //
-//			resultado.setIdUAsHijas(idUAsHijas);
-		}
+//		}
 
 		if (this.fechaBoletin != null) {
 			resultado.setFechaBoletin(LocalDate.parse(fechaBoletin, formatter));
@@ -296,10 +255,10 @@ public class FiltroNormativas extends FiltroPaginacion {
 		}
 
 		// ¿tipoPublicacion es tipoNormativa o tipoBoletin?
-		if (this.tipoPublicacion != null) {
-			resultado.setTipoNormativa(tipoNormativa);
-			resultado.setTipoBoletin(tipoBoletin);
-		}
+//		if (this.tipoPublicacion != null) {
+//			resultado.setTipoNormativa(tipoNormativa);
+//			resultado.setTipoBoletin(tipoBoletin);
+//		}
 
 		if (this.texto != null) {
 			resultado.setTexto(texto);
@@ -307,6 +266,14 @@ public class FiltroNormativas extends FiltroPaginacion {
 
 		return resultado;
 
+	}
+
+	public FiltroPaginacion getFiltroPaginacion() {
+		return filtroPaginacion;
+	}
+
+	public void setFiltroPaginacion(FiltroPaginacion filtroPaginacion) {
+		this.filtroPaginacion = filtroPaginacion;
 	}
 
 }

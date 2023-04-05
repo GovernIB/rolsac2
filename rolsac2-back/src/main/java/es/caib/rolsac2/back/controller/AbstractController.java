@@ -71,25 +71,27 @@ public abstract class AbstractController {
                 || clase.equals(ViewTipoSexo.class) || clase.equals(ViewTipoBoletin.class)
                 || clase.equals(ViewTipoVia.class) || clase.equals(ViewTipoPublicoObjetivo.class)
                 || clase.equals(ViewTipoSilencioAdministrativo.class)
-                || clase.equals(ViewTipoLegitimacion.class))
+                || clase.equals(ViewTipoLegitimacion.class) || clase.equals(ViewUsuario.class))
                 || isAdministradorEntidad() && (clase.equals(ViewConfiguracionEntidad.class)
-                || clase.equals(ViewPlugins.class) || clase.equals(ViewUsuario.class)
+                || clase.equals(ViewPlugins.class) || clase.equals(ViewUsuario.class) || clase.equals(ViewEntidadRaiz.class)
                 || clase.equals(ViewRoles.class) || clase.equals(ViewTipoUnidadAdministrativa.class)
                 || clase.equals(ViewTipoMediaUA.class) || clase.equals(ViewPlatTramitElectronica.class)
                 || clase.equals(ViewTipoTramitacion.class) || clase.equals(ViewTipoProcedimiento.class)
                 || clase.equals(ViewTema.class) || clase.equals(ViewPublicoObjetivoEntidad.class)
                 || clase.equals(ViewTipoMediaFicha.class) || clase.equals(ViewAlertas.class)
                 || clase.equals(ViewEventosPlat.class)
-                || clase.equals(ViewProcesos.class) || clase.equals(ViewProcesosSolr.class) || clase.equals(ViewProcesosLog.class)
+                || clase.equals(ViewProcesos.class) || clase.equals(ViewProcesosSolr.class) || clase.equals(ViewProcesosSIA.class) || clase.equals(ViewProcesosLog.class)
                 || clase.equals(ViewEvolucion.class) || clase.equals(ViewContenidos.class)
                 || clase.equals(ViewUnidadAdministrativa.class)) || clase.equals(ViewLOPD.class)
+                || clase.equals(ViewOrganigramaDir3.class)
                 || (isAdministradorContenidos() || isGestor() || isInformador())
                 && (clase.equals(ViewUnidadAdministrativa.class) || clase.equals(ViewNormativa.class)
-                || clase.equals(ViewProcedimientos.class) || clase.equals(ViewServicios.class))))
-                ) {
+                || clase.equals(ViewProcedimientos.class) || clase.equals(ViewServicios.class)
+        )))
+        ) {
             throw new NoAutorizadoException();
         }
-        if(isInformador()) {
+        if (isInformador()) {
             setModoAcceso(TypeModoAcceso.CONSULTA.toString());
         }
     }

@@ -3,6 +3,7 @@ package es.caib.rolsac2.service.model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * Dades d'un Procedimiento.
@@ -26,6 +27,28 @@ public class ServicioGridDTO extends ModelApi {
     private String nombre;
 
     private LocalDate fecha;
+    /**
+     * Fecha actualizacion
+     */
+    private Date fechaActualizacion;
+
+    /**
+     * Comun
+     */
+    private Boolean comun;
+
+    /**
+     * Tiene mensajes pendientes.
+     **/
+    private boolean mensajesPendienteGestor;
+    private boolean mensajesPendienteSupervisor;
+
+    /**
+     * Información visibilidad
+     **/
+    private Date fechaPublicacion;
+    private Date fechaDespublicacion;
+
 
     public Long getCodigo() {
         return codigo;
@@ -124,6 +147,111 @@ public class ServicioGridDTO extends ModelApi {
 
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
+    }
+
+    public boolean isMensajesPendienteGestor() {
+        return mensajesPendienteGestor;
+    }
+
+    public void setMensajesPendienteGestor(boolean mensajesPendienteGestor) {
+        this.mensajesPendienteGestor = mensajesPendienteGestor;
+    }
+
+    public boolean isMensajesPendienteSupervisor() {
+        return mensajesPendienteSupervisor;
+    }
+
+    public void setMensajesPendienteSupervisor(boolean mensajesPendienteSupervisor) {
+        this.mensajesPendienteSupervisor = mensajesPendienteSupervisor;
+    }
+
+    public Date getFechaPublicacion() {
+        return fechaPublicacion;
+    }
+
+    public void setFechaPublicacion(Date fechaPublicacion) {
+        this.fechaPublicacion = fechaPublicacion;
+    }
+
+    public Date getFechaDespublicacion() {
+        return fechaDespublicacion;
+    }
+
+    public void setFechaDespublicacion(Date fechaDespublicacion) {
+        this.fechaDespublicacion = fechaDespublicacion;
+    }
+
+    public Date getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+
+    public void setFechaActualizacion(Date fechaActualizacion) {
+        this.fechaActualizacion = fechaActualizacion;
+    }
+
+    public Boolean getComun() {
+        return comun;
+    }
+
+    public void setComun(Boolean comun) {
+        this.comun = comun;
+    }
+
+    public String getLiteralComun() {
+        if (comun == null) {
+            return "";
+        }
+        return comun ? "Sí" : "No";
+    }
+
+
+    /**
+     * Icono de visibilidad
+     *
+     * @return
+     */
+    public String getIcon() {
+        if (this.isVisible()) {
+            return "pi pi-eye iconoVerde";
+        } else {
+            return "pi pi-eye-slash iconoRojo";
+        }
+
+    }
+
+
+    /**
+     * Tiene mensajes pendientes.
+     *
+     * @return
+     */
+    public boolean tieneMensajesPendientes() {
+        return isMensajesPendienteGestor() || isMensajesPendienteSupervisor();
+    }
+
+    /**
+     * Devuelve la ruta dela imagen.
+     *
+     * @return
+     */
+    public String getCssMensajes() {
+        if (isMensajesPendienteGestor() && isMensajesPendienteSupervisor()) {
+            return "../images/email_GS.png";
+        } else if (isMensajesPendienteGestor()) {
+            return "../images/email_G.png";
+        } else {//isMensajesPendienteSupervisor()
+            return "../images/email_S.png";
+        }
+    }
+
+    private boolean isVisible() {
+        final Date now = new Date();
+
+        final boolean noCaducado = (getFechaDespublicacion() == null || getFechaDespublicacion().after(now));
+        final boolean publicado = (getFechaPublicacion() == null || getFechaPublicacion().before(now));
+
+        final boolean visible = this.estado != null && this.estado.contains("P");
+        return visible && noCaducado && publicado;
     }
 
     @Override

@@ -137,6 +137,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
+            dataOriginal = (ServicioDTO) data.clone();
 
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             if (id != null && !id.isEmpty()) {
@@ -269,7 +270,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
 
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
-        //params.put("SOLO_MENSAJES","N");
+        params.put("ID", this.data.getCodigo().toString());
         params.put("ESTADO", data.getEstado().toString());
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }
@@ -279,6 +280,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         params.put("SOLO_MENSAJES", "S");
         params.put("ESTADO", data.getEstado().toString());
+        params.put("ID", this.data.getCodigo().toString());
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }
 
@@ -287,7 +289,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         if (!respuesta.isCanceled()) {
             RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
             resetearOrdenListas();
-            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil());
+            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo());
             final DialogResult result = new DialogResult();
             if (this.getModoAcceso() != null) {
                 result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
@@ -310,7 +312,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
             RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
-            procedimientoServiceFacade.actualizarMensajes(data.getCodigo(), respuestaFlujo.getMensajes());
+            procedimientoServiceFacade.actualizarMensajes(data.getCodigo(), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
             data.setMensajes(respuestaFlujo.getMensajes());
         }
     }
@@ -347,7 +349,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         if (this.data.getCodigo() == null) {
             procedimientoServiceFacade.create(this.data, sessionBean.getPerfil());
         } else {
-            procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil());
+            procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil(), UtilJSF.getSessionBean().getEntidad().getCodigo());
         }
 
         final DialogResult result = new DialogResult();
@@ -433,16 +435,18 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }
 
-        if (this.data.isTramitElectronica() && (this.data.getTipoTramitacion().getUrl() == null || this.data.getTipoTramitacion().getUrl().estaVacio()) && this.data.getTipoTramitacion().getCodPlatTramitacion() == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlPlataforma"));
-            return false;
+        if (data.getPlantillaSel() == null || data.getPlantillaSel().getCodigo() == null) {
+            if (this.data.isTramitElectronica() && (this.data.getTipoTramitacion().getUrl() == null || this.data.getTipoTramitacion().getUrl().estaVacio()) && this.data.getTipoTramitacion().getCodPlatTramitacion() == null) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlPlataforma"));
+                return false;
+            }
         }
 
         return retorno;
     }
 
     public void cerrar() {
-        if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && (this.data.getCodigoWF() == null || this.data.compareTo(this.dataOriginal) != 0)) {
+        if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
             PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;
         }

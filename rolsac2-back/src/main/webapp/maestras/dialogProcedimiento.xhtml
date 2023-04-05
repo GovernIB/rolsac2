@@ -104,7 +104,7 @@
                             <p:calendar id="txtFechaPublicacion" styleClass="fecha" disabled="#{dialogProcedimiento.isModoConsulta()}"
                                         value="#{dialogProcedimiento.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
                                         requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
-                                        required="true"
+                                        required="#{empty param['formDialog:closeButton']}"
                                         showOn="button">
                                 <p:ajax event="change" />
                             </p:calendar>
@@ -147,7 +147,7 @@
                             <my:literalComponent id="txtNombre" styleClass="w95"
                                                  value="#{dialogProcedimiento.data.nombreProcedimientoWorkFlow}"
                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
-                                                 required="true"
+                                                 required="#{empty param['formDialog:closeButton']}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimiento.idioma}"
@@ -167,7 +167,7 @@
                             <my:literalComponent id="txtObjeto" styleClass="w95"
                                                  value="#{dialogProcedimiento.data.objeto}"
                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
-                                                 required="true"
+                                                 required="#{empty param['formDialog:closeButton']}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimiento.idioma}"
@@ -187,7 +187,7 @@
                             <my:literalComponent id="txtDestinatarios" styleClass="w95"
                                                  value="#{dialogProcedimiento.data.destinatarios}"
                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
-                                                 required="true"
+                                                 required="#{empty param['formDialog:closeButton']}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimiento.idioma}"
@@ -204,7 +204,7 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.formaInicio']}:"
                                        for="txtFormaIni" />
                         <p:selectOneMenu id="txtFormaIni" value="#{dialogProcedimiento.data.iniciacion}"
-                                         styleClass="w95" required="true" autoWidth="false"
+                                         styleClass="w95" required="#{empty param['formDialog:closeButton']}" autoWidth="false"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          requiredMessage="#{labels['dict.obligatorio.tipoFormaInicio']}"
                                          converter="#{tipoFormaInicioConverter}">
@@ -218,7 +218,7 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.silencioAdministrativo']}:"
                                        for="txtSilAdmin"/>
                         <p:selectOneMenu id="txtSilAdmin" value="#{dialogProcedimiento.data.silencio}"
-                                         styleClass="w95" required="true" autoWidth="false"
+                                         styleClass="w95" required="#{empty param['formDialog:closeButton']}" autoWidth="false"
                                          requiredMessage="#{labels['dict.obligatorio.silencioAdm']}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          converter="#{tipoSilencioAdministrativoConverter}">
@@ -233,7 +233,7 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.tipoProcedimiento']}:"
                                        for="txtTipoProcedimiento"/>
                         <p:selectOneMenu id="txtTipoProcedimiento" value="#{dialogProcedimiento.data.tipoProcedimiento}"
-                                         styleClass="w95" required="true" autoWidth="false"
+                                         styleClass="w95" required="#{empty param['formDialog:closeButton']}" autoWidth="false"
                                          requiredMessage="#{labels['dict.obligatorio.tipoProcedimiento']}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          converter="#{tipoProcedimientoConverter}">
@@ -249,7 +249,7 @@
                                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.tipoVia']}:"
                                                        for="txtTipoVia"/>
                                         <p:selectOneMenu id="txtTipoVia" value="#{dialogProcedimiento.data.tipoVia}"
-                                                         styleClass="w95" required="true" autoWidth="false"
+                                                         styleClass="w95" required="#{empty param['formDialog:closeButton']}" autoWidth="false"
                                                          requiredMessage="#{labels['dict.obligatorio.tipoVia']}"
                                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                                          converter="#{tipoViaConverter}">
@@ -269,7 +269,7 @@
                                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.habilitadoFuncionario']}:"
                                                        for="txtHabilitadoFuncionario"/>
                                         <p:selectOneMenu id="txtHabilitadoFuncionario" value="#{dialogProcedimiento.data.habilitadoFuncionario}"
-                                                         styleClass="w95"  autoWidth="false" required="true"
+                                                         styleClass="w95"  autoWidth="false" required="#{empty param['formDialog:closeButton']}"
                                                          requiredMessage="#{labels['dict.obligatorio.habilitadoFuncionario']}"
                                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                                          >
@@ -377,7 +377,7 @@
                             <my:literalComponent id="txtTerminios" styleClass="w95"
                                                  value="#{dialogProcedimiento.data.terminoResolucion}"
                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
-                                                 required="true"
+                                                 required="#{empty param['formDialog:closeButton']}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimiento.idioma}"
@@ -430,7 +430,7 @@
                         <p>
                             <p:inputText id="txtNombreResp" value="#{dialogProcedimiento.data.responsable}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         required="true" requiredMessage="#{labels['dict.obligatorio.responsable']}"
+                                         required="#{empty param['formDialog:closeButton']}" requiredMessage="#{labels['dict.obligatorio.responsable']}"
                                          styleClass="w95"/>
                         </p>
                     </div>
@@ -439,7 +439,7 @@
                             <h:outputText styleClass="mb-1" value="#{labels['dialogProcedimiento.correoElectronico']}:" for="txtEmailResp"/>
                         </p>
                         <p:inputText id="txtEmailResp" value="#{dialogProcedimiento.data.responsableEmail}"
-                                     validatorMessage="#{dict.emailNoValido}"
+                                     validatorMessage="#{labels['dict.emailNoValido']}"
                                      update="messagesDialog"
                                      disabled="#{dialogProcedimiento.isModoConsulta()}" styleClass="w95">
                             <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" update="messagesDialog" />
@@ -887,10 +887,9 @@
         </p:confirmDialog>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="cdSalirSinGuardar">
-            <p:commandButton value="#{labels['dict.si']}" action="#{dialogProcedimiento.cerrarSinCheck()}" update="messagesDialog" onclick="confirmation.hide()"  />
-            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()"  />
+            <p:commandButton value="#{labels['dict.si']}" action="#{dialogProcedimiento.cerrarSinCheck()}" process="@this" update="messagesDialog" oncomplete="PF('cdSalirSinGuardar').hide();"  />
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();"  />
         </p:confirmDialog>
-
 
     </ui:define>
     <ui:define name="contentFooterDialogLeft">
@@ -939,9 +938,9 @@
                          value="#{labels['dict.guardar']}" update="messagesDialog formDatos formDatosSIA formDatosContacto formDatosLOPD"
                          rendered="#{dialogProcedimiento.mostrarBotonGuardar()}"
                          process="@all"/>
-        <p:commandButton action="#{dialogProcedimiento.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@form" />
+        <p:commandButton id="closeButton" action="#{dialogProcedimiento.cerrar}" update="messagesDialog" process="@all"
+                         value="#{labels['dict.cerrar']}" oncomplete="stopCargando()" onstart="startCargando()">
+        </p:commandButton>
 
     </ui:define>
 </ui:composition>

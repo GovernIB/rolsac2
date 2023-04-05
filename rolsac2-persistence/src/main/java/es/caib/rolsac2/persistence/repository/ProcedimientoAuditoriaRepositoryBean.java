@@ -64,7 +64,7 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
                 if (resultado[2] != null) {
                     Timestamp fecha = (Timestamp) resultado[2];
                     java.util.Date date = new java.util.Date(fecha.getTime());
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     registroAuditoria.setFecha(format.format(date));
                 }
 
@@ -137,15 +137,13 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
             if (isTotal) {
                 sql = new StringBuilder("SELECT count(j) FROM JProcedimientoAuditoria where 1 = 1 ");
             } else {
-                sql = new StringBuilder(
-                        "SELECT j.codigo, j.procedimiento.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil, j.literalFlujo  FROM JProcedimientoAuditoria j where 1 = 1 ");
+                sql = new StringBuilder("SELECT j.codigo, j.procedimiento.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil, j.literalFlujo  FROM JProcedimientoAuditoria j where 1 = 1 ");
             }
         } else if ("UA".equalsIgnoreCase(tipo)) {
             if (isTotal) {
                 sql = new StringBuilder("SELECT count(j) FROM JUnidadAdministrativaAuditoria where 1 = 1 ");
             } else {
-                sql = new StringBuilder(
-                        "SELECT j.codigo, j.procedimiento.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil, j.literalFlujo  FROM JUnidadAdministrativaAuditoria j where 1 = 1 ");
+                sql = new StringBuilder("SELECT j.codigo, j.procedimiento.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil, j.literalFlujo  FROM JUnidadAdministrativaAuditoria j where 1 = 1 ");
             }
         } else {
             sql = null;

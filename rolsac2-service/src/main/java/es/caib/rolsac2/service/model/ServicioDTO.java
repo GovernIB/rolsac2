@@ -6,6 +6,7 @@ import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -427,4 +428,21 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         return 0;
     }
 
+    public boolean esVisible() {
+        final GregorianCalendar dataActual = new GregorianCalendar();
+        Boolean visible;
+
+        final Boolean esPublic = this.getWorkflow() == TypeProcedimientoWorkflow.PUBLICADO && this.getEstado() == TypeProcedimientoEstado.PUBLICADO;
+        final Boolean noCaducat = (this.getFechaCaducidad() != null
+                && this.getFechaCaducidad().after(dataActual.getTime())) || this.getFechaCaducidad() == null;
+        final Boolean esPublicat = (this.getFechaPublicacion() != null
+                && this.getFechaPublicacion().before(dataActual.getTime())) || this.getFechaPublicacion() == null;
+
+        if (esPublic && noCaducat && esPublicat) {
+            visible = Boolean.TRUE;
+        } else {
+            visible = Boolean.FALSE;
+        }
+        return visible;
+    }
 }

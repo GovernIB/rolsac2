@@ -1,13 +1,15 @@
 package es.caib.rolsac2.service.facade;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
+import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
-import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 
@@ -36,10 +38,13 @@ public interface ProcedimientoServiceFacade {
     /**
      * Actualiza los datos de un procedimiento a la base de datos.
      *
-     * @param dto nuevos datos del persoanl
+     * @param dto        nuevos datos
+     * @param dtoAntiguo datos antiguos
+     * @param perfil     El perfil
+     * @param idEntidad  Id de la entidad
      * @throws RecursoNoEncontradoException si el persoanl con el id no existe.
      */
-    void update(ProcedimientoBaseDTO dto, ProcedimientoBaseDTO dtoAntiguo, TypePerfiles perfil) throws RecursoNoEncontradoException;
+    void update(ProcedimientoBaseDTO dto, ProcedimientoBaseDTO dtoAntiguo, TypePerfiles perfil, Long idEntidad) throws RecursoNoEncontradoException;
 
 
     /**
@@ -112,9 +117,9 @@ public interface ProcedimientoServiceFacade {
 
     void deleteProcedimientoTramite(Long id) throws RecursoNoEncontradoException;
 
-    void guardarFlujo(ProcedimientoBaseDTO data, TypeProcedimientoEstado estadoDestino, String mensajes, TypePerfiles perfil);
+    void guardarFlujo(ProcedimientoBaseDTO data, TypeProcedimientoEstado estadoDestino, String mensajes, TypePerfiles perfil, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor, Long idEntidad);
 
-    void actualizarMensajes(Long idProc, String mensajes);
+    void actualizarMensajes(Long idProc, String mensajes, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor);
 
     Long getCodigoByWF(Long codigo, boolean valor);
 
@@ -129,20 +134,15 @@ public interface ProcedimientoServiceFacade {
     List<AuditoriaGridDTO> findProcedimientoAuditoriasById(Long id);
 
     /**
-     * Codigos pendientes de indexar.
-     *
-     * @param pendientesIndexar Indica si hay que devolver los pendientes de indexar (en caso false, serán todos los datos)
-     * @param tipo              Indica si es tipo procedimiento o servicio
-     * @return
-     */
-    List<ProcedimientoBaseSolr> obtenerPendientesIndexar(boolean pendientesIndexar, String tipo);
-
-    /**
      * Para marcar datos de solr.
      *
      * @param proc
      */
-    void actualizarSolr(ProcedimientoBaseSolr proc);
+    void actualizarSolr(IndexacionDTO proc, ResultadoAccion resultadoAccion);
+
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    void actualizarSIA(IndexacionSIADTO siadto, ResultadoSIA resultadoAccion);
 
     /**
      * Obtiene el codigo publicado (tiene WF = publicado)
@@ -152,8 +152,27 @@ public interface ProcedimientoServiceFacade {
      */
     Long getCodigoPublicado(Long codProc);
 
-   
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+
     DataIndexacion findDataIndexacionTram(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, PathUA pathUA);
+
+    /**
+     * Obtiene los mensajes de un procedimiento
+     *
+     * @param codigo
+     * @return
+     */
+    String getMensajesByCodigo(Long codigo);
+
+
+    ProcedimientoDTO findProcedimientoByCodigo(Long codigo);
+
+    ServicioDTO findServicioByCodigo(Long idEntidad);
+
+    Pagina<IndexacionDTO> getProcedimientosParaIndexacion(boolean isTipoProcedimiento, Long idEntidad);
+
+    Pagina<IndexacionSIADTO> getProcedimientosParaIndexacionSIA(Long idEntidad);
+
+    IndexFile findDataIndexacionProcDoc(ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion documentoTraduccion, PathUA pathUA);
+
+    IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA);
 }

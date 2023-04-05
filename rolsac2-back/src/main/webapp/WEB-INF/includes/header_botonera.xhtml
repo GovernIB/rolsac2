@@ -57,7 +57,7 @@
                 <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="idiomas">
                     <p:link styleClass="dropdown-item mobil" outcome="/configuracio"
                             title="#{labels['dict.configuracion']}">
-                        <span class="mb-0 float-right botoCurt">#{labels['dict.configuracion']}</span>
+                        <span class="mb-0 float-right">#{labels['dict.configuracion']}</span>
                     </p:link>
                     <p:repeat value="#{applicationLocales.available}" var="locale">
                         <h:commandLink styleClass="dropdown-item mobil" hreflang="#{locale.toLanguageTag()}"
@@ -66,14 +66,14 @@
                                        rendered="#{sessionBean.lang != locale.toLanguageTag()}"
                                        update="@form" execute="@form" render="@form"
                                        >
-                            <span class="mb-0 float-right botoCurt">#{labels['dict.' += locale.toLanguageTag()]}</span>
+                            <span class="mb-0 float-right">#{labels['dict.' += locale.toLanguageTag()]}</span>
                             <f:ajax listener="#{sessionBean.setCurrent(locale)}" update="@form" execute="@form" render="@form"  />
                         </h:commandLink>
                     </p:repeat>
                     <p:commandLink action="#{logout.logout}"
                                    ajax="false" immediate="true" styleClass="dropdown-item mobil"
                                    title="#{labels['dict.salir']}">
-                        <span class="mb-0 float-right botoCurt">#{labels['dict.salir']}</span>
+                        <span class="mb-0 float-right">#{labels['dict.salir']}</span>
                     </p:commandLink>
                 </div>
             </li>

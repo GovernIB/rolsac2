@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.model;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +40,12 @@ public class JProcedimiento extends BaseEntity {
     private String tipo;
 
     /**
+     * Fecha SIA
+     */
+    @Column(name = "PROC_FECACT")
+    private Date fechaActualizacion;
+
+    /**
      * Codigo SIA
      */
     @Column(name = "PROC_SIACOD")
@@ -56,7 +61,7 @@ public class JProcedimiento extends BaseEntity {
      * Fecha SIA
      */
     @Column(name = "PROC_SIAFC")
-    private LocalDate siaFecha;
+    private Date siaFecha;
 
     /**
      * Codigo Dir3 SIA
@@ -70,11 +75,6 @@ public class JProcedimiento extends BaseEntity {
     @Column(name = "PROC_MENSA")
     private String mensajes;
 
-    /**
-     * Pendiente indexar
-     */
-    @Column(name = "PROC_PDTIDX", nullable = true, precision = 1, scale = 0)
-    private boolean pendienteIndexar = false;
 
     /**
      * Fecha indexacion
@@ -191,7 +191,7 @@ public class JProcedimiento extends BaseEntity {
      *
      * @return sia fecha
      */
-    public LocalDate getSiaFecha() {
+    public Date getSiaFecha() {
         return siaFecha;
     }
 
@@ -200,7 +200,7 @@ public class JProcedimiento extends BaseEntity {
      *
      * @param procSiafc proc siafc
      */
-    public void setSiaFecha(LocalDate procSiafc) {
+    public void setSiaFecha(Date procSiafc) {
         this.siaFecha = procSiafc;
     }
 
@@ -257,15 +257,7 @@ public class JProcedimiento extends BaseEntity {
     public void setProcedimientoWF(List<JProcedimientoWorkflow> procedimientoWF) {
         this.procedimientoWF = procedimientoWF;
     }
-
-    public boolean isPendienteIndexar() {
-        return pendienteIndexar;
-    }
-
-    public void setPendienteIndexar(boolean pendienteIndexar) {
-        this.pendienteIndexar = pendienteIndexar;
-    }
-
+ 
     public Date getFechaIndexacion() {
         return fechaIndexacion;
     }
@@ -304,6 +296,14 @@ public class JProcedimiento extends BaseEntity {
 
     public void setMensajesPendienteSupervisor(boolean mensajesPendienteSupervisor) {
         this.mensajesPendienteSupervisor = mensajesPendienteSupervisor;
+    }
+
+    public Date getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+
+    public void setFechaActualizacion(Date fechaActualizacion) {
+        this.fechaActualizacion = fechaActualizacion;
     }
 
     @Override

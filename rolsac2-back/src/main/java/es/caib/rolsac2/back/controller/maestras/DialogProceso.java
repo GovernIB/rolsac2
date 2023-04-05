@@ -119,14 +119,6 @@ public class DialogProceso extends AbstractController implements Serializable {
     }
 
     /**
-     * Método para iniciar el procesado manual en un proceso
-     */
-    public void procesadoManual() {
-        procesoTimerServiceFacade.procesadoManual(this.data.getIdentificadorProceso());
-        UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcesos.procesoLanzado"));
-    }
-
-    /**
      * Crea nueva propiedad.
      */
     public void nuevaPropiedad() {

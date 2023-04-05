@@ -2,6 +2,7 @@ package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
+import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
@@ -157,14 +158,18 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
         } else {
             Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
+            boolean realizarBusqueda = false;
             if (idProcMod == null) {
                 String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
                 idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub(), usuario, sessionBean.getPerfil());
+                realizarBusqueda = true;
             }
             this.datoSeleccionado.setCodigoWFMod(idProcMod);
             ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
             abrirVentana(TypeModoAcceso.EDICION, proc);
-            //PrimeFaces.current().executeScript("PF('cdDeseaCrearEditar').hide();");
+            if (realizarBusqueda) {
+                this.buscar();
+            }
         }
     }
 
@@ -291,8 +296,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             public ProcedimientoGridDTO getRowData(String rowKey) {
                 if (getWrappedData() != null) {
                     for (ProcedimientoGridDTO proc : (List<ProcedimientoGridDTO>) getWrappedData()) {
-                        if (proc.getCodigo().toString().equals(rowKey))
-                            return proc;
+                        if (proc.getCodigo().toString().equals(rowKey)) return proc;
                     }
                 }
                 return null;
@@ -304,8 +308,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             }
 
             @Override
-            public List<ProcedimientoGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-                                                   Map<String, FilterMeta> filterBy) {
+            public List<ProcedimientoGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     if (!sortField.equals("filtro.orderBy")) {
@@ -366,6 +369,25 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             }
         }
     }
+
+    public void abrirMensajes(Long codigo) {
+        final Map<String, String> params = new HashMap<>();
+        String mensajes = procedimientoService.getMensajesByCodigo(codigo);
+        UtilJSF.anyadirMochila("mensajes", mensajes);
+        params.put("SOLO_MENSAJES", "S");
+        params.put("ID", codigo.toString());
+        //params.put("ESTADO", data.getEstado().toString());
+        UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
+    }
+
+    public void returnDialogMensajes(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
+            procedimientoService.actualizarMensajes(Long.valueOf(respuestaFlujo.getCodigoProcedimiento()), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
+        }
+    }
+
 
     public void returnDialogNormativa(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();

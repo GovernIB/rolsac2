@@ -1,5 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
+import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
 import es.caib.rolsac2.persistence.converter.ProcedimientoTramiteConverter;
 import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
@@ -12,8 +14,10 @@ import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
-import es.caib.rolsac2.service.model.solr.ProcedimientoBaseSolr;
+import es.caib.rolsac2.service.model.types.TypeIndexacion;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -22,6 +26,8 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,8 +42,9 @@ import java.util.Optional;
 @Stateless
 @Local(ProcedimientoRepository.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedimiento, Long>
-        implements ProcedimientoRepository {
+public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedimiento, Long> implements ProcedimientoRepository {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoRepositoryBean.class);
 
     @Inject
     FicheroExternoRepository ficheroExternoRepository;
@@ -56,16 +63,16 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         List<ServicioGridDTO> procs = new ArrayList<>();
         if (jprocs != null) {
             for (Object[] jproc : jprocs) {
-                ServicioGridDTO servicioGridDTO = new ServicioGridDTO();
-                servicioGridDTO.setCodigo((Long) jproc[0]);
-                servicioGridDTO.setCodigoWFPub((Long) jproc[1]);
-                servicioGridDTO.setCodigoWFMod((Long) jproc[2]);
-                servicioGridDTO.setEstado((String) jproc[3]);
-                servicioGridDTO.setTipo((String) jproc[4]);
-                servicioGridDTO.setCodigoSIA((Integer) jproc[5]);
-                servicioGridDTO.setEstadoSIA((Boolean) jproc[6]);
-                servicioGridDTO.setSiaFecha((LocalDate) jproc[7]);
-                servicioGridDTO.setCodigoDir3SIA((String) jproc[8]);
+                ServicioGridDTO procedimientoGridDTO = new ServicioGridDTO();
+                procedimientoGridDTO.setCodigo((Long) jproc[0]);
+                procedimientoGridDTO.setCodigoWFPub((Long) jproc[1]);
+                procedimientoGridDTO.setCodigoWFMod((Long) jproc[2]);
+                procedimientoGridDTO.setEstado((String) jproc[3]);
+                procedimientoGridDTO.setTipo((String) jproc[4]);
+                procedimientoGridDTO.setCodigoSIA((Integer) jproc[5]);
+                procedimientoGridDTO.setEstadoSIA((Boolean) jproc[6]);
+                procedimientoGridDTO.setSiaFecha((LocalDate) jproc[7]);
+                procedimientoGridDTO.setCodigoDir3SIA((String) jproc[8]);
                 String t1 = (String) jproc[9]; //Nombre wf publicado
                 String t2 = (String) jproc[10]; //Nombre wf en edicion
                 String nombre;
@@ -74,8 +81,24 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 } else {
                     nombre = t2;
                 }
-                servicioGridDTO.setNombre(nombre);
-                procs.add(servicioGridDTO);
+                procedimientoGridDTO.setNombre(nombre);
+                procedimientoGridDTO.setFechaActualizacion((Date) jproc[13]);
+                Integer comun1 = (Integer) jproc[14];
+                Integer comun2 = (Integer) jproc[15];
+                Boolean comun = null;
+                if (comun1 != null) {
+                    comun = (comun1 == 1);
+                } else if (comun2 != null) {
+                    comun = (comun2 == 1);
+                }
+                procedimientoGridDTO.setComun(comun);
+
+                procedimientoGridDTO.setFechaPublicacion((Date) jproc[17]);
+                procedimientoGridDTO.setFechaDespublicacion((Date) jproc[18]);
+                procedimientoGridDTO.setMensajesPendienteGestor((Boolean) jproc[19]);
+                procedimientoGridDTO.setMensajesPendienteSupervisor((Boolean) jproc[20]);
+
+                procs.add(procedimientoGridDTO);
             }
         }
         return procs;
@@ -110,6 +133,55 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     nombre = t2;
                 }
                 procedimientoGridDTO.setNombre(nombre);
+                String tipo1 = (String) jproc[11]; //Nombre wf publicado
+                String tipo2 = (String) jproc[12]; //Nombre wf en edicion
+                String tipoProcedimiento;
+                if (tipo1 != null && !tipo1.isEmpty()) {
+                    tipoProcedimiento = tipo1;
+                } else {
+                    tipoProcedimiento = tipo2;
+                }
+                procedimientoGridDTO.setTipoProcedimiento(tipoProcedimiento);
+                procedimientoGridDTO.setFechaActualizacion((Date) jproc[13]);
+                Integer comun1 = (Integer) jproc[14];
+                Integer comun2 = (Integer) jproc[15];
+                Boolean comun = null;
+                if (comun1 != null) {
+                    comun = (comun1 == 1);
+                } else if (comun2 != null) {
+                    comun = (comun2 == 1);
+                }
+                procedimientoGridDTO.setComun(comun);
+                if (jproc[16] != null) {
+                    String[] valores = ((String) jproc[16]).split("#");
+                    if (valores.length == 3 || valores.length == 2) {
+                        if (valores[0] != null) {
+                            procedimientoGridDTO.setTramiteInicioCodigo(Long.valueOf(valores[0]));
+                        }
+                        final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                        if (valores[1] != null) {
+                            try {
+                                Date fecha = sdf.parse((String) valores[1]);
+                                procedimientoGridDTO.setTramiteInicioFechaPublicacion(fecha);
+                            } catch (ParseException e) {
+                                LOG.error("Error parseando en el codigo " + procedimientoGridDTO.getCodigo() + " la fecha Pub Tram :" + valores[1], e);
+                            }
+
+                        }
+                        if (valores.length == 3 && valores[2] != null) {
+                            try {
+                                Date fecha = sdf.parse((String) valores[2]);
+                                procedimientoGridDTO.setTramiteIniciofechaCierre(fecha);
+                            } catch (ParseException e) {
+                                LOG.error("Error parseando en el codigo " + procedimientoGridDTO.getCodigo() + " la fecha Cierre Tram :" + valores[1], e);
+                            }
+                        }
+                    }
+                }
+
+                procedimientoGridDTO.setMensajesPendienteGestor((Boolean) jproc[19]);
+                procedimientoGridDTO.setMensajesPendienteSupervisor((Boolean) jproc[20]);
+
                 procs.add(procedimientoGridDTO);
             }
         }
@@ -152,26 +224,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
-    public List<ProcedimientoBaseSolr> obtenerPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro) {
-        StringBuilder sql;
-        Query query = getQuerySolr(false, pendientesIndexar, tipo, filtro);
-        List<Object[]> resultado = query.getResultList();
-        List<ProcedimientoBaseSolr> procs = new ArrayList<>();
-        if (resultado != null) {
-            for (Object[] datos : resultado) {
-                ProcedimientoBaseSolr proc = new ProcedimientoBaseSolr();
-                proc.setCodigo((Long) datos[0]);
-                proc.setFechaInicioIndexacion((Date) datos[1]);
-                proc.setFechaIndexacion((Date) datos[2]);
-                proc.setMensajeError((String) datos[3]);
-                proc.setTipo((String) datos[4]);
-                procs.add(proc);
-            }
-        }
-        return procs;
-    }
-
-    @Override
     public Long obtenerCountPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro) {
         StringBuilder sql;
         Query query = getQuerySolr(true, pendientesIndexar, tipo, filtro);
@@ -207,22 +259,106 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
-    public void actualizarSolr(ProcedimientoBaseSolr proc) {
-        JProcedimiento jproc = entityManager.find(JProcedimiento.class, proc.getCodigo());
-        jproc.setFechaIndexacion(proc.getFechaIndexacion());
-        jproc.setMensajeIndexacion(proc.getMensajeError());
-        jproc.setPendienteIndexar(proc.isMantenerIndexado());
+    public void actualizarSolr(IndexacionDTO dato, ResultadoAccion resultadoAccion) {
+        JProcedimiento jproc = entityManager.find(JProcedimiento.class, dato.getCodElemento());
+        jproc.setFechaIndexacion(new Date());
+        jproc.setMensajeIndexacion(resultadoAccion.getMensaje());
         entityManager.merge(jproc);
     }
 
     @Override
-    public void marcarParaIndexar(Long codigo) {
-        JProcedimiento jproc = entityManager.find(JProcedimiento.class, codigo);
-        jproc.setFechaInicioIndexacion(new Date());
-        jproc.setPendienteIndexar(true);
+    public void actualizarSIA(IndexacionSIADTO dato, ResultadoSIA resultadoAccion) {
+        JProcedimiento jproc = entityManager.find(JProcedimiento.class, dato.getCodElemento());
+        jproc.setSiaFecha(dato.getFechaSIA());
+        jproc.setCodigoSIA(dato.getCodigoSIA());
+        jproc.setEstadoSIA(dato.getEstadoSIA());
+        jproc.setMensajeIndexacion(resultadoAccion.getMensaje());
         entityManager.merge(jproc);
     }
 
+    @Override
+    public void actualizarFechaActualizacion(Long codigo) {
+        //JProcedimiento jproc = entityManager.find(JProcedimiento.class, codigo);
+        //jproc.setFechaActualizacion(new Date());
+        //entityManager.merge(jproc);
+        entityManager.flush();
+        Query query = entityManager.createQuery("update JProcedimiento set fechaActualizacion = :fecha where codigo = :codigo");
+        query.setParameter("codigo", codigo);
+        query.setParameter("fecha", new Date());
+        query.executeUpdate();
+    }
+
+    @Override
+    public String getMensajesByCodigo(Long codigo) {
+        JProcedimiento jproc = entityManager.find(JProcedimiento.class, codigo);
+        return jproc.getMensajes();
+    }
+
+    @Override
+    public Pagina<IndexacionDTO> getProcedimientosParaIndexacion(boolean isTipoProcedimiento, Long idEntidad) {
+        StringBuilder sql = new StringBuilder("SELECT j.codigo ");
+
+        sql.append("  FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.PUBLICADO.getValor() + " WHERE WF.uaResponsable.entidad.codigo = :entidad ");
+        if (isTipoProcedimiento) {
+            sql.append(" AND j.tipo = '" + Constantes.PROCEDIMIENTO + "'");
+        } else {
+            sql.append(" AND j.tipo = '" + Constantes.SERVICIO + "'");
+        }
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("entidad", idEntidad);
+        List<Long> datos = query.getResultList();
+        Pagina<IndexacionDTO> resultado = null;
+        if (datos == null || datos.isEmpty()) {
+            resultado = new Pagina<>(new ArrayList<>(), 0);
+        } else {
+            List<IndexacionDTO> indexacionDTOS = new ArrayList<>();
+            for (Long dato : datos) {
+                IndexacionDTO indexacionDTO = new IndexacionDTO();
+                if (isTipoProcedimiento) {
+                    indexacionDTO.setTipo(TypeIndexacion.PROCEDIMIENTO.toString());
+                } else {
+                    indexacionDTO.setTipo(TypeIndexacion.SERVICIO.toString());
+                }
+                indexacionDTO.setCodElemento(dato);
+                indexacionDTO.setFechaCreacion(new Date());
+                indexacionDTO.setAccion(1); //Indexar
+                indexacionDTOS.add(indexacionDTO);
+            }
+            resultado = new Pagina<>(indexacionDTOS, indexacionDTOS.size());
+        }
+        return resultado;
+    }
+
+    @Override
+    public Pagina<IndexacionSIADTO> getProcedimientosParaIndexacionSIA(Long idEntidad) {
+        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.tipo ");
+
+        sql.append("  FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.PUBLICADO.getValor() + " WHERE WF.uaResponsable.entidad.codigo = :entidad ");
+
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("entidad", idEntidad);
+        List<Object[]> datos = query.getResultList();
+        Pagina<IndexacionSIADTO> resultado = null;
+        if (datos == null || datos.isEmpty()) {
+            resultado = new Pagina<>(new ArrayList<>(), 0);
+        } else {
+            List<IndexacionSIADTO> indexacionDTOS = new ArrayList<>();
+            for (Object[] dato : datos) {
+                IndexacionSIADTO indexacionDTO = new IndexacionSIADTO();
+                indexacionDTO.setCodElemento((Long) dato[0]);
+                String tipo = (String) dato[1];
+                if (tipo.equals(Constantes.PROCEDIMIENTO)) {
+                    indexacionDTO.setTipo(TypeIndexacion.PROCEDIMIENTO.toString());
+                } else {
+                    indexacionDTO.setTipo(TypeIndexacion.SERVICIO.toString());
+                }
+                indexacionDTO.setFechaCreacion(new Date());
+                indexacionDTOS.add(indexacionDTO);
+            }
+            resultado = new Pagina<>(indexacionDTOS, indexacionDTOS.size());
+        }
+        return resultado;
+    }
 
     @Override
     public JProcedimientoWorkflow getWF(Long id, boolean procedimientoEnmodificacion) {
@@ -248,8 +384,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public boolean existeProcedimientoConMateria(Long materiaSIA) {
         List<TipoMateriaSIAGridDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JProcedimientoMateriaSIA j where j.tipoMateriaSIA.codigo = :materiaSIA ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JProcedimientoMateriaSIA j where j.tipoMateriaSIA.codigo = :materiaSIA ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("materiaSIA", materiaSIA);
         Long resultado = (Long) query.getSingleResult();
@@ -259,8 +394,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public List<TipoMateriaSIAGridDTO> getMateriaGridSIAByWF(Long codigoWF) {
         List<TipoMateriaSIAGridDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(
-                "SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoMateriaSIA> jlista = query.getResultList();
@@ -274,8 +408,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public void mergeMateriaSIAProcWF(Long codigoWF, List<TipoMateriaSIAGridDTO> listaNuevos) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoMateriaSIA> jlista = query.getResultList();
@@ -340,8 +473,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public boolean existeProcedimientoConPublicoObjetivo(Long codigoPub) {
         List<TipoPublicoObjetivoEntidadGridDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JProcedimientoPublicoObjectivo j where j.tipoPublicoObjetivo.codigo = :codigoPub ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JProcedimientoPublicoObjectivo j where j.tipoPublicoObjetivo.codigo = :codigoPub ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoPub", codigoPub);
         Long resultado = (Long) query.getSingleResult();
@@ -351,8 +483,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public List<TipoPublicoObjetivoEntidadGridDTO> getTipoPubObjEntByWF(Long codigoWF) {
         List<TipoPublicoObjetivoEntidadGridDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(
-                "SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
@@ -366,8 +497,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public boolean existeProcedimientoConFormaInicio(Long codigoForIni) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JProcedimientoWorkflow j where j.formaInicio.codigo = :codigoForIni ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JProcedimientoWorkflow j where j.formaInicio.codigo = :codigoForIni ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoForIni", codigoForIni);
         Long resultado = (Long) query.getSingleResult();
@@ -376,8 +506,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public boolean existeProcedimientoConSilencio(Long codigoSilen) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JProcedimientoWorkflow j where j.silencioAdministrativo.codigo = :codigoSilen ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JProcedimientoWorkflow j where j.silencioAdministrativo.codigo = :codigoSilen ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoSilen", codigoSilen);
         Long resultado = (Long) query.getSingleResult();
@@ -386,8 +515,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public boolean existeProcedimientoConLegitimacion(Long codigoLegi) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JProcedimientoWorkflow j where j.datosPersonalesLegitimacion.codigo = :codigoLegi ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JProcedimientoWorkflow j where j.datosPersonalesLegitimacion.codigo = :codigoLegi ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoLegi", codigoLegi);
         Long resultado = (Long) query.getSingleResult();
@@ -398,8 +526,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public boolean existeProcedimientosConNormativas(Long codigoNor) {
         List<NormativaGridDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JProcedimientoNormativa j where j.normativa.codigo = :codigoNor ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JProcedimientoNormativa j where j.normativa.codigo = :codigoNor ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoNor", codigoNor);
         Long resultado = (Long) query.getSingleResult();
@@ -409,8 +536,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public boolean existeTramitesConTipoTramitacionPlantilla(Long codigoTipoTramitacion) {
         List<NormativaGridDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JProcedimientoTramite j where j.tipoTramitacion.codigo = :codigoTipoTramitacion ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JProcedimientoTramite j where j.tipoTramitacion.codigo = :codigoTipoTramitacion ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoTipoTramitacion", codigoTipoTramitacion);
         Long resultado = (Long) query.getSingleResult();
@@ -420,8 +546,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public List<NormativaGridDTO> getNormativasByWF(Long codigoWF) {
         List<NormativaGridDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(
-                "SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoNormativa> jlista = query.getResultList();
@@ -517,8 +642,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public List<ProcedimientoTramiteDTO> getTramitesByWF(Long codigoWF) {
         List<ProcedimientoTramiteDTO> tramites = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(
-                "SELECT j FROM JProcedimientoTramite j where j.procedimiento.codigo = :codigoProcWF ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoTramite j where j.procedimiento.codigo = :codigoProcWF ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoTramite> jlista = query.getResultList();
@@ -548,9 +672,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
-    public void actualizarMensajes(Long codigo, String mensajes) {
+    public void actualizarMensajes(Long codigo, String mensajes, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor) {
         entityManager.flush();
-        Query query = entityManager.createQuery("update JProcedimiento set mensajes = '" + mensajes + "' where codigo = " + codigo);
+        Query query = entityManager.createQuery("update JProcedimiento set mensajes = '" + mensajes + "', mensajesPendienteGestor=" + pendienteMensajesGestor + " ,mensajesPendienteSupervisor=" + pendienteMensajeSupervisor + " where codigo = " + codigo);
         query.executeUpdate();
         /*
         JProcedimiento jproc = entityManager.find(JProcedimiento.class, codigo);
@@ -762,8 +886,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     private List<JProcedimientoDocumento> getDocumentos(Long codigoListaDocumentos) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT j FROM JProcedimientoDocumento j where j.listaDocumentos = :codigoListaDocumentos ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoDocumento j where j.listaDocumentos = :codigoListaDocumentos ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoListaDocumentos", codigoListaDocumentos);
         return query.getResultList();
@@ -783,8 +906,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         //BORRAMOS todos los publico objetivo asociados
-        StringBuilder sql = new StringBuilder(
-                "SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoProcWF", jprocWF.getCodigo());
         List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
@@ -795,8 +917,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         //Borramos las materias SIA asociadas
-        StringBuilder sqlSIA = new StringBuilder(
-                "SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
+        StringBuilder sqlSIA = new StringBuilder("SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
         Query querySIA = entityManager.createQuery(sqlSIA.toString());
         querySIA.setParameter("codigoProcWF", jprocWF.getCodigo());
         List<JProcedimientoMateriaSIA> jlistaSIA = querySIA.getResultList();
@@ -807,8 +928,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         //Borramos las normativas asociadas
-        StringBuilder sqlNormativas = new StringBuilder(
-                "SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
+        StringBuilder sqlNormativas = new StringBuilder("SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
 
         Query queryNormativas = entityManager.createQuery(sqlNormativas.toString());
         queryNormativas.setParameter("codigoProcWF", jprocWF.getCodigo());
@@ -839,8 +959,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         //Obtenemos los tramites y sus traducciones y borramos los documentos asociados (marcando lso ficheros para borrar)
-        StringBuilder sqlTramites = new StringBuilder(
-                "SELECT j FROM JProcedimientoTramite j where j.procedimiento.codigo = :codigoProcWF ");
+        StringBuilder sqlTramites = new StringBuilder("SELECT j FROM JProcedimientoTramite j where j.procedimiento.codigo = :codigoProcWF ");
         Query queryTramites = entityManager.createQuery(sqlTramites.toString());
         queryTramites.setParameter("codigoProcWF", jprocWF.getCodigo());
         List<JProcedimientoTramite> jlistaTramites = queryTramites.getResultList();
@@ -856,8 +975,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public void mergePublicoObjetivoProcWF(Long codigoWF, List<TipoPublicoObjetivoEntidadGridDTO> listaNuevos) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
@@ -926,8 +1044,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public void mergeTramitesProcWF(Long codigoWF, List<ProcedimientoTramiteDTO> listaNuevos, String ruta) {
         entityManager.flush();
-        StringBuilder sql = new StringBuilder(
-                "SELECT j FROM JProcedimientoTramite j where j.procedimiento.codigo = :codigoProcWF ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoTramite j where j.procedimiento.codigo = :codigoProcWF ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoTramite> jlista = query.getResultList();
@@ -1122,8 +1239,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public void mergeNormativaProcWF(Long codigoWF, List<NormativaGridDTO> listaNuevos) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoNormativa> jlista = query.getResultList();
@@ -1195,18 +1311,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder("SELECT count(j) FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = true LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = true LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, j.codigoDir3SIA, t.nombre, t2.nombre FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.PUBLICADO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, j.codigoDir3SIA, t.nombre, t2.nombre, tipoPro1.descripcion, tipoPro2.descripcion, j.fechaActualizacion, wf.comun, wf2.comun, (select tram.codigo || '#' || to_char(tram.fechaPublicacion, 'DD/MM/YYYY HH24:MI') || '#' || to_char(tram.fechaCierre, 'DD/MM/YYYY HH24:MI') FROM JProcedimientoTramite tram where wf.codigo = tram.procedimiento.codigo and tram.fase = 1), wf.fechaPublicacion, wf.fechaCaducidad, j.mensajesPendienteGestor, j.mensajesPendienteSupervisor FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.PUBLICADO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
         }
 
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( LOWER(cast(j.codigo as string)) like :filtro "
-                    + " OR LOWER(t.nombre) LIKE :filtro  OR LOWER(t2.nombre) LIKE :filtro "
-                    + " OR LOWER(wf.estado) LIKE :filtro OR LOWER(wf2.estado) LIKE :filtro    "
-                    + " OR LOWER(j.tipo) LIKE :filtro  OR LOWER(cast(j.codigoSIA as string)) LIKE :filtro "
-                    + " OR LOWER(cast(j.estadoSIA as string)) LIKE :filtro OR LOWER(cast(j.codigoDir3SIA as string)) LIKE :filtro )");
+            sql.append(" and ( LOWER(cast(j.codigo as string)) like :filtro " + " OR LOWER(t.nombre) LIKE :filtro  OR LOWER(t2.nombre) LIKE :filtro " + " OR LOWER(wf.estado) LIKE :filtro OR LOWER(wf2.estado) LIKE :filtro    " + " OR LOWER(j.tipo) LIKE :filtro  OR LOWER(cast(j.codigoSIA as string)) LIKE :filtro " + " OR LOWER(cast(j.estadoSIA as string)) LIKE :filtro OR LOWER(cast(j.codigoDir3SIA as string)) LIKE :filtro )");
         }
         if (filtro.isRellenoFormaInicio()) {
             sql.append(" AND ( WF.formaInicio.codigo = :formaInicio or  WF2.formaInicio.codigo = :formaInicio)");
@@ -1237,6 +1348,17 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoMaterias()) {
             sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoMateriaSIA procMat WHERE (procMat.codigo.procedimiento = WF.codigo OR procMat.codigo.procedimiento = WF2.codigo) AND procMat.codigo.tipoMateriaSIA IN (:materias) ) ");
+        }
+        if (filtro.isRellenoMensajesPendientes()) {
+            if (filtro.getMensajesPendiente().equals("PE")) {
+                sql.append(" AND (j.mensajesPendienteGestor = true or j.mensajesPendienteSupervisor = true ) ");
+            } else if (filtro.getMensajesPendiente().equals("PG")) {
+                sql.append(" AND j.mensajesPendienteGestor = true ");
+            } else if (filtro.getMensajesPendiente().equals("PS")) {
+                sql.append(" AND j.mensajesPendienteSupervisor = true ");
+            } else if (filtro.getMensajesPendiente().equals("NO")) {
+                sql.append(" AND j.mensajesPendienteGestor = false AND j.mensajesPendienteSupervisor = false ");
+            }
         }
         if (filtro.isRellenoVolcadoSIA()) {
             switch (filtro.getVolcadoSIA()) {
@@ -1369,8 +1491,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public Optional<JProcedimiento> findById(String id) {
-        TypedQuery<JProcedimiento> query =
-                entityManager.createNamedQuery(JProcedimiento.FIND_BY_ID, JProcedimiento.class);
+        TypedQuery<JProcedimiento> query = entityManager.createNamedQuery(JProcedimiento.FIND_BY_ID, JProcedimiento.class);
         query.setParameter("codigo", id);
         List<JProcedimiento> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));

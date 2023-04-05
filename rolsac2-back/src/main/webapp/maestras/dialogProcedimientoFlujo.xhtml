@@ -9,7 +9,7 @@
     <ui:define name="metadata">
         <f:metadata>
             <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogProcedimientoFlujo.modoAcceso}"/>
-            <!--<f:viewParam id="MENSAJE" name="MENSAJE" value="#{dialogProcedimientoFlujo.mensaje}"/>-->
+            <f:viewParam id="ID" name="ID" value="#{dialogProcedimientoFlujo.id}"/>
             <f:viewParam id="SOLO_MENSAJES" name="SOLO_MENSAJES" value="#{dialogProcedimientoFlujo.consultarSoloMensajes}"/>
             <f:viewParam id="ESTADO" name="ESTADO" value="#{dialogProcedimientoFlujo.estadoActual}"/>
             <f:viewAction action="#{dialogProcedimientoFlujo.load}"/>
@@ -74,35 +74,66 @@
                     <table style="padding:5px;width: 100%">
                     <thead>
                     <tr>
+                        <th scope="col" width="10%" style="padding:10px"></th>
                         <th scope="col" width="10%" style="padding:10px">#{labels['dialogProcedimientoFlujo.admContenido']}</th>
-                        <th scope="col" width="60%" style="padding:10px">#{labels['dialogProcedimientoFlujo.mensaje']}</th>
+                        <th scope="col" width="40%" style="padding:10px">#{labels['dialogProcedimientoFlujo.mensaje']}</th>
                         <th scope="col" width="20%" style="padding:10px">#{labels['dialogProcedimientoFlujo.fecha']}</th>
                         <th scope="col" width="10%" style="padding:10px">#{labels['dialogProcedimientoFlujo.gestor']}</th>
+                        <th scope="col" width="10%" style="padding:10px"></th>
                     </tr>
                     </thead>
                     <tbody>
 
-                        <ui:repeat var="mensaje" value="#{dialogProcedimientoFlujo.mensajes}" >
+                        <ui:repeat var="mensaje" value="#{dialogProcedimientoFlujo.mensajes}" varStatus="status" >
                             <tr >
                                 <ui:fragment rendered="#{dialogProcedimientoFlujo.esAdministradorContenido(mensaje)}">
+                                    <td>
+                                        <p:commandButton action="#{dialogProcedimientoFlujo.marcarComoLeido(status.index)}"
+                                                         value="#{labels['dict.marcarComoLeido']}"
+                                                         icon="pi pi-check" update="@form:formDatos2"
+                                                         rendered="#{dialogProcedimientoFlujo.isAdministradorContenidos() and mensaje.isPendienteMensajesSupervisor()}"
+                                                         process="@this"/>
+                                    </td>
                                     <td class="backgroundAdmContenido borderIzqArribaAbajo" style="padding: 10px;">#{mensaje.usuario}</td>
                                     <td class="backgroundAdmContenido borderArribaAbajo" style="padding: 20px;">#{mensaje.mensaje}</td>
                                     <td class="backgroundAdmContenido borderDerArribaAbajo" style="padding: 10px;">
                                         <h:outputText value="#{mensaje.fechaReal}">
-                                            <f:convertDateTime type="date" pattern="yyyy/dd/MM HH:mm"/>
+                                            <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                         </h:outputText>
                                     </td>
                                     <td></td>
+                                    <td>
+                                            <p:commandButton action="#{dialogProcedimientoFlujo.marcarComoLeido(status.index)}"
+                                                             value="#{labels['dict.marcarComoLeido']}"
+                                                             icon="pi pi-check" update="@form:formDatos2"
+                                                             rendered="#{dialogProcedimientoFlujo.isGestor() and mensaje.isPendienteMensajesGestor()}"
+                                                             process="@this"/>
+                                    </td>
                                 </ui:fragment>
                                 <ui:fragment rendered="#{!dialogProcedimientoFlujo.esAdministradorContenido(mensaje)}">
+                                    <td>
+                                            <p:commandButton action="#{dialogProcedimientoFlujo.marcarComoLeido(status.index)}"
+                                                             value="#{labels['dict.marcarComoLeido']}"
+                                                             icon="pi pi-check" update="@form:formDatos2"
+                                                             rendered="#{dialogProcedimientoFlujo.isAdministradorContenidos() and mensaje.isPendienteMensajesSupervisor()}"
+                                                             process="@this"/>
+
+                                    </td>
                                     <td style="border-top:none !important;"></td>
                                     <td class="backgroundGestor borderIzqArribaAbajo" style="padding: 20px;">#{mensaje.mensaje}</td>
                                     <td class="backgroundGestor borderArribaAbajo" style="padding: 10px;">
                                         <h:outputText value="#{mensaje.fechaReal}">
-                                            <f:convertDateTime type="date" pattern="yyyy/dd/MM HH:mm"/>
+                                            <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                         </h:outputText>
                                     </td>
                                     <td class="backgroundGestor borderDerArribaAbajo" style="padding: 10px;">#{mensaje.usuario}</td>
+                                    <td>
+                                            <p:commandButton action="#{dialogProcedimientoFlujo.marcarComoLeido(status.index)}"
+                                                             value="#{labels['dict.marcarComoLeido']}"
+                                                             icon="pi pi-check" update="@form:formDatos2"
+                                                             rendered="#{dialogProcedimientoFlujo.isGestor() and mensaje.isPendienteMensajesGestor()}"
+                                                             process="@this"/>
+                                    </td>
                                 </ui:fragment>
 
                             </tr>

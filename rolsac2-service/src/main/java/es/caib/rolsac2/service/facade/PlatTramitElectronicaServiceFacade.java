@@ -4,7 +4,9 @@ import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
+import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
+import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
 
 import java.util.List;
 
@@ -73,5 +75,7 @@ public interface PlatTramitElectronicaServiceFacade {
      * @return si existe o no
      */
     Boolean checkIdentificador(String identificador);
+
+	Pagina<PlatTramitElectronicaDTO> findByFiltroRest(PlatTramitElectronicaFiltro filtro);
 
 }

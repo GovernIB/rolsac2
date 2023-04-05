@@ -3,6 +3,7 @@ package es.caib.rolsac2.service.model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * Dades d'un Procedimiento.
@@ -28,7 +29,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     private Long codigoWFPub;
 
     /**
-     *  Tipo
+     * Tipo
      */
     private String tipo;
 
@@ -68,9 +69,38 @@ public class ProcedimientoGridDTO extends ModelApi {
     private LocalDate fecha;
 
     /**
+     * Tipo procedimiento
+     */
+    private String tipoProcedimiento;
+
+    /**
+     * Fecha actualizacion
+     */
+    private Date fechaActualizacion;
+
+    /**
+     * Comun
+     */
+    private Boolean comun;
+
+    /**
+     * Tiene mensajes pendientes.
+     **/
+    private boolean mensajesPendienteGestor;
+    private boolean mensajesPendienteSupervisor;
+
+    /**
+     * Información tramite inicio
+     **/
+    private Long tramiteInicioCodigo;
+    private Date tramiteInicioFechaPublicacion;
+    private Date tramiteIniciofechaCierre;
+
+
+    /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -79,7 +109,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -88,7 +118,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Obtiene tipo.
      *
-     * @return  tipo
+     * @return tipo
      */
     public String getTipo() {
         return tipo;
@@ -97,7 +127,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece tipo.
      *
-     * @param tipo  tipo
+     * @param tipo tipo
      */
     public void setTipo(String tipo) {
         this.tipo = tipo;
@@ -106,7 +136,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Obtiene estado sia.
      *
-     * @return  estado sia
+     * @return estado sia
      */
     public Boolean getEstadoSIA() {
         return estadoSIA;
@@ -115,7 +145,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece estado sia.
      *
-     * @param estadoSIA  estado sia
+     * @param estadoSIA estado sia
      */
     public void setEstadoSIA(Boolean estadoSIA) {
         this.estadoSIA = estadoSIA;
@@ -124,7 +154,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Obtiene sia fecha.
      *
-     * @return  sia fecha
+     * @return sia fecha
      */
     public LocalDate getSiaFecha() {
         return siaFecha;
@@ -133,7 +163,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece sia fecha.
      *
-     * @param fechaSIA  fecha sia
+     * @param fechaSIA fecha sia
      */
     public void setSiaFecha(LocalDate fechaSIA) {
         this.siaFecha = fechaSIA;
@@ -142,7 +172,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Obtiene codigo sia.
      *
-     * @return  codigo sia
+     * @return codigo sia
      */
     public Integer getCodigoSIA() {
         return codigoSIA;
@@ -151,7 +181,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece codigo sia.
      *
-     * @param codigoSIA  codigo sia
+     * @param codigoSIA codigo sia
      */
     public void setCodigoSIA(Integer codigoSIA) {
         this.codigoSIA = codigoSIA;
@@ -160,7 +190,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Obtiene codigo dir 3 sia.
      *
-     * @return  codigo dir 3 sia
+     * @return codigo dir 3 sia
      */
     public String getCodigoDir3SIA() {
         return codigoDir3SIA;
@@ -169,7 +199,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece codigo dir 3 sia.
      *
-     * @param codigoDir3SIA  codigo dir 3 sia
+     * @param codigoDir3SIA codigo dir 3 sia
      */
     public void setCodigoDir3SIA(String codigoDir3SIA) {
         this.codigoDir3SIA = codigoDir3SIA;
@@ -178,7 +208,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Obtiene nombre.
      *
-     * @return  nombre
+     * @return nombre
      */
     public String getNombre() {
         return nombre;
@@ -187,7 +217,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece nombre.
      *
-     * @param nombre  nombre
+     * @param nombre nombre
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -196,7 +226,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Obtiene estado.
      *
-     * @return  estado
+     * @return estado
      */
     public String getEstado() {
         if (estado == null) {
@@ -208,7 +238,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece estado.
      *
-     * @param estado  estado
+     * @param estado estado
      */
     public void setEstado(String estado) {
         this.estado = estado;
@@ -217,7 +247,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Obtiene codigo wf mod.
      *
-     * @return  codigo wf mod
+     * @return codigo wf mod
      */
     public Long getCodigoWFMod() {
         return codigoWFMod;
@@ -226,7 +256,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece codigo wf mod.
      *
-     * @param codigoWFMod  codigo wf mod
+     * @param codigoWFMod codigo wf mod
      */
     public void setCodigoWFMod(Long codigoWFMod) {
         this.codigoWFMod = codigoWFMod;
@@ -235,7 +265,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Obtiene codigo wf pub.
      *
-     * @return  codigo wf pub
+     * @return codigo wf pub
      */
     public Long getCodigoWFPub() {
         return codigoWFPub;
@@ -244,7 +274,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece codigo wf pub.
      *
-     * @param codigoWFPub  codigo wf pub
+     * @param codigoWFPub codigo wf pub
      */
     public void setCodigoWFPub(Long codigoWFPub) {
         this.codigoWFPub = codigoWFPub;
@@ -253,7 +283,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Tiene datos publicados boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean tieneDatosPublicados() {
         return this.codigoWFPub != null;
@@ -262,7 +292,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Tiene datos en modificacion boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean tieneDatosEnModificacion() {
         return this.codigoWFMod != null;
@@ -271,7 +301,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Obtiene fecha.
      *
-     * @return  fecha
+     * @return fecha
      */
     public LocalDate getFecha() {
         return fecha;
@@ -280,10 +310,159 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Establece fecha.
      *
-     * @param fecha  fecha
+     * @param fecha fecha
      */
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
+    }
+
+    /**
+     * Obtiene el tipo de procedimiento (ya traducido)
+     *
+     * @return
+     */
+    public String getTipoProcedimiento() {
+        return tipoProcedimiento;
+    }
+
+    /**
+     * Estblece el tipo de procedimiento
+     *
+     * @param tipoProcedimiento
+     */
+    public void setTipoProcedimiento(String tipoProcedimiento) {
+        this.tipoProcedimiento = tipoProcedimiento;
+    }
+
+    /**
+     * Obtiene la fecha de actualizacion
+     *
+     * @return
+     */
+    public Date getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+
+    /**
+     * Establece la fecha de actualizacion
+     *
+     * @param fechaActualizacion
+     */
+    public void setFechaActualizacion(Date fechaActualizacion) {
+        this.fechaActualizacion = fechaActualizacion;
+    }
+
+    /**
+     * Obtiene el comun
+     *
+     * @return
+     */
+    public Boolean getComun() {
+        return comun;
+    }
+
+    public String getLiteralComun() {
+        if (comun == null) {
+            return "";
+        }
+        return comun ? "Sí" : "No";
+    }
+
+    /**
+     * Establece el comun
+     *
+     * @param comun
+     */
+    public void setComun(Boolean comun) {
+        this.comun = comun;
+    }
+
+    public Long getTramiteInicioCodigo() {
+        return tramiteInicioCodigo;
+    }
+
+    public void setTramiteInicioCodigo(Long tramiteInicioCodigo) {
+        this.tramiteInicioCodigo = tramiteInicioCodigo;
+    }
+
+    public Date getTramiteInicioFechaPublicacion() {
+        return tramiteInicioFechaPublicacion;
+    }
+
+    public void setTramiteInicioFechaPublicacion(Date tramiteInicioFechaPublicacion) {
+        this.tramiteInicioFechaPublicacion = tramiteInicioFechaPublicacion;
+    }
+
+    public Date getTramiteIniciofechaCierre() {
+        return tramiteIniciofechaCierre;
+    }
+
+    public void setTramiteIniciofechaCierre(Date tramiteIniciofechaCierre) {
+        this.tramiteIniciofechaCierre = tramiteIniciofechaCierre;
+    }
+
+    public boolean isMensajesPendienteGestor() {
+        return mensajesPendienteGestor;
+    }
+
+    public void setMensajesPendienteGestor(boolean mensajesPendienteGestor) {
+        this.mensajesPendienteGestor = mensajesPendienteGestor;
+    }
+
+    public boolean isMensajesPendienteSupervisor() {
+        return mensajesPendienteSupervisor;
+    }
+
+    public void setMensajesPendienteSupervisor(boolean mensajesPendienteSupervisor) {
+        this.mensajesPendienteSupervisor = mensajesPendienteSupervisor;
+    }
+
+    /**
+     * Icono de visibilidad
+     *
+     * @return
+     */
+    public String getIcon() {
+        if (this.isVisible()) {
+            return "pi pi-eye iconoVerde";
+        } else {
+            return "pi pi-eye-slash iconoRojo";
+        }
+
+    }
+
+    /**
+     * Tiene mensajes pendientes.
+     *
+     * @return
+     */
+    public boolean tieneMensajesPendientes() {
+        return isMensajesPendienteGestor() || isMensajesPendienteSupervisor();
+    }
+
+    /**
+     * Devuelve la ruta dela imagen.
+     *
+     * @return
+     */
+    public String getCssMensajes() {
+        if (isMensajesPendienteGestor() && isMensajesPendienteSupervisor()) {
+            return "../images/email_GS.png";
+        } else if (isMensajesPendienteGestor()) {
+            return "../images/email_G.png";
+        } else {//isMensajesPendienteSupervisor()
+            return "../images/email_S.png";
+        }
+    }
+
+    private boolean isVisible() {
+        final Date now = new Date();
+        final boolean tieneTramiteInicio = this.tramiteInicioCodigo != null;
+        final boolean noCaducado = (getTramiteIniciofechaCierre() == null || getTramiteIniciofechaCierre().after(now));
+        final boolean publicado = (getTramiteInicioFechaPublicacion() == null || getTramiteInicioFechaPublicacion().before(now));
+
+        final boolean visible = this.estado != null && this.estado.contains("P");
+        return tieneTramiteInicio && visible && noCaducado && publicado;
     }
 
     @Override

@@ -40,8 +40,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private ProcedimientoDTO dataOriginal;
 
     private String objeto;
-
-
     private String destinatarios;
 
     private String termino;
@@ -121,6 +119,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
+            dataOriginal = (ProcedimientoDTO) data.clone();
+
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             if (id != null && !id.isEmpty()) {
                 data = procedimientoServiceFacade.findProcedimientoById(Long.valueOf(id));
@@ -270,7 +270,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
 
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
-        //params.put("SOLO_MENSAJES","N");
+        params.put("ID", this.data.getCodigo().toString());
         params.put("ESTADO", data.getEstado().toString());
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }
@@ -280,6 +280,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         params.put("SOLO_MENSAJES", "S");
         params.put("ESTADO", data.getEstado().toString());
+        params.put("ID", this.data.getCodigo().toString());
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }
 
@@ -289,7 +290,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
 
             resetearOrdenListas();
-            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil());
+            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo());
             final DialogResult result = new DialogResult();
             if (this.getModoAcceso() != null) {
                 result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
@@ -298,6 +299,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
             data.setEstado(respuestaFlujo.getEstadoDestino());
             data.setMensajes(respuestaFlujo.getMensajes());
+            data.setPendienteMensajesSupervisor(respuestaFlujo.isPendienteMensajesSupervisor());
+            data.setPendienteMensajesGestor(respuestaFlujo.isPendienteMensajesGestor());
             result.setResult(data);
             UtilJSF.closeDialog(result);
         }
@@ -307,8 +310,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
             RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
-            procedimientoServiceFacade.actualizarMensajes(data.getCodigo(), respuestaFlujo.getMensajes());
+            procedimientoServiceFacade.actualizarMensajes(data.getCodigo(), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
             data.setMensajes(respuestaFlujo.getMensajes());
+            data.setPendienteMensajesSupervisor(respuestaFlujo.isPendienteMensajesSupervisor());
+            data.setPendienteMensajesGestor(respuestaFlujo.isPendienteMensajesGestor());
         }
     }
 
@@ -336,7 +341,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (this.data.getCodigo() == null) {
             procedimientoServiceFacade.create(this.data, sessionBean.getPerfil());
         } else {
-            procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil());
+            procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil(), UtilJSF.getSessionBean().getEntidad().getCodigo());
         }
 
 
@@ -467,7 +472,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void cerrar() {
-        if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && (this.data.getCodigoWF() == null || this.data.compareTo(this.dataOriginal) != 0)) {
+        if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
             PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;
         }
@@ -728,9 +733,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
             final Map<String, String> params = new HashMap<>();
             params.put("ID", normativaGridSeleccionada.getCodigo().toString());
-            UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true,
-                    (Integer.parseInt(sessionBean.getScreenWidth()) - 200),
-                    (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+            UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("normativasSeleccionadas", data.getNormativas());
             final Map<String, String> params = new HashMap<>();
@@ -820,8 +823,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
         params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
 
-        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
-                800, 350);
+        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true, 800, 350);
     }
 
     public void nuevoDocumento() {
@@ -910,8 +912,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado.clone());
         }
         params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
-        UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", modoAcceso, params, true,
-                800, 320);
+        UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", modoAcceso, params, true, 800, 320);
     }
 
     public void nuevoDocumentoLOPD() {
