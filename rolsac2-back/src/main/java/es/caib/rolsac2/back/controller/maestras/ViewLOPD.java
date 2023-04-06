@@ -4,30 +4,18 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
-import es.caib.rolsac2.service.facade.FicheroServiceFacade;
 import es.caib.rolsac2.service.model.EntidadDTO;
-import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -66,7 +54,7 @@ public class ViewLOPD extends AbstractController implements Serializable {
 
         UtilJSF.getSessionBean().setEntidad(this.data);
 
-        addGlobalMessage(getLiteral("msg.creaciocorrecta"));
+        // addGlobalMessage(getLiteral("msg.creaciocorrecta"));
 
         UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("viewConfiguracionEntidad.actualizado"));
 
@@ -83,8 +71,7 @@ public class ViewLOPD extends AbstractController implements Serializable {
             return false;
         }
 
-        if (Objects.isNull(this.data.getCodigo())
-                && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo()) && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }

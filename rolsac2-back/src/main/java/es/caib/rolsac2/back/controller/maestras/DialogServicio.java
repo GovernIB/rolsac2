@@ -108,6 +108,11 @@ public class DialogServicio extends AbstractController implements Serializable {
     @EJB
     private TemaServiceFacade temaServiceFacade;
 
+    private Literal lopdDerechos;
+    private Literal lopdDestinatario;
+    private Literal lopdInfoAdicional;
+    private Literal lopdFinalidad;
+
     /**
      * Variable booleana para saber si es guardar o flujo
      **/
@@ -126,17 +131,18 @@ public class DialogServicio extends AbstractController implements Serializable {
         temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
         temasPadreAnyadidos = new ArrayList<>();
 
+        this.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
+        this.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
+        this.setLopdInfoAdicional(new Literal());
+        this.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
 
         if (this.isModoAlta()) {
             data = ServicioDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUaInstructor(sessionBean.getUnidadActiva());
             data.setUaResponsable(sessionBean.getUnidadActiva());
-            data.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
-            data.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
-            data.setLopdInfoAdicional(new Literal());
-            data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
+            data.setHabilitadoFuncionario("N");
             dataOriginal = (ServicioDTO) data.clone();
 
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
@@ -427,13 +433,14 @@ public class DialogServicio extends AbstractController implements Serializable {
             retorno = false;
         }
 
+        /*
         if (this.data.getPublicosObjetivo() != null && !this.data.getPublicosObjetivo().isEmpty()) {
             boolean empleadoPublico = this.data.getPublicosObjetivo().get(0).isEmpleadoPublico();
             if ((empleadoPublico && this.data.isHabilitadoApoderado()) || (!empleadoPublico && !this.data.isHabilitadoApoderado())) {
                 PrimeFaces.current().executeScript("PF('cdApoderado').show();");
                 return retorno;
             }
-        }
+        }*/
 
         if (data.getPlantillaSel() == null || data.getPlantillaSel().getCodigo() == null) {
             if (this.data.isTramitElectronica() && (this.data.getTipoTramitacion().getUrl() == null || this.data.getTipoTramitacion().getUrl().estaVacio()) && this.data.getTipoTramitacion().getCodPlatTramitacion() == null) {
@@ -596,9 +603,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
             final Map<String, String> params = new HashMap<>();
             params.put("ID", normativaGridSeleccionada.getCodigo().toString());
-            UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true,
-                    (Integer.parseInt(sessionBean.getScreenWidth()) - 200),
-                    (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+            UtilJSF.openDialog("dialogNormativa", modoAcceso, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("normativasSeleccionadas", data.getNormativas());
             final Map<String, String> params = new HashMap<>();
@@ -687,8 +692,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
         params.put(TypeParametroVentana.TIPO.toString(), "SERV_DOC");
 
-        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
-                800, 350);
+        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true, 800, 350);
     }
 
     public void nuevoDocumento() {
@@ -777,8 +781,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado.clone());
         }
         params.put(TypeParametroVentana.TIPO.toString(), "SERV_DOC");
-        UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", modoAcceso, params, true,
-                800, 320);
+        UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", modoAcceso, params, true, 800, 320);
     }
 
     public void nuevoDocumentoLOPD() {
@@ -1152,6 +1155,38 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void setUaRaiz(String uaRaiz) {
         this.uaRaiz = uaRaiz;
+    }
+
+    public Literal getLopdDerechos() {
+        return lopdDerechos;
+    }
+
+    public void setLopdDerechos(Literal lopdDerechos) {
+        this.lopdDerechos = lopdDerechos;
+    }
+
+    public Literal getLopdDestinatario() {
+        return lopdDestinatario;
+    }
+
+    public void setLopdDestinatario(Literal lopdDestinatario) {
+        this.lopdDestinatario = lopdDestinatario;
+    }
+
+    public Literal getLopdInfoAdicional() {
+        return lopdInfoAdicional;
+    }
+
+    public void setLopdInfoAdicional(Literal lopdInfoAdicional) {
+        this.lopdInfoAdicional = lopdInfoAdicional;
+    }
+
+    public Literal getLopdFinalidad() {
+        return lopdFinalidad;
+    }
+
+    public void setLopdFinalidad(Literal lopdFinalidad) {
+        this.lopdFinalidad = lopdFinalidad;
     }
 }
 

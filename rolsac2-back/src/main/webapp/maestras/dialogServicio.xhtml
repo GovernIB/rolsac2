@@ -495,8 +495,8 @@
                                        for="txtLopdFinalidad"/>
                         <p>
                             <my:literalComponent id="txtLopdFinalidad"
-                                                 literal="#{dialogServicio.data.lopdFinalidad}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 literal="#{dialogServicio.lopdFinalidad}"
+                                                 soloLecture="#{true}"
                                                  idioma="#{dialogServicio.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -513,8 +513,8 @@
                                        for="txtLopdDestinatario"/>
                         <p>
                             <my:literalComponent id="txtLopdDestinatario"  styleClass="w95"
-                                                 literal="#{dialogServicio.data.lopdDestinatario}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 literal="#{dialogServicio.lopdDestinatario}"
+                                                 soloLecture="#{true}"
                                                  idioma="#{dialogServicio.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -531,8 +531,8 @@
                                        for="txtLopdDerechos"/>
                         <p>
                             <my:literalComponent id="txtLopdDerechos"  styleClass="w95"
-                                                 literal="#{dialogServicio.data.lopdDerechos}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 literal="#{dialogServicio.lopdDerechos}"
+                                                 soloLecture="#{true}"
                                                  idioma="#{dialogServicio.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -892,22 +892,6 @@
                              disabled="#{empty dialogServicio.data.codigo}"
             />
         </div>
-
-        <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoApoderado']}"
-                         header="#{labels['dict.guardandoDato']}"
-
-                         widgetVar="cdApoderado">
-            <p:commandButton value="#{labels['dict.continuar']}" onclick="confirmation.hide()" action="#{dialogServicio.accionSin()}" update="messagesDialog" >
-                <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogFlujo}" process="@this" />
-            </p:commandButton>
-            <p:commandButton value="#{labels['dict.no']}"        onclick="confirmation.hide()" />
-        </p:confirmDialog>
-
-        <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoFuncionario']}"
-                         header="#{labels['dict.guardandoDato']}"
-                         widgetVar="cdFuncionario">
-            <p:commandButton value="#{labels['dict.aceptar']}"        onclick="confirmation.hide()" />
-        </p:confirmDialog>
 
         <p:confirmDialog message="#{labels['dialogProcedimiento.warning.datoModificadoCerrar']}"
                          header="#{labels['dict.aviso']}!"

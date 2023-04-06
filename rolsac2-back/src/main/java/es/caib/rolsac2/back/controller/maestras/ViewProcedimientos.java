@@ -269,7 +269,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         //if (ancho == null) {
         //    ancho = 1433;
         //}
-        Integer ancho = 975;
+        Integer ancho = 1010;
         UtilJSF.openDialog("dialogProcedimiento", modoAcceso, params, true, ancho, 733);
     }
 

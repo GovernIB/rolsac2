@@ -271,7 +271,7 @@
                                         <p:selectOneMenu id="txtHabilitadoFuncionario" value="#{dialogProcedimiento.data.habilitadoFuncionario}"
                                                          styleClass="w95"  autoWidth="false" required="#{empty param['formDialog:closeButton']}"
                                                          requiredMessage="#{labels['dict.obligatorio.habilitadoFuncionario']}"
-                                                         disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                                         disabled="#{dialogProcedimiento.isModoConsulta() || dialogProcedimiento.isGestor()}"
                                                          >
                                              <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
                                              <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
@@ -478,8 +478,8 @@
                                        for="txtLopdFinalidad"/>
                         <p>
                             <my:literalComponent id="txtLopdFinalidad"
-                                                 literal="#{dialogProcedimiento.data.lopdFinalidad}"
-                                                 soloLecture="#{dialogProcedimiento.isModoConsulta()}"
+                                                 literal="#{dialogProcedimiento.lopdFinalidad}"
+                                                 soloLecture="true"
                                                  idioma="#{dialogProcedimiento.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -496,8 +496,8 @@
                                        for="txtLopdDestinatario"/>
                         <p>
                             <my:literalComponent id="txtLopdDestinatario"  styleClass="w95"
-                                                 literal="#{dialogProcedimiento.data.lopdDestinatario}"
-                                                 soloLecture="#{dialogProcedimiento.isModoConsulta()}"
+                                                 literal="#{dialogProcedimiento.lopdDestinatario}"
+                                                 soloLecture="true"
                                                  idioma="#{dialogProcedimiento.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -514,8 +514,8 @@
                                        for="txtLopdDerechos"/>
                         <p>
                             <my:literalComponent id="txtLopdDerechos"  styleClass="w95"
-                                                 literal="#{dialogProcedimiento.data.lopdDerechos}"
-                                                 soloLecture="#{dialogProcedimiento.isModoConsulta()}"
+                                                 literal="#{dialogProcedimiento.lopdDerechos}"
+                                                 soloLecture="true"
                                                  idioma="#{dialogProcedimiento.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"

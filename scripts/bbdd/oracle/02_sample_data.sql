@@ -13,7 +13,7 @@ Insert into ROLSAC2.RS2_TRAUSER (TRUS_CODIGO, TRUS_CODUS, TRUS_IDIOMA, TRUS_OBSE
 
 /*UA por defecto*/
 Insert into ROLSAC2.RS2_UNIADM (UNAD_CODIGO,UNAD_CODENTI,UNAD_TIPOUA,UNAD_UNADPADRE,UNAD_DIR3,UNAD_IDENTI,UNAD_ABREVI,UNAD_TFNO,UNAD_FAX,UNAD_EMAIL,UNAD_DOMINI,UNAD_RSPNOM,UNAD_RSPSEX,UNAD_RSPEMA,UNAD_ORDEN)
-    values (RS2_UNIADM_SEQ.NEXTVAL,RS2_ENTIDA_SEQ.CURRVAL,null,null,'dir3',null,null,null,null,null,null,null,null,null,'1');
+    values (RS2_UNIADM_SEQ.NEXTVAL,RS2_ENTIDA_SEQ.CURRVAL,null,null,'A04003003',null,null,null,null,null,null,null,null,null,'1');
 Insert into ROLSAC2.RS2_TRAUNAD (TRUA_CODIGO,TRUA_CODUNAD,TRUA_IDIOMA,TRUA_NOMBRE,TRUA_PRESEN,TRUA_URLWEB,TRUA_RSPCV) values (RS2_TRAUNAD_SEQ.NEXTVAL,RS2_UNIADM_SEQ.CURRVAL,'es','nombreua es',null,null, EMPTY_CLOB());
 Insert into ROLSAC2.RS2_TRAUNAD (TRUA_CODIGO,TRUA_CODUNAD,TRUA_IDIOMA,TRUA_NOMBRE,TRUA_PRESEN,TRUA_URLWEB,TRUA_RSPCV) values (RS2_TRAUNAD_SEQ.NEXTVAL,RS2_UNIADM_SEQ.CURRVAL,'ca','nombreua ca',null,null, EMPTY_CLOB());
 
@@ -35,3 +35,8 @@ Insert into ROLSAC2.RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASS
 VALUES (RS2_PLUGIN_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'Plugin de traducción', 'es.caib.rolsac2.commons.plugins.traduccion.translatorib.TranslatorIBPlugin',
         '[{"codigo":"url","valor":"https://dev.caib.es/translatorib/api/services/traduccion/v1","orden":null},{"codigo":"usr","valor":"api-tib","orden":null},{"codigo":"pwd","valor":"XXXXXX","orden":null}]',
         'pluginsib.traduccion.translatorib.', 'TRA');
+
+Insert into ROLSAC2.RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
+VALUES (RS2_PLUGIN_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'Plugin de consulta al API REST DIR3CAIB', 'es.caib.rolsac2.commons.plugins.dir3.caib.Dir3CaibRestPlugin',
+        '[{"codigo":"url","valor":"https://dev.caib.es/dir3caib/rest","orden":null},{"codigo":"usr","valor":"$sistra_dir3caib","orden":null},{"codigo":"pwd","valor":"sistra_dir3caib","orden":null}]',
+        'es.caib.rolsac2.pluginsib.dir3.caib.', 'DIR3');

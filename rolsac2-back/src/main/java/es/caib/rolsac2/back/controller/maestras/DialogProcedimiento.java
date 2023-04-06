@@ -99,6 +99,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private final Integer FASE_INICIACION = 1;
     private boolean esSoloGuardar;
     private String uaRaiz;
+    private Literal lopdDerechos;
+    private Literal lopdDestinatario;
+    private Literal lopdInfoAdicional;
+    private Literal lopdFinalidad;
 
     public void load() {
         LOG.debug("init");
@@ -109,16 +113,18 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
         temasPadreAnyadidos = new ArrayList<>();
 
+        this.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
+        this.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
+        this.setLopdInfoAdicional(new Literal());
+        this.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
+
         if (this.isModoAlta()) {
             data = ProcedimientoDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUaInstructor(sessionBean.getUnidadActiva());
             data.setUaResponsable(sessionBean.getUnidadActiva());
-            data.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
-            data.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
-            data.setLopdInfoAdicional(new Literal());
-            data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
+            data.setHabilitadoFuncionario("N");
             dataOriginal = (ProcedimientoDTO) data.clone();
 
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
@@ -450,7 +456,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
-
+        /*
         if (this.data.getTramites() != null && !this.data.getTramites().isEmpty() && "S".equals(this.data.getHabilitadoFuncionario())) {
             for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
                 if (tramite.isTramitElectronica() && !tramite.isTramitPresencial()) {
@@ -466,7 +472,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 PrimeFaces.current().executeScript("PF('cdApoderado').show();");
                 return todoCorrecto;
             }
-        }
+        }*/
 
         return todoCorrecto;
     }
@@ -1299,6 +1305,38 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void setUaRaiz(String uaRaiz) {
         this.uaRaiz = uaRaiz;
+    }
+
+    public Literal getLopdDerechos() {
+        return lopdDerechos;
+    }
+
+    public void setLopdDerechos(Literal lopdDerechos) {
+        this.lopdDerechos = lopdDerechos;
+    }
+
+    public Literal getLopdDestinatario() {
+        return lopdDestinatario;
+    }
+
+    public void setLopdDestinatario(Literal lopdDestinatario) {
+        this.lopdDestinatario = lopdDestinatario;
+    }
+
+    public Literal getLopdInfoAdicional() {
+        return lopdInfoAdicional;
+    }
+
+    public void setLopdInfoAdicional(Literal lopdInfoAdicional) {
+        this.lopdInfoAdicional = lopdInfoAdicional;
+    }
+
+    public Literal getLopdFinalidad() {
+        return lopdFinalidad;
+    }
+
+    public void setLopdFinalidad(Literal lopdFinalidad) {
+        this.lopdFinalidad = lopdFinalidad;
     }
 }
 

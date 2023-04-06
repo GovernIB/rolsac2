@@ -188,13 +188,8 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                 String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
                 msg.setUsuario(usuario);
                 msg.setMensaje(valorLiteral);
-                if (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) {
-                    msg.setPendienteMensajesGestor(false);
-                    msg.setPendienteMensajesSupervisor(true);
-                } else {
-                    msg.setPendienteMensajesGestor(true);
-                    msg.setPendienteMensajesSupervisor(false);
-                }
+                msg.setPendienteMensajesGestor(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
+                msg.setPendienteMensajesSupervisor(!(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS));
                 msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
                 mensajes.add(0, msg);
             }
@@ -213,13 +208,8 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             msg.setUsuario(usuario);
             msg.setMensaje(mensajeNuevo);
             msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
-            if (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) {
-                msg.setPendienteMensajesGestor(true);
-                msg.setPendienteMensajesSupervisor(false);
-            } else {
-                msg.setPendienteMensajesGestor(false);
-                msg.setPendienteMensajesSupervisor(true);
-            }
+            msg.setPendienteMensajesGestor(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
+            msg.setPendienteMensajesSupervisor(!(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS));
             mensajes.add(0, msg);
         }
 
