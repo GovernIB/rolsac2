@@ -18,7 +18,6 @@ public class TestSiaPlugin {
     /**
      * Se genera un envío vacío para ver si SIA responde correctamente.
      */
-    @Test
     public void actualizarActiacionSia() {
         Map<String, String> opciones = new HashMap<>();
         Properties prop = new Properties();
