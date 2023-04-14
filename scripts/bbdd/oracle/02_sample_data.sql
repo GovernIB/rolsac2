@@ -39,4 +39,4 @@ VALUES (RS2_PLUGIN_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'Plugin de traducción',
 Insert into ROLSAC2.RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
 VALUES (RS2_PLUGIN_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'Plugin de consulta al API REST DIR3CAIB', 'es.caib.rolsac2.commons.plugins.dir3.caib.Dir3CaibRestPlugin',
         '[{"codigo":"url","valor":"https://dev.caib.es/dir3caib/rest","orden":null},{"codigo":"usr","valor":"$sistra_dir3caib","orden":null},{"codigo":"pwd","valor":"sistra_dir3caib","orden":null}]',
-        'es.caib.rolsac2.pluginsib.dir3.caib.', 'DIR3');
+        'es.caib.rolsac2.pluginsib.dir3.caib.', 'DI3');
