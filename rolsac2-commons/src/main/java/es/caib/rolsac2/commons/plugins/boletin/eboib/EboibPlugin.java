@@ -144,7 +144,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
      * @param inputFileName
      * @return
      */
-    private Normativa getEnviament(final ResultadoBoib rdf, final String inputFileName) {
+    private Normativa getEnviament(final ResultadoBoib rdf, final String inputFileName) throws BoletinErrorException {
 
         final Normativa normativa = new Normativa();
         final Model m = loadRdf(inputFileName);
@@ -158,7 +158,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
         normativa.setValorRegistro("" + res.getProperty(RdfProperties.NUM_REGISTRE).getString());
         normativa.setIdTipoNormativa(extraerIdTipoNormativa(res.getProperty(RdfProperties.TIPUS_PUBLICACIO).getResource().getURI()));
 
-        final java.text.SimpleDateFormat anyosMedia = new java.text.SimpleDateFormat("dd/MM/yyyy");
+        final java.text.SimpleDateFormat anyosMedia = new java.text.SimpleDateFormat("yyyy-MM-dd");
         try {
             normativa.setFechaBoletin(anyosMedia.parse(res.getProperty(RdfProperties.DATE).getString()));
         } catch (final ParseException e) {
