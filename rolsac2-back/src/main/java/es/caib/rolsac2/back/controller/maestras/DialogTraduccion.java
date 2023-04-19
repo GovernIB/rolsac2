@@ -185,19 +185,16 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
                 for (Field field : fields) {
                     for (Method m : metodos) {
-                        if ((m.getName().startsWith("set"))
-                                && (m.getParameterTypes()[0].getTypeName().equals(Literal.class.getTypeName()))) {
+                        if ((m.getName().startsWith("set")) && (m.getParameterTypes()[0].getTypeName().equals(Literal.class.getTypeName()))) {
                             try {
 
-                                if (field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("set", ""))
-                                        && !field.getName().toLowerCase(Locale.ROOT).contains("url")) {
+                                if (field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("set", "")) && !field.getName().toLowerCase(Locale.ROOT).contains("url")) {
                                     if (literales.size() > cont) {
                                         m.invoke(data, literales.get(cont));
                                         cont++;
                                     }
                                 }
-                            } catch (IllegalAccessException | IllegalArgumentException
-                                    | InvocationTargetException e) {
+                            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -279,14 +276,6 @@ public class DialogTraduccion extends AbstractController implements Serializable
         listaFields.add("requisitos");*/
 
 
-        literales.add((Literal) ((ServicioDTO) data).getLopdFinalidad().clone());
-        literales.add((Literal) ((ServicioDTO) data).getLopdDestinatario().clone());
-        literales.add((Literal) ((ServicioDTO) data).getLopdDerechos().clone());
-        //literales.add((Literal) ((ProcedimientoDTO) data).getLopdInfoAdicional().clone());
-        listaFields.add("lopdFinalidad");
-        listaFields.add("lopdDestinatario");
-        listaFields.add("lopdDerechos");
-        //listaFields.add("lopdInfoAdicional");
     }
 
     public void imprimirLiteralesProcedimiento() {
@@ -309,14 +298,6 @@ public class DialogTraduccion extends AbstractController implements Serializable
         //listaFields.add("requisitos");
 
 
-        literales.add((Literal) ((ProcedimientoDTO) data).getLopdFinalidad().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getLopdDestinatario().clone());
-        literales.add((Literal) ((ProcedimientoDTO) data).getLopdDerechos().clone());
-        //literales.add((Literal) ((ProcedimientoDTO) data).getLopdInfoAdicional().clone());
-        listaFields.add("lopdFinalidad");
-        listaFields.add("lopdDestinatario");
-        listaFields.add("lopdDerechos");
-        //listaFields.add("lopdInfoAdicional");
     }
 
     public void imprimirLiterales() {
@@ -327,8 +308,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
         for (Field field : fields) {
             for (Method m : metodos) {
-                if ((m.getName().startsWith("get")) &&
-                        m.getGenericReturnType().getTypeName().equals(lit.getClass().getTypeName())) {
+                if ((m.getName().startsWith("get")) && m.getGenericReturnType().getTypeName().equals(lit.getClass().getTypeName())) {
                     if ((field.getName().toLowerCase(Locale.ROOT).equals(m.getName().toLowerCase(Locale.ROOT).replace("get", "")))) {
                         try {
                             if (!field.getName().toLowerCase(Locale.ROOT).contains("url")) {
@@ -337,8 +317,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
                                 listaFields.add(field.getName());
                             }
 
-                        } catch (IllegalAccessException | IllegalArgumentException
-                                | InvocationTargetException e) {
+                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                             e.printStackTrace();
                         }
                     }
@@ -446,9 +425,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
             if (data instanceof UnidadAdministrativaDTO) {
                 for (int i = 0; i < literales.size(); i++) {
                     try {
-                        String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.TEXTO_PLANO.toString(),
-                                literales.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino),
-                                opciones, sessionBean.getEntidad().getCodigo());
+                        String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.TEXTO_PLANO.toString(), literales.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino), opciones, sessionBean.getEntidad().getCodigo());
                         if (isSustitucion()) {
                             literalAuxDestino.add(i, tradDestino);
                             this.cambioIdiomaDestino(literales.get(i), idiomaDestino, i);
@@ -461,9 +438,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
                 }
                 for (int i = 0; i < literalesHTML.size(); i++) {
                     try {
-                        String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.HTML.toString(),
-                                literalesHTML.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino),
-                                opciones, sessionBean.getEntidad().getCodigo());
+                        String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.HTML.toString(), literalesHTML.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino), opciones, sessionBean.getEntidad().getCodigo());
                         if (isSustitucion()) {
                             literalHTMLAuxDestino.add(i, tradDestino);
                             this.cambioIdiomaDestinoHTML(literalesHTML.get(i), idiomaDestino, i);
@@ -479,9 +454,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
             } else {
                 for (int i = 0; i < literales.size(); i++) {
                     try {
-                        String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.TEXTO_PLANO.toString(),
-                                literales.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino),
-                                opciones, sessionBean.getEntidad().getCodigo());
+                        String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.TEXTO_PLANO.toString(), literales.get(i).getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino), opciones, sessionBean.getEntidad().getCodigo());
                         if (isSustitucion()) {
                             literalAuxDestino.add(i, tradDestino);
                             this.cambioIdiomaDestino(literales.get(i), idiomaDestino, i);
