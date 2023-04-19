@@ -153,9 +153,6 @@ public class DialogTraduccion extends AbstractController implements Serializable
                 ((ProcedimientoDTO) data).setDestinatarios(literales.get(2));
                 ((ProcedimientoDTO) data).setTerminoResolucion(literales.get(3));
                 ((ProcedimientoDTO) data).setObservaciones(literales.get(4));
-                ((ProcedimientoDTO) data).setLopdFinalidad(literales.get(5));
-                ((ProcedimientoDTO) data).setLopdDestinatario(literales.get(6));
-                ((ProcedimientoDTO) data).setLopdDerechos(literales.get(7));
             }
         } else if (data instanceof ServicioDTO) {
             if (literales != null) {
@@ -164,9 +161,6 @@ public class DialogTraduccion extends AbstractController implements Serializable
                 ((ServicioDTO) data).setDestinatarios(literales.get(2));
                 ((ServicioDTO) data).setRequisitos(literales.get(3));
                 ((ServicioDTO) data).setObservaciones(literales.get(4));
-                ((ServicioDTO) data).setLopdFinalidad(literales.get(5));
-                ((ServicioDTO) data).setLopdDestinatario(literales.get(6));
-                ((ServicioDTO) data).setLopdDerechos(literales.get(7));
             }
         } else if (data instanceof ProcedimientoTramiteDTO) {
             if (literales != null) {
