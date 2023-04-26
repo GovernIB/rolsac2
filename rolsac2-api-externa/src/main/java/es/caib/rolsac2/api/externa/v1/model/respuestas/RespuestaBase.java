@@ -1,8 +1,8 @@
 package es.caib.rolsac2.api.externa.v1.model.respuestas;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * RespuestaBase. Estructura de respuesta que contiene la información comun a todas las respuestas.

@@ -1,29 +1,20 @@
 package es.caib.rolsac2.api.externa.v1.services;
 
-import javax.annotation.security.RolesAllowed;
-import javax.annotation.security.RunAs;
-import javax.ejb.EJB;
-import javax.servlet.http.HttpServlet;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import es.caib.rolsac2.service.facade.PersonalServiceFacade;
+import es.caib.rolsac2.service.model.Pagina;
+import es.caib.rolsac2.service.model.PersonalGridDTO;
+import es.caib.rolsac2.service.model.filtro.PersonalFiltro;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
-import es.caib.rolsac2.service.facade.PersonalServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.PersonalGridDTO;
-import es.caib.rolsac2.service.model.filtro.PersonalFiltro;
-import es.caib.rolsac2.service.model.types.TypePerfiles;
+import javax.ejb.EJB;
+import javax.servlet.http.HttpServlet;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Recurs REST per accedir a personal.

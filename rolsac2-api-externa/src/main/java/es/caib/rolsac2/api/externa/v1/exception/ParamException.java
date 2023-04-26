@@ -1,16 +1,9 @@
 package es.caib.rolsac2.api.externa.v1.exception;
 
-import java.lang.annotation.Annotation;
-
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.MatrixParam;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-
 import es.caib.rolsac2.api.externa.v1.model.respuestas.Responses;
+
+import javax.ws.rs.*;
+import java.lang.annotation.Annotation;
 
 public abstract class ParamException extends WebApplicationException {
 

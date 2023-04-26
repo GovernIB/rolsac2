@@ -1,8 +1,8 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @Schema(name = "Login", description = "Objeto de login")

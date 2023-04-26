@@ -1,10 +1,9 @@
 package es.caib.rolsac2.api.externa.v1.model.respuestas;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Respuesta Idioma
