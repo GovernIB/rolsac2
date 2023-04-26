@@ -1,25 +1,18 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.io.IOException;
-import java.util.Calendar;
-
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.api.externa.v1.utils.Utiles;
+import es.caib.rolsac2.service.model.ProcedimientoDTO;
+import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.api.externa.v1.utils.Utiles;
-import es.caib.rolsac2.service.model.ProcedimientoDTO;
-import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.Calendar;
 
 /**
  * Procediments.
@@ -146,6 +139,7 @@ public class Procedimientos extends EntidadBase {
 //	@Schema(description = "linkServicioResponsable", required = false)
 //	private Link linkServicioResponsable;
 	@Schema(hidden = true)
+	@JsonIgnore
 	@XmlTransient
 	private Long servicioResponsable;
 
@@ -153,6 +147,7 @@ public class Procedimientos extends EntidadBase {
 //	@Schema(description = "linkUnidadAdministrativa", required = false)
 //	private Link linkUnidadAdministrativa;
 	@Schema(hidden = true)
+	@JsonIgnore
 	@XmlTransient
 	private Long unidadAdministrativa;
 
@@ -160,6 +155,7 @@ public class Procedimientos extends EntidadBase {
 //	@Schema(description = "linkOrganResolutori", required = false)
 //	private Link linkOrganResolutori;
 	@Schema(hidden = true)
+	@JsonIgnore
 	@XmlTransient
 	private Long organResolutori;
 
@@ -167,6 +163,7 @@ public class Procedimientos extends EntidadBase {
 //	@Schema(description = "linkFamilia", required = false)
 //	private Link linkFamilia;
 	@Schema(hidden = true)
+	@JsonIgnore
 	@XmlTransient
 	private Long familia;
 
@@ -190,6 +187,7 @@ public class Procedimientos extends EntidadBase {
 //	@Schema(description = "linkLopdInfoAdicional", required = false)
 //	private Link linkLopdInfoAdicional;
 	@Schema(hidden = true)
+	@JsonIgnore
 	@XmlTransient
 	private String lopdInfoAdicional;
 
@@ -433,56 +431,56 @@ public class Procedimientos extends EntidadBase {
 	/**
 	 * @return the destinatarios
 	 */
-	public java.lang.String getDestinatarios() {
+	public String getDestinatarios() {
 		return destinatarios;
 	}
 
 	/**
 	 * @param destinatarios the destinatarios to set
 	 */
-	public void setDestinatarios(final java.lang.String destinatarios) {
+	public void setDestinatarios(final String destinatarios) {
 		this.destinatarios = destinatarios;
 	}
 
 	/**
 	 * @return the fechaActualizacion
 	 */
-	public java.util.Calendar getFechaActualizacion() {
+	public Calendar getFechaActualizacion() {
 		return fechaActualizacion;
 	}
 
 	/**
 	 * @param fechaActualizacion the fechaActualizacion to set
 	 */
-	public void setFechaActualizacion(final java.util.Calendar fechaActualizacion) {
+	public void setFechaActualizacion(final Calendar fechaActualizacion) {
 		this.fechaActualizacion = fechaActualizacion;
 	}
 
 	/**
 	 * @return the fechaCaducidad
 	 */
-	public java.util.Calendar getFechaCaducidad() {
+	public Calendar getFechaCaducidad() {
 		return fechaCaducidad;
 	}
 
 	/**
 	 * @param fechaCaducidad the fechaCaducidad to set
 	 */
-	public void setFechaCaducidad(final java.util.Calendar fechaCaducidad) {
+	public void setFechaCaducidad(final Calendar fechaCaducidad) {
 		this.fechaCaducidad = fechaCaducidad;
 	}
 
 	/**
 	 * @return the fechaPublicacion
 	 */
-	public java.util.Calendar getFechaPublicacion() {
+	public Calendar getFechaPublicacion() {
 		return fechaPublicacion;
 	}
 
 	/**
 	 * @param fechaPublicacion the fechaPublicacion to set
 	 */
-	public void setFechaPublicacion(final java.util.Calendar fechaPublicacion) {
+	public void setFechaPublicacion(final Calendar fechaPublicacion) {
 		this.fechaPublicacion = fechaPublicacion;
 	}
 
@@ -503,70 +501,70 @@ public class Procedimientos extends EntidadBase {
 	/**
 	 * @return the dirElectronica
 	 */
-	public java.lang.String getDirElectronica() {
+	public String getDirElectronica() {
 		return dirElectronica;
 	}
 
 	/**
 	 * @param dirElectronica the dirElectronica to set
 	 */
-	public void setDirElectronica(final java.lang.String dirElectronica) {
+	public void setDirElectronica(final String dirElectronica) {
 		this.dirElectronica = dirElectronica;
 	}
 
 	/**
 	 * @return the lugar
 	 */
-	public java.lang.String getLugar() {
+	public String getLugar() {
 		return lugar;
 	}
 
 	/**
 	 * @param lugar the lugar to set
 	 */
-	public void setLugar(final java.lang.String lugar) {
+	public void setLugar(final String lugar) {
 		this.lugar = lugar;
 	}
 
 	/**
 	 * @return the nombre
 	 */
-	public java.lang.String getNombre() {
+	public String getNombre() {
 		return nombre;
 	}
 
 	/**
 	 * @param nombre the nombre to set
 	 */
-	public void setNombre(final java.lang.String nombre) {
+	public void setNombre(final String nombre) {
 		this.nombre = nombre;
 	}
 
 	/**
 	 * @return the notificacion
 	 */
-	public java.lang.String getNotificacion() {
+	public String getNotificacion() {
 		return notificacion;
 	}
 
 	/**
 	 * @param notificacion the notificacion to set
 	 */
-	public void setNotificacion(final java.lang.String notificacion) {
+	public void setNotificacion(final String notificacion) {
 		this.notificacion = notificacion;
 	}
 
 	/**
 	 * @return the observaciones
 	 */
-	public java.lang.String getObservaciones() {
+	public String getObservaciones() {
 		return observaciones;
 	}
 
 	/**
 	 * @param observaciones the observaciones to set
 	 */
-	public void setObservaciones(final java.lang.String observaciones) {
+	public void setObservaciones(final String observaciones) {
 		this.observaciones = observaciones;
 	}
 
@@ -587,98 +585,98 @@ public class Procedimientos extends EntidadBase {
 	/**
 	 * @return the plazos
 	 */
-	public java.lang.String getPlazos() {
+	public String getPlazos() {
 		return plazos;
 	}
 
 	/**
 	 * @param plazos the plazos to set
 	 */
-	public void setPlazos(final java.lang.String plazos) {
+	public void setPlazos(final String plazos) {
 		this.plazos = plazos;
 	}
 
 	/**
 	 * @return the recursos
 	 */
-	public java.lang.String getRecursos() {
+	public String getRecursos() {
 		return recursos;
 	}
 
 	/**
 	 * @param recursos the recursos to set
 	 */
-	public void setRecursos(final java.lang.String recursos) {
+	public void setRecursos(final String recursos) {
 		this.recursos = recursos;
 	}
 
 	/**
 	 * @return the requisitos
 	 */
-	public java.lang.String getRequisitos() {
+	public String getRequisitos() {
 		return requisitos;
 	}
 
 	/**
 	 * @param requisitos the requisitos to set
 	 */
-	public void setRequisitos(final java.lang.String requisitos) {
+	public void setRequisitos(final String requisitos) {
 		this.requisitos = requisitos;
 	}
 
 	/**
 	 * @return the resolucion
 	 */
-	public java.lang.String getResolucion() {
+	public String getResolucion() {
 		return resolucion;
 	}
 
 	/**
 	 * @param resolucion the resolucion to set
 	 */
-	public void setResolucion(final java.lang.String resolucion) {
+	public void setResolucion(final String resolucion) {
 		this.resolucion = resolucion;
 	}
 
 	/**
 	 * @return the responsable
 	 */
-	public java.lang.String getResponsable() {
+	public String getResponsable() {
 		return responsable;
 	}
 
 	/**
 	 * @param responsable the responsable to set
 	 */
-	public void setResponsable(final java.lang.String responsable) {
+	public void setResponsable(final String responsable) {
 		this.responsable = responsable;
 	}
 
 	/**
 	 * @return the resumen
 	 */
-	public java.lang.String getResumen() {
+	public String getResumen() {
 		return resumen;
 	}
 
 	/**
 	 * @param resumen the resumen to set
 	 */
-	public void setResumen(final java.lang.String resumen) {
+	public void setResumen(final String resumen) {
 		this.resumen = resumen;
 	}
 
 	/**
 	 * @return the signatura
 	 */
-	public java.lang.String getSignatura() {
+	public String getSignatura() {
 		return signatura;
 	}
 
 	/**
 	 * @param signatura the signatura to set
 	 */
-	public void setSignatura(final java.lang.String signatura) {
+	public void setSignatura(final String signatura) {
 		this.signatura = signatura;
 	}
 
@@ -699,70 +697,70 @@ public class Procedimientos extends EntidadBase {
 	/**
 	 * @return the url
 	 */
-	public java.lang.String getUrl() {
+	public String getUrl() {
 		return url;
 	}
 
 	/**
 	 * @param url the url to set
 	 */
-	public void setUrl(final java.lang.String url) {
+	public void setUrl(final String url) {
 		this.url = url;
 	}
 
 	/**
 	 * @return the validacion
 	 */
-	public java.lang.Integer getValidacion() {
+	public Integer getValidacion() {
 		return validacion;
 	}
 
 	/**
 	 * @param validacion the validacion to set
 	 */
-	public void setValidacion(final java.lang.Integer validacion) {
+	public void setValidacion(final Integer validacion) {
 		this.validacion = validacion;
 	}
 
 	/**
 	 * @return the codigoSIA
 	 */
-	public java.lang.String getCodigoSIA() {
+	public String getCodigoSIA() {
 		return codigoSIA;
 	}
 
 	/**
 	 * @param codigoSIA the codigoSIA to set
 	 */
-	public void setCodigoSIA(final java.lang.String codigoSIA) {
+	public void setCodigoSIA(final String codigoSIA) {
 		this.codigoSIA = codigoSIA;
 	}
 
 	/**
 	 * @return the estadoSIA
 	 */
-	public java.lang.String getEstadoSIA() {
+	public String getEstadoSIA() {
 		return estadoSIA;
 	}
 
 	/**
 	 * @param estadoSIA the estadoSIA to set
 	 */
-	public void setEstadoSIA(final java.lang.String estadoSIA) {
+	public void setEstadoSIA(final String estadoSIA) {
 		this.estadoSIA = estadoSIA;
 	}
 
 	/**
 	 * @return the fechaSIA
 	 */
-	public java.util.Calendar getFechaSIA() {
+	public Calendar getFechaSIA() {
 		return fechaSIA;
 	}
 
 	/**
 	 * @param fechaSIA the fechaSIA to set
 	 */
-	public void setFechaSIA(final java.util.Calendar fechaSIA) {
+	public void setFechaSIA(final Calendar fechaSIA) {
 		this.fechaSIA = fechaSIA;
 	}
 
@@ -885,28 +883,28 @@ public class Procedimientos extends EntidadBase {
 	/**
 	 * @return the tramite
 	 */
-	public java.lang.String getTramite() {
+	public String getTramite() {
 		return tramite;
 	}
 
 	/**
 	 * @param tramite the tramite to set
 	 */
-	public void setTramite(final java.lang.String tramite) {
+	public void setTramite(final String tramite) {
 		this.tramite = tramite;
 	}
 
 	/**
 	 * @return the version
 	 */
-	public java.lang.Long getVersion() {
+	public Long getVersion() {
 		return version;
 	}
 
 	/**
 	 * @param version the version to set
 	 */
-	public void setVersion(final java.lang.Long version) {
+	public void setVersion(final Long version) {
 		this.version = version;
 	}
 

@@ -1,16 +1,15 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * PlatTramitElectronica.
@@ -19,7 +18,7 @@ import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
  *
  */
 @XmlRootElement
-@Schema(name = "PlatTramitElectronica", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_TIPO_TRAMITACION)
+@Schema(name = "PlatTramitElectronica", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_PLATAFORMA)
 public class PlatTramitElectronica extends EntidadBase<PlatTramitElectronica> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PlatTramitElectronica.class);
@@ -47,6 +46,7 @@ public class PlatTramitElectronica extends EntidadBase<PlatTramitElectronica> {
 	@Schema(description = "linkEntidad", required = false)
 	private Link linkEntidad;
 	@Schema(hidden = true)
+	@JsonIgnore
 	@XmlTransient
 	private Long codEntidad;
 

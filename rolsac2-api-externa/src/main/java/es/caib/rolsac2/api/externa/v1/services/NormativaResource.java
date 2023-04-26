@@ -1,29 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.services;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.ejb.EJB;
-import javax.validation.ValidationException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
-import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-
 import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
 import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.Normativa;
@@ -35,12 +11,27 @@ import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
 import es.caib.rolsac2.service.facade.TipoNormativaServiceFacade;
 import es.caib.rolsac2.service.model.NormativaDTO;
-import es.caib.rolsac2.service.model.NormativaGridDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-@Path("/v1/" + Constantes.ENTIDAD_NORMATIVAS)
-@Tag(description = "/v1/" + Constantes.ENTIDAD_NORMATIVAS, name = Constantes.ENTIDAD_NORMATIVAS)
+import javax.ejb.EJB;
+import javax.validation.ValidationException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
+
+@Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_NORMATIVAS)
+@Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_NORMATIVAS, name = Constantes.ENTIDAD_NORMATIVAS)
 public class NormativaResource {
 
 	@EJB
@@ -115,35 +106,24 @@ public class NormativaResource {
 		if (lang != null) {
 			fg.setIdioma(lang);
 		}
-		fg.setIdEntidad(new Long(codigo));
+		fg.setCodigo(new Long(codigo));
 
-		return Response.ok(getRespuestaSimple(fg), MediaType.APPLICATION_JSON).build();
+		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
 	}
 
 	private RespuestaNormativa getRespuesta(NormativaFiltro filtro) throws DelegateException {
-		Pagina<NormativaGridDTO> resultadoBusqueda = normativaService.findByFiltro(filtro);
+		Pagina<NormativaDTO> resultadoBusqueda = normativaService.findByFiltroRest(filtro);
 
 		List<Normativa> lista = new ArrayList<>();
 		Normativa elemento = null;
 
-		for (NormativaGridDTO nodo : resultadoBusqueda.getItems()) {
+		for (NormativaDTO nodo : resultadoBusqueda.getItems()) {
 			elemento = new Normativa(nodo, null, filtro.getIdioma(), true);
 			lista.add(elemento);
 		}
 
 		return new RespuestaNormativa(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()),
 				resultadoBusqueda.getTotal(), lista);
-	}
-
-	private RespuestaNormativa getRespuestaSimple(NormativaFiltro filtro) throws DelegateException {
-		NormativaDTO resultadoBusqueda = normativaService.findById(filtro.getIdEntidad());
-
-		List<Normativa> lista = new ArrayList<>();
-
-		lista.add(new Normativa(resultadoBusqueda, null, filtro.getIdioma(), true));
-
-		return new RespuestaNormativa(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), 1L,
-				lista);
 	}
 
 }

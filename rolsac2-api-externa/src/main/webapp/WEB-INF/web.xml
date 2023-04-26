@@ -28,7 +28,7 @@
         <web-resource-collection>
             <web-resource-name>restringit</web-resource-name>
             <description>Restringim l'accés a tots els recursos REST</description>
-            <url-pattern>/services/*</url-pattern>
+            <url-pattern>/*</url-pattern>
             <http-method-omission>
                 OPTIONS
             </http-method-omission>

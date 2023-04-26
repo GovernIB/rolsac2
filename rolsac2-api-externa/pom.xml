@@ -50,6 +50,12 @@
             <scope>provided</scope>
         </dependency>
 
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -179,6 +185,7 @@
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoTramitacionResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.EntidadesResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.PlatTramitElectronicaResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.FicheroResource</endpointClass>
                             </endpointClasses>
                             <output>${project.build.directory}/openapi/openapi.json</output>
                             <info>

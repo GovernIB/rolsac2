@@ -2,8 +2,6 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
 import es.caib.rolsac2.persistence.model.JTipoTramitacion;
-import es.caib.rolsac2.persistence.model.JTipoTramitacion;
-import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
@@ -116,7 +114,7 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JTipoTramitacion j JOIN j.codPlatTramitacion p where 1 = 1 ");
         } else if (isRest) {
-        	sql = new StringBuilder("SELECT j FROM JTipoTramitacion j JOIN j.codPlatTramitacion p where 1 = 1 ");
+        	sql = new StringBuilder("SELECT j FROM JTipoTramitacion j JOIN j.codPlatTramitacion p LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             // sql = new StringBuilder("SELECT j.codigo, j.identificador, j.descripcion FROM JTipoTramitacion j where 1
             // = 1 ");
@@ -151,6 +149,12 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         if (filtro.isRellenoCodigo()) {
         	sql.append(" and j.codigo = :codigo ");
         }
+        if (filtro.isRellenoFaseProc()) {
+        	sql.append(" and j.faseProc = :faseProc ");
+        }
+        if (filtro.isRellenoCodPlatTramitacion()) {
+        	sql.append(" and p.codigo = :codPlatTramitacion ");
+        }
 
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
@@ -170,6 +174,12 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         }
         if (filtro.isRellenoCodigo()) {
         	query.setParameter("codigo", filtro.getCodigo());
+        }
+        if (filtro.isRellenoIdioma()) {
+            query.setParameter("idioma", filtro.getIdioma());
+        }
+        if (filtro.isRellenoFaseProc()) {
+        	query.setParameter("faseProc", filtro.getFaseProc());
         }
 
         return query;

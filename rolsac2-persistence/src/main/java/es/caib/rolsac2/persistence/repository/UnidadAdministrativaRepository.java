@@ -15,14 +15,14 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     Optional<JUnidadAdministrativa> findById(String id);
 
-    List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest);
+    List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro);
 
     List<JUnidadAdministrativa> getHijos(Long idUnitat, String idioma);
 
 
     Long getCountHijos(Long parentId);
 
-    long countByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest);
+    long countByFiltro(UnidadAdministrativaFiltro filtro);
 
     List<JTipoUnidadAdministrativa> getTipo(Long idUnitat, String idioma);
 
@@ -57,4 +57,6 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     boolean isVisibleUA(UnidadAdministrativaDTO uaInstructor);
 
     String obtenerCodigoDIR3(Long codigoUA);
+
+	List<UnidadAdministrativaDTO> findPagedByFiltroRest(UnidadAdministrativaFiltro fg);
 }

@@ -454,6 +454,22 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         //procedimientoRepository.actualizarSolr(indexacionDTO, resultadoAccion);
     }
 
+	@Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<NormativaDTO> findByFiltroRest(NormativaFiltro filtro) {
+		try {
+			List<NormativaDTO> items = normativaRepository.findPagedByFiltroRest(filtro);
+			long total = normativaRepository.countByFiltro(filtro);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error("Error", e);
+			List<NormativaDTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
+
 
     /*******************************************************************************************************************
      * Funciones privadas del servicio

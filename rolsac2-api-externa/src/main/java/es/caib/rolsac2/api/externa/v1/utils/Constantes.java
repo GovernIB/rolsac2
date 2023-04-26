@@ -3,17 +3,18 @@ package es.caib.rolsac2.api.externa.v1.utils;
 /**
  * Clase de constantes.
  *
- * @author slromero
+ * @author Indra
  *
  */
 public class Constantes {
-
-//	private static Log log = LogFactory.getLog(Constantes.class);
 
 	public static final String SALTO_LINEA = "<br>";
 
 	/** Version del api (minusculas, sin espacios) **/
 	public static final String API_VERSION = "v1";
+
+	/** Version del api (minusculas, sin espacios) **/
+	public static final String API_VERSION_BARRA = "/" + API_VERSION + "/";
 
 	/** Idioma por defecto. solo para Swagger **/
 	public static final String IDIOMA_DEFECTO = "ca";
@@ -198,9 +199,6 @@ public class Constantes {
 	public static final String ENTIDAD_ESTADISTICAS = "estadisticas";
 	public static final String ENTIDAD_TASA = "tasas";
 
-	public static final String ENTIDAD_PLATAFORMAS = "plataformas";
-	public static final String URL_PLATAFORMAS = ENTIDAD_PLATAFORMAS + "/{0}";
-
 	public static final String ENTIDAD_PLANTILLAS = "plantillas";
 	public static final String URL_PLANTILLAS = ENTIDAD_PLANTILLAS + "/{0}";
 
@@ -214,20 +212,5 @@ public class Constantes {
 		}
 		return res;
 	}
-
-//	public static final String getUrlPropiedades() {
-//		String res = "";
-//		try {
-//			res = System.getProperty("es.caib.rolsac.api.rest.urlbase");
-//			if (org.apache.commons.lang.StringUtils.isEmpty(res)) {
-//				res = org.apache.commons.lang.StringUtils.isEmpty(System.getProperty("es.caib.rolsac.portal.url")) ? ""
-//						: System.getProperty("es.caib.rolsac.portal.url");
-//			}
-//		} catch (final Exception e) {
-//			log.error("Error al recuperar las propiedades de URL " + e.getMessage());
-//			res = e.getMessage();
-//		}
-//		return res;
-//	}
 
 }

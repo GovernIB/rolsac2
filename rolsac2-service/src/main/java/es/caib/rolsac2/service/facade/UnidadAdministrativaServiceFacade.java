@@ -84,10 +84,9 @@ public interface UnidadAdministrativaServiceFacade {
      * Devuelve una página con el ua relacionado con los parámetros del filtro
      *
      * @param filtro    filtro de la búsqueda
-     * @param isApiRest llamada desde Api Rest
      * @return una pagina con el numero total de ua y la lista de uas por el rango indicado.
      */
-    Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest);
+    Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro);
 
     /**
      * Devuelve el total de uas relacionado con los parámetros del filtro.
@@ -203,4 +202,6 @@ public interface UnidadAdministrativaServiceFacade {
     String obtenerCodigoDIR3(Long codigoUA);
 
     EntidadRaizDTO getUaRaiz(Long codigoUA);
+
+	Pagina<UnidadAdministrativaDTO> findByFiltroRest(UnidadAdministrativaFiltro fg);
 }

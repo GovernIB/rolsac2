@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<JUnidadAdministrativa, Long> implements UnidadAdministrativaRepository {
 
+    @Inject
+    private UnidadAdministrativaConverter converter;
+
     protected UnidadAdministrativaRepositoryBean() {
         super(JUnidadAdministrativa.class);
     }
@@ -171,14 +174,10 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest) {
+    public List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro) {
         Query query = null;
 
-        if (isApiRest) {
-            query = getQueryApiRest(false, filtro);
-        } else {
-            query = getQuery(false, filtro);
-        }
+        query = getQuery(false, filtro, false);
 
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
@@ -205,11 +204,26 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         return unidadAdmin;
     }
 
-    private Query getQuery(boolean isTotal, UnidadAdministrativaFiltro filtro) {
+    private Query getQuery(boolean isTotal, UnidadAdministrativaFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder("SELECT count(j) FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma " + " LEFT OUTER JOIN j.entidad je " + " where 1 = 1 AND je.codigo=:codEnti");
+            sql = new StringBuilder("SELECT count(j) FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma LEFT OUTER JOIN j.entidad je ");
+
+            if (filtro.isRellenoCodigoNormativa()) {
+           	 	sql.append(new StringBuilder(" LEFT OUTER JOIN j.normativas jn ON jn.codigo = :codigoNormativa "));
+            }
+
+            sql.append(new StringBuilder(" where 1 = 1  "));
+        } else if (isRest) {
+            sql = new StringBuilder("SELECT j FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma LEFT OUTER JOIN j.entidad je ");
+
+            if (filtro.isRellenoCodigoNormativa()) {
+            	 sql.append(new StringBuilder(" LEFT OUTER JOIN j.normativas jn ON jn.codigo = :codigoNormativa "));
+            }
+
+            sql.append(new StringBuilder(" where 1 = 1  "));
+
         } else {
             sql = new StringBuilder("SELECT j.codigo, jtipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma " + " LEFT OUTER JOIN j.entidad je " + " LEFT OUTER JOIN j.tipo jtipo where 1 = 1 AND je.codigo=:codEnti");
         }
@@ -218,7 +232,35 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         }
 
         if (filtro.isRellenoIdUA()) {
-            sql.append(" and ( j.codigo = :idUA OR j.padre.codigo = :idUA) ");
+        	if(filtro.getIdUA().longValue() == -1) {
+        		 sql.append(" and j.padre is null ");
+        	} else {
+        		 sql.append(" and ( j.codigo = :idUA OR j.padre.codigo = :idUA) ");
+        	}
+        }
+
+//        if (filtro.isRellenoCodigoNormativa()) {
+//            sql.append(" and  j.normativas in (:codigoNormativa) ");
+//        }
+
+        if (filtro.isRellenoCodigoDIR3()) {
+            sql.append(" and LOWER(j.codigoDIR3) LIKE :codigoDIR3 ");
+        }
+
+        if (filtro.isRellenoCodEnti()) {
+        	sql.append(" and je.codigo=:codEnti ");
+        }
+
+        if (filtro.isRellenoIdentificador()) {
+        	sql.append(" and LOWER(jtipo.identificador) LIKE :identificador ");
+        }
+
+        if (filtro.isRellenoNombre()) {
+        	sql.append(" and LOWER(t.nombre) LIKE :nombre ");
+        }
+
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -240,83 +282,22 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
         }
-        if (filtro.isRellenoIdUA()) {
+        if (filtro.isRellenoCodigoDIR3()) {
+            query.setParameter("codigoDIR3", "%" +  filtro.getCodigoDIR3().toLowerCase()  + "%");
+        }
+        if (filtro.isRellenoIdUA() && filtro.getIdUA().longValue() != -1) {
             query.setParameter("idUA", filtro.getIdUA());
-        }
-        query.setParameter("codEnti", filtro.getCodEnti());
-
-
-        return query;
-    }
-
-    private Query getQueryApiRest(boolean isTotal, UnidadAdministrativaFiltro filtro) {
-        StringBuilder sql;
-        if (isTotal) {
-            sql = new StringBuilder("SELECT count(j) FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma ");
-
-            if (filtro.isRellenoCodEnti()) {
-                sql.append(" LEFT OUTER JOIN j.entidad je ON je.codigo=:codEnti ");
-            }
-
-            if (filtro.isRellenoCodigoNormativa()) {
-                sql.append(" LEFT OUTER JOIN j.normativas n ON n.codigo=:codigoNormativa ");
-            }
-            sql.append(" where 1 = 1 ");
-
-        } else {
-            sql = new StringBuilder("SELECT j.codigo, jtipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma ");
-            if (filtro.isRellenoCodEnti()) {
-                sql.append(" LEFT OUTER JOIN j.entidad je ON je.codigo=:codEnti ");
-            }
-            if (filtro.isRellenoCodigoNormativa()) {
-                sql.append(" LEFT OUTER JOIN j.normativas n ON n.codigo=:codigoNormativa ");
-            }
-            sql.append(" LEFT OUTER JOIN j.tipo jtipo where 1 = 1 ");
-        }
-        if (filtro.isRellenoTexto()) {
-            sql.append(" and (LOWER(jtipo.identificador) LIKE :filtro " + " OR LOWER(j.codigoDIR3) LIKE :filtro " + " OR LOWER(t.nombre) LIKE :filtro " + " OR LOWER(tpd.nombre) LIKE :filtro ) ");
-        }
-
-        if (filtro.isRellenoNombre()) {
-            sql.append(" and LOWER(t.nombre) LIKE :nombre ");
-        }
-
-        if (filtro.isRellenoIdentificador()) {
-            sql.append(" and j.identificador LIKE :identificador ");
-        }
-
-        if (filtro.isRellenoIdUA()) {
-            sql.append(" and ( j.codigo = :idUA OR j.padre.codigo = :idUA) ");
-        }
-
-        if (filtro.getOrderBy() != null) {
-            sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
-            sql.append(filtro.isAscendente() ? " asc " : " desc ");
-        }
-
-        Query query = entityManager.createQuery(sql.toString());
-
-        if (filtro.isRellenoTexto()) {
-            query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
-        }
-        if (filtro.isRellenoNombre()) {
-            query.setParameter("nombre", "%" + filtro.getNombre().toLowerCase() + "%");
-        }
-        if (filtro.isRellenoIdentificador()) {
-            query.setParameter("identificador", "%" + filtro.getIdentificador().toLowerCase() + "%");
-        }
-        if (filtro.isRellenoIdioma()) {
-            query.setParameter("idioma", filtro.getIdioma());
-        }
-        if (filtro.isRellenoIdUA()) {
-            query.setParameter("idUA", filtro.getIdUA());
-        }
-        if (filtro.isRellenoCodigoNormativa()) {
-            query.setParameter("codigoNormativa", filtro.getCodigoNormativa());
         }
         if (filtro.isRellenoCodEnti()) {
-            query.setParameter("codEnti", filtro.getCodEnti());
+        	 query.setParameter("codEnti", filtro.getCodEnti());
         }
+        if (filtro.isRellenoCodigo()) {
+       	 	query.setParameter("codigo", filtro.getCodigo());
+        }
+        if (filtro.isRellenoCodigoNormativa()) {
+        	query.setParameter("codigoNormativa", filtro.getCodigoNormativa());
+        }
+
         return query;
     }
 
@@ -375,12 +356,8 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public long countByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest) {
-        if (isApiRest) {
-            return (long) getQueryApiRest(true, filtro).getSingleResult();
-        } else {
-            return (long) getQuery(true, filtro).getSingleResult();
-        }
+    public long countByFiltro(UnidadAdministrativaFiltro filtro) {
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
     private String getOrden(String order) {
@@ -395,8 +372,6 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             default:
                 return "j." + order;
         }
-
-
     }
 
     @Override
@@ -611,4 +586,22 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             return null;
         }
     }
+
+	@Override
+	public List<UnidadAdministrativaDTO> findPagedByFiltroRest(UnidadAdministrativaFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+		query.setFirstResult(filtro.getPaginaFirst());
+		query.setMaxResults(filtro.getPaginaTamanyo());
+
+		List<JUnidadAdministrativa> jentidades = query.getResultList();
+		List<UnidadAdministrativaDTO> entidades = new ArrayList<>();
+		if (jentidades != null) {
+			for (JUnidadAdministrativa jentidad : jentidades) {
+				UnidadAdministrativaDTO entidad = converter.createDTO(jentidad);
+
+				entidades.add(entidad);
+			}
+		}
+		return entidades;
+	}
 }

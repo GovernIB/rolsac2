@@ -6,8 +6,6 @@ import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 public class NormativaFiltro extends AbstractFiltro {
 
     private String texto;
@@ -31,6 +29,8 @@ public class NormativaFiltro extends AbstractFiltro {
 	private Integer codigoProcedimiento;
 
 	private Integer codigoServicio;
+
+	private Long codigo;
 
     @Override
     protected String getDefaultOrder() {
@@ -108,6 +108,8 @@ public class NormativaFiltro extends AbstractFiltro {
 
     public boolean isRellenoFechaAprobacion() { return fechaAprobacion != null; }
 
+    public boolean isRellenoCodigo() { return codigo != null; }
+
     public boolean isRellenoFechaBoletin() { return fechaBoletin != null; }
 
     public boolean isRellenoTipoNormativa() {
@@ -153,5 +155,13 @@ public class NormativaFiltro extends AbstractFiltro {
 
 	public void setCodigoServicio(Integer codigoServicio) {
 		this.codigoServicio = codigoServicio;
+	}
+
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
 	}
 }

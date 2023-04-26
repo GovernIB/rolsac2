@@ -1,14 +1,14 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public abstract class EntidadJson<V> {
 
@@ -34,7 +34,10 @@ public abstract class EntidadJson<V> {
 	public String toJson() {
 		try {
 			final ObjectMapper objectMapper = new ObjectMapper();
+
 			objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false);
+			objectMapper.registerModule(new JavaTimeModule());
+			objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 			return objectMapper.writeValueAsString(this);
 		} catch (final JsonProcessingException e) {
 			LOG.error(e.getMessage(), e);

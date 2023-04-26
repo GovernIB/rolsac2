@@ -1,17 +1,15 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.EntidadDTO;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.FicheroDTO;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.EntidadDTO;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Dades d'un Entidad.
@@ -49,6 +47,7 @@ public class Entidad extends EntidadBase<Entidad> {
 	@Schema(description = "linkLogo", name = "linkLogo", required = false)
 	private Link linkLogo;
 	@Schema(hidden = true)
+	@JsonIgnore
 	@XmlTransient
 	private Long logo;
 
@@ -56,6 +55,7 @@ public class Entidad extends EntidadBase<Entidad> {
 	@Schema(description = "linkCssPersonalizado", name = "linkCssPersonalizado", required = false)
 	private Link linkCssPersonalizado;
 	@Schema(hidden = true)
+	@JsonIgnore
 	@XmlTransient
 	private Long cssPersonalizado;
 

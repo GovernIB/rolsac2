@@ -1,17 +1,5 @@
 package es.caib.rolsac2.persistence.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
 import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
@@ -20,6 +8,17 @@ import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
+
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementación del repositorio de una plataforma de tramitación electrónica
@@ -61,6 +60,7 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( (cast(j.codigo as string)) like :filtro OR LOWER(j.identificador) LIKE :filtro " +
+            		" OR LOWER(t.descripcion) LIKE :filtro " +
                     " OR LOWER(j.codEntidad.identificador) LIKE :filtro  ) ");
         }
         if(filtro.isRellenoEntidad()) {
@@ -93,7 +93,6 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
         if (filtro.isRellenoCodigo()) {
         	query.setParameter("codigo", filtro.getCodigo());
         }
-
 
         return query;
     }

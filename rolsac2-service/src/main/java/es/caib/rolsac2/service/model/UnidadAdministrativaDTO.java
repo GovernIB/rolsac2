@@ -4,7 +4,6 @@ import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.utils.AuditoriaUtil;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

@@ -1,18 +1,18 @@
 package es.caib.rolsac2.api.externa.v1.model.filters;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
-import javax.xml.bind.annotation.XmlRootElement;
-
+import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.TipoBoletinDTO;
+import es.caib.rolsac2.service.model.TipoNormativaDTO;
+import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * FiltroNormatives.
@@ -26,59 +26,69 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FiltroNormativas.class);
 
-	public static final String SAMPLE = Constantes.SALTO_LINEA +
-			"{"	+
-//			"\"codigoUA\":\"0\"," 					+ Constantes.SALTO_LINEA +
-			"\"fechaBoletin\":\"DD/MM/YYYY\"," 		+ Constantes.SALTO_LINEA +
-			"\"codigoProcedimiento\":\"0\"," 		+ Constantes.SALTO_LINEA +
-			"\"codigoServicio\":\"0\"," 			+ Constantes.SALTO_LINEA +
-			"\"numNorma\":\"0\"," 					+ Constantes.SALTO_LINEA +
-			"\"fechaPublicacion\":\"DD/MM/YYYY\"," 	+ Constantes.SALTO_LINEA +
-//			"\"tipoPublicacion\":\"0\"," 			+ Constantes.SALTO_LINEA +
-			"\"texto\":\"0\"," 						+ Constantes.SALTO_LINEA +
+	public static final String SAMPLE = Constantes.SALTO_LINEA + "{" +
+			"\"idUA\":\"0\"," 					+ Constantes.SALTO_LINEA +
+			"\"idUAsHijas\":[0, ...]," 					+ Constantes.SALTO_LINEA +
+			"\"fechaBoletin\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA +
+			"\"codigoTipoNormativa\":\"0\"," + Constantes.SALTO_LINEA +
+			"\"codigoTipoBoletin\":\"0\"," + Constantes.SALTO_LINEA +
+			"\"numero\":\"string\"," + Constantes.SALTO_LINEA +
+			"\"fechaAprobacion\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA +
+//			"\"hijasActivas\":\"false\"," + Constantes.SALTO_LINEA +
+//			"\"todasUnidadesOrganicas\":\"false\"," + Constantes.SALTO_LINEA +
+			"\"texto\":\"0\"," + Constantes.SALTO_LINEA +
 			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
 			"}";
 
-	public static final String SAMPLE_JSON =
-			"{" +
-//			"\"codigoUA\":\"0\"," 					+
-			"\"fechaBoletin\":null," 		+
-			"\"codigoProcedimiento\":null," 		+
-			"\"codigoServicio\":null," 			+
-			"\"numNorma\":null," 					+
-			"\"fechaPublicacion\":null," 	+
-//			"\"tipoPublicacion\":\"0\"," 			+
-			"\"texto\":null," 						+
+	public static final String SAMPLE_JSON = "{" +
+			"\"idUA\":null," 					+
+			"\"idUAsHijas\":null," 					 +
+			"\"fechaBoletin\":null," +
+			"\"codigoTipoNormativa\":null," +
+			"\"codigoTipoBoletin\":null,"+
+			"\"numero\":null," +
+			"\"fechaAprobacion\":null," +
+//			"\"hijasActivas\":false," +
+//			"\"todasUnidadesOrganicas\":false," +
+			"\"texto\":null," +
 			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
 			"}";
 
-//	/** codigoUA. **/
-//	@Schema(name = "codigoUA", description = "codigoUA", type = SchemaType.INTEGER, required = false)
-//	private Integer codigoUA;
+	/** idUA. **/
+	@Schema(name = "idUA", description = "idUA", type = SchemaType.INTEGER, required = false)
+	private Long idUA;
+
+	@Schema(name = "idUAsHijas", description = "idUAsHijas", type = SchemaType.ARRAY, required = false)
+	private List<Long> idUAsHijas;
 
 	/** fechaBoletin. **/
 	@Schema(name = "fechaBoletin", description = "fechaBoletin", type = SchemaType.STRING, required = false)
-	private String fechaBoletin;
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private LocalDate fechaBoletin;
 
-	/** codigoProcedimiento **/
-	@Schema(name = "codigoProcedimiento", description = "codigoProcedimiento", type = SchemaType.INTEGER, required = false)
-	private Integer codigoProcedimiento;
+	/** codigoTipoNormativa. **/
+	@Schema(name = "codigoTipoNormativa", description = "codigoTipoNormativa", type = SchemaType.INTEGER, required = false)
+	private Long codigoTipoNormativa;
 
-	/** codigoServicio. **/
-	@Schema(name = "codigoServicio", description = "codigoServicio", type = SchemaType.INTEGER, required = false)
-	private Integer codigoServicio;
+	/** numero. **/
+	@Schema(name = "numero", description = "numero", type = SchemaType.STRING, required = false)
+	private String numero;
 
-	/** numNorma. **/
-	@Schema(name = "numNorma", description = "numNorma", type = SchemaType.STRING, required = false)
-	private String numNorma;
+//	/** hijasActivas. **/
+//	@Schema(name = "hijasActivas", description = "hijasActivas", type = SchemaType.BOOLEAN, required = false)
+//	private boolean hijasActivas = false;
+//
+//	/** todasUnidadesOrganicas. **/
+//	@Schema(name = "todasUnidadesOrganicas", description = "todasUnidadesOrganicas", type = SchemaType.BOOLEAN, required = false)
+//	private boolean todasUnidadesOrganicas = false;
 
-	/** fechaPublicacion. **/
-	@Schema(name = "fechaPublicacion", description = "fechaPublicacion", type = SchemaType.STRING, required = false)
-	private String fechaPublicacion;
+	/** codigoTipoBoletin. **/
+	@Schema(name = "codigoTipoBoletin", description = "codigoTipoBoletin", type = SchemaType.INTEGER, required = false)
+	private Long codigoTipoBoletin;
 
-//	/** tipoPublicacion. **/
-//	@Schema(name = "tipoPublicacion", description = "tipoPublicacion", type = SchemaType.INTEGER, required = false)
-//	private Integer tipoPublicacion;
+	/** fechaAprobacion. **/
+	@Schema(name = "fechaAprobacion", description = "fechaAprobacion", type = SchemaType.STRING, required = false)
+	private LocalDate fechaAprobacion;
 
 	/** FiltroPaginacion. **/
 	@Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
@@ -87,129 +97,6 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 	/** texto. **/
 	@Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
 	private String texto;
-
-//	public static FiltroNormativas valueOf(final String json) {
-//		final ObjectMapper objectMapper = new ObjectMapper();
-//		final TypeReference<FiltroNormativas> typeRef = new TypeReference<FiltroNormativas>() {
-//		};
-//		FiltroNormativas obj;
-//		try {
-//			obj = (FiltroNormativas) objectMapper.readValue(json, typeRef);
-//		} catch (final IOException e) {
-//			LOG.error(e.getMessage(), e);
-//			throw new RuntimeException(e);
-//		}
-//		return obj;
-//	}
-//
-//	public String toJson() {
-//		try {
-//			final ObjectMapper objectMapper = new ObjectMapper();
-//			objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false);
-//			return objectMapper.writeValueAsString(this);
-//		} catch (final JsonProcessingException e) {
-//			LOG.error(e.getMessage(), e);
-//			throw new RuntimeException(e);
-//		}
-//	}
-
-//	/**
-//	 * @return the codigoUA
-//	 */
-//	public Integer getCodigoUA() {
-//		return codigoUA;
-//	}
-
-//	/**
-//	 * @param codigoUA the codigoUA to set
-//	 */
-//	public void setCodigoUA(Integer codigoUA) {
-//		this.codigoUA = codigoUA;
-//	}
-
-	/**
-	 * @return the fechaBoletin
-	 */
-	public String getFechaBoletin() {
-		return fechaBoletin;
-	}
-
-	/**
-	 * @param fechaBoletin the fechaBoletin to set
-	 */
-	public void setFechaBoletin(String fechaBoletin) {
-		this.fechaBoletin = fechaBoletin;
-	}
-
-	/**
-	 * @return the codigoProcedimiento
-	 */
-	public Integer getCodigoProcedimiento() {
-		return codigoProcedimiento;
-	}
-
-	/**
-	 * @param codigoProcedimiento the codigoProcedimiento to set
-	 */
-	public void setCodigoProcedimiento(Integer codigoProcedimiento) {
-		this.codigoProcedimiento = codigoProcedimiento;
-	}
-
-	/**
-	 * @return the codigoServicio
-	 */
-	public Integer getCodigoServicio() {
-		return codigoServicio;
-	}
-
-	/**
-	 * @param codigoServicio the codigoServicio to set
-	 */
-	public void setCodigoServicio(Integer codigoServicio) {
-		this.codigoServicio = codigoServicio;
-	}
-
-	/**
-	 * @return the numNorma
-	 */
-	public String getNumNorma() {
-		return numNorma;
-	}
-
-	/**
-	 * @param numNorma the numNorma to set
-	 */
-	public void setNumNorma(String numNorma) {
-		this.numNorma = numNorma;
-	}
-
-	/**
-	 * @return the fechaPublicacion
-	 */
-	public String getFechaPublicacion() {
-		return fechaPublicacion;
-	}
-
-	/**
-	 * @param fechaPublicacion the fechaPublicacion to set
-	 */
-	public void setFechaPublicacion(String fechaPublicacion) {
-		this.fechaPublicacion = fechaPublicacion;
-	}
-
-//	/**
-//	 * @return the tipoPublicacion
-//	 */
-//	public Integer getTipoPublicacion() {
-//		return tipoPublicacion;
-//	}
-
-//	/**
-//	 * @param tipoPublicacion the tipoPublicacion to set
-//	 */
-//	public void setTipoPublicacion(Integer tipoPublicacion) {
-//		this.tipoPublicacion = tipoPublicacion;
-//	}
 
 	/**
 	 * @return the texto
@@ -228,40 +115,42 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 	public NormativaFiltro toNormativaFiltro() {
 		NormativaFiltro resultado = new NormativaFiltro();
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-
-//		if (this.codigoUA != null) {
-//
-//		}
-
-		if (this.fechaBoletin != null) {
-			resultado.setFechaBoletin(LocalDate.parse(fechaBoletin, formatter));
-		}
-
-		if (this.codigoProcedimiento != null) {
-			resultado.setCodigoProcedimiento(codigoProcedimiento);
-		}
-
-		if (this.codigoServicio != null) {
-			resultado.setCodigoServicio(codigoServicio);
-		}
-
-		if (this.numNorma != null) {
-			resultado.setNumero(numNorma);
-		}
-
-		if (this.fechaPublicacion != null) {
-			resultado.setFechaAprobacion(LocalDate.parse(fechaPublicacion, formatter));
-		}
-
-		// ¿tipoPublicacion es tipoNormativa o tipoBoletin?
-//		if (this.tipoPublicacion != null) {
-//			resultado.setTipoNormativa(tipoNormativa);
-//			resultado.setTipoBoletin(tipoBoletin);
-//		}
-
 		if (this.texto != null) {
 			resultado.setTexto(texto);
+		}
+
+		if (this.fechaAprobacion != null) {
+			resultado.setFechaAprobacion(fechaAprobacion);
+		}
+
+		if (this.codigoTipoBoletin != null) {
+			TipoBoletinDTO tipoBoletin = new TipoBoletinDTO();
+			tipoBoletin.setCodigo(codigoTipoBoletin);
+			resultado.setTipoBoletin(tipoBoletin);
+		}
+
+		if (this.numero != null) {
+			resultado.setNumero(numero);
+		}
+
+		if (this.codigoTipoNormativa != null) {
+			TipoNormativaDTO tipoNormativa = new TipoNormativaDTO();
+			tipoNormativa.setCodigo(codigoTipoNormativa);
+			resultado.setTipoNormativa(tipoNormativa);
+		}
+
+		if (this.fechaBoletin != null) {
+			resultado.setFechaBoletin(fechaBoletin);
+		}
+
+		if (this.idUAsHijas != null) {
+			resultado.setIdUAsHijas(idUAsHijas);
+			resultado.setHijasActivas(true);
+
+		}
+
+		if (this.idUA != null) {
+			resultado.setIdUA(idUA);
 		}
 
 		return resultado;
@@ -274,6 +163,78 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 
 	public void setFiltroPaginacion(FiltroPaginacion filtroPaginacion) {
 		this.filtroPaginacion = filtroPaginacion;
+	}
+
+	public Long getIdUA() {
+		return idUA;
+	}
+
+	public void setIdUA(Long idUA) {
+		this.idUA = idUA;
+	}
+
+	public List<Long> getIdUAsHijas() {
+		return idUAsHijas;
+	}
+
+	public void setIdUAsHijas(List<Long> idUAsHijas) {
+		this.idUAsHijas = idUAsHijas;
+	}
+
+	public LocalDate getFechaBoletin() {
+		return fechaBoletin;
+	}
+
+	public void setFechaBoletin(LocalDate fechaBoletin) {
+		this.fechaBoletin = fechaBoletin;
+	}
+
+	public Long getCodigoTipoNormativa() {
+		return codigoTipoNormativa;
+	}
+
+	public void setCodigoTipoNormativa(Long codigoTipoNormativa) {
+		this.codigoTipoNormativa = codigoTipoNormativa;
+	}
+
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+//	public boolean isHijasActivas() {
+//		return hijasActivas;
+//	}
+//
+//	public void setHijasActivas(boolean hijasActivas) {
+//		this.hijasActivas = hijasActivas;
+//	}
+//
+//	public boolean isTodasUnidadesOrganicas() {
+//		return todasUnidadesOrganicas;
+//	}
+//
+//	public void setTodasUnidadesOrganicas(boolean todasUnidadesOrganicas) {
+//		this.todasUnidadesOrganicas = todasUnidadesOrganicas;
+//	}
+
+	public Long getCodigoTipoBoletin() {
+		return codigoTipoBoletin;
+	}
+
+	public void setCodigoTipoBoletin(Long codigoTipoBoletin) {
+		this.codigoTipoBoletin = codigoTipoBoletin;
+	}
+
+	public LocalDate getFechaAprobacion() {
+		return fechaAprobacion;
+	}
+
+	public void setFechaAprobacion(LocalDate fechaAprobacion) {
+		this.fechaAprobacion = fechaAprobacion;
 	}
 
 }

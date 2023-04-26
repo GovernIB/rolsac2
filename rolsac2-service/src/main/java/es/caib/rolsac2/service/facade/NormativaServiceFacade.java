@@ -155,7 +155,6 @@ public interface NormativaServiceFacade {
 
     void deleteAfectacion(Long idAfectacion);
 
-
     ProcedimientoSolrDTO findDataIndexacionNormById(Long idNormativa);
 
     IndexFile findDataIndexacionDocNormById(NormativaDTO normativaDTO, DocumentoNormativaDTO doc, DocumentoTraduccion docTraduccion, List<PathUA> pathUAs);
@@ -171,4 +170,6 @@ public interface NormativaServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     void actualizarSolr(IndexacionDTO proc, ResultadoAccion resultadoAccion);
+
+	Pagina<NormativaDTO> findByFiltroRest(NormativaFiltro filtro);
 }

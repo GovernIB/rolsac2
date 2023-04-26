@@ -1,10 +1,10 @@
 package es.caib.rolsac2.service.model;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 /**
  * Dades de una normativa.
@@ -17,11 +17,11 @@ public class NormativaDTO extends ModelApi {
 
     private TipoBoletinDTO boletinOficial;
 
-    //private AfectacionDTO afectacion;
+//    private AfectacionDTO afectacion;
     private TipoNormativaDTO tipoNormativa;
     private String numero;
     private LocalDate fechaAprobacion;
-    //private TipoBoletinDTO tipoBoletin;
+//    private TipoBoletinDTO tipoBoletin;
     private LocalDate fechaBoletin;
     private String numeroBoletin;
     private Literal urlBoletin;
@@ -40,8 +40,8 @@ public class NormativaDTO extends ModelApi {
     public NormativaDTO(NormativaDTO otro) {
         if (otro != null) {
             this.codigo = otro.codigo;
-            this.boletinOficial = otro.boletinOficial == null ? null : (TipoBoletinDTO) otro.boletinOficial.clone();
-            this.tipoNormativa = otro.tipoNormativa == null ? null : (TipoNormativaDTO) otro.tipoNormativa.clone();
+            this.boletinOficial = otro.boletinOficial == null ? null : otro.boletinOficial.clone();
+            this.tipoNormativa = otro.tipoNormativa == null ? null : otro.tipoNormativa.clone();
             this.numero = otro.getNumero();
             this.fechaAprobacion = otro.fechaAprobacion;
             this.fechaBoletin = otro.fechaBoletin;
@@ -49,7 +49,7 @@ public class NormativaDTO extends ModelApi {
             this.urlBoletin = otro.urlBoletin == null ? null : (Literal) otro.urlBoletin.clone();
             this.nombreResponsable = otro.nombreResponsable;
             this.nombre = otro.nombre == null ? null : (Literal) otro.nombre.clone();
-            this.entidad = otro.entidad == null ? null : (EntidadDTO) otro.entidad.clone();
+            this.entidad = otro.entidad == null ? null : otro.entidad.clone();
             this.documentosNormativa = otro.documentosNormativa;
             this.unidadesAdministrativas = otro.unidadesAdministrativas;
             this.afectaciones = otro.afectaciones;

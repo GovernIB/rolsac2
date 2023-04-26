@@ -1,15 +1,14 @@
 package es.caib.rolsac2.api.externa.v1.model.filters;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
+import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @Schema(name = "FiltroTipoTramitacion", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
@@ -20,6 +19,8 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
 		public static final String SAMPLE = Constantes.SALTO_LINEA +
 				"{"	+
 				"\"texto\":\"string\"," + Constantes.SALTO_LINEA +
+				"\"faseProc\":0," + Constantes.SALTO_LINEA +
+				"\"codPlatTramitacion\":0," + Constantes.SALTO_LINEA +
 				"\"plantilla\":\"boolean\"," + Constantes.SALTO_LINEA +
 				"\"filtroPaginacion\":{\"page\":0,\"size\":10}" +
 				"}";
@@ -28,12 +29,20 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
 				"{" +
 				"\"texto\":null," 						+
 				"\"plantilla\":null," 						+
+				"\"faseProc\":null," +
+				"\"codPlatTramitacion\":null," +
 				"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
 				"}";
 
 		/** texto. **/
 		@Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
 		private String texto;
+
+		@Schema(name = "faseProc", description = "faseProc", type = SchemaType.INTEGER, required = false)
+	    private Integer faseProc;
+
+		@Schema(name = "codPlatTramitacion", description = "codPlatTramitacion", type = SchemaType.INTEGER, required = false)
+	    private Long codPlatTramitacion;
 
 	    /**
 	     * Indica si es de tipo plantilla
@@ -70,6 +79,14 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
 				resultado.setTipoPlantilla(plantilla);
 			}
 
+			if (this.faseProc != null) {
+				resultado.setFaseProc(faseProc);
+			}
+
+			if (this.codPlatTramitacion != null) {
+				resultado.setCodPlatTramitacion(codPlatTramitacion);
+			}
+
 			return resultado;
 
 		}
@@ -88,5 +105,21 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
 
 		public void setPlantilla(Boolean plantilla) {
 			this.plantilla = plantilla;
+		}
+
+		public Integer getFaseProc() {
+			return faseProc;
+		}
+
+		public void setFaseProc(Integer faseProc) {
+			this.faseProc = faseProc;
+		}
+
+		public Long getCodPlatTramitacion() {
+			return codPlatTramitacion;
+		}
+
+		public void setCodPlatTramitacion(Long codPlatTramitacion) {
+			this.codPlatTramitacion = codPlatTramitacion;
 		}
 }

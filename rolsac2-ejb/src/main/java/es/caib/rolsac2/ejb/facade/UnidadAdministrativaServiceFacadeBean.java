@@ -274,10 +274,10 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-    public Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro, boolean isApiRest) {
+    public Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro) {
         try {
-            List<UnidadAdministrativaGridDTO> items = unidadAdministrativaRepository.findPagedByFiltro(filtro, isApiRest);
-            long total = unidadAdministrativaRepository.countByFiltro(filtro, isApiRest);
+            List<UnidadAdministrativaGridDTO> items = unidadAdministrativaRepository.findPagedByFiltro(filtro);
+            long total = unidadAdministrativaRepository.countByFiltro(filtro);
             return new Pagina<>(items, total);
         } catch (Exception e) {
             LOG.error("Error", e);
@@ -291,7 +291,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public int countByFiltro(UnidadAdministrativaFiltro filtro) {
-        return (int) unidadAdministrativaRepository.countByFiltro(filtro, false);
+        return (int) unidadAdministrativaRepository.countByFiltro(filtro);
     }
 
     @Override
@@ -540,4 +540,20 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     public EntidadRaizDTO getUaRaiz(Long codigoUA) {
         return entidadRaizRepository.getEntidadRaizByUA(codigoUA);
     }
+
+	@Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<UnidadAdministrativaDTO> findByFiltroRest(UnidadAdministrativaFiltro fg) {
+		try {
+			List<UnidadAdministrativaDTO> items = unidadAdministrativaRepository.findPagedByFiltroRest(fg);
+			long total = unidadAdministrativaRepository.countByFiltro(fg);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error("Error", e);
+			List<UnidadAdministrativaDTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.NormativaConverter;
 import es.caib.rolsac2.persistence.model.JNormativa;
 import es.caib.rolsac2.persistence.model.JTipoBoletin;
 import es.caib.rolsac2.persistence.model.JTipoNormativa;
@@ -12,6 +13,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
@@ -25,17 +27,22 @@ import java.util.Optional;
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, Long> implements NormativaRepository {
 
+    @Inject
+    private NormativaConverter converter;
+
     protected NormativaRepositoryBean() {
         super(JNormativa.class);
     }
 
-    private Query getQuery(boolean isTotal, NormativaFiltro filtro) {
+    private Query getQuery(boolean isTotal, NormativaFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder("select count(j) from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.unidadesAdministrativas u" + " where 1 = 1 ");
+            sql = new StringBuilder("select count(j) from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u where 1 = 1 ");
+        } else if (isRest) {
+        	sql = new StringBuilder("SELECT j from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u where 1 = 1 ");
         } else {
-            sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion " + "FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + "LEFT OUTER JOIN j.unidadesAdministrativas u WHERE 1 = 1 ");
+            sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u WHERE 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and (LOWER(t.titulo) LIKE :filtro OR LOWER(j.tipoNormativa.identificador) LIKE :filtro " + " OR LOWER(cast(j.numero as string)) LIKE :filtro OR LOWER(j.boletinOficial.nombre) LIKE :filtro " + " OR LOWER(cast (j.fechaAprobacion as string)) LIKE :filtro ) ");
@@ -46,7 +53,6 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         } else if (filtro.isRellenoIdUA()) {
             sql.append(" and ( u.codigo = :idUA) ");
         }
-
 
         if (filtro.isRellenoTipoNormativa()) {
             sql.append(" and (j.tipoNormativa.codigo = :tipoNormativa) ");
@@ -66,6 +72,9 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
         if (filtro.isRellenoNumero()) {
             sql.append(" and (j.numero = :numero) ");
+        }
+        if (filtro.isRellenoCodigo()) {
+        	sql.append(" and j.codigo = :codigo ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -107,6 +116,9 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         if (filtro.isRellenoNumero()) {
             query.setParameter("numero", filtro.getNumero());
         }
+        if (filtro.isRellenoCodigo()) {
+        	query.setParameter("codigo", filtro.getCodigo());
+        }
 
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
@@ -126,7 +138,7 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
     @Override
     public List<NormativaGridDTO> findPagedByFiltro(NormativaFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -158,7 +170,7 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
     @Override
     public long countByFiltro(NormativaFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
     }
 
     @Override
@@ -212,4 +224,22 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
                 return "j." + order;
         }
     }
+
+	@Override
+	public List<NormativaDTO> findPagedByFiltroRest(NormativaFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+		query.setFirstResult(filtro.getPaginaFirst());
+		query.setMaxResults(filtro.getPaginaTamanyo());
+
+		List<JNormativa> jentidades = query.getResultList();
+		List<NormativaDTO> entidades = new ArrayList<>();
+		if (jentidades != null) {
+			for (JNormativa jentidad : jentidades) {
+				NormativaDTO entidad = converter.createDTO(jentidad);
+
+				entidades.add(entidad);
+			}
+		}
+		return entidades;
+	}
 }

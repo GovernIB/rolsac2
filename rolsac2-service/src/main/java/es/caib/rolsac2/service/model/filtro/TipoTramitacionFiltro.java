@@ -15,7 +15,27 @@ public class TipoTramitacionFiltro extends AbstractFiltro {
      **/
     private Boolean tipoPlantilla;
 
-    public String getTexto() {
+    private Integer faseProc;
+
+    private Long codPlatTramitacion;
+
+    public Integer getFaseProc() {
+		return faseProc;
+	}
+
+	public void setFaseProc(Integer faseProc) {
+		this.faseProc = faseProc;
+	}
+
+	public Long getCodPlatTramitacion() {
+		return codPlatTramitacion;
+	}
+
+	public void setCodPlatTramitacion(Long codPlatTramitacion) {
+		this.codPlatTramitacion = codPlatTramitacion;
+	}
+
+	public String getTexto() {
         return texto;
     }
 
@@ -39,6 +59,16 @@ public class TipoTramitacionFiltro extends AbstractFiltro {
     public boolean isRellenoTexto() {
         return texto != null && !texto.isEmpty();
     }
+
+    public boolean isRellenoFaseProc() {
+        return faseProc != null;
+    }
+
+    public boolean isRellenoCodPlatTramitacion() {
+        return codPlatTramitacion != null;
+    }
+
+
 
     /**
      * Esta relleno el tipo plantilla

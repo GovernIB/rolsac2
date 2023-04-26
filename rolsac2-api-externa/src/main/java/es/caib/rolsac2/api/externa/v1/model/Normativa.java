@@ -1,26 +1,16 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Calendar;
-
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.NormativaDTO;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.api.externa.v1.utils.Utiles;
-import es.caib.rolsac2.service.model.NormativaDTO;
-import es.caib.rolsac2.service.model.NormativaGridDTO;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.time.LocalDate;
 
 /**
  * Normatives.
@@ -36,19 +26,21 @@ public class Normativa extends EntidadBase<Normativa> {
 
 	/** codigo **/
 	@Schema(description = "codigo", type = SchemaType.INTEGER, required = false)
-	private long codigo;
+	private Long codigo;
 
 	/** fecha **/
-	@Schema(description = "fechaAprobacion", required = false)
-	private Calendar fechaAprobacion;//
+	@Schema(description = "fechaAprobacion", name = "fechaAprobacion", type = SchemaType.STRING, required = false)
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private LocalDate fechaAprobacion;
 
 	/** numero **/
-	@Schema(description = "numero", type = SchemaType.INTEGER, required = false)
-	private Long numero;
+	@Schema(description = "numero", type = SchemaType.STRING, required = false)
+	private String numero;
 
 	/** fechaBoletin **/
-	@Schema(description = "fechaBoletin", required = false)
-	private Calendar fechaBoletin;//
+	@Schema(description = "fechaBoletin", name = "fechaBoletin", type = SchemaType.STRING, required = false)
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private LocalDate fechaBoletin;//
 
 	/** numeroBoletin **/
 	@Schema(description = "numeroBoletin", type = SchemaType.STRING, required = false)
@@ -66,57 +58,33 @@ public class Normativa extends EntidadBase<Normativa> {
 	@Schema(description = "nombreResponsable", type = SchemaType.STRING, required = false)
 	private String nombreResponsable;//
 
-	@Schema(description = "tipoNormativa", type = SchemaType.STRING, required = false)
-	private String tipoNormativa;
-
 	// -- LINKS--//
 	// -- se duplican las entidades para poder generar la clase link en funcion de
 	// la propiedad principal (sin "link_")
 	/** boletin **/
 	@Schema(description = "linkTipoBoletin", required = false)
-	private Link linkTipoBoletin;
-	@Schema(description = "boletinOficial", type = SchemaType.STRING, required = false)
+	private Link linkBoletinOficial;
+	@JsonIgnore
+	@Schema(hidden = true)
+	@XmlTransient
 	private Long boletinOficial;
+
+	@Schema(description = "linkTipoNormativa", required = false)
+	private Link linkTipoNormativa;
+	@JsonIgnore
+	@Schema(hidden = true)
+	@XmlTransient
+	private Long tipoNormativa;
 
 	@Schema(description = "linkEntidad", required = false)
 	private Link linkEntidad;
+	@JsonIgnore
 	@Schema(hidden = true)
 	@XmlTransient
 	private Long entidad;
 
-	public Normativa(NormativaGridDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
-//		super( elem, urlBase, idioma, hateoasEnabled);
-		if(elem != null) {
-			this.codigo = elem.getCodigo();
-//			this.boletinOficial = elem.getBoletinOficial();
-			try {
-				this.fechaAprobacion = Utiles.convertStringToJavaUtilCalendar(elem.getFechaAprobacion());
-			} catch (ParseException e) {
-				LOG.error(e.getMessage(), e);
-			}
-			this.numero = elem.getNumero() == null ? null : Long.valueOf(elem.getNumero());
-			this.tipoNormativa = elem.getTipoNormativa();
-		}
-
-	}
-
 	public Normativa(NormativaDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
-//		super( elem, urlBase, idioma, hateoasEnabled);
-		if(elem != null) {
-			this.codigo = elem.getCodigo();
-			this.boletinOficial = elem.getBoletinOficial() == null ? null : elem.getBoletinOficial().getCodigo();
-			this.entidad = elem.getEntidad() == null ? null : elem.getEntidad().getCodigo();
-			this.fechaAprobacion = Utiles.convertLocalDateToJavaUtilCalendar(elem.getFechaAprobacion());
-			this.fechaBoletin = Utiles.convertLocalDateToJavaUtilCalendar(elem.getFechaBoletin());
-			this.hateoasEnabled = true;
-			this.nombre = elem.getNombre() == null ? null : elem.getNombre().getTraduccion(idioma);
-			this.nombreResponsable = elem.getNombreResponsable();
-			this.numero = elem.getNumero() == null ? null : Long.valueOf(elem.getNumero());
-			this.numeroBoletin = elem.getNumeroBoletin();
-			this.tipoNormativa = elem.getTipoNormativa() == null ? null : elem.getTipoNormativa().getDescripcion().getTraduccion(idioma);
-			this.urlBoletin = elem.getUrlBoletin() == null ? null : elem.getUrlBoletin().getTraduccion(idioma);
-			generaLinks(urlBase);
-		}
+		super( elem, urlBase, idioma, hateoasEnabled);
 	}
 
 	public Normativa() {
@@ -125,9 +93,11 @@ public class Normativa extends EntidadBase<Normativa> {
 
 	@Override
 	public void generaLinks(String urlBase) {
-		linkTipoBoletin = this.generaLink(this.boletinOficial, Constantes.ENTIDAD_BOLETINES, Constantes.URL_BOLETINES,
+		linkBoletinOficial = this.generaLink(this.boletinOficial, Constantes.ENTIDAD_BOLETINES, Constantes.URL_BOLETINES,
 				urlBase, null);
 		linkEntidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
+				null);
+		linkTipoNormativa = this.generaLink(this.tipoNormativa, Constantes.ENTIDAD_TIPO_NORMATIVA, Constantes.URL_TIPO_NORMATIVA, urlBase,
 				null);
 	}
 
@@ -145,10 +115,6 @@ public class Normativa extends EntidadBase<Normativa> {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public static Logger getLog() {
-		return LOG;
 	}
 
 	@Override
@@ -176,73 +142,6 @@ public class Normativa extends EntidadBase<Normativa> {
 		this.codigo = codigo;
 	}
 
-	/**
-	 * @return the fechaBoletin
-	 */
-	public java.util.Calendar getFechaBoletin() {
-		return fechaBoletin;
-	}
-
-	/**
-	 * @param fechaBoletin the fechaBoletin to set
-	 */
-	public void setFechaBoletin(java.util.Calendar fechaBoletin) {
-		this.fechaBoletin = fechaBoletin;
-	}
-
-	/**
-	 * @return the numero
-	 */
-	public java.lang.Long getNumero() {
-		return numero;
-	}
-
-	/**
-	 * @param numero the numero to set
-	 */
-	public void setNumero(java.lang.Long numero) {
-		this.numero = numero;
-	}
-
-	public Calendar getFechaAprobacion() {
-		return fechaAprobacion;
-	}
-
-	public void setFechaAprobacion(Calendar fechaAprobacion) {
-		this.fechaAprobacion = fechaAprobacion;
-	}
-
-	public String getNumeroBoletin() {
-		return numeroBoletin;
-	}
-
-	public void setNumeroBoletin(String numeroBoletin) {
-		this.numeroBoletin = numeroBoletin;
-	}
-
-	public String getNombreResponsable() {
-		return nombreResponsable;
-	}
-
-	public void setNombreResponsable(String nombreResponsable) {
-		this.nombreResponsable = nombreResponsable;
-	}
-
-	public String getTipoNormativa() {
-		return tipoNormativa;
-	}
-
-	public void setTipoNormativa(String tipoNormativa) {
-		this.tipoNormativa = tipoNormativa;
-	}
-
-	public Link getLinkTipoBoletin() {
-		return linkTipoBoletin;
-	}
-
-	public void setLinkTipoBoletin(Link linkTipoBoletin) {
-		this.linkTipoBoletin = linkTipoBoletin;
-	}
 
 	public Long getBoletinOficial() {
 		return boletinOficial;
@@ -267,6 +166,74 @@ public class Normativa extends EntidadBase<Normativa> {
 
 	public void setEntidad(Long entidad) {
 		this.entidad = entidad;
+	}
+
+	public LocalDate getFechaAprobacion() {
+		return fechaAprobacion;
+	}
+
+	public void setFechaAprobacion(LocalDate fechaAprobacion) {
+		this.fechaAprobacion = fechaAprobacion;
+	}
+
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	public LocalDate getFechaBoletin() {
+		return fechaBoletin;
+	}
+
+	public void setFechaBoletin(LocalDate fechaBoletin) {
+		this.fechaBoletin = fechaBoletin;
+	}
+
+	public String getNumeroBoletin() {
+		return numeroBoletin;
+	}
+
+	public void setNumeroBoletin(String numeroBoletin) {
+		this.numeroBoletin = numeroBoletin;
+	}
+
+	public String getNombreResponsable() {
+		return nombreResponsable;
+	}
+
+	public void setNombreResponsable(String nombreResponsable) {
+		this.nombreResponsable = nombreResponsable;
+	}
+
+	public Link getLinkBoletinOficial() {
+		return linkBoletinOficial;
+	}
+
+	public void setLinkBoletinOficial(Link linkBoletinOficial) {
+		this.linkBoletinOficial = linkBoletinOficial;
+	}
+
+	public Link getLinkTipoNormativa() {
+		return linkTipoNormativa;
+	}
+
+	public void setLinkTipoNormativa(Link linkTipoNormativa) {
+		this.linkTipoNormativa = linkTipoNormativa;
+	}
+
+	public Long getTipoNormativa() {
+		return tipoNormativa;
+	}
+
+	public void setTipoNormativa(Long tipoNormativa) {
+		this.tipoNormativa = tipoNormativa;
+	}
+
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
 	}
 
 }

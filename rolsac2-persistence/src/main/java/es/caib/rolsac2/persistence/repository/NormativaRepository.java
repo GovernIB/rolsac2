@@ -2,6 +2,7 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JNormativa;
 import es.caib.rolsac2.service.model.IndexacionDTO;
+import es.caib.rolsac2.service.model.NormativaDTO;
 import es.caib.rolsac2.service.model.NormativaGridDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
@@ -21,4 +22,6 @@ public interface NormativaRepository extends CrudRepository<JNormativa, Long> {
     boolean existeBoletin(Long codigoBol);
 
     Pagina<IndexacionDTO> getNormativasParaIndexacion(Long idEntidad);
+
+	List<NormativaDTO> findPagedByFiltroRest(NormativaFiltro filtro);
 }

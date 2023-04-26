@@ -12,9 +12,19 @@ public class UnidadAdministrativaFiltro extends AbstractFiltro {
     private String nombre;
     private String identificador;
     private Long codEnti;
-	private Integer codigoNormativa;
+	private Long codigoNormativa;
+	private Long codigo;
+	private String codigoDIR3;
 
-    public Long getCodEnti() {
+    public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
+	}
+
+	public Long getCodEnti() {
         return codEnti;
     }
 
@@ -90,11 +100,27 @@ public class UnidadAdministrativaFiltro extends AbstractFiltro {
         return "id";
     }
 
-	public Integer getCodigoNormativa() {
+	public Long getCodigoNormativa() {
 		return codigoNormativa;
 	}
 
-	public void setCodigoNormativa(Integer codigoNormativa) {
+	public void setCodigoNormativa(Long codigoNormativa) {
 		this.codigoNormativa = codigoNormativa;
 	}
+
+	public String getCodigoDIR3() {
+		return codigoDIR3;
+	}
+
+	public void setCodigoDIR3(String codigoDIR3) {
+		this.codigoDIR3 = codigoDIR3;
+	}
+
+	public boolean isRellenoCodigoDIR3() {
+        return codigoDIR3 != null && !codigoDIR3.isEmpty();
+    }
+
+	public boolean isRellenoCodigo() {
+        return codigo != null;
+    }
 }

@@ -1,30 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.services;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.ejb.EJB;
-import javax.validation.ValidationException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.apache.commons.lang.StringUtils;
-import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
-import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-
 import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
 import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.UnidadAdministrativa;
@@ -37,11 +12,26 @@ import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-@Path("/v1/" + Constantes.ENTIDAD_UA)
-@Tag(description = "/v1/" + Constantes.ENTIDAD_UA, name = Constantes.ENTIDAD_UA)
+import javax.ejb.EJB;
+import javax.validation.ValidationException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
+
+@Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_UA)
+@Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_UA, name = Constantes.ENTIDAD_UA)
 public class UAResource {
 
 	@EJB
@@ -121,9 +111,10 @@ public class UAResource {
 		if (lang != null) {
 			fg.setIdioma(lang);
 		}
-		fg.setIdEntidad(new Long(codigo));
 
-		return Response.ok(getRespuestaSimple(fg), MediaType.APPLICATION_JSON).build();
+		fg.setCodigo(new Long(codigo));
+
+		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
 
 	}
 
@@ -142,31 +133,23 @@ public class UAResource {
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = "application/json", schema = @Schema(implementation = RespuestaSimple.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = "application/json", schema = @Schema(implementation = RespuestaError.class)))
 	public Response getCodDir3UA(
-			@Parameter(description = "Codigo Unidad Administrativa", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final Long codigo)
-			throws Exception, ValidationException {
+			@Parameter(description = "Codigo DIR3 Unidad Administrativa", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo) throws Exception, ValidationException {
 
-		UnidadAdministrativaDTO unidad = unidadAdministrativaService.findById(codigo);
+		UnidadAdministrativaFiltro fg = new UnidadAdministrativaFiltro();
 
-		String resultadoBusqueda = new String();
-		if (unidad != null) {
-			resultadoBusqueda = unidad.getCodigoDIR3();
-		}
+		fg.setCodigoDIR3(codigo);
+		fg.setIdioma(Constantes.IDIOMA_DEFECTO);
 
-		Long numeroElementos = StringUtils.isEmpty(resultadoBusqueda) ? 0L : 1L;
-
-		return Response.ok(
-				new RespuestaSimple(Response.Status.OK.getStatusCode() + "",
-						Constantes.mensaje200(numeroElementos.intValue()), numeroElementos, resultadoBusqueda),
-				MediaType.APPLICATION_JSON).build();
+		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
 
 	}
 
 	private RespuestaUA getRespuesta(UnidadAdministrativaFiltro fg) throws DelegateException {
-		Pagina<UnidadAdministrativaGridDTO> resultadoBusqueda = unidadAdministrativaService.findByFiltro(fg, true);
+		Pagina<UnidadAdministrativaDTO> resultadoBusqueda = unidadAdministrativaService.findByFiltroRest(fg);
 		List<UnidadAdministrativa> lista = new ArrayList<>();
 		UnidadAdministrativa elemento;
 
-		for (UnidadAdministrativaGridDTO nodo : resultadoBusqueda.getItems()) {
+		for (UnidadAdministrativaDTO nodo : resultadoBusqueda.getItems()) {
 			elemento = new UnidadAdministrativa(nodo, null, fg.getIdioma(), true);
 			lista.add(elemento);
 		}
@@ -174,15 +157,4 @@ public class UAResource {
 		return new RespuestaUA(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()),
 				resultadoBusqueda.getTotal(), lista);
 	}
-
-	private Object getRespuestaSimple(UnidadAdministrativaFiltro fg) {
-		UnidadAdministrativaDTO resultadoBusqueda = unidadAdministrativaService.findById(fg.getIdEntidad());
-
-		List<UnidadAdministrativa> lista = new ArrayList<>();
-
-		lista.add(new UnidadAdministrativa(resultadoBusqueda, null, fg.getIdioma(), true));
-
-		return new RespuestaUA(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), 1L, lista);
-	}
-
 }
