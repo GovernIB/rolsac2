@@ -63,7 +63,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     public ResultadoAccion indexarContenido(DataIndexacion dataIndexacion) throws IPluginIndexacionExcepcion {
 
         String urlSolr = getPropiedadSolrUrl();
-        String index = "caib";
+        String index = getPropiedadSolrIndex();
         String userSolr = getPropiedadSolrUsr();
         String passSolr = getPropiedadSolrPwd();
 
@@ -75,8 +75,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         boolean elasticActivo = isPropiedadElasticActivo();
 
         ResultadoAccion resultadoAccion = null;
-        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
-                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
 
 
         //Es el unico momento para convertir el html de la descripcion en texto plano
@@ -118,6 +117,10 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         return getPropiedad("usrSolr");
     }
 
+    private String getPropiedadSolrIndex() {
+        return getPropiedad("indexSolr");
+    }
+
     private String getPropiedadSolrPwd() {
         return getPropiedad("pwdSolr");
     }
@@ -149,7 +152,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     @Override
     public ResultadoAccion indexarFichero(IndexFile ficheroIndexacion) throws IPluginIndexacionExcepcion {
         String urlSolr = getPropiedadSolrUrl();
-        String index = "caib";
+        String index = getPropiedadSolrIndex();
         String userSolr = getPropiedadSolrUsr();
         String passSolr = getPropiedadSolrPwd();
 
@@ -161,8 +164,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         boolean elasticActivo = isPropiedadElasticActivo();
 
         ResultadoAccion resultadoAccion = null;
-        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
-                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.indexarFichero(ficheroIndexacion.cast());
             resultadoAccion = new ResultadoAccion(true, "");
@@ -185,7 +187,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     @Override
     public ResultadoAccion desindexarCaducados() throws IPluginIndexacionExcepcion {
         String urlSolr = getPropiedadSolrUrl();
-        String index = "caib";
+        String index = getPropiedadSolrIndex();
         String userSolr = getPropiedadSolrUsr();
         String passSolr = getPropiedadSolrPwd();
 
@@ -197,8 +199,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         boolean elasticActivo = isPropiedadElasticActivo();
 
         ResultadoAccion resultadoAccion = null;
-        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
-                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.desindexarCaducados();
             resultadoAccion = new ResultadoAccion(true, "");
@@ -220,7 +221,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     @Override
     public ResultadoAccion desindexar(String id, EnumCategoria categoria) throws IPluginIndexacionExcepcion {
         String urlSolr = getPropiedadSolrUrl();
-        String index = "caib";
+        String index = getPropiedadSolrIndex();
         String userSolr = getPropiedadSolrUsr();
         String passSolr = getPropiedadSolrPwd();
 
@@ -232,8 +233,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         boolean elasticActivo = isPropiedadElasticActivo();
 
         ResultadoAccion resultadoAccion = null;
-        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
-                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.desindexar(id, es.caib.solr.api.model.types.EnumCategoria.fromString(categoria.toString()));
             resultadoAccion = new ResultadoAccion(true, "");
@@ -255,7 +255,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     @Override
     public ResultadoAccion desindexarAplicacion() throws IPluginIndexacionExcepcion {
         String urlSolr = getPropiedadSolrUrl();
-        String index = "caib";
+        String index = getPropiedadSolrIndex();
         String userSolr = getPropiedadSolrUsr();
         String passSolr = getPropiedadSolrPwd();
 
@@ -267,8 +267,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         boolean elasticActivo = isPropiedadElasticActivo();
 
         ResultadoAccion resultadoAccion = null;
-        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
-                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.desindexarAplicacion();
             resultadoAccion = new ResultadoAccion(true, "");
@@ -290,7 +289,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     @Override
     public ResultadoAccion desindexarCategoria(EnumCategoria categoria) throws IPluginIndexacionExcepcion {
         String urlSolr = getPropiedadSolrUrl();
-        String index = "caib";
+        String index = getPropiedadSolrIndex();
         String userSolr = getPropiedadSolrUsr();
         String passSolr = getPropiedadSolrPwd();
 
@@ -302,8 +301,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         boolean elasticActivo = isPropiedadElasticActivo();
 
         ResultadoAccion resultadoAccion = null;
-        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
-                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.desindexarCategoria(es.caib.solr.api.model.types.EnumCategoria.fromString(categoria.toString()));
             resultadoAccion = new ResultadoAccion(true, "");
@@ -325,7 +323,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     @Override
     public ResultadoAccion desindexarRaiz(String idRaiz, EnumCategoria categoriaRaiz) throws IPluginIndexacionExcepcion {
         String urlSolr = getPropiedadSolrUrl();
-        String index = "caib";
+        String index = getPropiedadSolrIndex();
         String userSolr = getPropiedadSolrUsr();
         String passSolr = getPropiedadSolrPwd();
 
@@ -337,8 +335,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         boolean elasticActivo = isPropiedadElasticActivo();
 
         ResultadoAccion resultadoAccion = null;
-        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
-                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.desindexarRaiz(idRaiz, es.caib.solr.api.model.types.EnumCategoria.fromString(categoriaRaiz.toString()));
             resultadoAccion = new ResultadoAccion(true, "");
@@ -360,7 +357,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     @Override
     public ResultadoAccion commit() throws IPluginIndexacionExcepcion {
         String urlSolr = getPropiedadSolrUrl();
-        String index = "caib";
+        String index = getPropiedadSolrIndex();
         String userSolr = getPropiedadSolrUsr();
         String passSolr = getPropiedadSolrPwd();
 
@@ -372,8 +369,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         boolean elasticActivo = isPropiedadElasticActivo();
 
         ResultadoAccion resultadoAccion = null;
-        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
-                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.commit();
             resultadoAccion = new ResultadoAccion(true, "");
@@ -395,7 +391,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     @Override
     public String htmlToText(String html) {
         String urlSolr = getPropiedadSolrUrl();
-        String index = "caib";
+        String index = getPropiedadSolrIndex();
         String userSolr = getPropiedadSolrUsr();
         String passSolr = getPropiedadSolrPwd();
 
@@ -407,8 +403,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         boolean elasticActivo = isPropiedadElasticActivo();
 
         ResultadoAccion resultadoAccion = null;
-        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr,
-                urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
+        final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         return solrIndexer.htmlToText(html);
     }
 
@@ -418,8 +413,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         final String password = ""; //PropertiesUtil.getSolrPass();
         final String index = ""; //PropertiesUtil.getSolrIndex();
         final String urlSolr = ""; //PropertiesUtil.getSolrUrl();
-        final SolrSearcher buscador = SolrFactory.getSearcher("ROLSAC2", urlSolr,
-                index, username, password);
+        final SolrSearcher buscador = SolrFactory.getSearcher("ROLSAC2", urlSolr, index, username, password);
 
         final FilterSearch filterSearch = new FilterSearch();
         if (filtroBusqueda.getAplicaciones() != null && !filtroBusqueda.getAplicaciones().isEmpty()) {
@@ -448,8 +442,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         paginationSearch.setMaxElementos(paginacionBusqueda.getMaxElementos());
         final ResultData resultadoSolr;
         try {
-            resultadoSolr = buscador.buscar("SESSION_ID", textoBusqueda,
-                    es.caib.solr.api.model.types.EnumIdiomas.fromString(idiomaBusqueda.toString()), filterSearch, paginationSearch);
+            resultadoSolr = buscador.buscar("SESSION_ID", textoBusqueda, es.caib.solr.api.model.types.EnumIdiomas.fromString(idiomaBusqueda.toString()), filterSearch, paginationSearch);
         } catch (ExcepcionSolrApi e) {
             throw new IPluginIndexacionExcepcion(e);
         }
