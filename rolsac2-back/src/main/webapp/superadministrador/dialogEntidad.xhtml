@@ -100,13 +100,15 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <my:literalComponent id="inputDescripcion"
-                                         literal="#{dialogEntidad.data.descripcion}"
+                    <my:literalComponent id="inputDescripcion" styleClass="w95"
+                                         value="#{dialogEntidad.data.descripcion}"
                                          soloLecture="#{dialogEntidad.isModoConsulta()}"
-                                         idioma="#{dialogEntidad.idioma}"
+                                         required="#{empty param['formDialog:closeButton']}"
                                          required="#{empty param['formDialog:closeButton']}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         idioma="#{dialogEntidad.idioma}"
+                                         literal="#{dialogEntidad.data.descripcion}"
                                          nombreLiteral="#{labels['dict.descripcion']}">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                     </my:literalComponent>
