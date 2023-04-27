@@ -1,16 +1,19 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.NormativaDTO;
+import java.time.LocalDate;
+
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.NormativaDTO;
 
 /**
  * Normatives.

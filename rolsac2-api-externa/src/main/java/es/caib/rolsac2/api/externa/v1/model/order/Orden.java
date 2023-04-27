@@ -1,15 +1,18 @@
 package es.caib.rolsac2.api.externa.v1.model.order;
 
+import java.io.IOException;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
-import java.util.List;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 
 /**
  * Orden Clase encargada de almacenar los campos por los que ordenar

@@ -1,15 +1,16 @@
 package es.caib.rolsac2.api.externa;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Provider
 public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {

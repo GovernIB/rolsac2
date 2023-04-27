@@ -1,14 +1,16 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.FicheroDTO;
+import java.util.Base64;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Base64;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.FicheroDTO;
 
 /**
  * Fichero.

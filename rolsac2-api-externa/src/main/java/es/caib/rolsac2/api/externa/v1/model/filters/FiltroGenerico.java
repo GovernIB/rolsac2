@@ -1,11 +1,11 @@
 package es.caib.rolsac2.api.externa.v1.model.filters;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * filtro generico para aplanar los filtros del api rest

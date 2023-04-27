@@ -1,12 +1,20 @@
 package es.caib.rolsac2.api.externa.v1.services;
 
-import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
-import es.caib.rolsac2.api.externa.v1.model.Fichero;
-import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
-import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaFichero;
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.facade.FicheroServiceFacade;
-import es.caib.rolsac2.service.model.FicheroDTO;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.validation.ValidationException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -15,13 +23,13 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import javax.ejb.EJB;
-import javax.validation.ValidationException;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
+import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
+import es.caib.rolsac2.api.externa.v1.model.Fichero;
+import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
+import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaFichero;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.facade.FicheroServiceFacade;
+import es.caib.rolsac2.service.model.FicheroDTO;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_FICHERO)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_FICHERO, name = Constantes.ENTIDAD_FICHERO)

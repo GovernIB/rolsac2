@@ -1,14 +1,15 @@
 package es.caib.rolsac2.api.externa.v1.model.filters;
 
-import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.filtro.TipoMediaEdificioFiltro;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.filtro.TipoMediaEdificioFiltro;
 
 @XmlRootElement
 @Schema(name = "FiltroTipoMediaEdificio", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")

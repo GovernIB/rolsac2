@@ -1,9 +1,9 @@
 package es.caib.rolsac2.api.externa.v1.exception;
 
-import es.caib.rolsac2.api.externa.v1.model.respuestas.Responses;
-
-import javax.ws.rs.WebApplicationException;
 import java.net.URI;
+import javax.ws.rs.WebApplicationException;
+
+import es.caib.rolsac2.api.externa.v1.model.respuestas.Responses;
 
 /**
  * A HTTP 404 (Not Found) exception.

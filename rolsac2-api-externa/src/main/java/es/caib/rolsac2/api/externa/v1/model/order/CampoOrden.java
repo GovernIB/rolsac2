@@ -1,13 +1,15 @@
 package es.caib.rolsac2.api.externa.v1.model.order;
 
+import java.io.IOException;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 /**
  * FiltroUA.

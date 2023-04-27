@@ -1,15 +1,16 @@
 package es.caib.rolsac2.api.externa.v1.exception;
 
-import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 
 @Provider
 public class MapeadorExcepcionesGenericas implements ExceptionMapper<Exception> {
