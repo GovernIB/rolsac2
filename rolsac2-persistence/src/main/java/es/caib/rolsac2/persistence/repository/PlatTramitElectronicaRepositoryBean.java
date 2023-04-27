@@ -1,13 +1,8 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
-import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
-import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -16,9 +11,15 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
+import es.caib.rolsac2.persistence.model.JEntidad;
+import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
+import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
 
 /**
  * Implementación del repositorio de una plataforma de tramitación electrónica

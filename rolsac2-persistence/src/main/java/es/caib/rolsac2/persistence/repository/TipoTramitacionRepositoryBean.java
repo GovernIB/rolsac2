@@ -2,6 +2,8 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
 import es.caib.rolsac2.persistence.model.JTipoTramitacion;
+import es.caib.rolsac2.persistence.model.JTipoTramitacion;
+import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;

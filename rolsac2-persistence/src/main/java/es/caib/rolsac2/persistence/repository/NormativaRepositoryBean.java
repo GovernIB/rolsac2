@@ -1,7 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.NormativaConverter;
+import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
 import es.caib.rolsac2.persistence.model.JNormativa;
+import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
 import es.caib.rolsac2.persistence.model.JTipoBoletin;
 import es.caib.rolsac2.persistence.model.JTipoNormativa;
 import es.caib.rolsac2.persistence.util.Utils;

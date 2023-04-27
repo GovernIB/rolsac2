@@ -2,6 +2,7 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
+import es.caib.rolsac2.persistence.model.JNormativa;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;

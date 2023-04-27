@@ -6,6 +6,8 @@ import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 public class NormativaFiltro extends AbstractFiltro {
 
     private String texto;

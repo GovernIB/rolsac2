@@ -1,12 +1,13 @@
 package es.caib.rolsac2.service.model;
 
-import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
-import es.caib.rolsac2.service.utils.AuditoriaUtil;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
+import es.caib.rolsac2.service.utils.AuditoriaUtil;
 
 /**
  * Dades de una Unidad Administrativa.

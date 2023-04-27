@@ -1,10 +1,10 @@
 package es.caib.rolsac2.service.model;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 /**
  * Dades de una normativa.
