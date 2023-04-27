@@ -9,11 +9,7 @@ import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "procedimiento-wf-trad-sequence", sequenceName = "RS2_TRAPRWF_SEQ", allocationSize = 1)
-@Table(name = "RS2_TRAPRWF",
-        indexes = {
-                @Index(name = "RS2_TRAPRWF_PK_I", columnList = "TRPW_CODIGO")
-        }
-)
+@Table(name = "RS2_TRAPRWF", indexes = {@Index(name = "RS2_TRAPRWF_PK_I", columnList = "TRPW_CODIGO")})
 public class JProcedimientoWorkflowTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-wf-trad-sequence")
@@ -228,8 +224,6 @@ public class JProcedimientoWorkflowTraduccion {
 
     @Override
     public String toString() {
-        return "JProcedimientoWorkflowTraduccion{" +
-                "codigo=" + codigo +
-                '}';
+        return "JProcedimientoWorkflowTraduccion{" + "codigo=" + codigo + '}';
     }
 }

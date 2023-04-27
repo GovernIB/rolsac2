@@ -1146,9 +1146,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     if (elemento.getPlantillaSel() != null && elemento.getPlantillaSel().getCodigo() != null) {
                         jTipoTramitacionPlantilla = entityManager.find(JTipoTramitacion.class, elemento.getPlantillaSel().getCodigo());
                         jTipoTramitacionPlantilla.setPlantilla(true);
-                    }
-
-                    if (elemento.getTipoTramitacion() != null) {
+                    } else if (elemento.getTipoTramitacion() != null) {
                         jTipoTramitacion = tipoTramitacionConverter.createEntity(elemento.getTipoTramitacion());
                         jTipoTramitacion.setPlantilla(false);
                         entityManager.persist(jTipoTramitacion);
