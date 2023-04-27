@@ -1,8 +1,12 @@
 package es.caib.rolsac2.persistence.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import es.caib.rolsac2.persistence.converter.EntidadConverter;
+import es.caib.rolsac2.persistence.model.JEntidad;
+import es.caib.rolsac2.service.model.EntidadDTO;
+import es.caib.rolsac2.service.model.EntidadGridDTO;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -11,14 +15,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import es.caib.rolsac2.persistence.converter.EntidadConverter;
-import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.service.model.EntidadDTO;
-import es.caib.rolsac2.service.model.EntidadGridDTO;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementación del repositorio de Personal.
@@ -68,8 +67,7 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
 
     @Override
     public List<JEntidad> findActivas() {
-        TypedQuery<JEntidad> query =
-                entityManager.createQuery("SELECT j FROM JEntidad j where j.activa = true", JEntidad.class);
+        TypedQuery<JEntidad> query = entityManager.createQuery("SELECT j FROM JEntidad j where j.activa = true", JEntidad.class);
 
         List<JEntidad> jEntidad = query.getResultList();
 
@@ -114,22 +112,16 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else if (isRest) {
-        	sql = new StringBuilder("SELECT j FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder("SELECT j.codigo, j.identificador, j.activa, j.rolAdmin, j.rolAdminContenido, "
-                    + " j.rolGestor, j.rolInformador, t.descripcion FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma WHERE t.idioma=:idioma");
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, j.activa, j.rolAdmin, j.rolAdminContenido, " + " j.rolGestor, j.rolInformador, t.descripcion FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma WHERE t.idioma=:idioma");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) LIKE :filtro "
-                    + " OR LOWER(t.descripcion) LIKE :filtro "
-                    + " OR LOWER(j.rolAdmin) LIKE :filtro "
-                    + " OR LOWER(j.rolAdminContenido) LIKE :filtro OR LOWER(j.rolGestor) LIKE :filtro "
-                    + " OR LOWER(j.rolInformador) LIKE :filtro)");
-
-
+            sql.append(" and ( cast(j.id as string) LIKE :filtro " + " OR LOWER(j.identificador) LIKE :filtro " + " OR LOWER(t.descripcion) LIKE :filtro " + " OR LOWER(j.rolAdmin) LIKE :filtro " + " OR LOWER(j.rolAdminContenido) LIKE :filtro OR LOWER(j.rolGestor) LIKE :filtro " + " OR LOWER(j.rolInformador) LIKE :filtro)");
         }
+
         if (filtro.isRellenoCodigo()) {
-        	sql.append(" and j.codigo = :codigo ");
+            sql.append(" and j.codigo = :codigo ");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
@@ -141,7 +133,7 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
         if (filtro.isRellenoCodigo()) {
-        	query.setParameter("codigo", filtro.getCodigo());
+            query.setParameter("codigo", filtro.getCodigo());
         }
         return query;
     }
@@ -162,29 +154,28 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
 
-	@Override
-	public List<JEntidad> findAll() {
-		TypedQuery<JEntidad> query =
-                entityManager.createQuery("select p from JEntidad p ", JEntidad.class);
+    @Override
+    public List<JEntidad> findAll() {
+        TypedQuery<JEntidad> query = entityManager.createQuery("select p from JEntidad p ", JEntidad.class);
         List<JEntidad> result = query.getResultList();
         return result;
-	}
+    }
 
-	@Override
-	public List<EntidadDTO> findPagedByFiltroRest(EntidadFiltro filtro) {
-		Query query = getQuery(false, filtro, true);
-		query.setFirstResult(filtro.getPaginaFirst());
-		query.setMaxResults(filtro.getPaginaTamanyo());
+    @Override
+    public List<EntidadDTO> findPagedByFiltroRest(EntidadFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
 
-		List<JEntidad> jentidades = query.getResultList();
-		List<EntidadDTO> entidades = new ArrayList<>();
-		if (jentidades != null) {
-			for (JEntidad jentidad : jentidades) {
-				EntidadDTO entidad = converter.createDTO(jentidad);
+        List<JEntidad> jentidades = query.getResultList();
+        List<EntidadDTO> entidades = new ArrayList<>();
+        if (jentidades != null) {
+            for (JEntidad jentidad : jentidades) {
+                EntidadDTO entidad = converter.createDTO(jentidad);
 
-				entidades.add(entidad);
-			}
-		}
-		return entidades;
-	}
+                entidades.add(entidad);
+            }
+        }
+        return entidades;
+    }
 }
