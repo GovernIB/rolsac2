@@ -50,7 +50,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private int comun;
     private List<TemaGridDTO> temas;
     private TipoViaDTO tipoVia;
-    private boolean habilitadoApoderado;
+    private Boolean habilitadoApoderado;
 
     private String habilitadoFuncionario;
 
@@ -476,12 +476,16 @@ public class ProcedimientoBaseDTO extends ModelApi {
         this.observaciones = observaciones;
     }
 
-    public boolean isHabilitadoApoderado() {
+    public Boolean isHabilitadoApoderado() {
         return habilitadoApoderado;
     }
 
-    public void setHabilitadoApoderado(boolean habilitadoApoderado) {
+    public void setHabilitadoApoderado(Boolean habilitadoApoderado) {
         this.habilitadoApoderado = habilitadoApoderado;
+    }
+
+    public Boolean getHabilitadoApoderado() {
+        return habilitadoApoderado;
     }
 
     public String getHabilitadoFuncionario() {
@@ -550,10 +554,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "ProcedimientoBaseDTO{" +
-                "codigo=" + codigo +
-                ", codigoWF='" + codigoWF + '\'' +
-                '}';
+        return "ProcedimientoBaseDTO{" + "codigo=" + codigo + ", codigoWF='" + codigoWF + '\'' + '}';
     }
 
     @Override

@@ -52,7 +52,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     protected ProcedimientoRepositoryBean() {
         super(JProcedimiento.class);
     }
-
+ 
     @Override
     public List<ServicioGridDTO> findServiciosPagedByFiltro(ProcedimientoFiltro filtro) {
         Query query = getQuery(false, filtro);

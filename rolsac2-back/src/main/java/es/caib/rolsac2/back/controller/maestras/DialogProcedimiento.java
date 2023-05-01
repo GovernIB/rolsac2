@@ -151,6 +151,16 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
         listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
         listTipoVia = maestrasSupService.findAllTipoVia();
+
+        /** Si es alta y hay un tipo legitimacion por defecto, lo setea **/
+        if (this.isModoAlta() && listTipoLegitimacion != null && !listTipoLegitimacion.isEmpty()) {
+            for (TipoLegitimacionDTO tipoLegitimacion : listTipoLegitimacion) {
+                if (tipoLegitimacion.isPorDefecto()) {
+                    this.data.setDatosPersonalesLegitimacion(tipoLegitimacion);
+                    break;
+                }
+            }
+        }
     }
 
     public void traducir() {
@@ -272,6 +282,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
         if (!tiene) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteFaseIniciacion"));
+            return;
+        }
+
+        if (data.getTemas() == null || data.getTemas().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
             return;
         }
 

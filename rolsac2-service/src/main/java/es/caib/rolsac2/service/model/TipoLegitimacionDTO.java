@@ -31,6 +31,11 @@ public class TipoLegitimacionDTO extends ModelApi implements Cloneable {
     private Literal descripcion;
 
     /**
+     * Legitimacion
+     **/
+    private boolean porDefecto;
+
+    /**
      * Instancia un nuevo Tipo legitimacion dto.
      */
     public TipoLegitimacionDTO() {
@@ -41,6 +46,7 @@ public class TipoLegitimacionDTO extends ModelApi implements Cloneable {
             this.codigo = otro.codigo;
             this.identificador = otro.identificador;
             this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+            this.porDefecto = otro.porDefecto;
         }
     }
 
@@ -98,6 +104,14 @@ public class TipoLegitimacionDTO extends ModelApi implements Cloneable {
         this.descripcion = descripcion;
     }
 
+    public boolean isPorDefecto() {
+        return porDefecto;
+    }
+
+    public void setPorDefecto(boolean porDefecto) {
+        this.porDefecto = porDefecto;
+    }
+
     /**
      * Se hace a este nivel manualmente el clonar.
      *
@@ -111,11 +125,7 @@ public class TipoLegitimacionDTO extends ModelApi implements Cloneable {
 
     @Override
     public String toString() {
-        return "TipoLegitimacionDTO{" +
-                "id=" + codigo +
-                ", identificador='" + identificador + '\'' +
-                ", descripcion=" + descripcion +
-                '}';
+        return "TipoLegitimacionDTO{" + "id=" + codigo + ", identificador='" + identificador + '\'' + ", descripcion=" + descripcion + '}';
     }
 
     @Override

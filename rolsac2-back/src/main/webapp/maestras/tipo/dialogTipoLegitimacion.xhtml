@@ -96,6 +96,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
              <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
           </my:literalComponent>
         </div>
+
+        <div class="ui-g-12 ui-md-2 ui-lg-1">
+          <p:outputLabel value="#{labels['dict.opcionPorDefecto']}:" />
+        </div>
+        <div class="ui-g-12 ui-md-10 ui-lg-5">
+
+          <p:selectBooleanCheckbox value="#{dialogTipoLegitimacion.data.porDefecto}"
+                                   disabled="#{dialogTipoLegitimacion.isModoConsulta()}"
+                                   styleClass="w95"  />
+
+        </div>
       </div>
     </p:panel>
   </ui:define>

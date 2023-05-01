@@ -1,8 +1,12 @@
 package es.caib.rolsac2.persistence.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import es.caib.rolsac2.persistence.converter.TipoLegitimacionConverter;
+import es.caib.rolsac2.persistence.model.JTipoLegitimacion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoLegitimacionDTO;
+import es.caib.rolsac2.service.model.TipoLegitimacionGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.TipoLegitimacionFiltro;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -11,14 +15,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import es.caib.rolsac2.persistence.converter.TipoLegitimacionConverter;
-import es.caib.rolsac2.persistence.model.JTipoLegitimacion;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoLegitimacionDTO;
-import es.caib.rolsac2.service.model.TipoLegitimacionGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.filtro.TipoLegitimacionFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 @Local(TipoLegitimacionRepository.class)
@@ -48,6 +47,7 @@ public class TipoLegitimacionRepositoryBean extends AbstractCrudRepository<JTipo
                 Literal literal = new Literal();
                 literal.add(new Traduccion(filtro.getIdioma(), (String) jtipoLegitimacion[2]));
                 tipoLegitimacionGrid.setDescripcion(literal);
+                tipoLegitimacionGrid.setPorDefecto((boolean) jtipoLegitimacion[3]);
                 tipoLegitimaciones.add(tipoLegitimacionGrid);
             }
         }
@@ -71,19 +71,17 @@ public class TipoLegitimacionRepositoryBean extends AbstractCrudRepository<JTipo
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder(
-                    "SELECT count(j) FROM JTipoLegitimacion j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JTipoLegitimacion j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else if (isRest) {
-        	sql = new StringBuilder("SELECT j FROM JTipoLegitimacion j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j FROM JTipoLegitimacion j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoLegitimacion j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where t.idioma = :idioma");
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, t.descripcion, j.porDefecto FROM JTipoLegitimacion j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where t.idioma = :idioma");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro)");
         }
         if (filtro.isRellenoCodigo()) {
-        	sql.append(" and j.codigo = :codigo ");
+            sql.append(" and j.codigo = :codigo ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -100,7 +98,7 @@ public class TipoLegitimacionRepositoryBean extends AbstractCrudRepository<JTipo
             query.setParameter("idioma", filtro.getIdioma());
         }
         if (filtro.isRellenoCodigo()) {
-        	query.setParameter("codigo", filtro.getCodigo());
+            query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -113,8 +111,7 @@ public class TipoLegitimacionRepositoryBean extends AbstractCrudRepository<JTipo
 
     @Override
     public Optional<JTipoLegitimacion> findById(String id) {
-        TypedQuery<JTipoLegitimacion> query = entityManager.createNamedQuery(JTipoLegitimacion.FIND_BY_ID,
-                JTipoLegitimacion.class);
+        TypedQuery<JTipoLegitimacion> query = entityManager.createNamedQuery(JTipoLegitimacion.FIND_BY_ID, JTipoLegitimacion.class);
         query.setParameter("id", id);
         List<JTipoLegitimacion> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
@@ -122,11 +119,10 @@ public class TipoLegitimacionRepositoryBean extends AbstractCrudRepository<JTipo
 
     @Override
     public List<TipoLegitimacionDTO> findAllTipoLegitimacion() {
-        TypedQuery query =
-                entityManager.createQuery("SELECT j FROM JTipoLegitimacion j", JTipoLegitimacion.class);
+        TypedQuery query = entityManager.createQuery("SELECT j FROM JTipoLegitimacion j", JTipoLegitimacion.class);
         List<JTipoLegitimacion> jTipoLegitimacions = query.getResultList();
         List<TipoLegitimacionDTO> tipoLegitimacionDTOS = new ArrayList<>();
-        if (jTipoLegitimacions  != null) {
+        if (jTipoLegitimacions != null) {
             for (JTipoLegitimacion jTipoLegitimacion : jTipoLegitimacions) {
                 tipoLegitimacionDTOS.add(this.converter.createDTO(jTipoLegitimacion));
             }
@@ -134,21 +130,28 @@ public class TipoLegitimacionRepositoryBean extends AbstractCrudRepository<JTipo
         return tipoLegitimacionDTOS;
     }
 
-	@Override
-	public List<TipoLegitimacionDTO> findPagedByFiltroRest(TipoLegitimacionFiltro filtro) {
-		Query query = getQuery(false, filtro, true);
-		query.setFirstResult(filtro.getPaginaFirst());
-		query.setMaxResults(filtro.getPaginaTamanyo());
+    @Override
+    public List<TipoLegitimacionDTO> findPagedByFiltroRest(TipoLegitimacionFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
 
-		List<JTipoLegitimacion> jtipoLegitimaciones = query.getResultList();
-		List<TipoLegitimacionDTO> tipoLegitimaciones = new ArrayList<>();
-		if (jtipoLegitimaciones != null) {
-			for (JTipoLegitimacion jtipoLegitimacion : jtipoLegitimaciones) {
-				TipoLegitimacionDTO tipoLegitimacion = converter.createDTO(jtipoLegitimacion);
+        List<JTipoLegitimacion> jtipoLegitimaciones = query.getResultList();
+        List<TipoLegitimacionDTO> tipoLegitimaciones = new ArrayList<>();
+        if (jtipoLegitimaciones != null) {
+            for (JTipoLegitimacion jtipoLegitimacion : jtipoLegitimaciones) {
+                TipoLegitimacionDTO tipoLegitimacion = converter.createDTO(jtipoLegitimacion);
 
-				tipoLegitimaciones.add(tipoLegitimacion);
-			}
-		}
-		return tipoLegitimaciones;
-	}
+                tipoLegitimaciones.add(tipoLegitimacion);
+            }
+        }
+        return tipoLegitimaciones;
+    }
+
+    @Override
+    public void quitarTodosPorDefecto() {
+        Query query = entityManager.createQuery("UPDATE JTipoLegitimacion j SET j.porDefecto = 0");
+        query.executeUpdate();
+    }
+
 }

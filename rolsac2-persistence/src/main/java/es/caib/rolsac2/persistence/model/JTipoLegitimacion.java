@@ -11,17 +11,8 @@ import java.util.Objects;
  */
 @Entity
 @SequenceGenerator(name = "tipo-legitimacion-sequence", sequenceName = "RS2_TIPOLEG_SEQ", allocationSize = 1)
-@Table(name = "RS2_TIPOLEG",
-        indexes = {
-                @Index(name = "RS2_TIPOLEG_PK", columnList = "TPLE_CODIGO")
-        }
-)
-@NamedQueries({
-        @NamedQuery(name = JTipoLegitimacion.FIND_BY_ID,
-                query = "select p from JTipoLegitimacion p where p.codigo = :id"),
-        @NamedQuery(name = JTipoLegitimacion.COUNT_BY_IDENTIFICADOR,
-                query = "select COUNT(p) from JTipoLegitimacion p where p.identificador = :identificador")
-})
+@Table(name = "RS2_TIPOLEG", indexes = {@Index(name = "RS2_TIPOLEG_PK", columnList = "TPLE_CODIGO")})
+@NamedQueries({@NamedQuery(name = JTipoLegitimacion.FIND_BY_ID, query = "select p from JTipoLegitimacion p where p.codigo = :id"), @NamedQuery(name = JTipoLegitimacion.COUNT_BY_IDENTIFICADOR, query = "select COUNT(p) from JTipoLegitimacion p where p.identificador = :identificador")})
 public class JTipoLegitimacion extends BaseEntity {
 
     /**
@@ -51,6 +42,13 @@ public class JTipoLegitimacion extends BaseEntity {
     private String identificador;
 
     /**
+     * Por defecto
+     **/
+    @Column(name = "TPLE_DEFECT")
+    private boolean porDefecto;
+
+
+    /**
      * Instania un nuevo J tipo legitimacion.
      */
     public JTipoLegitimacion() {
@@ -60,7 +58,7 @@ public class JTipoLegitimacion extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -69,7 +67,7 @@ public class JTipoLegitimacion extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -78,7 +76,7 @@ public class JTipoLegitimacion extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -87,7 +85,7 @@ public class JTipoLegitimacion extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -96,7 +94,7 @@ public class JTipoLegitimacion extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public List<JTipoLegitimacionTraduccion> getDescripcion() {
         return descripcion;
@@ -105,10 +103,18 @@ public class JTipoLegitimacion extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(List<JTipoLegitimacionTraduccion> descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public boolean isPorDefecto() {
+        return porDefecto;
+    }
+
+    public void setPorDefecto(boolean porDefecto) {
+        this.porDefecto = porDefecto;
     }
 
     @Override

@@ -238,8 +238,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             UtilJSF.anyadirMochila("documento", this.documentoSeleccionado);
         }
         params.put(TypeParametroVentana.TIPO.toString(), "TRAM_DOC");
-        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
-                800, 350);
+        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true, 800, 350);
     }
 
     public void nuevoDocumento() {
@@ -331,8 +330,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         }
         params.put(TypeParametroVentana.TIPO.toString(), "TRAM_MOD");
 
-        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true,
-                800, 350);
+        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true, 800, 350);
     }
 
     public void nuevoModelo() {

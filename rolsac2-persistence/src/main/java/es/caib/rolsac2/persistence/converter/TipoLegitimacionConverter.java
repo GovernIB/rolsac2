@@ -31,17 +31,15 @@ public interface TipoLegitimacionConverter extends Converter<JTipoLegitimacion, 
 
     @Override
     @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(entity,dto.getDescripcion()))")
-///, ignore = true)
+        ///, ignore = true)
     void mergeEntity(@MappingTarget JTipoLegitimacion entity, TipoLegitimacionDTO dto);
 
-    default List<JTipoLegitimacionTraduccion> convierteLiteralToTraduccion(
-            JTipoLegitimacion jtipoLegitimacion, Literal descripcion
-    ) {
+    default List<JTipoLegitimacionTraduccion> convierteLiteralToTraduccion(JTipoLegitimacion jtipoLegitimacion, Literal descripcion) {
 
         //Iteramos sobre el literal para ver que idiomas se han rellenado
         List<String> idiomasRellenos = new ArrayList<>();
-        for(String idioma : descripcion.getIdiomas()) {
-            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+        for (String idioma : descripcion.getIdiomas()) {
+            if (descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
                 idiomasRellenos.add(idioma);
             }
         }
@@ -51,7 +49,7 @@ public interface TipoLegitimacionConverter extends Converter<JTipoLegitimacion, 
             for (JTipoLegitimacionTraduccion jtrad : jtipoLegitimacion.getDescripcion()) {
                 jtrad.setTipoLegitimacion(jtipoLegitimacion);
             }
-        } else if(idiomasRellenos.size() >  jtipoLegitimacion.getDescripcion().size()) {
+        } else if (idiomasRellenos.size() > jtipoLegitimacion.getDescripcion().size()) {
             //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
             List<JTipoLegitimacionTraduccion> tradsAux = jtipoLegitimacion.getDescripcion();
             List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
@@ -80,8 +78,7 @@ public interface TipoLegitimacionConverter extends Converter<JTipoLegitimacion, 
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
-            resultado.setCodigo(
-                    traducciones.stream().map(t -> t.getTipoLegitimacion().getCodigo()).findFirst().orElse(null));
+            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoLegitimacion().getCodigo()).findFirst().orElse(null));
             for (JTipoLegitimacionTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
                 trad.setCodigo(traduccion.getCodigo());

@@ -101,6 +101,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
                     <h:outputText value="#{tipoLegitimacion.descripcion.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
+                <p:column sortBy="#{tipoLegitimacion.descripcion}" styleClass="overflow-datagrid-cell">
+                    <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
+                    <h:outputText value="#{tipoLegitimacion.descripcion.getTraduccion(sessionBean.lang)}"/>
+                </p:column>
+                <p:column sortBy="#{tipoLegitimacion.porDefecto}" styleClass="overflow-datagrid-cell">
+                    <f:facet name="header">#{labels['dict.opcionPorDefecto']}</f:facet>
+                    <p:selectBooleanCheckbox value="#{tipoLegitimacion.porDefecto}"
+                                             styleClass="w95"
+                                             disabled="true"  />
+                </p:column>
+
             </p:dataTable>
 
             <h:outputScript>

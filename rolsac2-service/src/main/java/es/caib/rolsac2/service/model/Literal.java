@@ -2,7 +2,6 @@ package es.caib.rolsac2.service.model;
 
 import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
 import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
-
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -317,5 +316,26 @@ public class Literal implements Cloneable {
             }
         }
         return vacio;
+    }
+
+    /**
+     * Comprueba si al menos tiene una traducción con contenido.
+     *
+     * @return
+     */
+    public boolean estaCompleto(List<String> idiomas) {
+
+        if (this.getTraducciones() == null || this.getTraducciones().isEmpty()) {
+            return false;
+        }
+
+        if (idiomas != null) {
+            for (String idioma : idiomas) {
+                if (this.getTraduccion(idioma) == null || this.getTraduccion(idioma).isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

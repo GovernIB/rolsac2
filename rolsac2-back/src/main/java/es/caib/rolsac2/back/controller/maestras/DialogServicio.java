@@ -187,6 +187,16 @@ public class DialogServicio extends AbstractController implements Serializable {
             this.data.setTipoTramitacion(TipoTramitacionDTO.createInstance(sessionBean.getIdiomasPermitidosList()));
             this.data.getTipoTramitacion().setEntidad(UtilJSF.getSessionBean().getEntidad());
         }
+
+        /** Si es alta y hay un tipo legitimacion por defecto, lo setea **/
+        if (this.isModoAlta() && listTipoLegitimacion != null && !listTipoLegitimacion.isEmpty()) {
+            for (TipoLegitimacionDTO tipoLegitimacion : listTipoLegitimacion) {
+                if (tipoLegitimacion.isPorDefecto()) {
+                    this.data.setDatosPersonalesLegitimacion(tipoLegitimacion);
+                    break;
+                }
+            }
+        }
     }
 
     public void traducir() {
@@ -272,6 +282,11 @@ public class DialogServicio extends AbstractController implements Serializable {
         }*/
         if (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
+            return;
+        }
+
+        if (data.getTemas() == null || data.getTemas().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
             return;
         }
 

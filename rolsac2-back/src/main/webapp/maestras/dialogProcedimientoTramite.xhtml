@@ -321,12 +321,13 @@
                                        style="width: 100px !important;" />
                     </div>
                     <div class="form-group col-md-6">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.plataforma']}:"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.plataforma']}:*"
                                        for="txtTraPlat"/>
                         <p:selectOneMenu id="txtTraPlat"
                                          value="#{dialogProcedimientoTramite.data.tipoTramitacion.codPlatTramitacion}"
                                          styleClass="w95"
                                          autoWidth="false"
+                                         required="#{empty param['formDialog:closeButton'] and (dialogProcedimientoTramite.data.tipoTramitacion.url == null or !dialogProcedimientoTramite.data.tipoTramitacion.url.estaCompleto(sessionBean.getIdiomasObligatoriosList()))}"
                                          requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
                                          disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
                                                             dialogProcedimientoTramite.data.plantillaSel != null ||

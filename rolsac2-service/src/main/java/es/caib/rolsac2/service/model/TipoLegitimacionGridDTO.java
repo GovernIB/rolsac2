@@ -11,6 +11,7 @@ public class TipoLegitimacionGridDTO extends ModelApi {
     private Long codigo;
     private String identificador;
     private Literal descripcion;
+    private boolean porDefecto;
 
     /**
      * Instancia un nuevo Tipo legitimacion grid dto.
@@ -21,8 +22,8 @@ public class TipoLegitimacionGridDTO extends ModelApi {
     /**
      * Instancia un nuevo Tipo legitimacion grid dto.
      *
-     * @param id             id
-     * @param identificador  identificador
+     * @param id            id
+     * @param identificador identificador
      */
     public TipoLegitimacionGridDTO(Long id, String identificador) {
         this.codigo = id;
@@ -32,7 +33,7 @@ public class TipoLegitimacionGridDTO extends ModelApi {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -41,7 +42,7 @@ public class TipoLegitimacionGridDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -50,7 +51,7 @@ public class TipoLegitimacionGridDTO extends ModelApi {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -59,7 +60,7 @@ public class TipoLegitimacionGridDTO extends ModelApi {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -68,7 +69,7 @@ public class TipoLegitimacionGridDTO extends ModelApi {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public Literal getDescripcion() {
         return descripcion;
@@ -77,18 +78,22 @@ public class TipoLegitimacionGridDTO extends ModelApi {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }
 
+    public boolean isPorDefecto() {
+        return porDefecto;
+    }
+
+    public void setPorDefecto(boolean porDefecto) {
+        this.porDefecto = porDefecto;
+    }
+
     @Override
     public String toString() {
-        return "TipoLegitimacionGridDTO{" +
-                "id=" + codigo +
-                ", identificador='" + identificador + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                '}';
+        return "TipoLegitimacionGridDTO{" + "id=" + codigo + ", identificador='" + identificador + '\'' + ", descripcion='" + descripcion + '\'' + '}';
     }
 }

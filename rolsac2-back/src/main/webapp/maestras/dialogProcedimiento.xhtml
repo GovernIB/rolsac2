@@ -260,8 +260,20 @@
                                         </p:selectOneMenu>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <p:selectBooleanCheckbox id="txtHabilitadoApoderado" styleClass="mt-4" value="#{dialogProcedimiento.data.habilitadoApoderado}" disabled="#{dialogProcedimiento.isModoConsulta()}" itemLabel="#{labels['dialogProcedimiento.habilitadoApoderado']}" style="margin-top:10px" >
-                                        </p:selectBooleanCheckbox>
+                                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.habilitadoApoderado']}:"
+                                                       for="txtHabilitadoApoderado"/>
+
+                                        <p:selectOneMenu id="txtHabilitadoApoderado" value="#{dialogProcedimiento.data.habilitadoApoderado}"
+                                                         styleClass="w95"  autoWidth="false" required="#{empty param['formDialog:closeButton']}"
+                                                         requiredMessage="#{labels['dict.obligatorio.habilitadoApoderado']}"
+                                                         disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                        >
+                                            <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
+                                            <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="true" />
+                                            <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="false" />
+                                            <f:converter converterId="javax.faces.Boolean" />
+                                        </p:selectOneMenu>
+
 
                                     </div>
 

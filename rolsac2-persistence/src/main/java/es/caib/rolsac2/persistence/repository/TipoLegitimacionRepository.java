@@ -10,16 +10,17 @@ import java.util.Optional;
 
 public interface TipoLegitimacionRepository extends CrudRepository<JTipoLegitimacion, Long> {
 
-  Optional<JTipoLegitimacion> findById(String id);
+    Optional<JTipoLegitimacion> findById(String id);
 
-  List<TipoLegitimacionGridDTO> findPagedByFiltro(TipoLegitimacionFiltro filtro);
+    List<TipoLegitimacionGridDTO> findPagedByFiltro(TipoLegitimacionFiltro filtro);
 
-  long countByFiltro(TipoLegitimacionFiltro filtro);
+    long countByFiltro(TipoLegitimacionFiltro filtro);
 
-  boolean existeIdentificador(String identificador);
+    boolean existeIdentificador(String identificador);
 
-  List<TipoLegitimacionDTO> findAllTipoLegitimacion();
+    List<TipoLegitimacionDTO> findAllTipoLegitimacion();
 
-List<TipoLegitimacionDTO> findPagedByFiltroRest(TipoLegitimacionFiltro filtro);
+    List<TipoLegitimacionDTO> findPagedByFiltroRest(TipoLegitimacionFiltro filtro);
 
+    void quitarTodosPorDefecto();
 }
