@@ -60,6 +60,8 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     private String ocultarIniciacion;
     private Date fechaPublicacion;
 
+    private Integer opcionTelematica = null;
+
     public void load() {
         this.setearIdioma();
 
@@ -83,6 +85,15 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
                 canalesSeleccionados.add("TFN");
             }
 
+            if (data.isTramitElectronica()) {
+                if (data.getPlantillaSel() != null && data.getPlantillaSel().getCodigo() != null) {
+                    opcionTelematica = 1;
+                } else if (data.getTipoTramitacion() != null && data.getTipoTramitacion().getTramiteId() != null && !data.getTipoTramitacion().getTramiteId().isEmpty()) {
+                    opcionTelematica = 2;
+                } else if (data.getTipoTramitacion() != null) {// && data.getTipoTramitacion().getUrl() != null && data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList())) {
+                    opcionTelematica = 3;
+                }
+            }
         } else if (this.isModoAlta()) {
             data = ProcedimientoTramiteDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUnidadAdministrativa(sessionBean.getUnidadActiva());
@@ -105,6 +116,18 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         }
 
 
+    }
+
+    public boolean isOpcionTelematicaPlantilla() {
+        return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(1) == 0;
+    }
+
+    public boolean isOpcionTelematicaDatos() {
+        return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(2) == 0;
+    }
+
+    public boolean isOpcionTelematicaUrl() {
+        return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(3) == 0;
     }
 
     public void cambiaFase() {
@@ -173,6 +196,23 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             return;
         }
 
+        if (data.isTramitElectronica()) {
+            if (opcionTelematica == 1) {
+                //Seleccionamos plantilla
+                data.setTipoTramitacion(null);
+            } else if (opcionTelematica == 2 && data.getTipoTramitacion() != null) {
+                //Introducimos datos
+                data.setPlantillaSel(null);
+                data.getTipoTramitacion().setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            } else if (opcionTelematica == 3 && data.getTipoTramitacion() != null) {
+                //Introducimos url
+                data.setPlantillaSel(null);
+                data.getTipoTramitacion().setTramiteId(null);
+                data.getTipoTramitacion().setTramiteVersion(null);
+                data.getTipoTramitacion().setTramiteParametros(null);
+                data.getTipoTramitacion().setCodPlatTramitacion(null);
+            }
+        }
 
         final DialogResult result = new DialogResult();
         if (this.getModoAcceso() != null) {
@@ -531,5 +571,13 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
     public void setOcultarIniciacion(String ocultarIniciacion) {
         this.ocultarIniciacion = ocultarIniciacion;
+    }
+
+    public Integer getOpcionTelematica() {
+        return opcionTelematica;
+    }
+
+    public void setOpcionTelematica(Integer opcionTelematica) {
+        this.opcionTelematica = opcionTelematica;
     }
 }

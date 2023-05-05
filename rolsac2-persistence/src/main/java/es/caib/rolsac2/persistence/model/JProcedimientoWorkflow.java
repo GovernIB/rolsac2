@@ -165,18 +165,11 @@ public class JProcedimientoWorkflow {
     /**
      * Traducciones
      */
-    @OneToMany(mappedBy = "procedimientoWorkflow", fetch = FetchType.EAGER, cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "procedimientoWorkflow", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JProcedimientoWorkflowTraduccion> traducciones;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "RS2_PRCTEM",
-            joinColumns = {
-                    @JoinColumn(name = "PRTM_CODPRWF")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "PRTM_CODTEMA")
-            })
+    @JoinTable(name = "RS2_PRCTEM", joinColumns = {@JoinColumn(name = "PRTM_CODPRWF")}, inverseJoinColumns = {@JoinColumn(name = "PRTM_CODTEMA")})
     private Set<JTema> temas;
 
     public Long getCodigo() {
@@ -478,9 +471,7 @@ public class JProcedimientoWorkflow {
 
     @Override
     public String toString() {
-        return "JProcedimientoWorkflow{" +
-                "codigo=" + codigo +
-                '}';
+        return "JProcedimientoWorkflow{" + "codigo=" + codigo + '}';
     }
 
     @Override

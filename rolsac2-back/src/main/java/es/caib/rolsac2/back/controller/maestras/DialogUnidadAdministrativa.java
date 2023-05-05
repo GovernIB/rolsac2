@@ -356,7 +356,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             }
             List<TemaGridDTO> temasBorrado = new ArrayList<>();
             for (TemaGridDTO tema : data.getTemas()) {
-                if (tema.getMathPath().contains(temaPadre.getCodigo().toString()) && !temasSeleccionados.contains(tema)) {
+                if (Arrays.asList(tema.getMathPath().split(";")).contains(temaPadre.getCodigo().toString()) && !temasSeleccionados.contains(tema)) {
                     temasBorrado.add(tema);
                 }
             }

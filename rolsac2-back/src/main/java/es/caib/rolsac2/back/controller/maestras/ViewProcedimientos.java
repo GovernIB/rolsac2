@@ -77,11 +77,19 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
         } else if (filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
             List<Long> ids = new ArrayList<>();
-            for (UnidadAdministrativaDTO ua : sessionBean.getUnidadesAdministrativasActivas()) {
+
+            for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
                 List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
                 ids.addAll(idsUa);
             }
             filtro.setIdUAsHijas(ids);
+        } else if (!filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
+            List<Long> idsUa = new ArrayList<>();
+            for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
+                idsUa.add(ua.getCodigo());
+            }
+            idsUa.add(sessionBean.getUnidadActiva().getCodigo());
+            filtro.setIdUAsHijas(idsUa);
         }
     }
 
@@ -89,19 +97,22 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         if (filtro.isTodasUnidadesOrganicas()) {
             if (filtro.isHijasActivas()) {
                 List<Long> ids = new ArrayList<>();
-                for (UnidadAdministrativaDTO ua : sessionBean.getUnidadesAdministrativasActivas()) {
+
+                for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
                     List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
                     ids.addAll(idsUa);
                 }
                 filtro.setIdUAsHijas(ids);
             } else {
                 List<Long> idsUa = new ArrayList<>();
-                for (UnidadAdministrativaDTO ua : sessionBean.getUnidadesAdministrativasActivas()) {
+                for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
                     idsUa.add(ua.getCodigo());
                 }
                 idsUa.add(sessionBean.getUnidadActiva().getCodigo());
                 filtro.setIdUAsHijas(idsUa);
             }
+        } else if(filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()){
+            filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
         }
     }
 
@@ -282,6 +293,11 @@ public class ViewProcedimientos extends AbstractController implements Serializab
      * El buscar desde el evento de seleccionar una UA.
      */
     public void buscarEvt() {
+        if(filtro.isTodasUnidadesOrganicas()) {
+            filtroUnidadOrganicasChange();
+        } else if(filtro.isHijasActivas()) {
+            filtroHijasActivasChange();
+        }
         if (filtro.getIdUA() == null || filtro.getIdUA().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
             buscar();
         }
@@ -313,6 +329,11 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
+                    }
+                    if(filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
+                        List<Long> unidadesHijasAux = new ArrayList<>(filtro.getIdUAsHijas());
+                        filtro.setIdUAsHijas(unidadesHijasAux.subList(0, 999));
+                        filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));
                     }
                     Pagina<ProcedimientoGridDTO> pagina = procedimientoService.findProcedimientosByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
@@ -352,6 +373,13 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     public void seleccionarPubObjetivos() {
         UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", filtro.getMaterias());
         UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 460);
+    }
+
+    public void seleccionarTemas() {
+        final Map<String, String> params = new HashMap<>();
+        params.put("filtrado", "true");
+        UtilJSF.anyadirMochila("temas", filtro.getTemas());
+        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", TypeModoAcceso.EDICION, params, true, 1040, 460);
     }
 
     public void returnDialogMateria(final SelectEvent event) {
@@ -418,6 +446,23 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 }
                 filtro.setPublicoObjetivos(new ArrayList<>());
                 filtro.getPublicoObjetivos().addAll(tipPubObjEntSeleccionadas);
+            }
+        }
+    }
+
+    public void returnDialogTema(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            List<TemaGridDTO> temas = (List<TemaGridDTO>) respuesta.getResult();
+
+            if (temas == null) {
+                filtro.setTemas(new ArrayList<>());
+            } else {
+                if (filtro.getTemas() == null) {
+                    filtro.setTemas(new ArrayList<>());
+                }
+                filtro.setTemas(new ArrayList<>());
+                filtro.getTemas().addAll(temas);
             }
         }
     }

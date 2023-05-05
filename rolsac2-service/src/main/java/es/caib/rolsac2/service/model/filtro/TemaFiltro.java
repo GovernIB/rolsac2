@@ -4,6 +4,7 @@ public class TemaFiltro extends AbstractFiltro {
 
     private String texto;
     private String identificador;
+    private Long codigo;
 
     public String getTexto() {
         return texto;
@@ -24,6 +25,18 @@ public class TemaFiltro extends AbstractFiltro {
     public boolean isRellenoTexto() {
         return texto != null && !texto.isEmpty();
     }
+
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
+	}
+
+	public boolean isRellenoCodigo() {
+		 return codigo != null ;
+	}
 
     /**
      * Esta relleno el identificador

@@ -16,8 +16,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String texto;
     private String tipo;
     private Integer codigoSIA;
-    private Integer codigoProc;
-    private Integer codigoTram;
+    private Long codigoProc;
+    private Long codigoTram;
     private String estadoSIA;
     private String siaFecha;
     private String codigoDir3SIA;
@@ -38,6 +38,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String estado;
     private boolean hijasActivas = false;
     private List<Long> idUAsHijas;
+
+    private List<Long> idsUAsHijasAux;
     private boolean todasUnidadesOrganicas = false;
 
     private TipoViaDTO finVia;
@@ -49,19 +51,21 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     private String mensajesPendiente;
 
-    public Integer getCodigoProc() {
+    private List<TemaGridDTO> temas;
+
+    public Long getCodigoProc() {
         return codigoProc;
     }
 
-    public void setCodigoProc(Integer codigoProc) {
+    public void setCodigoProc(Long codigoProc) {
         this.codigoProc = codigoProc;
     }
 
-    public Integer getCodigoTram() {
+    public Long getCodigoTram() {
         return codigoTram;
     }
 
-    public void setCodigoTram(Integer codigoTram) {
+    public void setCodigoTram(Long codigoTram) {
         this.codigoTram = codigoTram;
     }
 
@@ -214,6 +218,33 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         }
     }
 
+    public List<TemaGridDTO> getTemas() {
+        return temas;
+    }
+
+    public String getTemas(String idioma) {
+        if (temas == null || temas.isEmpty()) {
+            return "";
+        } else {
+            StringBuilder texto = new StringBuilder();
+            for (TemaGridDTO tema : temas) {
+                texto.append(tema.getDescripcion().getTraduccion(idioma) + ",");
+            }
+            return texto.toString().substring(0, texto.toString().length() - 1);
+        }
+    }
+    public List<Long> getTemasId() {
+        List<Long> idTemas = new ArrayList<>();
+        for (TemaGridDTO tema : temas) {
+            idTemas.add(tema.getCodigo());
+        }
+        return idTemas;
+    }
+
+    public void setTemas(List<TemaGridDTO> temas) {
+        this.temas = temas;
+    }
+
     public void setMaterias(List<TipoMateriaSIAGridDTO> materias) {
         this.materias = materias;
     }
@@ -292,6 +323,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public void setComun(String comun) {
         this.comun = comun;
+    }
+
+    public List<Long> getIdsUAsHijasAux() {
+        return idsUAsHijasAux;
+    }
+
+    public void setIdsUAsHijasAux(List<Long> idsUAsHijasAux) {
+        this.idsUAsHijasAux = idsUAsHijasAux;
     }
 
     public boolean isHijasActivas() {
@@ -398,10 +437,15 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public boolean isRellenoMaterias() {
         return materias != null && !materias.isEmpty();
     }
+    public boolean isRellenoTemas() {
+        return temas != null && !temas.isEmpty();
+    }
 
     public boolean isRellenoHijasActivas() {
         return hijasActivas;
     }
+
+    public boolean isRellenoUasAux() {return idsUAsHijasAux != null; }
 
     public boolean isRellenoTodasUnidadesOrganicas() {
         return todasUnidadesOrganicas;

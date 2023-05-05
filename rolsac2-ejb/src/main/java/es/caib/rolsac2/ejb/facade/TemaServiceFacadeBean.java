@@ -10,6 +10,7 @@ import es.caib.rolsac2.persistence.repository.TemaRepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
+import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.TemaGridDTO;
@@ -33,6 +34,7 @@ import java.util.List;
 public class TemaServiceFacadeBean implements TemaServiceFacade{
 
     private static final Logger LOG = LoggerFactory.getLogger(TemaServiceFacadeBean.class);
+    private static final String ERROR_LITERAL = "Error";
 
     @Resource
     private SessionContext context;
@@ -218,4 +220,19 @@ public class TemaServiceFacadeBean implements TemaServiceFacade{
             jTema.setMathPath(temaActualizado.getMathPath());
         }
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TemaDTO> findByFiltroRest(TemaFiltro filtro) {
+    	 try {
+             List<TemaDTO> items = temaRepository.findPagedByFiltroRest(filtro);
+             long total = temaRepository.countByFiltro(filtro);
+             return new Pagina<>(items, total);
+         } catch (Exception e) {
+             LOG.error(ERROR_LITERAL, e);
+             List<TemaDTO> items = new ArrayList<>();
+             long total = items.size();
+             return new Pagina<>(items, total);
+         }
+	}
 }

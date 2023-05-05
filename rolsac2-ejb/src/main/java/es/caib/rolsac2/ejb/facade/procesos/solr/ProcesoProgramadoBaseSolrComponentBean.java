@@ -74,14 +74,6 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
         final ListaPropiedades detalles = new ListaPropiedades();
         final ResultadoProcesoProgramado res = new ResultadoProcesoProgramado();
 
-
-        /*if (params == null || params.getPropiedad("accion") == null || params.getPropiedad("entidad") == null) {
-            res.setFinalizadoOk(false);
-            detalles.addPropiedad("Informació del procés", "No están bien especificados los parámetros para la indexación");
-            res.setDetalles(detalles);
-            return res;
-        } else {*/
-
         String accion;
         if (pendiente) {
             accion = "pendientes";

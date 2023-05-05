@@ -691,6 +691,14 @@ public class SessionBean implements Serializable {
     }
 
     /**
+     * Método utilizado para obtener las unidades administrativas asociadas al usuario
+     * @return
+     */
+    public List<UnidadAdministrativaDTO> obtenerUnidadesAdministrativasUsuario() {
+        return uaService.getUnidadesAdministrativasByUsuario(obtenerUsuarioAutenticado().getCodigo());
+    }
+
+    /**
      * Método que de manera recursiva devuelve las UAs en modo lista poniendo a la raiz la primera.
      *
      * @param ua

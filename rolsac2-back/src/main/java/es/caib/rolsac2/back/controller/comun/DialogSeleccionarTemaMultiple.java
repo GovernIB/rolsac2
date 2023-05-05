@@ -10,6 +10,7 @@ import es.caib.rolsac2.service.model.TemaGridDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.model.CheckboxTreeNode;
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.primefaces.util.TreeUtils;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,27 +42,43 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
 
     private TemaGridDTO temaPadre;
 
+    private Boolean filtrado = Boolean.FALSE;
+
     public void load() {
         LOG.debug("init");
         this.setearIdioma();
-        temaPadre = (TemaGridDTO) UtilJSF.getValorMochilaByKey("temaPadre");
-        temasRelacionados = (List<TemaGridDTO>) UtilJSF.getValorMochilaByKey("temasRelacionados");
-
-        root = new CheckboxTreeNode(temaPadre, null);
-        root.setSelectable(false);
-        root.setExpanded(true);
-
-        for (TemaGridDTO tema : temasRelacionados) {
-            if (tema.getMathPath() != null && tema.getMathPath().contains(temaPadre.getCodigo().toString())) {
-                root.setExpanded(true);
+        filtrado = UtilJSF.getDialogParam("filtrado") != null ? Boolean.valueOf((String) UtilJSF.getDialogParam("filtrado")) : Boolean.FALSE;
+        if(filtrado) {
+            temasRelacionados = (List<TemaGridDTO>) UtilJSF.getValorMochilaByKey("temas");
+            root = new CheckboxTreeNode(new TemaGridDTO(), null);
+            List<TemaGridDTO> temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+            for(TemaGridDTO tema : temasPadre) {
+                TreeNode nodo = new CheckboxTreeNode(tema, root);
+                nodo.setExpanded(true);
+                if(temasRelacionados != null && temasRelacionados.contains(tema)) {
+                    nodo.setSelected(true);
+                }
+                this.construirArbolFiltro(tema, nodo);
             }
-            if (tema.getCodigo().compareTo(temaPadre.getCodigo()) == 0) {
-                root.setExpanded(true);
-                root.setSelected(true);
+        } else {
+            temaPadre = (TemaGridDTO) UtilJSF.getValorMochilaByKey("temaPadre");
+            temasRelacionados = (List<TemaGridDTO>) UtilJSF.getValorMochilaByKey("temasRelacionados");
+
+            root = new CheckboxTreeNode(temaPadre, null);
+            root.setSelectable(false);
+            root.setExpanded(true);
+
+            for (TemaGridDTO tema : temasRelacionados) {
+                if (tema.getMathPath() != null && tema.getMathPath().contains(temaPadre.getCodigo().toString())) {
+                    root.setExpanded(true);
+                }
+                if (tema.getCodigo().compareTo(temaPadre.getCodigo()) == 0) {
+                    root.setExpanded(true);
+                    root.setSelected(true);
+                }
             }
+            construirArbolDesdeHoja(temaPadre, root);
         }
-        construirArbolDesdeHoja(temaPadre, root);
-
         UtilJSF.vaciarMochila();
     }
 
@@ -82,27 +100,53 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
         }
     }
 
+    private void construirArbolFiltro(TemaGridDTO hoja, TreeNode arbol) {
+        CheckboxTreeNode nodo = null;
+        List<TemaGridDTO> hijos = temaServiceFacade.getGridHijos(hoja.getCodigo(), sessionBean.getLang());
+        for (TemaGridDTO hijo : hijos) {
+            nodo = new CheckboxTreeNode(hijo, arbol);
+            if(temasRelacionados!= null && temasRelacionados.contains(hijo)) {
+                nodo.setSelected(true);
+            }
+            this.construirArbolFiltro(hijo, nodo);
+        }
+    }
+
     public void guardar() {
-        if (temasSeleccionados == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-                    getLiteral("msg.seleccioneElemento"));
-            return;
+        if(filtrado) {
+            if(temasSeleccionados != null) {
+                List<TemaGridDTO> temas = new ArrayList<>();
+                for (TreeNode tree : Arrays.asList(temasSeleccionados)) {
+                    TemaGridDTO tema = (TemaGridDTO) tree.getData();
+                    temas.add(tema);
+                }
+                final DialogResult result = new DialogResult();
+                result.setModoAcceso(TypeModoAcceso.EDICION);
+                result.setResult(temas);
+                UtilJSF.closeDialog(result);
+            }
         } else {
-            temasRelacionados.clear();
-            for (TreeNode tree : Arrays.asList(temasSeleccionados)) {
-                TemaGridDTO tema = (TemaGridDTO) tree.getData();
-                temasRelacionados.add(tema);
+            if (temasSeleccionados == null) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
+                        getLiteral("msg.seleccioneElemento"));
+                return;
+            } else {
+                temasRelacionados.clear();
+                for (TreeNode tree : Arrays.asList(temasSeleccionados)) {
+                    TemaGridDTO tema = (TemaGridDTO) tree.getData();
+                    temasRelacionados.add(tema);
+                }
+
+                // Retornamos resultado
+                //LOG.error("Acceso:" + this.getModoAcceso());
+                UtilJSF.anyadirMochila("temaPadre", temaPadre);
+
+                final DialogResult result = new DialogResult();
+                result.setModoAcceso(TypeModoAcceso.EDICION);
+                result.setResult(temasRelacionados);
+                UtilJSF.closeDialog(result);
             }
         }
-
-        // Retornamos resultado
-        //LOG.error("Acceso:" + this.getModoAcceso());
-        UtilJSF.anyadirMochila("temaPadre", temaPadre);
-
-        final DialogResult result = new DialogResult();
-        result.setModoAcceso(TypeModoAcceso.EDICION);
-        result.setResult(temasRelacionados);
-        UtilJSF.closeDialog(result);
     }
 
     public void cerrar() {
@@ -142,5 +186,13 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
 
     public void setTemaPadre(TemaGridDTO temaPadre) {
         this.temaPadre = temaPadre;
+    }
+
+    public Boolean getFiltrado() {
+        return filtrado;
+    }
+
+    public void setFiltrado(Boolean filtrado) {
+        this.filtrado = filtrado;
     }
 }

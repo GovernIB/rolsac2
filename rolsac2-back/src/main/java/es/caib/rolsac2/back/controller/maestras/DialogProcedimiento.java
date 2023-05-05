@@ -26,10 +26,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -1027,7 +1024,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             final Map<String, String> params = new HashMap<>();
             TemaGridDTO tema = (TemaGridDTO) temasTabla.get(index).getData();
             params.put("ID", tema.getCodigo().toString());
-            UtilJSF.openDialog("dialogTema", TypeModoAcceso.CONSULTA, params, true, 700, 300);
+            UtilJSF.openDialog("/entidades/dialogTema", TypeModoAcceso.CONSULTA, params, true, 700, 300);
         }
     }
 
@@ -1059,7 +1056,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
             List<TemaGridDTO> temasBorrado = new ArrayList<>();
             for (TemaGridDTO tema : data.getTemas()) {
-                if (tema.getMathPath() != null && tema.getMathPath().contains(temaPadre.getCodigo().toString()) && !temasSeleccionados.contains(tema)) {
+                if (tema.getMathPath() != null && Arrays.asList(tema.getMathPath().split(";")).contains(temaPadre.getCodigo().toString()) && !temasSeleccionados.contains(tema)) {
                     temasBorrado.add(tema);
                 }
             }

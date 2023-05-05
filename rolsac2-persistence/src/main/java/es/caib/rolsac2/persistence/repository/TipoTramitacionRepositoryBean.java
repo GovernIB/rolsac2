@@ -1,9 +1,8 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
+import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
 import es.caib.rolsac2.persistence.model.JTipoTramitacion;
-import es.caib.rolsac2.persistence.model.JTipoTramitacion;
-import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
@@ -27,8 +26,7 @@ import java.util.Optional;
 @Stateless
 @Local(TipoTramitacionRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoTramitacion, Long>
-        implements TipoTramitacionRepository {
+public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoTramitacion, Long> implements TipoTramitacionRepository {
 
     @Inject
     private TipoTramitacionConverter converter;
@@ -70,8 +68,7 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
 
     @Override
     public List<TipoTramitacionDTO> findAll() {
-        TypedQuery<JTipoTramitacion> query =
-                entityManager.createQuery("SELECT j FROM JTipoTramitacion j", JTipoTramitacion.class);
+        TypedQuery<JTipoTramitacion> query = entityManager.createQuery("SELECT j FROM JTipoTramitacion j", JTipoTramitacion.class);
         return converter.createTipoTramitacionDTOs(query.getResultList());
     }
 
@@ -81,8 +78,7 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         if (fase != null) {
             sql += " and j.faseProc = :fase ";
         }
-        TypedQuery<JTipoTramitacion> query = entityManager.createQuery(
-                sql, JTipoTramitacion.class);
+        TypedQuery<JTipoTramitacion> query = entityManager.createQuery(sql, JTipoTramitacion.class);
         query.setParameter("idEntidad", idEntidad);
         if (fase != null) {
             query.setParameter("fase", fase);
@@ -106,9 +102,22 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         JTipoTramitacion jTipoTramitacion = entityManager.find(JTipoTramitacion.class, codigo);
         entityManager.flush();
         entityManager.remove(jTipoTramitacion);
+        entityManager.flush();
 
     }
 
+    @Override
+    public void borrarByServicio(Long idServicioWF, Long codigo) {
+
+        JProcedimientoWorkflow jprocWF = entityManager.find(JProcedimientoWorkflow.class, idServicioWF);
+        jprocWF.setTramiteElectronico(null);
+        entityManager.merge(jprocWF);
+        JTipoTramitacion jTipoTramitacion = entityManager.find(JTipoTramitacion.class, codigo);
+        entityManager.flush();
+        entityManager.remove(jTipoTramitacion);
+        entityManager.flush();
+
+    }
 
     private Query getQuery(boolean isTotal, TipoTramitacionFiltro filtro, boolean isRest) {
 
@@ -116,46 +125,39 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JTipoTramitacion j JOIN j.codPlatTramitacion p where 1 = 1 ");
         } else if (isRest) {
-        	sql = new StringBuilder("SELECT j FROM JTipoTramitacion j JOIN j.codPlatTramitacion p LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j FROM JTipoTramitacion j JOIN j.codPlatTramitacion p LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             // sql = new StringBuilder("SELECT j.codigo, j.identificador, j.descripcion FROM JTipoTramitacion j where 1
             // = 1 ");
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.tramitPresencial, j.tramitElectronica, j.urlTramitacion, p.identificador, "
-                            + " j.tramiteId, j.tramiteVersion, j.tramiteParametros FROM JTipoTramitacion j "
-                            + " JOIN j.codPlatTramitacion p where 1 = 1  ");
+            sql = new StringBuilder("SELECT j.codigo, j.tramitPresencial, j.tramitElectronica, j.urlTramitacion, p.identificador, " + " j.tramiteId, j.tramiteVersion, j.tramiteParametros FROM JTipoTramitacion j " + " JOIN j.codPlatTramitacion p where 1 = 1 ");
         }
         // if (filtro.isRellenoIdUA()) {
         // sql.append(" and j.unidadAdministrativa = :ua");
         // }
 
+        if (filtro.isRellenoEntidad()) {
+            sql.append(" and j.entidad.codigo=:idEntidad");
+        }
         if (filtro.isRellenoTexto()) {
             // sql.append(" LEFT JOIN e.descripcion.trads t ");
             sql.append(
                     // " and ( cast(j.id as string) like :filtro OR (t.idioma.identificador = :idioma AND
                     // LOWER(t.literal) LIKE
                     // :filtro) OR LOWER(j.identificador) LIKE :filtro )");
-                    " and ( cast(j.codigo as string) like :filtro OR "
-                            + " cast(j.tramitPresencial as string) like :filtro OR "
-                            + " cast(j.tramitElectronica as string) like :filtro OR "
-                            + " cast(j.urlTramitacion as string) like :filtro OR "
-                            + " cast(p.identificador as string) like :filtro OR "
-                            + " cast(j.tramiteId as string) like :filtro OR "
-                            + " cast(j.tramiteVersion as string) like :filtro OR "
-                            + " cast(j.tramiteParametros as string) like :filtro)");
+                    " and ( cast(j.codigo as string) like :filtro OR " + " cast(j.tramitPresencial as string) like :filtro OR " + " cast(j.tramitElectronica as string) like :filtro OR " + " cast(j.urlTramitacion as string) like :filtro OR " + " cast(p.identificador as string) like :filtro OR " + " cast(j.tramiteId as string) like :filtro OR " + " cast(j.tramiteVersion as string) like :filtro OR " + " cast(j.tramiteParametros as string) like :filtro)");
         }
 
         if (filtro.isRellenoTipoPlantilla()) {
             sql.append(" and j.plantilla = :plantilla ");
         }
         if (filtro.isRellenoCodigo()) {
-        	sql.append(" and j.codigo = :codigo ");
+            sql.append(" and j.codigo = :codigo ");
         }
         if (filtro.isRellenoFaseProc()) {
-        	sql.append(" and j.faseProc = :faseProc ");
+            sql.append(" and j.faseProc = :faseProc ");
         }
         if (filtro.isRellenoCodPlatTramitacion()) {
-        	sql.append(" and p.codigo = :codPlatTramitacion ");
+            sql.append(" and p.codigo = :codPlatTramitacion ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -168,6 +170,9 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         // if (filtro.isRellenoIdUA()) {
         // query.setParameter("ua", filtro.getIdUA());
         // }
+        if (filtro.isRellenoEntidad()) {
+            query.setParameter("idEntidad", filtro.getIdEntidad());
+        }
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto() + "%");
         }
@@ -175,13 +180,13 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
             query.setParameter("plantilla", filtro.getTipoPlantilla());
         }
         if (filtro.isRellenoCodigo()) {
-        	query.setParameter("codigo", filtro.getCodigo());
+            query.setParameter("codigo", filtro.getCodigo());
         }
-        if (filtro.isRellenoIdioma()) {
+        if (filtro.isRellenoIdioma() && isRest) {
             query.setParameter("idioma", filtro.getIdioma());
         }
         if (filtro.isRellenoFaseProc()) {
-        	query.setParameter("faseProc", filtro.getFaseProc());
+            query.setParameter("faseProc", filtro.getFaseProc());
         }
 
         return query;
@@ -194,28 +199,27 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
 
     @Override
     public Optional<JTipoTramitacion> findById(String id) {
-        TypedQuery<JTipoTramitacion> query =
-                entityManager.createNamedQuery(JTipoTramitacion.FIND_BY_ID, JTipoTramitacion.class);
+        TypedQuery<JTipoTramitacion> query = entityManager.createNamedQuery(JTipoTramitacion.FIND_BY_ID, JTipoTramitacion.class);
         query.setParameter("id", id);
         List<JTipoTramitacion> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
 
-	@Override
-	public List<TipoTramitacionDTO> findPagedByFiltroRest(TipoTramitacionFiltro filtro) {
-		Query query = getQuery(false, filtro, true);
-		query.setFirstResult(filtro.getPaginaFirst());
-		query.setMaxResults(filtro.getPaginaTamanyo());
+    @Override
+    public List<TipoTramitacionDTO> findPagedByFiltroRest(TipoTramitacionFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
 
-		List<JTipoTramitacion> jtipoTramitaciones = query.getResultList();
-		List<TipoTramitacionDTO> tipoTramitaciones = new ArrayList<>();
-		if (jtipoTramitaciones != null) {
-			for (JTipoTramitacion jtipoTramitacion : jtipoTramitaciones) {
-				TipoTramitacionDTO tipoTramitacion = converter.createDTO(jtipoTramitacion);
+        List<JTipoTramitacion> jtipoTramitaciones = query.getResultList();
+        List<TipoTramitacionDTO> tipoTramitaciones = new ArrayList<>();
+        if (jtipoTramitaciones != null) {
+            for (JTipoTramitacion jtipoTramitacion : jtipoTramitaciones) {
+                TipoTramitacionDTO tipoTramitacion = converter.createDTO(jtipoTramitacion);
 
-				tipoTramitaciones.add(tipoTramitacion);
-			}
-		}
-		return tipoTramitaciones;
-	}
+                tipoTramitaciones.add(tipoTramitacion);
+            }
+        }
+        return tipoTramitaciones;
+    }
 }

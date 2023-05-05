@@ -13,6 +13,7 @@ import es.caib.rolsac2.ejb.util.JSONUtilException;
 import es.caib.rolsac2.persistence.converter.*;
 import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
+import es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.AuditoriaException;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
@@ -235,7 +236,14 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             jProcWF.setTramitTelefonica(((ServicioDTO) dto).isTramitTelefonica());
             if (((ServicioDTO) dto).getPlantillaSel() != null || ((ServicioDTO) dto).getTipoTramitacion() != null) {
                 JTipoTramitacion jTipoTramitacion = null;
-                if (((ServicioDTO) dto).getTipoTramitacion() != null && ((ServicioDTO) dto).getTipoTramitacion().getTramiteId() != null) {
+                if (((ServicioDTO) dto).getPlantillaSel() != null && ((ServicioDTO) dto).getPlantillaSel().getCodigo() != null) {
+                    jTipoTramitacion = tipoTramitacionRepository.findById(((ServicioDTO) dto).getPlantillaSel().getCodigo());
+                    jProcWF.setTramiteElectronicoPlantilla(jTipoTramitacion);
+                    if (jProcWF.getTramiteElectronico() != null && jProcWF.getTramiteElectronico().getCodigo() != null) {
+                        tipoTramitacionRepository.borrarByServicio(jProcWF.getCodigo(), jProcWF.getTramiteElectronico().getCodigo());
+                    }
+                    jProcWF.setTramiteElectronico(null);
+                } else if (((ServicioDTO) dto).getTipoTramitacion() != null) { // && ((ServicioDTO) dto).getTipoTramitacion().getTramiteId() != null) {
                     if (((ServicioDTO) dto).getTipoTramitacion().getCodigo() == null) {
                         jTipoTramitacion = tipoTramitacionConverter.createEntity(((ServicioDTO) dto).getTipoTramitacion());
                         tipoTramitacionRepository.create(jTipoTramitacion);
@@ -267,15 +275,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                     }
 
 
-                } else if (((ServicioDTO) dto).getPlantillaSel() != null && ((ServicioDTO) dto).getPlantillaSel().getCodigo() != null) {
-                    jTipoTramitacion = tipoTramitacionRepository.findById(((ServicioDTO) dto).getPlantillaSel().getCodigo());
-                    jProcWF.setTramiteElectronicoPlantilla(jTipoTramitacion);
-                    if (jProcWF.getTramiteElectronico() != null && jProcWF.getTramiteElectronico().getCodigo() != null) {
-                        tipoTramitacionRepository.borrar(jProcWF.getTramiteElectronico().getCodigo());
-                    }
-                    jProcWF.setTramiteElectronico(null);
                 }
-
             } else {
                 jProcWF.setTramiteElectronicoPlantilla(null);
                 if (jProcWF.getTramiteElectronico() != null) {
@@ -779,9 +779,17 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                 temaGridDTO.setIdentificador(tema.getIdentificador());
                 temaGridDTO.setEntidad(tema.getEntidad().getCodigo());
                 temaGridDTO.setMathPath(tema.getMathPath());
+
                 if (tema.getTemaPadre() != null) {
                     temaGridDTO.setTemaPadre(tema.getTemaPadre().getIdentificador());
                 }
+                List<Traduccion> traducciones = new ArrayList<>();
+                for(JTemaTraduccion temaTraduccion : tema.getDescripcion()) {
+                    traducciones.add(new Traduccion(temaTraduccion.getIdioma(), temaTraduccion.getDescripcion()));
+                }
+                Literal descripcion = new Literal();
+                descripcion.setTraducciones(traducciones);
+                temaGridDTO.setDescripcion(descripcion);
                 temasDTO.add(temaGridDTO);
             }
             proc.setTemas(temasDTO);

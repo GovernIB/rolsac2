@@ -23,10 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -117,6 +114,7 @@ public class DialogServicio extends AbstractController implements Serializable {
      * Variable booleana para saber si es guardar o flujo
      **/
     boolean esSoloGuardar;
+    private Integer opcionTelematica = null;
 
 
     public void load() {
@@ -154,6 +152,16 @@ public class DialogServicio extends AbstractController implements Serializable {
             dataOriginal = (ServicioDTO) data.clone();
             if (data.getTipoTramitacion() == null) {
                 data.setTipoTramitacion(TipoTramitacionDTO.createInstance(sessionBean.getIdiomasPermitidosList()));
+            }
+
+            if (data.isTramitElectronica()) {
+                if (data.getPlantillaSel() != null && data.getPlantillaSel().getCodigo() != null) {
+                    opcionTelematica = 1;
+                } else if (data.getTipoTramitacion() != null && data.getTipoTramitacion().getTramiteId() != null && !data.getTipoTramitacion().getTramiteId().isEmpty()) {
+                    opcionTelematica = 2;
+                } else if (data.getTipoTramitacion() != null) {// && data.getTipoTramitacion().getUrl() != null && data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList())) {
+                    opcionTelematica = 3;
+                }
             }
             UtilJSF.vaciarMochila();
         }
@@ -197,6 +205,18 @@ public class DialogServicio extends AbstractController implements Serializable {
                 }
             }
         }
+    }
+
+    public boolean isOpcionTelematicaPlantilla() {
+        return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(1) == 0;
+    }
+
+    public boolean isOpcionTelematicaDatos() {
+        return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(2) == 0;
+    }
+
+    public boolean isOpcionTelematicaUrl() {
+        return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(3) == 0;
     }
 
     public void traducir() {
@@ -280,7 +300,8 @@ public class DialogServicio extends AbstractController implements Serializable {
                 return;
             }
         }*/
-        if (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty()) {
+
+        if (data.isActivoLOPD() && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
             return;
         }
@@ -345,6 +366,23 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.data.setTramitElectronica(canalesSeleccionados.contains("TEL"));
         this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
 
+        if (data.isTramitElectronica()) {
+            if (opcionTelematica == 1) {
+                //Seleccionamos plantilla
+                data.setTipoTramitacion(null);
+            } else if (opcionTelematica == 2 && data.getTipoTramitacion() != null) {
+                //Introducimos datos
+                data.setPlantillaSel(null);
+                data.getTipoTramitacion().setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            } else if (opcionTelematica == 3 && data.getTipoTramitacion() != null) {
+                //Introducimos url
+                data.setPlantillaSel(null);
+                data.getTipoTramitacion().setTramiteId(null);
+                data.getTipoTramitacion().setTramiteVersion(null);
+                data.getTipoTramitacion().setTramiteParametros(null);
+                data.getTipoTramitacion().setCodPlatTramitacion(null);
+            }
+        }
 
         if (this.data.getTipoTramitacion() != null) {
             this.data.getTipoTramitacion().setEntidad(sessionBean.getEntidad());
@@ -857,7 +895,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             final Map<String, String> params = new HashMap<>();
             TemaGridDTO tema = (TemaGridDTO) temasTabla.get(index).getData();
             params.put("ID", tema.getCodigo().toString());
-            UtilJSF.openDialog("dialogTema", TypeModoAcceso.CONSULTA, params, true, 700, 300);
+            UtilJSF.openDialog("/entidades/dialogTema", TypeModoAcceso.CONSULTA, params, true, 700, 300);
         }
     }
 
@@ -889,7 +927,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
             List<TemaGridDTO> temasBorrado = new ArrayList<>();
             for (TemaGridDTO tema : data.getTemas()) {
-                if (tema.getMathPath().contains(temaPadre.getCodigo().toString()) && !temasSeleccionados.contains(tema)) {
+                if (Arrays.asList(tema.getMathPath().split(";")).contains(temaPadre.getCodigo().toString()) && !temasSeleccionados.contains(tema)) {
                     temasBorrado.add(tema);
                 }
             }
@@ -1202,6 +1240,14 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void setLopdFinalidad(Literal lopdFinalidad) {
         this.lopdFinalidad = lopdFinalidad;
+    }
+
+    public Integer getOpcionTelematica() {
+        return opcionTelematica;
+    }
+
+    public void setOpcionTelematica(Integer opcionTelematica) {
+        this.opcionTelematica = opcionTelematica;
     }
 }
 

@@ -9,24 +9,24 @@ import java.util.Objects;
 public class JProcedimientoTemaPK implements Serializable {
     private static final long serialVersionUID = 2711148029669764426L;
     @Column(name = "PRTM_CODTEMA", nullable = false)
-    private Integer tema;
+    private Long tema;
 
     @Column(name = "PRTM_CODPRWF", nullable = false)
-    private Integer procedimiento;
+    private Long procedimiento;
 
-    public Integer getTema() {
+    public Long getTema() {
         return tema;
     }
 
-    public void setTema(Integer prtmCodtema) {
+    public void setTema(Long prtmCodtema) {
         this.tema = prtmCodtema;
     }
 
-    public Integer getProcedimiento() {
+    public Long getProcedimiento() {
         return procedimiento;
     }
 
-    public void setProcedimiento(Integer prtmCodprwf) {
+    public void setProcedimiento(Long prtmCodprwf) {
         this.procedimiento = prtmCodprwf;
     }
 

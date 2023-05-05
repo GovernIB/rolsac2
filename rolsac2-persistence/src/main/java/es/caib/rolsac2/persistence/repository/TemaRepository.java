@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTema;
+import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.TemaGridDTO;
 import es.caib.rolsac2.service.model.filtro.TemaFiltro;
 
@@ -23,4 +24,6 @@ public interface TemaRepository extends CrudRepository<JTema, Long>{
     Boolean checkIdentificador(String identificador);
 
     List<JTema> getHijosTodosNiveles(String mathPath, String idioma);
+
+	List<TemaDTO> findPagedByFiltroRest(TemaFiltro filtro);
 }

@@ -37,7 +37,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
             <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}"
                         update="migaPan"
-                        oncomplete="$('#form\\:btnBuscar').click();"
+                        oncomplete="$('#form\\:btnBuscarEvt').click();"
                         disabled="#{sessionBean.getPerfil() == TypePerfiles.GESTOR and sessionBean.checkUaGestor(ua)}"
             />
         </c:forEach>
@@ -51,8 +51,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <p:commandButton styleClass="btn btn-danger btn-molla" process="@this @form"
                                          actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
                                          value="#{sessionBean.unidadActivaAux.nombre.getTraduccion(sessionBean.lang)}"
-                                         update="panelMolla form">
-                            <f:actionListener binding="#{viewServicios.buscar()}"></f:actionListener>
+                                         update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
                         </p:commandButton>
                         <button type="button"
                                 class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
@@ -78,8 +77,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <div class="btn-group">
                                 <p:commandButton styleClass="btn btn-danger btn-molla" process="@this"
                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                 value="#{ua.nombre.getTraduccion(sessionBean.lang)}" update="panelMolla form">
-                                    <f:actionListener binding="#{viewServicios.buscar()}"></f:actionListener>
+                                                 value="#{ua.nombre.getTraduccion(sessionBean.lang)}" update="panelMolla"
+                                                 oncomplete="$('#form\\:btnBuscarEvt').click();">
                                 </p:commandButton>
                                 <button type="button"
                                         class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
@@ -92,8 +91,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                             var="ua">
                                         <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                          actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}" update="panelMolla form">
-                                            <f:actionListener binding="#{viewServicios.buscar()}"></f:actionListener>
+                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}" update="panelMolla"
+                                                         oncomplete="$('#form\\:btnBuscarEvt').click();">
                                         </p:commandButton>
                                     </c:forEach>
                                 </div>
@@ -133,9 +132,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                 <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                                  value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
-                                                                 update="panelMolla form">
-                                                    <f:actionListener
-                                                            binding="#{viewServicios.buscar()}"></f:actionListener>
+                                                                 update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
                                                 </p:commandButton>
                                             </c:forEach>
                                         </c:when>
@@ -200,6 +197,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2"/>
                             <p:inputText id="filtro" value="#{viewServicios.filtro.texto}"
                                          styleClass="mr-2"></p:inputText>
+                            <p:commandButton id="btnBuscarEvt" value="#{labels['dict.busqueda']}"
+                                             styleClass="mr-2" icon="pi pi-search"
+                                             actionListener="#{viewServicios.buscarEvt()}"
+                                             update="messages dataTable"
+                                             process="@form" style="display: none"/>
                             <p:commandButton id="btnBuscar" value="#{labels['dict.busqueda']}"
                                              styleClass="mr-2" icon="pi pi-search"
                                              actionListener="#{viewServicios.buscar()}"
@@ -244,7 +246,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <p class="p-m-0">
                     <div class="row">
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.codigoProc']}:" for="txtCodigoProc" />
+                            <h:outputText value="#{labels['viewServicios.codigoServ']}:" for="txtCodigoProc" />
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:inputText id="txtCodigoProc" value="#{viewServicios.filtro.codigoProc}" styleClass="w95" onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"  />
@@ -268,31 +270,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:selectOneMenu>
                         </div>
 
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewServicios.formaInicio']}:" for="txtFormaInicio"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:selectOneMenu id="txtFormaInicio" value="#{viewServicios.filtro.formaInicio}"
-                                             styleClass="w95" converter="#{tipoFormaInicioConverter}">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{viewServicios.listTipoFormaInicio}" var="tipoFormaInicio"
-                                               itemLabel="#{tipoFormaInicio.identificador}"
-                                               itemValue="#{tipoFormaInicio}"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewServicios.silencioAdministrativo']}:"
-                                          for="txtSilencioAdministrativo"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:selectOneMenu id="txtSilencioAdministrativo"
-                                             value="#{viewServicios.filtro.silencioAdministrativo}"
-                                             styleClass="w95" converter="#{tipoSilencioAdministrativoConverter}">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{viewServicios.listTipoSilencio}" var="tipoSilencio"
-                                               itemLabel="#{tipoSilencio.identificador}" itemValue="#{tipoSilencio}"/>
-                            </p:selectOneMenu>
-                        </div>
                         <!--
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
                             <h:outputText value="#{labels['viewServicios.tipoProcedimiento']}:"
@@ -364,6 +341,21 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         process="@this" update="txtNormativa"/>
                             </p:commandButton>
                         </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.temas']}:" for="txtTemas"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:inputText id="txtTemas"
+                                         value="#{viewServicios.filtro.getTemas(sessionBean.lang)}"
+                                         styleClass="w70" disabled="true"/>
+                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
+                                             styleClass="text-success"
+                                             process="@this"
+                                             actionListener="#{viewServicios.seleccionarTemas()}">
+                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogTema}"
+                                        process="@this" update="txtTemas"/>
+                            </p:commandButton>
+                        </div>
                         <div class="ui-g-12 ui-md-3 ui-lg-2">
                             <h:outputText value="#{labels['viewServicios.uaHijas']}:" for="txtUAHijas"/>
                         </div>
@@ -384,10 +376,24 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         listener="#{viewServicios.filtroUnidadOrganicasChange}"/>
                             </p:selectBooleanCheckbox>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-3 ui-lg-1">
+                            <h:outputText value="#{labels['viewProcedimientos.esComun']}:" for="txtEsComun" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-3 ui-lg-3">
+                            <p:selectOneMenu id="txtEsComun" value="#{viewServicios.filtro.comun}"
+                                             styleClass="w95" autoWidth="false" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="#{labels['viewProcedimientos.comun']}" itemValue="S"/>
+                                <f:selectItem itemLabel="#{labels['viewProcedimientos.especifico']}" itemValue="N"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-g-12 text-center">
                             <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="mr-2"
                                              icon="pi pi-trash" iconPos="top" action="#{viewServicios.limpiarFiltro()}"
                                              process="@form" update="panel"/>
+                            <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
+                                             actionListener="#{viewServicios.buscar()}" update="messages dataTable"
+                                             process="@form" oncomplete="PF('panel').toggle()"/>
                         </div>
                     </div>
                 </p>

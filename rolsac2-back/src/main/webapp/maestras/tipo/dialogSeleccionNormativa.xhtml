@@ -68,7 +68,7 @@
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.codigo}"/>
                 </p:column>-->
-                <p:column sortBy="#{normativa.titulo}" headerText="#{labels['dict.titulo']}">
+                <p:column sortBy="#{normativa.titulo}" headerText="#{labels['dict.titulo']}" styleClass="w50">
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.titulo.getTraduccion(sessionBean.lang)}"/>
                 </p:column>

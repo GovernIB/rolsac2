@@ -87,7 +87,6 @@
                         </p>
                     </div>
                     <div class="form-group col-md-4">
-
                         <p:outputLabel value="#{labels['viewTipoTramitacion.fasePro.titulo']}:" for="faseProc"
                                        styleClass="mb-1 pt-0"/>
                         <p:selectOneMenu id="faseProc"
@@ -253,27 +252,48 @@
             </p:panel>
             <p:panel id="panelCanales"  header="#{labels['dialogProcedimientoTramite.canales']}">
                 <div class="form-row align-items-center">
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <!--Aquí es mapear luego con los bools que tiene TipoTramitacionDTO para ello-->
                         <p:selectManyCheckbox id="canalesTramitacion"
                                               value="#{dialogProcedimientoTramite.canalesSeleccionados}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.canalPresencial']}" itemValue="PRE" />
-                            <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.canalTelematico']}" itemValue="TEL" />
+                            <f:selectItem id="canalesTramitacionTel" itemLabel="#{labels['dialogProcedimientoTramite.canalTelematico']}" itemValue="TEL" />
                             <!--<f:selectItem itemLabel="Telefónico" itemValue="TFN"  />-->
-                            <p:ajax update="txtTraPlantilla txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto"
+                            <p:ajax update="txtTraPlantilla txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto txtOpcionTelematica"
                                     event="change" listener="#{dialogProcedimientoTramite.cambiaTipo}"/>
                         </p:selectManyCheckbox>
+                        <p:selectOneMenu id="txtOpcionTelematica"  onchange="refrescarValorInterfaz(this.value)"
+                                         value="#{dialogProcedimientoTramite.opcionTelematica}"
+                                         style="display:relativa;left:200px;top:-20px;width:200px !important;"
+                                         requiredMessage="#{labels['dict.obligatorio.opcionTelematica']}"
+                                         required="#{empty param['formDialog:closeButton'] and dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                         disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                                        !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}" autoWidth="false"
+                        >
+                            <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccione']}" itemValue="#{null}" />
+                            <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccionePlantilla']}" itemValue="1"  />
+                            <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccionePlataforma']}" itemValue="2" />
+                            <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccioneUrl']}" itemValue="3" />
+                            <p:ajax update="txtOpcion txtTraPlantilla" event="change"  />
+
+                        </p:selectOneMenu>
+                        <p:inputText id="txtOpcion" style="display:none"  value="#{dialogProcedimientoTramite.opcionTelematica}" />
                     </div>
                 </div>
 
-                <div class="form-row">
+                <div id="divVacio" class="form-row" style="height:100px !important;">
+
+                </div>
+                <div id="divPlantilla" class="form-row" style="height:100px !important;">
                     <div class="form-group col-md-5">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.seleccionPlantilla']}:"
+                        <p:outputLabel id="lbltxtTraPlantilla" styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.seleccionPlantilla']}:"
                                        for="txtTraPlantilla"/>
 
                     <p:selectOneMenu id="txtTraPlantilla"
                                      value="#{dialogProcedimientoTramite.data.plantillaSel}"
                                      styleClass="w95"
+                                     requiredMessage="La plantilla es obligatoria"
+                                     required="#{dialogProcedimientoTramite.isOpcionTelematicaPlantilla()}"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
                                                         !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                      converter="#{tipoTramitacionConverter}"
@@ -287,18 +307,17 @@
                     </p:selectOneMenu>
                 </div>
             </div>
-            <div class="form-row">
+            <div id="divDatosTelematico1" class="form-row">
                 <div class="form-grup col-md-4">
-                    <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.identificador']}:"
+                    <p:outputLabel id="lbltxtTraId" styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.identificador']}:"
                                    for="txtTraId"/>
                     <p:inputText id="txtTraId"
                                  disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
-                                                    dialogProcedimientoTramite.data.plantillaSel != null ||
                                                     !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                  value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteId}" styleClass="w95"
                                  onblur="this.value = this.value.toUpperCase();"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 required="#{empty param['formDialog:closeButton']}" maxlength="50">
+                                 required="#{empty param['formDialog:closeButton'] and dialogProcedimientoTramite.isOpcionTelematicaDatos()}" maxlength="50">
                         <p:keyFilter regEx="/[0-9_-a-zA-Z\.]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[0-9_-a-zA-Z\.]{1,50}$" />
                     </p:inputText>
@@ -306,14 +325,13 @@
 
                     </div>
                     <div class="form-grup col-md-2">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.version']}:"
+                        <p:outputLabel id="lbltxtTraVer"  styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.version']}:"
                                        for="txtTraVer"/>
                         <p:inputText id="txtTraVer" decimalPlaces="0"
                                        disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
-                                                    dialogProcedimientoTramite.data.plantillaSel != null ||
                                                     !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                        value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteVersion}"
-                                       required="#{empty param['formDialog:closeButton']}"
+                                       required="#{empty param['formDialog:closeButton'] and dialogProcedimientoTramite.isOpcionTelematicaDatos()}"
                                        requiredMessage="#{labels['dict.obligatorio.version']}"
                                        onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"
                                        width="100px"
@@ -321,17 +339,16 @@
                                        style="width: 100px !important;" />
                     </div>
                     <div class="form-group col-md-6">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.plataforma']}:*"
+                        <p:outputLabel id="lbltxtTraPlat" styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.plataforma']}:"
                                        for="txtTraPlat"/>
                         <p:selectOneMenu id="txtTraPlat"
                                          value="#{dialogProcedimientoTramite.data.tipoTramitacion.codPlatTramitacion}"
                                          styleClass="w95"
                                          autoWidth="false"
-                                         required="#{empty param['formDialog:closeButton'] and (dialogProcedimientoTramite.data.tipoTramitacion.url == null or !dialogProcedimientoTramite.data.tipoTramitacion.url.estaCompleto(sessionBean.getIdiomasObligatoriosList()))}"
+                                         required="#{empty param['formDialog:closeButton'] and dialogProcedimientoTramite.isOpcionTelematicaDatos()}"
                                          requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
                                          disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
-                                                            dialogProcedimientoTramite.data.plantillaSel != null ||
-                                                        !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                                     !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                          converter="#{platTramitElectronicaConverter}">
                             <f:selectItem itemLabel="#{labels['dialogUnidadAdministrativa.selecciona.tipo']}"
                                           itemValue="#{null}"/>
@@ -339,41 +356,37 @@
                                            itemLabel="#{plataforma.descripcion.getTraduccion(sessionBean.lang)}" itemValue="#{plataforma}"/>
                         </p:selectOneMenu>
                     </div>
-                </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.url']}:"
-                                   for="txtTraUrl"/>
-                    <my:literalComponent id="txtTraUrl" styleClass="w95"
-                                         value="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
-                                         soloLecture="#{dialogProcedimientoTramite.isModoConsulta() ||
-                                                            dialogProcedimientoTramite.data.plantillaSel != null ||
-                                                        !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
-                                         disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
-                                                            dialogProcedimientoTramite.data.plantillaSel != null ||
-                                                        !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
-                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         idioma="#{dialogProcedimientoTramite.idioma}"
-                                         literal="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
-                                         nombreLiteral="#{labels['dialogProcedimientoTramite.url']}">
-                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
-                                                            dialogProcedimientoTramite.data.plantillaSel != null ||
-                                                        !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}" />
-                    </my:literalComponent>
-
-                </div>
+            </div>
+            <div id="divDatosTelematico2" class="form-row" >
                 <div class="form-grup col-md-6">
-                    <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.parametros']}:"
+                    <p:outputLabel id="lbltxtTraParam" styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.parametros']}:"
                                    for="txtTraParam"/>
                     <p:inputText id="txtTraParam"
                                  disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
-                                                    dialogProcedimientoTramite.data.plantillaSel != null ||
-                                                    !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                             !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                  value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteParametros}"
                                  styleClass="w95"/>
                 </div>
             </div>
+             <div id="divUrlTelematico" class="form-row" style="height:100px !important;">
+                    <div class="form-group col-md-6">
+                        <p:outputLabel id="lbltxtTraUrl" styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimientoTramite.url']}:"
+                                       for="txtTraUrl"/>
+                        <my:literalComponent id="txtTraUrl" styleClass="w95"
+                                             value="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
+                                             soloLecture="#{dialogProcedimientoTramite.isModoConsulta() || !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                             disabled="#{dialogProcedimientoTramite.isModoConsulta() || !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             idioma="#{dialogProcedimientoTramite.idioma}"
+                                             literal="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
+                                             nombreLiteral="#{labels['dialogProcedimientoTramite.url']}">
+                            <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" disabled="#{dialogProcedimientoTramite.isModoConsulta() or
+                                                             !dialogProcedimientoTramite.isOpcionTelematicaUrl()}" />
+                        </my:literalComponent>
+
+                    </div>
+                </div>
         </p:panel>
     </div>
         <div class="ui-g-12 ui-md-3 pr-1 ">
@@ -466,12 +479,50 @@
         </div>
 
             <h:outputScript>
-                function rcEditarPropiedad() {
-                    document.getElementById("dialogPlugin:btnEditarPropiedad").click();
+                /** Funcion que almacena el valor almacenado. **/
+                function refrescarValorInterfaz(valor) {
+                    valorActual = valor;
+                    refrescarInterfaz(valor);
                 }
 
-                function rcBorrarPropiedad() {
-                    document.getElementById("dialogPlugin:btnEliminarPropiedad").click();
+                /** Refresca la interfaz **/
+                function refrescarInterfaz(valor) {
+                        var visibilidad0 = "none";
+                        var visibilidad1 = "none";
+                        var visibilidad2 = "none";
+                        var visibilidad3 = "none";
+                        if (valor == 1) {
+                            visibilidad1 = "";
+                        } else  if (valor == 2) {
+                            visibilidad2 = "";
+                        } else  if (valor == 3) {
+                            visibilidad3 = "";
+                        } else { visibilidad0 = ""; }
+
+
+                    document.getElementById("divVacio").style.display = visibilidad0;
+                    document.getElementById("divPlantilla").style.display = visibilidad1;
+                    document.getElementById("divDatosTelematico1").style.display = visibilidad2;
+                    document.getElementById("divDatosTelematico2").style.display = visibilidad2;
+                    document.getElementById("divUrlTelematico").style.display = visibilidad3;
+
+                   /* alert('sale.v0' + visibilidad0 + ' v1' + visibilidad1 + ' v2' + visibilidad2 + ' v3' + visibilidad3);*/
+
+                }
+
+                /** Cuando está preparado el documento, llama al evento **/
+                $( document ).ready(function() {
+                    refrescarInterfaz(document.getElementById("formDialog:txtOpcion").value);
+                });
+
+                var valorActual;
+
+                /** Al guardar, con un delay, llama a arefrescar **/
+                function refrescarInterfazGuardar() {
+                    if (valorActual == undefined) {
+                        valorActual = document.getElementById("formDialog:txtOpcion").value;
+                    }
+                    refrescarInterfaz(valorActual);
                 }
             </h:outputScript>
         </ui:define>
@@ -482,8 +533,9 @@
                              value="#{labels['dict.ayuda']}"
                              process="@this"/>
             <p:commandButton action="#{dialogProcedimientoTramite.guardar}"
-                             value="#{labels['dict.aceptar']}" update="messagesDialog panelDatos panelCanales"
+                             value="#{labels['dict.aceptar']}" update="messagesDialog panelDatos panelCanales "
                              rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
+                             oncomplete="setTimeout(refrescarInterfazGuardar, 500);"
                              process="@all"/>
             <p:commandButton action="#{dialogProcedimientoTramite.cerrar}"
                              value="#{labels['dict.cerrar']}" update="messagesDialog"

@@ -6,6 +6,7 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UtilsArbolTemas {
@@ -50,7 +51,7 @@ public class UtilsArbolTemas {
                             construirArbolDesdeHoja(tema, nodo, temasPadreAnyadidos, temasRelacionados, temaServiceFacade);
                         }
 
-                    } else if (tema.getMathPath().contains(hoja.getCodigo().toString())) {
+                    } else if (Arrays.asList(tema.getMathPath().split(";")).contains(hoja.getCodigo().toString())) {
                         String[] niveles = tema.getMathPath().split(";");
                         String idPadre = niveles[1];
                         TemaGridDTO temaPadre = temaServiceFacade.findGridById(Long.valueOf(idPadre));
@@ -69,7 +70,7 @@ public class UtilsArbolTemas {
             for (TemaGridDTO tema : temasRelacionados) {
                 Integer nivelHijo = tema.getMathPath().split(";").length;
 
-                if (tema.getMathPath().contains(hoja.getCodigo().toString()) && nivelHijo == nivel) {
+                if (Arrays.asList(tema.getMathPath().split(";")).contains(hoja.getCodigo().toString()) && nivelHijo == nivel) {
                     if (temasPadreAnyadidos.isEmpty()) {
                         nodo = new DefaultTreeNode(tema, arbol);
                         arbol.setExpanded(true);
@@ -79,7 +80,7 @@ public class UtilsArbolTemas {
                         arbol.setExpanded(true);
                         construirArbolDesdeHoja(tema, nodo, temasPadreAnyadidos, temasRelacionados, temaServiceFacade);
                     }
-                } else if (tema.getMathPath().contains(hoja.getCodigo().toString())) {
+                } else if (Arrays.asList(tema.getMathPath().split(";")).contains(hoja.getCodigo().toString())) {
                     String[] niveles = tema.getMathPath().split(";");
                     String idPadre = niveles[nivel];
                     TemaGridDTO temaPadre = temaServiceFacade.findGridById(Long.valueOf(idPadre));

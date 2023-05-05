@@ -36,5 +36,7 @@ public interface TemaServiceFacade {
 
     Boolean checkIdentificador(String identificador);
 
+	Pagina<TemaDTO> findByFiltroRest(TemaFiltro filtro);
+
 
 }

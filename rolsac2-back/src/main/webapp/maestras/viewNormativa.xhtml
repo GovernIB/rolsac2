@@ -143,6 +143,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                              actionListener="#{viewNormativa.limpiarFiltro()}" iconPos="top"
                                              icon="pi pi-trash" update="messages dataTable filtroAvanzado"
                                              process="@form"/>
+                            <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
+                                             actionListener="#{viewNormativa.buscar()}" update="messages dataTable"
+                                             process="@form"/>
                         </div>
                     </div>
                 </h:panelGroup>
