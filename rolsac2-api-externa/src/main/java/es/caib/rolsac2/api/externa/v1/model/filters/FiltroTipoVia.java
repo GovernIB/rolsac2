@@ -54,7 +54,7 @@ public class FiltroTipoVia extends EntidadJson<FiltroTipoVia> {
 	public TipoViaFiltro toTipoViaFiltro() {
 		TipoViaFiltro resultado = new TipoViaFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

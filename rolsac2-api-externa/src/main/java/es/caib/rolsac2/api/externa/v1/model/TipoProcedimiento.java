@@ -63,9 +63,9 @@ public class TipoProcedimiento extends EntidadBase<TipoProcedimientoDTO> {
 	public TipoProcedimiento(TipoProcedimientoDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
 		super(nodo, urlBase, idioma, hateoasEnabled);
 
-		if (nodo != null) {
-			entidad = nodo.getEntidad() == null ? null : nodo.getEntidad().getCodigo();
-		}
+//		if (nodo != null) {
+//			entidad = nodo.getEntidad() == null ? null : nodo.getEntidad().getCodigo();
+//		}
 
 //		date = new Date();
 	}

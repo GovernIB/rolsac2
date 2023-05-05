@@ -62,7 +62,7 @@ public class FiltroTipoMediaEdificio extends EntidadJson<FiltroTipoMediaEdificio
 	public TipoMediaEdificioFiltro toTipoMediaEdificioFiltro() {
 		TipoMediaEdificioFiltro resultado = new TipoMediaEdificioFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

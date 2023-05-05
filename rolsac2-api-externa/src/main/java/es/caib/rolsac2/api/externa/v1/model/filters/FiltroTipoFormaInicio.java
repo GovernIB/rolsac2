@@ -79,7 +79,7 @@ public class FiltroTipoFormaInicio extends EntidadJson<FiltroTipoFormaInicio> {
 	public TipoFormaInicioFiltro toTipoFormaInicioFiltro() {
 		TipoFormaInicioFiltro resultado = new TipoFormaInicioFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

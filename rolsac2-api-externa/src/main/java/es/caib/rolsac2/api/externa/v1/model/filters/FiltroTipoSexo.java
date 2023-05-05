@@ -54,7 +54,7 @@ public class FiltroTipoSexo extends EntidadJson<FiltroTipoSexo> {
 	public TipoSexoFiltro toTipoSexoFiltro() {
 		TipoSexoFiltro resultado = new TipoSexoFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

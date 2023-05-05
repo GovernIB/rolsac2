@@ -54,7 +54,7 @@ public class FiltroTipoNormativa extends EntidadJson<FiltroTipoNormativa> {
 	public TipoNormativaFiltro toTipoNormativaFiltro() {
 		TipoNormativaFiltro resultado = new TipoNormativaFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

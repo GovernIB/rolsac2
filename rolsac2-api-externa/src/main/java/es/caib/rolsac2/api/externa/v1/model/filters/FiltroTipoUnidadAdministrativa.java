@@ -62,7 +62,7 @@ public class FiltroTipoUnidadAdministrativa extends EntidadJson<FiltroTipoUnidad
 	public TipoUnidadAdministrativaFiltro toTipoUnidadAdministrativaFiltro() {
 		TipoUnidadAdministrativaFiltro resultado = new TipoUnidadAdministrativaFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

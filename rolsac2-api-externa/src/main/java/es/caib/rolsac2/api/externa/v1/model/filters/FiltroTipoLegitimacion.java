@@ -79,7 +79,7 @@ public class FiltroTipoLegitimacion extends EntidadJson<FiltroTipoLegitimacion> 
 	public TipoLegitimacionFiltro toTipoLegitimacionFiltro() {
 		TipoLegitimacionFiltro resultado = new TipoLegitimacionFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

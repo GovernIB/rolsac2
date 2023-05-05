@@ -162,7 +162,7 @@
                         <configuration>
                             <application>es.caib.rolsac2.api.externa.JAXRSConfiguration</application>
                             <endpointClasses>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.PersonalResource</endpointClass>
+<!--                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.PersonalResource</endpointClass> -->
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoBoletinResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.UAResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.NormativaResource</endpointClass>
@@ -186,6 +186,7 @@
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.EntidadesResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.PlatTramitElectronicaResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.FicheroResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TemaResource</endpointClass>
                             </endpointClasses>
                             <output>${project.build.directory}/openapi/openapi.json</output>
                             <info>

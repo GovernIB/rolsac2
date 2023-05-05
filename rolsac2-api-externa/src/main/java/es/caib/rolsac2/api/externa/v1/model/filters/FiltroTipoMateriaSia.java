@@ -79,7 +79,7 @@ public class FiltroTipoMateriaSia extends EntidadJson<FiltroTipoMateriaSia> {
 	public TipoMateriaSIAFiltro toTipoMateriaSIAFiltro() {
 		TipoMateriaSIAFiltro resultado = new TipoMateriaSIAFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

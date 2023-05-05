@@ -73,6 +73,9 @@ public class Constantes {
 	public static final String ENTIDAD_ENTIDADES = "entidades";
 	public static final String URL_ENTIDADES = ENTIDAD_ENTIDADES + "/{0}";
 
+	public static final String ENTIDAD_TEMAS = "temas";
+	public static final String URL_TEMAS = ENTIDAD_TEMAS + "/{0}";
+
 	public static final String ENTIDAD_CATALOGO_DOCUMENTOS = "catalogo_documentos";
 	public static final String URL_CATALOGO_DOCUMENTOS = ENTIDAD_CATALOGO_DOCUMENTOS + "/{0}";
 

@@ -62,13 +62,9 @@ public class FiltroTipoPublicoObjetivo extends EntidadJson<FiltroTipoPublicoObje
 	public TipoPublicoObjetivoFiltro toTipoPublicoObjetivoFiltro() {
 		TipoPublicoObjetivoFiltro resultado = new TipoPublicoObjetivoFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
-
-//		if (this.idEntidad != null) {
-//			resultado.setIdEntidad(idEntidad);
-//		}
 
 		return resultado;
 

@@ -54,7 +54,7 @@ public class FiltroTipoSilencioAdministrativo extends EntidadJson<FiltroTipoSile
 	public TipoSilencioAdministrativoFiltro toTipoSilencioAdministrativoFiltro() {
 		TipoSilencioAdministrativoFiltro resultado = new TipoSilencioAdministrativoFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

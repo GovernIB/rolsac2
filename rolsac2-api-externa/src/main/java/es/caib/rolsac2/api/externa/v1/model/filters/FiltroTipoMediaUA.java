@@ -62,7 +62,7 @@ public class FiltroTipoMediaUA extends EntidadJson<FiltroTipoMediaUA> {
 	public TipoMediaUAFiltro toTipoMediaUAFiltro() {
 		TipoMediaUAFiltro resultado = new TipoMediaUAFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

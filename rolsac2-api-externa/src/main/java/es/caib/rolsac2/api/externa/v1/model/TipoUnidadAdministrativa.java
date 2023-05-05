@@ -74,9 +74,9 @@ public class TipoUnidadAdministrativa extends EntidadBase<TipoUnidadAdministrati
 			boolean hateoasEnabled) {
 		super(nodo, urlBase, idioma, hateoasEnabled);
 
-		if(nodo != null) {
-			entidad = nodo.getEntidad() == null ? null : nodo.getEntidad().getCodigo();
-		}
+//		if(nodo != null) {
+//			entidad = nodo.getEntidad() == null ? null : nodo.getEntidad().getCodigo();
+//		}
 
 	}
 

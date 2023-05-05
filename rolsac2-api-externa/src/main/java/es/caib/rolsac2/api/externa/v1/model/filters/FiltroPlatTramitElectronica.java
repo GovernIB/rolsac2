@@ -62,7 +62,7 @@ public class FiltroPlatTramitElectronica extends EntidadJson<FiltroPlatTramitEle
 		public PlatTramitElectronicaFiltro toPlatTramitElectronicaFiltro() {
 			PlatTramitElectronicaFiltro resultado = new PlatTramitElectronicaFiltro();
 
-			if (this.texto != null) {
+			if (this.texto != null && !this.texto.isEmpty()) {
 				resultado.setTexto(texto);
 			}
 

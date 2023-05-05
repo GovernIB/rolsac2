@@ -49,9 +49,9 @@ public class TipoMediaUA extends EntidadBase<TipoMediaUA> {
 	public TipoMediaUA(TipoMediaUADTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
 		super(nodo, urlBase, idioma, hateoasEnabled);
 
-		if(nodo != null) {
-			entidad = nodo.getEntidad() == null ? null : nodo.getEntidad().getCodigo();
-		}
+//		if(nodo != null) {
+//			entidad = nodo.getEntidad() == null ? null : nodo.getEntidad().getCodigo();
+//		}
 	}
 
 	public TipoMediaUA() {

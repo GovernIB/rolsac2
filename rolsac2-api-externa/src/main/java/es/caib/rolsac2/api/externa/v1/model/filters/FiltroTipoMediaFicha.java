@@ -54,7 +54,7 @@ public class FiltroTipoMediaFicha extends EntidadJson<FiltroTipoMediaFicha> {
 	public TipoMediaFichaFiltro toTipoMediaFichaFiltro() {
 		TipoMediaFichaFiltro resultado = new TipoMediaFichaFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 

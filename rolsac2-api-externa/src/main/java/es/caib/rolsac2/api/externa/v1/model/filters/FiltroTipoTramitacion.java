@@ -72,7 +72,7 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
 		public TipoTramitacionFiltro toTipoTramitacionFiltro() {
 			TipoTramitacionFiltro resultado = new TipoTramitacionFiltro();
 
-			if (this.texto != null) {
+			if (this.texto != null && !this.texto.isEmpty()) {
 				resultado.setTexto(texto);
 			}
 

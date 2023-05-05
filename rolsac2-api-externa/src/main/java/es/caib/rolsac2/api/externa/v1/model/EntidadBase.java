@@ -33,6 +33,8 @@ import es.caib.rolsac2.api.externa.v1.utils.Utiles;
 @Schema(name = "EntidadBase", description = "Entidad Base")
 public abstract class EntidadBase<V> extends EntidadJson<V> {
 
+	@Schema(hidden = true)
+	@JsonIgnore
 	protected List<String> SETTERS_INVALIDS = new ArrayList<String>() {
 		private static final long serialVersionUID = 1L;
 

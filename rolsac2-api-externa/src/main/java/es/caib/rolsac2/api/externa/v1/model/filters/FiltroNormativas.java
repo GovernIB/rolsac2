@@ -117,7 +117,7 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 	public NormativaFiltro toNormativaFiltro() {
 		NormativaFiltro resultado = new NormativaFiltro();
 
-		if (this.texto != null) {
+		if (this.texto != null && !this.texto.isEmpty()) {
 			resultado.setTexto(texto);
 		}
 
