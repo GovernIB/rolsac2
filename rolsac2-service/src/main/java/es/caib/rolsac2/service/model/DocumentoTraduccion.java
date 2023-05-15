@@ -40,6 +40,11 @@ public class DocumentoTraduccion extends ModelApi implements Cloneable {
     private FicheroDTO ficheroDTO;
 
     /**
+     * Codigo fichero asociado al idioma.
+     */
+    private Long fichero;
+
+    /**
      * Constructor.
      **/
     public DocumentoTraduccion() {
@@ -54,6 +59,7 @@ public class DocumentoTraduccion extends ModelApi implements Cloneable {
     public DocumentoTraduccion(final String iIdioma, final FicheroDTO iFichero) {
         this.idioma = iIdioma;
         this.ficheroDTO = iFichero;
+        this.fichero = iFichero == null ? null : iFichero.getCodigo();
     }
 
     /**
@@ -136,5 +142,13 @@ public class DocumentoTraduccion extends ModelApi implements Cloneable {
     public int hashCode() {
         return Objects.hash(codigo, idioma, ficheroDTO);
     }
+
+	public Long getFichero() {
+		return fichero;
+	}
+
+	public void setFichero(Long fichero) {
+		this.fichero = fichero;
+	}
 
 }

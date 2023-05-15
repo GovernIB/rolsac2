@@ -77,8 +77,7 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
                         final ERRORES errores = envia.getERRORES();
                         resultadoSIA.setMensaje("");
                         for (final ERRORES.ERROR error : errores.getERROR()) {
-                            resultadoSIA.setMensaje(resultadoSIA.getMensaje() + error.getERROR() + ":"
-                                    + error.getDESCERROR() + " " + resultadoSIA.getMensaje() + "<br />");
+                            resultadoSIA.setMensaje(resultadoSIA.getMensaje() + error.getERROR() + ":" + error.getDESCERROR() + " " + resultadoSIA.getMensaje() + "<br />");
                         }
                     }
                     if (SiaConstantes.ESTADO_BAJA.compareTo(envia.getOPERACION()) == 0) {
@@ -211,8 +210,10 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
 
         paramSia.setUNIDADGESTORATRAMITE(sia.getUnidadGestora());
 
+
         paramSia.setENLACEWEB(sia.getEnlaceWeb());
         paramSia.setOPERACION(sia.getOperacion());
+
 
         final ParamSIA.ACTUACIONES actuaciones = new ParamSIA.ACTUACIONES();
         actuaciones.getACTUACION().add(paramSia);
@@ -343,8 +344,13 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
         return actuaciones;
     }
 
+    /**
+     * Se considera activo si no está introducido o si está introducido y es true
+     *
+     * @return
+     */
     private Boolean isActivoEnvio() {
-        return getProperty(ACTIVO_ENVIO).equals("true");
+        return getProperty(ACTIVO_ENVIO) == null || (getProperty(ACTIVO_ENVIO) != null && getProperty(ACTIVO_ENVIO).equals("true"));
     }
 }
 

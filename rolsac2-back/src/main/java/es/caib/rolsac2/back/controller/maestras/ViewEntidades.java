@@ -173,7 +173,38 @@ public class ViewEntidades extends AbstractController implements Serializable {
         UtilJSF.openDialog("dialogEntidad", modoAcceso, params, true, 780, 500);
     }
 
+    private void abrirVentanaBorrar() {
+        final Map<String, String> params = new HashMap<>();
+        if (this.datoSeleccionado != null) {
+            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
+            UtilJSF.anyadirMochila("borrarEntidad", datoSeleccionado);
+        }
+        UtilJSF.openDialog("dialogBorrarEntidad", TypeModoAcceso.CONSULTA, params, true, 700, 300);
+    }
+
+    public void returnDialogoBorrar(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            this.buscar();
+        }
+    }
+
     public void borrarEntidad() {
+        try {
+            if (datoSeleccionado == null) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+            } else {
+                abrirVentanaBorrar();
+//                addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+            }
+        } catch (ServiceException e) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.ua.relacionadas"));
+        }
+
+    }
+
+    /*public void borrarEntidad() {
         try {
             if (datoSeleccionado == null) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
@@ -185,7 +216,7 @@ public class ViewEntidades extends AbstractController implements Serializable {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.ua.relacionadas"));
         }
 
-    }
+    }*/
 
     public EntidadGridDTO getDatoSeleccionado() {
         return datoSeleccionado;

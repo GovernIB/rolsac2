@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
 import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
 import es.caib.rolsac2.persistence.model.JTipoTramitacion;
+import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
@@ -221,5 +222,81 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
             }
         }
         return tipoTramitaciones;
+    }
+
+    @Override
+    public String getEnlaceTelematico(TipoTramitacionFiltro fg) {
+        JTipoTramitacion obj = this.findById(fg.getCodigo());
+        String res = "";
+
+        if (obj != null) {
+            res = montarUrl(obj, fg.getIdioma());
+        }
+
+        return res;
+    }
+
+    @Override
+    public void deleteByUA(Long idEntidad) {
+        String sql;
+        Query query;
+        sql = "SELECT t FROM JTipoTramitacion j LEFT OUTER JOIN j.traducciones t where j.entidad.codigo = :entidad ";
+        query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        List<JTipoTramitacionTraduccion> jtraducciones = query.getResultList();
+        if (jtraducciones != null) {
+            for (JTipoTramitacionTraduccion jtraduccion : jtraducciones) {
+                entityManager.remove(jtraduccion);
+            }
+            entityManager.flush();
+        }
+
+        sql = "SELECT j FROM JTipoTramitacion j where j.entidad.codigo = :entidad ";
+        query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        //int totalBorrados = query.executeUpdate();
+        List<JTipoTramitacion> jtipos = query.getResultList();
+        if (jtipos != null) {
+            for (JTipoTramitacion jtipo : jtipos) {
+                entityManager.remove(jtipo);
+            }
+            entityManager.flush();
+        }
+
+        entityManager.flush();
+    }
+
+    private String montarUrl(JTipoTramitacion obj, String lang) {
+        String res = "";
+        try {
+            final String idTramite = obj.getTramiteId();
+            final String numVersion = obj.getTramiteVersion().toString();
+            final String idioma = lang;
+            final String parametros;
+            if (obj.getTramiteParametros() == null) {
+                parametros = "";
+            } else {
+                parametros = obj.getTramiteParametros();
+            }
+            final String idTramiteRolsac = obj.getCodigo().toString();
+
+            String url = converter.createDTO(obj).getCodPlatTramitacion().getUrlAcceso().getTraduccion(lang);
+
+            url = url.replace("${idTramitePlataforma}", idTramite);
+            url = url.replace("${versionTramitePlatorma}", numVersion);
+            url = url.replace("${parametros}", parametros);
+            url = url.replace("${servicio}", String.valueOf(false));
+            url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
+
+
+            res = url;
+        } catch (final Exception e) {
+
+            // si ocurre un error es porque alguno de los campos de url del trámite no
+            // existen. buscamos en la url externa.
+            res = obj.getUrlTramitacion();
+        }
+
+        return res;
     }
 }

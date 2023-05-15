@@ -23,4 +23,6 @@ public interface IndexacionRepository extends CrudRepository<JIndexacion, Long> 
     void guardarIndexar(Long codigo, TypeIndexacion procedimiento, Long idEntidad, int accion);
 
     void actualizarDato(IndexacionDTO proc, ResultadoAccion resultadoAccion);
+
+    void deleteByUA(Long id);
 }

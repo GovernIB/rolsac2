@@ -20,7 +20,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private Long codigoTram;
     private String estadoSIA;
     private String siaFecha;
+    private String fechaPublicacionDesde;
+    private String fechaPublicacionHasta;
     private String codigoDir3SIA;
+    private String codigoUaDir3;
 
     private String volcadoSIA;
 
@@ -48,6 +51,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private TipoTramitacionDTO plantilla;
     private PlatTramitElectronicaDTO plataforma;
     private String comun;
+    private String estadoWF;
 
     private String mensajesPendiente;
 
@@ -117,7 +121,15 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.codigoDir3SIA = procSiadir3;
     }
 
-    public TipoSilencioAdministrativoDTO getSilencioAdministrativo() {
+    public String getEstadoWF() {
+		return estadoWF;
+	}
+
+	public void setEstadoWF(String estadoWF) {
+		this.estadoWF = estadoWF;
+	}
+
+	public TipoSilencioAdministrativoDTO getSilencioAdministrativo() {
         return silencioAdministrativo;
     }
 
@@ -374,6 +386,15 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return texto != null && !texto.isEmpty();
     }
 
+    /**
+     * Esta relleno el codigoUaDir3
+     *
+     * @return
+     */
+    public boolean isRellenoCodigoUaDir3() {
+        return codigoUaDir3 != null && !codigoUaDir3.isEmpty();
+    }
+
     public boolean isRellenoTipo() {
         return tipo != null && !tipo.isEmpty();
     }
@@ -396,6 +417,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public boolean isRellenoSiaFecha() {
         return siaFecha != null && !siaFecha.isEmpty();
+    }
+
+    public boolean isRellenoFechaPublicacionDesde() {
+        return fechaPublicacionDesde != null && !fechaPublicacionDesde.isEmpty();
+    }
+
+    public boolean isRellenoFechaPublicacionHasta() {
+        return fechaPublicacionHasta != null && !fechaPublicacionHasta.isEmpty();
     }
 
     public boolean isRellenoCodigoDir3SIA() {
@@ -479,7 +508,31 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return mensajesPendiente != null && !mensajesPendiente.isEmpty();
     }
 
-    @Override
+	public String getFechaPublicacionDesde() {
+		return fechaPublicacionDesde;
+	}
+
+	public void setFechaPublicacionDesde(String fechaPublicacionDesde) {
+		this.fechaPublicacionDesde = fechaPublicacionDesde;
+	}
+
+	public String getFechaPublicacionHasta() {
+		return fechaPublicacionHasta;
+	}
+
+	public void setFechaPublicacionHasta(String fechaPublicacionHasta) {
+		this.fechaPublicacionHasta = fechaPublicacionHasta;
+	}
+
+	public String getCodigoUaDir3() {
+		return codigoUaDir3;
+	}
+
+	public void setCodigoUaDir3(String codigoUaDir3) {
+		this.codigoUaDir3 = codigoUaDir3;
+	}
+
+	@Override
     protected String getDefaultOrder() {
         return "id";
     }

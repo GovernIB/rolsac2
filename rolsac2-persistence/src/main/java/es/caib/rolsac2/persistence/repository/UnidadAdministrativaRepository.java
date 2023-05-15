@@ -24,6 +24,8 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     long countByFiltro(UnidadAdministrativaFiltro filtro);
 
+    long countByFiltroEntidad(Long entidadId);
+
     List<JTipoUnidadAdministrativa> getTipo(Long idUnitat, String idioma);
 
     Boolean checkIdentificador(String identificador);
@@ -58,5 +60,7 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     String obtenerCodigoDIR3(Long codigoUA);
 
-	List<UnidadAdministrativaDTO> findPagedByFiltroRest(UnidadAdministrativaFiltro fg);
+    List<UnidadAdministrativaDTO> findPagedByFiltroRest(UnidadAdministrativaFiltro fg);
+
+    void deleteUA(Long id);
 }

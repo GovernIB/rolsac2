@@ -25,8 +25,7 @@ import java.util.Optional;
 @Stateless
 @Local(IndexacionRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class IndexacionSIARepositoryBean extends AbstractCrudRepository<JIndexacionSIA, Long>
-        implements IndexacionSIARepository {
+public class IndexacionSIARepositoryBean extends AbstractCrudRepository<JIndexacionSIA, Long> implements IndexacionSIARepository {
 
     protected IndexacionSIARepositoryBean() {
         super(JIndexacionSIA.class);
@@ -67,11 +66,9 @@ public class IndexacionSIARepositoryBean extends AbstractCrudRepository<JIndexac
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder(
-                    "SELECT count(j) FROM JIndexacionSIA j where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JIndexacionSIA j where 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.tipo, j.codElemento, j.fechaCreacion, j.fechaIntentoIndexacion, j.mensajeError, j.estado, j.existe FROM JIndexacionSIA j where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, j.tipo, j.codElemento, j.fechaCreacion, j.fechaIntentoIndexacion, j.mensajeError, j.estado, j.existe FROM JIndexacionSIA j where 1 = 1 ");
         }
 
 
@@ -115,8 +112,7 @@ public class IndexacionSIARepositoryBean extends AbstractCrudRepository<JIndexac
 
     @Override
     public Optional<JIndexacionSIA> findById(String id) {
-        TypedQuery<JIndexacionSIA> query =
-                entityManager.createNamedQuery(JIndexacionSIA.FIND_BY_ID, JIndexacionSIA.class);
+        TypedQuery<JIndexacionSIA> query = entityManager.createNamedQuery(JIndexacionSIA.FIND_BY_ID, JIndexacionSIA.class);
         query.setParameter("id", id);
         List<JIndexacionSIA> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
@@ -124,8 +120,7 @@ public class IndexacionSIARepositoryBean extends AbstractCrudRepository<JIndexac
 
     @Override
     public boolean existeIndexacion(Long idElemento, String tipo, Long idEntidad) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JIndexacionSIA j where j.entidad.codigo = :idEntidad and j.tipo like :tipo and j.codElemento =: idElemento ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JIndexacionSIA j where j.entidad.codigo = :idEntidad and j.tipo like :tipo and j.codElemento =: idElemento ");
 
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("tipo", tipo);
@@ -153,13 +148,23 @@ public class IndexacionSIARepositoryBean extends AbstractCrudRepository<JIndexac
     @Override
     public void actualizarDato(IndexacionSIADTO dato, ResultadoSIA resultadoAccion) {
         JIndexacionSIA jIndexacion = entityManager.find(JIndexacionSIA.class, dato.getCodigo());
-        if (resultadoAccion.isCorrecto()) {
+        if (resultadoAccion.isNoError()) {
             entityManager.remove(jIndexacion);
         } else {
             jIndexacion.setMensajeError(resultadoAccion.getMensaje());
             jIndexacion.setFechaIntentoIndexacion(new Date());
             entityManager.merge(jIndexacion);
         }
+    }
+
+    @Override
+    public void deleteByUA(Long idEntidad) {
+
+        String sql = "DELETE FROM JIndexacionSIA j where j.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        int resultado = query.executeUpdate();
+        entityManager.flush();
     }
 
 }

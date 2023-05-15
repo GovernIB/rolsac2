@@ -31,6 +31,11 @@ public class TipoMateriaSIADTO extends ModelApi {
     private Literal descripcion;
 
     /**
+     * Codigo SIA
+     */
+    private Long codigoSIA;
+
+    /**
      * Instancia un nuevo Tipo materia siadto.
      */
     public TipoMateriaSIADTO() {
@@ -39,8 +44,8 @@ public class TipoMateriaSIADTO extends ModelApi {
     /**
      * Instancia un nuevo Tipo materia siadto.
      *
-     * @param id             id
-     * @param identificador  identificador
+     * @param id            id
+     * @param identificador identificador
      */
     public TipoMateriaSIADTO(Long id, String identificador) {
         this.codigo = id;
@@ -63,7 +68,7 @@ public class TipoMateriaSIADTO extends ModelApi {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -72,7 +77,7 @@ public class TipoMateriaSIADTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -81,7 +86,7 @@ public class TipoMateriaSIADTO extends ModelApi {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -90,7 +95,7 @@ public class TipoMateriaSIADTO extends ModelApi {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -99,7 +104,7 @@ public class TipoMateriaSIADTO extends ModelApi {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public Literal getDescripcion() {
         return descripcion;
@@ -108,11 +113,30 @@ public class TipoMateriaSIADTO extends ModelApi {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
     }
+
+    /**
+     * Obtiene codigo SIA.
+     *
+     * @return codigoSIA
+     */
+    public Long getCodigoSIA() {
+        return codigoSIA;
+    }
+
+    /**
+     * Establece codig o SIA.
+     *
+     * @param codigoSIA codigoSIA
+     */
+    public void setCodigoSIA(Long codigoSIA) {
+        this.codigoSIA = codigoSIA;
+    }
+
 
     @Override
     public String toString() {
@@ -121,6 +145,6 @@ public class TipoMateriaSIADTO extends ModelApi {
 
     @Override
     public TipoMateriaSIADTO clone() {
-    	return new TipoMateriaSIADTO(this);
+        return new TipoMateriaSIADTO(this);
     }
 }

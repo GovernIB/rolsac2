@@ -88,6 +88,12 @@ Pàgina amb el llistat de processos automàtics
                         <f:facet name="header"/>
                         <h:outputText value="#{proceso.getListaPropiedadesPlano()}" escape="false" style="white-space:pre-line;" />
                     </p:column>
+                    <p:column headerText="" styleClass="w50px">
+                        <p:commandButton value="" icon="pi pi-align-center" iconPos="center"
+                                         actionListener="#{viewProcesosSolr.verErrores(proceso.codigo)}"
+                                         process="@this" update="messages" styleClass="h30px w30px">
+                        </p:commandButton>
+                    </p:column>
                 </p:dataTable>
             </p:tab>
             <p:tab title="#{labels['viewProcesosSolr.tab.datosPendientes']}">
@@ -125,6 +131,10 @@ Pàgina amb el llistat de processos automàtics
                 <p:column sortBy="#{proceso.tipo}" headerText="#{labels['dict.tipo']}"  styleClass="w160px">
                     <f:facet name="header"/>
                     <h:outputText value="#{labels['viewProcesosSolr.tipo.' += proceso.tipo] }"/>
+                </p:column>
+                <p:column sortBy="#{proceso.accion}" headerText="#{labels['dict.accion']}"  styleClass="w160px">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{labels['viewProcesosSolr.accion.' += proceso.accion] }"/>
                 </p:column>
                 <p:column sortBy="#{proceso.tipo}" headerText="#{labels['dict.codigoElemento']}"  styleClass="w160px">
                     <f:facet name="header"/>

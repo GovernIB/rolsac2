@@ -17,10 +17,7 @@ import java.util.Objects;
 @Entity
 @SequenceGenerator(name = "tipo-materia-sia-sequence", sequenceName = "RS2_TIPOMSI_SEQ", allocationSize = 1)
 @Table(name = "RS2_TIPOMSI", indexes = {@Index(name = "RS2_TIPOMSI_PK", columnList = "TPMS_CODIGO")})
-@NamedQueries({
-        @NamedQuery(name = JTipoMateriaSIA.FIND_BY_ID, query = "select p from JTipoMateriaSIA p where p.codigo = :id"),
-        @NamedQuery(name = JTipoMateriaSIA.COUNT_BY_IDENTIFICADOR,
-                query = "select COUNT(p) from JTipoMateriaSIA p where p.identificador = :identificador")})
+@NamedQueries({@NamedQuery(name = JTipoMateriaSIA.FIND_BY_ID, query = "select p from JTipoMateriaSIA p where p.codigo = :id"), @NamedQuery(name = JTipoMateriaSIA.COUNT_BY_IDENTIFICADOR, query = "select COUNT(p) from JTipoMateriaSIA p where p.identificador = :identificador")})
 public class JTipoMateriaSIA extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -53,6 +50,12 @@ public class JTipoMateriaSIA extends BaseEntity {
     private String identificador;
 
     /**
+     * Codigo SIA que se envia a SIA en el proceso.
+     */
+    @Column(name = "TPMS_CODSIA")
+    private Long codigoSIA;
+
+    /**
      * Descripción
      */
     @OneToMany(mappedBy = "tipoMateriaSIA", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -61,7 +64,7 @@ public class JTipoMateriaSIA extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -70,7 +73,7 @@ public class JTipoMateriaSIA extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -79,7 +82,7 @@ public class JTipoMateriaSIA extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -88,7 +91,7 @@ public class JTipoMateriaSIA extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificacion  identificacion
+     * @param identificacion identificacion
      */
     public void setIdentificador(String identificacion) {
         this.identificador = identificacion;
@@ -97,7 +100,7 @@ public class JTipoMateriaSIA extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public List<JTipoMateriaSIATraduccion> getDescripcion() {
         return descripcion;
@@ -106,18 +109,34 @@ public class JTipoMateriaSIA extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(List<JTipoMateriaSIATraduccion> descripcion) {
         this.descripcion = descripcion;
     }
 
+    /**
+     * Obtiene codigo sia.
+     *
+     * @return codigoSIA
+     */
+    public Long getCodigoSIA() {
+        return codigoSIA;
+    }
+
+    /**
+     * Establece codigo SIA.
+     *
+     * @param codigoSIA codigoSIA
+     */
+    public void setCodigoSIA(Long codigoSIA) {
+        this.codigoSIA = codigoSIA;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof JTipoMateriaSIA))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof JTipoMateriaSIA)) return false;
         JTipoMateriaSIA that = (JTipoMateriaSIA) o;
         return Objects.equals(codigo, that.codigo);
     }
@@ -135,7 +154,7 @@ public class JTipoMateriaSIA extends BaseEntity {
     /**
      * To model tipo materia sia grid dto.
      *
-     * @return  tipo materia sia grid dto
+     * @return tipo materia sia grid dto
      */
     public TipoMateriaSIAGridDTO toModel() {
         TipoMateriaSIAGridDTO tipo = new TipoMateriaSIAGridDTO();
@@ -146,6 +165,7 @@ public class JTipoMateriaSIA extends BaseEntity {
         }
         tipo.setDescripcion(literal);
         tipo.setIdentificador(this.getIdentificador());
+        tipo.setCodigoSIA(this.getCodigoSIA());
         return tipo;
     }
 }

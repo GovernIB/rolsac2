@@ -101,6 +101,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <f:facet name="header"/>
                     <h:outputText value="#{tipoMateriaSIA.descripcion.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
+                <p:column sortBy="#{tipoMateriaSIA.codigoSIA}" headerText="#{labels['dict.codigoSIA']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{tipoMateriaSIA.codigoSIA}"/>
+                </p:column>
             </p:dataTable>
 
             <h:outputScript>

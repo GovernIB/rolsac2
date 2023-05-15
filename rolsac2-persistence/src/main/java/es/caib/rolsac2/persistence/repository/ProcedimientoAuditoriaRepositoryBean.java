@@ -41,6 +41,26 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
     }
 
     @Override
+    public void borrarAuditoriasByIdProcedimiento(Long id) {
+
+        String sql = "SELECT p.codigo FROM JProcedimientoAuditoria p WHERE p.procedimiento.codigo =:id";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("id", id);
+        final List<Integer> resultados = query.getResultList();
+        if (resultados != null && !resultados.isEmpty()) {
+            for (Integer codProcAud : resultados) {
+                JProcedimientoAuditoria jProcedimientoAuditoria = entityManager.find(JProcedimientoAuditoria.class, codProcAud);
+                entityManager.remove(jProcedimientoAuditoria);
+            }
+        }
+        entityManager.flush();
+        //String sql = "DELETE FROM JProcedimientoAuditoria p WHERE p.procedimiento.codigo =:id";
+        //Query query = entityManager.createQuery(sql);
+        //query.setParameter("id", id);
+        //query.executeUpdate();
+    }
+
+    @Override
     public List<AuditoriaGridDTO> findProcedimientoAuditoriasById(Long id) {
         return findAuditoriasById(id, "PROC");
     }

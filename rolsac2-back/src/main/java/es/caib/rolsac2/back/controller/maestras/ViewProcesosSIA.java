@@ -9,6 +9,7 @@ import es.caib.rolsac2.service.model.filtro.ProcesoLogFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSIAFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -20,10 +21,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -78,18 +76,29 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
         buscar();
     }
 
+    public void verErrores(Long codigo) {
+        // Muestra dialogo
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.ID.toString(), codigo.toString());
+        UtilJSF.openDialog("dialogProcesoLog", TypeModoAcceso.CONSULTA, params, true, 1000, 733);
+    }
+
+    /**
+     * Update
+     */
     public void update() {
         buscar();
     }
 
-
+    /**
+     * Buscar
+     */
     public void buscar() {
         lazyModel = new LazyDataModel<IndexacionSIADTO>() {
             @Override
             public IndexacionSIADTO getRowData(String rowKey) {
                 for (IndexacionSIADTO pers : (List<IndexacionSIADTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
@@ -100,8 +109,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
             }
 
             @Override
-            public List<IndexacionSIADTO> load(int first, int pageSize, String sortField,
-                                               SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<IndexacionSIADTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
@@ -126,8 +134,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
             @Override
             public ProcesoLogGridDTO getRowData(String rowKey) {
                 for (ProcesoLogGridDTO pers : (List<ProcesoLogGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
@@ -138,8 +145,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
             }
 
             @Override
-            public List<ProcesoLogGridDTO> load(int first, int pageSize, String sortField,
-                                                SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<ProcesoLogGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtroLog.setIdioma(sessionBean.getLang());
                     if (sortField != null && !sortField.equals("filtroLog.orderBy") && !sortField.equals("filtro.orderBy")) {

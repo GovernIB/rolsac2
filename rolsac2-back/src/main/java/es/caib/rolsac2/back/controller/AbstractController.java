@@ -74,7 +74,7 @@ public abstract class AbstractController {
                 || clase.equals(ViewTipoLegitimacion.class) || clase.equals(ViewUsuario.class))
                 || isAdministradorEntidad() && (clase.equals(ViewConfiguracionEntidad.class)
                 || clase.equals(ViewPlugins.class) || clase.equals(ViewUsuario.class) || clase.equals(ViewEntidadRaiz.class)
-                || clase.equals(ViewRoles.class) || clase.equals(ViewTipoUnidadAdministrativa.class)
+                || clase.equals(ViewRoles.class) || clase.equals(ViewTipoUnidadAdministrativa.class) || clase.equals(ViewEntidades.class)
                 || clase.equals(ViewTipoMediaUA.class) || clase.equals(ViewPlatTramitElectronica.class)
                 || clase.equals(ViewTipoTramitacion.class) || clase.equals(ViewTipoProcedimiento.class)
                 || clase.equals(ViewTema.class) || clase.equals(ViewPublicoObjetivoEntidad.class)

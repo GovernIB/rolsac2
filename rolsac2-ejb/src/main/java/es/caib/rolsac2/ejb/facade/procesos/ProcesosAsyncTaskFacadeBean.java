@@ -50,8 +50,7 @@ public class ProcesosAsyncTaskFacadeBean implements ProcesosAsyncTaskFacade {
 
     @Override
     @Asynchronous
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void ejecutarProceso(final String idProceso, final Long idEntidad) {
         final ProcesoProgramadoFacade proceso = obtenerProceso(idProceso);
         final ListaPropiedades params = obtenerParamsProceso(idProceso, idEntidad);
@@ -62,7 +61,7 @@ public class ProcesosAsyncTaskFacadeBean implements ProcesosAsyncTaskFacade {
         } catch (final Exception ex) {
             final ResultadoProcesoProgramado resultadoProcesoProgramado = new ResultadoProcesoProgramado();
             resultadoProcesoProgramado.setFinalizadoOk(false);
-            resultadoProcesoProgramado.setMensajeError("Error no controlado: " + ex.getMessage());
+            resultadoProcesoProgramado.setMensajeErrorTraza("Error no controlado: " + ex.getMessage());
             procesosExecComponent.auditarFinProceso(idProceso, instanciaProceso, resultadoProcesoProgramado);
         }
 
@@ -72,8 +71,7 @@ public class ProcesosAsyncTaskFacadeBean implements ProcesosAsyncTaskFacade {
 
     @Override
     @Asynchronous
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void ejecutarProceso(final String idProceso, final ListaPropiedades params, Long idEntidad) {
         final ProcesoProgramadoFacade proceso = obtenerProceso(idProceso);
         final Long instanciaProceso = procesosExecComponent.auditarInicioProceso(idProceso, idEntidad);
@@ -83,7 +81,7 @@ public class ProcesosAsyncTaskFacadeBean implements ProcesosAsyncTaskFacade {
         } catch (final Exception ex) {
             final ResultadoProcesoProgramado resultadoProcesoProgramado = new ResultadoProcesoProgramado();
             resultadoProcesoProgramado.setFinalizadoOk(false);
-            resultadoProcesoProgramado.setMensajeError("Error no controlado: " + ex.getMessage());
+            resultadoProcesoProgramado.setMensajeErrorTraza("Error no controlado: " + ex.getMessage());
             procesosExecComponent.auditarFinProceso(idProceso, instanciaProceso, resultadoProcesoProgramado);
         }
 

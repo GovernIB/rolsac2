@@ -32,8 +32,8 @@ import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaServicios;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
+import es.caib.rolsac2.service.model.ProcedimientoBaseDTO;
 import es.caib.rolsac2.service.model.ServicioDTO;
-import es.caib.rolsac2.service.model.ServicioGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_SERVICIO)
@@ -57,7 +57,7 @@ public class ServiciosResource {
 	public Response llistar(
 			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
 			@RequestBody(description = "Filtro de servicios: "
-					+ FiltroUA.SAMPLE, name = "filtro", content = @Content(example = FiltroServicios.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroServicios.class))) FiltroServicios filtro)
+					+ FiltroServicios.SAMPLE, name = "filtro", content = @Content(example = FiltroServicios.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroServicios.class))) FiltroServicios filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
 		if (filtro == null) {
@@ -70,7 +70,7 @@ public class ServiciosResource {
 		 * 400,"No se puede indicar un codigoUA y un codigoUADir3 simultaneamente"); }
 		 */
 
-		final ProcedimientoFiltro fg = filtro.toServicioFiltro();
+		final ProcedimientoFiltro fg = filtro.toProcedimientoFiltro();
 
 		if (lang != null) {
 			fg.setIdioma(lang);
@@ -100,6 +100,38 @@ public class ServiciosResource {
 	}
 
 	/**
+	 * Para obtener el enlace.
+	 *
+	 * @param idioma
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@POST
+	@Path("/enlaceTelematico/{codigo}")
+	@Operation(operationId = "getEnlaceTelematico", summary = "Obtiene enlace telematico", description = "Obtiene enlace telematico dado procedimiento")
+	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
+	@APIResponse(responseCode = "400", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
+	public Response getEnlaceTelematico(
+			@Parameter(description = "Código servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo,
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang)
+			throws Exception, ValidationException {
+
+		final ProcedimientoFiltro fg = new ProcedimientoFiltro();
+		fg.setCodigoProc(new Long(codigo));
+
+		if (lang != null) {
+			fg.setIdioma(lang);
+		}
+
+		fg.setTipo("S");
+		final String url = servicioService.getEnlaceTelematico(fg);
+		RespuestaServicios respuesta = new RespuestaServicios();
+		respuesta.setUrl(url);
+		return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+	}
+
+	/**
 	 * Para obtener un servicio.
 	 *
 	 * @Parameter idioma
@@ -123,7 +155,7 @@ public class ServiciosResource {
 			fg.setIdioma(lang);
 		}
 		fg.setIdEntidad(new Long(codigo));
-
+		fg.setTipo("P");
 //		final RespuestaServicios respuesta = getRespuesta(fg);
 //		if (respuesta.getResultado() != null && !respuesta.getResultado().isEmpty()) {
 //			String cabecera;
@@ -135,33 +167,51 @@ public class ServiciosResource {
 //			respuesta.getResultado().get(0).setLopdCabecera(cabecera);
 //		}
 
-		return Response.ok(getRespuestaSimple(fg), MediaType.APPLICATION_JSON).build();
+		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
 	}
 
+//	private RespuestaServicios getRespuesta(final ProcedimientoFiltro filtro) throws DelegateException {
+//		Pagina<ServicioGridDTO> resultadoBusqueda = servicioService.findServiciosByFiltro(filtro);
+//
+//		List<Servicios> lista = new ArrayList<>();
+//		Servicios elemento = null;
+//
+//		for (ServicioGridDTO nodo : resultadoBusqueda.getItems()) {
+//			elemento = new Servicios(nodo, null, filtro.getIdioma(), true);
+//			lista.add(elemento);
+//		}
+//
+//		return new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()),
+//				resultadoBusqueda.getTotal(), lista);
+//	}
+//
+//	private RespuestaServicios getRespuestaSimple(ProcedimientoFiltro filtro) throws DelegateException {
+//		ServicioDTO resultadoBusqueda = servicioService.findServicioByCodigo(filtro.getIdEntidad());
+//
+//		List<Servicios> lista = new ArrayList<>();
+//
+//		lista.add(new Servicios(resultadoBusqueda, null, filtro.getIdioma(), true));
+//
+//		return new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), 1L,
+//				lista);
+//	}
+
+
 	private RespuestaServicios getRespuesta(final ProcedimientoFiltro filtro) throws DelegateException {
-		Pagina<ServicioGridDTO> resultadoBusqueda = servicioService.findServiciosByFiltro(filtro);
+
+
+		Pagina<ProcedimientoBaseDTO> resultadoBusqueda = servicioService.findProcedimientosByFiltroRest(filtro);
 
 		List<Servicios> lista = new ArrayList<>();
 		Servicios elemento = null;
 
-		for (ServicioGridDTO nodo : resultadoBusqueda.getItems()) {
-			elemento = new Servicios(nodo, null, filtro.getIdioma(), true);
+		for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
+			elemento = new Servicios((ServicioDTO)nodo, null, filtro.getIdioma(), true);
 			lista.add(elemento);
 		}
 
 		return new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()),
-				resultadoBusqueda.getTotal(), lista);
-	}
-
-	private RespuestaServicios getRespuestaSimple(ProcedimientoFiltro filtro) throws DelegateException {
-		ServicioDTO resultadoBusqueda = servicioService.findServicioByCodigo(filtro.getIdEntidad());
-
-		List<Servicios> lista = new ArrayList<>();
-
-		lista.add(new Servicios(resultadoBusqueda, null, filtro.getIdioma(), true));
-
-		return new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), 1L,
-				lista);
+				Long.valueOf(resultadoBusqueda.getItems().size()), lista);
 	}
 
 //	/**

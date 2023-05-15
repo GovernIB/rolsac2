@@ -187,6 +187,10 @@
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.PlatTramitElectronicaResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.FicheroResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TemaResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoPublicoObjetivoEntidadResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.DocumentoNormativaResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.ProcedimientoTramiteResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.ProcedimientoDocumentoResource</endpointClass>
                             </endpointClasses>
                             <output>${project.build.directory}/openapi/openapi.json</output>
                             <info>

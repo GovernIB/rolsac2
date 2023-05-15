@@ -80,14 +80,19 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
         buscar();
     }
 
+    public void verErrores(Long codigo) {
+        // Muestra dialogo
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.ID.toString(), codigo.toString());
+        UtilJSF.openDialog("dialogProcesoLog", TypeModoAcceso.CONSULTA, params, true, 1000, 733);
+    }
 
     public void buscar() {
         lazyModel = new LazyDataModel<IndexacionDTO>() {
             @Override
             public IndexacionDTO getRowData(String rowKey) {
                 for (IndexacionDTO pers : (List<IndexacionDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
@@ -98,8 +103,7 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
             }
 
             @Override
-            public List<IndexacionDTO> load(int first, int pageSize, String sortField,
-                                            SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<IndexacionDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
@@ -124,8 +128,7 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
             @Override
             public ProcesoLogGridDTO getRowData(String rowKey) {
                 for (ProcesoLogGridDTO pers : (List<ProcesoLogGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
@@ -136,8 +139,7 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
             }
 
             @Override
-            public List<ProcesoLogGridDTO> load(int first, int pageSize, String sortField,
-                                                SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<ProcesoLogGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtroLog.setIdioma(sessionBean.getLang());
                     if (sortField != null && !sortField.equals("filtroLog.orderBy") && !sortField.equals("filtro.orderBy")) {

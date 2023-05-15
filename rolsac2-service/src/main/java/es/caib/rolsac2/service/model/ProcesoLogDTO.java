@@ -1,10 +1,15 @@
 package es.caib.rolsac2.service.model;
 
-public class ProcesoLogDTO extends ProcesoLogGridDTO{
-    /** Serial version UID. **/
+public class ProcesoLogDTO extends ProcesoLogGridDTO {
+    /**
+     * Serial version UID.
+     **/
     private static final long serialVersionUID = 1L;
 
-    /** Constructor. **/
+
+    /**
+     * Constructor.
+     **/
     public ProcesoLogDTO() {
         super();
     }
@@ -18,4 +23,5 @@ public class ProcesoLogDTO extends ProcesoLogGridDTO{
     public static ProcesoLogDTO createInstance() {
         return new ProcesoLogDTO();
     }
+ 
 }

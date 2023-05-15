@@ -32,4 +32,8 @@ public interface TipoTramitacionRepository extends CrudRepository<JTipoTramitaci
     List<TipoTramitacionDTO> findPagedByFiltroRest(TipoTramitacionFiltro filtro);
 
     void borrarByServicio(Long idServicioWF, Long codigo);
+
+    String getEnlaceTelematico(TipoTramitacionFiltro fg);
+
+    void deleteByUA(Long id);
 }

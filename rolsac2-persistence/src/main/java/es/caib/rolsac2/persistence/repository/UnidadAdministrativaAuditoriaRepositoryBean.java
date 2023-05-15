@@ -1,6 +1,5 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.model.JProcedimientoAuditoria;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativaAuditoria;
 import es.caib.rolsac2.persistence.util.JSONUtil;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
@@ -72,6 +71,29 @@ public class UnidadAdministrativaAuditoriaRepositoryBean extends AbstractCrudRep
         return auditorias;
     }
 
+    @Override
+    public void borrarAuditoriasByIdUA(Long codigo) {
+
+        String sql = "DELETE FROM JUnidadAdministrativaAuditoria p WHERE p.unidadAdministrativa.codigo =:id";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("id", codigo);
+        int totalBorrados = query.executeUpdate();
+        entityManager.flush();
+
+        /*
+        String sql = "SELECT p.codigo FROM JUnidadAdministrativaAuditoria p WHERE p.unidadAdministrativa.codigo =:id";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("id", codigo);
+        final List<Integer> resultados = query.getResultList();
+        if (resultados != null && !resultados.isEmpty()) {
+            for (Integer codProcAud : resultados) {
+                JUnidadAdministrativaAuditoria jProcedimientoAuditoria = entityManager.find(JUnidadAdministrativaAuditoria.class, codProcAud);
+                entityManager.remove(jProcedimientoAuditoria);
+            }
+        }
+        entityManager.flush();*/
+    }
+
     /**
      * Consulta que se realiza en la tabla de auditoria de personas
      *
@@ -122,8 +144,7 @@ public class UnidadAdministrativaAuditoriaRepositoryBean extends AbstractCrudRep
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JUnidadAdministrativaAuditoria where 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.unidadAdministrativa.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil, j.literalFlujo  FROM JUnidadAdministrativaAuditoria j where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, j.unidadAdministrativa.codigo, j.fechaModificacion, j.listaModificaciones, j.usuarioModificacion, j.usuarioPerfil, j.literalFlujo  FROM JUnidadAdministrativaAuditoria j where 1 = 1 ");
         }
 
 

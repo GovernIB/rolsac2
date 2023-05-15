@@ -1,6 +1,10 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
+import es.caib.rolsac2.persistence.model.BaseEntity;
 import es.caib.rolsac2.persistence.model.JProcedimientoDocumento;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -32,6 +36,16 @@ public class JProcedimientoDocumentoTraduccion {
 
     @Column(name = "TRDP_FICHER")
     private Long fichero;
+
+    public static List<JProcedimientoDocumentoTraduccion> createInstance(List<String> idiomas) {
+        List<JProcedimientoDocumentoTraduccion> traducciones = new ArrayList<>();
+        for (String idioma : idiomas) {
+            JProcedimientoDocumentoTraduccion trad = new JProcedimientoDocumentoTraduccion();
+            trad.setIdioma(idioma);
+            traducciones.add(trad);
+        }
+        return traducciones;
+    }
 
     public Long getCodigo() {
         return codigo;

@@ -751,6 +751,14 @@ public interface MaestrasSupServiceFacade {
     TipoPublicoObjetivoEntidadDTO findTipoPublicoObjetivoEntidadById(Long id);
 
     /**
+     * Retorna el tipo de public objetivo indicado por el idEntidad
+     *
+     * @param id identificador de la entidad
+     * @return lista TipoPublicoObjetivo por Entidad
+     */
+    List<TipoPublicoObjetivoEntidadDTO> findTipoPublicoObjetivoEntidadByEntidadId(Long idEntidad);
+
+    /**
      * Retorna si el publico objetivo SIA está relacionado a algún tipo público objetivo por entidad.
      */
     boolean existePublicoObjetivo(Long codigoPO);
@@ -939,5 +947,21 @@ public interface MaestrasSupServiceFacade {
      * @return una página con el número total de tipo de tramitación y la lista tipo de tramitación con el rango indicado
      */
 	Pagina<TipoTramitacionDTO> findByFiltroRest(TipoTramitacionFiltro fg);
+
+	/**
+     * Devuelve una página con el tipo de público objetivo entidad relacionado con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return una página con el número total de tipo de público objetivo entidad y la lista tipo de público objetivo entidad con el rango indicado
+     */
+	Pagina<TipoPublicoObjetivoEntidadDTO> findByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro);
+
+	/**
+     * Devuelve el enlace telemático
+     *
+     * @param filtro filtro de la búsqueda
+     * @return enlace telemático
+     */
+	String getEnlaceTelematico(TipoTramitacionFiltro fg);
 
 }

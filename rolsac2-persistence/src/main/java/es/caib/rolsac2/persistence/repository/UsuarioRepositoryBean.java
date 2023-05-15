@@ -261,4 +261,14 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
         List<Long> entidadesAsociadas = query.getResultList();
         return entidadesAsociadas;
     }
+
+    @Override
+    public void deleteByUA(Long idEntidad) {
+        String sql = "DELETE FROM JUsuarioEntidad j where j.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        int resultado = query.executeUpdate();
+        entityManager.flush();
+
+    }
 }

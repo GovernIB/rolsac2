@@ -1139,6 +1139,17 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoPublicoObjetivoEntidadDTO> findTipoPublicoObjetivoEntidadByEntidadId(Long idEntidad) {
+        List<JTipoPublicoObjetivoEntidad> jTipo =  tipoPublicoObjetivoEntidadRepository.findPageByEntidad(idEntidad);
+        List<TipoPublicoObjetivoEntidadDTO> tipos = new ArrayList<>();
+        for (JTipoPublicoObjetivoEntidad jT : jTipo) {
+            tipos.add(tipoPublicoObjetivoEntidadConverter.createDTO(jT));
+        }
+        return tipos;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public boolean existePublicoObjetivo(Long codigoPO) {
         return tipoPublicoObjetivoEntidadRepository.existePublicoObjetivo(codigoPO);
     }
@@ -1377,6 +1388,27 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     public void setTipoMediaUAConverter(TipoMediaUAConverter tipoMediaUAConverter) {
         this.tipoMediaUAConverter = tipoMediaUAConverter;
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public Pagina<TipoPublicoObjetivoEntidadDTO> findByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro) {
+    	try {
+            List<TipoPublicoObjetivoEntidadDTO> items = tipoPublicoObjetivoEntidadRepository.findPagedByFiltroRest(filtro);
+            long total = tipoPublicoObjetivoEntidadRepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error(ERROR_LITERAL, e);
+            List<TipoPublicoObjetivoEntidadDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+	}
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+	public String getEnlaceTelematico(TipoTramitacionFiltro fg) {
+		return tipoTramitacionRepository.getEnlaceTelematico(fg);
+	}
 
 
 }

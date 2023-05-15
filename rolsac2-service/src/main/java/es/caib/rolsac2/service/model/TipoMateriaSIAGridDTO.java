@@ -34,6 +34,11 @@ public class TipoMateriaSIAGridDTO extends ModelApi implements Cloneable {
     private Literal descripcion;
 
     /**
+     * Codigo SIA
+     */
+    private Long codigoSIA;
+
+    /**
      * Instancia un nuevo Tipo materia sia grid dto.
      */
     public TipoMateriaSIAGridDTO() {
@@ -104,6 +109,14 @@ public class TipoMateriaSIAGridDTO extends ModelApi implements Cloneable {
         this.descripcion = descripcion;
     }
 
+    public Long getCodigoSIA() {
+        return codigoSIA;
+    }
+
+    public void setCodigoSIA(Long codigoSIA) {
+        this.codigoSIA = codigoSIA;
+    }
+
     @Override
     public String toString() {
         return "TipoMateriaSIAGridDTO{" + "id=" + codigo + ", identificador='" + identificador + '\'' + '}';
@@ -118,6 +131,7 @@ public class TipoMateriaSIAGridDTO extends ModelApi implements Cloneable {
         TipoMateriaSIAGridDTO tipo = new TipoMateriaSIAGridDTO();
         tipo.setCodigo(this.getCodigo());
         tipo.setIdentificador(this.getIdentificador());
+        tipo.setCodigoSIA(this.getCodigoSIA());
 
         if (this.getDescripcion() != null) {
             tipo.setDescripcion((Literal) this.getDescripcion().clone());

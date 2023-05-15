@@ -25,5 +25,7 @@ public interface PlatTramitElectronicaRepository extends CrudRepository<JPlatTra
 
     Boolean checkIdentificador(String identificador);
 
-	List<PlatTramitElectronicaDTO> findPagedByFiltroRest(PlatTramitElectronicaFiltro filtro);
+    List<PlatTramitElectronicaDTO> findPagedByFiltroRest(PlatTramitElectronicaFiltro filtro);
+
+    void deleteByUA(Long id);
 }

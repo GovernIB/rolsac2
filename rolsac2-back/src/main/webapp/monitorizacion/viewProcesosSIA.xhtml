@@ -87,6 +87,12 @@ Pàgina amb el llistat de processos automàtics
                         <f:facet name="header"/>
                         <h:outputText value="#{proceso.getListaPropiedadesPlano()}" escape="false" style="white-space:pre-line;" />
                     </p:column>
+                    <p:column headerText="" styleClass="w50px">
+                        <p:commandButton value="" icon="pi pi-align-center" iconPos="center"
+                                         actionListener="#{viewProcesosSIA.verErrores(proceso.codigo)}"
+                                         process="@this" update="messages" styleClass="h30px w30px">
+                        </p:commandButton>
+                    </p:column>
                 </p:dataTable>
             </p:tab>
             <p:tab title="#{labels['viewProcesosSIA.tab.datosPendientes']}">
@@ -117,19 +123,23 @@ Pàgina amb el llistat de processos automàtics
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <p:column sortBy="#{proceso.codigo}" headerText="#{labels['dict.codigo']}">
+                <p:column sortBy="#{proceso.codigo}" headerText="#{labels['dict.codigo']}" styleClass="w160px">
                     <f:facet name="header"/>
                     <h:outputText value="#{proceso.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{proceso.tipo}" headerText="#{labels['dict.tipo']}">
-                    <f:facet name="header"/>
-                    <h:outputText value="#{proceso.tipo}"/>
-                </p:column>
-                <p:column sortBy="#{proceso.fechaCreacion}" headerText="#{labels['dict.fechaCreacion']}">
+                 <p:column sortBy="#{proceso.tipo}" headerText="#{labels['dict.tipo']}"  styleClass="w160px">
+                     <f:facet name="header"/>
+                     <h:outputText value="#{labels['viewProcesosSolr.tipo.' += proceso.tipo] }"/>
+                 </p:column>
+                     <p:column sortBy="#{proceso.tipo}" headerText="#{labels['dict.codigoElemento']}"  styleClass="w160px">
+                         <f:facet name="header"/>
+                         <h:outputText value="#{proceso.codElemento}"/>
+                     </p:column>
+                <p:column sortBy="#{proceso.fechaCreacion}" headerText="#{labels['dict.fechaCreacion']}" styleClass="w160px">
                     <f:facet name="header"/>
                     <h:outputText value="#{proceso.fechaCreacion}"/>
                 </p:column>
-                <p:column sortBy="#{proceso.fechaIntentoIndexacion}" headerText="#{labels['dict.fechaIntentoIndexacion']}">
+                <p:column sortBy="#{proceso.fechaIntentoIndexacion}" headerText="#{labels['dict.fechaIntentoIndexacion']}" styleClass="w160px">
                     <f:facet name="header"/>
                     <h:outputText value="#{proceso.fechaIntentoIndexacion}"/>
                 </p:column>

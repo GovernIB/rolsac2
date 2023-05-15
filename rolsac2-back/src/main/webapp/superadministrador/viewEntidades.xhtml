@@ -57,7 +57,8 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                     <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
                                      action="#{viewEntidades.borrarEntidad}" process="@form"
                                      update="messages dataTable">
-                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                        <p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogoBorrar}"
+                                update="messages dataTable"/>
                     </p:commandButton>
                     <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
                                      action="#{viewEntidades.ayuda}" process="@this" update="messages"/>

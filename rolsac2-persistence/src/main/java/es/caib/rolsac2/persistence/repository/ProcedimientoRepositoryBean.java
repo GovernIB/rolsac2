@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
+import es.caib.rolsac2.persistence.converter.ProcedimientoConverter;
 import es.caib.rolsac2.persistence.converter.ProcedimientoTramiteConverter;
 import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
 import es.caib.rolsac2.persistence.model.*;
@@ -11,6 +12,7 @@ import es.caib.rolsac2.persistence.model.pk.JProcedimientoNormativaPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoPublicoObjectivoPK;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoDocumentoTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
+import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
@@ -26,6 +28,8 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -48,6 +52,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Inject
     FicheroExternoRepository ficheroExternoRepository;
+
+    @Inject
+    private ProcedimientoConverter converter;
+
+    @Inject
+    private ProcedimientoServiceFacade procedimientoService;
 
     protected ProcedimientoRepositoryBean() {
         super(JProcedimiento.class);
@@ -189,8 +199,114 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
+    public List<ProcedimientoBaseDTO> findProcedimientosPagedByFiltroRest(ProcedimientoFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
+        List<ProcedimientoBaseDTO> procs = new ArrayList<>();
+
+
+        //3opciones todos (si publicado envio publi, si pubnli=null envio mod, )solo publi, solo mod
+
+        JProcedimientoWorkflow seleccionado = null;
+
+        if (filtro.getEstadoWF() != null) {
+            switch (filtro.getEstadoWF()) {
+                case "D":
+                case "M":
+                    List<JProcedimientoWorkflow> jprocsL = query.getResultList();
+                    for (Object proc : jprocsL) {
+                        if (proc != null) {
+                            seleccionado = (JProcedimientoWorkflow) proc;
+
+                            if (seleccionado != null) {
+                                ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionado);
+                                procs.add(procDTO);
+                            }
+                        }
+                    }
+                    break;
+                case "A":
+                    List<JProcedimientoWorkflow> jprocsA = query.getResultList();
+                    for (Object proc : jprocsA) {
+                        if (proc != null) {
+                            JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
+
+                            ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionadoA);
+                            procs.add(procDTO);
+
+
+                        }
+                    }
+                    break;
+                case "T":
+                default:
+                    List<JProcedimientoWorkflow[]> jprocs = query.getResultList();
+                    for (Object[] proc : jprocs) {
+                        if (proc != null) {
+                            JProcedimientoWorkflow modificado = (JProcedimientoWorkflow) proc[0];
+                            JProcedimientoWorkflow publicado = (JProcedimientoWorkflow) proc[1];
+
+                            if (publicado != null) {
+                                seleccionado = publicado;
+                            } else {
+                                seleccionado = modificado;
+                            }
+
+                            if (seleccionado != null) {
+                                ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionado);
+                                procs.add(procDTO);
+                            }
+
+                        }
+
+                    }
+                    break;
+
+            }
+            //	if (jprocs != null) {
+            //  for (JProcedimiento jproc : jprocs) {
+
+
+            //  }
+            // }
+
+        } else {
+            List<JProcedimientoWorkflow> jprocsA = query.getResultList();
+            for (Object proc : jprocsA) {
+                if (proc != null) {
+                    JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
+
+                    ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionadoA);
+                    procs.add(procDTO);
+
+
+                }
+            }
+        }
+
+        return procs;
+    }
+
+    @Override
     public long countByFiltro(ProcedimientoFiltro filtro) {
         return (long) getQuery(true, filtro).getSingleResult();
+    }
+
+    @Override
+    public Long countByEntidad(Long entidadId) {
+        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c LEFT OUTER JOIN c.entidad d WHERE d.codigo= :entidadId  and a.tipo='P' ";
+        TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
+        query.setParameter("entidadId", entidadId);
+        return query.getSingleResult();
+    }
+
+    @Override
+    public Long countServicioByEntidad(Long entidadId) {
+        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c LEFT OUTER JOIN c.entidad d WHERE d.codigo= :entidadId and a.tipo='S' ";
+        TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
+        query.setParameter("entidadId", entidadId);
+        return query.getSingleResult();
     }
 
 
@@ -269,12 +385,25 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public void actualizarSIA(IndexacionSIADTO dato, ResultadoSIA resultadoAccion) {
         JProcedimiento jproc = entityManager.find(JProcedimiento.class, dato.getCodElemento());
-        jproc.setSiaFecha(dato.getFechaSIA());
-        jproc.setCodigoSIA(dato.getCodigoSIA());
-        jproc.setEstadoSIA(dato.getEstadoSIA());
-        jproc.setMensajeIndexacion(resultadoAccion.getMensaje());
-        entityManager.merge(jproc);
+        if (resultadoAccion.isCorrecto() && jproc.getCodigoSIA() == null) {
+            jproc.setSiaFecha(new Date());
+            jproc.setCodigoSIA(Integer.parseInt(resultadoAccion.getCodSIA()));
+            //TODO Revisar jproc.setEstadoSIA(resultadoAccion.getEstadoSIA());
+            //jproc.setMensajeIndexacionSIA(resultadoAccion.getMensaje());
+            entityManager.merge(jproc);
+        }
+
     }
+
+    @Override
+    public Long getUAbyCodProcedimiento(Long codProcedimiento) {
+        JProcedimientoWorkflow jprocWF = getWF(codProcedimiento, Constantes.PROCEDIMIENTO_DEFINITIVO);
+        if (jprocWF == null) {
+            return null;
+        }
+        return jprocWF.getUaInstructor().getCodigo();
+    }
+
 
     @Override
     public void actualizarFechaActualizacion(Long codigo) {
@@ -971,6 +1100,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         //Lo ultimo es borrar el propio WF
         entityManager.remove(jprocWF);
+        entityManager.flush();
     }
 
     @Override
@@ -1300,57 +1430,193 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
     }
 
+    /**
+     * Obtiene el enlace telematico de un servicio..
+     *
+     * @param idServicio Id servicio
+     * @param lang       Idioma, por defecto, ca.
+     * @return Devuelve la url.
+     * @throws DelegateException
+     * @ejb.interface-method
+     * @ejb.permission role-name="${role.system},${role.admin},${role.super},${role.oper}"
+     */
+    @Override
+    public String getEnlaceTelematico(ProcedimientoFiltro filtro) {
+        List<ProcedimientoBaseDTO> lista = this.findProcedimientosPagedByFiltroRest(filtro);
+        ServicioDTO serv = null;
+        String res = "";
+        if (lista != null && !lista.isEmpty()) {
+            serv = (ServicioDTO) lista.get(0);
+        }
+
+        if (serv != null) {
+            res = montarUrl(serv, filtro.getIdioma());
+        }
+
+
+        return res;
+    }
+
+    private String montarUrl(ServicioDTO serv, String lang) {
+        TipoTramitacionDTO servTr = serv.getTipoTramitacion();
+        String res = "";
+        try {
+            final String idTramite = servTr.getTramiteId();
+            final String numVersion = servTr.getTramiteVersion().toString();
+            final String idioma = lang;
+            final String parametros;
+            if (servTr.getTramiteParametros() == null) {
+                parametros = "";
+            } else {
+                parametros = servTr.getTramiteParametros();
+            }
+            final String idTramiteRolsac = serv.getCodigo().toString();
+
+            String url = servTr.getCodPlatTramitacion().getUrlAcceso().getTraduccion(lang);
+
+            url = url.replace("${idTramitePlataforma}", idTramite);
+            url = url.replace("${versionTramitePlatorma}", numVersion);
+            url = url.replace("${parametros}", parametros);
+            url = url.replace("${servicio}", String.valueOf(true));
+            url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
+
+
+            res = url;
+        } catch (final Exception e) {
+
+            // si ocurre un error es porque alguno de los campos de url del trámite no
+            // existen. buscamos en la url externa.
+            res = servTr.getUrlTramitacion();
+        }
+
+        return res;
+    }
+
     @Override
     public void updateWF(JProcedimientoWorkflow jProcWF) {
         entityManager.merge(jProcWF);
     }
 
     private Query getQuery(boolean isTotal, ProcedimientoFiltro filtro) {
+        return getQuery(isTotal, filtro, false);
+    }
+
+    private Query getQuery(boolean isTotal, ProcedimientoFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
+        boolean ambosWf = false;
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = true LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+        } else if (isRest) {
+            if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("D")) {
+                sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF ON wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
+            } else if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("M")) {
+                sql = new StringBuilder("SELECT  wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF ON wf.workflow = true LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma  LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
+            } else if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("T")) {
+                sql = new StringBuilder("SELECT  wf, wf2 FROM JProcedimiento j LEFT JOIN j.procedimientoWF WF ON wf.workflow = true or wf.workflow is null LEFT JOIN j.procedimientoWF WF2 ON wf2.workflow = false or wf2.workflow is null LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma=:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");//and((wf.workflow = true and wf2.workflow is null) or (wf.workflow = true and wf2.workflow = false) or (wf.workflow is null and wf2.workflow = false))
+                ambosWf = true;
+            } else {
+                sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF ON wf.workflow = true or wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma  where 1 = 1 ");
+            }
         } else {
             sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, j.codigoDir3SIA, t.nombre, t2.nombre, tipoPro1.descripcion, tipoPro2.descripcion, j.fechaActualizacion, wf.comun, wf2.comun, (select tram.codigo || '#' || to_char(tram.fechaPublicacion, 'DD/MM/YYYY HH24:MI') || '#' || to_char(tram.fechaCierre, 'DD/MM/YYYY HH24:MI') FROM JProcedimientoTramite tram where wf.codigo = tram.procedimiento.codigo and tram.fase = 1), wf.fechaPublicacion, wf.fechaCaducidad, j.mensajesPendienteGestor, j.mensajesPendienteSupervisor FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.PUBLICADO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+            ambosWf = true;
         }
 
-        if (filtro.isRellenoTexto()) {
+        if (filtro.isRellenoTexto() && ambosWf) {
             sql.append(" and ( LOWER(cast(j.codigo as string)) like :filtro " + " OR LOWER(t.nombre) LIKE :filtro  OR LOWER(t2.nombre) LIKE :filtro " + " OR LOWER(wf.estado) LIKE :filtro OR LOWER(wf2.estado) LIKE :filtro    " + " OR LOWER(j.tipo) LIKE :filtro  OR LOWER(cast(j.codigoSIA as string)) LIKE :filtro " + " OR LOWER(cast(j.estadoSIA as string)) LIKE :filtro OR LOWER(cast(j.codigoDir3SIA as string)) LIKE :filtro )");
+        } else if (filtro.isRellenoTexto()) {
+            sql.append(" and ( LOWER(cast(j.codigo as string)) like :filtro " + " OR LOWER(t.nombre) LIKE :filtro " + " OR LOWER(wf.estado) LIKE :filtro " + " OR LOWER(j.tipo) LIKE :filtro  OR LOWER(cast(j.codigoSIA as string)) LIKE :filtro " + " OR LOWER(cast(j.estadoSIA as string)) LIKE :filtro OR LOWER(cast(j.codigoDir3SIA as string)) LIKE :filtro )");
         }
-        if (filtro.isRellenoFormaInicio()) {
-            sql.append(" AND ( WF.formaInicio.codigo = :formaInicio or  WF2.formaInicio.codigo = :formaInicio)");
+
+        if (filtro.isRellenoFormaInicio() && ambosWf) {
+            sql.append(" AND ( WF.formaInicio.codigo = :formaInicio or  WF2.formaInicio.codigo = :formaInicio) ");
+        } else if (filtro.isRellenoFormaInicio()) {
+            sql.append(" AND ( WF.formaInicio.codigo = :formaInicio) ");
         }
+
         if (filtro.isRellenoPublicoObjetivo()) {
             sql.append(" AND exists (select pubObj from JProcedimientoPublicoObjectivo pubObj where pubObj.tipoPublicoObjetivo = :tipoPublicoObjetivo and pubObj.procedimiento.codigo = WF.codigo ) ");
         }
+
         if (filtro.isRellenoTipo()) {
             sql.append(" AND j.tipo = :tipo ");
         }
-        if (filtro.isRellenoTipoProcedimiento()) {
-            sql.append(" AND (WF.tipoProcedimiento.codigo = :tipoProcedimiento or WF2.tipoProcedimiento.codigo = :tipoProcedimiento) ");
+
+        if (filtro.isRellenoSiaFecha()) {
+            sql.append(" AND j.siaFecha = :siaFecha ");
         }
-        if (filtro.isRellenoSilencioAdministrativo()) {
+
+        if (filtro.isRellenoFechaPublicacionDesde() && ambosWf) {
+            sql.append(" AND (WF.fechaPublicacion >= :fechaPublicacionDesde or WF2.fechaPublicacion >= :fechaPublicacionDesde) ");
+        } else if (filtro.isRellenoFechaPublicacionDesde()) {
+            sql.append(" AND (WF.fechaPublicacion >= :fechaPublicacionDesde) ");
+        }
+
+        if (filtro.isRellenoFechaPublicacionHasta() && ambosWf) {
+            sql.append(" AND (WF.fechaPublicacion <= :fechaPublicacionHasta or WF2.fechaPublicacion <= :fechaPublicacionHasta) ");
+        } else if (filtro.isRellenoFechaPublicacionHasta()) {
+            sql.append(" AND (WF.fechaPublicacion <= :fechaPublicacionHasta) ");
+        }
+
+        if (filtro.isRellenoTipoProcedimiento() && ambosWf) {
+            sql.append(" AND (WF.tipoProcedimiento.codigo = :tipoProcedimiento or WF2.tipoProcedimiento.codigo = :tipoProcedimiento) ");
+        } else if (filtro.isRellenoTipoProcedimiento()) {
+            sql.append(" AND (WF.tipoProcedimiento.codigo = :tipoProcedimiento) ");
+        }
+
+        if (filtro.isRellenoSilencioAdministrativo() && ambosWf) {
             sql.append(" AND (WF.silencioAdministrativo.codigo = :tipoSilencio or WF2.silencioAdministrativo.codigo = :tipoSilencio) ");
+        } else if (filtro.isRellenoTipoProcedimiento()) {
+            sql.append(" AND (WF.silencioAdministrativo.codigo = :tipoSilencio) ");
         }
 
         if ((filtro.isRellenoHijasActivas() && !filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {
-            sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) OR WF2.uaInstructor.codigo in (:idUAs)) ");
+            if (ambosWf) {
+                sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) OR WF2.uaInstructor.codigo in (:idUAs)) ");
+            } else {
+                sql.append(" AND (WF.uaInstructor.codigo in (:idUAs)) ");
+            }
         } else if ((filtro.isRellenoHijasActivas() && filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {
-            sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) OR WF.uaInstructor.codigo in (:idUAsAux) OR WF2.uaInstructor.codigo in (:idUAs) OR WF2.uaInstructor.codigo in (:idUAsAux)) ");
+            if (ambosWf) {
+                sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) OR WF.uaInstructor.codigo in (:idUAsAux) OR WF2.uaInstructor.codigo in (:idUAs) OR WF2.uaInstructor.codigo in (:idUAsAux)) ");
+            } else {
+                sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) OR WF.uaInstructor.codigo in (:idUAsAux)) ");
+            }
         } else if (filtro.isRellenoIdUA()) {
-            sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA) ");
+            if (ambosWf) {
+                sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA) ");
+            } else {
+                sql.append(" AND (WF.uaInstructor.codigo = :idUA) ");
+            }
         }
         if (filtro.isRellenoNormativas()) {
-            sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoNormativa procNorm WHERE (procNorm.codigo.procedimiento = WF.codigo OR procNorm.codigo.procedimiento = WF2.codigo) AND procNorm.codigo.normativa IN (:normativas) ) ");
+            if (ambosWf) {
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoNormativa procNorm WHERE (procNorm.codigo.procedimiento = WF.codigo OR procNorm.codigo.procedimiento = WF2.codigo) AND procNorm.codigo.normativa IN (:normativas) ) ");
+            } else {
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoNormativa procNorm WHERE (procNorm.codigo.procedimiento = WF.codigo) AND procNorm.codigo.normativa IN (:normativas) ) ");
+            }
         }
         if (filtro.isRellenoPublicoObjetivos()) {
-            sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo OR procPub.codigo.procedimiento = WF2.codigo) AND procPub.codigo.tipoPublicoObjetivo IN (:publicoObjetivos) ) ");
+            if (ambosWf) {
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo OR procPub.codigo.procedimiento = WF2.codigo) AND procPub.codigo.tipoPublicoObjetivo IN (:publicoObjetivos) ) ");
+            } else {
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo) AND procPub.codigo.tipoPublicoObjetivo IN (:publicoObjetivos) ) ");
+            }
         }
         if (filtro.isRellenoMaterias()) {
-            sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoMateriaSIA procMat WHERE (procMat.codigo.procedimiento = WF.codigo OR procMat.codigo.procedimiento = WF2.codigo) AND procMat.codigo.tipoMateriaSIA IN (:materias) ) ");
+            if (ambosWf) {
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoMateriaSIA procMat WHERE (procMat.codigo.procedimiento = WF.codigo OR procMat.codigo.procedimiento = WF2.codigo) AND procMat.codigo.tipoMateriaSIA IN (:materias) ) ");
+            } else {
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoMateriaSIA procMat WHERE (procMat.codigo.procedimiento = WF.codigo) AND procMat.codigo.tipoMateriaSIA IN (:materias) ) ");
+            }
         }
-        if (filtro.isRellenoTemas())  {
-            sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoTema procTema WHERE (procTema.codigo.procedimiento = WF.codigo OR procTema.codigo.procedimiento = WF2.codigo) AND procTema.codigo.tema IN (:temas)) ");
+        if (filtro.isRellenoTemas()) {
+            if (ambosWf) {
+                sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoTema procTema WHERE (procTema.codigo.procedimiento = WF.codigo OR procTema.codigo.procedimiento = WF2.codigo) AND procTema.codigo.tema IN (:temas)) ");
+            } else {
+                sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoTema procTema WHERE (procTema.codigo.procedimiento = WF.codigo) AND procTema.codigo.tema IN (:temas)) ");
+            }
         }
         if (filtro.isRellenoMensajesPendientes()) {
             if (filtro.getMensajesPendiente().equals("PE")) {
@@ -1379,16 +1645,35 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND j.codigo LIKE :codigoProc ");
         }
         if (filtro.isRellenoCodigoTram()) {
-            sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND j.codigo = :codigoTram ) ");
+            if (ambosWf) {
+                sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND j.codigo = :codigoTram ) ");
+            } else {
+                sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND j.codigo = :codigoTram ) ");
+            }
         }
         if (filtro.isRellenoCodigoSIA()) {
             sql.append(" AND j.codigoSIA LIKE :codigoSIA ");
         }
+        if (filtro.isRellenoCodigoUaDir3()) {
+            if (ambosWf) {
+                sql.append(" AND ((WF.uaInstructor.codigoDIR3 LIKE :codigoUaDir3) or (WF2.uaInstructor.codigoDIR3 LIKE :codigoUaDir3)) ");
+            } else {
+                sql.append(" AND (WF.uaInstructor.codigoDIR3 LIKE :codigoUaDir3) ");
+            }
+        }
         if (filtro.isRellenoEstado()) {
-            sql.append(" AND ( wf.estado = :estado OR wf2.estado = :estado) ");
+            if (ambosWf) {
+                sql.append(" AND ( wf.estado = :estado OR wf2.estado = :estado) ");
+            } else {
+                sql.append(" AND ( wf.estado = :estado) ");
+            }
         }
         if (filtro.isRellenoFinVia()) {
-            sql.append(" AND (wf.tipoVia.codigo = :finVia or wf2.tipoVia.codigo = :finVia) ");
+            if (ambosWf) {
+                sql.append(" AND (wf.tipoVia.codigo = :finVia or wf2.tipoVia.codigo = :finVia) ");
+            } else {
+                sql.append(" AND (wf.tipoVia.codigo = :finVia) ");
+            }
         }
         if (filtro.isRellenoTramiteVigente()) {
             //ROLSAC1
@@ -1396,34 +1681,66 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
 
             if ("S".equals(filtro.getTramiteVigente())) {
-                sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t where t.fase = 1 and (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND (t.fechaInicio < current_date OR t.fechaInicio IS NULL) AND (t.fechaCierre > current_date OR t.fechaCierre IS NULL) )");
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t where t.fase = 1 and (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND (t.fechaInicio < current_date OR t.fechaInicio IS NULL) AND (t.fechaCierre > current_date OR t.fechaCierre IS NULL) )");
+                } else {
+                    sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t where t.fase = 1 and (t.procedimiento.codigo = WF.codigo) AND (t.fechaInicio < current_date OR t.fechaInicio IS NULL) AND (t.fechaCierre > current_date OR t.fechaCierre IS NULL) )");
+                }
             } else {
-                sql.append(" AND (EXISTS (SELECT t FROM JProcedimientoTramite t where (t.fase = 1 and ((t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND (t.fechaInicio > current_date OR t.fechaCierre < current_date)))) OR WF.codigo NOT IN (SELECT t.procedimiento.codigo FROM JProcedimientoTramite t) OR WF2.codigo NOT IN (SELECT t.procedimiento.codigo FROM JProcedimientoTramite t)) ");
+                if (ambosWf) {
+                    sql.append(" AND (EXISTS (SELECT t FROM JProcedimientoTramite t where (t.fase = 1 and ((t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND (t.fechaInicio > current_date OR t.fechaCierre < current_date)))) OR WF.codigo NOT IN (SELECT t.procedimiento.codigo FROM JProcedimientoTramite t) OR WF2.codigo NOT IN (SELECT t.procedimiento.codigo FROM JProcedimientoTramite t)) ");
+                } else {
+                    sql.append(" AND (EXISTS (SELECT t FROM JProcedimientoTramite t where (t.fase = 1 and ((t.procedimiento.codigo = WF.codigo) AND (t.fechaInicio > current_date OR t.fechaCierre < current_date)))) OR WF.codigo NOT IN (SELECT t.procedimiento.codigo FROM JProcedimientoTramite t)) ");
+                }
             }
         }
         if (filtro.isRellenoTramiteTelematico()) {
             switch (filtro.getTramiteTelematico()) {
                 case "P":
-                    sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitPresencial is true OR j.tipoTramitacion.tramitPresencial is true)) ");
+                    if (ambosWf) {
+                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitPresencial is true OR j.tipoTramitacion.tramitPresencial is true)) ");
+                    } else {
+                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitPresencial is true OR j.tipoTramitacion.tramitPresencial is true)) ");
+                    }
                     break;
                 case "T":
-                    sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+                    if (ambosWf) {
+                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+                    } else {
+                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+                    }
                     break;
                 case "A":
-                    sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true OR j.tramitPresencial is true OR j.tipoTramitacion.tramitPresencial is true)) ");
+                    if (ambosWf) {
+                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true OR j.tramitPresencial is true OR j.tipoTramitacion.tramitPresencial is true)) ");
+                    } else {
+                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true OR j.tramitPresencial is true OR j.tipoTramitacion.tramitPresencial is true)) ");
+                    }
                     break;
                 default:
                     break;
             }
         }
         if (filtro.isRellenoPlantilla()) {
-            sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND j.tipoTramitacionPlantilla.codigo = :plantilla )  ");
+            if (ambosWf) {
+                sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND j.tipoTramitacionPlantilla.codigo = :plantilla )  ");
+            } else {
+                sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND j.tipoTramitacionPlantilla.codigo = :plantilla )  ");
+            }
         }
         if (filtro.isRellenoPlataforma()) {
-            sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion as tipo inner join tipo.codPlatTramitacion plataforma where (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND ( plataforma.codigo = :plataforma) ) ");
+            if (ambosWf) {
+                sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion as tipo inner join tipo.codPlatTramitacion plataforma where (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND ( plataforma.codigo = :plataforma) ) ");
+            } else {
+                sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion as tipo inner join tipo.codPlatTramitacion plataforma where (t.procedimiento.codigo = WF.codigo) AND ( plataforma.codigo = :plataforma) ) ");
+            }
         }
         if (filtro.isRellenoComun()) {
-            sql.append(" AND (wf.comun = :comun or wf2.comun = :comun) ");
+            if (ambosWf) {
+                sql.append(" AND (wf.comun = :comun or wf2.comun = :comun) ");
+            } else {
+                sql.append(" AND (wf.comun = :comun) ");
+            }
         }
 
         if (filtro.getOrderBy() != null) {
@@ -1435,6 +1752,36 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         query.setParameter("idioma", filtro.getIdioma());
         if (filtro.isRellenoTipo()) {
             query.setParameter("tipo", filtro.getTipo());
+        }
+        if (filtro.isRellenoSiaFecha()) {
+            try {
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = df.parse(filtro.getSiaFecha());
+                Timestamp timeStampDate = new Timestamp(date.getTime());
+                query.setParameter("siaFecha", timeStampDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        if (filtro.isRellenoFechaPublicacionDesde()) {
+            try {
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = df.parse(filtro.getFechaPublicacionDesde());
+                Timestamp timeStampDate = new Timestamp(date.getTime());
+                query.setParameter("fechaPublicacionDesde", timeStampDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        if (filtro.isRellenoFechaPublicacionHasta()) {
+            try {
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = df.parse(filtro.getFechaPublicacionHasta());
+                Timestamp timeStampDate = new Timestamp(date.getTime());
+                query.setParameter("fechaPublicacionHasta", timeStampDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
@@ -1463,7 +1810,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoEstado()) {
             query.setParameter("estado", filtro.getEstado());
         }
-
+        if (filtro.isRellenoCodigoUaDir3()) {
+            query.setParameter("codigoUaDir3", "%" + filtro.getCodigoUaDir3().toUpperCase() + "%");
+        }
         if ((filtro.isRellenoHijasActivas() && !filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {
             query.setParameter("idUAs", filtro.getIdUAsHijas());
         } else if ((filtro.isRellenoHijasActivas() && filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {

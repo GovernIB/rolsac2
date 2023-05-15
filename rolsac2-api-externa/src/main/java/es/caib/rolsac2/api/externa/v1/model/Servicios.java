@@ -1,6 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.io.IOException;
 import java.util.Calendar;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,10 +9,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.api.externa.v1.utils.Utiles;
@@ -133,9 +128,9 @@ public class Servicios extends EntidadBase {
 //	@Schema
 //	private LopdLegitimacion lopdLegitimacion;
 
-	/** Info Adicional **/
-	@Schema(description = "lopdInfoAdicional", type = SchemaType.STRING, required = false)
-	private String lopdInfoAdicional;
+//	/** Info Adicional **/
+//	@Schema(description = "lopdInfoAdicional", type = SchemaType.STRING, required = false)
+//	private String lopdInfoAdicional;
 
 	@Schema(description = "lopdResponsable", type = SchemaType.STRING, required = false)
 	private String lopdResponsable;
@@ -152,7 +147,7 @@ public class Servicios extends EntidadBase {
 //	@Schema(description = "lopdCabecera", type = SchemaType.STRING, required = false)
 //	private String lopdCabecera;
 
-	@Schema(description = "lopdCabecera", type = SchemaType.STRING, required = false)
+	@Schema(description = "codigoWF", type = SchemaType.STRING, required = false)
     private Long codigoWF;
 
 	@Schema(description = "tipo", type = SchemaType.STRING, required = false)
@@ -173,16 +168,16 @@ public class Servicios extends EntidadBase {
     private Long uaResponsable;
 	@Schema(description = "uaInstructor", type = SchemaType.INTEGER, required = false)
     private Long uaInstructor;
-	@Schema(description = "iniciacion", type = SchemaType.INTEGER, required = false)
-    private Long iniciacion;
-	@Schema(description = "responsable", type = SchemaType.STRING, required = false)
-    private String responsable;
-	@Schema(description = "silencio", type = SchemaType.INTEGER, required = false)
-    private Long silencio;
-	@Schema(description = "tipoProcedimiento", type = SchemaType.INTEGER, required = false)
-    private Long tipoProcedimiento;
-	@Schema(description = "tipoVia", type = SchemaType.INTEGER, required = false)
-    private Long tipoVia;
+//	@Schema(description = "iniciacion", type = SchemaType.INTEGER, required = false)
+//    private Long iniciacion;
+//	@Schema(description = "responsable", type = SchemaType.STRING, required = false)
+//    private String responsable;
+//	@Schema(description = "silencio", type = SchemaType.INTEGER, required = false)
+//    private Long silencio;
+//	@Schema(description = "tipoProcedimiento", type = SchemaType.INTEGER, required = false)
+//    private Long tipoProcedimiento;
+//	@Schema(description = "tipoVia", type = SchemaType.INTEGER, required = false)
+//    private Long tipoVia;
 	@Schema(description = "habilitadoApoderado", type = SchemaType.BOOLEAN, required = false)
     private boolean habilitadoApoderado;
 	@Schema(description = "habilitadoFuncionario", type = SchemaType.STRING, required = false)
@@ -195,28 +190,28 @@ public class Servicios extends EntidadBase {
     private String responsableTelefono;
 	@Schema(description = "nombreProcedimientoWorkFlow", type = SchemaType.STRING, required = false)
     private String nombreProcedimientoWorkFlow;
-	@Schema(description = "datosPersonalesFinalidad", type = SchemaType.STRING, required = false)
-    private String datosPersonalesFinalidad;
-	@Schema(description = "datosPersonalesDestinatario", type = SchemaType.STRING, required = false)
-    private String datosPersonalesDestinatario;
+//	@Schema(description = "datosPersonalesFinalidad", type = SchemaType.STRING, required = false)
+//    private String datosPersonalesFinalidad;
+//	@Schema(description = "datosPersonalesDestinatario", type = SchemaType.STRING, required = false)
+//    private String datosPersonalesDestinatario;
 	@Schema(description = "terminoResolucion", type = SchemaType.STRING, required = false)
     private String terminoResolucion;
-	@Schema(description = "mensajes", type = SchemaType.STRING, required = false)
-    private String mensajes;
-	@Schema(description = "usuarioAuditoria", type = SchemaType.STRING, required = false)
-    private String usuarioAuditoria;
-	@Schema(description = "pendienteIndexar", type = SchemaType.BOOLEAN, required = false)
-    private boolean pendienteIndexar = false;
-	@Schema(description = "pendienteMensajesGestor", type = SchemaType.BOOLEAN, required = false)
-    private boolean pendienteMensajesGestor = false;
-	@Schema(description = "pendienteMensajesSupervisor", type = SchemaType.BOOLEAN, required = false)
-    private boolean pendienteMensajesSupervisor = false;
-	@Schema(description = "tasa", type = SchemaType.STRING, required = false)
-    private String tasa;
-	@Schema(description = "tipoTramitacion", type = SchemaType.INTEGER, required = false)
-    private Long tipoTramitacion;
-	@Schema(description = "plantillaSel", type = SchemaType.INTEGER, required = false)
-    private Long plantillaSel;
+//	@Schema(description = "mensajes", type = SchemaType.STRING, required = false)
+//    private String mensajes;
+//	@Schema(description = "usuarioAuditoria", type = SchemaType.STRING, required = false)
+//    private String usuarioAuditoria;
+//	@Schema(description = "pendienteIndexar", type = SchemaType.BOOLEAN, required = false)
+//    private boolean pendienteIndexar = false;
+//	@Schema(description = "pendienteMensajesGestor", type = SchemaType.BOOLEAN, required = false)
+//    private boolean pendienteMensajesGestor = false;
+//	@Schema(description = "pendienteMensajesSupervisor", type = SchemaType.BOOLEAN, required = false)
+//    private boolean pendienteMensajesSupervisor = false;
+//	@Schema(description = "tasa", type = SchemaType.STRING, required = false)
+//    private String tasa;
+//	@Schema(description = "tipoTramitacion", type = SchemaType.INTEGER, required = false)
+//    private Long tipoTramitacion;
+//	@Schema(description = "plantillaSel", type = SchemaType.INTEGER, required = false)
+//    private Long plantillaSel;
 	@Schema(description = "tramitPresencial", type = SchemaType.BOOLEAN, required = false)
     private boolean tramitPresencial;
 	@Schema(description = "tramitElectronica", type = SchemaType.BOOLEAN, required = false)
@@ -243,8 +238,8 @@ public class Servicios extends EntidadBase {
 			this.activoLOPD = elem.isActivoLOPD();
 			this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA().toString();
 			this.codigoWF = elem.getCodigoWF();
-			this.datosPersonalesDestinatario = elem.getDatosPersonalesDestinatario() == null ? null : elem.getDatosPersonalesDestinatario().getTraduccion(idioma);
-			this.datosPersonalesFinalidad = elem.getDatosPersonalesFinalidad() == null ? null : elem.getDatosPersonalesFinalidad().getTraduccion(idioma);
+//			this.datosPersonalesDestinatario = elem.getDatosPersonalesDestinatario() == null ? null : elem.getDatosPersonalesDestinatario().getTraduccion(idioma);
+//			this.datosPersonalesFinalidad = elem.getDatosPersonalesFinalidad() == null ? null : elem.getDatosPersonalesFinalidad().getTraduccion(idioma);
 			this.datosPersonalesLegitimacion = elem.getDatosPersonalesLegitimacion() == null ? null : elem.getDatosPersonalesLegitimacion().getCodigo();
 			this.destinatarios = elem.getDestinatarios() == null ? null : elem.getDestinatarios().getTraduccion(idioma);
 			this.estado = elem.getEstado() == null ? null : elem.getEstado().name();
@@ -254,40 +249,40 @@ public class Servicios extends EntidadBase {
 			this.fechaSIA = elem.getFechaSIA() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaSIA());
 			this.habilitadoApoderado = elem.isHabilitadoApoderado();
 			this.habilitadoFuncionario = elem.getHabilitadoFuncionario();
-			this.iniciacion = elem.getIniciacion() == null ? null : elem.getIniciacion().getCodigo();
+//			this.iniciacion = elem.getIniciacion() == null ? null : elem.getIniciacion().getCodigo();
 			this.interno = elem.isInterno();
 			this.lopdDerechos = elem.getLopdDerechos() == null ? null : elem.getLopdDerechos().getTraduccion(idioma);
 			this.lopdDestinatario = elem.getLopdDestinatario() == null ? null : elem.getLopdDestinatario().getTraduccion(idioma);
 			this.lopdFinalidad = elem.getLopdFinalidad() == null ? null : elem.getLopdFinalidad().getTraduccion(idioma);
-			this.lopdInfoAdicional = elem.getLopdInfoAdicional() == null ? null : elem.getLopdInfoAdicional().getTraduccion(idioma);
+//			this.lopdInfoAdicional = elem.getLopdInfoAdicional() == null ? null : elem.getLopdInfoAdicional().getTraduccion(idioma);
 			this.lopdResponsable = elem.getLopdResponsable();
-			this.mensajes = elem.getMensajes();
+//			this.mensajes = elem.getMensajes();
 			this.nombreProcedimientoWorkFlow = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccion(idioma);
 			this.objeto = elem.getObjeto() == null ? null : elem.getObjeto().getTraduccion(idioma);
 			this.observaciones = elem.getObservaciones() == null ? null : elem.getObservaciones().getTraduccion(idioma);
-			this.pendienteIndexar = elem.isPendienteIndexar();
-			this.pendienteMensajesGestor = elem.isPendienteMensajesGestor();
-			this.pendienteMensajesSupervisor = elem.isPendienteMensajesSupervisor();
-			this.plantillaSel = elem.getPlantillaSel() == null ? null : elem.getPlantillaSel().getCodigo();
+//			this.pendienteIndexar = elem.isPendienteIndexar();
+//			this.pendienteMensajesGestor = elem.isPendienteMensajesGestor();
+//			this.pendienteMensajesSupervisor = elem.isPendienteMensajesSupervisor();
+//			this.plantillaSel = elem.getPlantillaSel() == null ? null : elem.getPlantillaSel().getCodigo();
 			this.publicado = elem.isPublicado();
 			this.requisitos = elem.getRequisitos() == null ? null : elem.getRequisitos().getTraduccion(idioma);
-			this.responsable = elem.getResponsable();
+//			this.responsable = elem.getResponsable();
 			this.responsableEmail = elem.getResponsableEmail();
 			this.responsableTelefono = elem.getResponsableTelefono();
-			this.silencio = elem.getSilencio() == null ? null : elem.getSilencio().getCodigo();
-			this.tasa = elem.getTasa();
+//			this.silencio = elem.getSilencio() == null ? null : elem.getSilencio().getCodigo();
+//			this.tasa = elem.getTasa();
 			this.terminoResolucion = elem.getTerminoResolucion() == null ? null : elem.getTerminoResolucion().getTraduccion(idioma);
 			this.tieneTasa = elem.isTieneTasa();
 			this.tipo = elem.getTipo();
-			this.tipoProcedimiento = elem.getTipoProcedimiento() == null ? null : elem.getTipoProcedimiento().getCodigo();
-			this.tipoTramitacion = elem.getTipoTramitacion() == null ? null : elem.getTipoTramitacion().getCodigo();
-			this.tipoVia = elem.getTipoVia() == null ? null : elem.getTipoVia().getCodigo();
+//			this.tipoProcedimiento = elem.getTipoProcedimiento() == null ? null : elem.getTipoProcedimiento().getCodigo();
+//			this.tipoTramitacion = elem.getTipoTramitacion() == null ? null : elem.getTipoTramitacion().getCodigo();
+//			this.tipoVia = elem.getTipoVia() == null ? null : elem.getTipoVia().getCodigo();
 			this.tramitElectronica = elem.isTramitElectronica();
 			this.tramitTelefonica = elem.isTramitTelefonica();
 			this.tramitPresencial = elem.isTramitPresencial();
 			this.uaInstructor = elem.getUaInstructor() == null ? null : elem.getUaInstructor().getCodigo();
 			this.uaResponsable = elem.getUaResponsable() == null ? null : elem.getUaResponsable().getCodigo();
-			this.usuarioAuditoria = elem.getUsuarioAuditoria();
+//			this.usuarioAuditoria = elem.getUsuarioAuditoria();
 			this.workflow = elem.getWorkflow() == null ? null : elem.getWorkflow().name();
 		}
 
@@ -771,19 +766,19 @@ public class Servicios extends EntidadBase {
 //		this.linkLopdInfoAdicional = linkLopdInfoAdicional;
 //	}
 
-	/**
-	 * @return the lopdInfoAdicional
-	 */
-	public String getLopdInfoAdicional() {
-		return lopdInfoAdicional;
-	}
-
-	/**
-	 * @param lopdInfoAdicional the lopdInfoAdicional to set
-	 */
-	public void setLopdInfoAdicional(final String lopdInfoAdicional) {
-		this.lopdInfoAdicional = lopdInfoAdicional;
-	}
+//	/**
+//	 * @return the lopdInfoAdicional
+//	 */
+//	public String getLopdInfoAdicional() {
+//		return lopdInfoAdicional;
+//	}
+//
+//	/**
+//	 * @param lopdInfoAdicional the lopdInfoAdicional to set
+//	 */
+//	public void setLopdInfoAdicional(final String lopdInfoAdicional) {
+//		this.lopdInfoAdicional = lopdInfoAdicional;
+//	}
 
 	/**
 	 * @return the lopdResponsable
@@ -935,45 +930,45 @@ public class Servicios extends EntidadBase {
 		this.uaInstructor = uaInstructor;
 	}
 
-	public Long getIniciacion() {
-		return iniciacion;
-	}
+//	public Long getIniciacion() {
+//		return iniciacion;
+//	}
+//
+//	public void setIniciacion(Long iniciacion) {
+//		this.iniciacion = iniciacion;
+//	}
+//
+//	public String getResponsable() {
+//		return responsable;
+//	}
+//
+//	public void setResponsable(String responsable) {
+//		this.responsable = responsable;
+//	}
 
-	public void setIniciacion(Long iniciacion) {
-		this.iniciacion = iniciacion;
-	}
-
-	public String getResponsable() {
-		return responsable;
-	}
-
-	public void setResponsable(String responsable) {
-		this.responsable = responsable;
-	}
-
-	public Long getSilencio() {
-		return silencio;
-	}
-
-	public void setSilencio(Long silencio) {
-		this.silencio = silencio;
-	}
-
-	public Long getTipoProcedimiento() {
-		return tipoProcedimiento;
-	}
-
-	public void setTipoProcedimiento(Long tipoProcedimiento) {
-		this.tipoProcedimiento = tipoProcedimiento;
-	}
-
-	public Long getTipoVia() {
-		return tipoVia;
-	}
-
-	public void setTipoVia(Long tipoVia) {
-		this.tipoVia = tipoVia;
-	}
+//	public Long getSilencio() {
+//		return silencio;
+//	}
+//
+//	public void setSilencio(Long silencio) {
+//		this.silencio = silencio;
+//	}
+//
+//	public Long getTipoProcedimiento() {
+//		return tipoProcedimiento;
+//	}
+//
+//	public void setTipoProcedimiento(Long tipoProcedimiento) {
+//		this.tipoProcedimiento = tipoProcedimiento;
+//	}
+//
+//	public Long getTipoVia() {
+//		return tipoVia;
+//	}
+//
+//	public void setTipoVia(Long tipoVia) {
+//		this.tipoVia = tipoVia;
+//	}
 
 	public boolean isHabilitadoApoderado() {
 		return habilitadoApoderado;
@@ -1023,21 +1018,21 @@ public class Servicios extends EntidadBase {
 		this.nombreProcedimientoWorkFlow = nombreProcedimientoWorkFlow;
 	}
 
-	public String getDatosPersonalesFinalidad() {
-		return datosPersonalesFinalidad;
-	}
-
-	public void setDatosPersonalesFinalidad(String datosPersonalesFinalidad) {
-		this.datosPersonalesFinalidad = datosPersonalesFinalidad;
-	}
-
-	public String getDatosPersonalesDestinatario() {
-		return datosPersonalesDestinatario;
-	}
-
-	public void setDatosPersonalesDestinatario(String datosPersonalesDestinatario) {
-		this.datosPersonalesDestinatario = datosPersonalesDestinatario;
-	}
+//	public String getDatosPersonalesFinalidad() {
+//		return datosPersonalesFinalidad;
+//	}
+//
+//	public void setDatosPersonalesFinalidad(String datosPersonalesFinalidad) {
+//		this.datosPersonalesFinalidad = datosPersonalesFinalidad;
+//	}
+//
+//	public String getDatosPersonalesDestinatario() {
+//		return datosPersonalesDestinatario;
+//	}
+//
+//	public void setDatosPersonalesDestinatario(String datosPersonalesDestinatario) {
+//		this.datosPersonalesDestinatario = datosPersonalesDestinatario;
+//	}
 
 	public String getTerminoResolucion() {
 		return terminoResolucion;
@@ -1047,69 +1042,69 @@ public class Servicios extends EntidadBase {
 		this.terminoResolucion = terminoResolucion;
 	}
 
-	public String getMensajes() {
-		return mensajes;
-	}
-
-	public void setMensajes(String mensajes) {
-		this.mensajes = mensajes;
-	}
-
-	public String getUsuarioAuditoria() {
-		return usuarioAuditoria;
-	}
-
-	public void setUsuarioAuditoria(String usuarioAuditoria) {
-		this.usuarioAuditoria = usuarioAuditoria;
-	}
-
-	public boolean isPendienteIndexar() {
-		return pendienteIndexar;
-	}
-
-	public void setPendienteIndexar(boolean pendienteIndexar) {
-		this.pendienteIndexar = pendienteIndexar;
-	}
-
-	public boolean isPendienteMensajesGestor() {
-		return pendienteMensajesGestor;
-	}
-
-	public void setPendienteMensajesGestor(boolean pendienteMensajesGestor) {
-		this.pendienteMensajesGestor = pendienteMensajesGestor;
-	}
-
-	public boolean isPendienteMensajesSupervisor() {
-		return pendienteMensajesSupervisor;
-	}
-
-	public void setPendienteMensajesSupervisor(boolean pendienteMensajesSupervisor) {
-		this.pendienteMensajesSupervisor = pendienteMensajesSupervisor;
-	}
-
-	public String getTasa() {
-		return tasa;
-	}
-
-	public void setTasa(String tasa) {
-		this.tasa = tasa;
-	}
-
-	public Long getTipoTramitacion() {
-		return tipoTramitacion;
-	}
-
-	public void setTipoTramitacion(Long tipoTramitacion) {
-		this.tipoTramitacion = tipoTramitacion;
-	}
-
-	public Long getPlantillaSel() {
-		return plantillaSel;
-	}
-
-	public void setPlantillaSel(Long plantillaSel) {
-		this.plantillaSel = plantillaSel;
-	}
+//	public String getMensajes() {
+//		return mensajes;
+//	}
+//
+//	public void setMensajes(String mensajes) {
+//		this.mensajes = mensajes;
+//	}
+//
+//	public String getUsuarioAuditoria() {
+//		return usuarioAuditoria;
+//	}
+//
+//	public void setUsuarioAuditoria(String usuarioAuditoria) {
+//		this.usuarioAuditoria = usuarioAuditoria;
+//	}
+//
+//	public boolean isPendienteIndexar() {
+//		return pendienteIndexar;
+//	}
+//
+//	public void setPendienteIndexar(boolean pendienteIndexar) {
+//		this.pendienteIndexar = pendienteIndexar;
+//	}
+//
+//	public boolean isPendienteMensajesGestor() {
+//		return pendienteMensajesGestor;
+//	}
+//
+//	public void setPendienteMensajesGestor(boolean pendienteMensajesGestor) {
+//		this.pendienteMensajesGestor = pendienteMensajesGestor;
+//	}
+//
+//	public boolean isPendienteMensajesSupervisor() {
+//		return pendienteMensajesSupervisor;
+//	}
+//
+//	public void setPendienteMensajesSupervisor(boolean pendienteMensajesSupervisor) {
+//		this.pendienteMensajesSupervisor = pendienteMensajesSupervisor;
+//	}
+//
+//	public String getTasa() {
+//		return tasa;
+//	}
+//
+//	public void setTasa(String tasa) {
+//		this.tasa = tasa;
+//	}
+//
+//	public Long getTipoTramitacion() {
+//		return tipoTramitacion;
+//	}
+//
+//	public void setTipoTramitacion(Long tipoTramitacion) {
+//		this.tipoTramitacion = tipoTramitacion;
+//	}
+//
+//	public Long getPlantillaSel() {
+//		return plantillaSel;
+//	}
+//
+//	public void setPlantillaSel(Long plantillaSel) {
+//		this.plantillaSel = plantillaSel;
+//	}
 
 	public boolean isTramitPresencial() {
 		return tramitPresencial;

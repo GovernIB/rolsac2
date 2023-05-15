@@ -200,9 +200,9 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable, Co
                 obj.titulo = (Literal) this.titulo.clone();
             }
 
-            if (this.url != null) {
-                obj.url = (Literal) this.url.clone();
-            }
+//            if (this.url != null) {
+//                obj.url = (Literal) this.url.clone();
+//            }
 
             if (this.descripcion != null) {
                 obj.descripcion = (Literal) this.descripcion.clone();

@@ -96,6 +96,22 @@ public class ResultadoSIA {
         }
     }
 
+    public boolean isNoError() {
+        if (resultado != ResultadoSIA.RESULTADO_ERROR) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isError() {
+        if (resultado == ResultadoSIA.RESULTADO_ERROR) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Es enviable pero no cumple los datos.
      *

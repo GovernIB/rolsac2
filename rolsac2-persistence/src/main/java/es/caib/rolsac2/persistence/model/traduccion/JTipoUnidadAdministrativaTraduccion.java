@@ -2,7 +2,6 @@ package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.BaseEntity;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
-import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,15 +15,8 @@ import java.util.Objects;
  */
 @Entity
 @SequenceGenerator(name = "tipo-uatra-sequence", sequenceName = "RS2_TIPOUNA_SEQ", allocationSize = 1)
-@Table(name = "RS2_TRATPUA",
-        indexes = {
-                @Index(name = "RS2_TRATPUA_PK", columnList = "TRTU_CODIGO")
-        }
-)
-@NamedQueries({
-        @NamedQuery(name = JTipoUnidadAdministrativaTraduccion.FIND_BY_ID,
-                query = "select p from JTipoUnidadAdministrativaTraduccion p where p.codigo = :id")
-})
+@Table(name = "RS2_TRATPUA", indexes = {@Index(name = "RS2_TRATPUA_PK", columnList = "TRTU_CODIGO")})
+@NamedQueries({@NamedQuery(name = JTipoUnidadAdministrativaTraduccion.FIND_BY_ID, query = "select p from JTipoUnidadAdministrativaTraduccion p where p.codigo = :id")})
 public class JTipoUnidadAdministrativaTraduccion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -40,13 +32,11 @@ public class JTipoUnidadAdministrativaTraduccion extends BaseEntity {
     @JoinColumn(name = "TRTU_CODTPUA")
     private JTipoUnidadAdministrativa tipoUnidadAdministrativa;
 
-
     @Column(name = "TRTU_IDIOMA", length = 2)
     private String idioma;
 
     @Column(name = "TRTU_DESCRI", length = 255)
     private String descripcion;
-
 
     @Column(name = "TRTU_CRGMAS", length = 255)
     private String cargoMasculino;
@@ -153,15 +143,7 @@ public class JTipoUnidadAdministrativaTraduccion extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JTipoUnidadAdministrativaTraduccion{" +
-                "id=" + codigo +
-                "idioma=" + idioma +
-                "descripcion=" + descripcion +
-                "cargoMasculino=" + cargoMasculino +
-                "cargoFemenino=" + cargoFemenino +
-                "tratamientoMasculino=" + tratamientoMasculino +
-                "tratamientoMasculino=" + tratamientoMasculino +
-                '}';
+        return "JTipoUnidadAdministrativaTraduccion{" + "id=" + codigo + "idioma=" + idioma + "descripcion=" + descripcion + "cargoMasculino=" + cargoMasculino + "cargoFemenino=" + cargoFemenino + "tratamientoMasculino=" + tratamientoMasculino + "tratamientoMasculino=" + tratamientoMasculino + '}';
     }
 
 }

@@ -216,8 +216,7 @@ public class SiaUtils {
         return resultado;
     }
 
-    public static EnvioSIA cast(UnidadAdministrativaServiceFacade uaService, ProcedimientoBaseDTO procedimiento,
-                                final SiaEnviableResultado siaEnviableResultado, final SiaCumpleDatos siaCumpleDatos) {
+    public static EnvioSIA cast(UnidadAdministrativaServiceFacade uaService, ProcedimientoBaseDTO procedimiento, final SiaEnviableResultado siaEnviableResultado, final SiaCumpleDatos siaCumpleDatos) {
         final EnvioSIA sia = new EnvioSIA();
 
         final boolean esProcSerInterno = CastUtil.contienePOInterno(procedimiento.getPublicosObjetivo());
@@ -232,12 +231,11 @@ public class SiaUtils {
         sia.setDsObjeto(siaCumpleDatos.getResumen());
 
         sia.setIdCentroDirectivo(siaEnviableResultado.getIdCentro());
-        sia.setIdDepartamento(uaService.obtenerCodigoDIR3(siaCumpleDatos.getSiaUA().getCodigo()));
+        sia.setIdDepartamento(uaService.obtenerCodigoDIR3(siaCumpleDatos.getSiaUA().getUa().getCodigo()));
         if (procedimiento.esComun()) {
             //TODO Pendiente
             //sia.setUaGest(RolsacPropertiesUtil.getUAComun(false));
-        } else if (procedimiento.getUaInstructor() != null && procedimiento.getUaInstructor().getNombre() != null
-                && procedimiento.getUaInstructor().getNombre().getTraduccion("es") != null) {
+        } else if (procedimiento.getUaInstructor() != null && procedimiento.getUaInstructor().getNombre() != null && procedimiento.getUaInstructor().getNombre().getTraduccion("es") != null) {
             sia.setUnidadGestora(procedimiento.getUaInstructor().getNombre().getTraduccion("es"));
         } else {
             sia.setUnidadGestora(procedimiento.getUaInstructor().getNombre().getTraduccion("ca"));
@@ -270,6 +268,10 @@ public class SiaUtils {
                     default:
                         break;
                 }
+            }
+            //TODO para poder avanzar, se añade uno por defecto
+            if (destinatarios.isEmpty()) {
+                destinatarios.add("1");
             }
             sia.setIdDestinatario(destinatarios);
         }
@@ -312,13 +314,9 @@ public class SiaUtils {
 
         if (procedimiento.getMateriasSIA() != null) {
             for (final TipoMateriaSIAGridDTO mat : procedimiento.getMateriasSIA()) {
-                //TODO Ponía código SIA
                 if (mat.getCodigo() != null) {
-                    // if (!materias.contains(mat.getCodigoSIA().toString())) {
-                    //     materias.add(mat.getCodigoSIA().toString());
-                    // }
-                    if (!materias.contains(mat.getCodigo().toString())) {
-                        materias.add(mat.getCodigo().toString());
+                    if (!materias.contains(mat.getCodigoSIA().toString())) {
+                        materias.add(mat.getCodigoSIA().toString());
                     }
                 }
             }
@@ -398,9 +396,12 @@ public class SiaUtils {
      */
     public static String getUrlProcedimiento(final boolean esInterno) {
         if (esInterno) {
-            return System.getProperty("es.caib.rolsac.sia.url.procedimiento.interno").trim();
+            //TODO
+            // return System.getProperty("es.caib.rolsac.sia.url.procedimiento.interno").trim();
+            return "";
         } else {
-            return System.getProperty("es.caib.rolsac.sia.url").trim() + "tramite/";
+            //return System.getProperty("es.caib.rolsac.sia.url").trim() + "tramite/";
+            return "www.caib.es/seucaib/";
         }
 
     }
@@ -435,8 +436,7 @@ public class SiaUtils {
      *                             para enviar a SIA sin estar visible)
      * @return
      */
-    public static SiaCumpleDatos cumpleDatos(final UnidadAdministrativaServiceFacade uaService, final ProcedimientoBaseDTO procedimiento,
-                                             final SiaEnviableResultado siaEnviableResultado, final boolean activo, final EntidadRaizDTO siaUA) {
+    public static SiaCumpleDatos cumpleDatos(final UnidadAdministrativaServiceFacade uaService, final ProcedimientoBaseDTO procedimiento, final SiaEnviableResultado siaEnviableResultado, final boolean activo, final EntidadRaizDTO siaUA) {
         final SiaCumpleDatos resultado = new SiaCumpleDatos(false);
         final StringBuffer mensajeError = new StringBuffer();
 
@@ -467,8 +467,7 @@ public class SiaUtils {
         }
 
         boolean tieneNombre, tieneResumen, tieneMaterias, tieneNormativas, encontradoTipo;
-        if (siaEnviableResultado.getOperacion() != null
-                && SiaUtils.ESTADO_BAJA.equals(siaEnviableResultado.getOperacion())) {
+        if (siaEnviableResultado.getOperacion() != null && SiaUtils.ESTADO_BAJA.equals(siaEnviableResultado.getOperacion())) {
             // En caso de baja, no hace falta comprobar ni normativas, ni materia, ni si
             // tiene tipo, ni nombre ni resumen.
             // Eso si, sin siaUA, es imposible enviar una baja.
@@ -525,8 +524,7 @@ public class SiaUtils {
         }
 
         /** Si cumple todos los datos ok, sino incrustamos el mensaje de error. **/
-        if (tieneMaterias && tieneNormativas && encontradoTipo && tieneNombre && tieneResumen && tieneSiaUA
-                && noAsociadoSiaUA) {
+        if (tieneMaterias && tieneNormativas && encontradoTipo && tieneNombre && tieneResumen && tieneSiaUA && noAsociadoSiaUA) {
             resultado.setCumpleDatos(true);
         } else {
             resultado.setCumpleDatos(false);

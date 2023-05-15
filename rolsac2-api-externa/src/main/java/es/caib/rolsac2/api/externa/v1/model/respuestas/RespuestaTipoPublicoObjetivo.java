@@ -17,7 +17,7 @@ import es.caib.rolsac2.api.externa.v1.utils.Constantes;
  */
 
 @XmlRootElement
-@Schema(name = "RespuestaTipoPublicoObjetivo", description = Constantes.TXT_RESPUESTA + Constantes.ENTIDAD_TIPO_PUBLICO)
+@Schema(name = "RespuestaTipoPublicoObjetivo", description = Constantes.TXT_RESPUESTA + Constantes.ENTIDAD_PUBLICO)
 public class RespuestaTipoPublicoObjetivo extends RespuestaBase {
 
 	/** Resultado. **/

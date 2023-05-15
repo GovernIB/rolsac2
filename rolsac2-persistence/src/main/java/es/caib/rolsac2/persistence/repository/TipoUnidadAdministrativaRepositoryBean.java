@@ -3,9 +3,8 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.converter.TipoUnidadAdministrativaObjetivoConverter;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
-import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
+import es.caib.rolsac2.persistence.model.traduccion.JTipoUnidadAdministrativaTraduccion;
 import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.TipoUnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
@@ -30,8 +29,7 @@ import java.util.Optional;
 @Stateless
 @Local(TipoUnidadAdministrativaRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudRepository<JTipoUnidadAdministrativa, Long>
-        implements TipoUnidadAdministrativaRepository {
+public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudRepository<JTipoUnidadAdministrativa, Long> implements TipoUnidadAdministrativaRepository {
 
     protected TipoUnidadAdministrativaRepositoryBean() {
         super(JTipoUnidadAdministrativa.class);
@@ -54,16 +52,11 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
                 tipoUnidadAdministrativaGridDTO.setCodigo((Long) jtipoUnidadAdmin[0]);
                 tipoUnidadAdministrativaGridDTO.setIdentificador((String) jtipoUnidadAdmin[1]);
                 tipoUnidadAdministrativaGridDTO.setEntidad(((JEntidad) jtipoUnidadAdmin[2]).getDescripcion(filtro.getIdioma()));
-                tipoUnidadAdministrativaGridDTO
-                        .setDescripcion(createLiteral((String) jtipoUnidadAdmin[3], filtro.getIdioma()));
-                tipoUnidadAdministrativaGridDTO
-                        .setCargoMasculino(createLiteral((String) jtipoUnidadAdmin[4], filtro.getIdioma()));
-                tipoUnidadAdministrativaGridDTO
-                        .setCargoFemenino(createLiteral((String) jtipoUnidadAdmin[5], filtro.getIdioma()));
-                tipoUnidadAdministrativaGridDTO.setTratamientoMasculino(
-                        createLiteral((String) jtipoUnidadAdmin[6], filtro.getIdioma()));
-                tipoUnidadAdministrativaGridDTO.setTratamientoFemenino(
-                        createLiteral((String) jtipoUnidadAdmin[7], filtro.getIdioma()));
+                tipoUnidadAdministrativaGridDTO.setDescripcion(createLiteral((String) jtipoUnidadAdmin[3], filtro.getIdioma()));
+                tipoUnidadAdministrativaGridDTO.setCargoMasculino(createLiteral((String) jtipoUnidadAdmin[4], filtro.getIdioma()));
+                tipoUnidadAdministrativaGridDTO.setCargoFemenino(createLiteral((String) jtipoUnidadAdmin[5], filtro.getIdioma()));
+                tipoUnidadAdministrativaGridDTO.setTratamientoMasculino(createLiteral((String) jtipoUnidadAdmin[6], filtro.getIdioma()));
+                tipoUnidadAdministrativaGridDTO.setTratamientoFemenino(createLiteral((String) jtipoUnidadAdmin[7], filtro.getIdioma()));
                 tipoUnidadAdmin.add(tipoUnidadAdministrativaGridDTO);
             }
         }
@@ -85,31 +78,23 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder(
-                    "SELECT count(j) FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
-        	} else if (isRest) {
-            	sql = new StringBuilder(
-            			"SELECT j FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
-            } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.identificador, j.entidad, t.descripcion, t.cargoMasculino, t.cargoFemenino, t.tratamientoMasculino, t.tratamientoFemenino "
-                            + " FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1  ");
+            sql = new StringBuilder("SELECT count(j) FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
+        } else if (isRest) {
+            sql = new StringBuilder("SELECT j FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
+        } else {
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, j.entidad, t.descripcion, t.cargoMasculino, t.cargoFemenino, t.tratamientoMasculino, t.tratamientoFemenino " + " FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1  ");
         }
         // if (filtro.isRellenoIdUA()) {
         // sql.append(" and j.unidadAdministrativa = :ua");
         // }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro "
-                    + " OR LOWER(t.descripcion) LIKE :filtro OR LOWER(t.cargoMasculino) LIKE :filtro "
-                    + " OR LOWER(t.cargoFemenino) LIKE :filtro OR LOWER(t.tratamientoMasculino) LIKE :filtro "
-                    + " OR LOWER(t.tratamientoFemenino) LIKE :filtro "
-                    + "OR LOWER(j.entidad.dir3) LIKE :filtro ) ");
+            sql.append(" and ( cast(j.id as string) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro " + " OR LOWER(t.descripcion) LIKE :filtro OR LOWER(t.cargoMasculino) LIKE :filtro " + " OR LOWER(t.cargoFemenino) LIKE :filtro OR LOWER(t.tratamientoMasculino) LIKE :filtro " + " OR LOWER(t.tratamientoFemenino) LIKE :filtro " + "OR LOWER(j.entidad.dir3) LIKE :filtro ) ");
         }
         if (filtro.isRellenoEntidad()) {
             sql.append(" and j.entidad.id = :entidad ");
         }
         if (filtro.isRellenoCodigo()) {
-        	sql.append(" and j.codigo = :codigo ");
+            sql.append(" and j.codigo = :codigo ");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
@@ -129,7 +114,7 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
             query.setParameter("entidad", filtro.getIdEntidad());
         }
         if (filtro.isRellenoCodigo()) {
-        	query.setParameter("codigo", filtro.getCodigo());
+            query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -137,8 +122,7 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
 
     @Override
     public List<TipoUnidadAdministrativaDTO> findTipo() {
-        TypedQuery<JTipoUnidadAdministrativa> query =
-                entityManager.createQuery("SELECT j FROM JTipoUnidadAdministrativa j", JTipoUnidadAdministrativa.class);
+        TypedQuery<JTipoUnidadAdministrativa> query = entityManager.createQuery("SELECT j FROM JTipoUnidadAdministrativa j", JTipoUnidadAdministrativa.class);
         List<JTipoUnidadAdministrativa> jTipoUnidadAdministrativas = query.getResultList();
         List<TipoUnidadAdministrativaDTO> tipoUnidadAdministrativaDTOS = new ArrayList<>();
         if (jTipoUnidadAdministrativas != null) {
@@ -165,8 +149,7 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
 
     @Override
     public Optional<JTipoUnidadAdministrativa> findById(String id) {
-        TypedQuery<JTipoUnidadAdministrativa> query = entityManager
-                .createNamedQuery(JTipoUnidadAdministrativa.FIND_BY_ID, JTipoUnidadAdministrativa.class);
+        TypedQuery<JTipoUnidadAdministrativa> query = entityManager.createNamedQuery(JTipoUnidadAdministrativa.FIND_BY_ID, JTipoUnidadAdministrativa.class);
         query.setParameter("id", id);
         List<JTipoUnidadAdministrativa> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
@@ -175,17 +158,16 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
 
     @Override
     public Boolean checkIdentificador(String identificador, Long idEntidad) {
-        TypedQuery<Long> query =
-                entityManager.createNamedQuery(JTipoUnidadAdministrativa.COUNT_BY_IDENTIFICADOR, Long.class);
+        TypedQuery<Long> query = entityManager.createNamedQuery(JTipoUnidadAdministrativa.COUNT_BY_IDENTIFICADOR, Long.class);
 
         query.setParameter("identificador", identificador.toLowerCase());
         query.setParameter("entidad", idEntidad);
         return query.getSingleResult() > 0;
     }
 
-	@Override
-	public List<TipoUnidadAdministrativaDTO> findPagedByFiltroRest(TipoUnidadAdministrativaFiltro filtro) {
-		Query query = getQuery(false, filtro, true);
+    @Override
+    public List<TipoUnidadAdministrativaDTO> findPagedByFiltroRest(TipoUnidadAdministrativaFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -199,6 +181,36 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
             }
         }
         return tipoUnidadAdministrativaes;
-	}
+    }
+
+    @Override
+    public void deleteByEntidad(Long idEntidad) {
+        String sql;
+        Query query;
+        sql = "SELECT t FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t where j.entidad.codigo = :entidad ";
+        query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        List<JTipoUnidadAdministrativaTraduccion> jtraducciones = query.getResultList();
+        if (jtraducciones != null) {
+            for (JTipoUnidadAdministrativaTraduccion jtraduccion : jtraducciones) {
+                entityManager.remove(jtraduccion);
+            }
+            entityManager.flush();
+        }
+
+        sql = "SELECT j FROM JTipoUnidadAdministrativa j where j.entidad.codigo = :entidad ";
+        query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        //int totalBorrados = query.executeUpdate();
+        List<JTipoUnidadAdministrativa> jtipos = query.getResultList();
+        if (jtipos != null) {
+            for (JTipoUnidadAdministrativa jtipo : jtipos) {
+                entityManager.remove(jtipo);
+            }
+            entityManager.flush();
+        }
+
+        entityManager.flush();
+    }
 
 }

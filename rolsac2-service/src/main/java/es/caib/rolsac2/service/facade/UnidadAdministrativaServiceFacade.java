@@ -83,7 +83,7 @@ public interface UnidadAdministrativaServiceFacade {
     /**
      * Devuelve una página con el ua relacionado con los parámetros del filtro
      *
-     * @param filtro    filtro de la búsqueda
+     * @param filtro filtro de la búsqueda
      * @return una pagina con el numero total de ua y la lista de uas por el rango indicado.
      */
     Pagina<UnidadAdministrativaGridDTO> findByFiltro(UnidadAdministrativaFiltro filtro);
@@ -95,6 +95,8 @@ public interface UnidadAdministrativaServiceFacade {
      * @return
      */
     int countByFiltro(UnidadAdministrativaFiltro filtro);
+
+    Long countByEntidad(Long entidadId);
 
     Long getCountHijos(Long parentId);
 
@@ -203,5 +205,7 @@ public interface UnidadAdministrativaServiceFacade {
 
     EntidadRaizDTO getUaRaiz(Long codigoUA);
 
-	Pagina<UnidadAdministrativaDTO> findByFiltroRest(UnidadAdministrativaFiltro fg);
+    Pagina<UnidadAdministrativaDTO> findByFiltroRest(UnidadAdministrativaFiltro fg);
+
+    EntidadRaizDTO getUaRaizByProcedimiento(Long codProcedimiento);
 }

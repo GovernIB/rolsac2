@@ -1,8 +1,14 @@
 package es.caib.rolsac2.persistence.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import es.caib.rolsac2.persistence.converter.TemaConverter;
+import es.caib.rolsac2.persistence.model.JEntidad;
+import es.caib.rolsac2.persistence.model.JTema;
+import es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TemaDTO;
+import es.caib.rolsac2.service.model.TemaGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.TemaFiltro;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -11,22 +17,18 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import es.caib.rolsac2.persistence.converter.TemaConverter;
-import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.persistence.model.JTema;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TemaDTO;
-import es.caib.rolsac2.service.model.TemaGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.filtro.TemaFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 @Local(TemaRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> implements TemaRepository{
+public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> implements TemaRepository {
 
-    protected TemaRepositoryBean(){super(JTema.class);}
+    protected TemaRepositoryBean() {
+        super(JTema.class);
+    }
 
     @Inject
     private TemaConverter converter;
@@ -64,34 +66,28 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
         return temaGridDTOS;
     }
 
-    private Query getQuery(boolean isTotal, TemaFiltro filtro, boolean isRest){
+    private Query getQuery(boolean isTotal, TemaFiltro filtro, boolean isRest) {
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder(
-                    "SELECT count(j) FROM JTema j LEFT OUTER JOIN j.temaPadre tp LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
-                    + " where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JTema j LEFT OUTER JOIN j.temaPadre tp LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + " where 1 = 1 ");
         } else if (isRest) {
             sql = new StringBuilder("SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.entidad, j.identificador, j.temaPadre "
-                    + " FROM JTema j LEFT OUTER JOIN j.temaPadre tp "
-                    + " LEFT OUTER JOIN j.descripcion jd ON jd.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, j.entidad, j.identificador, j.temaPadre " + " FROM JTema j LEFT OUTER JOIN j.temaPadre tp " + " LEFT OUTER JOIN j.descripcion jd ON jd.idioma=:idioma where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and (LOWER (j.identificador) LIKE :filtro OR cast(j.codigo as string) like :filtro "
-                    + " OR LOWER (j.entidad.identificador) LIKE :filtro OR LOWER (j.temaPadre.identificador) LIKE :filtro ) " );
+            sql.append(" and (LOWER (j.identificador) LIKE :filtro OR cast(j.codigo as string) like :filtro " + " OR LOWER (j.entidad.identificador) LIKE :filtro OR LOWER (j.temaPadre.identificador) LIKE :filtro ) ");
         }
-        if(filtro.isRellenoEntidad()) {
+        if (filtro.isRellenoEntidad()) {
             sql.append(" and j.entidad.codigo =:idEntidad ");
         }
 
-        if(filtro.isRellenoCodigo()) {
+        if (filtro.isRellenoCodigo()) {
             sql.append(" and j.codigo =:codigo ");
         }
 
         if (filtro.isRellenoIdentificador()) {
-        	 sql.append(" and LOWER (j.identificador) LIKE :identificador ");
+            sql.append(" and LOWER (j.identificador) LIKE :identificador ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -110,11 +106,11 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
         }
-        if(filtro.isRellenoEntidad()) {
-        	query.setParameter("idEntidad", filtro.getIdEntidad());
+        if (filtro.isRellenoEntidad()) {
+            query.setParameter("idEntidad", filtro.getIdEntidad());
         }
-        if(filtro.isRellenoCodigo()) {
-        	query.setParameter("codigo", filtro.getCodigo());
+        if (filtro.isRellenoCodigo()) {
+            query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -128,8 +124,7 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
     public List<JTema> getRoot(String idioma, Long entidadId) {
         TypedQuery<JTema> query = null;
 
-        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
-                + " where j.temaPadre.codigo IS NULL AND j.entidad.codigo = :entidadId ";
+        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + " where j.temaPadre.codigo IS NULL AND j.entidad.codigo = :entidadId ";
         query = entityManager.createQuery(sql, JTema.class);
         query.setParameter("idioma", idioma);
         query.setParameter("entidadId", entidadId);
@@ -140,8 +135,7 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
     public List<JTema> getHijos(Long idTema, String idioma) {
         TypedQuery<JTema> query = null;
 
-        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
-                + "WHERE j.temaPadre.codigo = :idTema";
+        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + "WHERE j.temaPadre.codigo = :idTema";
 
         query = entityManager.createQuery(sql, JTema.class);
         query.setParameter("idTema", idTema);
@@ -152,8 +146,7 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
     @Override
     public List<JTema> getHijosTodosNiveles(String mathPath, String idioma) {
         TypedQuery<JTema> query = null;
-        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma "
-                +  "WHERE j.mathPath LIKE :mathPath";
+        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + "WHERE j.mathPath LIKE :mathPath";
         query = entityManager.createQuery(sql, JTema.class);
         query.setParameter("idioma", idioma);
         query.setParameter("mathPath", mathPath + "%");
@@ -185,29 +178,59 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
 
     @Override
     public Boolean checkIdentificador(String identificador) {
-        TypedQuery<Long> query =
-                entityManager.createNamedQuery(JTema.COUNT_BY_IDENTIFICADOR, Long.class);
+        TypedQuery<Long> query = entityManager.createNamedQuery(JTema.COUNT_BY_IDENTIFICADOR, Long.class);
         query.setParameter("identificador", identificador);
         Long resultado = query.getSingleResult();
         return resultado > 0;
     }
 
 
-	@Override
-	public List<TemaDTO> findPagedByFiltroRest(TemaFiltro filtro) {
-		 Query query = getQuery(false, filtro, true);
-	        query.setFirstResult(filtro.getPaginaFirst());
-	        query.setMaxResults(filtro.getPaginaTamanyo());
+    @Override
+    public List<TemaDTO> findPagedByFiltroRest(TemaFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
 
-	        List<JTema> jtemas = query.getResultList();
-	        List<TemaDTO> temas = new ArrayList<>();
-	        if (jtemas != null) {
-	            for (JTema jtema : jtemas) {
-	                TemaDTO tema = converter.createDTO(jtema);
+        List<JTema> jtemas = query.getResultList();
+        List<TemaDTO> temas = new ArrayList<>();
+        if (jtemas != null) {
+            for (JTema jtema : jtemas) {
+                TemaDTO tema = converter.createDTO(jtema);
 
-	                temas.add(tema);
-	            }
-	        }
-	        return temas;
-	}
+                temas.add(tema);
+            }
+        }
+        return temas;
+    }
+
+    @Override
+    public void deleteByUA(Long idEntidad) {
+
+        String sql;
+        Query query;
+        sql = "SELECT t FROM JTema j LEFT OUTER JOIN j.descripcion t where j.entidad.codigo = :entidad ";
+        query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        List<JTemaTraduccion> jtraducciones = query.getResultList();
+        if (jtraducciones != null) {
+            for (JTemaTraduccion jtraduccion : jtraducciones) {
+                entityManager.remove(jtraduccion);
+            }
+            entityManager.flush();
+        }
+
+        sql = "SELECT j FROM JTema j where j.entidad.codigo = :entidad ";
+        query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        //int totalBorrados = query.executeUpdate();
+        List<JTema> jtipos = query.getResultList();
+        if (jtipos != null) {
+            for (JTema jtipo : jtipos) {
+                entityManager.remove(jtipo);
+            }
+            entityManager.flush();
+        }
+
+        entityManager.flush();
+    }
 }

@@ -97,6 +97,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
 
 
         inicializarTotalesACero();
+        StringBuilder mensajeTraza = new StringBuilder();
 
         if (datos != null && datos.getItems() != null && !datos.getItems().isEmpty()) {
 
@@ -106,24 +107,18 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
             for (IndexacionSIADTO dato : datos.getItems()) {
                 switch (TypeIndexacion.fromString(dato.getTipo())) {
                     case PROCEDIMIENTO:
-                        ResultadoSIA resultadoPro = indexarProcedimiento(dato, plugin);
-                        if (dato.getCodigo() != null) {
-                            //Si es distinto null, significa que es un dato pendiente
-                            procedimientoService.actualizarSIA(dato, resultadoPro);
-                        }
+                        ResultadoSIA resultadoPro = indexarProcedimiento(dato, plugin, mensajeTraza);
+
+                        //Si es distinto null, significa que es un dato pendiente
+                        procedimientoService.actualizarSIA(dato, resultadoPro);
+
                         break;
                     case SERVICIO:
                         totalServicios++;
-                        ResultadoSIA resultadoSrv = indexarServicio(dato, plugin);
-                        if (resultadoSrv.isCorrecto()) {
-                            totalServiciosOK++;
-                        } else {
-                            totalServiciosERROR++;
-                        }
-                        if (dato.getCodigo() != null) {
-                            //Si es distinto null, significa que es un dato pendiente
-                            procedimientoService.actualizarSIA(dato, resultadoSrv);
-                        }
+                        ResultadoSIA resultadoSrv = indexarServicio(dato, plugin, mensajeTraza);
+
+                        //Si es distinto null, significa que es un dato pendiente
+                        procedimientoService.actualizarSIA(dato, resultadoSrv);
                         break;
                 }
 
@@ -151,28 +146,34 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
 
         }
         res.setDetalles(detalles);
+        res.setMensajeErrorTraza(mensajeTraza.toString());
         return res;
     }
 
 
-    private ResultadoSIA indexarServicio(IndexacionSIADTO indexacionDTO, IPluginSIA plugin) {
+    private ResultadoSIA indexarServicio(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, StringBuilder mensajeTraza) {
         Long codigoWF = procedimientoService.getCodigoPublicado(indexacionDTO.getCodElemento());
         boolean publicado = codigoWF != null;
         indexacionDTO.setFechaIntentoIndexacion(new Date());
         totalServicios++;
 
-        EntidadRaizDTO entidadRaiz = null;
+        EntidadRaizDTO entidadRaiz = uaService.getUaRaizByProcedimiento(indexacionDTO.getCodElemento());
 
         if (indexacionDTO.getExiste().compareTo(SiaUtils.SIAPENDIENTE_PROCEDIMIENTO_BORRADO) == 0) {
-            return borradoSIA(indexacionDTO, plugin, entidadRaiz);
+            ResultadoSIA resultadoSIA = borradoSIA(indexacionDTO, plugin, entidadRaiz);
+            if (resultadoSIA != null && resultadoSIA.isCorrecto()) {
+                mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " s'ha desindexat correctament. \n");
+            } else {
+                mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " NO s'ha desindexat correctament, error:" + resultadoSIA.getMensaje() + " \n");
+            }
+            return resultadoSIA;
         } else {
             if (publicado) {
                 try {
                     ServicioDTO servicioDTO = procedimientoService.findServicioById(indexacionDTO.getCodElemento());
                     SiaEnviableResultado esEnviable = SiaUtils.isEnviable(uaService, servicioDTO);
-                    EntidadRaizDTO siaUA = null;
                     if (esEnviable.isNotificiarSIA()) {
-                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(uaService, servicioDTO, esEnviable, true, siaUA);
+                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(uaService, servicioDTO, esEnviable, true, entidadRaiz);
                         //Si es común, no se indexa
                         if (siaCumpleDatos.isCumpleDatos()) {
 
@@ -180,55 +181,67 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                             ResultadoSIA resultadoSIA = plugin.enviarSIA(envioSIA, false, false);
                             if (resultadoSIA != null && resultadoSIA.isCorrecto()) {
                                 totalServiciosOK++;
-                                new ResultadoSIA(1, "El procediment s'ha indexat correctament");
+                                mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " s'ha indexat correctament. \n");
+                                new ResultadoSIA(1, "El servei s'ha indexat correctament");
                             } else {
                                 totalServiciosERROR++;
-                                new ResultadoSIA(0, "El procediment s'ha indexat incorrectamente " + resultadoSIA.getMensaje().toString());
+                                mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + resultadoSIA.getMensaje() + ". \n");
+                                new ResultadoSIA(0, "El servei s'ha indexat incorrectamente " + resultadoSIA.getMensaje().toString());
                             }
                         } else {
                             totalServiciosOK++;
                             // Guardamos un SIA Pendiente como que no cumple datos (ultima pestaña)
                             final ResultadoSIA siaPendiente = new ResultadoSIA();
                             siaPendiente.setCorrectos(1);
-                            siaPendiente.setMensaje("No cumple los datos");
+                            siaPendiente.setMensaje("No compleix les dades, " + siaCumpleDatos.getRespuesta());
                             siaPendiente.setResultado(ResultadoSIA.RESULTADO_NO_CUMPLE_DATOS);
+                            mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " no cumpleix les dades, " + siaCumpleDatos.getRespuesta() + " \n");
                             return siaPendiente;
                         }
                     } else {
                         totalServiciosOK++;
+                        mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " es no enviable \n");
                         return new ResultadoSIA(ResultadoSIA.RESULTADO_NO_ENVIABLE, esEnviable.getRespuesta());
                     }
                 } catch (Exception e) {
                     totalServiciosERROR++;
+                    mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " no s'ha indexat, error:" + e.getMessage() + " \n");
                     return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, e.getMessage());
                 }
             } else {
                 totalServiciosOK++;
-                return new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El procediment no està publicat");
+                mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " no està publicat. \n");
+                return new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El servei no està publicat");
             }
         }
 
         return null;
     }
 
-    private ResultadoSIA indexarProcedimiento(IndexacionSIADTO indexacionDTO, IPluginSIA plugin) {
+    private ResultadoSIA indexarProcedimiento(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, StringBuilder mensajeTraza) {
         Long codigoWF = procedimientoService.getCodigoPublicado(indexacionDTO.getCodElemento());
         boolean publicado = codigoWF != null;
         indexacionDTO.setFechaIntentoIndexacion(new Date());
         totalProcedimientos++;
 
-        EntidadRaizDTO entidadRaiz = null;
+        EntidadRaizDTO entidadRaiz = uaService.getUaRaizByProcedimiento(indexacionDTO.getCodElemento());
+
 
         if (indexacionDTO.getExiste().compareTo(SiaUtils.SIAPENDIENTE_PROCEDIMIENTO_BORRADO) == 0) {
-            return borradoSIA(indexacionDTO, plugin, entidadRaiz);
+            ResultadoSIA resultadoSIA = borradoSIA(indexacionDTO, plugin, entidadRaiz);
+            if (resultadoSIA != null && resultadoSIA.isCorrecto()) {
+                mensajeTraza.append("El procedimient " + indexacionDTO.getCodElemento() + " s'ha desindexat correctament. \n");
+            } else {
+                mensajeTraza.append("El procedimient " + indexacionDTO.getCodElemento() + " NO s'ha desindexat correctament, error:" + resultadoSIA.getMensaje() + " \n");
+            }
+            return resultadoSIA;
         } else {
             if (publicado) {
                 try {
                     ProcedimientoDTO procedimientoDTO = procedimientoService.findProcedimientoById(codigoWF);
                     SiaEnviableResultado esEnviable = SiaUtils.isEnviable(uaService, procedimientoDTO);
-                    EntidadRaizDTO siaUA = uaService.getUaRaiz(procedimientoDTO.getUaInstructor().getCodigo());
                     if (esEnviable.isNotificiarSIA()) {
-                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(uaService, procedimientoDTO, esEnviable, true, siaUA);
+                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(uaService, procedimientoDTO, esEnviable, true, entidadRaiz);
                         //Si es común, no se indexa
                         if (siaCumpleDatos.isCumpleDatos()) {
 
@@ -236,34 +249,39 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                             ResultadoSIA resultadoSIA = plugin.enviarSIA(envioSIA, false, false);
                             if (resultadoSIA != null && resultadoSIA.isCorrecto()) {
                                 totalProcedimientosOK++;
-                                new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El procediment s'ha indexat correctament");
+                                mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " s'ha indexat correctament. \n");
+                                return new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El procediment s'ha indexat correctament");
                             } else {
                                 totalProcedimientosERROR++;
-                                new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, "El procediment s'ha indexat incorrectamente " + resultadoSIA.toString());
+                                mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + resultadoSIA.getMensaje() + ". \n");
+                                return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, "El procediment " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + resultadoSIA.getMensaje());
                             }
                         } else {
                             totalProcedimientosOK++;
                             // Guardamos un SIA Pendiente como que no cumple datos (ultima pestaña)
                             final ResultadoSIA siaPendiente = new ResultadoSIA();
                             siaPendiente.setCorrectos(1);
-                            siaPendiente.setMensaje("No cumple los datos");
+                            siaPendiente.setMensaje("No cumpleix les dades");
                             siaPendiente.setResultado(ResultadoSIA.RESULTADO_NO_CUMPLE_DATOS);
+                            mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " no cumpleix les dades, " + siaCumpleDatos.getRespuesta() + " \n");
                             return siaPendiente;
                         }
                     } else {
+                        mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " es no enviable \n");
                         return new ResultadoSIA(ResultadoSIA.RESULTADO_NO_ENVIABLE, esEnviable.getRespuesta());
                     }
                 } catch (Exception e) {
                     totalProcedimientosERROR++;
-                    return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, e.getMessage());
+                    mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " no s'ha indexat, error:" + e.getLocalizedMessage() + " \n");
+                    return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, e.getLocalizedMessage());
                 }
             } else {
                 totalProcedimientosOK++;
+                mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " no està publicat. \n");
                 return new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El procediment no està publicat");
             }
         }
 
-        return null;
     }
 
 

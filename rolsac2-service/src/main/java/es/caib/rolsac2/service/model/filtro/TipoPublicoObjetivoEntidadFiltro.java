@@ -1,8 +1,5 @@
 package es.caib.rolsac2.service.model.filtro;
 
-import es.caib.rolsac2.service.model.EntidadDTO;
-import es.caib.rolsac2.service.model.Literal;
-
 public class TipoPublicoObjetivoEntidadFiltro extends AbstractFiltro {
 
     private String texto;
@@ -32,8 +29,6 @@ public class TipoPublicoObjetivoEntidadFiltro extends AbstractFiltro {
         return codigoTipo;
     }
 
-    public void setCodigoTipoo(Long cod) { this.codigoTipo = cod; }
-
     public String getIdentificador() {
         return identificador;
     }
@@ -58,6 +53,10 @@ public class TipoPublicoObjetivoEntidadFiltro extends AbstractFiltro {
         return texto != null && !texto.isEmpty();
     }
 
+    public boolean isRellenoTraducciones() {
+        return traducciones != null && !traducciones.isEmpty();
+    }
+
     /**
      * Esta relleno el identificador
      **/
@@ -69,4 +68,12 @@ public class TipoPublicoObjetivoEntidadFiltro extends AbstractFiltro {
     protected String getDefaultOrder() {
         return "codigo";
     }
+
+	public boolean isRellenoCodigo() {
+		return codigo != null;
+	}
+
+	public boolean isRellenoCodigoTipo() {
+		return codigoTipo != null;
+	}
 }

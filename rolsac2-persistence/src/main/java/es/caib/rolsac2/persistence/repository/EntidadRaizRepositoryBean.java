@@ -37,18 +37,12 @@ public class EntidadRaizRepositoryBean extends AbstractCrudRepository<JEntidadRa
         StringBuilder sql;
 
         if (isTotal) {
-            sql = new StringBuilder(
-                    "SELECT count(j) FROM JEntidadRaiz j LEFT OUTER JOIN j.ua ju LEFT OUTER JOIN ju.traducciones jut ON jut.idioma=:idioma WHERE 1 = 1 "
-            );
+            sql = new StringBuilder("SELECT count(j) FROM JEntidadRaiz j LEFT OUTER JOIN j.ua ju LEFT OUTER JOIN ju.traducciones jut ON jut.idioma=:idioma WHERE 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, jut.nombre, j.user, j.pwd FROM JEntidadRaiz j "
-                            + " LEFT OUTER JOIN j.ua ju LEFT OUTER JOIN ju.traducciones jut ON jut.idioma=:idioma WHERE 1 = 1 "
-            );
+            sql = new StringBuilder("SELECT j.codigo, jut.nombre, j.user, j.pwd FROM JEntidadRaiz j " + " LEFT OUTER JOIN j.ua ju LEFT OUTER JOIN ju.traducciones jut ON jut.idioma=:idioma WHERE 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.codigo as string) LIKE :filtro OR LOWER(jut.nombre) LIKE :filtro "
-                    + " OR LOWER (j.user) LIKE :filtro OR LOWER(j.pwd) LIKE :filtro ) ");
+            sql.append(" and ( cast(j.codigo as string) LIKE :filtro OR LOWER(jut.nombre) LIKE :filtro " + " OR LOWER (j.user) LIKE :filtro OR LOWER(j.pwd) LIKE :filtro ) ");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
@@ -124,7 +118,7 @@ public class EntidadRaizRepositoryBean extends AbstractCrudRepository<JEntidadRa
         } else {
             JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigoUA);
             if (jua != null && jua.getPadre() != null) {
-                return getEntidadRaizByUARecursivo(codigoUA, (iteracion + 1));
+                return getEntidadRaizByUARecursivo(jua.getPadre().getCodigo(), (iteracion + 1));
             } else {
                 return null;
             }

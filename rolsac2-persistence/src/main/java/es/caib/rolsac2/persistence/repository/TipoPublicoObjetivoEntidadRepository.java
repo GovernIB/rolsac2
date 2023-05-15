@@ -2,8 +2,10 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivoEntidad;
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivoEntidad;
+import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoPublicoObjetivoEntidadFiltro;
+import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +26,8 @@ public interface TipoPublicoObjetivoEntidadRepository extends CrudRepository<JTi
     boolean existeIdentificador(String identificador);
 
     boolean existePublicoObjetivo(Long codigoPO);
+
+	List<TipoPublicoObjetivoEntidadDTO> findPagedByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro);
+
+    List<JTipoPublicoObjetivoEntidad> findPageByEntidad(Long idEntidad);
 }

@@ -8,7 +8,7 @@ import es.caib.rolsac2.service.model.filtro.TemaFiltro;
 import java.util.List;
 import java.util.Optional;
 
-public interface TemaRepository extends CrudRepository<JTema, Long>{
+public interface TemaRepository extends CrudRepository<JTema, Long> {
     Optional<JTema> findById(String id);
 
     List<TemaGridDTO> findPageByFiltro(TemaFiltro filtro);
@@ -25,5 +25,7 @@ public interface TemaRepository extends CrudRepository<JTema, Long>{
 
     List<JTema> getHijosTodosNiveles(String mathPath, String idioma);
 
-	List<TemaDTO> findPagedByFiltroRest(TemaFiltro filtro);
+    List<TemaDTO> findPagedByFiltroRest(TemaFiltro filtro);
+
+    void deleteByUA(Long id);
 }

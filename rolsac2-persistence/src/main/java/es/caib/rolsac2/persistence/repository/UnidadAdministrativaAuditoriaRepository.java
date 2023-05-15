@@ -1,6 +1,5 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.model.JProcedimientoAuditoria;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativaAuditoria;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 
@@ -8,7 +7,7 @@ import java.util.List;
 
 public interface UnidadAdministrativaAuditoriaRepository extends CrudRepository<JUnidadAdministrativaAuditoria, Long> {
 
-    void guardar (JUnidadAdministrativaAuditoria jUaAudit);
+    void guardar(JUnidadAdministrativaAuditoria jUaAudit);
 
     /**
      * Devuelve una lista de procedimento auditorias.
@@ -17,4 +16,11 @@ public interface UnidadAdministrativaAuditoriaRepository extends CrudRepository<
      * @return
      */
     List<AuditoriaGridDTO> findUaAuditoriasById(Long id);
+
+    /**
+     * Borra las auditorias segun el codigo de UA
+     *
+     * @param codigo
+     */
+    void borrarAuditoriasByIdUA(Long codigo);
 }

@@ -72,11 +72,9 @@ public class PluginRepositoryBean extends AbstractCrudRepository<JPlugin, Long> 
             sql = new StringBuilder("SELECT j.codigo, j.entidad, j.descripcion, j.classname, j.propiedades, j.tipo, j.prefijoPropiedades FROM JPlugin j where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.descripcion) LIKE :filtro " +
-                    " OR LOWER(j.classname) like :filtro OR LOWER(j.propiedades) like :filtro " +
-                    " OR LOWER(j.tipo) like :filtro  ) ");
+            sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.descripcion) LIKE :filtro " + " OR LOWER(j.classname) like :filtro OR LOWER(j.propiedades) like :filtro " + " OR LOWER(j.tipo) like :filtro  ) ");
         }
-        if(filtro.isRellenoEntidad()) {
+        if (filtro.isRellenoEntidad()) {
             sql.append(" and j.entidad.codigo =:idEntidad");
         }
         if (filtro.getOrderBy() != null) {
@@ -88,7 +86,7 @@ public class PluginRepositoryBean extends AbstractCrudRepository<JPlugin, Long> 
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
-        if(filtro.isRellenoEntidad()) {
+        if (filtro.isRellenoEntidad()) {
             query.setParameter("idEntidad", filtro.getIdEntidad());
         }
 
@@ -132,5 +130,14 @@ public class PluginRepositoryBean extends AbstractCrudRepository<JPlugin, Long> 
         query.setParameter("idEntidad", idEntidad);
         Long resultado = (Long) query.getSingleResult();
         return resultado > 0;
+    }
+
+    @Override
+    public void deleteByUA(Long idEntidad) {
+        String sql = "DELETE FROM JPlugin j where j.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        int resultado = query.executeUpdate();
+        entityManager.flush();
     }
 }

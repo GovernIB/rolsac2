@@ -43,6 +43,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private TipoLegitimacionDTO datosPersonalesLegitimacion;
     private UnidadAdministrativaDTO uaResponsable;
     private UnidadAdministrativaDTO uaInstructor;
+    private UnidadAdministrativaDTO uaCompetente;
     private TipoFormaInicioDTO iniciacion;
     private String responsable;
     private TipoSilencioAdministrativoDTO silencio;
@@ -55,7 +56,9 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private String habilitadoFuncionario;
 
     private boolean tieneTasa = false;
-
+    private boolean tramitElectronica = false;
+    private boolean tramitPresencial = false;
+    private boolean tramitTelefonica = false;
     private String responsableEmail;
     private String responsableTelefono;
 
@@ -552,7 +555,39 @@ public class ProcedimientoBaseDTO extends ModelApi {
         this.pendienteMensajesSupervisor = pendienteMensajesSupervisor;
     }
 
-    @Override
+    public UnidadAdministrativaDTO getUaCompetente() {
+		return uaCompetente;
+	}
+
+	public void setUaCompetente(UnidadAdministrativaDTO uaCompetente) {
+		this.uaCompetente = uaCompetente;
+	}
+
+	public boolean isTramitElectronica() {
+		return tramitElectronica;
+	}
+
+	public void setTramitElectronica(boolean tramitElectronica) {
+		this.tramitElectronica = tramitElectronica;
+	}
+
+	public boolean isTramitPresencial() {
+		return tramitPresencial;
+	}
+
+	public void setTramitPresencial(boolean tramitPresencial) {
+		this.tramitPresencial = tramitPresencial;
+	}
+
+	public boolean isTramitTelefonica() {
+		return tramitTelefonica;
+	}
+
+	public void setTramitTelefonica(boolean tramitTelefonica) {
+		this.tramitTelefonica = tramitTelefonica;
+	}
+
+	@Override
     public String toString() {
         return "ProcedimientoBaseDTO{" + "codigo=" + codigo + ", codigoWF='" + codigoWF + '\'' + '}';
     }

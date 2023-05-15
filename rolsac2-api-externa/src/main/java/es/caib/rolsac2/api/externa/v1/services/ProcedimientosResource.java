@@ -35,6 +35,7 @@ import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaProcedimientos;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
+import es.caib.rolsac2.service.model.ProcedimientoBaseDTO;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
@@ -62,7 +63,7 @@ public class ProcedimientosResource {
 	public Response llistar(
 			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
 			@RequestBody(description = "Filtro de procedimientos: "
-					+ FiltroUA.SAMPLE, name = "filtro", content = @Content(example = FiltroProcedimientos.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroProcedimientos.class))) FiltroProcedimientos filtro)
+					+ FiltroProcedimientos.SAMPLE, name = "filtro", content = @Content(example = FiltroProcedimientos.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroProcedimientos.class))) FiltroProcedimientos filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
 		if (filtro == null) {
@@ -138,8 +139,8 @@ public class ProcedimientosResource {
 		if (lang != null) {
 			fg.setIdioma(lang);
 		}
-		fg.setIdEntidad(new Long(codigo));
-
+		fg.setCodigoProc(Long.parseLong(codigo));
+		fg.setTipo("P");
 //		final RespuestaProcedimientos respuesta = getRespuesta(fg);
 //		if (respuesta.getResultado() != null && !respuesta.getResultado().isEmpty()) {
 //			String cabecera;
@@ -151,33 +152,22 @@ public class ProcedimientosResource {
 //			respuesta.getResultado().get(0).setLopdCabecera(cabecera);
 //		}
 
-		return Response.ok(getRespuestaSimple(fg), MediaType.APPLICATION_JSON).build();
+		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
 	}
 
 	private RespuestaProcedimientos getRespuesta(final ProcedimientoFiltro filtro) throws DelegateException {
-		Pagina<ProcedimientoGridDTO> resultadoBusqueda = procedimientoService.findProcedimientosByFiltro(filtro);
+		Pagina<ProcedimientoBaseDTO> resultadoBusqueda = procedimientoService.findProcedimientosByFiltroRest(filtro);
 
 		List<Procedimientos> lista = new ArrayList<>();
 		Procedimientos elemento = null;
 
-		for (ProcedimientoGridDTO nodo : resultadoBusqueda.getItems()) {
-			elemento = new Procedimientos(nodo, null, filtro.getIdioma(), true);
+		for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
+			elemento = new Procedimientos((ProcedimientoDTO)nodo, null, filtro.getIdioma(), true);
 			lista.add(elemento);
 		}
 
 		return new RespuestaProcedimientos(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()),
-				resultadoBusqueda.getTotal(), lista);
-	}
-
-	private RespuestaProcedimientos getRespuestaSimple(ProcedimientoFiltro filtro) throws DelegateException {
-		ProcedimientoDTO resultadoBusqueda = procedimientoService.findProcedimientoByCodigo(filtro.getIdEntidad());
-
-		List<Procedimientos> lista = new ArrayList<>();
-
-		lista.add(new Procedimientos(resultadoBusqueda, null, filtro.getIdioma(), true));
-
-		return new RespuestaProcedimientos(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()),
-				1L, lista);
+				Long.valueOf(resultadoBusqueda.getItems().size()), lista);
 	}
 
 }

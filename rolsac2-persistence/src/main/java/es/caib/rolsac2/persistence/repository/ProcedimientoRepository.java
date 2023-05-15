@@ -31,9 +31,15 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     List<ProcedimientoGridDTO> findProcedimientosPagedByFiltro(ProcedimientoFiltro filtro);
 
+    List<ProcedimientoBaseDTO> findProcedimientosPagedByFiltroRest(ProcedimientoFiltro filtro);
+
     List<ServicioGridDTO> findServiciosPagedByFiltro(ProcedimientoFiltro filtro);
 
     long countByFiltro(ProcedimientoFiltro filtro);
+
+    Long countByEntidad(Long entidadId);
+
+    Long countServicioByEntidad(Long entidadId);
 
     JProcedimientoWorkflow getWF(Long id, boolean procedimientoEnmodificacion);
 
@@ -102,6 +108,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
     void actualizarSolr(IndexacionDTO proc, ResultadoAccion resultadoAccion);
 
 
+    Long getUAbyCodProcedimiento(Long codProcedimiento);
+
     /**
      * Actualiza la fecha de actualizacion del jprocedimiento
      *
@@ -142,4 +150,6 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      * @return
      */
     Pagina<IndexacionSIADTO> getProcedimientosParaIndexacionSIA(Long idEntidad);
+
+    String getEnlaceTelematico(ProcedimientoFiltro filtro);
 }

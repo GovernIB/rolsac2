@@ -1,7 +1,12 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.converter.TipoPublicoObjetivoConverter;
+import es.caib.rolsac2.persistence.converter.TipoPublicoObjetivoEntidadConverter;
+import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivoEntidad;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
+import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.filtro.TipoPublicoObjetivoEntidadFiltro;
@@ -10,6 +15,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -27,6 +33,9 @@ import java.util.Optional;
 public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudRepository<JTipoPublicoObjetivoEntidad, Long>
         implements TipoPublicoObjetivoEntidadRepository {
 
+    @Inject
+    private TipoPublicoObjetivoEntidadConverter converter;
+
     protected TipoPublicoObjetivoEntidadRepositoryBean() {
         super(JTipoPublicoObjetivoEntidad.class);
     }
@@ -34,7 +43,7 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
     // Aquí empieza TipoPublicoObjetivoEntidad
     @Override
     public List<TipoPublicoObjetivoEntidadGridDTO> findPagedByFiltro(TipoPublicoObjetivoEntidadFiltro filtro) {
-        Query query = getQuery(false, filtro);
+        Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
@@ -64,11 +73,11 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
 
     @Override
     public long countByFiltro(TipoPublicoObjetivoEntidadFiltro filtro) {
-        return (long) getQuery(true, filtro).getSingleResult();
+        return (long) getQuery(true, filtro, false).getSingleResult();
 
     }
 
-    private Query getQuery(boolean isTotal, TipoPublicoObjetivoEntidadFiltro filtro) {
+    private Query getQuery(boolean isTotal, TipoPublicoObjetivoEntidadFiltro filtro, boolean isRest) {
 
         StringBuilder sql;
         if (isTotal) {
@@ -77,6 +86,12 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
                     " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma " +
                     " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma " +
                     " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
+        } else if (isRest) {
+        	 sql = new StringBuilder("SELECT j FROM JTipoPublicoObjetivoEntidad j  " +
+                     " LEFT OUTER JOIN j.tipo te " +
+                     " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma " +
+                     " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma " +
+                     " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
         } else {
             sql = new StringBuilder(
                     "SELECT j.codigo, j.identificador, tt.descripcion, tp.descripcion, te.empleadoPublico FROM JTipoPublicoObjetivoEntidad j" +
@@ -92,13 +107,27 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
                     + " OR LOWER(tt.descripcion) LIKE :filtro ) ");
         }
         if(filtro.isRellenoEntidad()) {
-            sql.append(" and j.entidad.codigo =:idEntidad");
+            sql.append(" and j.entidad.codigo = :idEntidad ");
+        }
+        if(filtro.isRellenoCodigo()) {
+            sql.append(" and j.codigo = :codigo ");
+        }
+        if(filtro.isRellenoCodigoTipo()) {
+            sql.append(" and te.codigo = :codigoTipo ");
+        }
+        if(filtro.isRellenoIdentificador()) {
+            sql.append(" and LOWER(j.identificador) LIKE :identificador ");
+        }
+        if(filtro.isRellenoTraducciones()) {
+            sql.append(" and LOWER(tp.descripcion) LIKE :traducciones ");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
         }
+
         Query query = entityManager.createQuery(sql.toString());
+
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
@@ -107,9 +136,26 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
             query.setParameter("idioma", filtro.getIdioma());
         }
 
-        if(filtro.isRellenoEntidad()) {
+        if (filtro.isRellenoEntidad()) {
             query.setParameter("idEntidad", filtro.getIdEntidad());
         }
+
+        if (filtro.isRellenoCodigo()) {
+            query.setParameter("codigo", filtro.getCodigo());
+        }
+
+        if (filtro.isRellenoTraducciones()) {
+            query.setParameter("traducciones", filtro.getTraducciones());
+        }
+
+        if(filtro.isRellenoCodigoTipo()) {
+        	query.setParameter("codigoTipo", filtro.getCodigoTipo());
+        }
+
+        if(filtro.isRellenoIdentificador()) {
+        	query.setParameter("identificador", "%" + filtro.getIdentificador() + "%");
+        }
+
         return query;
     }
 
@@ -155,4 +201,30 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
         return resultado > 0;
     }
 
+	@Override
+	public List<TipoPublicoObjetivoEntidadDTO> findPagedByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro) {
+		Query query = getQuery(false, filtro, true);
+		query.setFirstResult(filtro.getPaginaFirst());
+		query.setMaxResults(filtro.getPaginaTamanyo());
+
+		List<JTipoPublicoObjetivoEntidad> jtipoPublicoObjetivoes = query.getResultList();
+		List<TipoPublicoObjetivoEntidadDTO> tipoPublicoObjetivoes = new ArrayList<>();
+		if (jtipoPublicoObjetivoes != null) {
+			for (JTipoPublicoObjetivoEntidad jtipoPublicoObjetivo : jtipoPublicoObjetivoes) {
+				TipoPublicoObjetivoEntidadDTO tipoPublicoObjetivo = converter.createDTO(jtipoPublicoObjetivo);
+
+				tipoPublicoObjetivoes.add(tipoPublicoObjetivo);
+			}
+		}
+		return tipoPublicoObjetivoes;
+	}
+
+    @Override
+    public List<JTipoPublicoObjetivoEntidad> findPageByEntidad(Long idEntidad) {
+        String sql = "SELECT j FROM JTipoPublicoObjetivoEntidad j WHERE j.entidad.codigo = :idEntidad";
+
+        Query query = entityManager.createQuery(sql, JTipoPublicoObjetivoEntidad.class);
+        query.setParameter("idEntidad", idEntidad);
+        return query.getResultList();
+    }
 }

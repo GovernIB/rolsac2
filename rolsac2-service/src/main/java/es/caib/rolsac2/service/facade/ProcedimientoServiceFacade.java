@@ -9,7 +9,9 @@ import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
+import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
+import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 
@@ -92,6 +94,14 @@ public interface ProcedimientoServiceFacade {
     Pagina<ProcedimientoGridDTO> findProcedimientosByFiltro(ProcedimientoFiltro filtro);
 
     /**
+     * Devuelve una página con las fichas relacionado con los parámetros del filtro rest
+     *
+     * @param filtro filtro de la búsqueda
+     * @return una pàgina amb el nombre total de fichas i la llista de fichas pel rang indicat.
+     */
+    Pagina<ProcedimientoBaseDTO> findProcedimientosByFiltroRest(ProcedimientoFiltro filtro);
+
+    /**
      * Devuelve una página con las fichas relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
@@ -106,6 +116,10 @@ public interface ProcedimientoServiceFacade {
      * @return
      */
     int countByFiltro(ProcedimientoFiltro filtro);
+
+    Long countByEntidad(Long entidadId);
+
+    Long countServicioByEntidad(Long entidadId);
 
     Optional<ProcedimientoTramiteDTO> findProcedimientoTramiteById(Long id);
 
@@ -163,7 +177,6 @@ public interface ProcedimientoServiceFacade {
      */
     String getMensajesByCodigo(Long codigo);
 
-
     ProcedimientoDTO findProcedimientoByCodigo(Long codigo);
 
     ServicioDTO findServicioByCodigo(Long idEntidad);
@@ -175,4 +188,13 @@ public interface ProcedimientoServiceFacade {
     IndexFile findDataIndexacionProcDoc(ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion documentoTraduccion, PathUA pathUA);
 
     IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA);
+
+	Pagina<ProcedimientoDocumentoDTO> findProcedimientoDocumentoByFiltroRest(ProcedimientoDocumentoFiltro filtro);
+
+	Pagina<ProcedimientoTramiteDTO> findProcedimientoTramiteByFiltroRest(ProcedimientoTramiteFiltro filtro);
+
+	ProcedimientoBaseDTO convertirDTO(Object obj);
+
+	String getEnlaceTelematico(ProcedimientoFiltro filtro);
+
 }

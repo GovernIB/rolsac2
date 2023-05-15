@@ -82,8 +82,7 @@ public class ProcesoLogRepositoryBean extends AbstractCrudRepository<JProcesoLog
         if (total) {
             sql = new StringBuilder("SELECT COUNT(PL) ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT PL.codigo, PL.proceso.codigo, PL.fechaInicio, PL.fechaFin, PL.estadoProceso, PL.proceso.identificadorProceso, PL.proceso.descripcion, PL.informacionProceso ");
+            sql = new StringBuilder("SELECT PL.codigo, PL.proceso.codigo, PL.fechaInicio, PL.fechaFin, PL.estadoProceso, PL.proceso.identificadorProceso, PL.proceso.descripcion, PL.informacionProceso ");
         }
         sql.append("FROM JProcesoLog PL ");
 
@@ -191,7 +190,7 @@ public class ProcesoLogRepositoryBean extends AbstractCrudRepository<JProcesoLog
         if (jProcesoLog != null) {
             jProcesoLog.setEstadoProceso(resultadoProceso.isFinalizadoOk() ? TypeEstadoProceso.CORRECTO.toString() : TypeEstadoProceso.ERROR.toString());
             jProcesoLog.setFechaFin(new Date());
-            jProcesoLog.setMensajeError(resultadoProceso.getMensajeError());
+            jProcesoLog.setMensajeError(resultadoProceso.getMensajeErrorTraza());
             jProcesoLog.setInformacionProceso(UtilJSON.toJSON(resultadoProceso.getDetalles()));
             this.update(jProcesoLog);
         }
@@ -206,15 +205,15 @@ public class ProcesoLogRepositoryBean extends AbstractCrudRepository<JProcesoLog
         return result;
     }
 
-  @Override
-  public Date obtenerUltimaEjecucionCorrecta(final Long idProceso) {
-    final String sql = "SELECT max(PL.fechaInicio) from JProcesoLog PL WHERE PL.proceso.codigo = :idProceso and PL.estadoProceso = :estado";
-    final Query query = entityManager.createQuery(sql);
-    query.setParameter("idProceso", idProceso);
-    query.setParameter("estado", "C");
-    final Date result = (Date) query.getSingleResult();
-    return result;
-  }
+    @Override
+    public Date obtenerUltimaEjecucionCorrecta(final Long idProceso) {
+        final String sql = "SELECT max(PL.fechaInicio) from JProcesoLog PL WHERE PL.proceso.codigo = :idProceso and PL.estadoProceso = :estado";
+        final Query query = entityManager.createQuery(sql);
+        query.setParameter("idProceso", idProceso);
+        query.setParameter("estado", "C");
+        final Date result = (Date) query.getSingleResult();
+        return result;
+    }
 
 
     public JProceso obtenerProcesoPorIdentificador(final String identificador, Long idEntidad) {

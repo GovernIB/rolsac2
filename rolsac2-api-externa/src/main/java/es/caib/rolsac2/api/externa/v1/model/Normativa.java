@@ -65,22 +65,22 @@ public class Normativa extends EntidadBase<Normativa> {
 	// -- se duplican las entidades para poder generar la clase link en funcion de
 	// la propiedad principal (sin "link_")
 	/** boletin **/
-	@Schema(description = "linkTipoBoletin", required = false)
-	private Link linkBoletinOficial;
+	@Schema(description = "link_boletinOficial", required = false)
+	private Link link_boletinOficial;
 	@JsonIgnore
 	@Schema(hidden = true)
 	@XmlTransient
 	private Long boletinOficial;
 
-	@Schema(description = "linkTipoNormativa", required = false)
-	private Link linkTipoNormativa;
+	@Schema(description = "link_tipoNormativa", required = false)
+	private Link link_tipoNormativa;
 	@JsonIgnore
 	@Schema(hidden = true)
 	@XmlTransient
 	private Long tipoNormativa;
 
-	@Schema(description = "linkEntidad", required = false)
-	private Link linkEntidad;
+	@Schema(description = "link_entidad", required = false)
+	private Link link_entidad;
 	@JsonIgnore
 	@Schema(hidden = true)
 	@XmlTransient
@@ -96,11 +96,11 @@ public class Normativa extends EntidadBase<Normativa> {
 
 	@Override
 	public void generaLinks(String urlBase) {
-		linkBoletinOficial = this.generaLink(this.boletinOficial, Constantes.ENTIDAD_BOLETINES, Constantes.URL_BOLETINES,
+		link_boletinOficial = this.generaLink(this.boletinOficial, Constantes.ENTIDAD_BOLETINES, Constantes.URL_BOLETINES,
 				urlBase, null);
-		linkEntidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
+		link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
 				null);
-		linkTipoNormativa = this.generaLink(this.tipoNormativa, Constantes.ENTIDAD_TIPO_NORMATIVA, Constantes.URL_TIPO_NORMATIVA, urlBase,
+		link_tipoNormativa = this.generaLink(this.tipoNormativa, Constantes.ENTIDAD_TIPO_NORMATIVA, Constantes.URL_TIPO_NORMATIVA, urlBase,
 				null);
 	}
 
@@ -131,35 +131,12 @@ public class Normativa extends EntidadBase<Normativa> {
 		this.codigo = codigo;
 	}
 
-	/**
-	 * @return the codigo
-	 */
-	public long getCodigo() {
-		return codigo;
-	}
-
-	/**
-	 * @param codigo the codigo to set
-	 */
-	public void setCodigo(long codigo) {
-		this.codigo = codigo;
-	}
-
-
 	public Long getBoletinOficial() {
 		return boletinOficial;
 	}
 
 	public void setBoletinOficial(Long boletinOficial) {
 		this.boletinOficial = boletinOficial;
-	}
-
-	public Link getLinkEntidad() {
-		return linkEntidad;
-	}
-
-	public void setLinkEntidad(Link linkEntidad) {
-		this.linkEntidad = linkEntidad;
 	}
 
 	@XmlTransient
@@ -211,20 +188,28 @@ public class Normativa extends EntidadBase<Normativa> {
 		this.nombreResponsable = nombreResponsable;
 	}
 
-	public Link getLinkBoletinOficial() {
-		return linkBoletinOficial;
+	public Link getLink_boletinOficial() {
+		return link_boletinOficial;
 	}
 
-	public void setLinkBoletinOficial(Link linkBoletinOficial) {
-		this.linkBoletinOficial = linkBoletinOficial;
+	public void setLink_boletinOficial(Link link_boletinOficial) {
+		this.link_boletinOficial = link_boletinOficial;
 	}
 
-	public Link getLinkTipoNormativa() {
-		return linkTipoNormativa;
+	public Link getLink_tipoNormativa() {
+		return link_tipoNormativa;
 	}
 
-	public void setLinkTipoNormativa(Link linkTipoNormativa) {
-		this.linkTipoNormativa = linkTipoNormativa;
+	public void setLink_tipoNormativa(Link link_tipoNormativa) {
+		this.link_tipoNormativa = link_tipoNormativa;
+	}
+
+	public Link getLink_entidad() {
+		return link_entidad;
+	}
+
+	public void setLink_entidad(Link link_entidad) {
+		this.link_entidad = link_entidad;
 	}
 
 	public Long getTipoNormativa() {

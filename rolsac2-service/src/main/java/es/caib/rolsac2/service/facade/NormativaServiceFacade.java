@@ -5,6 +5,7 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.filtro.DocumentoNormativaFiltro;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 
@@ -60,6 +61,14 @@ public interface NormativaServiceFacade {
      * @return
      */
     int countByFiltro(NormativaFiltro filtro);
+
+    /**
+     * Devuelve el total de Normativas relacionado con los parámetros del codigo de la entidad.
+     *
+     * @param entidadId
+     * @return
+     */
+    Long countByEntidad(Long entidadId);
 
 
     /**
@@ -172,4 +181,6 @@ public interface NormativaServiceFacade {
     void actualizarSolr(IndexacionDTO proc, ResultadoAccion resultadoAccion);
 
 	Pagina<NormativaDTO> findByFiltroRest(NormativaFiltro filtro);
+
+	Pagina<DocumentoNormativaDTO> findDocumentoNormativaByFiltroRest(DocumentoNormativaFiltro filtro);
 }

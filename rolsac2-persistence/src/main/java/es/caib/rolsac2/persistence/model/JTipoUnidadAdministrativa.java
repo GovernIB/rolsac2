@@ -13,17 +13,8 @@ import java.util.Objects;
  */
 @Entity
 @SequenceGenerator(name = "tipo-ua-sequence", sequenceName = "RS2_TIPOUNA_SEQ", allocationSize = 1)
-@Table(name = "RS2_TIPOUNA",
-        indexes = {
-                @Index(name = "RS2_TIPOUNA_PK", columnList = "TPUA_CODIGO")
-        }
-)
-@NamedQueries({
-        @NamedQuery(name = JTipoUnidadAdministrativa.FIND_BY_ID,
-                query = "select p from JTipoUnidadAdministrativa p where p.codigo = :id"),
-        @NamedQuery(name = JTipoUnidadAdministrativa.COUNT_BY_IDENTIFICADOR,
-                query = "select count(p) from JTipoUnidadAdministrativa p where p.entidad.codigo = :entidad and lower(p.identificador) like :identificador")
-})
+@Table(name = "RS2_TIPOUNA", indexes = {@Index(name = "RS2_TIPOUNA_PK", columnList = "TPUA_CODIGO")})
+@NamedQueries({@NamedQuery(name = JTipoUnidadAdministrativa.FIND_BY_ID, query = "select p from JTipoUnidadAdministrativa p where p.codigo = :id"), @NamedQuery(name = JTipoUnidadAdministrativa.COUNT_BY_IDENTIFICADOR, query = "select count(p) from JTipoUnidadAdministrativa p where p.entidad.codigo = :entidad and lower(p.identificador) like :identificador")})
 public class JTipoUnidadAdministrativa extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -67,7 +58,7 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -76,7 +67,7 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -85,7 +76,7 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     /**
      * Obtiene entidad.
      *
-     * @return  entidad
+     * @return entidad
      */
     public JEntidad getEntidad() {
         return entidad;
@@ -94,7 +85,7 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     /**
      * Establece entidad.
      *
-     * @param entidad  entidad
+     * @param entidad entidad
      */
     public void setEntidad(JEntidad entidad) {
         this.entidad = entidad;
@@ -103,7 +94,7 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -112,7 +103,7 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -121,7 +112,7 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     /**
      * Obtiene traducciones.
      *
-     * @return  traducciones
+     * @return traducciones
      */
     public List<JTipoUnidadAdministrativaTraduccion> getTraducciones() {
         return traducciones;
@@ -130,7 +121,7 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
     /**
      * Establece traducciones.
      *
-     * @param traducciones  traducciones
+     * @param traducciones traducciones
      */
     public void setTraducciones(List<JTipoUnidadAdministrativaTraduccion> traducciones) {
         if (this.traducciones == null || this.traducciones.isEmpty()) {
@@ -155,11 +146,6 @@ public class JTipoUnidadAdministrativa extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JTipoUnidadAdministrativa{" +
-                "id=" + codigo +
-                ", entidad=" + entidad +
-                ", traducciones=" + traducciones +
-                ", identificador='" + identificador + '\'' +
-                '}';
+        return "JTipoUnidadAdministrativa{" + "id=" + codigo + ", entidad=" + entidad + ", traducciones=" + traducciones + ", identificador='" + identificador + '\'' + '}';
     }
 }

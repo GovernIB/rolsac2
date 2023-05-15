@@ -52,7 +52,7 @@ public class Constantes {
     public static final String PROCEDIMIENTO_TRAMITES = "auditoria.procedimiento.tramites";
 
     public static final String PROCEDIMIENTO = "P";
-    public static final boolean PROCEDIMIENTO_PUBLICADO = false;
+    public static final boolean PROCEDIMIENTO_DEFINITIVO = false;
     public static final boolean PROCEDIMIENTO_ENMODIFICACION = true;
     public static final String SERVICIO = "S";
 

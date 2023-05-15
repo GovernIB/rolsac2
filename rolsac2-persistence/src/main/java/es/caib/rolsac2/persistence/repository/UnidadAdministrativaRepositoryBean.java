@@ -2,7 +2,6 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
-import es.caib.rolsac2.persistence.model.JNormativa;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
@@ -31,6 +30,9 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
 
     @Inject
     private UnidadAdministrativaConverter converter;
+
+    @Inject
+    private UnidadAdministrativaAuditoriaRepository uaAuditoriaRepository;
 
     protected UnidadAdministrativaRepositoryBean() {
         super(JUnidadAdministrativa.class);
@@ -212,7 +214,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             sql = new StringBuilder("SELECT count(j) FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma LEFT OUTER JOIN j.entidad je ");
 
             if (filtro.isRellenoCodigoNormativa()) {
-           	 	sql.append(new StringBuilder(" LEFT OUTER JOIN j.normativas jn ON jn.codigo = :codigoNormativa "));
+                sql.append(new StringBuilder(" LEFT OUTER JOIN j.normativas jn ON jn.codigo = :codigoNormativa "));
             }
 
             sql.append(new StringBuilder(" where 1 = 1  "));
@@ -220,7 +222,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             sql = new StringBuilder("SELECT j FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma LEFT OUTER JOIN j.entidad je ");
 
             if (filtro.isRellenoCodigoNormativa()) {
-            	 sql.append(new StringBuilder(" LEFT OUTER JOIN j.normativas jn ON jn.codigo = :codigoNormativa "));
+                sql.append(new StringBuilder(" LEFT OUTER JOIN j.normativas jn ON jn.codigo = :codigoNormativa "));
             }
 
             sql.append(new StringBuilder(" where 1 = 1  "));
@@ -233,35 +235,35 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         }
 
         if (filtro.isRellenoIdUA()) {
-        	if(filtro.getIdUA().longValue() == -1) {
-        		 sql.append(" and j.padre is null ");
-        	} else {
-        		 sql.append(" and ( j.codigo = :idUA OR j.padre.codigo = :idUA) ");
-        	}
+            if (filtro.getIdUA().longValue() == -1) {
+                sql.append(" and j.padre is null ");
+            } else {
+                sql.append(" and ( j.codigo = :idUA OR j.padre.codigo = :idUA) ");
+            }
         }
 
-//        if (filtro.isRellenoCodigoNormativa()) {
-//            sql.append(" and  j.normativas in (:codigoNormativa) ");
-//        }
+        //        if (filtro.isRellenoCodigoNormativa()) {
+        //            sql.append(" and  j.normativas in (:codigoNormativa) ");
+        //        }
 
         if (filtro.isRellenoCodigoDIR3()) {
             sql.append(" and LOWER(j.codigoDIR3) LIKE :codigoDIR3 ");
         }
 
         if (filtro.isRellenoCodEnti()) {
-        	sql.append(" and je.codigo=:codEnti ");
+            sql.append(" and je.codigo=:codEnti ");
         }
 
         if (filtro.isRellenoIdentificador()) {
-        	sql.append(" and LOWER(jtipo.identificador) LIKE :identificador ");
+            sql.append(" and LOWER(jtipo.identificador) LIKE :identificador ");
         }
 
         if (filtro.isRellenoNombre()) {
-        	sql.append(" and LOWER(t.nombre) LIKE :nombre ");
+            sql.append(" and LOWER(t.nombre) LIKE :nombre ");
         }
 
         if (filtro.isRellenoCodigo()) {
-        	sql.append(" and j.codigo = :codigo ");
+            sql.append(" and j.codigo = :codigo ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -284,19 +286,19 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             query.setParameter("idioma", filtro.getIdioma());
         }
         if (filtro.isRellenoCodigoDIR3()) {
-            query.setParameter("codigoDIR3", "%" +  filtro.getCodigoDIR3().toLowerCase()  + "%");
+            query.setParameter("codigoDIR3", "%" + filtro.getCodigoDIR3().toLowerCase() + "%");
         }
         if (filtro.isRellenoIdUA() && filtro.getIdUA().longValue() != -1) {
             query.setParameter("idUA", filtro.getIdUA());
         }
         if (filtro.isRellenoCodEnti()) {
-        	 query.setParameter("codEnti", filtro.getCodEnti());
+            query.setParameter("codEnti", filtro.getCodEnti());
         }
         if (filtro.isRellenoCodigo()) {
-       	 	query.setParameter("codigo", filtro.getCodigo());
+            query.setParameter("codigo", filtro.getCodigo());
         }
         if (filtro.isRellenoCodigoNormativa()) {
-        	query.setParameter("codigoNormativa", filtro.getCodigoNormativa());
+            query.setParameter("codigoNormativa", filtro.getCodigoNormativa());
         }
 
         return query;
@@ -359,6 +361,14 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     @Override
     public long countByFiltro(UnidadAdministrativaFiltro filtro) {
         return (long) getQuery(true, filtro, false).getSingleResult();
+    }
+
+    @Override
+    public long countByFiltroEntidad(Long entidadId) {
+        String sql = "SELECT count(a) FROM JUnidadAdministrativa a LEFT OUTER JOIN a.entidad b WHERE b.codigo= :entidadId";
+        TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
+        query.setParameter("entidadId", entidadId);
+        return query.getSingleResult();
     }
 
     private String getOrden(String order) {
@@ -588,21 +598,29 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         }
     }
 
-	@Override
-	public List<UnidadAdministrativaDTO> findPagedByFiltroRest(UnidadAdministrativaFiltro filtro) {
-		Query query = getQuery(false, filtro, true);
-		query.setFirstResult(filtro.getPaginaFirst());
-		query.setMaxResults(filtro.getPaginaTamanyo());
+    @Override
+    public List<UnidadAdministrativaDTO> findPagedByFiltroRest(UnidadAdministrativaFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
 
-		List<JUnidadAdministrativa> jentidades = query.getResultList();
-		List<UnidadAdministrativaDTO> entidades = new ArrayList<>();
-		if (jentidades != null) {
-			for (JUnidadAdministrativa jentidad : jentidades) {
-				UnidadAdministrativaDTO entidad = converter.createDTO(jentidad);
+        List<JUnidadAdministrativa> jentidades = query.getResultList();
+        List<UnidadAdministrativaDTO> entidades = new ArrayList<>();
+        if (jentidades != null) {
+            for (JUnidadAdministrativa jentidad : jentidades) {
+                UnidadAdministrativaDTO entidad = converter.createDTO(jentidad);
 
-				entidades.add(entidad);
-			}
-		}
-		return entidades;
-	}
+                entidades.add(entidad);
+            }
+        }
+        return entidades;
+    }
+
+    @Override
+    public void deleteUA(Long id) {
+        uaAuditoriaRepository.borrarAuditoriasByIdUA(id);
+        JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, id);
+        entityManager.remove(jua);
+        entityManager.flush();
+    }
 }

@@ -1,8 +1,12 @@
 package es.caib.rolsac2.persistence.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import es.caib.rolsac2.persistence.converter.TipoMateriaSIAConverter;
+import es.caib.rolsac2.persistence.model.JTipoMateriaSIA;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
+import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.TipoMateriaSIAFiltro;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -11,14 +15,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import es.caib.rolsac2.persistence.converter.TipoMateriaSIAConverter;
-import es.caib.rolsac2.persistence.model.JTipoMateriaSIA;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
-import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.filtro.TipoMateriaSIAFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementación del repositorio de tipo de materia SIA.
@@ -28,8 +27,7 @@ import es.caib.rolsac2.service.model.filtro.TipoMateriaSIAFiltro;
 @Stateless
 @Local(TipoMateriaSIARepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMateriaSIA, Long>
-        implements TipoMateriaSIARepository {
+public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMateriaSIA, Long> implements TipoMateriaSIARepository {
 
     @Inject
     private TipoMateriaSIAConverter converter;
@@ -54,6 +52,7 @@ public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMa
                 Literal literal = new Literal();
                 literal.add(new Traduccion(filtro.getIdioma(), (String) jTipoMateriaSIA[2]));
                 materiaSIAGrid.setDescripcion(literal);
+                materiaSIAGrid.setCodigoSIA((Long) jTipoMateriaSIA[3]);
                 tiposMateriaSIA.add(materiaSIAGrid);
             }
         }
@@ -77,20 +76,18 @@ public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMa
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder(
-                    "SELECT count(j) FROM JTipoMateriaSIA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JTipoMateriaSIA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else if (isRest) {
-        	sql = new StringBuilder("SELECT j FROM JTipoMateriaSIA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j FROM JTipoMateriaSIA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoMateriaSIA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, t.descripcion, j.codigoSIA FROM JTipoMateriaSIA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         }
 
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.id as string) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro)");
         }
         if (filtro.isRellenoCodigo()) {
-        	sql.append(" and j.codigo = :codigo ");
+            sql.append(" and j.codigo = :codigo ");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by " + getOrden(filtro.getOrderBy()));
@@ -106,7 +103,7 @@ public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMa
             query.setParameter("idioma", filtro.getIdioma());
         }
         if (filtro.isRellenoCodigo()) {
-        	query.setParameter("codigo", filtro.getCodigo());
+            query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -122,28 +119,27 @@ public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMa
 
     @Override
     public Optional<JTipoMateriaSIA> findById(String id) {
-        TypedQuery<JTipoMateriaSIA> query =
-                entityManager.createNamedQuery(JTipoMateriaSIA.FIND_BY_ID, JTipoMateriaSIA.class);
+        TypedQuery<JTipoMateriaSIA> query = entityManager.createNamedQuery(JTipoMateriaSIA.FIND_BY_ID, JTipoMateriaSIA.class);
         query.setParameter("id", id);
         List<JTipoMateriaSIA> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
 
-	@Override
-	public List<TipoMateriaSIADTO> findPagedByFiltroRest(TipoMateriaSIAFiltro filtro) {
-		Query query = getQuery(false, filtro, true);
-		query.setFirstResult(filtro.getPaginaFirst());
-		query.setMaxResults(filtro.getPaginaTamanyo());
+    @Override
+    public List<TipoMateriaSIADTO> findPagedByFiltroRest(TipoMateriaSIAFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
 
-		List<JTipoMateriaSIA> jtipoMateriaSIAes = query.getResultList();
-		List<TipoMateriaSIADTO> tipoMateriaSIAes = new ArrayList<>();
-		if (jtipoMateriaSIAes != null) {
-			for (JTipoMateriaSIA jtipoMateriaSIA : jtipoMateriaSIAes) {
-				TipoMateriaSIADTO tipoMateriaSIA = converter.createDTO(jtipoMateriaSIA);
+        List<JTipoMateriaSIA> jtipoMateriaSIAes = query.getResultList();
+        List<TipoMateriaSIADTO> tipoMateriaSIAes = new ArrayList<>();
+        if (jtipoMateriaSIAes != null) {
+            for (JTipoMateriaSIA jtipoMateriaSIA : jtipoMateriaSIAes) {
+                TipoMateriaSIADTO tipoMateriaSIA = converter.createDTO(jtipoMateriaSIA);
 
-				tipoMateriaSIAes.add(tipoMateriaSIA);
-			}
-		}
-		return tipoMateriaSIAes;
-	}
+                tipoMateriaSIAes.add(tipoMateriaSIA);
+            }
+        }
+        return tipoMateriaSIAes;
+    }
 }

@@ -9,7 +9,7 @@ import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 /**
- * Respuesta Fitxes
+ * Respuesta Tema
  *
  * @author Indra
  *

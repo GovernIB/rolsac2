@@ -83,17 +83,20 @@
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                    <p:outputLabel  value="#{labels['dict.descripcion']}:" for="inputDescripcion" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <my:literalComponent id="inputDescripcion"
-                                         literal="#{dialogTema.data.descripcion}"
+                    <my:literalComponent id="inputDescripcion" styleClass="w95"
+                                         value="#{dialogTema.data.descripcion}"
                                          soloLecture="#{dialogTema.isModoConsulta()}"
-                                         idioma="#{dialogTema.idioma}"
                                          required="#{empty param['formDialog:closeButton']}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.descripcion']}"/>
+                                         idioma="#{dialogTema.idioma}"
+                                         literal="#{dialogTema.data.descripcion}"
+                                         nombreLiteral="#{labels['dict.descripcion']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                    </my:literalComponent>
                 </div>
             </div>
 

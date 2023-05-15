@@ -10,15 +10,8 @@ import java.util.Objects;
  */
 @Entity
 @SequenceGenerator(name = "procedimiento-sequence", sequenceName = "RS2_PROC_SEQ", allocationSize = 1)
-@Table(name = "RS2_PROC",
-        indexes = {
-                @Index(name = "RS2_PROC_PK_I", columnList = "PROC_CODIGO")
-        }
-)
-@NamedQueries({
-        @NamedQuery(name = JProcedimiento.FIND_BY_ID,
-                query = "select p from JProcedimiento p where p.codigo = :id")
-})
+@Table(name = "RS2_PROC", indexes = {@Index(name = "RS2_PROC_PK_I", columnList = "PROC_CODIGO")})
+@NamedQueries({@NamedQuery(name = JProcedimiento.FIND_BY_ID, query = "select p from JProcedimiento p where p.codigo = :id")})
 public class JProcedimiento extends BaseEntity {
     /**
      * La consulta FIND_BY_ID.
@@ -257,7 +250,7 @@ public class JProcedimiento extends BaseEntity {
     public void setProcedimientoWF(List<JProcedimientoWorkflow> procedimientoWF) {
         this.procedimientoWF = procedimientoWF;
     }
- 
+
     public Date getFechaIndexacion() {
         return fechaIndexacion;
     }
@@ -321,13 +314,6 @@ public class JProcedimiento extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JProcedimiento{" +
-                "codigo=" + codigo +
-                ", tipo='" + tipo + '\'' +
-                ", codigoSIA=" + codigoSIA +
-                ", estadoSIA=" + estadoSIA +
-                ", siaFecha=" + siaFecha +
-                ", codigoDir3SIA='" + codigoDir3SIA + '\'' +
-                '}';
+        return "JProcedimiento{" + "codigo=" + codigo + ", tipo='" + tipo + '\'' + ", codigoSIA=" + codigoSIA + ", estadoSIA=" + estadoSIA + ", siaFecha=" + siaFecha + ", codigoDir3SIA='" + codigoDir3SIA + '\'' + '}';
     }
 }

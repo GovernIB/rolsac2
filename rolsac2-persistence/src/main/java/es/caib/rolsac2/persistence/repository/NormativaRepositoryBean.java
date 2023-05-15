@@ -176,6 +176,14 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
     }
 
     @Override
+    public Long countByEntidad(Long entidadId) {
+        String sql = "SELECT count(a) FROM JNormativa a LEFT OUTER JOIN a.entidad b WHERE b.codigo= :entidadId";
+        TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
+        query.setParameter("entidadId", entidadId);
+        return query.getSingleResult();
+    }
+
+    @Override
     public boolean existeTipoNormativa(Long codigoTipoNor) {
         StringBuilder sql = new StringBuilder("SELECT count(j) FROM JNormativa j where j.tipoNormativa.codigo = :codigoTipoNor ");
         Query query = entityManager.createQuery(sql.toString());

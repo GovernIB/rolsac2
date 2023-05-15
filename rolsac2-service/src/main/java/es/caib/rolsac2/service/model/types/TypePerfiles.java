@@ -48,7 +48,7 @@ public enum TypePerfiles {
     public static final String ADMINISTRADOR_CONTENIDOS_VALOR = "RS2_ADC";
     public static final String GESTOR_VALOR = "RS2_GES";
     public static final String INFORMADOR_VALOR = "RS2_INF";
-    public static final String RESTAPI_VALOR = "RS2_RES";
+    public static final String RESTAPI_VALOR = "RS2_API";
 
     TypePerfiles(String iPerfil) {
         perfil = iPerfil;
