@@ -1,0 +1,77 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components">
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogBorrarEntidad.modoAcceso}"/>
+<!--            <f:viewParam id="ID" name="ID" value="#{dialogBorrarEntidad.id}"/>-->
+            <f:viewAction action="#{dialogBorrarEntidad.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="Borrar Entidad"/>
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:panel id="form">
+            <p:confirmDialog global="true">
+                <p:commandButton value="#{labels['dict.si']}" type="button" styleClass="ui-confirmdialog-yes"
+                                 icon="ui-icon-check"/>
+                <p:commandButton value="#{labels['dict.no']}" type="button" styleClass="ui-confirmdialog-no"
+                                 icon="ui-icon-close"/>
+            </p:confirmDialog>
+            <p:growl id="messagesDialog"
+                     globalOnly="false"
+                     showDetail="false"
+                     life="5000"
+                     escape="false"/>
+            <div class="row">
+                <div class="ui-g-12 ui-md-12 ui-lg-12">
+                    <h:outputText value="#{labels['dialogBorrarEntidad.cabecera']}" />
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <h:outputText value="#{labels['dialogBorrarEntidad.ua']}:" for="txtUa"/>
+                </div>
+                <div class="ui-g-12 ui-md-8 ui-lg-4">
+                    <h:outputText id="txtUa" value="#{dialogBorrarEntidad.numeroUas}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <h:outputText value="#{labels['dialogBorrarEntidad.normativas']}:" for="txtNormativa"/>
+                </div>
+                <div class="ui-g-12 ui-md-8 ui-lg-4">
+                    <h:outputText id="txtNormativa" value="#{dialogBorrarEntidad.numeroNormativas}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <h:outputText value="#{labels['dialogBorrarEntidad.servicios']}:" for="txtServicios"/>
+                </div>
+                <div class="ui-g-12 ui-md-8 ui-lg-4">
+                    <h:outputText id="txtServicios" value="#{dialogBorrarEntidad.numeroServicios}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <h:outputText value="#{labels['dialogBorrarEntidad.procedimientos']}:" for="txtProcedimientos"/>
+                </div>
+                <div class="ui-g-12 ui-md-8 ui-lg-4">
+                    <h:outputText id="txtProcedimientos" value="#{dialogBorrarEntidad.numeroProcedimientos}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
+                </div>
+            </div>
+        </p:panel>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                         action="#{dialogBorrarEntidad.borrar}"
+                         process="@form" update="messagesDialog">
+            <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+        </p:commandButton>
+        <p:commandButton action="#{dialogBorrarEntidad.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all"/>
+    </ui:define>
+</ui:composition>
+</html>
