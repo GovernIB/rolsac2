@@ -36,8 +36,8 @@ import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.filtro.TipoPublicoObjetivoFiltro;
 
-@Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_PUBLICO)
-@Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_PUBLICO, name = Constantes.ENTIDAD_TIPO_PUBLICO)
+@Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PUBLICO)
+@Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PUBLICO, name = Constantes.ENTIDAD_PUBLICO)
 public class TipoPublicoObjetivoResource {
 
 	@EJB

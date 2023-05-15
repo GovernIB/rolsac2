@@ -45,17 +45,15 @@ public class Entidad extends EntidadBase<Entidad> {
 	@Schema(description = "rolInformador", name = "rolInformador", type = SchemaType.STRING, required = false)
 	private String rolInformador;
 
-//    private FicheroDTO logo;
-	@Schema(description = "linkLogo", name = "linkLogo", required = false)
-	private Link linkLogo;
+	@Schema(description = "link_logo", name = "linkLogo", required = false)
+	private Link link_logo;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
 	private Long logo;
 
-//    private FicheroDTO cssPersonalizado;
-	@Schema(description = "linkCssPersonalizado", name = "linkCssPersonalizado", required = false)
-	private Link linkCssPersonalizado;
+	@Schema(description = "link_cssPersonalizado", name = "linkCssPersonalizado", required = false)
+	private Link link_cssPersonalizado;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
@@ -106,9 +104,9 @@ public class Entidad extends EntidadBase<Entidad> {
 
 	@Override
 	public void generaLinks(String urlBase) {
-		linkLogo = this.generaLink(this.logo, Constantes.ENTIDAD_FICHERO, Constantes.URL_FICHERO, urlBase,
+		link_logo = this.generaLink(this.logo, Constantes.ENTIDAD_FICHERO, Constantes.URL_FICHERO, urlBase,
 				null);
-		linkCssPersonalizado = this.generaLink(this.cssPersonalizado, Constantes.ENTIDAD_FICHERO, Constantes.URL_FICHERO, urlBase,
+		link_cssPersonalizado = this.generaLink(this.cssPersonalizado, Constantes.ENTIDAD_FICHERO, Constantes.URL_FICHERO, urlBase,
 				null);
 	}
 
@@ -179,14 +177,6 @@ public class Entidad extends EntidadBase<Entidad> {
 		this.rolInformador = rolInformador;
 	}
 
-	public Link getLinkLogo() {
-		return linkLogo;
-	}
-
-	public void setLinkLogo(Link linkLogo) {
-		this.linkLogo = linkLogo;
-	}
-
 	public Long getLogo() {
 		return logo;
 	}
@@ -195,12 +185,20 @@ public class Entidad extends EntidadBase<Entidad> {
 		this.logo = logo;
 	}
 
-	public Link getLinkCssPersonalizado() {
-		return linkCssPersonalizado;
+	public Link getLink_logo() {
+		return link_logo;
 	}
 
-	public void setLinkCssPersonalizado(Link linkCssPersonalizado) {
-		this.linkCssPersonalizado = linkCssPersonalizado;
+	public void setLink_logo(Link link_logo) {
+		this.link_logo = link_logo;
+	}
+
+	public Link getLink_cssPersonalizado() {
+		return link_cssPersonalizado;
+	}
+
+	public void setLink_cssPersonalizado(Link link_cssPersonalizado) {
+		this.link_cssPersonalizado = link_cssPersonalizado;
 	}
 
 	public Long getCssPersonalizado() {

@@ -17,7 +17,7 @@ import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
  *
  */
 @XmlRootElement
-@Schema(name = "TipoPublicoObjetivo", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_TIPO_PUBLICO)
+@Schema(name = "TipoPublicoObjetivo", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_PUBLICO)
 public class TipoPublicoObjetivo extends EntidadBase<TipoPublicoObjetivo> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TipoPublicoObjetivo.class);

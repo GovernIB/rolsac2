@@ -253,7 +253,7 @@ public class Utiles {
 			lang = getDefaultLanguage();
 		String alternates = System.getProperty("es.caib.rolsac.api.v2.alternativesIdioma_" + lang);
 		if (alternates == null) {
-			LOG.error("No hay definidas alternativas de idioma para " + lang + ". Usando ca,es,en");
+			LOG.info("No hay definidas alternativas de idioma para " + lang + ". Usando ca,es,en");
 			return new String[] { "ca", "es", "en" };
 		}
 		return alternates.split(",");

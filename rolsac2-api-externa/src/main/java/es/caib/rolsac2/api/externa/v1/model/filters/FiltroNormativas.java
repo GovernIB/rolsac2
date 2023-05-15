@@ -29,16 +29,16 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 	private static final Logger LOG = LoggerFactory.getLogger(FiltroNormativas.class);
 
 	public static final String SAMPLE = Constantes.SALTO_LINEA + "{" +
-			"\"idUA\":\"0\"," 					+ Constantes.SALTO_LINEA +
+			"\"idUA\":0," 					+ Constantes.SALTO_LINEA +
 			"\"idUAsHijas\":[0, ...]," 					+ Constantes.SALTO_LINEA +
 			"\"fechaBoletin\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA +
-			"\"codigoTipoNormativa\":\"0\"," + Constantes.SALTO_LINEA +
-			"\"codigoTipoBoletin\":\"0\"," + Constantes.SALTO_LINEA +
+			"\"codigoTipoNormativa\":0," + Constantes.SALTO_LINEA +
+			"\"codigoTipoBoletin\":0," + Constantes.SALTO_LINEA +
 			"\"numero\":\"string\"," + Constantes.SALTO_LINEA +
 			"\"fechaAprobacion\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA +
 //			"\"hijasActivas\":\"false\"," + Constantes.SALTO_LINEA +
 //			"\"todasUnidadesOrganicas\":\"false\"," + Constantes.SALTO_LINEA +
-			"\"texto\":\"0\"," + Constantes.SALTO_LINEA +
+			"\"texto\":\"string\"," + Constantes.SALTO_LINEA +
 			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
 			"}";
 

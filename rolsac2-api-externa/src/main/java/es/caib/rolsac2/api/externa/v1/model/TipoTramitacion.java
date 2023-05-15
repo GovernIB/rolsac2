@@ -79,8 +79,8 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
     /**
      * Código plataforma tramitación
      */
-	@Schema(description = "linkPlatTramitacion", required = false)
-	private Link linkPlatTramitacion;
+	@Schema(description = "link_codPlatTramitacion", required = false)
+	private Link link_codPlatTramitacion;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
@@ -104,8 +104,8 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
 	@Schema(description = "plantilla", name = "plantilla", type = SchemaType.BOOLEAN, required = false)
     private boolean plantilla;
 
-	@Schema(description = "linkEntidad", required = false)
-	private Link linkEntidad;
+	@Schema(description = "link_entidad", required = false)
+	private Link link_entidad;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
@@ -114,14 +114,6 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
 
 	public TipoTramitacion(TipoTramitacionDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
 		super(nodo, urlBase, idioma, hateoasEnabled);
-
-		if(nodo != null) {
-			entidad = nodo.getEntidad() == null ? null : nodo.getEntidad().getCodigo();
-		}
-
-		if(nodo != null) {
-			codPlatTramitacion = nodo.getCodPlatTramitacion() == null ? null : nodo.getCodPlatTramitacion().getCodigo();
-		}
 	}
 
 	public TipoTramitacion() {
@@ -130,9 +122,9 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
 
 	@Override
 	public void generaLinks(String urlBase) {
-		linkEntidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
+		link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
 				null);
-		linkPlatTramitacion = this.generaLink(this.codPlatTramitacion, Constantes.ENTIDAD_PLATAFORMA, Constantes.URL_PLATAFORMA, urlBase,
+		link_codPlatTramitacion = this.generaLink(this.codPlatTramitacion, Constantes.ENTIDAD_PLATAFORMA, Constantes.URL_PLATAFORMA, urlBase,
 				null);
 	}
 
@@ -231,12 +223,12 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
 		this.urlTramitacion = urlTramitacion;
 	}
 
-	public Link getLinkPlatTramitacion() {
-		return linkPlatTramitacion;
+	public Link getLink_codPlatTramitacion() {
+		return link_codPlatTramitacion;
 	}
 
-	public void setLinkPlatTramitacion(Link linkPlatTramitacion) {
-		this.linkPlatTramitacion = linkPlatTramitacion;
+	public void setLink_codPlatTramitacion(Link link_codPlatTramitacion) {
+		this.link_codPlatTramitacion = link_codPlatTramitacion;
 	}
 
 	public Long getCodPlatTramitacion() {
@@ -271,12 +263,12 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
 		this.plantilla = plantilla;
 	}
 
-	public Link getLinkEntidad() {
-		return linkEntidad;
+	public Link getLink_entidad() {
+		return link_entidad;
 	}
 
-	public void setLinkEntidad(Link linkEntidad) {
-		this.linkEntidad = linkEntidad;
+	public void setLink_entidad(Link link_entidad) {
+		this.link_entidad = link_entidad;
 	}
 
 	public Long getEntidad() {

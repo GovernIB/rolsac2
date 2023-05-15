@@ -82,7 +82,7 @@ public class TemaResource {
 	}
 
 	/**
-	 * Para obtener una tema.
+	 * Para obtener un tema.
 	 *
 	 * @param idioma
 	 * @param id
@@ -93,7 +93,7 @@ public class TemaResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/{codigo}")
-	@Operation(operationId = "getPorId", summary = "Obtiene una tema", description = "Obtiene La tema con el código indicado")
+	@Operation(operationId = "getPorId", summary = "Obtiene un tema", description = "Obtiene La tema con el código indicado")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTema.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getPorId(

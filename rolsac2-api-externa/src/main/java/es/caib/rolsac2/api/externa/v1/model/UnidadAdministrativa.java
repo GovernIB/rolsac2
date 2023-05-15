@@ -28,7 +28,7 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
 
 	/** padre **/
 	@Schema(description = "link_padre", required = false)
-	private Link linkPadre;
+	private Link link_padre;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
@@ -42,8 +42,8 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
 	@Schema(description = "codigoDIR3", type = SchemaType.STRING, required = false)
 	private String codigoDIR3;
 
-	@Schema(description = "linkEntidad", required = false)
-	private Link linkEntidad;
+	@Schema(description = "link_entidad", required = false)
+	private Link link_entidad;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
@@ -86,8 +86,8 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
 	private String responsableEmail;
 
 	/** sexoResponsable **/
-	@Schema(description = "linkResponsableSexo", required = false)
-	private Link linkResponsableSexo;
+	@Schema(description = "link_responsableSexo", required = false)
+	private Link link_responsableSexo;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
@@ -96,8 +96,8 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
 	/**
 	 * Tipo de UA
 	 **/
-	@Schema(description = "linkTipo", required = false)
-	private Link linkTipo;
+	@Schema(description = "link_tipo", required = false)
+	private Link link_tipo;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
@@ -155,11 +155,11 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
 
 	@Override
 	protected void generaLinks(String urlBase) {
-		linkPadre = this.generaLink(this.padre, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
-		linkTipo = this.generaLink(this.tipo, Constantes.ENTIDAD_TIPO_UNIDAD, Constantes.URL_TIPO_UNIDAD, urlBase, null);
-		linkEntidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
+		link_padre = this.generaLink(this.padre, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
+		link_tipo = this.generaLink(this.tipo, Constantes.ENTIDAD_TIPO_UNIDAD, Constantes.URL_TIPO_UNIDAD, urlBase, null);
+		link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
 				null);
-		linkResponsableSexo = this.generaLink(this.responsableSexo == null ? null : this.responsableSexo.longValue(), Constantes.ENTIDAD_TIPO_SEXO, Constantes.URL_TIPO_SEXO, urlBase,
+		link_responsableSexo = this.generaLink(this.responsableSexo == null ? null : this.responsableSexo.longValue(), Constantes.ENTIDAD_TIPO_SEXO, Constantes.URL_TIPO_SEXO, urlBase,
 				null);
 	}
 
@@ -351,20 +351,20 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
 		this.codigoDIR3 = codigoDIR3;
 	}
 
-	public Link getLinkPadre() {
-		return linkPadre;
+	public Link getLink_padre() {
+		return link_padre;
 	}
 
-	public void setLinkPadre(Link linkPadre) {
-		this.linkPadre = linkPadre;
+	public void setLink_padre(Link link_padre) {
+		this.link_padre = link_padre;
 	}
 
-	public Link getLinkEntidad() {
-		return linkEntidad;
+	public Link getLink_entidad() {
+		return link_entidad;
 	}
 
-	public void setLinkEntidad(Link linkEntidad) {
-		this.linkEntidad = linkEntidad;
+	public void setLink_entidad(Link link_entidad) {
+		this.link_entidad = link_entidad;
 	}
 
 	public Long getEntidad() {
@@ -415,20 +415,20 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
 		this.usuarioAuditoria = usuarioAuditoria;
 	}
 
-	public Link getLinkResponsableSexo() {
-		return linkResponsableSexo;
+	public Link getLink_responsableSexo() {
+		return link_responsableSexo;
 	}
 
-	public void setLinkResponsableSexo(Link linkResponsableSexo) {
-		this.linkResponsableSexo = linkResponsableSexo;
+	public void setLink_responsableSexo(Link link_responsableSexo) {
+		this.link_responsableSexo = link_responsableSexo;
 	}
 
-	public Link getLinkTipo() {
-		return linkTipo;
+	public Link getLink_tipo() {
+		return link_tipo;
 	}
 
-	public void setLinkTipo(Link linkTipo) {
-		this.linkTipo = linkTipo;
+	public void setLink_tipo(Link link_tipo) {
+		this.link_tipo = link_tipo;
 	}
 
 	public Integer getVersion() {

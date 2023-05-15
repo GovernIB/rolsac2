@@ -35,8 +35,8 @@ public class TipoUnidadAdministrativa extends EntidadBase<TipoUnidadAdministrati
 	@Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
 	private String descripcion;
 
-	@Schema(description = "linkEntidad", required = false)
-	private Link linkEntidad;
+	@Schema(description = "link_entidad", required = false)
+	private Link link_entidad;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
@@ -73,11 +73,6 @@ public class TipoUnidadAdministrativa extends EntidadBase<TipoUnidadAdministrati
 	public TipoUnidadAdministrativa(TipoUnidadAdministrativaDTO nodo, String urlBase, String idioma,
 			boolean hateoasEnabled) {
 		super(nodo, urlBase, idioma, hateoasEnabled);
-
-//		if(nodo != null) {
-//			entidad = nodo.getEntidad() == null ? null : nodo.getEntidad().getCodigo();
-//		}
-
 	}
 
 	public TipoUnidadAdministrativa() {
@@ -86,7 +81,7 @@ public class TipoUnidadAdministrativa extends EntidadBase<TipoUnidadAdministrati
 
 	@Override
 	public void generaLinks(String urlBase) {
-		linkEntidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
+		link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
 				null);
 	}
 
@@ -150,12 +145,12 @@ public class TipoUnidadAdministrativa extends EntidadBase<TipoUnidadAdministrati
 		this.codigo = codigo;
 	}
 
-	public Link getLinkEntidad() {
-		return linkEntidad;
+	public Link getLink_entidad() {
+		return link_entidad;
 	}
 
-	public void setLinkEntidad(Link linkEntidad) {
-		this.linkEntidad = linkEntidad;
+	public void setLink_entidad(Link link_entidad) {
+		this.link_entidad = link_entidad;
 	}
 
 	public Long getEntidad() {

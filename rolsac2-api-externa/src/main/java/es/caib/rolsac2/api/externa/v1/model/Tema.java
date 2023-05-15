@@ -1,7 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.time.LocalDate;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -13,9 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.EntidadDTO;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.TemaDTO;
 
 /**
@@ -51,15 +46,15 @@ public class Tema extends EntidadBase<Tema> {
 	// -- se duplican las entidades para poder generar la clase link en funcion de
 	// la propiedad principal (sin "link_")
 	/** boletin **/
-	@Schema(description = "linkTemaPadre", required = false)
-	private Link linkTemaPadre;
+	@Schema(description = "link_temaPadre", required = false)
+	private Link link_temaPadre;
 	@JsonIgnore
 	@Schema(hidden = true)
 	@XmlTransient
 	private Long temaPadre;
 
-	@Schema(description = "linkEntidad", required = false)
-	private Link linkEntidad;
+	@Schema(description = "link_entidad", required = false)
+	private Link link_entidad;
 	@JsonIgnore
 	@Schema(hidden = true)
 	@XmlTransient
@@ -75,9 +70,9 @@ public class Tema extends EntidadBase<Tema> {
 
 	@Override
 	public void generaLinks(String urlBase) {
-		linkEntidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
+		link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
 				null);
-		linkTemaPadre = this.generaLink(this.temaPadre, Constantes.ENTIDAD_TEMAS, Constantes.URL_TEMAS, urlBase,
+		link_temaPadre = this.generaLink(this.temaPadre, Constantes.ENTIDAD_TEMAS, Constantes.URL_TEMAS, urlBase,
 				null);
 	}
 
@@ -106,12 +101,12 @@ public class Tema extends EntidadBase<Tema> {
 		this.codigo = codigo;
 	}
 
-	public Link getLinkEntidad() {
-		return linkEntidad;
+	public Link getLink_entidad() {
+		return link_entidad;
 	}
 
-	public void setLinkEntidad(Link linkEntidad) {
-		this.linkEntidad = linkEntidad;
+	public void setLink_entidad(Link link_entidad) {
+		this.link_entidad = link_entidad;
 	}
 
 	@XmlTransient
@@ -151,12 +146,12 @@ public class Tema extends EntidadBase<Tema> {
 		this.mathPath = mathPath;
 	}
 
-	public Link getLinkTemaPadre() {
-		return linkTemaPadre;
+	public Link getLink_temaPadre() {
+		return link_temaPadre;
 	}
 
-	public void setLinkTemaPadre(Link linkTemaPadre) {
-		this.linkTemaPadre = linkTemaPadre;
+	public void setLink_temaPadre(Link link_temaPadre) {
+		this.link_temaPadre = link_temaPadre;
 	}
 
 	public Long getTemaPadre() {

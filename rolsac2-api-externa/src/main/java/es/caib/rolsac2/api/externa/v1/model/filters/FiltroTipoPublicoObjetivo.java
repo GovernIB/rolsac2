@@ -20,26 +20,18 @@ public class FiltroTipoPublicoObjetivo extends EntidadJson<FiltroTipoPublicoObje
 	public static final String SAMPLE = Constantes.SALTO_LINEA +
 			"{"	+
 			"\"texto\":\"string\"," + Constantes.SALTO_LINEA +
-//			"\"idEntidad\":0," + Constantes.SALTO_LINEA +
 			"\"filtroPaginacion\":{\"page\":0,\"size\":10}" +
 			"}";
 
 	public static final String SAMPLE_JSON =
 			"{" +
 			"\"texto\":null," 						+
-//			"\"idEntidad\":null," 						+
 			"\"filtroPaginacion\":{\"page\":0,\"size\":10}" +
 			"}";
 
 	/** texto. **/
 	@Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
 	private String texto;
-
-//    /**
-//     * Entidad
-//     */
-//	@Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
-//    private Long idEntidad;
 
 	/** FiltroPaginacion. **/
 	@Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
@@ -67,7 +59,6 @@ public class FiltroTipoPublicoObjetivo extends EntidadJson<FiltroTipoPublicoObje
 		}
 
 		return resultado;
-
 	}
 
 	public FiltroPaginacion getFiltroPaginacion() {
@@ -78,11 +69,4 @@ public class FiltroTipoPublicoObjetivo extends EntidadJson<FiltroTipoPublicoObje
 		this.filtroPaginacion = filtroPaginacion;
 	}
 
-//	public Long getIdEntidad() {
-//		return idEntidad;
-//	}
-//
-//	public void setIdEntidad(Long idEntidad) {
-//		this.idEntidad = idEntidad;
-//	}
 }

@@ -1,108 +1,132 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Bulletins.
  *
  * @author indra
- *
  */
 @XmlRootElement
 @Schema(name = "TipoMateriaSia", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_TIPO_MATERIA)
 public class TipoMateriaSia extends EntidadBase<TipoMateriaSia> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TipoMateriaSia.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TipoMateriaSia.class);
 
-	/**
-	 * Identificador
-	 */
-	@Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
-	private String identificador;
+    /**
+     * Identificador
+     */
+    @Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+    private String identificador;
 
-	/** descripcion. **/
-	@Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
-	private String descripcion;
+    /**
+     * descripcion.
+     **/
+    @Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+    private String descripcion;
 
-	/** codigo **/
-	@Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
-	private Long codigo;
+    /**
+     * codigo
+     **/
+    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    private Long codigo;
 
-	public TipoMateriaSia(TipoMateriaSIADTO nodo, String urlBase, String idioma,
-			boolean hateoasEnabled) {
-		super(nodo, urlBase, idioma, hateoasEnabled);
-	}
+    /**
+     * codigo sia
+     **/
+    @Schema(description = "codigoSIA", name = "codigoSIA", type = SchemaType.INTEGER, required = false)
+    private Long codigoSIA;
 
-	public TipoMateriaSia() {
-		super();
-	}
+    public TipoMateriaSia(TipoMateriaSIADTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, hateoasEnabled);
+    }
 
-	@Override
-	public void generaLinks(String urlBase) {
-	}
+    public TipoMateriaSia() {
+        super();
+    }
 
-	@Override
-	protected void addSetersInvalidos() {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    public void generaLinks(String urlBase) {
+    }
 
-	@Override
-	public void setId(Long codigo) {
-		this.codigo = codigo;
-	}
+    @Override
+    protected void addSetersInvalidos() {
+        // TODO Auto-generated method stub
+    }
 
-	/**
-	 * @return the descripcion
-	 */
-	public String getDescripcion() {
-		return descripcion;
-	}
+    @Override
+    public void setId(Long codigo) {
+        this.codigo = codigo;
+    }
 
-	/**
-	 * @param enlace the enlace to set
-	 */
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    /**
+     * @return the descripcion
+     */
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	/**
-	 * @return the codigo
-	 */
-	public Long getCodigo() {
-		return codigo;
-	}
+    /**
+     * @param enlace the enlace to set
+     */
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	/**
-	 * @param codigo the codigo to set
-	 */
-	public void setCodigo(Long codigo) {
-		this.codigo = codigo;
-	}
+    /**
+     * @return the codigo
+     */
+    public Long getCodigo() {
+        return codigo;
+    }
 
-	/**
-	 * Obtiene identificador.
-	 *
-	 * @return identificador
-	 */
-	public String getIdentificador() {
-		return identificador;
-	}
+    /**
+     * @param codigo the codigo to set
+     */
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-	/**
-	 * Establece identificador.
-	 *
-	 * @param identificador identificador
-	 */
-	public void setIdentificador(String identificador) {
-		this.identificador = identificador;
-	}
+    /**
+     * Obtiene identificador.
+     *
+     * @return identificador
+     */
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    /**
+     * Establece identificador.
+     *
+     * @param identificador identificador
+     */
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
+
+    /**
+     * Obtiene codigo sia.
+     *
+     * @return codigoSIA
+     */
+    public Long getCodigoSIA() {
+        return codigoSIA;
+    }
+
+    /**
+     * Establece codigo SIA.
+     *
+     * @param codigoSIA codigoSIA
+     */
+    public void setCodigoSIA(Long codigoSIA) {
+        this.codigoSIA = codigoSIA;
+    }
 }

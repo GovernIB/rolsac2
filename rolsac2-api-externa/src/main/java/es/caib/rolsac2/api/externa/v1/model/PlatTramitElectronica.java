@@ -46,8 +46,8 @@ public class PlatTramitElectronica extends EntidadBase<PlatTramitElectronica> {
 	@Schema(description = "urlAcceso", name = "urlAcceso", type = SchemaType.STRING, required = false)
     private String urlAcceso;
 
-	@Schema(description = "linkEntidad", required = false)
-	private Link linkEntidad;
+	@Schema(description = "link_codEntidad", required = false)
+	private Link link_codEntidad;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
@@ -56,10 +56,6 @@ public class PlatTramitElectronica extends EntidadBase<PlatTramitElectronica> {
 
 	public PlatTramitElectronica(PlatTramitElectronicaDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
 		super(nodo, urlBase, idioma, hateoasEnabled);
-
-		if(nodo != null) {
-			codEntidad = nodo.getCodEntidad() == null ? null : nodo.getCodEntidad().getCodigo();
-		}
 	}
 
 	public PlatTramitElectronica() {
@@ -68,7 +64,7 @@ public class PlatTramitElectronica extends EntidadBase<PlatTramitElectronica> {
 
 	@Override
 	public void generaLinks(String urlBase) {
-		linkEntidad = this.generaLink(this.codEntidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
+		link_codEntidad = this.generaLink(this.codEntidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
 				null);
 	}
 
@@ -111,12 +107,12 @@ public class PlatTramitElectronica extends EntidadBase<PlatTramitElectronica> {
 		this.codigo = codigo;
 	}
 
-	public Link getLinkEntidad() {
-		return linkEntidad;
+	public Link getLink_codEntidad() {
+		return link_codEntidad;
 	}
 
-	public void setLinkEntidad(Link linkEntidad) {
-		this.linkEntidad = linkEntidad;
+	public void setLink_codEntidad(Link link_codEntidad) {
+		this.link_codEntidad = link_codEntidad;
 	}
 
 	public String getIdentificador() {

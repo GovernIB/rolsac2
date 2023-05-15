@@ -38,43 +38,6 @@ public class FicheroResource {
     @EJB
     private FicheroServiceFacade ficheroService;
 
-//	/**
-//	 * Listado de TiposTramitacion.
-//	 *
-//	 * @return
-//	 * @throws DelegateException
-//	 */
-//	@Produces({ MediaType.APPLICATION_JSON })
-//	@POST
-//	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
-//	@Path("/")
-//	@Operation(operationId = "llistarTiposTramitacion", summary = "Lista de plataformas de tramitación electrónica", description = "Lista todos las plataformas de tramitación electrónica disponibles")
-//	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaFichero.class)))
-//	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-//	public Response llistarTiposTramitacion(
-//	@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
-//	@RequestBody(description = "Filtro: " + FiltroFichero.SAMPLE, name = "filtro", content = @Content(example = FiltroFichero.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroFichero.class))) FiltroFichero filtro)
-//			throws DelegateException, ExcepcionAplicacion, ValidationException {
-//
-//		if (filtro == null) {
-//			filtro = new FiltroFichero();
-//		}
-//
-//		FicheroFiltro fg = filtro.toFicheroFiltro();
-//
-//		if (lang != null) {
-//			fg.setIdioma(lang);
-//		}
-//
-//		// si no vienen los filtros se completan con los datos por defecto
-//		if(filtro.getFiltroPaginacion() != null) {
-//			fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
-//			fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
-//		}
-//
-//		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
-//	}
-
     /**
      * Para obtener el idioma.
      *
@@ -105,7 +68,7 @@ public class FicheroResource {
     }
 
     private RespuestaFichero getRespuesta(Long codigo) throws DelegateException {
-        FicheroDTO resultadoBusqueda = ficheroService.getFicheroDTOById(codigo);
+        FicheroDTO resultadoBusqueda = ficheroService.getContentById(codigo);
 
         List<Fichero> lista = new ArrayList<Fichero>();
 

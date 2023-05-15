@@ -29,11 +29,13 @@ import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.TipoTramitacion;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroTipoTramitacion;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
+import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaServicios;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaTipoTramitacion;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
+import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_TRAMITACION)
@@ -42,6 +44,37 @@ public class TipoTramitacionResource {
 
 	@EJB
 	private MaestrasSupServiceFacade tipoTramitacionService;
+
+	/**
+	 * Para obtener el enlace.
+	 *
+	 * @param idioma
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@POST
+	@Path("/enlaceTelematico/{codigo}")
+	@Operation(operationId = "getEnlaceTelematico", summary = "Obtiene enlace telematico", description = "Obtiene enlace telematico dado procedimiento")
+	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
+	@APIResponse(responseCode = "400", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
+	public Response getEnlaceTelematico(
+			@Parameter(description = "Código servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo,
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang)
+			throws Exception, ValidationException {
+
+		TipoTramitacionFiltro fg = new TipoTramitacionFiltro();
+		fg.setCodigo(new Long(codigo));
+
+		if (lang != null) {
+			fg.setIdioma(lang);
+		}
+
+		final String url = tipoTramitacionService.getEnlaceTelematico(fg);
+		RespuestaTipoTramitacion respuesta = new RespuestaTipoTramitacion();
+		respuesta.setMensaje(url);
+		return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+	}
 
 	/**
 	 * Listado de TiposTramitacion.

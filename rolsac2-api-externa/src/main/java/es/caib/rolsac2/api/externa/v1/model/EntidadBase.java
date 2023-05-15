@@ -96,11 +96,31 @@ public abstract class EntidadBase<V> extends EntidadJson<V> {
 		return null;
 	}
 
+	public List<Link> generaLink(List<Long> codigos, String entidad, String url, String urlBase, String descripcion) {
+		List<Link> result = new ArrayList<Link>();
+
+		if(codigos != null) {
+			for(long codigo : codigos) {
+				result.add(this.generaLink(codigo, entidad, url,
+					urlBase, null));
+			}
+		}
+
+		return result;
+	}
+
 	public Link generaLink(Long codigo, String entidad, String url, String urlBase, String descripcion) {
 		if (codigo != null) {
 			return new Link(entidad, codigo.toString(),
 					(StringUtils.isEmpty(urlBase) ? Constantes.URL_BASE : urlBase) + url.replace("{0}", codigo + ""),
 					descripcion, hateoasEnabled);
+		}
+		return null;
+	}
+
+	public Link generaLinkArchivo(Long codigo, String urlBase,String descripcion) {
+		if(codigo!=null) {
+			return generaLink(codigo.toString(), Constantes.ENTIDAD_ARCHIVO, Constantes.URL_ARCHIVO, urlBase,descripcion);
 		}
 		return null;
 	}

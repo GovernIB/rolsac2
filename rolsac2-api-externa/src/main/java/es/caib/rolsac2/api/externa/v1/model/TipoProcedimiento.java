@@ -53,8 +53,8 @@ public class TipoProcedimiento extends EntidadBase<TipoProcedimientoDTO> {
 	@Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
 	private Long codigo;
 
-	@Schema(description = "linkEntidad", required = false)
-	private Link linkEntidad;
+	@Schema(description = "link_entidad", required = false)
+	private Link link_entidad;
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
@@ -62,12 +62,6 @@ public class TipoProcedimiento extends EntidadBase<TipoProcedimientoDTO> {
 
 	public TipoProcedimiento(TipoProcedimientoDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
 		super(nodo, urlBase, idioma, hateoasEnabled);
-
-//		if (nodo != null) {
-//			entidad = nodo.getEntidad() == null ? null : nodo.getEntidad().getCodigo();
-//		}
-
-//		date = new Date();
 	}
 
 	public TipoProcedimiento() {
@@ -76,7 +70,7 @@ public class TipoProcedimiento extends EntidadBase<TipoProcedimientoDTO> {
 
 	@Override
 	public void generaLinks(String urlBase) {
-		linkEntidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
+		link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
 				null);
 	}
 
@@ -137,12 +131,12 @@ public class TipoProcedimiento extends EntidadBase<TipoProcedimientoDTO> {
 		this.identificador = identificador;
 	}
 
-	public Link getLinkEntidad() {
-		return linkEntidad;
+	public Link getLink_entidad() {
+		return link_entidad;
 	}
 
-	public void setLinkEntidad(Link linkEntidad) {
-		this.linkEntidad = linkEntidad;
+	public void setLink_entidad(Link link_entidad) {
+		this.link_entidad = link_entidad;
 	}
 
 	public Long getEntidad() {

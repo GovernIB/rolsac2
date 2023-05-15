@@ -37,8 +37,8 @@ public class Constantes {
 	public static final String TXT_DEFINICION_CLASE = "Definición de la clase ";
 	public static final String TXT_RESPUESTA = "Respuesta ";
 
-	public static final String URL_MODULO = "/rolsac2api/externa/";
-	public static final String URL_BASE = "https://localhost:8080" + URL_MODULO + Constantes.API_VERSION + "/";
+	public static final String URL_MODULO = "/rolsac2api/externa/services/";
+	public static final String URL_BASE = "http://localhost:8080" + URL_MODULO + Constantes.API_VERSION + "/";
 
 	public static final String ENTIDAD_IDIOMA = "idiomas";
 	public static final String URL_IDIOMA = ENTIDAD_IDIOMA + "/{0}";
@@ -54,6 +54,9 @@ public class Constantes {
 
 	public static final String ENTIDAD_ARCHIVO = "archivos";
 	public static final String URL_ARCHIVO = ENTIDAD_ARCHIVO + "/{0}";
+
+	public static final String ENTIDAD_PUBLICO_ENTIDAD = "publicos_objetivo_entidad";
+	public static final String URL_PUBLICO_ENTIDAD = ENTIDAD_PUBLICO_ENTIDAD + "/{0}";
 
 	public static final String ENTIDAD_PUBLICO = "publicos_objetivo";
 	public static final String URL_PUBLICO = ENTIDAD_PUBLICO + "/{0}";
@@ -163,8 +166,11 @@ public class Constantes {
 	public static final String ENTIDAD_TIPO_VIA = "tipos_via";
 	public static final String URL_TIPO_VIA = ENTIDAD_TIPO_VIA + "/{0}";
 
-	public static final String ENTIDAD_TIPO_PUBLICO = "tipos_publico";
-	public static final String URL_TIPO_PUBLICO = ENTIDAD_TIPO_PUBLICO + "/{0}";
+//	public static final String ENTIDAD_TIPO_PUBLICO = "tipos_publico";
+//	public static final String URL_TIPO_PUBLICO = ENTIDAD_TIPO_PUBLICO + "/{0}";
+//
+//	public static final String ENTIDAD_TIPO_PUBLICO_ENTIDAD = "tipos_publico_entidad";
+//	public static final String URL_TIPO_PUBLICO_ENTIDAD = ENTIDAD_TIPO_PUBLICO_ENTIDAD + "/{0}";
 
 	public static final String ENTIDAD_TIPO_MEDIA_EDIFICIO = "tipos_media_edificio";
 	public static final String URL_TIPO_MEDIA_EDIFICIO = ENTIDAD_TIPO_MEDIA_EDIFICIO + "/{0}";
@@ -204,6 +210,15 @@ public class Constantes {
 
 	public static final String ENTIDAD_PLANTILLAS = "plantillas";
 	public static final String URL_PLANTILLAS = ENTIDAD_PLANTILLAS + "/{0}";
+
+	public static final String ENTIDAD_DOCUMENTO_NORMATIVA = "documento_normativa";
+	public static final String URL_DOCUMENTO_NORMATIVA = ENTIDAD_DOCUMENTO_NORMATIVA + "/{0}";
+
+	public static final String ENTIDAD_PROCEDIMIENTO_DOCUMENTO = "procedimiento_documento";
+	public static final String URL_PROCEDIMIENTO_DOCUMENTO = ENTIDAD_PROCEDIMIENTO_DOCUMENTO + "/{0}";
+
+	public static final String ENTIDAD_PROCEDIMIENTO_TRAMITE = "procedimiento_tramite";
+	public static final String URL_PROCEDIMIENTO_TRAMITE = ENTIDAD_PROCEDIMIENTO_TRAMITE + "/{0}";
 
 	public static final String ENTIDAD_LOPD_LEGITIMACION = "lopdLegitimacion";
 	public static final String URL_LOPD_LEGITIMACION = ENTIDAD_LOPD_LEGITIMACION + "/{0}";
