@@ -244,6 +244,20 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
     }
 
+    /**
+     * Obtiene el literal a mostrar
+     *
+     * @return
+     */
+    public String getEstadoSIA() {
+        if (data.getEstadoSIA() == null || data.getEstadoSIA().isEmpty()) {
+            return "";
+        }
+
+        return getLiteral("dialogProcedimiento.estadoSIA." + data.getEstadoSIA());
+    }
+
+
     public boolean esUAResponsableRaiz() {
         return this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz();
     }

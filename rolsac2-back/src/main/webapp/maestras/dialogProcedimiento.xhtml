@@ -65,17 +65,19 @@
                                        styleClass="mb-1 pt-0"/>
 
                         <br />
-                        <p:selectBooleanCheckbox id="txtEstadoSIA" value="#{dialogProcedimiento.data.estadoSIA}" disabled="true" styleClass="mb-1 pt-0" />
 
+                        <p:inputText id="txtEstadoSIA" value="#{dialogProcedimiento.getEstadoSIA()}"
+                                     styleClass="w95"
+                                     disabled="true"/>
                     </div>
                     <div class="form-group col-md-2">
-                        <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dialogProcedimiento.codigo.sia']}:"
-                                          for="txtCodigoSIA"/>
+                            <h:outputText  value="#{labels['dialogProcedimiento.codigo.sia']}:"
+                                          styleClass="mb-1 pt-0" for="txtCodigoSIA"/>
+
                             <p:inputText id="txtCodigoSIA" value="#{dialogProcedimiento.data.codigoSIA}"
                                          styleClass="w95"
                                          disabled="true"/>
-                        </p>
+
                     </div>
                     <div class="form-group col-md-2">
                         <p>
@@ -83,7 +85,33 @@
                                            styleClass="mb-1 pt-0"/>
                             <p:inputText id="txtFechaSIA" value="#{dialogProcedimiento.data.fechaSIA}"
                                          styleClass="w95"
-                                         disabled="true"/>
+                                         disabled="true">
+                                <f:convertDateTime pattern="dd-MM-yyyy" />
+                            </p:inputText>
+                        </p>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <p>
+                            <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" for="txtErrorSIA"
+                                           styleClass="mb-1 pt-0"/>
+                            <p:inputText id="txtErrorSIA" value="#{dialogProcedimiento.data.errorSIA}"
+                                         styleClass="w95"
+                                          />
+                            <p:tooltip id="toolTipFade" for="txtErrorSIA" value="#{dialogProcedimiento.data.errorSIA}" position="top"/>
+                        </p>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <p>
+                            <p:commandButton  id="btnIndexacionSIA" action="#{dialogProcedimiento.enviarSIA}"
+                                         value="#{labels['dict.enviarSIA']}" update="messagesDialog formDatosSIA btnRefrescarSIA btnIndexacionSIA"
+                                         rendered="#{empty dialogProcedimiento.data.codigoSIA and !empty dialogProcedimiento.data.codigo and !dialogProcedimiento.mostrarRefreshSIA}"
+                                         style="margin-top:19px"
+                                         process="@all" />
+                            <p:commandButton id="btnRefrescarSIA" action="#{dialogProcedimiento.refrescarSIA}"
+                                             value="#{labels['dict.refrescarSIA']}" update="messagesDialog formDatosSIA"
+                                             rendered="#{dialogProcedimiento.mostrarRefreshSIA}"
+                                             style="margin-top:19px"
+                                             process="@all" />
                         </p>
                     </div>
                 </div>

@@ -5,10 +5,7 @@ import es.caib.rolsac2.back.controller.comun.UtilsArbolTemas;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
-import es.caib.rolsac2.service.facade.TemaServiceFacade;
-import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -87,8 +84,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     @EJB
     private TemaServiceFacade temaServiceFacade;
 
+    @EJB
+    private ProcesoTimerServiceFacade procesoTimerServiceFacade;
 
     private String id = "";
+    private boolean mostrarRefreshSIA = false;
 
     private String textoValor;
     private String comunUA;
@@ -158,6 +158,32 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 }
             }
         }
+    }
+
+    /**
+     * Enviado a SIA para que se indexe.
+     */
+    public void enviarSIA() {
+        if (data.getCodigo() != null && data.getCodigoSIA() == null) {
+            ListaPropiedades listaPropiedades = new ListaPropiedades();
+            Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
+            listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
+            listaPropiedades.addPropiedad("id", data.getCodigo().toString());
+            procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
+            mostrarRefreshSIA = true;
+        }
+    }
+
+    /**
+     * Refresca los datos por si ya se ha indexado
+     */
+    public void refrescarSIA() {
+        ProcedimientoBaseDTO proc = procedimientoServiceFacade.findProcedimientoBaseById(data.getCodigo());
+        this.data.setCodigoSIA(proc.getCodigoSIA());
+        this.data.setEstadoSIA(proc.getEstadoSIA());
+        this.data.setErrorSIA(proc.getErrorSIA());
+        this.data.setFechaSIA(proc.getFechaSIA());
     }
 
     public void traducir() {
@@ -342,6 +368,19 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             return;
         }
         guardarSinCheck();
+    }
+
+    /**
+     * Obtiene el literal a mostrar
+     *
+     * @return
+     */
+    public String getEstadoSIA() {
+        if (data.getEstadoSIA() == null || data.getEstadoSIA().isEmpty()) {
+            return "";
+        }
+
+        return getLiteral("dialogProcedimiento.estadoSIA." + data.getEstadoSIA());
     }
 
     public void accionSin() {
@@ -1350,5 +1389,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     public void setLopdFinalidad(Literal lopdFinalidad) {
         this.lopdFinalidad = lopdFinalidad;
     }
+
+    public boolean isMostrarRefreshSIA() {
+        return mostrarRefreshSIA;
+    }
+
+    public void setMostrarRefreshSIA(boolean mostrarRefreshSIA) {
+        this.mostrarRefreshSIA = mostrarRefreshSIA;
+    }
+
 }
 
