@@ -1,7 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.model.filters;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -26,7 +24,7 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FiltroUA.class);
 
-	public static final String CAMPO_ORD_UA_ORDEN = "orden";
+	public static final String CAMPO_ORD_UA_ORDEN = "nombre/presentacion/url/nombrePadre";
 
 	public static final String SAMPLE =    Constantes.SALTO_LINEA +
 			"{" +
@@ -36,8 +34,8 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
 			"\"codEnti\":0," + Constantes.SALTO_LINEA +
 			"\"texto\":\"string\"," + Constantes.SALTO_LINEA +
 			"\"idUA\":0 (Usar -1 para recuperar las UA que no tienen padre)," + Constantes.SALTO_LINEA +
-			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" + Constantes.SALTO_LINEA +
-//			"\"listaOrden\":[{\"campo\":\"" + CAMPO_ORD_UA_ORDEN + "\",\"tipoOrden\":\"ASC/DESC\"}]" +
+			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA +
+			"\"orden\":{\"campo\":\"" + CAMPO_ORD_UA_ORDEN + "\",\"tipoOrden\":\"ASC/DESC\"}" +
 			"}"
 			;
 
@@ -49,8 +47,8 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
 			"\"codEnti\":null," +
 			"\"texto\":null,"	+
 			"\"idUA\":null,"	+
-			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
-//			"\"listaOrden\":null" +
+			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," +
+			"\"orden\":{\"campo\":\"nombre\",\"tipoOrden\":\"ASC\"}" +
 			"}";
 
 	/** CodigoNormativa. **/
@@ -81,9 +79,9 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
 	@Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
 	private FiltroPaginacion filtroPaginacion;
 
-	/** Lista de campos a ordenar. **/
-	@Schema(description = "Lista de campos por los que ordenar", required = false)
-	private List<CampoOrden> listaOrden;
+	/** Campo por el que ordenar. **/
+	@Schema(name = "orden", description = "Campo por el que ordenar", required = false)
+	private CampoOrden orden;
 
 	public FiltroPaginacion getFiltroPaginacion() {
 		return filtroPaginacion;
@@ -179,15 +177,15 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
 	/**
 	 * @return the listaOrden
 	 */
-	public List<CampoOrden> getListaOrden() {
-		return listaOrden;
+	public CampoOrden getOrden() {
+		return orden;
 	}
 
 	/**
 	 * @param listaOrden the listaOrden to set
 	 */
-	public void setListaOrden(List<CampoOrden> listaOrden) {
-		this.listaOrden = listaOrden;
+	public void setOrden(CampoOrden orden) {
+		this.orden = orden;
 	}
 
 	public Long getIdUA() {

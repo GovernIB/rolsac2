@@ -59,7 +59,7 @@ public class ProcedimientoTramiteResource {
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response llistar(
 			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
-			@RequestBody(description = "Filtro de procedimientoTramites: "
+			@RequestBody(description = "Filtro de procedimiento trámites: "
 					+ FiltroProcedimientoTramite.SAMPLE, name = "filtro", content = @Content(example = FiltroProcedimientoTramite.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroProcedimientoTramite.class))) FiltroProcedimientoTramite filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 

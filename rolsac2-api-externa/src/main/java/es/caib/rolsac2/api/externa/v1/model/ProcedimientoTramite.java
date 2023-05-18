@@ -177,7 +177,6 @@ public class ProcedimientoTramite extends EntidadBase<ProcedimientoTramite> {
 	@Override
 	protected void addSetersInvalidos() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

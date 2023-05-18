@@ -15,10 +15,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
-import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
@@ -38,7 +36,6 @@ import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_UA)
@@ -85,13 +82,10 @@ public class UAResource {
 		}
 
 		// si viene el orden intentamos rellenarlo
-		if (filtro.getListaOrden() != null && !filtro.getListaOrden().isEmpty()) {
-			List<CampoOrden> ord = filtro.getListaOrden();
-			if (ord != null && !ord.isEmpty()) {
-				CampoOrden campoOrden = ord.get(0);
-				fg.setOrderBy(campoOrden.getCampo());
-				fg.setAscendente(campoOrden.getTipoOrden().compareTo("ASC") == 0);
-			}
+		if (filtro.getOrden() != null) {
+			fg.setOrderBy(filtro.getOrden().getCampo());
+			fg.setAscendente(filtro.getOrden().getTipoOrden().compareTo("ASC") == 0);
+
 		}
 
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
