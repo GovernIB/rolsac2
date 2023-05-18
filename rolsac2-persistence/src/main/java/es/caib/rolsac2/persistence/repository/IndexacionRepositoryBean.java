@@ -158,7 +158,7 @@ public class IndexacionRepositoryBean extends AbstractCrudRepository<JIndexacion
     }
 
     @Override
-    public void deleteByUA(Long idEntidad) {
+    public void deleteByEntidad(Long idEntidad) {
 
         String sql = "DELETE FROM JIndexacion j where j.entidad.codigo = :entidad ";
         Query query = entityManager.createQuery(sql);

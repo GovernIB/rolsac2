@@ -70,5 +70,6 @@ public class Constantes {
 
 
     public static final String INDEXAR_SIA_PENDIENTES = "pendientes";
+    public static final String INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL = "puntual";
     public static final String INDEXAR_SIA_COMPLETO = "completo";
 }

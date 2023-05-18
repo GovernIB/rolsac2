@@ -32,7 +32,6 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +44,7 @@ import java.util.Optional;
  */
 @Stateless
 @Local(ProcedimientoRepository.class)
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedimiento, Long> implements ProcedimientoRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoRepositoryBean.class);
@@ -80,8 +79,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 procedimientoGridDTO.setEstado((String) jproc[3]);
                 procedimientoGridDTO.setTipo((String) jproc[4]);
                 procedimientoGridDTO.setCodigoSIA((Integer) jproc[5]);
-                procedimientoGridDTO.setEstadoSIA((Boolean) jproc[6]);
-                procedimientoGridDTO.setSiaFecha((LocalDate) jproc[7]);
+                procedimientoGridDTO.setEstadoSIA((String) jproc[6]);
+                procedimientoGridDTO.setSiaFecha((Date) jproc[7]);
                 procedimientoGridDTO.setCodigoDir3SIA((String) jproc[8]);
                 String t1 = (String) jproc[9]; //Nombre wf publicado
                 String t2 = (String) jproc[10]; //Nombre wf en edicion
@@ -131,8 +130,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 procedimientoGridDTO.setEstado((String) jproc[3]);
                 procedimientoGridDTO.setTipo((String) jproc[4]);
                 procedimientoGridDTO.setCodigoSIA((Integer) jproc[5]);
-                procedimientoGridDTO.setEstadoSIA((Boolean) jproc[6]);
-                procedimientoGridDTO.setSiaFecha((LocalDate) jproc[7]);
+                procedimientoGridDTO.setEstadoSIA((String) jproc[6]);
+                procedimientoGridDTO.setSiaFecha((Date) jproc[7]);
                 procedimientoGridDTO.setCodigoDir3SIA((String) jproc[8]);
                 String t1 = (String) jproc[9]; //Nombre wf publicado
                 String t2 = (String) jproc[10]; //Nombre wf en edicion
@@ -385,11 +384,17 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public void actualizarSIA(IndexacionSIADTO dato, ResultadoSIA resultadoAccion) {
         JProcedimiento jproc = entityManager.find(JProcedimiento.class, dato.getCodElemento());
-        if (resultadoAccion.isCorrecto() && jproc.getCodigoSIA() == null) {
+        if (resultadoAccion.isCorrecto() || (resultadoAccion.getMensaje() != null && resultadoAccion.getMensaje().startsWith("0167"))) {
             jproc.setSiaFecha(new Date());
-            jproc.setCodigoSIA(Integer.parseInt(resultadoAccion.getCodSIA()));
-            //TODO Revisar jproc.setEstadoSIA(resultadoAccion.getEstadoSIA());
-            //jproc.setMensajeIndexacionSIA(resultadoAccion.getMensaje());
+            if (resultadoAccion.getCodSIA() != null) {
+                //Si es una baja, ya no se pasa
+                jproc.setCodigoSIA(Integer.parseInt(resultadoAccion.getCodSIA()));
+            }
+            jproc.setEstadoSIA(resultadoAccion.getEstadoSIA());
+            jproc.setMensajeIndexacionSIA("");
+            entityManager.merge(jproc);
+        } else {
+            jproc.setMensajeIndexacionSIA(resultadoAccion.getMensaje());
             entityManager.merge(jproc);
         }
 
@@ -398,6 +403,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public Long getUAbyCodProcedimiento(Long codProcedimiento) {
         JProcedimientoWorkflow jprocWF = getWF(codProcedimiento, Constantes.PROCEDIMIENTO_DEFINITIVO);
+        if (jprocWF == null) {
+            jprocWF = getWF(codProcedimiento, Constantes.PROCEDIMIENTO_ENMODIFICACION);
+        }
         if (jprocWF == null) {
             return null;
         }
@@ -1100,7 +1108,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         //Lo ultimo es borrar el propio WF
         entityManager.remove(jprocWF);
-        entityManager.flush();
     }
 
     @Override
@@ -1507,6 +1514,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         boolean ambosWf = false;
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = true LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+            ambosWf = true;
         } else if (isRest) {
             if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("D")) {
                 sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF ON wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");

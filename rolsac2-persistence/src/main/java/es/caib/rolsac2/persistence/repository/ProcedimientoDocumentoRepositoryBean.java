@@ -25,7 +25,7 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 @Stateless
 @Local(ProcedimientoRepository.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-public class  ProcedimientoDocumentoRepositoryBean extends AbstractCrudRepository<JProcedimientoDocumento, Long>
+public class ProcedimientoDocumentoRepositoryBean extends AbstractCrudRepository<JProcedimientoDocumento, Long>
         implements  ProcedimientoDocumentoRepository {
 
     protected ProcedimientoDocumentoRepositoryBean() {
@@ -39,14 +39,6 @@ public class  ProcedimientoDocumentoRepositoryBean extends AbstractCrudRepositor
         query.setParameter("id", id);
         List<JProcedimientoDocumento> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
-    }
-
-    @Override
-    public List<JProcedimientoDocumento> findByProcedimientoId(Long id) {
-        TypedQuery<JProcedimientoDocumento> query = entityManager.createNamedQuery(JProcedimientoDocumento.FIND_BY_PROC_ID,
-                JProcedimientoDocumento.class);
-        query.setParameter("id", id);
-        return query.getResultList();
     }
 
     @Inject

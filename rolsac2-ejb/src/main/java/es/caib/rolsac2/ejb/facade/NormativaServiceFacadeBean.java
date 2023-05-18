@@ -246,6 +246,16 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         return normativaDTO;
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<NormativaDTO> findByEntidad(Long idEntidad) {
+        List<JNormativa> jNormativas = normativaRepository.findByEntidad(idEntidad);
+        List<NormativaDTO> normativas = new ArrayList<>();
+        jNormativas.forEach(nor -> normativas.add(converter.createDTO(nor)));
+        return normativas;
+    }
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})

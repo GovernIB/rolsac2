@@ -15,5 +15,7 @@ public interface UnidadOrganicaRepository extends CrudRepository<JUnidadOrganica
 
   JUnidadOrganica obtenerUnidadRaiz(Long idEntidad);
 
+  List<JUnidadOrganica> findByEntidad(Long idEntidad);
+
   void eliminarRegistros(Long idEntidad);
 }

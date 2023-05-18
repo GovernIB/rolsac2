@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
@@ -148,6 +149,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
 
         if (mensajes != null && !mensajes.isEmpty()) {
             Collections.sort(mensajes);
+            ValidacionTipoUtils.normalizarMensajes(mensajes);
         }
     }
 
@@ -212,7 +214,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             msg.setPendienteMensajesSupervisor(!(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS));
             mensajes.add(0, msg);
         }
-
+        ValidacionTipoUtils.sanitizarMensajes(mensajes);
         data.setMensajes(UtilJSON.toJSON(mensajes));
         data.setEstadoDestino(this.estadoSeleccionado);
         data.setPendienteMensajesSupervisor(getLeidoSupervisor());
@@ -233,8 +235,13 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         } else {
             this.mensajes.get(posicion).setPendienteMensajesSupervisor(false);
         }
+
+        //Sanitizamos mensajes por si hubiera el carácter de apóstrofe (')
+        ValidacionTipoUtils.sanitizarMensajes(mensajes);
         String mensajesJSON = UtilJSON.toJSON(mensajes);
         procedimientoService.actualizarMensajes(idProcedimiento, mensajesJSON, getLeidoSupervisor(), getLeidoGestor());
+        //Normalizamos los mensajes para que se muestren correctamente.
+        ValidacionTipoUtils.normalizarMensajes(mensajes);
     }
 
     private boolean getLeidoSupervisor() {

@@ -43,6 +43,14 @@ public class UnidadOrganicaRepositoryBean extends AbstractCrudRepository<JUnidad
     }
 
     @Override
+    public List<JUnidadOrganica> findByEntidad(Long idEntidad) {
+        String sql = "SELECT j FROM JUnidadOrganica j WHERE j.entidad.codigo = :idEntidad";
+        Query query = entityManager.createQuery(sql, JUnidadOrganica.class);
+        query.setParameter("idEntidad", idEntidad);
+        return query.getResultList();
+    }
+
+    @Override
     public void eliminarRegistros(Long idEntidad) {
         String sql = "DELETE FROM JUnidadOrganica p WHERE p.entidad.codigo =:idEntidad";
         Query query = entityManager.createQuery(sql);

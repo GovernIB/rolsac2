@@ -54,6 +54,7 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new NormativaFiltro();
         filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
 
         // Generamos una búsqueda
         buscar();

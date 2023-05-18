@@ -26,4 +26,6 @@ public interface NormativaRepository extends CrudRepository<JNormativa, Long> {
     Pagina<IndexacionDTO> getNormativasParaIndexacion(Long idEntidad);
 
 	List<NormativaDTO> findPagedByFiltroRest(NormativaFiltro filtro);
+
+    List<JNormativa> findByEntidad(Long idEntidad);
 }

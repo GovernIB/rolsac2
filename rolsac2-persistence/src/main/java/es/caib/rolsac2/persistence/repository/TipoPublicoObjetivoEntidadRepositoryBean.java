@@ -227,4 +227,13 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
         query.setParameter("idEntidad", idEntidad);
         return query.getResultList();
     }
+
+    @Override
+    public void deleteByEntidad(Long idEntidad) {
+        String sql = "DELETE FROM JTipoPublicoObjetivoEntidad j where j.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        int resultado = query.executeUpdate();
+        entityManager.flush();
+    }
 }

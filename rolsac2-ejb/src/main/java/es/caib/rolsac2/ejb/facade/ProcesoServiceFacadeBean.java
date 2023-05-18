@@ -95,6 +95,13 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
         return this.procesoRepository.listar(idioma, tipo);
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<ProcesoDTO> findProcesoByEntidad(Long idEntidad) {
+        return procesoRepository.findProcesoByEntidad(idEntidad);
+    }
+
     /**
      * Total Lista Peticion.
      **/

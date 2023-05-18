@@ -388,6 +388,16 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         procedimientoRepository.deleteWF(idWF);
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void deleteProcedimientoCompleto(Long id) {
+
+        //Primero borramos las auditorias asociadas al procedimiento
+        auditoriaRepository.borrarAuditoriasByIdProcedimiento(id);
+        //Borramos los workflows asociados
+        this.delete(id);
+    }
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -685,7 +695,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public ProcedimientoBaseDTO convertirDTO(Object obj) {
         JProcedimientoWorkflow jprocWF = (JProcedimientoWorkflow) obj;
-    	return convertDTO(jprocWF);
+        return convertDTO(jprocWF);
     }
 
     private ProcedimientoBaseDTO getProcedimientoDTOByCodigoWF(Long codigoWF) {
@@ -696,7 +706,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     private ProcedimientoBaseDTO convertDTO(JProcedimientoWorkflow jprocWF) {
-    	JProcedimiento jproc = jprocWF.getProcedimiento();
+        JProcedimiento jproc = jprocWF.getProcedimiento();
         ProcedimientoBaseDTO proc = createDTO(jproc);
 
         //JProcedimientoWorkflow jprocWF = procedimientoRepository.getWF(id, Constantes.PROCEDIMIENTO_ENMODIFICACION);
@@ -917,6 +927,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         if (jproc.getSiaFecha() != null) {
             dato.setFechaSIA(jproc.getSiaFecha());
         }
+        dato.setErrorSIA(jproc.getMensajeIndexacionSIA());
         dato.setTipo(jproc.getTipo());
         return dato;
     }
@@ -934,6 +945,19 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public String getEnlaceTelematico(ProcedimientoFiltro filtro) {
         return procedimientoRepository.getEnlaceTelematico(filtro);
+    }
+
+    @Override
+    public ProcedimientoBaseDTO findProcedimientoBaseById(Long codigo) {
+        JProcedimiento jproc = procedimientoRepository.findById(codigo);
+        ProcedimientoBaseDTO proc = new ProcedimientoBaseDTO();
+        if (jproc != null) {
+            proc.setCodigoSIA(jproc.getCodigoSIA());
+            proc.setFechaSIA(jproc.getSiaFecha());
+            proc.setErrorSIA(jproc.getMensajeIndexacionSIA());
+            proc.setEstadoSIA(jproc.getEstadoSIA());
+        }
+        return proc;
     }
 
     @Override
@@ -1136,20 +1160,19 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-	public Pagina<ProcedimientoDocumentoDTO> findProcedimientoDocumentoByFiltroRest(ProcedimientoDocumentoFiltro filtro) {
-		try {
-			List<ProcedimientoDocumentoDTO> items = procedimientoDocumentoRepository.findPagedByFiltroRest(filtro);
-			long total = procedimientoDocumentoRepository.countByFiltro(filtro);
-			return new Pagina<>(items, total);
-		} catch (Exception e) {
-			LOG.error("Error", e);
-			List<ProcedimientoDocumentoDTO> items = new ArrayList<>();
-			long total = items.size();
-			return new Pagina<>(items, total);
-		}
-	}
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public Pagina<ProcedimientoDocumentoDTO> findProcedimientoDocumentoByFiltroRest(ProcedimientoDocumentoFiltro filtro) {
+        try {
+            List<ProcedimientoDocumentoDTO> items = procedimientoDocumentoRepository.findPagedByFiltroRest(filtro);
+            long total = procedimientoDocumentoRepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            List<ProcedimientoDocumentoDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
 
     @Override
     public IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA) {
@@ -1159,20 +1182,19 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-	public Pagina<ProcedimientoTramiteDTO> findProcedimientoTramiteByFiltroRest(ProcedimientoTramiteFiltro filtro) {
-    	try {
-			List<ProcedimientoTramiteDTO> items = procedimientoTramiteRepository.findPagedByFiltroRest(filtro);
-			long total = procedimientoTramiteRepository.countByFiltro(filtro);
-			return new Pagina<>(items, total);
-		} catch (Exception e) {
-			LOG.error("Error", e);
-			List<ProcedimientoTramiteDTO> items = new ArrayList<>();
-			long total = items.size();
-			return new Pagina<>(items, total);
-		}
-	}
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public Pagina<ProcedimientoTramiteDTO> findProcedimientoTramiteByFiltroRest(ProcedimientoTramiteFiltro filtro) {
+        try {
+            List<ProcedimientoTramiteDTO> items = procedimientoTramiteRepository.findPagedByFiltroRest(filtro);
+            long total = procedimientoTramiteRepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            List<ProcedimientoTramiteDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
 }
 
 

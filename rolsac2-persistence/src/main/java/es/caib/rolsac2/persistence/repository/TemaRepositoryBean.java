@@ -204,7 +204,7 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
     }
 
     @Override
-    public void deleteByUA(Long idEntidad) {
+    public void deleteByEntidad(Long idEntidad) {
 
         String sql;
         Query query;

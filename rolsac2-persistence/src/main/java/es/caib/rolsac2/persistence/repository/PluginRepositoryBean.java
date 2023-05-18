@@ -133,7 +133,7 @@ public class PluginRepositoryBean extends AbstractCrudRepository<JPlugin, Long> 
     }
 
     @Override
-    public void deleteByUA(Long idEntidad) {
+    public void deleteByEntidad(Long idEntidad) {
         String sql = "DELETE FROM JPlugin j where j.entidad.codigo = :entidad ";
         Query query = entityManager.createQuery(sql);
         query.setParameter("entidad", idEntidad);

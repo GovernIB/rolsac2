@@ -19,6 +19,8 @@ public interface TipoTramitacionRepository extends CrudRepository<JTipoTramitaci
 
     List<TipoTramitacionGridDTO> findPagedByFiltro(TipoTramitacionFiltro filtro);
 
+    List<JTipoTramitacion> findByEntidad(Long idEntidad);
+
     long countByFiltro(TipoTramitacionFiltro filtro);
 
     List<TipoTramitacionDTO> findAll();
@@ -35,5 +37,5 @@ public interface TipoTramitacionRepository extends CrudRepository<JTipoTramitaci
 
     String getEnlaceTelematico(TipoTramitacionFiltro fg);
 
-    void deleteByUA(Long id);
+    void deleteByEntidad(Long id);
 }

@@ -48,7 +48,7 @@ public class JProcedimiento extends BaseEntity {
      * Estiado SIA
      */
     @Column(name = "PROC_SIAEST")
-    private Boolean estadoSIA;
+    private String estadoSIA;
 
     /**
      * Fecha SIA
@@ -86,6 +86,13 @@ public class JProcedimiento extends BaseEntity {
      */
     @Column(name = "PROC_ERRIDX")
     private String mensajeIndexacion;
+
+    /**
+     * Error indexacion
+     */
+    @Column(name = "PROC_ERRSIA")
+    private String mensajeIndexacionSIA;
+
 
     /**
      * Mensajes pdt gestor
@@ -166,7 +173,7 @@ public class JProcedimiento extends BaseEntity {
      *
      * @return estado sia
      */
-    public Boolean getEstadoSIA() {
+    public String getEstadoSIA() {
         return estadoSIA;
     }
 
@@ -175,7 +182,7 @@ public class JProcedimiento extends BaseEntity {
      *
      * @param procSiaest proc siaest
      */
-    public void setEstadoSIA(Boolean procSiaest) {
+    public void setEstadoSIA(String procSiaest) {
         this.estadoSIA = procSiaest;
     }
 
@@ -273,6 +280,14 @@ public class JProcedimiento extends BaseEntity {
 
     public void setMensajeIndexacion(String errorIndexacion) {
         this.mensajeIndexacion = errorIndexacion;
+    }
+
+    public String getMensajeIndexacionSIA() {
+        return mensajeIndexacionSIA;
+    }
+
+    public void setMensajeIndexacionSIA(String mensajeIndexacionSIA) {
+        this.mensajeIndexacionSIA = mensajeIndexacionSIA;
     }
 
     public boolean isMensajesPendienteGestor() {

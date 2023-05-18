@@ -639,6 +639,14 @@ public interface MaestrasSupServiceFacade {
     TipoTramitacionDTO findTipoTramitacionById(Long id);
 
     /**
+     * Retorna un listado con los tipoTramitacions asociados a una entidad.
+     *
+     * @param idEntidad identificadorde la entidad asociada
+     * @return un listado de tipoTramitacions
+     */
+    List<TipoTramitacionDTO> findTipoTramitacionByEntidad(Long idEntidad);
+
+    /**
      * Devuelve una página con el tipo de tramitación relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda

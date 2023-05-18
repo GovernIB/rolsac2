@@ -148,7 +148,7 @@ public class IndexacionSIARepositoryBean extends AbstractCrudRepository<JIndexac
     @Override
     public void actualizarDato(IndexacionSIADTO dato, ResultadoSIA resultadoAccion) {
         JIndexacionSIA jIndexacion = entityManager.find(JIndexacionSIA.class, dato.getCodigo());
-        if (resultadoAccion.isNoError()) {
+        if (resultadoAccion.isNoError() || (resultadoAccion.getMensaje() != null && resultadoAccion.getMensaje().startsWith("0167"))) {
             entityManager.remove(jIndexacion);
         } else {
             jIndexacion.setMensajeError(resultadoAccion.getMensaje());
@@ -158,7 +158,7 @@ public class IndexacionSIARepositoryBean extends AbstractCrudRepository<JIndexac
     }
 
     @Override
-    public void deleteByUA(Long idEntidad) {
+    public void deleteByEntidad(Long idEntidad) {
 
         String sql = "DELETE FROM JIndexacionSIA j where j.entidad.codigo = :entidad ";
         Query query = entityManager.createQuery(sql);

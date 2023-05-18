@@ -63,6 +63,14 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
     }
 
     @Override
+    public List<JTipoTramitacion> findByEntidad(Long idEntidad) {
+        String sql = "SELECT j FROM JTipoTramitacion j WHERE j.entidad.codigo = :idEntidad";
+        Query query = entityManager.createQuery(sql, JTipoTramitacion.class);
+        query.setParameter("idEntidad", idEntidad);
+        return query.getResultList();
+    }
+
+    @Override
     public long countByFiltro(TipoTramitacionFiltro filtro) {
         return (long) getQuery(true, filtro, false).getSingleResult();
     }
@@ -237,7 +245,7 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
     }
 
     @Override
-    public void deleteByUA(Long idEntidad) {
+    public void deleteByEntidad(Long idEntidad) {
         String sql;
         Query query;
         sql = "SELECT t FROM JTipoTramitacion j LEFT OUTER JOIN j.traducciones t where j.entidad.codigo = :entidad ";

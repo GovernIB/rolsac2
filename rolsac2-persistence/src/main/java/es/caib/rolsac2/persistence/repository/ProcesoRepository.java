@@ -27,4 +27,6 @@ public interface ProcesoRepository extends CrudRepository<JProceso, Long>{
     ProcesoDTO obtenerProcesoPorIdentificador(final String identificador, final Long idEntidad);
 
     ProcesoDTO convertProceso(JProceso jProceso);
+
+    List<ProcesoDTO> findProcesoByEntidad(Long idEntidad);
 }

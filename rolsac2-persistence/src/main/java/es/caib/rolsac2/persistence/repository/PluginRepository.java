@@ -20,5 +20,5 @@ public interface PluginRepository extends CrudRepository<JPlugin, Long> {
 
     boolean existePluginTipoByEntidad(Long idEntidad, String tipo);
 
-    void deleteByUA(Long id);
+    void deleteByEntidad(Long id);
 }

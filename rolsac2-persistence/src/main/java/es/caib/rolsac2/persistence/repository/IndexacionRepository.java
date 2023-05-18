@@ -24,5 +24,5 @@ public interface IndexacionRepository extends CrudRepository<JIndexacion, Long> 
 
     void actualizarDato(IndexacionDTO proc, ResultadoAccion resultadoAccion);
 
-    void deleteByUA(Long id);
+    void deleteByEntidad(Long id);
 }

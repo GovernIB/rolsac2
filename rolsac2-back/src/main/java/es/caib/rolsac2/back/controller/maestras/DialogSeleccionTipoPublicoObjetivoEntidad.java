@@ -54,6 +54,7 @@ public class DialogSeleccionTipoPublicoObjetivoEntidad extends AbstractControlle
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoPublicoObjetivoEntidadFiltro();
         filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
 
         // Generamos una búsqueda
         buscar();

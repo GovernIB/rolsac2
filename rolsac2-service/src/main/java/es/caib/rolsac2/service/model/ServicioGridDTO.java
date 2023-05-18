@@ -20,8 +20,8 @@ public class ServicioGridDTO extends ModelApi {
     private String tipo;
 
     private String estado;
-    private Boolean estadoSIA;
-    public LocalDate siaFecha;
+    private String estadoSIA;
+    public Date siaFecha;
     private String codigoDir3SIA;
     private Integer codigoSIA;
     private String nombre;
@@ -66,19 +66,19 @@ public class ServicioGridDTO extends ModelApi {
         this.tipo = tipo;
     }
 
-    public Boolean getEstadoSIA() {
+    public String getEstadoSIA() {
         return estadoSIA;
     }
 
-    public void setEstadoSIA(Boolean estadoSIA) {
+    public void setEstadoSIA(String estadoSIA) {
         this.estadoSIA = estadoSIA;
     }
 
-    public LocalDate getSiaFecha() {
+    public Date getSiaFecha() {
         return siaFecha;
     }
 
-    public void setSiaFecha(LocalDate fechaSIA) {
+    public void setSiaFecha(Date fechaSIA) {
         this.siaFecha = fechaSIA;
     }
 
@@ -256,10 +256,6 @@ public class ServicioGridDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "ProcedimientoDTO{" +
-                "codigo=" + codigo +
-                ", nombre='" + nombre + '\'' +
-                ", codigoSIA='" + codigoSIA + '\'' +
-                '}';
+        return "ProcedimientoDTO{" + "codigo=" + codigo + ", nombre='" + nombre + '\'' + ", codigoSIA='" + codigoSIA + '\'' + '}';
     }
 }

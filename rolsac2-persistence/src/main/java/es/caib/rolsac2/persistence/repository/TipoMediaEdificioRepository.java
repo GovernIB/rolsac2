@@ -14,9 +14,13 @@ public interface TipoMediaEdificioRepository extends CrudRepository<JTipoMediaEd
 
     List<TipoMediaEdificioGridDTO> findPagedByFiltro(TipoMediaEdificioFiltro filtro);
 
+    List<JTipoMediaEdificio> findByEntidad(Long idEntidad);
+
     long countByFiltro(TipoMediaEdificioFiltro filtro);
 
     boolean existeIdentificador(String identificador, Long idEntidad);
 
 	List<TipoMediaEdificioDTO> findPagedByFiltroRest(TipoMediaEdificioFiltro filtro);
+
+    void deleteByEntidad(Long idEntidad);
 }

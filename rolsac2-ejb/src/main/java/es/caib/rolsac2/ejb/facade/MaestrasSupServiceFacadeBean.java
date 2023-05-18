@@ -1002,6 +1002,15 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoTramitacionDTO> findTipoTramitacionByEntidad(Long idEntidad) {
+        List<JTipoTramitacion> jTipoTramitacions = tipoTramitacionRepository.findByEntidad(idEntidad);
+        List<TipoTramitacionDTO> tramitaciones = new ArrayList<>();
+        jTipoTramitacions.forEach(te -> tramitaciones.add(tipoTramitacionConverter.createDTO(te)));
+        return tramitaciones;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<TipoTramitacionGridDTO> findByFiltro(TipoTramitacionFiltro filtro) {
         try {
             List<TipoTramitacionGridDTO> items = tipoTramitacionRepository.findPagedByFiltro(filtro);

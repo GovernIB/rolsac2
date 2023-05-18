@@ -35,8 +35,9 @@ public class ProcedimientoBaseDTO extends ModelApi {
      * Datos sia
      **/
     private Integer codigoSIA;
-    private Boolean estadoSIA;
+    private String estadoSIA;
     private Date fechaSIA;
+    private String errorSIA;
     private Date fechaCaducidad;
     private Date fechaPublicacion;
     private Date fechaActualizacion;
@@ -132,7 +133,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
         this.codigoSIA = codigoSIA;
     }
 
-    public void setEstadoSIA(Boolean estadoSIA) {
+    public void setEstadoSIA(String estadoSIA) {
         this.estadoSIA = estadoSIA;
     }
 
@@ -266,6 +267,13 @@ public class ProcedimientoBaseDTO extends ModelApi {
         this.fechaSIA = fechaSIA;
     }
 
+    public String getErrorSIA() {
+        return errorSIA;
+    }
+
+    public void setErrorSIA(String errorSIA) {
+        this.errorSIA = errorSIA;
+    }
 
     public TipoSilencioAdministrativoDTO getSilencio() {
         return silencio;
@@ -320,7 +328,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
         return codigoSIA;
     }
 
-    public Boolean getEstadoSIA() {
+    public String getEstadoSIA() {
         return estadoSIA;
     }
 
@@ -556,38 +564,38 @@ public class ProcedimientoBaseDTO extends ModelApi {
     }
 
     public UnidadAdministrativaDTO getUaCompetente() {
-		return uaCompetente;
-	}
+        return uaCompetente;
+    }
 
-	public void setUaCompetente(UnidadAdministrativaDTO uaCompetente) {
-		this.uaCompetente = uaCompetente;
-	}
+    public void setUaCompetente(UnidadAdministrativaDTO uaCompetente) {
+        this.uaCompetente = uaCompetente;
+    }
 
-	public boolean isTramitElectronica() {
-		return tramitElectronica;
-	}
+    public boolean isTramitElectronica() {
+        return tramitElectronica;
+    }
 
-	public void setTramitElectronica(boolean tramitElectronica) {
-		this.tramitElectronica = tramitElectronica;
-	}
+    public void setTramitElectronica(boolean tramitElectronica) {
+        this.tramitElectronica = tramitElectronica;
+    }
 
-	public boolean isTramitPresencial() {
-		return tramitPresencial;
-	}
+    public boolean isTramitPresencial() {
+        return tramitPresencial;
+    }
 
-	public void setTramitPresencial(boolean tramitPresencial) {
-		this.tramitPresencial = tramitPresencial;
-	}
+    public void setTramitPresencial(boolean tramitPresencial) {
+        this.tramitPresencial = tramitPresencial;
+    }
 
-	public boolean isTramitTelefonica() {
-		return tramitTelefonica;
-	}
+    public boolean isTramitTelefonica() {
+        return tramitTelefonica;
+    }
 
-	public void setTramitTelefonica(boolean tramitTelefonica) {
-		this.tramitTelefonica = tramitTelefonica;
-	}
+    public void setTramitTelefonica(boolean tramitTelefonica) {
+        this.tramitTelefonica = tramitTelefonica;
+    }
 
-	@Override
+    @Override
     public String toString() {
         return "ProcedimientoBaseDTO{" + "codigo=" + codigo + ", codigoWF='" + codigoWF + '\'' + '}';
     }

@@ -263,7 +263,15 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
     }
 
     @Override
-    public void deleteByUA(Long idEntidad) {
+    public List<JUsuarioEntidad> findUsuariosByEntidad(Long idEntidad) {
+        String sql = "SELECT j FROM JUsuarioEntidad j WHERE j.entidad.codigo = :idEntidad";
+        Query query = entityManager.createQuery(sql, JUsuarioEntidad.class);
+        query.setParameter("idEntidad", idEntidad);
+        return query.getResultList();
+    }
+
+    @Override
+    public void deleteByEntidad(Long idEntidad) {
         String sql = "DELETE FROM JUsuarioEntidad j where j.entidad.codigo = :entidad ";
         Query query = entityManager.createQuery(sql);
         query.setParameter("entidad", idEntidad);

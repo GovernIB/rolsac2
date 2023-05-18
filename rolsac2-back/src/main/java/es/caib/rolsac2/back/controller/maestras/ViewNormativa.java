@@ -76,6 +76,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
         filtro = new NormativaFiltro();
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         cargarFiltros();
         // Generamos una búsqueda
         buscar();

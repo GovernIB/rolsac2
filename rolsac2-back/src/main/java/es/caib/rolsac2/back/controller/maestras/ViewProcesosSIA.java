@@ -44,6 +44,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
 
     @EJB
     private ProcesoTimerServiceFacade procesoTimerServiceFacade;
+
     private LazyDataModel<IndexacionSIADTO> lazyModel;
 
     private LazyDataModel<ProcesoLogGridDTO> lazyModelLogs;

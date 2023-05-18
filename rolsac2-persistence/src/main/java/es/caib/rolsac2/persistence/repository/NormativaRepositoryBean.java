@@ -50,6 +50,10 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             sql.append(" and (LOWER(t.titulo) LIKE :filtro OR LOWER(j.tipoNormativa.identificador) LIKE :filtro " + " OR LOWER(cast(j.numero as string)) LIKE :filtro OR LOWER(j.boletinOficial.nombre) LIKE :filtro " + " OR LOWER(cast (j.fechaAprobacion as string)) LIKE :filtro ) ");
         }
 
+        if(filtro.isRellenoEntidad()) {
+            sql.append(" AND j.entidad.codigo = :idEntidad");
+        }
+
         if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUnidadesOrganicas()) {
             sql.append(" AND (u.codigo in (:idUAs) ) ");
         } else if (filtro.isRellenoIdUA()) {
@@ -93,6 +97,9 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             query.setParameter("idioma", filtro.getIdioma());
         }
 
+        if (filtro.isRellenoIdioma()) {
+            query.setParameter("idEntidad", filtro.getIdEntidad());
+        }
         if (filtro.isRellenoHijasActivas() || filtro.isRellenoTodasUnidadesOrganicas()) {
             query.setParameter("idUAs", filtro.getIdUAsHijas());
         } else if (filtro.isRellenoIdUA()) {
@@ -252,4 +259,12 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 		}
 		return entidades;
 	}
+
+    @Override
+    public List<JNormativa> findByEntidad(Long idEntidad) {
+        String sql = "SELECT j FROM JNormativa j WHERE j.entidad.codigo = :idEntidad";
+        Query query = entityManager.createQuery(sql, JNormativa.class);
+        query.setParameter("idEntidad", idEntidad);
+        return query.getResultList();
+    }
 }

@@ -18,6 +18,7 @@ import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -94,6 +95,15 @@ public class TipoUnidadAdministrativaServiceFacadeBean implements TipoUnidadAdmi
         JTipoUnidadAdministrativa jTipoUnidadAdministrativa = tipoUnidadAdministrativaRepository.getReference(id);
         TipoUnidadAdministrativaDTO tipoUnidadAdministrativaDTO = converter.createDTO(jTipoUnidadAdministrativa);
         return tipoUnidadAdministrativaDTO;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoUnidadAdministrativaDTO> findByEntidad(Long idEntidad) {
+        List<JTipoUnidadAdministrativa> jTipoUnidadAdministrativas = tipoUnidadAdministrativaRepository.findByEntidad(idEntidad);
+        List<TipoUnidadAdministrativaDTO> unidadAdministrativas = new ArrayList<>();
+        jTipoUnidadAdministrativas.forEach(te -> unidadAdministrativas.add(converter.createDTO(te)));
+        return unidadAdministrativas;
     }
 
     @Override

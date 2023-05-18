@@ -47,6 +47,14 @@ public interface NormativaServiceFacade {
     NormativaDTO findById(Long id);
 
     /**
+     * Devuelve el listado de normativas asociadas a unaentidad.
+     *
+     * @param idEntidad identificador de la Entidad a buscar
+     * @return un listado con los datos de las Normativas.
+     */
+    List<NormativaDTO> findByEntidad(Long idEntidad);
+
+    /**
      * Devuelve una página con la Normativa relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda

@@ -30,4 +30,6 @@ public interface TipoPublicoObjetivoEntidadRepository extends CrudRepository<JTi
 	List<TipoPublicoObjetivoEntidadDTO> findPagedByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro);
 
     List<JTipoPublicoObjetivoEntidad> findPageByEntidad(Long idEntidad);
+
+    void deleteByEntidad(Long idEntidad);
 }

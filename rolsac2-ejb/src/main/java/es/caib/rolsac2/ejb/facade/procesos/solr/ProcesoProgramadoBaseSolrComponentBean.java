@@ -85,7 +85,17 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
 
         Pagina<IndexacionDTO> datos = null;
 
-        IPluginIndexacion plugin = (IPluginIndexacion) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.INDEXACION, idEntidad);
+        IPluginIndexacion plugin = null;
+
+        try {
+            plugin = (IPluginIndexacion) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.INDEXACION, idEntidad);
+        } catch (Exception e) {
+            res.setFinalizadoOk(false);
+            detalles.addPropiedad("Informació del procés", "Error obteniendo plugin de indexacion.");
+            detalles.addPropiedad("Error", e.getLocalizedMessage());
+            res.setDetalles(detalles);
+            return res;
+        }
 
         if (plugin == null) {
             res.setFinalizadoOk(false);

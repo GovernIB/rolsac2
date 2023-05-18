@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import es.caib.rolsac2.persistence.converter.TipoMediaFichaConverter;
+import es.caib.rolsac2.persistence.model.JTipoMediaEdificio;
 import es.caib.rolsac2.persistence.model.JTipoMediaFicha;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoMediaFichaDTO;
@@ -52,6 +53,11 @@ public class TipoMediaFichaRepositoryBean extends AbstractCrudRepository<JTipoMe
             }
         }
         return tipoMediaFichaes;
+    }
+
+    @Override
+    public List<JTipoMediaFicha> findByEntidad(Long idEntidad) {
+        return null;
     }
 
     @Override

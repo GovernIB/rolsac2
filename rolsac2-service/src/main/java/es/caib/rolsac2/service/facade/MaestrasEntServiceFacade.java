@@ -6,6 +6,8 @@ import es.caib.rolsac2.service.model.filtro.TipoMediaEdificioFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoMediaFichaFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoMediaUAFiltro;
 
+import java.util.List;
+
 public interface MaestrasEntServiceFacade {
 
     /**
@@ -39,6 +41,14 @@ public interface MaestrasEntServiceFacade {
      * @return un opcional amb les dades del tipoMediaEdificio indicat o buid si no existeix.
      */
     TipoMediaEdificioDTO findTipoMediaEdificioById(Long id);
+
+    /**
+     * Retorna el listado de tipoMediaEdificio asociado a una entidad
+     *
+     * @param idEntidad identificador de la entidad.
+     * @return un listado con los datos de los tipoMediaEdificio asociados a una entidad.
+     */
+    List<TipoMediaEdificioDTO> findTipoMediaEdificioByEntidad(Long idEntidad);
 
     /**
      * Devuelve una página con el tipoMediaEdificio relacionado con los parámetros del filtro
@@ -90,6 +100,14 @@ public interface MaestrasEntServiceFacade {
     TipoMediaUADTO findTipoMediaUAById(Long id);
 
     /**
+     * Retorna un listado con los tipoMediaUAs asociados a una entidad.
+     *
+     * @param idEntidad identificadorde la entidad asociada
+     * @return un listado de tipoMediaUAs
+     */
+    List<TipoMediaUADTO> findTipoMediaUAByEntidad(Long idEntidad);
+
+    /**
      * Devuelve una página con el tipoMediaUA relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
@@ -136,6 +154,15 @@ public interface MaestrasEntServiceFacade {
      * @return un opcional amb les dades del TipoMediaFicha indicat o buid si no existeix.
      */
     TipoMediaFichaDTO findTipoMediaFichaById(Long id);
+
+
+    /**
+     * Retorna un listado con los tipoMediaFichass asociados a una entidad.
+     *
+     * @param idEntidad identificadorde la entidad asociada
+     * @return un listado de tipoMediaFichass
+     */
+    List<TipoMediaFichaDTO> findTipoMediaFichaByEntidad(Long idEntidad);
 
     /**
      * Devuelve una página con el TipoMediaFicha relacionado con los parámetros del filtro

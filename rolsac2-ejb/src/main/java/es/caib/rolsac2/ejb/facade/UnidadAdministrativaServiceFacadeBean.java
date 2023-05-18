@@ -380,6 +380,14 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
     @Override
+    public List<UnidadOrganicaDTO> findUoByEntidad(Long idEntidad) {
+        List<JUnidadOrganica> jUnidadOrganicas = unidadOrganicaRepository.findByEntidad(idEntidad);
+        List<UnidadOrganicaDTO> unidadesOrganicas = new ArrayList<>();
+        jUnidadOrganicas.forEach(uo -> unidadesOrganicas.add(unidadOrganicaConverter.createDTO(uo)));
+        return unidadesOrganicas;
+    }
+
+    @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void eliminarOrganigrama(Long idEntidad) {
         unidadOrganicaRepository.eliminarRegistros(idEntidad);

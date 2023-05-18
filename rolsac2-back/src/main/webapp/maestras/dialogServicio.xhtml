@@ -70,7 +70,10 @@
                                        styleClass="mb-1 pt-0"/>
 
                         <br />
-                        <p:selectBooleanCheckbox id="txtEstadoSIA" value="#{dialogServicio.data.estadoSIA}" disabled="true" styleClass="mb-1 pt-0" />
+                        <p:inputText id="txtEstadoSIA"
+                                     value="#{dialogServicio.getEstadoSIA()}"
+                                     styleClass="w95"
+                                     disabled="true"/>
 
                     </div>
                     <div class="form-group col-md-2">
@@ -82,14 +85,20 @@
                                          disabled="true"/>
                         </p>
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-4">
                         <p>
-                            <p:outputLabel value="#{labels['dialogServicio.fecha.sia']}:" for="txtFechaSIA"
+                            <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" for="txtFechaSIA"
                                            styleClass="mb-1 pt-0"/>
                             <p:inputText id="txtFechaSIA" value="#{dialogServicio.data.fechaSIA}"
                                          styleClass="w95"
                                          disabled="true"/>
                         </p>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <p:commandButton action="#{dialogServicio.enviarSIA}"
+                                         value="#{labels['dict.enviarSIA']}" update="messagesDialog formDatosSIA"
+                                         rendered="#{empty dialogServicio.data.codigoSIA and !empty dialogServicio.data.codigo}"
+                                         process="@all" />
                     </div>
                 </div>
             </p:panel>

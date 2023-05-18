@@ -27,5 +27,5 @@ public interface TemaRepository extends CrudRepository<JTema, Long> {
 
     List<TemaDTO> findPagedByFiltroRest(TemaFiltro filtro);
 
-    void deleteByUA(Long id);
+    void deleteByEntidad(Long id);
 }

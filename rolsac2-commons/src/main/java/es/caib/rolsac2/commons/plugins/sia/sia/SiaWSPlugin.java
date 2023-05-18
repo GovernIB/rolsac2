@@ -30,8 +30,8 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
         final ResultadoSIA resultadoSIA = new ResultadoSIA();
         resultadoSIA.setOperacion(envioSIA.getOperacion());
         if (isActivoEnvio()) {
-            final String usuario = getProperty(USER);
-            final String password = getProperty(PASSWORD);
+            final String usuario = envioSIA.getUsuario();//getProperty(USER);
+            final String password = envioSIA.getPassword();//getProperty(PASSWORD);
             final String url = getProperty(URL);
             SiaClient client;
             try {
@@ -124,7 +124,7 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
         paramSia.setACTIVO("N");
 
         if (sia.getIdSia() == null || sia.getIdSia().isEmpty()) {
-            paramSia.setCODIGOACTUACION("inventadoCAIB"); // Obligan a que se introduzca, en caso de alta, lo generan
+            paramSia.setCODIGOACTUACION("X"); // Obligan a que se introduzca, en caso de alta, lo generan
             // ellos en la respuesta.
         } else {
             paramSia.setCODIGOACTUACION(sia.getIdSia());
@@ -315,16 +315,20 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
 
         ObjectFactory factory = new ObjectFactory();
 
-        if (sia.getDisponibleApoderadoHabilitado()) {
-            paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.SI));
-        } else {
-            paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.NO));
+        if (sia.getDisponibleApoderadoHabilitado() != null) {
+            if (sia.getDisponibleApoderadoHabilitado()) {
+                paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.SI));
+            } else {
+                paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.NO));
+            }
         }
 
-        if (sia.getDisponibleFuncionarioHabilitado()) {
-            paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.SI));
-        } else {
-            paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.NO));
+        if (sia.getDisponibleFuncionarioHabilitado() != null) {
+            if (sia.getDisponibleFuncionarioHabilitado()) {
+                paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.SI));
+            } else {
+                paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.NO));
+            }
         }
 
 

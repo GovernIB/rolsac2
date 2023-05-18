@@ -133,7 +133,15 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
 
-	@Override
+    @Override
+    public List<JTipoMediaUA> findByEntidad(Long idEntidad) {
+        String sql = "SELECT j FROM JTipoMediaUA j WHERE j.entidad.codigo = :idEntidad";
+        Query query = entityManager.createQuery(sql, JTipoMediaUA.class);
+        query.setParameter("idEntidad", idEntidad);
+        return query.getResultList();
+    }
+
+    @Override
 	public List<TipoMediaUADTO> findPagedByFiltroRest(TipoMediaUAFiltro filtro) {
 		Query query = getQuery(false, filtro, true);
 		query.setFirstResult(filtro.getPaginaFirst());
@@ -150,4 +158,13 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
 		}
 		return tipoMediaUAes;
 	}
+
+    @Override
+    public void deleteByEntidad(Long idEntidad) {
+        String sql = "DELETE FROM JTipoMediaUA j where j.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        int resultado = query.executeUpdate();
+        entityManager.flush();
+    }
 }

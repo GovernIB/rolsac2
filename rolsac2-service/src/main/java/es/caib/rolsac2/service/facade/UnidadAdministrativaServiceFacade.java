@@ -176,6 +176,14 @@ public interface UnidadAdministrativaServiceFacade {
     UnidadOrganicaDTO obtenerUnidadRaizRolsac(Long idEntidad);
 
     /**
+     * Retorna un listado con las unidades orgánicas asociados a una entidad.
+     *
+     * @param idEntidad identificadorde la entidad asociada
+     * @return un listado de unidades orgánicas
+     */
+    List<UnidadOrganicaDTO> findUoByEntidad(Long idEntidad);
+
+    /**
      * Elimina el organigrama DIR3
      */
     void eliminarOrganigrama(Long idEntidad);

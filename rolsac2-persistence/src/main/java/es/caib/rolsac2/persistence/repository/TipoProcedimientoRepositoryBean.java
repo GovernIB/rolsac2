@@ -14,11 +14,9 @@ import javax.persistence.TypedQuery;
 
 import es.caib.rolsac2.persistence.converter.TipoProcedimientoConverter;
 import es.caib.rolsac2.persistence.model.JTipoProcedimiento;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoProcedimientoDTO;
-import es.caib.rolsac2.service.model.TipoProcedimientoGridDTO;
-import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.TipoProcedimientoFiltro;
+import es.caib.rolsac2.service.model.filtro.TipoSexoFiltro;
 
 @Stateless
 @Local(TipoSexoRepository.class)
@@ -140,6 +138,7 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
 
+
     public List<TipoProcedimientoDTO> findAll(Long codigoEntidad) {
 
         TypedQuery query =
@@ -172,4 +171,13 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
 		}
 		return tipoProcedimientoes;
 	}
+
+    @Override
+    public void deleteByEntidad(Long idEntidad) {
+        String sql = "DELETE FROM JTipoProcedimiento j where j.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        int resultado = query.executeUpdate();
+        entityManager.flush();
+    }
 }

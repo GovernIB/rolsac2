@@ -24,5 +24,5 @@ public interface IndexacionSIARepository extends CrudRepository<JIndexacionSIA, 
 
     void actualizarDato(IndexacionSIADTO dato, ResultadoSIA resultadoAccion);
 
-    void deleteByUA(Long id);
+    void deleteByEntidad(Long id);
 }

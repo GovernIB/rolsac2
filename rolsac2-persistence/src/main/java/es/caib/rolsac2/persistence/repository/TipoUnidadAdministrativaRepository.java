@@ -25,7 +25,9 @@ public interface TipoUnidadAdministrativaRepository extends CrudRepository<JTipo
 
     List<TipoUnidadAdministrativaDTO> findTipo();
 
-    List<TipoUnidadAdministrativaDTO> findPagedByFiltroRest(TipoUnidadAdministrativaFiltro filtro);
+    List<JTipoUnidadAdministrativa> findByEntidad(Long idEntidad);
+
+	List<TipoUnidadAdministrativaDTO> findPagedByFiltroRest(TipoUnidadAdministrativaFiltro filtro);
 
     void deleteByEntidad(Long id);
 }

@@ -1,6 +1,7 @@
 package es.caib.rolsac2.back.utils;
 
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.Mensaje;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,5 +122,13 @@ public class ValidacionTipoUtils {
             }
         }
         return idiomasPendientes;
+    }
+
+    public static void sanitizarMensajes(List<Mensaje> mensajes) {
+        mensajes.forEach(m -> m.setMensaje(m.getMensaje().replace("'", "''")));
+    }
+
+    public static void normalizarMensajes(List<Mensaje> mensajes) {
+        mensajes.forEach(m -> m.setMensaje(m.getMensaje().replace("''", "'")));
     }
 }

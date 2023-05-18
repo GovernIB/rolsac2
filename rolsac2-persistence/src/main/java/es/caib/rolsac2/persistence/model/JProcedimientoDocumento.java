@@ -22,10 +22,7 @@ public class JProcedimientoDocumento {
      * La consulta FIND_BY_ID.
      */
     public static final String FIND_BY_ID = "ProcedimientoDocumento.FIND_BY_ID";
-    /**
-     * La consulta FIND_BY_PROC_ID.
-     */
-    public static final String FIND_BY_PROC_ID = "ProcedimientoDocumento.FIND_BY_PROC_ID";
+
     /**
      * Codigo
      */

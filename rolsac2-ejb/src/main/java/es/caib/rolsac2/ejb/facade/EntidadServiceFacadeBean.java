@@ -3,8 +3,8 @@ package es.caib.rolsac2.ejb.facade;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.EntidadConverter;
-import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.repository.*;
+import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.*;
@@ -51,10 +51,6 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     private EntidadConverter converter;
 
     @Inject
-    private UnidadAdministrativaRepository unidadAdministrativaRepository;
-
-
-    @Inject
     private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
     @Inject
@@ -62,9 +58,6 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
 
     @Inject
     private ProcedimientoServiceFacade procedimientoServiceFacade;
-
-    /*@Inject
-    private AdministracionEntServiceFacadeBean administracionEntServiceFacadeBean;*/
 
     @Inject
     private TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
@@ -79,16 +72,10 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     private ProcesoServiceFacade procesoServiceFacade;
 
     @Inject
-    private ProcedimientoRepositoryBean procedimientoRepositoryBean;
+    private PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;
 
     @Inject
-    private ProcedimientoAuditoriaRepository procedimientoAuditoriaRepository;
-
-    @Inject
-    private UnidadAdministrativaAuditoriaRepository uaAuditoriaRepository;
-
-    @Inject
-    private TipoTramitacionRepository tipoTramitacionRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Inject
     private IndexacionRepository indexacionRepository;
@@ -97,16 +84,10 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     private IndexacionSIARepository indexacionSIARepository;
 
     @Inject
-    private UsuarioRepository usuarioRepository;
-
-    @Inject
     private PluginRepository pluginRepository;
 
     @Inject
     private TemaRepository temaRepository;
-
-    @Inject
-    private PlatTramitElectronicaRepository platTramitElectronicaRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -133,22 +114,18 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     public void delete(Long id) throws RecursoNoEncontradoException {
         List<UnidadAdministrativaDTO> listaUas = unidadAdministrativaServiceFacade.getUnidadesAdministrativaByEntidadId(id, "es");
         ProcedimientoFiltro procedimientoFiltro = new ProcedimientoFiltro();
-        NormativaFiltro normativaFiltro = new NormativaFiltro();
-        TipoUnidadAdministrativaFiltro tUaFiltro = new TipoUnidadAdministrativaFiltro();
-        TipoMediaUAFiltro tipoMediaUAFiltro = new TipoMediaUAFiltro();
-        TipoMediaFichaFiltro tipoMediaFichaFiltro = new TipoMediaFichaFiltro();
-        ProcesoFiltro procesoFiltro = new ProcesoFiltro();
 
-        List<ProcedimientoGridDTO> listaProc = new ArrayList<>();
-        List<ServicioGridDTO> listaServ = new ArrayList<>();
-        List<NormativaGridDTO> listaNormativa = new ArrayList<>();
-        List<PluginDTO> listaPlugin = new ArrayList<>();
-        List<TipoUnidadAdministrativaGridDTO> listatUa = new ArrayList<>();
-        List<TipoMediaUAGridDTO> listaTMediaUa = new ArrayList<>();
-        List<TipoMediaFichaGridDTO> listaTMediaFicha = new ArrayList<>();
-        List<TipoProcedimientoDTO> listaTProcedimiento = new ArrayList<>();
-        List<ProcesoGridDTO> listaProceso = new ArrayList<>();
-        List<TipoPublicoObjetivoEntidadDTO> listaTObjetivo = new ArrayList<>();
+        List<ProcedimientoGridDTO> listaProc;
+        List<ServicioGridDTO> listaServ;
+        List<NormativaDTO> listaNormativa;
+
+        List<TipoMediaUADTO> listaTMediaUa;
+        List<TipoMediaEdificioDTO> listaTMediaEdificio;
+        List<TipoTramitacionDTO> listaTTramitacion;
+        List<PlatTramitElectronicaDTO> listaPlatTramitElec;
+        List<TipoProcedimientoDTO> listaTProcedimiento;
+        List<TipoPublicoObjetivoEntidadDTO> listaTObjetivo;
+        List<ProcesoDTO> listaProceso;
 
         if (!listaUas.isEmpty()) {
             for (UnidadAdministrativaDTO ua : listaUas) {
@@ -158,16 +135,7 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
                 procedimientoFiltro.setTipo("P");
                 listaProc = procedimientoServiceFacade.findProcedimientosByFiltro(procedimientoFiltro).getItems();
                 if (!listaProc.isEmpty()) {
-                    for (ProcedimientoGridDTO dto : listaProc) {
-                        procedimientoAuditoriaRepository.borrarAuditoriasByIdProcedimiento(dto.getCodigo());
-                        if (dto.getCodigoWFMod() != null) {
-                            procedimientoServiceFacade.deleteWF(dto.getCodigoWFMod());
-                        }
-                        if (dto.getCodigoWFPub() != null) {
-                            procedimientoServiceFacade.deleteWF(dto.getCodigoWFPub());
-                        }
-                    }
-
+                    listaProc.forEach(p -> procedimientoServiceFacade.deleteProcedimientoCompleto(p.getCodigo()));
                 }
 
                 procedimientoFiltro.setIdUA(ua.getCodigo());
@@ -176,94 +144,87 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
 
                 listaServ = procedimientoServiceFacade.findServiciosByFiltro(procedimientoFiltro).getItems();
                 if (!listaServ.isEmpty()) {
-                    for (ServicioGridDTO dto : listaServ) {
-                        procedimientoAuditoriaRepository.borrarAuditoriasByIdProcedimiento(dto.getCodigo());
-                        if (dto.getCodigoWFMod() != null) {
-                            procedimientoServiceFacade.deleteWF(dto.getCodigoWFMod());
-                        }
-                        if (dto.getCodigoWFPub() != null) {
-                            procedimientoServiceFacade.deleteWF(dto.getCodigoWFPub());
-                        }
+                    if (!listaServ.isEmpty()) {
+                        listaServ.forEach(p -> procedimientoServiceFacade.deleteProcedimientoCompleto(p.getCodigo()));
                     }
                 }
+            }
 
-                listaTObjetivo = maestrasSupServiceFacade.findTipoPublicoObjetivoEntidadByEntidadId(id);
-                if (!listaTObjetivo.isEmpty()) {
-                    for (TipoPublicoObjetivoEntidadDTO dto : listaTObjetivo) {
-                        maestrasSupServiceFacade.deleteTipoPublicoObjetivoEntidad(dto.getCodigo());
-                    }
-                }
+        }
 
-                listaTProcedimiento = maestrasSupServiceFacade.findAllTipoProcedimiento(id);
-                if (!listaTProcedimiento.isEmpty()) {
-                    for (TipoProcedimientoDTO dto : listaTProcedimiento) {
-                        maestrasSupServiceFacade.deleteTipoProcedimiento(dto.getCodigo());
-                    }
-                }
+        //Borramos las indexaciones segun entidad
+        indexacionRepository.deleteByEntidad(id);
+        indexacionSIARepository.deleteByEntidad(id);
 
+        //Borramos las normativas
+        listaNormativa = normativaServiceFacade.findByEntidad(id);
+        if (!listaNormativa.isEmpty()) {
+            listaNormativa.forEach(nor -> normativaServiceFacade.delete(nor.getCodigo()));
+        }
 
-                normativaFiltro.setIdUA(ua.getCodigo());
-                normativaFiltro.setIdioma("es");
-                listaNormativa = normativaServiceFacade.findByFiltro(normativaFiltro).getItems();
-                if (!listaNormativa.isEmpty()) {
-                    for (NormativaGridDTO dto : listaNormativa) {
-                        normativaServiceFacade.delete(dto.getCodigo());
-                    }
-                }
-            /*listaPlugin = administracionEntServiceFacadeBean.listPluginsByEntidad(id);
-            if (!listaPlugin.isEmpty()) {
-                for (PluginDTO dto : listaPlugin) {
-                    administracionEntServiceFacadeBean.deletePlugin(dto.getCodigo());
-                }
+        //Borramos los tipo media UA
+        listaTMediaUa = maestrasEntServiceFacade.findTipoMediaUAByEntidad(id);
+        if (!listaTMediaUa.isEmpty()) {
+            listaTMediaUa.forEach(tm -> maestrasEntServiceFacade.deleteTipoMediaUA(tm.getCodigo()));
+        }
+
+/*            listaTMediaFicha = maestrasEntServiceFacade.findTipoMediaFichaByEntidad(id);
+            if (!listaTMediaFicha.isEmpty()) {
+                listaTMediaFicha.forEach(tm -> maestrasEntServiceFacade.deleteTipoMediaFicha(tm.getCodigo()));
             }*/
 
-                tipoMediaUAFiltro.setIdEntidad(id);
-                tipoMediaUAFiltro.setIdioma("es");
-                listaTMediaUa = maestrasEntServiceFacade.findByFiltro(tipoMediaUAFiltro).getItems();
-                if (!listaTMediaUa.isEmpty()) {
-                    for (TipoMediaUAGridDTO dto : listaTMediaUa) {
-                        maestrasEntServiceFacade.deleteTipoMediaUA(dto.getCodigo());
-                    }
-                }
-                tipoMediaFichaFiltro.setIdEntidad(id);
-                tipoMediaFichaFiltro.setIdioma("es");
-                listaTMediaFicha = maestrasEntServiceFacade.findByFiltro(tipoMediaFichaFiltro).getItems();
-                if (!listaTMediaFicha.isEmpty()) {
-                    for (TipoMediaFichaGridDTO dto : listaTMediaFicha) {
-                        maestrasEntServiceFacade.deleteTipoMediaFicha(dto.getCodigo());
-                    }
-                }
-
-                //Borramos los tipos de tramitacion segun entidad
-                tipoTramitacionRepository.deleteByUA(id);
-
-                //Borramos las indexaciones segun entidad
-                indexacionRepository.deleteByUA(id);
-                indexacionSIARepository.deleteByUA(id);
-
-                //Borramos los usuarios segun entidad
-                usuarioRepository.deleteByUA(id);
-
-                //Borramos los plugins segun entidad
-                pluginRepository.deleteByUA(id);
-
-                //Borramos los temas segun entidad
-                temaRepository.deleteByUA(id);
-
-                //Borramos las plataformas de tramitacion segun entidad
-                platTramitElectronicaRepository.deleteByUA(id);
-            }
-
-
-            if (!listaUas.isEmpty()) {
-                for (UnidadAdministrativaDTO dto : listaUas) {
-                    unidadAdministrativaRepository.deleteUA(dto.getCodigo());
-                }
-            }
-
-
-            tipoUnidadAdministrativaRepository.deleteByEntidad(id);
+        //Borramos los tipo media edificio
+        listaTMediaEdificio = maestrasEntServiceFacade.findTipoMediaEdificioByEntidad(id);
+        if (!listaTMediaEdificio.isEmpty()) {
+            listaTMediaEdificio.forEach(tm -> maestrasEntServiceFacade.deleteTipoMediaEdificio(tm.getCodigo()));
         }
+
+        //Borramos los tipo tramitación
+        listaTTramitacion = maestrasSupServiceFacade.findTipoTramitacionByEntidad(id);
+        if (!listaTTramitacion.isEmpty()) {
+            listaTTramitacion.forEach(tm -> maestrasSupServiceFacade.deleteTipoTramitacion(tm.getCodigo()));
+        }
+
+        //Borramos las plantillas de tramitación
+        listaPlatTramitElec = platTramitElectronicaServiceFacade.findAll(id);
+        if (!listaPlatTramitElec.isEmpty()) {
+            listaPlatTramitElec.forEach(tm -> platTramitElectronicaServiceFacade.delete(tm.getCodigo()));
+        }
+
+        //Borramos los tipos de público objetivo entidad
+        listaTObjetivo = maestrasSupServiceFacade.findTipoPublicoObjetivoEntidadByEntidadId(id);
+        if (!listaTObjetivo.isEmpty()) {
+            listaTObjetivo.forEach(tm -> maestrasSupServiceFacade.deleteTipoPublicoObjetivoEntidad(tm.getCodigo()));
+        }
+
+        //Borramos los tipos de procedimiento
+        listaTProcedimiento = maestrasSupServiceFacade.findAllTipoProcedimiento(id);
+        if (!listaTProcedimiento.isEmpty()) {
+            listaTProcedimiento.forEach(tm -> maestrasSupServiceFacade.deleteTipoProcedimiento(tm.getCodigo()));
+        }
+
+        //Borramos los usuarios segun entidad
+        usuarioRepository.deleteByEntidad(id);
+
+        //Borramos los temas segun entidad
+        temaRepository.deleteByEntidad(id);
+
+        //Eliminación del organigrama DIR3
+        unidadAdministrativaServiceFacade.eliminarOrganigrama(id);
+
+        //Eliminación de plugins
+        pluginRepository.deleteByEntidad(id);
+
+        listaProceso = procesoServiceFacade.findProcesoByEntidad(id);
+        if(!listaProceso.isEmpty()) {
+            listaProceso.forEach(p -> procesoServiceFacade.borrar(p.getCodigo()));
+        }
+
+        if (!listaUas.isEmpty()) {
+            listaUas.forEach(p -> unidadAdministrativaServiceFacade.delete(p.getCodigo()));
+        }
+
+        tipoUnidadAdministrativaRepository.deleteByEntidad(id);
 
         JEntidad jEntidad = entidadRepository.getReference(id);
         entidadRepository.delete(jEntidad);

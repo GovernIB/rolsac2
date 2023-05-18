@@ -27,5 +27,5 @@ public interface PlatTramitElectronicaRepository extends CrudRepository<JPlatTra
 
     List<PlatTramitElectronicaDTO> findPagedByFiltroRest(PlatTramitElectronicaFiltro filtro);
 
-    void deleteByUA(Long id);
+    void deleteByEntidad(Long id);
 }

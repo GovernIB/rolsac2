@@ -13,7 +13,7 @@ Insert into ROLSAC2.RS2_TRAUSER (TRUS_CODIGO, TRUS_CODUS, TRUS_IDIOMA, TRUS_OBSE
 
 /*UA por defecto*/
 Insert into ROLSAC2.RS2_UNIADM (UNAD_CODIGO,UNAD_CODENTI,UNAD_TIPOUA,UNAD_UNADPADRE,UNAD_DIR3,UNAD_IDENTI,UNAD_ABREVI,UNAD_TFNO,UNAD_FAX,UNAD_EMAIL,UNAD_DOMINI,UNAD_RSPNOM,UNAD_RSPSEX,UNAD_RSPEMA,UNAD_ORDEN,UNAD_VERSION)
-    values (RS2_UNIADM_SEQ.NEXTVAL,RS2_ENTIDA_SEQ.CURRVAL,null,null,'A04003003',null,null,null,null,null,null,null,null,null,'1','1');
+values (RS2_UNIADM_SEQ.NEXTVAL,RS2_ENTIDA_SEQ.CURRVAL,null,null,'A04003003',null,null,null,null,null,null,null,null,null,'1','1');
 Insert into ROLSAC2.RS2_TRAUNAD (TRUA_CODIGO,TRUA_CODUNAD,TRUA_IDIOMA,TRUA_NOMBRE,TRUA_PRESEN,TRUA_URLWEB,TRUA_RSPCV) values (RS2_TRAUNAD_SEQ.NEXTVAL,RS2_UNIADM_SEQ.CURRVAL,'es','Gobierno de las Islas Baleares',null,null, EMPTY_CLOB());
 Insert into ROLSAC2.RS2_TRAUNAD (TRUA_CODIGO,TRUA_CODUNAD,TRUA_IDIOMA,TRUA_NOMBRE,TRUA_PRESEN,TRUA_URLWEB,TRUA_RSPCV) values (RS2_TRAUNAD_SEQ.NEXTVAL,RS2_UNIADM_SEQ.CURRVAL,'ca','Govern de les Illes Balears',null,null, EMPTY_CLOB());
 
@@ -23,6 +23,8 @@ Insert into ROLSAC2.RS2_USENTI (USEN_CODUSER,USEN_CODENTI) values (RS2_USER_SEQ.
 /* Datos para inicio de procesos automáticos*/
 insert into ROLSAC2.RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'TEST', 'Proceso de prueba', null, 1, '[{"codigo":"valida","valor":"true"}]');
 insert into ROLSAC2.RS2_PROCEX (procex_codigo, procex_instan, procex_fecha) VALUES ('MAESTRO', 'XXXX', to_date('1998/05/31:12:00:00AM', 'yyyy/mm/dd:hh:mi:ssam'));
+insert into ROLSAC2.RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'SIA_PUNT', 'Proceso de lanzamiento puntual SIA', null, 1, '[{"codigo":"valida","valor":"true"}]');
+insert into ROLSAC2.RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'SOLR_PUNT', 'Proceso  de lanzamiento puntual SOLR', null, 1, '[{"codigo":"valida","valor":"true"}]');
 
 Insert into ROLSAC2.RS2_BOLETI (BOLE_CODIGO,BOLE_IDENTI,BOLE_NOMBRE,BOLE_URL) values (1,'BOIB','Boletín Oficial de las Islas Baleares','https://www.caib.es/eboibfront/es');
 
@@ -40,6 +42,12 @@ Insert into ROLSAC2.RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASS
 VALUES (RS2_PLUGIN_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'Plugin de consulta al API REST DIR3CAIB', 'es.caib.rolsac2.commons.plugins.dir3.caib.Dir3CaibRestPlugin',
         '[{"codigo":"url","valor":"https://dev.caib.es/dir3caib/rest","orden":null},{"codigo":"usr","valor":"$sistra_dir3caib","orden":null},{"codigo":"pwd","valor":"sistra_dir3caib","orden":null}]',
         'es.caib.rolsac2.pluginsib.dir3.caib.', 'DI3');
+
+Insert into ROLSAC2.RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
+VALUES (RS2_PLUGIN_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'Plugin de indexacion sia', 'es.caib.rolsac2.commons.plugins.sia.sia.SiaWSPlugin',
+        '[{"codigo":"url","valor":"http://pre-sia2.redsara.es/axis2/services/wsSIAActualizarActuaciones","orden":null}]',
+        'pluginsib.indexacion.sia.', 'SIA');
+
 
 /** Los 3 tipos de publico objetivo basico que son 1.Ciudadano 2.Empresa 3.Administración . **/
 INSERT INTO ROLSAC2.RS2_TIPOPUB(TPPO_CODIGO, TPPO_IDENTI, TPPO_EMPPUB)

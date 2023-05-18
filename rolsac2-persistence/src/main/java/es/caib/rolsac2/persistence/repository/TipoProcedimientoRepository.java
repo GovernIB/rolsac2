@@ -24,4 +24,6 @@ public interface TipoProcedimientoRepository extends CrudRepository<JTipoProcedi
 
 	List<TipoProcedimientoDTO> findPagedByFiltroRest(TipoProcedimientoFiltro filtro);
 
+    void deleteByEntidad(Long idEntidad);
+
 }

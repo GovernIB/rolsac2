@@ -1,5 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.model.JTipoMediaFicha;
 import es.caib.rolsac2.persistence.model.JTipoMediaUA;
 import es.caib.rolsac2.service.model.TipoMediaUADTO;
 import es.caib.rolsac2.service.model.TipoMediaUAGridDTO;
@@ -12,6 +13,8 @@ public interface TipoMediaUARepository extends CrudRepository<JTipoMediaUA, Long
 
     Optional<JTipoMediaUA> findById(String id);
 
+    List<JTipoMediaUA> findByEntidad(Long idEntidad);
+
     List<TipoMediaUAGridDTO> findPagedByFiltro(TipoMediaUAFiltro filtro);
 
     long countByFiltro(TipoMediaUAFiltro filtro);
@@ -19,4 +22,6 @@ public interface TipoMediaUARepository extends CrudRepository<JTipoMediaUA, Long
     boolean existeIdentificador(String identificador, Long idEntidad);
 
 	List<TipoMediaUADTO> findPagedByFiltroRest(TipoMediaUAFiltro filtro);
+
+    void deleteByEntidad(Long idEntidad);
 }

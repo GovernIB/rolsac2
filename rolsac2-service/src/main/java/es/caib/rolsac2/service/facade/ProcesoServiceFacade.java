@@ -52,6 +52,8 @@ public interface ProcesoServiceFacade {
 
     List<ProcesoGridDTO> listar(final String idioma, final String tipo);
 
+    List<ProcesoDTO> findProcesoByEntidad(Long idEntidad);
+
     Pagina<ProcesoGridDTO> findByFiltro(ProcesoFiltro filtro);
 
     Pagina<IndexacionDTO> findSolrByFiltro(ProcesoSolrFiltro filtro);

@@ -242,6 +242,17 @@ public class ProcesoRepositoryBean extends AbstractCrudRepository<JProceso, Long
         return procesoDTO;
     }
 
+    @Override
+    public List<ProcesoDTO> findProcesoByEntidad(Long idEntidad) {
+        String sql = "SELECT j FROM JProceso j WHERE j.entidad.codigo = :idEntidad";
+        Query query = entityManager.createQuery(sql, JProceso.class);
+        query.setParameter("idEntidad", idEntidad);
+        List<JProceso> jProcesos = query.getResultList();
+        List<ProcesoDTO> procesos = new ArrayList<>();
+        jProcesos.forEach(p -> procesos.add(p.toModel()));
+        return procesos;
+    }
+
 }
 
 

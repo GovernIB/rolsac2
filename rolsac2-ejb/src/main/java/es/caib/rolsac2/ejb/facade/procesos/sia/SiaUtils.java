@@ -53,7 +53,7 @@ public class SiaUtils {
      * @param procedimiento
      * @return
      */
-    public static SiaEnviableResultado isEnviable(final UnidadAdministrativaServiceFacade uaService, final ProcedimientoDTO procedimiento) {
+    public static SiaEnviableResultado isEnviable(final UnidadAdministrativaServiceFacade uaService, final ProcedimientoDTO procedimiento, final boolean indexacionForzada) {
         final SiaEnviableResultado resultado = new SiaEnviableResultado(false);
         final StringBuilder mensajeError = new StringBuilder();
 
@@ -80,13 +80,17 @@ public class SiaUtils {
         }
 
         // Es visible.
-        final boolean esVisible = procedimiento.esVisible();
-        if (!esVisible) {
-            mensajeError.append("El procediment no és visible.");
+        boolean esVisible = true;
+        if (!indexacionForzada) {
+            esVisible = procedimiento.esVisible();
+            if (!esVisible) {
+                mensajeError.append("El procediment no és visible.");
+            }
         }
 
+
         // Es visible UA.
-        final boolean isVisibleUA = uaService.isVisibleUA(procedimiento.getUaInstructor());
+        final boolean isVisibleUA = uaService.isVisibleUA(procedimiento.getUaResponsable());
         if (!isVisibleUA) {
             mensajeError.append("La unitat de l'òrgan resolutori o d'alguns dels seus predecessors és no visible.");
         }
@@ -96,7 +100,7 @@ public class SiaUtils {
         if (procedimiento.esComun()) {
             tieneCodigoCentro = true;
         } else {
-            final String codigoIdCentro = uaService.obtenerCodigoDIR3(procedimiento.getUaInstructor().getCodigo());
+            final String codigoIdCentro = uaService.obtenerCodigoDIR3(procedimiento.getUaResponsable().getCodigo());
             if (codigoIdCentro == null) {
                 tieneCodigoCentro = false;
                 mensajeError.append("No té codi DIR ni l'òrgan resolutori ni predecessors.");
@@ -125,6 +129,10 @@ public class SiaUtils {
                     resultado.setOperacion(SiaUtils.ESTADO_MODIFICACION);
                 }
             }
+
+            if (indexacionForzada) {
+                resultado.setOperacion(SiaUtils.ESTADO_BAJA);
+            }
         } else {
             if (procedimiento.getEstadoSIA() == null || SiaUtils.ESTADO_BAJA.equals(procedimiento.getEstadoSIA())) {
                 resultado.setNotificarSIA(false);
@@ -145,7 +153,7 @@ public class SiaUtils {
      * @param servicio
      * @return
      */
-    public static SiaEnviableResultado isEnviable(final UnidadAdministrativaServiceFacade uaService, final ServicioDTO servicio) {
+    public static SiaEnviableResultado isEnviable(final UnidadAdministrativaServiceFacade uaService, final ServicioDTO servicio, final boolean indexacionForzada) {
         final SiaEnviableResultado resultado = new SiaEnviableResultado(false);
         final StringBuilder mensajeError = new StringBuilder();
 
@@ -159,12 +167,12 @@ public class SiaUtils {
 
         // Es visible.
         final boolean esVisible = servicio.esVisible();
-        if (!esVisible) {
+        if (!esVisible && !indexacionForzada) {
             mensajeError.append("El procediment no és visible.");
         }
 
         // Es visible UA.
-        final boolean isVisibleUA = uaService.isVisibleUA(servicio.getUaInstructor());
+        final boolean isVisibleUA = uaService.isVisibleUA(servicio.getUaResponsable());
         if (!isVisibleUA) {
             mensajeError.append("La unitat de l'òrgan resolutori o d'alguns dels seus predecessors és no visible.");
         }
@@ -174,7 +182,7 @@ public class SiaUtils {
         if (servicio.esComun()) {
             tieneCodigoCentro = true;
         } else {
-            final String codigoIdCentro = uaService.obtenerCodigoDIR3(servicio.getUaInstructor().getCodigo());
+            final String codigoIdCentro = uaService.obtenerCodigoDIR3(servicio.getUaResponsable().getCodigo());
             if (codigoIdCentro == null) {
                 tieneCodigoCentro = false;
                 mensajeError.append("No té codi DIR ni l'òrgan resolutori ni predecessors.");
@@ -201,6 +209,10 @@ public class SiaUtils {
                 } else {
                     resultado.setOperacion(SiaUtils.ESTADO_MODIFICACION);
                 }
+            }
+
+            if (indexacionForzada) {
+                resultado.setOperacion(SiaUtils.ESTADO_BAJA);
             }
         } else {
             if (servicio.getEstadoSIA() == null || SiaUtils.ESTADO_BAJA.equals(servicio.getEstadoSIA())) {
@@ -235,10 +247,10 @@ public class SiaUtils {
         if (procedimiento.esComun()) {
             //TODO Pendiente
             //sia.setUaGest(RolsacPropertiesUtil.getUAComun(false));
-        } else if (procedimiento.getUaInstructor() != null && procedimiento.getUaInstructor().getNombre() != null && procedimiento.getUaInstructor().getNombre().getTraduccion("es") != null) {
-            sia.setUnidadGestora(procedimiento.getUaInstructor().getNombre().getTraduccion("es"));
+        } else if (procedimiento.getUaResponsable() != null && procedimiento.getUaResponsable().getNombre() != null && procedimiento.getUaResponsable().getNombre().getTraduccion("es") != null) {
+            sia.setUnidadGestora(procedimiento.getUaResponsable().getNombre().getTraduccion("es"));
         } else {
-            sia.setUnidadGestora(procedimiento.getUaInstructor().getNombre().getTraduccion("ca"));
+            sia.setUnidadGestora(procedimiento.getUaResponsable().getNombre().getTraduccion("ca"));
         }
 
         if (esProcSerInterno) {
@@ -289,11 +301,13 @@ public class SiaUtils {
                         break;
                     }
 
-                    for (final ProcedimientoDocumentoDTO documentTramit : tramite.getListaDocumentos()) {
-                        //TODO Pendiente
-                        //if (documentTramit.get() == 1) {
-                        //    nivelAdministrativo = 2;
-                        //}
+                    if (tramite.getListaDocumentos() != null) {
+                        for (final ProcedimientoDocumentoDTO documentTramit : tramite.getListaDocumentos()) {
+                            //TODO Pendiente
+                            //if (documentTramit.get() == 1) {
+                            //    nivelAdministrativo = 2;
+                            //}
+                        }
                     }
                 }
             }
@@ -356,11 +370,13 @@ public class SiaUtils {
 
         sia.setUsuario(siaCumpleDatos.getSiaUA().getUser());
         sia.setPassword(siaCumpleDatos.getSiaUA().getPwd());
-        sia.setTipoTramite("P");
-        sia.setTipologia(procedimiento.esComun() ? 1 : 2);
+        sia.setTipoTramite((procedimiento instanceof ProcedimientoDTO) ? SiaUtils.TRAMITE_PROC : SiaUtils.TRAMITE_SERV);
+        //sia.setTipologia(procedimiento.esComun() ? 1 : 2);
 
         sia.setDisponibleApoderadoHabilitado(procedimiento.isHabilitadoApoderado());
-        sia.setDisponibleFuncionarioHabilitado(procedimiento.getHabilitadoFuncionario().equals("S"));
+        if (procedimiento.getHabilitadoFuncionario() != null) {
+            sia.setDisponibleFuncionarioHabilitado(procedimiento.getHabilitadoFuncionario().equals("S"));
+        }
         return sia;
     }
 
@@ -458,7 +474,7 @@ public class SiaUtils {
         boolean noAsociadoSiaUA = true;
         // No se comprueba si está asociado a la Raíz si es comun
         if (!procedimiento.esComun() && tieneSiaUA) {
-            final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(procedimiento.getUaInstructor().getCodigo());
+            final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(procedimiento.getUaResponsable().getCodigo());
             final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(siaUA.getUa().getCodigo());
             if (codigoDir3SiaUA.equals(codigoDir3IdCentro)) {
                 mensajeError.append("El procedimiento esta asociado directamente a la entidad raiz.");

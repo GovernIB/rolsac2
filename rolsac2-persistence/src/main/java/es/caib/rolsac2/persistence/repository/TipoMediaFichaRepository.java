@@ -14,6 +14,8 @@ public interface TipoMediaFichaRepository extends CrudRepository<JTipoMediaFicha
 
   List<TipoMediaFichaGridDTO> findPagedByFiltro(TipoMediaFichaFiltro filtro);
 
+  List<JTipoMediaFicha> findByEntidad(Long idEntidad);
+
   long countByFiltro(TipoMediaFichaFiltro filtro);
 
   boolean existeIdentificador(String identificador);

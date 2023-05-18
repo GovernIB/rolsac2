@@ -59,6 +59,14 @@ public class TipoMediaEdificioRepositoryBean extends AbstractCrudRepository<JTip
     }
 
     @Override
+    public List<JTipoMediaEdificio> findByEntidad(Long idEntidad) {
+        String sql = "SELECT j FROM JTipoMediaEdificio j WHERE j.entidad.codigo = :idEntidad";
+        Query query = entityManager.createQuery(sql, JTipoMediaEdificio.class);
+        query.setParameter("idEntidad", idEntidad);
+        return query.getResultList();
+    }
+
+    @Override
     public long countByFiltro(TipoMediaEdificioFiltro filtro) {
         return (long) getQuery(true, filtro, false).getSingleResult();
     }
@@ -152,4 +160,13 @@ public class TipoMediaEdificioRepositoryBean extends AbstractCrudRepository<JTip
 		}
 		return tipoMediaEdificioes;
 	}
+
+    @Override
+    public void deleteByEntidad(Long idEntidad) {
+        String sql = "DELETE FROM JTipoMediaEdificio j where j.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidad", idEntidad);
+        int resultado = query.executeUpdate();
+        entityManager.flush();
+    }
 }

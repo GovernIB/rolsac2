@@ -133,6 +133,14 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
         return tipoUnidadAdministrativaDTOS;
     }
 
+    @Override
+    public List<JTipoUnidadAdministrativa> findByEntidad(Long idEntidad) {
+        String sql = "SELECT j FROM JTipoUnidadAdministrativa j WHERE j.entidad.codigo = :idEntidad";
+        Query query = entityManager.createQuery(sql, JTipoUnidadAdministrativa.class);
+        query.setParameter("idEntidad", idEntidad);
+        return query.getResultList();
+    }
+
     private String getOrden(String order) {
         // Se puede hacer un switch/if pero en este caso, con j.+order sobra
         switch (order) {

@@ -15,7 +15,6 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,9 +56,10 @@ public interface ProcedimientoServiceFacade {
      */
     void delete(Long id) throws RecursoNoEncontradoException;
 
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     void deleteWF(Long idWF) throws RecursoNoEncontradoException;
+
+
+    void deleteProcedimientoCompleto(Long id);
 
     /**
      * Retorna un procedimiento amb el proc/serv indicat per l'identificador.
@@ -69,8 +69,6 @@ public interface ProcedimientoServiceFacade {
      */
     ProcedimientoDTO findProcedimientoById(Long id);
 
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     ProcedimientoSolrDTO findDataIndexacionProcById(Long codigoWF);
 
     /**
@@ -81,8 +79,6 @@ public interface ProcedimientoServiceFacade {
      */
     ServicioDTO findServicioById(Long id);
 
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     ProcedimientoSolrDTO findDataIndexacionServById(Long codigoWF);
 
     /**
@@ -154,8 +150,6 @@ public interface ProcedimientoServiceFacade {
      */
     void actualizarSolr(IndexacionDTO proc, ResultadoAccion resultadoAccion);
 
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     void actualizarSIA(IndexacionSIADTO siadto, ResultadoSIA resultadoAccion);
 
     /**
@@ -189,12 +183,13 @@ public interface ProcedimientoServiceFacade {
 
     IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA);
 
-	Pagina<ProcedimientoDocumentoDTO> findProcedimientoDocumentoByFiltroRest(ProcedimientoDocumentoFiltro filtro);
+    Pagina<ProcedimientoDocumentoDTO> findProcedimientoDocumentoByFiltroRest(ProcedimientoDocumentoFiltro filtro);
 
-	Pagina<ProcedimientoTramiteDTO> findProcedimientoTramiteByFiltroRest(ProcedimientoTramiteFiltro filtro);
+    Pagina<ProcedimientoTramiteDTO> findProcedimientoTramiteByFiltroRest(ProcedimientoTramiteFiltro filtro);
 
-	ProcedimientoBaseDTO convertirDTO(Object obj);
+    ProcedimientoBaseDTO convertirDTO(Object obj);
 
-	String getEnlaceTelematico(ProcedimientoFiltro filtro);
+    String getEnlaceTelematico(ProcedimientoFiltro filtro);
 
+    ProcedimientoBaseDTO findProcedimientoBaseById(Long codigo);
 }

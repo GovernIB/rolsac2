@@ -50,6 +50,14 @@ public interface TipoUnidadAdministrativaServiceFacade {
     TipoUnidadAdministrativaDTO findById(Long id);
 
     /**
+     * Retorna un listado con los tipoUAs asociados a una entidad.
+     *
+     * @param idEntidad identificadorde la entidad asociada
+     * @return un listado de tipoUAs
+     */
+    List<TipoUnidadAdministrativaDTO> findByEntidad(Long idEntidad);
+
+    /**
      * Devuelve una página con el TipoUnidadAdministrativa relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda

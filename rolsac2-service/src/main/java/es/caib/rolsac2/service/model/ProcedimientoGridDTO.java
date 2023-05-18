@@ -41,12 +41,12 @@ public class ProcedimientoGridDTO extends ModelApi {
     /**
      * Estado SIA
      */
-    private Boolean estadoSIA;
+    private String estadoSIA;
 
     /**
      * Fecha SIA
      */
-    public LocalDate siaFecha;
+    public Date siaFecha;
 
     /**
      * Codigo DIR3 SIA
@@ -138,7 +138,7 @@ public class ProcedimientoGridDTO extends ModelApi {
      *
      * @return estado sia
      */
-    public Boolean getEstadoSIA() {
+    public String getEstadoSIA() {
         return estadoSIA;
     }
 
@@ -147,7 +147,7 @@ public class ProcedimientoGridDTO extends ModelApi {
      *
      * @param estadoSIA estado sia
      */
-    public void setEstadoSIA(Boolean estadoSIA) {
+    public void setEstadoSIA(String estadoSIA) {
         this.estadoSIA = estadoSIA;
     }
 
@@ -156,7 +156,7 @@ public class ProcedimientoGridDTO extends ModelApi {
      *
      * @return sia fecha
      */
-    public LocalDate getSiaFecha() {
+    public Date getSiaFecha() {
         return siaFecha;
     }
 
@@ -165,7 +165,7 @@ public class ProcedimientoGridDTO extends ModelApi {
      *
      * @param fechaSIA fecha sia
      */
-    public void setSiaFecha(LocalDate fechaSIA) {
+    public void setSiaFecha(Date fechaSIA) {
         this.siaFecha = fechaSIA;
     }
 
@@ -467,10 +467,6 @@ public class ProcedimientoGridDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "ProcedimientoDTO{" +
-                "codigo=" + codigo +
-                ", nombre='" + nombre + '\'' +
-                ", codigoSIA='" + codigoSIA + '\'' +
-                '}';
+        return "ProcedimientoDTO{" + "codigo=" + codigo + ", nombre='" + nombre + '\'' + ", codigoSIA='" + codigoSIA + '\'' + '}';
     }
 }
