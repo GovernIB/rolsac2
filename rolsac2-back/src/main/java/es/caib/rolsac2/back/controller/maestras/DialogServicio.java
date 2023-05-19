@@ -85,6 +85,8 @@ public class DialogServicio extends AbstractController implements Serializable {
     @EJB
     private UnidadAdministrativaServiceFacade uaService;
 
+    @EJB
+    private ProcesoTimerServiceFacade procesoTimerServiceFacade;
 
     private String id = "";
 
@@ -115,6 +117,7 @@ public class DialogServicio extends AbstractController implements Serializable {
      **/
     boolean esSoloGuardar;
     private Integer opcionTelematica = null;
+    private boolean mostrarRefreshSIA = false;
 
 
     public void load() {
@@ -217,6 +220,32 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public boolean isOpcionTelematicaUrl() {
         return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(3) == 0;
+    }
+
+    /**
+     * Enviado a SIA para que se indexe.
+     */
+    public void enviarSIA() {
+        if (data.getCodigo() != null && data.getCodigoSIA() == null) {
+            ListaPropiedades listaPropiedades = new ListaPropiedades();
+            Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
+            listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
+            listaPropiedades.addPropiedad("id", data.getCodigo().toString());
+            procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
+            mostrarRefreshSIA = true;
+        }
+    }
+
+    /**
+     * Refresca los datos por si ya se ha indexado
+     */
+    public void refrescarSIA() {
+        ProcedimientoBaseDTO proc = procedimientoServiceFacade.findProcedimientoBaseById(data.getCodigo());
+        this.data.setCodigoSIA(proc.getCodigoSIA());
+        this.data.setEstadoSIA(proc.getEstadoSIA());
+        this.data.setErrorSIA(proc.getErrorSIA());
+        this.data.setFechaSIA(proc.getFechaSIA());
     }
 
     public void traducir() {
@@ -1262,6 +1291,14 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void setOpcionTelematica(Integer opcionTelematica) {
         this.opcionTelematica = opcionTelematica;
+    }
+
+    public boolean isMostrarRefreshSIA() {
+        return mostrarRefreshSIA;
+    }
+
+    public void setMostrarRefreshSIA(boolean mostrarRefreshSIA) {
+        this.mostrarRefreshSIA = mostrarRefreshSIA;
     }
 }
 

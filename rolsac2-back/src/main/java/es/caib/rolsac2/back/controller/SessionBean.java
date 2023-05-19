@@ -927,6 +927,9 @@ public class SessionBean implements Serializable {
             tiposViewIds.add("/monitorizacion/viewEventosPlat.xhtml");
             tiposViewIds.add("/monitorizacion/viewProcesos.xhtml");
             tiposViewIds.add("/monitorizacion/viewProcesosLog.xhtml");
+            tiposViewIds.add("/monitorizacion/viewProcesosSolr.xhtml");
+            tiposViewIds.add("/monitorizacion/viewProcesosSIA.xhtml");
+            tiposViewIds.add("/entidades/viewEntidadRaiz.xhtml");
             String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
             return tiposViewIds.contains(viewId);
         } else {
