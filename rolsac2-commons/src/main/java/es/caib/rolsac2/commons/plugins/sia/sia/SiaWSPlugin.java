@@ -43,11 +43,12 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
             ParamSIA.ACTUACIONES actuaciones;
             try {
                 if (noactivo) {
-                    actuaciones = cargarDatosSiaNoActivo(envioSIA);
+                    //actuaciones = cargarDatosSiaNoActivo(envioSIA);
+                    actuaciones = cargarDatosSia(envioSIA, false);
                 } else if (borrado) {
                     actuaciones = cargarDatosSiaBorrado(envioSIA);
                 } else {
-                    actuaciones = cargarDatosSia(envioSIA);
+                    actuaciones = cargarDatosSia(envioSIA, true);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -121,10 +122,10 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
     private static ParamSIA.ACTUACIONES cargarDatosSiaNoActivo(final EnvioSIA sia) throws Exception {
 
         final ParamSIA.ACTUACIONES.ACTUACION paramSia = new ParamSIA.ACTUACIONES.ACTUACION();
-        paramSia.setACTIVO("N");
+        paramSia.setACTIVO(SiaConstantes.NO);
 
         if (sia.getIdSia() == null || sia.getIdSia().isEmpty()) {
-            paramSia.setCODIGOACTUACION("X"); // Obligan a que se introduzca, en caso de alta, lo generan
+            paramSia.setCODIGOACTUACION("inventadoCAIB"); // Obligan a que se introduzca, en caso de alta, lo generan
             // ellos en la respuesta.
         } else {
             paramSia.setCODIGOACTUACION(sia.getIdSia());
@@ -194,22 +195,25 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
 
         ObjectFactory factory = new ObjectFactory();
 
-        if (sia.getDisponibleApoderadoHabilitado()) {
-            paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.SI));
-        } else {
-            paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.NO));
+        if (sia.getDisponibleApoderadoHabilitado() != null) {
+            if (sia.getDisponibleApoderadoHabilitado()) {
+                paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.SI));
+            } else {
+                paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.NO));
+            }
         }
 
-        if (sia.getDisponibleFuncionarioHabilitado()) {
-            paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.SI));
-        } else {
-            paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.NO));
+        if (sia.getDisponibleFuncionarioHabilitado() != null) {
+            if (sia.getDisponibleFuncionarioHabilitado()) {
+                paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.SI));
+            } else {
+                paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.NO));
+            }
         }
 
         paramSia.setTIPOTRAMITE(sia.getTipoTramite());
 
         paramSia.setUNIDADGESTORATRAMITE(sia.getUnidadGestora());
-
 
         paramSia.setENLACEWEB(sia.getEnlaceWeb());
         paramSia.setOPERACION(sia.getOperacion());
@@ -342,6 +346,119 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
 
         paramSia.setOPERACION(sia.getOperacion());
 
+        final ParamSIA.ACTUACIONES actuaciones = new ParamSIA.ACTUACIONES();
+        actuaciones.getACTUACION().add(paramSia);
+
+        return actuaciones;
+    }
+
+    /**
+     * @param sia
+     * @return
+     * @throws Exception
+     */
+    private static ParamSIA.ACTUACIONES cargarDatosSia(final EnvioSIA sia, boolean activo) throws Exception {
+        final ParamSIA.ACTUACIONES.ACTUACION paramSia = new ParamSIA.ACTUACIONES.ACTUACION();
+
+        if ((sia.getOperacion() != null && SiaConstantes.ESTADO_ALTA.equals(sia.getOperacion())) || !activo) {
+            paramSia.setCODIGOACTUACION("inventadoCAIB"); // Obligan a que se introduzca, en caso de alta, lo generan
+            // ellos en la respuesta.
+        } else {
+            paramSia.setCODIGOACTUACION(sia.getIdSia());
+        }
+        paramSia.setCODIGOORIGEN(sia.getCdExpediente());
+
+        paramSia.setDENOMINACION(sia.getDsProcedimiento());
+        // paramSia.setTITULOCIUDADANO(sia.getTitulo());
+        paramSia.setDESCRIPCION(sia.getDsObjeto());
+        final ORGANISMORESPONSABLE organismoResponsable = new ORGANISMORESPONSABLE();
+        // Fix 17/02. Pasado el id del centro a nivel 2 e incluido como nivel1 el
+        // departamento que viene por propiedades.
+        organismoResponsable.setCODORGANISMORESPONSABLEN1(sia.getIdDepartamento());
+        organismoResponsable.setCODORGANISMORESPONSABLEN2(sia.getIdCentroDirectivo());
+        paramSia.setORGANISMORESPONSABLE(organismoResponsable);
+
+        final DESTINATARIOS destinatarios = new DESTINATARIOS();
+        for (final String pObj : sia.getIdDestinatario()) {
+            DESTINATARIOS.DESTINATARIO destinatario = new DESTINATARIOS.DESTINATARIO();
+            destinatario.setCODDESTINATARIO(pObj);
+            destinatarios.getDESTINATARIO().add(destinatario);
+        }
+        paramSia.setDESTINATARIOS(destinatarios);
+        paramSia.setCODNIVELADMINISTRACIONELECTRONICA(sia.getNivelAdminElectronica());
+
+        final NORMATIVAS normativasCorrectas = new NORMATIVAS();
+        for (final NormativaSIA norm : sia.getNormativas()) {
+            final NORMATIVAS.NORMATIVA nor = new NORMATIVAS.NORMATIVA();
+            if (norm == null || norm.getTipoSia() == null /*|| !norm.isVisible() || norm.getTipo().getTipoSia() == null*/) {
+                continue;
+            }
+            nor.setCODRANGO(norm.getTipoSia());
+            nor.setTITULO(norm.getTitulo());
+            normativasCorrectas.getNORMATIVA().add(nor);
+        }
+
+        paramSia.setNORMATIVAS(normativasCorrectas);
+
+        final MATERIAS materias = new MATERIAS();
+
+        for (final String mat : sia.getMaterias()) {
+            MATERIAS.MATERIA materia = new MATERIAS.MATERIA();
+            materia.setCODMATERIA(mat);
+            materias.getMATERIA().add(materia);
+        }
+        paramSia.setMATERIAS(materias);
+
+
+        paramSia.setFINVIA(sia.getFinVia());
+
+        if (sia.getTipologia() == SiaConstantes.TIPOLOGIA_INTERNO_COMUN) {
+            paramSia.setINTERNO(SiaConstantes.SI);
+            paramSia.setESCOMUN(SiaConstantes.SI);
+        } else if (sia.getTipologia() == SiaConstantes.TIPOLOGIA_INTERNO_ESPECIFICO) {
+            paramSia.setINTERNO(SiaConstantes.SI);
+            paramSia.setESCOMUN(SiaConstantes.NO);
+        } else if (sia.getTipologia() == SiaConstantes.TIPOLOGIA_EXTERNO_COMUN) {
+            paramSia.setINTERNO(SiaConstantes.NO);
+            paramSia.setESCOMUN(SiaConstantes.SI);
+        } else if (sia.getTipologia() == SiaConstantes.TIPOLOGIA_EXTERNO_ESPECIFICO) {
+            paramSia.setINTERNO(SiaConstantes.NO);
+            paramSia.setESCOMUN(SiaConstantes.NO);
+        }
+
+        ObjectFactory factory = new ObjectFactory();
+
+        if (sia.getDisponibleApoderadoHabilitado() != null) {
+            if (sia.getDisponibleApoderadoHabilitado()) {
+                paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.SI));
+            } else {
+                paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.NO));
+            }
+        }
+
+        if (sia.getDisponibleFuncionarioHabilitado() != null) {
+            if (sia.getDisponibleFuncionarioHabilitado()) {
+                paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.SI));
+            } else {
+                paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.NO));
+            }
+        }
+
+
+        paramSia.setTIPOTRAMITE(sia.getTipoTramite());
+
+        paramSia.setUNIDADGESTORATRAMITE(sia.getUnidadGestora());
+
+        paramSia.setENLACEWEB(sia.getEnlaceWeb());
+
+        if (activo) {
+            paramSia.setACTIVO(SiaConstantes.SI);
+        } else {
+            paramSia.setACTIVO(SiaConstantes.NO);
+        }
+
+        paramSia.setOPERACION(sia.getOperacion());
+        
         final ParamSIA.ACTUACIONES actuaciones = new ParamSIA.ACTUACIONES();
         actuaciones.getACTUACION().add(paramSia);
 

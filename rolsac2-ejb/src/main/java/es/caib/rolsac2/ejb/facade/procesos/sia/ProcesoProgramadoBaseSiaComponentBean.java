@@ -75,8 +75,10 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         }
 
         String id = null;
+        String tipo = null;
         if (accion.equals(Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL)) {
             id = params.getPropiedad("id");
+            tipo = params.getPropiedad("tipo");
         }
         detalles.addPropiedades(params);
 
@@ -112,13 +114,22 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         } else if (accion.equals(Constantes.INDEXAR_SIA_COMPLETO)) {
             datos = procedimientoService.getProcedimientosParaIndexacionSIA(idEntidad);
         } else if (accion.equals(Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL)) {
-            if (id == null) {
+            if (id == null || tipo == null) {
                 res.setFinalizadoOk(false);
                 detalles.addPropiedad("Informació del procés", "El procediment no té codi per a indexar");
                 res.setDetalles(detalles);
                 return res;
             }
-            ProcedimientoBaseDTO procedimiento = procedimientoService.findProcedimientoById(Long.valueOf(id));
+            ProcedimientoBaseDTO procedimiento;
+            Long codigoWF = procedimientoService.getCodigoByWF(Long.valueOf(id), Constantes.PROCEDIMIENTO_DEFINITIVO);
+            if (codigoWF == null) {
+                codigoWF = procedimientoService.getCodigoByWF(Long.valueOf(id), Constantes.PROCEDIMIENTO_ENMODIFICACION);
+            }
+            if (tipo.equals("P")) {
+                procedimiento = procedimientoService.findProcedimientoById(codigoWF);
+            } else {
+                procedimiento = procedimientoService.findServicioById(codigoWF);
+            }
             if (procedimiento.getCodigoSIA() != null) {
                 res.setFinalizadoOk(false);
                 detalles.addPropiedad("Informació del procés", "El procediment ja té codi SIA");
@@ -207,13 +218,18 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         } else {
             codigoWF = procedimientoService.getCodigoByWF(indexacionDTO.getCodElemento(), Constantes.PROCEDIMIENTO_DEFINITIVO);
             publicado = true;
+
+            if (codigoWF == null) {
+                mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " no está publicat. \n");
+                return new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El servei " + indexacionDTO.getCodElemento() + " NO esta publicat.");
+            }
         }
         indexacionDTO.setFechaIntentoIndexacion(new Date());
         totalServicios++;
 
         EntidadRaizDTO entidadRaiz = uaService.getUaRaizByProcedimiento(indexacionDTO.getCodElemento());
 
-        ServicioDTO servicioDTO = procedimientoService.findServicioByCodigo(indexacionDTO.getCodElemento());
+        ServicioDTO servicioDTO = procedimientoService.findServicioById(codigoWF);
         if (indexacionDTO.getExiste().compareTo(SiaUtils.SIAPENDIENTE_PROCEDIMIENTO_BORRADO) == 0) {
             ResultadoSIA resultadoSIA = borradoSIA(indexacionDTO, plugin, entidadRaiz, servicioDTO);
             if (resultadoSIA != null && resultadoSIA.isCorrecto()) {
@@ -285,9 +301,16 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         } else {
             codigoWF = procedimientoService.getCodigoByWF(indexacionDTO.getCodElemento(), Constantes.PROCEDIMIENTO_DEFINITIVO);
             publicado = true;
+
+            if (codigoWF == null) {
+                mensajeTraza.append("El procedimient " + indexacionDTO.getCodElemento() + " no está publicat. \n");
+                return new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El procediment " + indexacionDTO.getCodElemento() + " NO esta publicat.");
+            }
         }
 
         indexacionDTO.setFechaIntentoIndexacion(new Date());
+
+
         totalProcedimientos++;
 
         EntidadRaizDTO entidadRaiz = uaService.getUaRaizByProcedimiento(indexacionDTO.getCodElemento());
@@ -377,7 +400,11 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
 
     private ResultadoSIA borradoSIA(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, EntidadRaizDTO entidadRaiz, ProcedimientoBaseDTO procedimiento) {
         EnvioSIA sia = new EnvioSIA();
-        sia.setIdSia(indexacionDTO.getCodigoSIA().toString());
+        if (procedimiento.getCodigoSIA() != null) {
+            sia.setIdSia(procedimiento.getCodigoSIA().toString());
+        } else if (indexacionDTO.getCodigoSIA() != null) {
+            sia.setIdSia(indexacionDTO.getCodigoSIA().toString());
+        }
         sia.setOperacion(SiaUtils.ESTADO_BAJA);
         sia.setCdExpediente(procedimiento.getCodigo().toString());
 

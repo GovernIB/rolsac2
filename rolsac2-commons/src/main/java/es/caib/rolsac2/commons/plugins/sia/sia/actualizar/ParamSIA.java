@@ -41,7 +41,7 @@ import java.util.List;
  *                                 &lt;/union&gt;
  *                               &lt;/simpleType&gt;
  *                             &lt;/element&gt;
- *                             &lt;element name="ACTIVO" minOccurs="0"&gt;
+ *                             &lt;element name="ParamSIAACTUACIONESACTUACIONACTIVO" minOccurs="0"&gt;
  *                               &lt;simpleType&gt;
  *                                 &lt;union memberTypes=" {http://www.map.es/sgca/actualizar/messages/v3_1/ParamSIA}booleano {http://www.map.es/sgca/actualizar/messages/v3_1/ParamSIA}emptyString"&gt;
  *                                 &lt;/union&gt;
@@ -147,12 +147,7 @@ import java.util.List;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-        "user",
-        "password",
-        "certificado",
-        "actuaciones"
-})
+@XmlType(name = "", propOrder = {"user", "password", "certificado", "actuaciones"})
 @XmlRootElement(name = "paramSIA")
 public class ParamSIA {
 
@@ -270,7 +265,7 @@ public class ParamSIA {
      *                       &lt;/union&gt;
      *                     &lt;/simpleType&gt;
      *                   &lt;/element&gt;
-     *                   &lt;element name="ACTIVO" minOccurs="0"&gt;
+     *                   &lt;element name="ParamSIAACTUACIONESACTUACIONACTIVO" minOccurs="0"&gt;
      *                     &lt;simpleType&gt;
      *                       &lt;union memberTypes=" {http://www.map.es/sgca/actualizar/messages/v3_1/ParamSIA}booleano {http://www.map.es/sgca/actualizar/messages/v3_1/ParamSIA}emptyString"&gt;
      *                       &lt;/union&gt;
@@ -371,9 +366,7 @@ public class ParamSIA {
      * </pre>
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-            "actuacion"
-    })
+    @XmlType(name = "", propOrder = {"actuacion"})
     public static class ACTUACIONES {
 
         @XmlElement(name = "ACTUACION")
@@ -429,7 +422,7 @@ public class ParamSIA {
          *             &lt;/union&gt;
          *           &lt;/simpleType&gt;
          *         &lt;/element&gt;
-         *         &lt;element name="ACTIVO" minOccurs="0"&gt;
+         *         &lt;element name="ParamSIAACTUACIONESACTUACIONACTIVO" minOccurs="0"&gt;
          *           &lt;simpleType&gt;
          *             &lt;union memberTypes=" {http://www.map.es/sgca/actualizar/messages/v3_1/ParamSIA}booleano {http://www.map.es/sgca/actualizar/messages/v3_1/ParamSIA}emptyString"&gt;
          *             &lt;/union&gt;
@@ -525,51 +518,7 @@ public class ParamSIA {
          * </pre>
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-                "interno",
-                "escomun",
-                "activo",
-                "tipotramite",
-                "titulociudadano",
-                "denominacion",
-                "descripcion",
-                "organismoresponsable",
-                "destinatarios",
-                "sujetoatasas",
-                "periodicidad",
-                "unidadgestoratramite",
-                "notificaciones",
-                "codniveladministracionelectronica",
-                "sistemasidentificacion",
-                "canalacceso",
-                "formularios",
-                "enlaceweb",
-                "esresponsive",
-                "portal",
-                "requisitosiniciacion",
-                "presencialnoadaptable",
-                "disponiblefuncionariohabilitado",
-                "disponibleapoderadohabilitado",
-                "codrequisitosidentpj",
-                "codrequisitosidentpf",
-                "idintegradoclave",
-                "observacionintegradoclave",
-                "volumenestramitaciones",
-                "tiempomedioresolucion",
-                "volumennotificaciones",
-                "materias",
-                "submaterias",
-                "codclasetramite",
-                "tramitesrelacionados",
-                "norequieredocumentacion",
-                "documentacion",
-                "altadocumentosespecificos",
-                "documentoscatalogo",
-                "inicios",
-                "finvia",
-                "plazoresolucion",
-                "normativas"
-        })
+        @XmlType(name = "", propOrder = {"interno", "escomun", "activo", "tipotramite", "titulociudadano", "denominacion", "descripcion", "organismoresponsable", "destinatarios", "sujetoatasas", "periodicidad", "unidadgestoratramite", "notificaciones", "codniveladministracionelectronica", "sistemasidentificacion", "canalacceso", "formularios", "enlaceweb", "esresponsive", "portal", "requisitosiniciacion", "presencialnoadaptable", "disponiblefuncionariohabilitado", "disponibleapoderadohabilitado", "codrequisitosidentpj", "codrequisitosidentpf", "idintegradoclave", "observacionintegradoclave", "volumenestramitaciones", "tiempomedioresolucion", "volumennotificaciones", "materias", "submaterias", "codclasetramite", "tramitesrelacionados", "norequieredocumentacion", "documentacion", "altadocumentosespecificos", "documentoscatalogo", "inicios", "finvia", "plazoresolucion", "normativas"})
         public static class ACTUACION {
 
             @XmlElement(name = "INTERNO")

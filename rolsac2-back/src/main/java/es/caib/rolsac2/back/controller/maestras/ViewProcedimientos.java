@@ -141,9 +141,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void dblClickProcedimiento() {
         if (datoSeleccionado != null) {
-            if (datoSeleccionado.getCodigoWFMod() != null) {
+            if (datoSeleccionado.getCodigoWFMod() != null && !isInformador()) {
                 editarProcedimiento();
-            } else if (datoSeleccionado.getCodigoWFPub() != null) {
+            } else if (datoSeleccionado.getCodigoWFPub() != null || isInformador()) {
                 consultarProcedimiento();
             }
         }

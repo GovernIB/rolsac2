@@ -131,9 +131,9 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void dblClickProcedimiento() {
         if (datoSeleccionado != null) {
-            if (datoSeleccionado.getCodigoWFMod() != null) {
+            if (datoSeleccionado.getCodigoWFMod() != null && !isInformador())  {
                 editarProcedimiento();
-            } else if (datoSeleccionado.getCodigoWFPub() != null) {
+            } else if (datoSeleccionado.getCodigoWFPub() != null || isInformador()) {
                 consultarProcedimiento();
             }
         }
@@ -184,6 +184,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
             RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
+            procedimientoService.actualizarMensajes(Long.valueOf(respuestaFlujo.getCodigoProcedimiento()), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
             procedimientoService.actualizarMensajes(Long.valueOf(respuestaFlujo.getCodigoProcedimiento()), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
         }
     }

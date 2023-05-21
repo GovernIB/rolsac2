@@ -12,13 +12,13 @@
 
 
         <div class="d-flex flex-column mt-3">
-            <c:if test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR}">
+            <c:if test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR or sessionBean.getPerfil() == TypePerfiles.INFORMADOR}">
                 <ui:insert name="mollaPaGestor"></ui:insert>
 
 
             </c:if>
             <div id="bread" class="d-flex">
-                <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.INFORMADOR) or (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD) }">
+                <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD) }">
                     <div style="margin-top: 5px">
                         <div style="margin-top: 5px">
                             <my:unidadAdministrativaComponent id="uaGeneral"
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getPerfil() == TypePerfiles.INFORMADOR) or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD)}">
+                <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD)}">
                     <p:breadCrumb id="migaPan" styleClass="breadcrumb migaPan"
                                   homeDisplay="text"
                                   style="background-image: none !important;background: transparent;  border: none; margin-top: 5px">

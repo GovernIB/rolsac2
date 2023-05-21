@@ -163,11 +163,12 @@ public class SessionBean implements Serializable {
             roles = seguridad.getRoles(idEntidades);
             if (systemServiceBean.checkSesion(usuario.getCodigo())) {
                 SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
-                if (!TypePerfiles.SUPER_ADMINISTRADOR.equals(TypePerfiles.fromString(sesion.getPerfil())) &&
-                        !TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
+                if (!TypePerfiles.SUPER_ADMINISTRADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))
+                        && !TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil()))
+                        && !TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
                     unidadActiva = uaService.findById(sesion.getIdUa());
-                } else if(TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
+                } else if(TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
                     try {
                         UnidadAdministrativaDTO unidad = uaService.findById(sesion.getIdUa());
@@ -180,9 +181,6 @@ public class SessionBean implements Serializable {
                     }
                 }
                 perfil = TypePerfiles.fromString(sesion.getPerfil());
-                if (perfil.equals(TypePerfiles.GESTOR)) {
-
-                }
                 actualizarPerfiles();
                 actualizarEntidades();
                 lang = sesion.getIdioma();
@@ -243,7 +241,7 @@ public class SessionBean implements Serializable {
             Boolean permiso = checkPermisosPerfil(perfil);
             if (permiso) {
                 actualizarUnidadAdministrativa(usuario);
-                if (perfil.equals(TypePerfiles.GESTOR)) {
+                if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR) ) {
                     checkUaGestor(unidadActiva);
                 }
                 this.perfil = perfil;

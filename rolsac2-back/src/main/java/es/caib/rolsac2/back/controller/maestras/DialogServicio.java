@@ -231,6 +231,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
             listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
             listaPropiedades.addPropiedad("id", data.getCodigo().toString());
+            listaPropiedades.addPropiedad("tipo", "S");
             procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
             mostrarRefreshSIA = true;

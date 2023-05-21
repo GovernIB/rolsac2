@@ -31,7 +31,12 @@ public enum TypePluginEntidad {
 	/**
 	 * SIA
 	 */
-	SIA("SIA");
+	SIA("SIA"),
+
+	/**
+	 * EMAIL
+	 */
+	EMAIL("EMA");
 
 	/**
 	 * Valor como string.

@@ -148,6 +148,14 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         }
     }
 
+    public void dobleClickUa() {
+        if(isInformador()) {
+            this.consultarUnidadAdministrativa();
+        } else {
+            this.editarUnidadAdministrativa();
+        }
+    }
+
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 

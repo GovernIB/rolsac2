@@ -18,6 +18,10 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
 
     <ui:define name="content">
+        <h:form id="form">
+            <p:commandButton value="EnvioEmail" icon="pi pi-info-circle" iconPos="top"
+                             action="#{viewAlertas.abrirVentana}" process="@this" update="messages"/>
+        </h:form>
     </ui:define>
 </ui:composition>
 

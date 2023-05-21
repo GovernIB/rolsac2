@@ -130,9 +130,9 @@ public class SiaUtils {
                 }
             }
 
-            if (indexacionForzada) {
+            /*if (indexacionForzada) {
                 resultado.setOperacion(SiaUtils.ESTADO_BAJA);
-            }
+            }*/
         } else {
             if (procedimiento.getEstadoSIA() == null || SiaUtils.ESTADO_BAJA.equals(procedimiento.getEstadoSIA())) {
                 resultado.setNotificarSIA(false);
@@ -166,9 +166,12 @@ public class SiaUtils {
         }
 
         // Es visible.
-        final boolean esVisible = servicio.esVisible();
-        if (!esVisible && !indexacionForzada) {
-            mensajeError.append("El procediment no és visible.");
+        boolean esVisible = true;
+        if (!indexacionForzada) {
+            esVisible = servicio.esVisible();
+            if (!esVisible) {
+                mensajeError.append("El servei no és visible.");
+            }
         }
 
         // Es visible UA.
@@ -211,9 +214,9 @@ public class SiaUtils {
                 }
             }
 
-            if (indexacionForzada) {
+            /*if (indexacionForzada) {
                 resultado.setOperacion(SiaUtils.ESTADO_BAJA);
-            }
+            }*/
         } else {
             if (servicio.getEstadoSIA() == null || SiaUtils.ESTADO_BAJA.equals(servicio.getEstadoSIA())) {
                 resultado.setNotificarSIA(false);

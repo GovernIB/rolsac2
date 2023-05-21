@@ -384,6 +384,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public void actualizarSIA(IndexacionSIADTO dato, ResultadoSIA resultadoAccion) {
         JProcedimiento jproc = entityManager.find(JProcedimiento.class, dato.getCodElemento());
+        if (resultadoAccion == null) {
+            return;
+        }
         if (resultadoAccion.isCorrecto() || (resultadoAccion.getMensaje() != null && resultadoAccion.getMensaje().startsWith("0167"))) {
             jproc.setSiaFecha(new Date());
             if (resultadoAccion.getCodSIA() != null) {

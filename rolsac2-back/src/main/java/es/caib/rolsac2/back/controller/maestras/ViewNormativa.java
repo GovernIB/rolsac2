@@ -211,6 +211,14 @@ public class ViewNormativa extends AbstractController implements Serializable {
         }
     }
 
+    public void dobleClickNormativa() {
+        if(isInformador()) {
+            this.consultarNormativa();
+        } else {
+            this.editarNormativa();
+        }
+    }
+
     public void borrarNormativa() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
