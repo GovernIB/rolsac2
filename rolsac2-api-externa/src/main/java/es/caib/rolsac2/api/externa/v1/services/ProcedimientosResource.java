@@ -28,16 +28,15 @@ import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
 import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.Procedimientos;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroProcedimientos;
-import es.caib.rolsac2.api.externa.v1.model.filters.FiltroUA;
 import es.caib.rolsac2.api.externa.v1.model.order.CampoOrden;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaProcedimientos;
+import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaServicios;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.ProcedimientoBaseDTO;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
-import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PROCEDIMIENTO)
@@ -60,7 +59,7 @@ public class ProcedimientosResource {
 	@Operation(operationId = "llistarProcedimientos", summary = "Lista los procedimientos", description = "Lista los procedimientos disponibles en funcion de los filtros")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientos.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistar(
+	public Response llistarProcedimientos(
 			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
 			@RequestBody(description = "Filtro de procedimientos: "
 					+ FiltroProcedimientos.SAMPLE, name = "filtro", content = @Content(example = FiltroProcedimientos.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroProcedimientos.class))) FiltroProcedimientos filtro)
@@ -168,6 +167,38 @@ public class ProcedimientosResource {
 
 		return new RespuestaProcedimientos(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()),
 				Long.valueOf(resultadoBusqueda.getItems().size()), lista);
+	}
+
+	/**
+	 * Para obtener el enlace.
+	 *
+	 * @param idioma
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@POST
+	@Path("/enlaceTelematico/{codigo}")
+	@Operation(operationId = "getEnlaceTelematico", summary = "Obtiene enlace telematico", description = "Obtiene enlace telematico dado procedimiento")
+	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientos.class)))
+	@APIResponse(responseCode = "400", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
+	public Response getEnlaceTelematico(
+			@Parameter(description = "Código procedimiento", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo,
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang)
+			throws Exception, ValidationException {
+
+		final ProcedimientoFiltro fg = new ProcedimientoFiltro();
+		fg.setCodigoProc(new Long(codigo));
+
+		if (lang != null) {
+			fg.setIdioma(lang);
+		}
+
+		fg.setTipo("P");
+		final String url = procedimientoService.getEnlaceTelematico(fg);
+		RespuestaProcedimientos respuesta = new RespuestaProcedimientos();
+		respuesta.setUrl(url);
+		return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
 	}
 
 }

@@ -217,9 +217,6 @@ public class Constantes {
 	public static final String ENTIDAD_PROCEDIMIENTO_DOCUMENTO = "procedimiento_documento";
 	public static final String URL_PROCEDIMIENTO_DOCUMENTO = ENTIDAD_PROCEDIMIENTO_DOCUMENTO + "/{0}";
 
-	public static final String ENTIDAD_PROCEDIMIENTO_TRAMITE = "procedimiento_tramite";
-	public static final String URL_PROCEDIMIENTO_TRAMITE = ENTIDAD_PROCEDIMIENTO_TRAMITE + "/{0}";
-
 	public static final String ENTIDAD_LOPD_LEGITIMACION = "lopdLegitimacion";
 	public static final String URL_LOPD_LEGITIMACION = ENTIDAD_LOPD_LEGITIMACION + "/{0}";
 

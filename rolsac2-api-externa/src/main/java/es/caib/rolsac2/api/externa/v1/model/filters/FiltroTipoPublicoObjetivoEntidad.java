@@ -21,7 +21,7 @@ public class FiltroTipoPublicoObjetivoEntidad extends EntidadJson<FiltroTipoPubl
 				"{"	+
 				"\"texto\":\"string\"," + Constantes.SALTO_LINEA +
 				"\"identificador\":\"string\"," + Constantes.SALTO_LINEA +
-				"\"codigoTipo\":0," + Constantes.SALTO_LINEA +
+				"\"codigoPublicoObjetivoSia\":0," + Constantes.SALTO_LINEA +
 				"\"idEntidad\":0," + Constantes.SALTO_LINEA +
 				"\"traducciones\":\"string\"," + Constantes.SALTO_LINEA +
 				"\"filtroPaginacion\":{\"page\":0,\"size\":10}" +
@@ -31,7 +31,7 @@ public class FiltroTipoPublicoObjetivoEntidad extends EntidadJson<FiltroTipoPubl
 				"{" +
 				"\"texto\":null," 						+
 				"\"identificador\":null," 						+
-				"\"codigoTipo\":null," 						+
+				"\"codigoPublicoObjetivoSia\":null," 						+
 				"\"idEntidad\":null," 						+
 				"\"traducciones\":null," 						+
 				"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
@@ -50,8 +50,8 @@ public class FiltroTipoPublicoObjetivoEntidad extends EntidadJson<FiltroTipoPubl
 		private String identificador;
 
 		/** codigoTipo. **/
-		@Schema(name = "codigoTipo", description = "codigoTipo", type = SchemaType.INTEGER, required = false)
-		private Long codigoTipo;
+		@Schema(name = "codigoPublicoObjetivoSia", description = "codigoPublicoObjetivoSia", type = SchemaType.INTEGER, required = false)
+		private Long codigoPublicoObjetivoSia;
 
 		/** idEntidad. **/
 		@Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
@@ -86,8 +86,8 @@ public class FiltroTipoPublicoObjetivoEntidad extends EntidadJson<FiltroTipoPubl
 				resultado.setIdentificador(identificador);
 			}
 
-			if (this.codigoTipo != null) {
-				resultado.setCodigoTipo(codigoTipo);
+			if (this.codigoPublicoObjetivoSia != null) {
+				resultado.setCodigoTipo(codigoPublicoObjetivoSia);
 			}
 
 			if (this.traducciones != null && !this.traducciones.isEmpty()) {
@@ -118,12 +118,8 @@ public class FiltroTipoPublicoObjetivoEntidad extends EntidadJson<FiltroTipoPubl
 			this.identificador = identificador;
 		}
 
-		public Long getIdEntidad() {
-			return codigoTipo;
-		}
-
-		public void setCodigoTipo(Long codigoTipo) {
-			this.codigoTipo = codigoTipo;
+		public void setCodigoPublicoObjetivoSia(Long codigoTipo) {
+			this.codigoPublicoObjetivoSia = codigoTipo;
 		}
 
 		public String getTraducciones() {
@@ -134,11 +130,15 @@ public class FiltroTipoPublicoObjetivoEntidad extends EntidadJson<FiltroTipoPubl
 			this.traducciones = traducciones;
 		}
 
-		public Long getCodigoTipo() {
-			return codigoTipo;
+		public Long getCodigoPublicoObjetivoSia() {
+			return codigoPublicoObjetivoSia;
 		}
 
 		public void setIdEntidad(Long idEntidad) {
 			this.idEntidad = idEntidad;
+		}
+
+		public Long getIdEntidad() {
+			return idEntidad;
 		}
 }

@@ -53,10 +53,10 @@ public class PlatTramitElectronicaResource {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistarTiposTramitacion", summary = "Lista de plataformas de tramitación electrónica", description = "Lista todos las plataformas de tramitación electrónica disponibles")
+	@Operation(operationId = "llistarPlatTramitElectronica", summary = "Lista de plataformas de tramitación electrónica", description = "Lista todos las plataformas de tramitación electrónica disponibles")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaPlatTramitElectronica.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistarTiposTramitacion(
+	public Response llistarPlatTramitElectronica(
 	@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
 	@RequestBody(description = "Filtro: " + FiltroPlatTramitElectronica.SAMPLE, name = "filtro", content = @Content(example = FiltroPlatTramitElectronica.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroPlatTramitElectronica.class))) FiltroPlatTramitElectronica filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {

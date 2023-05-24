@@ -28,7 +28,6 @@ import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
 import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.UnidadAdministrativa;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroUA;
-import es.caib.rolsac2.api.externa.v1.model.order.CampoOrden;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaSimple;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaUA;
@@ -85,7 +84,6 @@ public class UAResource {
 		if (filtro.getOrden() != null) {
 			fg.setOrderBy(filtro.getOrden().getCampo());
 			fg.setAscendente(filtro.getOrden().getTipoOrden().compareTo("ASC") == 0);
-
 		}
 
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();

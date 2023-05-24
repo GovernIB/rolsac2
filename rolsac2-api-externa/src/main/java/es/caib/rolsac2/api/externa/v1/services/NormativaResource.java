@@ -31,9 +31,7 @@ import es.caib.rolsac2.api.externa.v1.model.filters.FiltroNormativas;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaNormativa;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
-import es.caib.rolsac2.service.facade.TipoNormativaServiceFacade;
 import es.caib.rolsac2.service.model.NormativaDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
@@ -44,7 +42,6 @@ public class NormativaResource {
 
 	@EJB
 	private NormativaServiceFacade normativaService;
-
 
 	/**
 	 * Listado de normativas.

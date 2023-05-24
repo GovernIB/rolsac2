@@ -53,10 +53,10 @@ public class EntidadesResource {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistarTiposTramitacion", summary = "Lista de entidades", description = "Lista todos las entidades disponibles")
+	@Operation(operationId = "llistarEntidad", summary = "Lista de entidades", description = "Lista todos las entidades disponibles")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaEntidad.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistarTiposTramitacion(
+	public Response llistarEntidad(
 	@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
 	@RequestBody(description = "Filtro: " + FiltroEntidad.SAMPLE, name = "filtro", content = @Content(example = FiltroEntidad.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroEntidad.class))) FiltroEntidad filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {

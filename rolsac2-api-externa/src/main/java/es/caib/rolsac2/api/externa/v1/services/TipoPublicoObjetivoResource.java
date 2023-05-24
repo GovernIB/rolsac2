@@ -53,7 +53,7 @@ public class TipoPublicoObjetivoResource {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistarTiposPublicoObjetivo", summary = "Lista de tipos de publico objetivo", description = "Lista todos los tipos de publico objetivo disponibles")
+	@Operation(operationId = "llistarTiposPublicoObjetivo", summary = "Lista de tipos de publico objetivo SIA", description = "Lista todos los tipos de publico objetivo SIA disponibles")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoPublicoObjetivo.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response llistarTiposPublicoObjetivo(
@@ -91,12 +91,12 @@ public class TipoPublicoObjetivoResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/{codigo}")
-	@Operation(operationId = "getTipoPublicoObjetivo", summary = "Obtiene un tipo de publico objetivo", description = "Obtiene el tipo de publico objetivo con el id(código) indicado")
+	@Operation(operationId = "getTipoPublicoObjetivo", summary = "Obtiene un tipo de publico objetivo SIA", description = "Obtiene el tipo de publico objetivo SIA con el id(código) indicado")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoPublicoObjetivo.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getTipoPublicoObjetivo(
 			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
-			@Parameter(description = "Código de tipo de publico objetivo", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo)
+			@Parameter(description = "Código de tipo de publico objetivo SIA", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo)
 			throws Exception, ValidationException {
 
 		TipoPublicoObjetivoFiltro fg = new TipoPublicoObjetivoFiltro();

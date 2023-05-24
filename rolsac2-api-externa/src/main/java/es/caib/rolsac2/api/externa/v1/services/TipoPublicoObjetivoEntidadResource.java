@@ -98,7 +98,7 @@ public class TipoPublicoObjetivoEntidadResource {
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getPorId(
 			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
-			@Parameter(description = "Código tipo publico objetivo entidad", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo
+			@Parameter(description = "Código tipo publico objetivo entidad SIA", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo
 			)
 			throws Exception, ValidationException {
 

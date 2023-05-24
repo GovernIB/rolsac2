@@ -27,7 +27,7 @@ import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
  *
  */
 @XmlRootElement
-@Schema(name = "ProcedimientoTramite", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_PROCEDIMIENTO_TRAMITE)
+@Schema(name = "Tramite", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_TRAMITE)
 public class ProcedimientoTramite extends EntidadBase<ProcedimientoTramite> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoTramite.class);

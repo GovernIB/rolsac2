@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 
 /**

@@ -123,18 +123,4 @@ public class TipoFormaInicioResource {
 		return new RespuestaTipoFormaInicio(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()),
 				resultadoBusqueda.getTotal(), lista);
 	}
-
-//	private RespuestaTipoFormaInicio getRespuestaSimple(TipoFormaInicioFiltro fg) throws DelegateException {
-//		TipoFormaInicioDTO resultadoBusqueda = tipoFormaInicioService.findTipoFormaInicioById(fg.getIdEntidad());
-//
-//		List<TipoFormaInicio> lista = new ArrayList<TipoFormaInicio>();
-//
-//		if (resultadoBusqueda != null) {
-//			lista.add(new TipoFormaInicio(resultadoBusqueda, null, fg.getIdioma(), true));
-//		}
-//
-//		return new RespuestaTipoFormaInicio(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), 1,
-//				lista);
-//	}
-
 }

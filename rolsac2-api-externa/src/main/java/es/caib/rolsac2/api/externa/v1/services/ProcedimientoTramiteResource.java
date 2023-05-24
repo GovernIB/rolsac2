@@ -36,8 +36,8 @@ import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 
-@Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PROCEDIMIENTO_TRAMITE)
-@Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PROCEDIMIENTO_TRAMITE, name = Constantes.ENTIDAD_PROCEDIMIENTO_TRAMITE)
+@Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TRAMITE)
+@Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TRAMITE, name = Constantes.ENTIDAD_TRAMITE)
 public class ProcedimientoTramiteResource {
 
 	@EJB
@@ -54,12 +54,12 @@ public class ProcedimientoTramiteResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistar", summary = "Lista los procedimientos trámites", description = "Lista los procedimientos trámites disponibles en funcion de los filtros")
+	@Operation(operationId = "llistar", summary = "Lista los trámites", description = "Lista los trámites disponibles en funcion de los filtros")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoTramite.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response llistar(
 			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
-			@RequestBody(description = "Filtro de procedimiento trámites: "
+			@RequestBody(description = "Filtro de trámites: "
 					+ FiltroProcedimientoTramite.SAMPLE, name = "filtro", content = @Content(example = FiltroProcedimientoTramite.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroProcedimientoTramite.class))) FiltroProcedimientoTramite filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
@@ -94,11 +94,11 @@ public class ProcedimientoTramiteResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/{codigo}")
-	@Operation(operationId = "getPorId", summary = "Obtiene una procedimiento trámite", description = "Obtiene el procedimiento trámite con el código indicado")
+	@Operation(operationId = "getPorId", summary = "Obtiene una trámite", description = "Obtiene el trámite con el código indicado")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoTramite.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getPorId(
-			@Parameter(description = "Código procedimiento trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo,
+			@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo,
 			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang)
 			throws Exception, ValidationException {
 

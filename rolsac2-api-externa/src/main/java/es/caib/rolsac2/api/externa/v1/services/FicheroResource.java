@@ -6,12 +6,10 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -56,13 +54,6 @@ public class FicheroResource {
     public Response getFichero(
             @Parameter(description = "Código de fichero", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo)
             throws Exception, ValidationException {
-
-//		FicheroFiltro fg = new FicheroFiltro();
-//		fg.setCodigo(new Long(codigo));
-//
-//		if (lang != null) {
-//			fg.setIdioma(lang);
-//		}
 
         return Response.ok(getRespuesta(new Long(codigo)), MediaType.APPLICATION_JSON).build();
     }

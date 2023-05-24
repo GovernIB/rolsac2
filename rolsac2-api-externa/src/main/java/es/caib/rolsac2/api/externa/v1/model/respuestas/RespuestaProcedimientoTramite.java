@@ -16,7 +16,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
  */
 
 @XmlRootElement
-@Schema(name = "RespuestaProcedimientoTramite", description = Constantes.TXT_RESPUESTA + Constantes.ENTIDAD_PROCEDIMIENTO_TRAMITE)
+@Schema(name = "RespuestaTramite", description = Constantes.TXT_RESPUESTA + Constantes.ENTIDAD_TRAMITE)
 public class RespuestaProcedimientoTramite extends RespuestaBase {
 	/** Resultado. **/
 	@Schema(name = "resultado", description = "Listado con los objetos de resultado", required = false)

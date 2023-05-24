@@ -91,7 +91,7 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
 	@Schema(hidden = true)
 	@JsonIgnore
 	@XmlTransient
-	private Integer responsableSexo;
+	private Long responsableSexo;
 
 	/**
 	 * Tipo de UA
@@ -383,11 +383,11 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
 		this.responsableNombre = responsableNombre;
 	}
 
-	public Integer getResponsableSexo() {
+	public Long getResponsableSexo() {
 		return responsableSexo;
 	}
 
-	public void setResponsableSexo(Integer responsableSexo) {
+	public void setResponsableSexo(Long responsableSexo) {
 		this.responsableSexo = responsableSexo;
 	}
 

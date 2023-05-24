@@ -27,8 +27,6 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
 import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.TipoUnidadAdministrativa;
-import es.caib.rolsac2.api.externa.v1.model.filters.FiltroNormativas;
-import es.caib.rolsac2.api.externa.v1.model.filters.FiltroPaginacion;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroTipoUnidadAdministrativa;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaTipoUnidadAdministrativa;
@@ -36,8 +34,6 @@ import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
-import es.caib.rolsac2.service.model.TipoUnidadAdministrativaGridDTO;
-import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoUnidadAdministrativaFiltro;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_UNIDAD)

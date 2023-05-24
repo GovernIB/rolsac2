@@ -24,6 +24,10 @@ public class RespuestaProcedimientos extends RespuestaBase {
 	@Schema(description = "Listado con los objetos de resultado", required = false)
 	private List<Procedimientos> resultado;
 
+	/** Url. **/
+	@Schema(description = "Enlace tramite telematico", required = false)
+	private String url;
+
 	public RespuestaProcedimientos(final String status, final String mensaje, final Long numeroElementos,
 			final List<Procedimientos> resultado) {
 		super(status, mensaje, numeroElementos);
@@ -40,6 +44,20 @@ public class RespuestaProcedimientos extends RespuestaBase {
 
 	public void setResultado(final List<Procedimientos> resultado) {
 		this.resultado = resultado;
+	}
+
+	/**
+	 * @return the url
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+	/**
+	 * @param url the url to set
+	 */
+	public void setUrl(final String url) {
+		this.url = url;
 	}
 
 }

@@ -26,7 +26,6 @@ import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
 import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.Servicios;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroServicios;
-import es.caib.rolsac2.api.externa.v1.model.filters.FiltroUA;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaServicios;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
@@ -54,7 +53,7 @@ public class ServiciosResource {
 	@Operation(operationId = "llistarServicios", summary = "Lista los servicios", description = "Lista los servicios disponibles en funcion de los filtros")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistar(
+	public Response llistarServicios(
 			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
 			@RequestBody(description = "Filtro de servicios: "
 					+ FiltroServicios.SAMPLE, name = "filtro", content = @Content(example = FiltroServicios.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroServicios.class))) FiltroServicios filtro)

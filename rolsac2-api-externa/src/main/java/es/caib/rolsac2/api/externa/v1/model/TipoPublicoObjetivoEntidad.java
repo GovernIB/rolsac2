@@ -47,8 +47,8 @@ public class TipoPublicoObjetivoEntidad extends EntidadBase<TipoPublicoObjetivoE
 	// -- se duplican las entidades para poder generar la clase link en funcion de
 	// la propiedad principal (sin "link_")
 	/** boletin **/
-	@Schema(description = "link_tipo", required = false)
-	private Link link_tipo;
+	@Schema(description = "link_publico_objetivo_sia", required = false)
+	private Link link_publico_objetivo_sia;
 	@JsonIgnore
 	@Schema(hidden = true)
 	@XmlTransient
@@ -73,7 +73,7 @@ public class TipoPublicoObjetivoEntidad extends EntidadBase<TipoPublicoObjetivoE
 	public void generaLinks(String urlBase) {
 		link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
 				null);
-		link_tipo = this.generaLink(this.tipo, Constantes.ENTIDAD_PUBLICO, Constantes.URL_PUBLICO, urlBase,
+		link_publico_objetivo_sia = this.generaLink(this.tipo, Constantes.ENTIDAD_PUBLICO, Constantes.URL_PUBLICO, urlBase,
 				null);
 	}
 
@@ -139,12 +139,12 @@ public class TipoPublicoObjetivoEntidad extends EntidadBase<TipoPublicoObjetivoE
 		this.descripcion = descripcion;
 	}
 
-	public Link getLink_tipo() {
-		return link_tipo;
+	public Link getLink_publico_objetivo_sia() {
+		return link_publico_objetivo_sia;
 	}
 
-	public void setLink_tipo(Link link_tipo) {
-		this.link_tipo = link_tipo;
+	public void setLink_publico_objetivo_sia(Link link_publico_objetivo_sia) {
+		this.link_publico_objetivo_sia = link_publico_objetivo_sia;
 	}
 
 	public Long getTipo() {

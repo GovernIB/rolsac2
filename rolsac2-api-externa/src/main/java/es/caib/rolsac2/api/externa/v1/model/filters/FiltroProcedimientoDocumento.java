@@ -8,13 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
+import es.caib.rolsac2.api.externa.v1.model.order.CampoOrden;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 
 /**
- * FiltroNormatives.
+ * FiltroProcedimientoDocumentos.
  *
  * @author Indra
  *
@@ -25,20 +26,24 @@ public class FiltroProcedimientoDocumento extends EntidadJson<FiltroProcedimient
 
 	private static final Logger LOG = LoggerFactory.getLogger(FiltroProcedimientoDocumento.class);
 
+	public static final String CAMPO_ORD_DOC_ORDEN = "orden";
+
 	public static final String SAMPLE = Constantes.SALTO_LINEA + "{" +
 			"\"orden\":0," 					+ Constantes.SALTO_LINEA +
 			"\"codigoDocumento\":0," + Constantes.SALTO_LINEA +
-			"\"codigoProcedimiento\":0," + Constantes.SALTO_LINEA +
+//			"\"codigoProcedimiento\":0," + Constantes.SALTO_LINEA +
 			"\"texto\":\"0\"," + Constantes.SALTO_LINEA +
-			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
+			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA +
+			"\"campoOrden\":{\"campo\":\"" + CAMPO_ORD_DOC_ORDEN + "\",\"tipoOrden\":\"ASC/DESC\"}" +
 			"}";
 
 	public static final String SAMPLE_JSON = "{" +
 			"\"orden\":null," 					+
 			"\"codigoDocumento\":null," +
-			"\"codigoProcedimiento\":null,"+
+//			"\"codigoProcedimiento\":null,"+
 			"\"texto\":null," +
-			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
+			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," +
+			"\"campoOrden\":{\"campo\":\"orden\",\"tipoOrden\":\"ASC\"}" +
 			"}";
 
     /**
@@ -47,8 +52,12 @@ public class FiltroProcedimientoDocumento extends EntidadJson<FiltroProcedimient
 	@Schema(name = "orden", description = "orden", type = SchemaType.INTEGER, required = false)
     private Integer orden;
 
+	/** Campo por el que ordenar. **/
+	@Schema(name = "campoOrden", description = "Campo por el que ordenar", required = false)
+	private CampoOrden campoOrden;
+
     /*Fichero asociado al documento*/
-	@Schema(name = "fichero", description = "fichero", type = SchemaType.INTEGER, required = false)
+	@Schema(name = "codigoDocumento", description = "codigoDocumento", type = SchemaType.INTEGER, required = false)
     private Long codigoDocumento;
 
 //    /**
@@ -122,12 +131,20 @@ public class FiltroProcedimientoDocumento extends EntidadJson<FiltroProcedimient
 		this.orden = orden;
 	}
 
-	public Long getDocumento() {
-		return codigoDocumento;
-	}
-
 	public void setCodigoDocumento(Long codigoDocumento) {
 		this.codigoDocumento = codigoDocumento;
+	}
+
+	public CampoOrden getCampoOrden() {
+		return campoOrden;
+	}
+
+	public void setCampoOrden(CampoOrden campoOrden) {
+		this.campoOrden = campoOrden;
+	}
+
+	public Long getCodigoDocumento() {
+		return codigoDocumento;
 	}
 
 //	public Long getCodigoProcedimiento() {

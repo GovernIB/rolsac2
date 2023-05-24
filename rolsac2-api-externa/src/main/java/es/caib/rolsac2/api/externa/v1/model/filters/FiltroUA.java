@@ -24,7 +24,7 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FiltroUA.class);
 
-	public static final String CAMPO_ORD_UA_ORDEN = "nombre/presentacion/url/nombrePadre";
+	public static final String CAMPO_ORD_UA_ORDEN = "nombre/orden/codigoDIR3/identificador/abreviatura/responsableNombre/presentacion/url/nombrePadre";
 
 	public static final String SAMPLE =    Constantes.SALTO_LINEA +
 			"{" +
@@ -48,7 +48,7 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
 			"\"texto\":null,"	+
 			"\"idUA\":null,"	+
 			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," +
-			"\"orden\":{\"campo\":\"nombre\",\"tipoOrden\":\"ASC\"}" +
+			"\"orden\":{\"campo\":\"orden\",\"tipoOrden\":\"ASC\"}" +
 			"}";
 
 	/** CodigoNormativa. **/

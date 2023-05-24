@@ -79,6 +79,12 @@ public class ProcedimientoDocumentoResource {
 			fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
 		}
 
+		// si viene el orden intentamos rellenarlo
+		if (filtro.getCampoOrden() != null) {
+			fg.setOrderBy(filtro.getCampoOrden().getCampo());
+			fg.setAscendente(filtro.getCampoOrden().getTipoOrden().compareTo("ASC") == 0);
+		}
+
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
 	}
 

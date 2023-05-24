@@ -23,7 +23,7 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
  *
  */
 @XmlRootElement
-@Schema(name = "FiltroProcedimientoTramite", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTramite", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
 public class FiltroProcedimientoTramite extends EntidadJson<FiltroProcedimientoTramite> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FiltroProcedimientoTramite.class);
