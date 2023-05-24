@@ -5,12 +5,14 @@ import es.caib.rolsac2.back.exception.NoAutorizadoException;
 import es.caib.rolsac2.back.exception.PerfilException;
 import es.caib.rolsac2.back.security.Security;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.*;
+import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
+import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
+import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
 import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
-import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
@@ -26,10 +28,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -106,6 +106,10 @@ public class SessionBean implements Serializable {
      * Perfiles del usuario
      **/
     private List<TypePerfiles> perfiles;
+    /**
+     * Perfiles del usuario
+     **/
+    private List<TypePerfiles> perfilesBack;
 
     /**
      * Roles del usuario
@@ -150,6 +154,14 @@ public class SessionBean implements Serializable {
     private void cargarDatos() {
         String idUsuario = seguridad.getIdentificadorUsuario();
         perfiles = seguridad.getPerfiles();
+        if (perfiles != null) {
+            perfilesBack = new ArrayList<>();
+            for (TypePerfiles typePerfil : perfiles) {
+                if (!typePerfil.isRestApi()) {
+                    perfilesBack.add(typePerfil);
+                }
+            }
+        }
         if (administracionEntServiceFacade.checkIdentificadorUsuario(idUsuario)) {
             UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioByIdentificador(idUsuario);
             entidades = new ArrayList<>();
@@ -163,12 +175,10 @@ public class SessionBean implements Serializable {
             roles = seguridad.getRoles(idEntidades);
             if (systemServiceBean.checkSesion(usuario.getCodigo())) {
                 SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
-                if (!TypePerfiles.SUPER_ADMINISTRADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))
-                        && !TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil()))
-                        && !TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
+                if (!TypePerfiles.SUPER_ADMINISTRADOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
                     unidadActiva = uaService.findById(sesion.getIdUa());
-                } else if(TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
+                } else if (TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
                     try {
                         UnidadAdministrativaDTO unidad = uaService.findById(sesion.getIdUa());
@@ -205,8 +215,7 @@ public class SessionBean implements Serializable {
                             checkUaGestor(unidadActiva);
                         } catch (GestorSinUAExcepcion e) {
                             String rolsac2back = context.getExternalContext().getRequestContextPath();
-                            context.getPartialViewContext().getEvalScripts()
-                                    .add("location.replace('" + rolsac2back + "/error/uaRelacionadaException.xhtml')");
+                            context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/error/uaRelacionadaException.xhtml')");
                         }
                     }
                     sesionDTO.setIdEntidad(this.entidad.getCodigo());
@@ -221,8 +230,7 @@ public class SessionBean implements Serializable {
         } else {
             //Lanzar excepción y mostrar
             String rolsac2back = context.getExternalContext().getRequestContextPath();
-            context.getPartialViewContext().getEvalScripts()
-                    .add("location.replace('" + rolsac2back + "/error/usuarioAltaException.xhtml')");
+            context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/error/usuarioAltaException.xhtml')");
         }
     }
 
@@ -241,7 +249,7 @@ public class SessionBean implements Serializable {
             Boolean permiso = checkPermisosPerfil(perfil);
             if (permiso) {
                 actualizarUnidadAdministrativa(usuario);
-                if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR) ) {
+                if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR)) {
                     checkUaGestor(unidadActiva);
                 }
                 this.perfil = perfil;
@@ -435,8 +443,7 @@ public class SessionBean implements Serializable {
     }
 
     private Boolean tieneRolEntidadRelacionada(EntidadGridDTO entidad) {
-        return roles.contains(entidad.getRolAdminContenido()) || roles.contains(entidad.getRolAdmin())
-                || roles.contains(entidad.getRolGestor()) || roles.contains(entidad.getRolInformador());
+        return roles.contains(entidad.getRolAdminContenido()) || roles.contains(entidad.getRolAdmin()) || roles.contains(entidad.getRolGestor()) || roles.contains(entidad.getRolInformador());
     }
 
     public void actualizarPerfiles() {
@@ -488,9 +495,7 @@ public class SessionBean implements Serializable {
      */
     public void actualizarUnidadAdministrativa(UsuarioDTO usuario) {
         if (usuario.getUnidadesAdministrativas() != null && !usuario.getUnidadesAdministrativas().isEmpty()) {
-            UnidadAdministrativaGridDTO uAdm = usuario.getUnidadesAdministrativas().stream()
-                    .filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0)
-                    .findFirst().orElse(null);
+            UnidadAdministrativaGridDTO uAdm = usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).findFirst().orElse(null);
 
             this.unidadActiva = uAdm == null ? uaService.getUnidadesAdministrativaByEntidadId(this.entidad.getCodigo(), lang).get(0) : uaService.findById(uAdm.getCodigo());
         } else {
@@ -499,9 +504,7 @@ public class SessionBean implements Serializable {
     }
 
     public List<UnidadAdministrativaGridDTO> obtenerUasEntidad() {
-        return obtenerUsuarioAutenticado().getUnidadesAdministrativas().stream()
-                .filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0)
-                .collect(Collectors.toList());
+        return obtenerUsuarioAutenticado().getUnidadesAdministrativas().stream().filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).collect(Collectors.toList());
     }
 
     /**
@@ -618,8 +621,7 @@ public class SessionBean implements Serializable {
     public void checkUaGestor(UnidadAdministrativaDTO ua) {
         UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioByIdentificador(seguridad.getIdentificadorUsuario());
 
-        List<UnidadAdministrativaGridDTO> unidadesUsuario = usuario.getUnidadesAdministrativas().stream()
-                .filter(u -> u.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).collect(Collectors.toList());
+        List<UnidadAdministrativaGridDTO> unidadesUsuario = usuario.getUnidadesAdministrativas().stream().filter(u -> u.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).collect(Collectors.toList());
         if (!unidadesUsuario.isEmpty()) {
             for (UnidadAdministrativaGridDTO unidad : unidadesUsuario) {
                 if (unidad.getCodigo().compareTo(ua.getCodigo()) == 0) {
@@ -633,7 +635,7 @@ public class SessionBean implements Serializable {
             throw new GestorSinUAExcepcion();
         }
 
-        if(unidadActivaAux == null) {
+        if (unidadActivaAux == null) {
             throw new GestorSinUAExcepcion();
         }
 
@@ -664,8 +666,7 @@ public class SessionBean implements Serializable {
         setUnidadActivaAux(ua);
     }
 
-    private void cambiarUnidadAdministrativaRecursivo(UnidadAdministrativaDTO unidadAdministrativa,
-                                                      UnidadAdministrativaDTO ua) {
+    private void cambiarUnidadAdministrativaRecursivo(UnidadAdministrativaDTO unidadAdministrativa, UnidadAdministrativaDTO ua) {
         if (unidadAdministrativa == null || ua == null || unidadAdministrativa.getCodigo().compareTo(ua.getCodigo()) == 0) {
             this.unidadActiva = ua;
             return;
@@ -690,6 +691,7 @@ public class SessionBean implements Serializable {
 
     /**
      * Método utilizado para obtener las unidades administrativas asociadas al usuario
+     *
      * @return
      */
     public List<UnidadAdministrativaDTO> obtenerUnidadesAdministrativasUsuario() {
@@ -729,8 +731,7 @@ public class SessionBean implements Serializable {
 
         } catch (NullPointerException e) {
             String rolsac2back = context.getExternalContext().getRequestContextPath();
-            context.getPartialViewContext().getEvalScripts()
-                    .add("location.replace('" + rolsac2back + "/error/uaRelacionadaException.xhtml')");
+            context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/error/uaRelacionadaException.xhtml')");
         }
         return unidades;
 
@@ -821,28 +822,23 @@ public class SessionBean implements Serializable {
         switch (this.perfil) {
             case ADMINISTRADOR_CONTENIDOS:
                 opcion = "viewProcedimientos.titulo";
-                context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace('" + rolsac2back + "/maestras/viewProcedimientos.xhtml')");
+                context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/maestras/viewProcedimientos.xhtml')");
                 break;
             case ADMINISTRADOR_ENTIDAD:
                 opcion = "viewConfiguracionEntidad.titulo";
-                context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace('" + rolsac2back + "/entidades/viewConfiguracionEntidad.xhtml')");
+                context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/entidades/viewConfiguracionEntidad.xhtml')");
                 break;
             case GESTOR:
                 opcion = "viewUnidadAdministrativa.titulo";
-                context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace('" + rolsac2back + "/entidades/viewUnidadAdministrativa.xhtml')");
+                context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/entidades/viewUnidadAdministrativa.xhtml')");
                 break;
             case INFORMADOR:
                 opcion = "viewProcedimientos.titulo";
-                context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace('" + rolsac2back + "/maestras/viewProcedimientos.xhtml')");
+                context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/maestras/viewProcedimientos.xhtml')");
                 break;
             case SUPER_ADMINISTRADOR:
                 opcion = "viewTipoEntidades.titulo";
-                context.getPartialViewContext().getEvalScripts()
-                        .add("location.replace('" + rolsac2back + "/superadministrador/viewEntidades.xhtml')");
+                context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/superadministrador/viewEntidades.xhtml')");
                 break;
         }
 
@@ -962,10 +958,8 @@ public class SessionBean implements Serializable {
      * Función utilizada para conocer el ancho y alto de la pantalla del usuario
      */
     public void updateAspect() {
-        String width = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-                .get("formAspect:windowWidth");
-        String height = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-                .get("formAspect:windowHeight");
+        String width = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("formAspect:windowWidth");
+        String height = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("formAspect:windowHeight");
         if (width != null) {
             this.screenWidth = width;
         }
@@ -1058,11 +1052,7 @@ public class SessionBean implements Serializable {
             FicheroDTO logo = entidadservice.getLogoEntidad(this.entidad.getLogo().getCodigo());
             String mimeType = URLConnection.guessContentTypeFromName(logo.getFilename());
             InputStream fis = new ByteArrayInputStream(logo.getContenido());
-            StreamedContent file = DefaultStreamedContent.builder()
-                    .name(logo.getFilename())
-                    .contentType(mimeType)
-                    .stream(() -> fis)
-                    .build();
+            StreamedContent file = DefaultStreamedContent.builder().name(logo.getFilename()).contentType(mimeType).stream(() -> fis).build();
             return file;
         } catch (Exception e) {
             LOG.error("Error obtiendo el logo ", e);
@@ -1217,5 +1207,13 @@ public class SessionBean implements Serializable {
 
     public void setRenderPanelHijas(Boolean renderPanelHijas) {
         this.renderPanelHijas = renderPanelHijas;
+    }
+
+    public List<TypePerfiles> getPerfilesBack() {
+        return perfilesBack;
+    }
+
+    public void setPerfilesBack(List<TypePerfiles> perfilesBack) {
+        this.perfilesBack = perfilesBack;
     }
 }

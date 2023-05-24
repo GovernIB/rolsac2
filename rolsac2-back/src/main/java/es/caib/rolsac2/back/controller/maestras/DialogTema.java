@@ -65,7 +65,7 @@ public class DialogTema extends AbstractController implements Serializable {
         if (this.isModoAlta()) {
             data.setEntidad(sessionBean.getEntidad());
             data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-            if(idPadre != null) {
+            if (idPadre != null) {
                 TemaDTO padreDefecto = temaServiceFacade.findById(Long.valueOf(idPadre));
                 data.setTemaPadre(padreDefecto);
             } else {
@@ -90,8 +90,8 @@ public class DialogTema extends AbstractController implements Serializable {
         if (this.data.getCodigo() == null) {
             temaServiceFacade.create(this.data);
         } else {
-            if(this.data.getTemaPadre() != null && this.data.getTemaPadre().getCodigo() != null) {
-                if(this.data.getTemaPadre().getMathPath() == null) {
+            if (this.data.getTemaPadre() != null && this.data.getTemaPadre().getCodigo() != null) {
+                if (this.data.getTemaPadre().getMathPath() == null) {
                     this.data.setMathPath(this.data.getTemaPadre().getCodigo().toString());
                 } else {
                     String path = this.data.getTemaPadre().getMathPath();
@@ -139,11 +139,7 @@ public class DialogTema extends AbstractController implements Serializable {
     }
 
     private boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
-                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
-                || (data.getTemaPadre() != null && dataOriginal.getTemaPadre() != null && UtilComparador.compareTo(data.getTemaPadre().getCodigo(), dataOriginal.getTemaPadre().getCodigo()) != 0)
-                || ((data.getTemaPadre() == null || dataOriginal.getTemaPadre() == null) && (data.getTemaPadre() != null || dataOriginal.getTemaPadre() != null));
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0 || (data.getTemaPadre() != null && dataOriginal.getTemaPadre() != null && UtilComparador.compareTo(data.getTemaPadre().getCodigo(), dataOriginal.getTemaPadre().getCodigo()) != 0) || ((data.getTemaPadre() == null || dataOriginal.getTemaPadre() == null) && (data.getTemaPadre() != null || dataOriginal.getTemaPadre() != null));
     }
 
     public void cerrarDefinitivo() {
@@ -158,14 +154,12 @@ public class DialogTema extends AbstractController implements Serializable {
     }
 
     private boolean verificarGuardar() {
-        if (Objects.isNull(this.data.getCodigo())
-                && temaServiceFacade.checkIdentificador(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo()) && temaServiceFacade.checkIdentificador(this.data.getIdentificador(), UtilJSF.getSessionBean().getEntidad().getCodigo())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
 
-        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
-                && temaServiceFacade.checkIdentificador(this.data.getIdentificador())) {
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador()) && temaServiceFacade.checkIdentificador(this.data.getIdentificador(), UtilJSF.getSessionBean().getEntidad().getCodigo())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }

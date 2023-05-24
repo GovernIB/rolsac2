@@ -118,8 +118,8 @@ public class DialogEntidad extends AbstractController implements Serializable {
         adaptIdiomas();
 
         if (this.data.getCodigo() == null) {
-            Long nuevaEntidad = administracionSupServiceFacade.createEntidad(this.data);
-            administracionEntServiceFacade.createUsuarioEntidad(sessionBean.obtenerUsuarioAutenticado(), nuevaEntidad);
+            Long nuevaEntidad = administracionSupServiceFacade.createEntidad(this.data, sessionBean.obtenerUsuarioAutenticado());
+            //administracionEntServiceFacade.createUsuarioEntidad(sessionBean.obtenerUsuarioAutenticado(), nuevaEntidad);
             sessionBean.actualizarEntidades();
         } else {
             administracionSupServiceFacade.updateEntidad(this.data);
@@ -138,14 +138,12 @@ public class DialogEntidad extends AbstractController implements Serializable {
             return false;
         }
 
-        if (Objects.isNull(this.data.getCodigo())
-                && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo()) && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.campoVacio"), true);
             return false;
         }
 
-        if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equalsIgnoreCase(this.data.getIdentificador())
-                && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equalsIgnoreCase(this.data.getIdentificador()) && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
@@ -179,14 +177,7 @@ public class DialogEntidad extends AbstractController implements Serializable {
     }
 
     private boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getActiva(), dataOriginal.getActiva()) != 0
-                || UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
-                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
-                || UtilComparador.compareTo(data.getRolAdmin(), dataOriginal.getRolAdmin()) != 0
-                || UtilComparador.compareTo(data.getRolAdminContenido(), dataOriginal.getRolAdminContenido()) != 0
-                || UtilComparador.compareTo(data.getRolGestor(), dataOriginal.getRolGestor()) != 0
-                || UtilComparador.compareTo(data.getRolInformador(), dataOriginal.getRolInformador()) != 0;
+        return UtilComparador.compareTo(data.getActiva(), dataOriginal.getActiva()) != 0 || UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0 || UtilComparador.compareTo(data.getRolAdmin(), dataOriginal.getRolAdmin()) != 0 || UtilComparador.compareTo(data.getRolAdminContenido(), dataOriginal.getRolAdminContenido()) != 0 || UtilComparador.compareTo(data.getRolGestor(), dataOriginal.getRolGestor()) != 0 || UtilComparador.compareTo(data.getRolInformador(), dataOriginal.getRolInformador()) != 0;
     }
 
     public void cerrarDefinitivo() {
@@ -303,11 +294,7 @@ public class DialogEntidad extends AbstractController implements Serializable {
         //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());
         String mimeType = URLConnection.guessContentTypeFromName(this.data.getLogo().getFilename());
         InputStream fis = new ByteArrayInputStream(this.data.getLogo().getContenido());
-        StreamedContent file = DefaultStreamedContent.builder()
-                .name(this.data.getLogo().getFilename())
-                .contentType(mimeType)
-                .stream(() -> fis)
-                .build();
+        StreamedContent file = DefaultStreamedContent.builder().name(this.data.getLogo().getFilename()).contentType(mimeType).stream(() -> fis).build();
         return file;
     }
 
