@@ -16,12 +16,14 @@ public interface AdministracionSupServiceFacade {
 
     /**
      * Crea un nuevo Entidad a la base de datos relacionada con la unidad indicada.
+     * Se le asocia el usuario que lo ha creado y también la UA creada.
      *
-     * @param dto      datos del Entidad
+     * @param dto        datos del Entidad
+     * @param usuarioDTO El usuario DTO
      * @return EL identificador del nuevo Entidad
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    Long createEntidad(EntidadDTO dto) throws RecursoNoEncontradoException;
+    Long createEntidad(EntidadDTO dto, UsuarioDTO usuarioDTO) throws RecursoNoEncontradoException;
 
     /**
      * Actualiza los datos de un Entidad a la base de datos.
@@ -64,6 +66,7 @@ public interface AdministracionSupServiceFacade {
 
     /**
      * Función que se utilizará para obtener los roles definidos en todas las entidades.
+     *
      * @return
      */
     List<String> findRolesDefinidos(List<Long> idEntidades);

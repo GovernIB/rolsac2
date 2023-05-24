@@ -176,6 +176,7 @@ public class ProcesoLogRepositoryBean extends AbstractCrudRepository<JProcesoLog
     @Override
     public Long auditarInicioProceso(final String idProceso, final Long idEntidad) {
         final JProceso jproceso = obtenerProcesoPorIdentificador(idProceso, idEntidad);
+        jproceso.setActivo(true);
         final JProcesoLog jproclog = new JProcesoLog();
         jproclog.setProceso(jproceso);
         jproclog.setFechaInicio(new Date());

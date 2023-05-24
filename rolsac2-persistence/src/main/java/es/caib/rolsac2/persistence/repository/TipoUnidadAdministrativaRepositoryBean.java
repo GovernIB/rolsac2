@@ -193,31 +193,27 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
 
     @Override
     public void deleteByEntidad(Long idEntidad) {
-        String sql;
-        Query query;
-        sql = "SELECT t FROM JTipoUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t where j.entidad.codigo = :entidad ";
-        query = entityManager.createQuery(sql);
-        query.setParameter("entidad", idEntidad);
-        List<JTipoUnidadAdministrativaTraduccion> jtraducciones = query.getResultList();
-        if (jtraducciones != null) {
-            for (JTipoUnidadAdministrativaTraduccion jtraduccion : jtraducciones) {
-                entityManager.remove(jtraduccion);
+        String sqlTrad = "SELECT TRAD FROM JTipoUnidadAdministrativaTraduccion trad INNER JOIN trad.tipoUnidadAdministrativa j where j.entidad.codigo = :entidad ";
+        Query queryTrad = entityManager.createQuery(sqlTrad);
+        queryTrad.setParameter("entidad", idEntidad);
+        List<JTipoUnidadAdministrativaTraduccion> jtrads = queryTrad.getResultList();
+        if (jtrads != null) {
+            for (JTipoUnidadAdministrativaTraduccion jtrad : jtrads) {
+                entityManager.remove(jtrad);
             }
-            entityManager.flush();
         }
+        entityManager.flush();
 
-        sql = "SELECT j FROM JTipoUnidadAdministrativa j where j.entidad.codigo = :entidad ";
-        query = entityManager.createQuery(sql);
+
+        String sql = "SELECT j FROM JTipoUnidadAdministrativa j where j.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
         query.setParameter("entidad", idEntidad);
-        //int totalBorrados = query.executeUpdate();
         List<JTipoUnidadAdministrativa> jtipos = query.getResultList();
         if (jtipos != null) {
             for (JTipoUnidadAdministrativa jtipo : jtipos) {
                 entityManager.remove(jtipo);
             }
-            entityManager.flush();
         }
-
         entityManager.flush();
     }
 

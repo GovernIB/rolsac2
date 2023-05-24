@@ -1,9 +1,8 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.persistence.model.JUsuario;
-import es.caib.rolsac2.persistence.model.JUsuarioEntidad;
+import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.pk.JUsuarioEntidadPK;
+import es.caib.rolsac2.persistence.model.pk.JUsuarioUnidadAdministrativaPK;
 import es.caib.rolsac2.service.model.UsuarioGridDTO;
 import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
 
@@ -198,6 +197,18 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
         jUsuarioEntidadPK.setUsuario(usuario.getCodigo());
         jUsuarioEntidad.setCodigo(jUsuarioEntidadPK);
         entityManager.persist(jUsuarioEntidad);
+    }
+
+    @Override
+    public void anyadirNuevoUsuarioUA(JUsuario jUsuario, JUnidadAdministrativa jUnidadAdministrativa) {
+        JUsuarioUnidadAdministrativa jUsuarioUnidad = new JUsuarioUnidadAdministrativa();
+        JUsuarioUnidadAdministrativaPK pk = new JUsuarioUnidadAdministrativaPK();
+        pk.setUsuario(jUsuario.getCodigo());
+        pk.setUnidadAdministrativa(jUnidadAdministrativa.getCodigo());
+        jUsuarioUnidad.setCodigo(pk);
+        jUsuarioUnidad.setUsuario(jUsuario);
+        jUsuarioUnidad.setUnidadAdministrativa(jUnidadAdministrativa);
+        entityManager.persist(jUsuarioUnidad);
     }
 
     @Override

@@ -1,9 +1,8 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUsuario;
 import es.caib.rolsac2.persistence.model.JUsuarioEntidad;
-import es.caib.rolsac2.service.model.EntidadDTO;
-import es.caib.rolsac2.service.model.UsuarioDTO;
 import es.caib.rolsac2.service.model.UsuarioGridDTO;
 import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
 
@@ -38,4 +37,5 @@ public interface UsuarioRepository extends CrudRepository<JUsuario, Long> {
 
     List<JUsuarioEntidad> findUsuariosByEntidad(Long idEntidad);
 
+    void anyadirNuevoUsuarioUA(JUsuario jUsuario, JUnidadAdministrativa jUnidadAdministrativa);
 }

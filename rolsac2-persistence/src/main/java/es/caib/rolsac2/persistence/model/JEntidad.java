@@ -13,17 +13,8 @@ import java.util.Objects;
  */
 @Entity
 @SequenceGenerator(name = "tipo-entidad-sequence", sequenceName = "RS2_ENTIDA_SEQ", allocationSize = 1)
-@Table(name = "RS2_ENTIDA",
-        indexes = {
-                @Index(name = "RS2_ENTIDA_PK", columnList = "ENTI_CODIGO")
-        }
-)
-@NamedQueries({
-        @NamedQuery(name = JEntidad.FIND_BY_ID,
-                query = "select p from JEntidad p where p.codigo = :id"),
-        @NamedQuery(name = JEntidad.COUNT_BY_IDENTIFICADOR,
-                query = "select COUNT(p) from JEntidad p where lower(p.identificador) like :identificador")
-})
+@Table(name = "RS2_ENTIDA", indexes = {@Index(name = "RS2_ENTIDA_PK", columnList = "ENTI_CODIGO")})
+@NamedQueries({@NamedQuery(name = JEntidad.FIND_BY_ID, query = "select p from JEntidad p where p.codigo = :id"), @NamedQuery(name = JEntidad.COUNT_BY_IDENTIFICADOR, query = "select COUNT(p) from JEntidad p where lower(p.identificador) like :identificador")})
 public class JEntidad extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -124,7 +115,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -133,7 +124,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -142,7 +133,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene activa.
      *
-     * @return  activa
+     * @return activa
      */
     public Boolean getActiva() {
         return activa;
@@ -151,7 +142,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece activa.
      *
-     * @param activa  activa
+     * @param activa activa
      */
     public void setActiva(Boolean activa) {
         this.activa = activa;
@@ -160,7 +151,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene rol admin.
      *
-     * @return  rol admin
+     * @return rol admin
      */
     public String getRolAdmin() {
         return rolAdmin;
@@ -169,7 +160,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece rol admin.
      *
-     * @param rolAdmin  rol admin
+     * @param rolAdmin rol admin
      */
     public void setRolAdmin(String rolAdmin) {
         this.rolAdmin = rolAdmin;
@@ -178,7 +169,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene rol admin contenido.
      *
-     * @return  rol admin contenido
+     * @return rol admin contenido
      */
     public String getRolAdminContenido() {
         return rolAdminContenido;
@@ -187,7 +178,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece rol admin contenido.
      *
-     * @param rolAdminContenido  rol admin contenido
+     * @param rolAdminContenido rol admin contenido
      */
     public void setRolAdminContenido(String rolAdminContenido) {
         this.rolAdminContenido = rolAdminContenido;
@@ -196,7 +187,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene rol gestor.
      *
-     * @return  rol gestor
+     * @return rol gestor
      */
     public String getRolGestor() {
         return rolGestor;
@@ -205,7 +196,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece rol gestor.
      *
-     * @param rolGestor  rol gestor
+     * @param rolGestor rol gestor
      */
     public void setRolGestor(String rolGestor) {
         this.rolGestor = rolGestor;
@@ -214,7 +205,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene rol informador.
      *
-     * @return  rol informador
+     * @return rol informador
      */
     public String getRolInformador() {
         return rolInformador;
@@ -223,7 +214,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece rol informador.
      *
-     * @param rolInformador  rol informador
+     * @param rolInformador rol informador
      */
     public void setRolInformador(String rolInformador) {
         this.rolInformador = rolInformador;
@@ -232,7 +223,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene logo.
      *
-     * @return  logo
+     * @return logo
      */
     public JFicheroExterno getLogo() {
         return logo;
@@ -241,7 +232,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece logo.
      *
-     * @param logo  logo
+     * @param logo logo
      */
     public void setLogo(JFicheroExterno logo) {
         this.logo = logo;
@@ -250,7 +241,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene CSS.
      *
-     * @return  cssPersonalizado
+     * @return cssPersonalizado
      */
     public JFicheroExterno getCssPersonalizado() {
         return cssPersonalizado;
@@ -259,7 +250,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece CSS.
      *
-     * @param cssPersonalizado  CSS
+     * @param cssPersonalizado CSS
      */
     public void setCssPersonalizado(JFicheroExterno cssPersonalizado) {
         this.cssPersonalizado = cssPersonalizado;
@@ -268,7 +259,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public List<JEntidadTraduccion> getDescripcion() {
         return descripcion;
@@ -277,7 +268,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -286,7 +277,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -295,7 +286,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene idioma defecto rest.
      *
-     * @return  idioma defecto rest
+     * @return idioma defecto rest
      */
     public String getIdiomaDefectoRest() {
         return idiomaDefectoRest;
@@ -304,7 +295,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece idioma defecto rest.
      *
-     * @param idiomaDefectoRest  idioma defecto rest
+     * @param idiomaDefectoRest idioma defecto rest
      */
     public void setIdiomaDefectoRest(String idiomaDefectoRest) {
         this.idiomaDefectoRest = idiomaDefectoRest;
@@ -313,7 +304,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene idiomas permitidos.
      *
-     * @return  idiomas permitidos
+     * @return idiomas permitidos
      */
     public String getIdiomasPermitidos() {
         return idiomasPermitidos;
@@ -322,7 +313,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece idiomas permitidos.
      *
-     * @param idiomasPermitidos  idiomas permitidos
+     * @param idiomasPermitidos idiomas permitidos
      */
     public void setIdiomasPermitidos(String idiomasPermitidos) {
         this.idiomasPermitidos = idiomasPermitidos;
@@ -331,7 +322,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene idiomas obligatorios.
      *
-     * @return  idiomas obligatorios
+     * @return idiomas obligatorios
      */
     public String getIdiomasObligatorios() {
         return idiomasObligatorios;
@@ -340,7 +331,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece idiomas obligatorios.
      *
-     * @param idiomasObligatorios  idiomas obligatorios
+     * @param idiomasObligatorios idiomas obligatorios
      */
     public void setIdiomasObligatorios(String idiomasObligatorios) {
         this.idiomasObligatorios = idiomasObligatorios;
@@ -349,8 +340,8 @@ public class JEntidad extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @param idioma  idioma
-     * @return  descripcion
+     * @param idioma idioma
+     * @return descripcion
      */
     public String getDescripcion(String idioma) {
         if (descripcion == null || descripcion.isEmpty()) {
@@ -367,7 +358,7 @@ public class JEntidad extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(List<JEntidadTraduccion> descripcion) {
         if (this.descripcion == null || this.descripcion.isEmpty()) {
@@ -380,10 +371,8 @@ public class JEntidad extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof JEntidad))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof JEntidad)) return false;
         JEntidad jEntidad = (JEntidad) o;
         return Objects.equals(codigo, jEntidad.codigo);
     }
@@ -396,19 +385,8 @@ public class JEntidad extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JEntidad{" +
-                "codigo=" + codigo +
-                ", identificador='" + identificador + '\'' +
-                ", activa=" + activa +
-                ", rolAdmin='" + rolAdmin + '\'' +
-                ", rolAdminContenido='" + rolAdminContenido + '\'' +
-                ", rolGestor='" + rolGestor + '\'' +
-                ", rolInformador='" + rolInformador + '\'' +
-                ", logo=" + logo +
-                ", idiomaDefectoRest='" + idiomaDefectoRest + '\'' +
-                ", idiomasPermitidos='" + idiomasPermitidos + '\'' +
-                ", idiomasObligatorios='" + idiomasObligatorios + '\'' +
-                ", descripcion=" + descripcion +
+        return "JEntidad{" + "codigo=" + codigo + ", identificador='" + identificador + '\'' + ", activa=" + activa + ", rolAdmin='" + rolAdmin + '\'' + ", rolAdminContenido='" + rolAdminContenido + '\'' + ", rolGestor='" + rolGestor + '\'' + ", rolInformador='" + rolInformador + '\'' + ", idiomaDefectoRest='" + idiomaDefectoRest + '\'' + ", idiomasPermitidos='" + idiomasPermitidos + '\'' + ", idiomasObligatorios='" + idiomasObligatorios + '\'' +
+
                 '}';
     }
 }

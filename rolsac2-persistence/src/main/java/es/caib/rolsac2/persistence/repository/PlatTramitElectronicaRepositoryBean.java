@@ -174,7 +174,7 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
     @Override
     public void deleteByEntidad(Long idEntidad) {
 
-        /*String sql;
+        String sql;
         Query query;
         sql = "SELECT t FROM JPlatTramitElectronica j LEFT OUTER JOIN j.traducciones t where j.codEntidad.codigo = :entidad ";
         query = entityManager.createQuery(sql);
@@ -199,11 +199,6 @@ public class PlatTramitElectronicaRepositoryBean extends AbstractCrudRepository<
             entityManager.flush();
         }
 
-        entityManager.flush();*/
-        String sql = "DELETE FROM JPlatTramitElectronica j where j.codEntidad.codigo = :entidad ";
-        Query query = entityManager.createQuery(sql);
-        query.setParameter("entidad", idEntidad);
-        int resultado = query.executeUpdate();
         entityManager.flush();
     }
 }

@@ -177,9 +177,10 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
     }
 
     @Override
-    public Boolean checkIdentificador(String identificador) {
+    public Boolean checkIdentificador(String identificador, Long idEntidad) {
         TypedQuery<Long> query = entityManager.createNamedQuery(JTema.COUNT_BY_IDENTIFICADOR, Long.class);
         query.setParameter("identificador", identificador);
+        //query.setParameter("entidad", idEntidad);
         Long resultado = query.getSingleResult();
         return resultado > 0;
     }

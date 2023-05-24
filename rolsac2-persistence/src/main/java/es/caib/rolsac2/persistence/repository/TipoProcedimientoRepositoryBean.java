@@ -1,8 +1,13 @@
 package es.caib.rolsac2.persistence.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import es.caib.rolsac2.persistence.converter.TipoProcedimientoConverter;
+import es.caib.rolsac2.persistence.model.JTipoProcedimiento;
+import es.caib.rolsac2.persistence.model.traduccion.JTipoProcedimientoTraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoProcedimientoDTO;
+import es.caib.rolsac2.service.model.TipoProcedimientoGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.filtro.TipoProcedimientoFiltro;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -11,12 +16,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import es.caib.rolsac2.persistence.converter.TipoProcedimientoConverter;
-import es.caib.rolsac2.persistence.model.JTipoProcedimiento;
-import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.filtro.TipoProcedimientoFiltro;
-import es.caib.rolsac2.service.model.filtro.TipoSexoFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 @Local(TipoSexoRepository.class)
@@ -67,8 +69,7 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
 
     @Override
     public List<TipoProcedimientoDTO> findAll() {
-        TypedQuery<JTipoProcedimiento> query =
-                entityManager.createQuery("SELECT j FROM JTipoProcedimiento j", JTipoProcedimiento.class);
+        TypedQuery<JTipoProcedimiento> query = entityManager.createQuery("SELECT j FROM JTipoProcedimiento j", JTipoProcedimiento.class);
         List<JTipoProcedimiento> jTipos = query.getResultList();
         List<TipoProcedimientoDTO> tipos = new ArrayList<>();
         if (jTipos != null) {
@@ -83,22 +84,20 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder(
-                    "SELECT count(j) FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else if (isRest) {
-        	sql = new StringBuilder("SELECT j FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.identificador, t.descripcion FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, t.descripcion FROM JTipoProcedimiento j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.id as string) like :filtro OR LOWER(j.identificador) LIKE :filtro )");
         }
         if (filtro.isRellenoCodigo()) {
-        	sql.append(" and j.codigo = :codigo ");
+            sql.append(" and j.codigo = :codigo ");
         }
         if (filtro.isRellenoEntidad()) {
-        	sql.append(" and j.entidad.codigo = :idEntidad ");
+            sql.append(" and j.entidad.codigo = :idEntidad ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -116,10 +115,10 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
             query.setParameter("idioma", filtro.getIdioma());
         }
         if (filtro.isRellenoCodigo()) {
-        	query.setParameter("codigo", filtro.getCodigo());
+            query.setParameter("codigo", filtro.getCodigo());
         }
         if (filtro.isRellenoEntidad()) {
-        	query.setParameter("idEntidad", filtro.getIdEntidad());
+            query.setParameter("idEntidad", filtro.getIdEntidad());
         }
 
         return query;
@@ -141,8 +140,7 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
 
     public List<TipoProcedimientoDTO> findAll(Long codigoEntidad) {
 
-        TypedQuery query =
-                entityManager.createQuery("SELECT j FROM JTipoProcedimiento j where j.entidad.codigo = :idEntidad", JTipoProcedimiento.class);
+        TypedQuery query = entityManager.createQuery("SELECT j FROM JTipoProcedimiento j where j.entidad.codigo = :idEntidad", JTipoProcedimiento.class);
         query.setParameter("idEntidad", codigoEntidad);
         List<JTipoProcedimiento> jtipos = query.getResultList();
         List<TipoProcedimientoDTO> tipos = new ArrayList<>();
@@ -154,30 +152,47 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
         return tipos;
     }
 
-	@Override
-	public List<TipoProcedimientoDTO> findPagedByFiltroRest(TipoProcedimientoFiltro filtro) {
-		Query query = getQuery(false, filtro, true);
-		query.setFirstResult(filtro.getPaginaFirst());
-		query.setMaxResults(filtro.getPaginaTamanyo());
+    @Override
+    public List<TipoProcedimientoDTO> findPagedByFiltroRest(TipoProcedimientoFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
 
-		List<JTipoProcedimiento> jtipoProcedimientoes = query.getResultList();
-		List<TipoProcedimientoDTO> tipoProcedimientoes = new ArrayList<>();
-		if (jtipoProcedimientoes != null) {
-			for (JTipoProcedimiento jtipoProcedimiento : jtipoProcedimientoes) {
-				TipoProcedimientoDTO tipoProcedimiento = converter.createDTO(jtipoProcedimiento);
+        List<JTipoProcedimiento> jtipoProcedimientoes = query.getResultList();
+        List<TipoProcedimientoDTO> tipoProcedimientoes = new ArrayList<>();
+        if (jtipoProcedimientoes != null) {
+            for (JTipoProcedimiento jtipoProcedimiento : jtipoProcedimientoes) {
+                TipoProcedimientoDTO tipoProcedimiento = converter.createDTO(jtipoProcedimiento);
 
-				tipoProcedimientoes.add(tipoProcedimiento);
-			}
-		}
-		return tipoProcedimientoes;
-	}
+                tipoProcedimientoes.add(tipoProcedimiento);
+            }
+        }
+        return tipoProcedimientoes;
+    }
 
     @Override
     public void deleteByEntidad(Long idEntidad) {
-        String sql = "DELETE FROM JTipoProcedimiento j where j.entidad.codigo = :entidad ";
+
+        String sqlTrad = "SELECT TRAD FROM JTipoProcedimientoTraduccion trad INNER JOIN trad.tipoProcedimiento j where j.entidad.codigo = :entidad ";
+        Query queryTrad = entityManager.createQuery(sqlTrad);
+        queryTrad.setParameter("entidad", idEntidad);
+        List<JTipoProcedimientoTraduccion> jtrads = queryTrad.getResultList();
+        if (jtrads != null) {
+            for (JTipoProcedimientoTraduccion jtrad : jtrads) {
+                entityManager.remove(jtrad);
+            }
+        }
+        entityManager.flush();
+
+
+        String sql = "SELECT j FROM JTipoProcedimiento j where j.entidad.codigo = :entidad ";
         Query query = entityManager.createQuery(sql);
         query.setParameter("entidad", idEntidad);
-        int resultado = query.executeUpdate();
-        entityManager.flush();
+        List<JTipoProcedimiento> jtipos = query.getResultList();
+        if (jtipos != null) {
+            for (JTipoProcedimiento jtipo : jtipos) {
+                entityManager.remove(jtipo);
+            }
+        }
     }
 }

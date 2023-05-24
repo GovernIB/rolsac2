@@ -1,14 +1,13 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JProceso;
-
 import es.caib.rolsac2.service.model.ProcesoDTO;
 import es.caib.rolsac2.service.model.ProcesoGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
 
 import java.util.List;
 
-public interface ProcesoRepository extends CrudRepository<JProceso, Long>{
+public interface ProcesoRepository extends CrudRepository<JProceso, Long> {
 
     boolean verificarMaestro(final String instanciaId, final int minMaxMaestroInactivo);
 
@@ -29,4 +28,6 @@ public interface ProcesoRepository extends CrudRepository<JProceso, Long>{
     ProcesoDTO convertProceso(JProceso jProceso);
 
     List<ProcesoDTO> findProcesoByEntidad(Long idEntidad);
+
+    void deleteByEntidad(Long id);
 }

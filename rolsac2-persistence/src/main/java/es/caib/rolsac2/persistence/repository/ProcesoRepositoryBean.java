@@ -63,9 +63,7 @@ public class ProcesoRepositoryBean extends AbstractCrudRepository<JProceso, Long
 
         // Toma de control
         if (tomarControl) {
-            final String sql =
-                    "UPDATE JProcesoControl p SET p.instancia = :instanciaActual, p.fecha = :fechaActual " +
-                            "WHERE p.fecha = :fechaOld AND p.instancia = :instanciaOld";
+            final String sql = "UPDATE JProcesoControl p SET p.instancia = :instanciaActual, p.fecha = :fechaActual " + "WHERE p.fecha = :fechaOld AND p.instancia = :instanciaOld";
             final Query query = entityManager.createQuery(sql);
             query.setParameter("instanciaActual", instanciaId);
             query.setParameter("instanciaOld", jProceso.getInstancia());
@@ -251,6 +249,15 @@ public class ProcesoRepositoryBean extends AbstractCrudRepository<JProceso, Long
         List<ProcesoDTO> procesos = new ArrayList<>();
         jProcesos.forEach(p -> procesos.add(p.toModel()));
         return procesos;
+    }
+
+    @Override
+    public void deleteByEntidad(Long id) {
+        String sql = "DELETE FROM JProceso j where j.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidad", id);
+        int resultado = query.executeUpdate();
+        entityManager.flush();
     }
 
 }

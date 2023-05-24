@@ -13,10 +13,7 @@ import java.util.Set;
 @Entity
 @SequenceGenerator(name = "usuario-sequence", sequenceName = "RS2_USER_SEQ", allocationSize = 1)
 @Table(name = "RS2_USER", indexes = {@Index(name = "RS2_USER_PK_I", columnList = "USER_CODIGO")})
-@NamedQueries({@NamedQuery(name = JUsuario.FIND_BY_ID, query = "select p from JUsuario p where p.codigo = :codigo"),
-        @NamedQuery(name = JUsuario.COUNT_BY_IDENTIFICADOR,
-                query = "select count(p) from JUsuario p where p.identificador = :identificador"),
-        @NamedQuery(name = JUsuario.FIND_BY_IDENTIFICADOR, query = "select p from JUsuario p where p.identificador = :identificador")
+@NamedQueries({@NamedQuery(name = JUsuario.FIND_BY_ID, query = "select p from JUsuario p where p.codigo = :codigo"), @NamedQuery(name = JUsuario.COUNT_BY_IDENTIFICADOR, query = "select count(p) from JUsuario p where p.identificador = :identificador"), @NamedQuery(name = JUsuario.FIND_BY_IDENTIFICADOR, query = "select p from JUsuario p where p.identificador = :identificador")
 
 })
 public class JUsuario extends BaseEntity {
@@ -53,19 +50,19 @@ public class JUsuario extends BaseEntity {
     /**
      * Nombre
      */
-    @Column(name="USER_NOMBRE", nullable = false)
+    @Column(name = "USER_NOMBRE", nullable = false)
     private String nombre;
 
     /**
      * Email
      */
-    @Column(name="USER_EMAIL", nullable = false)
+    @Column(name = "USER_EMAIL", nullable = false)
     private String email;
 
     /**
      * Traducciones
      */
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,  cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JUsuarioTraduccion> traducciones;
 
 
@@ -73,32 +70,20 @@ public class JUsuario extends BaseEntity {
      * Unidades administrativas
      */
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "RS2_USERUA",
-            joinColumns = {
-                    @JoinColumn(name = "UAUS_CODUSER")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "UAUS_CODUA")
-            })
+    @JoinTable(name = "RS2_USERUA", joinColumns = {@JoinColumn(name = "UAUS_CODUSER")}, inverseJoinColumns = {@JoinColumn(name = "UAUS_CODUA")})
     private Set<JUnidadAdministrativa> unidadesAdministrativas;
 
     /**
      * Entidades
      */
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "RS2_USENTI",
-            joinColumns = {
-                    @JoinColumn(name = "USEN_CODUSER")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "USEN_CODENTI")
-            })
+    @JoinTable(name = "RS2_USENTI", joinColumns = {@JoinColumn(name = "USEN_CODUSER")}, inverseJoinColumns = {@JoinColumn(name = "USEN_CODENTI")})
     private Set<JEntidad> entidades;
 
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -107,7 +92,7 @@ public class JUsuario extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -116,7 +101,7 @@ public class JUsuario extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -125,7 +110,7 @@ public class JUsuario extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param userUser  user user
+     * @param userUser user user
      */
     public void setIdentificador(String userUser) {
         this.identificador = userUser;
@@ -134,42 +119,52 @@ public class JUsuario extends BaseEntity {
     /**
      * Obtiene nombre.
      *
-     * @return  nombre
+     * @return nombre
      */
-    public String getNombre() { return nombre; }
+    public String getNombre() {
+        return nombre;
+    }
 
     /**
      * Establece nombre.
      *
-     * @param nombre  nombre
+     * @param nombre nombre
      */
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     /**
      * Obtiene email.
      *
-     * @return  email
+     * @return email
      */
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
     /**
      * Establece email.
      *
-     * @param email  email
+     * @param email email
      */
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     /**
      * Obtiene traducciones.
      *
-     * @return  traducciones
+     * @return traducciones
      */
-    public List<JUsuarioTraduccion> getTraducciones() { return traducciones; }
+    public List<JUsuarioTraduccion> getTraducciones() {
+        return traducciones;
+    }
 
     /**
      * Establece traducciones.
      *
-     * @param traducciones  traducciones
+     * @param traducciones traducciones
      */
     public void setTraducciones(List<JUsuarioTraduccion> traducciones) {
         this.traducciones = traducciones;
@@ -178,7 +173,7 @@ public class JUsuario extends BaseEntity {
     /**
      * Obtiene unidades administrativas.
      *
-     * @return  unidades administrativas
+     * @return unidades administrativas
      */
     public Set<JUnidadAdministrativa> getUnidadesAdministrativas() {
         return unidadesAdministrativas;
@@ -187,7 +182,7 @@ public class JUsuario extends BaseEntity {
     /**
      * Establece unidades administrativas.
      *
-     * @param unidadesAdministrativas  unidades administrativas
+     * @param unidadesAdministrativas unidades administrativas
      */
     public void setUnidadesAdministrativas(Set<JUnidadAdministrativa> unidadesAdministrativas) {
         this.unidadesAdministrativas = unidadesAdministrativas;
@@ -203,10 +198,8 @@ public class JUsuario extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         JUsuario jUsuario = (JUsuario) o;
         return Objects.equals(codigo, jUsuario.codigo);
     }
@@ -218,14 +211,6 @@ public class JUsuario extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JUsuario{" +
-                "codigo=" + codigo +
-                ", identificador='" + identificador + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", email='" + email + '\'' +
-                ", traducciones=" + traducciones +
-                ", unidadesAdministrativas=" + unidadesAdministrativas +
-                ", entidades=" + entidades +
-                '}';
+        return "JUsuario{" + "codigo=" + codigo + ", identificador='" + identificador + '\'' + ", nombre='" + nombre + '\'' + ", email='" + email + '\'' + ", traducciones=" + traducciones + '}';
     }
 }

@@ -50,7 +50,6 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private TipoSilencioAdministrativoDTO silencio;
     private TipoProcedimientoDTO tipoProcedimiento;
     private int comun;
-    private List<TemaGridDTO> temas;
     private TipoViaDTO tipoVia;
     private Boolean habilitadoApoderado;
 
@@ -89,6 +88,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private List<ProcedimientoDocumentoDTO> documentos;
     private List<ProcedimientoDocumentoDTO> documentosLOPD;
     private List<NormativaGridDTO> normativas;
+    private List<TemaGridDTO> temas;
 
     /**
      * Auditoria y mensajes

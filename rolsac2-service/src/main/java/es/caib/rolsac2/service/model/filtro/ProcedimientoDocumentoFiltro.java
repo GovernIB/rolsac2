@@ -1,7 +1,6 @@
 package es.caib.rolsac2.service.model.filtro;
 
 import es.caib.rolsac2.service.model.FicheroDTO;
-import es.caib.rolsac2.service.model.ProcedimientoDTO;
 
 /**
  * Filtro de procedimientos.

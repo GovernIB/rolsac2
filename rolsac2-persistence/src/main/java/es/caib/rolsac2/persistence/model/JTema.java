@@ -11,16 +11,8 @@ import java.util.Objects;
  */
 @Entity
 @SequenceGenerator(name = "tema-sequence", sequenceName = "RS2_TEMA_SEQ", allocationSize = 1)
-@Table(name = "RS2_TEMA",
-        indexes = {
-                @Index(name = "RS2_TEMA_PK_I", columnList = "TEMA_CODIGO")
-        })
-@NamedQueries({
-        @NamedQuery(name = JTema.FIND_BY_ID,
-            query = "select p from JTema p where p.codigo = :id"),
-        @NamedQuery(name = JTema.COUNT_BY_IDENTIFICADOR,
-            query = "select count(p) from JTema p where p.identificador = :identificador")
-})
+@Table(name = "RS2_TEMA", indexes = {@Index(name = "RS2_TEMA_PK_I", columnList = "TEMA_CODIGO")})
+@NamedQueries({@NamedQuery(name = JTema.FIND_BY_ID, query = "select p from JTema p where p.codigo = :id"), @NamedQuery(name = JTema.COUNT_BY_IDENTIFICADOR, query = "select count(p) from JTema p where p.identificador = :identificador"), @NamedQuery(name = JTema.COUNT_BY_IDENTIFICADOR_ENTIDAD, query = "select count(p) from JTema p where p.identificador = :identificador and p.entidad.codigo = :entidad")})
 public class JTema extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -33,6 +25,10 @@ public class JTema extends BaseEntity {
      * La consulta COUNT_BY_IDENTIFICADOR.
      */
     public static final String COUNT_BY_IDENTIFICADOR = "Tema.COUNT_BY_IDENTIFICADOR";
+    /**
+     * La consulta COUNT_BY_IDENTIFICADOR.
+     */
+    public static final String COUNT_BY_IDENTIFICADOR_ENTIDAD = "Tema.COUNT_BY_IDENTIFICADOR_ENTIDAD";
 
     /**
      * Codigo
@@ -71,7 +67,7 @@ public class JTema extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -80,7 +76,7 @@ public class JTema extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -89,7 +85,7 @@ public class JTema extends BaseEntity {
     /**
      * Obtiene entidad.
      *
-     * @return  entidad
+     * @return entidad
      */
     public JEntidad getEntidad() {
         return entidad;
@@ -98,7 +94,7 @@ public class JTema extends BaseEntity {
     /**
      * Establece entidad.
      *
-     * @param temaCodenti  tema codenti
+     * @param temaCodenti tema codenti
      */
     public void setEntidad(JEntidad temaCodenti) {
         this.entidad = temaCodenti;
@@ -107,7 +103,7 @@ public class JTema extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -116,7 +112,7 @@ public class JTema extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param temaIdenti  tema identi
+     * @param temaIdenti tema identi
      */
     public void setIdentificador(String temaIdenti) {
         this.identificador = temaIdenti;
@@ -125,7 +121,7 @@ public class JTema extends BaseEntity {
     /**
      * Obtiene tema padre.
      *
-     * @return  tema padre
+     * @return tema padre
      */
     public JTema getTemaPadre() {
         return temaPadre;
@@ -134,7 +130,7 @@ public class JTema extends BaseEntity {
     /**
      * Establece tema padre.
      *
-     * @param temaPadre  tema padre
+     * @param temaPadre tema padre
      */
     public void setTemaPadre(JTema temaPadre) {
         this.temaPadre = temaPadre;
@@ -143,7 +139,7 @@ public class JTema extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public List<JTemaTraduccion> getDescripcion() {
         return descripcion;
@@ -160,7 +156,7 @@ public class JTema extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(List<JTemaTraduccion> descripcion) {
         if (this.descripcion == null || this.descripcion.isEmpty()) {
@@ -185,11 +181,6 @@ public class JTema extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JTema{" +
-                "codigo=" + codigo +
-                ", entidad=" + entidad +
-                ", identificador='" + identificador + '\'' +
-                ", descripcion=" + descripcion +
-                '}';
+        return "JTema{" + "codigo=" + codigo + ", entidad=" + entidad + ", identificador='" + identificador + '\'' + ", descripcion=" + descripcion + '}';
     }
 }

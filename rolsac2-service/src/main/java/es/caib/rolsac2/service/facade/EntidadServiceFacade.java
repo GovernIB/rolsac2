@@ -1,9 +1,10 @@
 package es.caib.rolsac2.service.facade;
 
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
-import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.EntidadGridDTO;
+import es.caib.rolsac2.service.model.Pagina;
+import es.caib.rolsac2.service.model.UsuarioDTO;
 import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 
 import java.util.List;
@@ -18,11 +19,12 @@ public interface EntidadServiceFacade {
 	/**
 	 * Crea una nueva entidad a la base de datos relacionada con la unidad indicada.
 	 *
-	 * @param dto datos de la entidad
+	 * @param dto        datos de la entidad
+	 * @param usuarioDTO Usuario
 	 * @return EL identificador de la nueva entidad
 	 * @throws RecursoNoEncontradoException si la unidad no existe
 	 */
-	Long create(EntidadDTO dto) throws RecursoNoEncontradoException;
+	Long create(EntidadDTO dto, UsuarioDTO usuarioDTO) throws RecursoNoEncontradoException;
 
 	/**
 	 * Actualiza los datos de una entidad a la base de datos.
@@ -52,7 +54,7 @@ public interface EntidadServiceFacade {
 	 * Retorna una lista con todas las entidades
 	 *
 	 * @return una lista con los datos de todas las entidades o una lista vacía si
-	 *         no hay ninguna
+	 * no hay ninguna
 	 */
 	List<EntidadDTO> findAll();
 
@@ -61,17 +63,17 @@ public interface EntidadServiceFacade {
 	 *
 	 * @param filtro filtro de la búsqueda
 	 * @return una página con el número total de la entidad y la lista de las
-	 *         entidades con el rango indicado
+	 * entidades con el rango indicado
 	 */
 	Pagina<EntidadGridDTO> findByFiltro(EntidadFiltro filtro);
 
-//	/**
-//	 * Devuelve si existe el identificador en la entidad
-//	 *
-//	 * @param identificador identificador a comprobar
-//	 * @return si existe o no
-//	 */
-//	Boolean checkIdentificador(String identificador);
+	//	/**
+	//	 * Devuelve si existe el identificador en la entidad
+	//	 *
+	//	 * @param identificador identificador a comprobar
+	//	 * @return si existe o no
+	//	 */
+	//	Boolean checkIdentificador(String identificador);
 
 	Pagina<EntidadDTO> findByFiltroRest(EntidadFiltro filtro);
 

@@ -34,9 +34,9 @@ public interface TemaServiceFacade {
 
     Long getCountHijos(Long parentId);
 
-    Boolean checkIdentificador(String identificador);
+    Boolean checkIdentificador(String identificador, Long idEntidad);
 
-	Pagina<TemaDTO> findByFiltroRest(TemaFiltro filtro);
+    Pagina<TemaDTO> findByFiltroRest(TemaFiltro filtro);
 
 
 }

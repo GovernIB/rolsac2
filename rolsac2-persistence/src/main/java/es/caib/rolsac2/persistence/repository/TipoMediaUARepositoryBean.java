@@ -3,9 +3,8 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.converter.TipoMediaUAConverter;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JTipoMediaUA;
-import es.caib.rolsac2.persistence.model.JTipoMediaUA;
+import es.caib.rolsac2.persistence.model.traduccion.JTipoMediaUATraduccion;
 import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoMediaUADTO;
 import es.caib.rolsac2.service.model.TipoMediaUADTO;
 import es.caib.rolsac2.service.model.TipoMediaUAGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
@@ -75,23 +74,20 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder(
-                    "SELECT count(j) FROM JTipoMediaUA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JTipoMediaUA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else if (isRest) {
-        	sql = new StringBuilder("SELECT j FROM JTipoMediaUA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j FROM JTipoMediaUA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.entidad, j.identificador, t.descripcion FROM JTipoMediaUA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where t.idioma = :idioma");
+            sql = new StringBuilder("SELECT j.codigo, j.entidad, j.identificador, t.descripcion FROM JTipoMediaUA j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where t.idioma = :idioma");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and ( cast(j.codigo as string) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro  OR LOWER(t.descripcion) LIKE :filtro)");
         }
         if (filtro.isRellenoEntidad()) {
-            sql.append(
-                    " and j.entidad.id = :entidad");
+            sql.append(" and j.entidad.id = :entidad");
         }
         if (filtro.isRellenoCodigo()) {
-        	sql.append(" and j.codigo = :codigo ");
+            sql.append(" and j.codigo = :codigo ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -111,7 +107,7 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
             query.setParameter("entidad", filtro.getIdEntidad());
         }
         if (filtro.isRellenoCodigo()) {
-        	query.setParameter("codigo", filtro.getCodigo());
+            query.setParameter("codigo", filtro.getCodigo());
         }
 
         return query;
@@ -142,29 +138,45 @@ public class TipoMediaUARepositoryBean extends AbstractCrudRepository<JTipoMedia
     }
 
     @Override
-	public List<TipoMediaUADTO> findPagedByFiltroRest(TipoMediaUAFiltro filtro) {
-		Query query = getQuery(false, filtro, true);
-		query.setFirstResult(filtro.getPaginaFirst());
-		query.setMaxResults(filtro.getPaginaTamanyo());
+    public List<TipoMediaUADTO> findPagedByFiltroRest(TipoMediaUAFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
 
-		List<JTipoMediaUA> jtipoMediaUAes = query.getResultList();
-		List<TipoMediaUADTO> tipoMediaUAes = new ArrayList<>();
-		if (jtipoMediaUAes != null) {
-			for (JTipoMediaUA jtipoMediaUA : jtipoMediaUAes) {
-				TipoMediaUADTO tipoMediaUA = converter.createDTO(jtipoMediaUA);
+        List<JTipoMediaUA> jtipoMediaUAes = query.getResultList();
+        List<TipoMediaUADTO> tipoMediaUAes = new ArrayList<>();
+        if (jtipoMediaUAes != null) {
+            for (JTipoMediaUA jtipoMediaUA : jtipoMediaUAes) {
+                TipoMediaUADTO tipoMediaUA = converter.createDTO(jtipoMediaUA);
 
-				tipoMediaUAes.add(tipoMediaUA);
-			}
-		}
-		return tipoMediaUAes;
-	}
+                tipoMediaUAes.add(tipoMediaUA);
+            }
+        }
+        return tipoMediaUAes;
+    }
 
     @Override
     public void deleteByEntidad(Long idEntidad) {
-        String sql = "DELETE FROM JTipoMediaUA j where j.entidad.codigo = :entidad ";
+        String sqlTrad = "SELECT TRAD FROM JTipoMediaUATraduccion trad INNER JOIN trad.tipoMediaUA j where j.entidad.codigo = :entidad ";
+        Query queryTrad = entityManager.createQuery(sqlTrad);
+        queryTrad.setParameter("entidad", idEntidad);
+        List<JTipoMediaUATraduccion> jtrads = queryTrad.getResultList();
+        if (jtrads != null) {
+            for (JTipoMediaUATraduccion jtrad : jtrads) {
+                entityManager.remove(jtrad);
+            }
+        }
+        entityManager.flush();
+
+
+        String sql = "SELECT j FROM JTipoMediaUA j where j.entidad.codigo = :entidad ";
         Query query = entityManager.createQuery(sql);
         query.setParameter("entidad", idEntidad);
-        int resultado = query.executeUpdate();
-        entityManager.flush();
+        List<JTipoMediaUA> jtipos = query.getResultList();
+        if (jtipos != null) {
+            for (JTipoMediaUA jtipo : jtipos) {
+                entityManager.remove(jtipo);
+            }
+        }
     }
 }

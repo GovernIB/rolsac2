@@ -623,4 +623,29 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         entityManager.remove(jua);
         entityManager.flush();
     }
+
+    @Override
+    public void deleteByEntidad(Long id) {
+        String sqlTrads = "SELECT j FROM JUnidadAdministrativaTraduccion j INNER JOIN j.unidadAdministrativa UA where UA.entidad.codigo = :entidad ";
+        Query queryTrads = entityManager.createQuery(sqlTrads);
+        queryTrads.setParameter("entidad", id);
+        final List<JUnidadAdministrativaTraduccion> jtrads = queryTrads.getResultList();
+        if (jtrads != null) {
+            for (JUnidadAdministrativaTraduccion jtrad : jtrads) {
+                entityManager.remove(jtrad);
+            }
+        }
+
+        entityManager.flush();
+
+        String sql = "SELECT j FROM JUnidadAdministrativa j where j.entidad.codigo = :entidad ";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidad", id);
+        final List<JUnidadAdministrativa> juas = query.getResultList();
+        if (juas != null) {
+            for (JUnidadAdministrativa jua : juas) {
+                entityManager.remove(jua);
+            }
+        }
+    }
 }

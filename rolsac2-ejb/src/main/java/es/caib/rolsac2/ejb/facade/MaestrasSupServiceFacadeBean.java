@@ -259,7 +259,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoBoletinDTO> findByFiltroRest(TipoBoletinFiltro filtro) {
         try {
             List<TipoBoletinDTO> items = tipoBoletinRepository.findPagedByFiltroRest(filtro);
@@ -274,7 +274,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoAfectacionDTO> findByFiltroRest(TipoAfectacionFiltro filtro) {
         try {
             List<TipoAfectacionDTO> items = tipoAfectacionRepository.findPagedByFiltroRest(filtro);
@@ -289,7 +289,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoFormaInicioDTO> findByFiltroRest(TipoFormaInicioFiltro filtro) {
         try {
             List<TipoFormaInicioDTO> items = tipoFormaInicioRepository.findPagedByFiltroRest(filtro);
@@ -304,7 +304,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoNormativaDTO> findByFiltroRest(TipoNormativaFiltro fg) {
         try {
             List<TipoNormativaDTO> items = tipoNormativaRepository.findPagedByFiltroRest(fg);
@@ -319,7 +319,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoSilencioAdministrativoDTO> findByFiltroRest(TipoSilencioAdministrativoFiltro fg) {
         try {
             List<TipoSilencioAdministrativoDTO> items = tipoSilencioAdministrativoRepository.findPagedByFiltroRest(fg);
@@ -334,7 +334,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoUnidadAdministrativaDTO> findByFiltroRest(TipoUnidadAdministrativaFiltro fg) {
         try {
             List<TipoUnidadAdministrativaDTO> items = tipoUnidadAdministrativaRepository.findPagedByFiltroRest(fg);
@@ -1225,7 +1225,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoViaDTO> findByFiltroRest(TipoViaFiltro filtro) {
         try {
             List<TipoViaDTO> items = tipoViaRepository.findPagedByFiltroRest(filtro);
@@ -1240,7 +1240,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoSexoDTO> findByFiltroRest(TipoSexoFiltro filtro) {
         try {
             List<TipoSexoDTO> items = tipoSexoRepository.findPagedByFiltroRest(filtro);
@@ -1255,7 +1255,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoPublicoObjetivoDTO> findByFiltroRest(TipoPublicoObjetivoFiltro filtro) {
         try {
             List<TipoPublicoObjetivoDTO> items = tipoPublicoObjetivoRepository.findPagedByFiltroRest(filtro);
@@ -1270,7 +1270,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoMateriaSIADTO> findByFiltroRest(TipoMateriaSIAFiltro filtro) {
         try {
             List<TipoMateriaSIADTO> items = tipoMateriaSIARepository.findPagedByFiltroRest(filtro);
@@ -1285,7 +1285,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoLegitimacionDTO> findByFiltroRest(TipoLegitimacionFiltro filtro) {
         try {
             List<TipoLegitimacionDTO> items = tipoLegitimacionRepository.findPagedByFiltroRest(filtro);
@@ -1300,7 +1300,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoMediaFichaDTO> findByFiltroRest(TipoMediaFichaFiltro filtro) {
         try {
             List<TipoMediaFichaDTO> items = tipoMediaFichaRepository.findPagedByFiltroRest(filtro);
@@ -1315,7 +1315,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoProcedimientoDTO> findByFiltroRest(TipoProcedimientoFiltro filtro) {
         try {
             List<TipoProcedimientoDTO> items = tipoProcedimientoRepository.findPagedByFiltroRest(filtro);
@@ -1330,7 +1330,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoMediaUADTO> findByFiltroRest(TipoMediaUAFiltro filtro) {
         try {
             List<TipoMediaUADTO> items = tipoMediaUARepository.findPagedByFiltroRest(filtro);
@@ -1345,7 +1345,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoMediaEdificioDTO> findByFiltroRest(TipoMediaEdificioFiltro filtro) {
         try {
             List<TipoMediaEdificioDTO> items = tipoMediaEdificioRepository.findPagedByFiltroRest(filtro);
@@ -1360,7 +1360,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoTramitacionDTO> findByFiltroRest(TipoTramitacionFiltro filtro) {
         try {
             List<TipoTramitacionDTO> items = tipoTramitacionRepository.findPagedByFiltroRest(filtro);
@@ -1399,7 +1399,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
 	public Pagina<TipoPublicoObjetivoEntidadDTO> findByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro) {
     	try {
             List<TipoPublicoObjetivoEntidadDTO> items = tipoPublicoObjetivoEntidadRepository.findPagedByFiltroRest(filtro);
@@ -1414,7 +1414,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 	}
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
 	public String getEnlaceTelematico(TipoTramitacionFiltro fg) {
 		return tipoTramitacionRepository.getEnlaceTelematico(fg);
 	}

@@ -221,7 +221,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public NormativaDTO findById(Long id) {
         JNormativa jNormativa = normativaRepository.findById(id);
         NormativaDTO normativaDTO = converter.createDTO(jNormativa);
@@ -258,7 +258,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
 
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<NormativaGridDTO> findByFiltro(NormativaFiltro filtro) {
         try {
             List<NormativaGridDTO> items = normativaRepository.findPagedByFiltro(filtro);
@@ -471,8 +471,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     }
 
 	@Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
 	public Pagina<NormativaDTO> findByFiltroRest(NormativaFiltro filtro) {
 		try {
 			List<NormativaDTO> items = normativaRepository.findPagedByFiltroRest(filtro);
@@ -487,8 +486,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
 	}
 
 	@Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
 	public Pagina<DocumentoNormativaDTO> findDocumentoNormativaByFiltroRest(DocumentoNormativaFiltro filtro) {
 		try {
 			List<DocumentoNormativaDTO> items = documentoNormativaRepository.findPagedByFiltroRest(filtro);

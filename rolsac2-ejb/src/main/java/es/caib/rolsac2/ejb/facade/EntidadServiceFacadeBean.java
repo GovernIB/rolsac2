@@ -3,13 +3,15 @@ package es.caib.rolsac2.ejb.facade;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.EntidadConverter;
+import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.repository.*;
-import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
-import es.caib.rolsac2.service.facade.*;
+import es.caib.rolsac2.service.facade.EntidadServiceFacade;
+import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.filtro.*;
+import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
+import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,28 +53,46 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     private EntidadConverter converter;
 
     @Inject
+    private UnidadOrganicaRepository unidadOrganicaRepository;
+
+    @Inject
     private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
     @Inject
-    private NormativaServiceFacade normativaServiceFacade;
+    private NormativaRepository normativaRepository;
 
     @Inject
-    private ProcedimientoServiceFacade procedimientoServiceFacade;
+    private ProcedimientoRepository procedimientoRepository;
+
+    @Inject
+    private ProcedimientoAuditoriaRepository auditoriaProcedimientoRepository;
 
     @Inject
     private TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
 
     @Inject
-    private MaestrasEntServiceFacade maestrasEntServiceFacade;
+    private TipoMediaUARepository tipoMediaUARepository;
 
     @Inject
-    private MaestrasSupServiceFacade maestrasSupServiceFacade;
+    private TipoMediaEdificioRepository tipoMediaEdificioRepository;
 
     @Inject
-    private ProcesoServiceFacade procesoServiceFacade;
+    private TipoProcedimientoRepository tipoProcedimientoRepository;
 
     @Inject
-    private PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;
+    private TipoPublicoObjetivoEntidadRepository tipoPublicoObjetivoEntRepository;
+
+    @Inject
+    private PlatTramitElectronicaRepository platTramitElectronicaRepository;
+
+    @Inject
+    private TipoTramitacionRepository tipoTramitacionRepository;
+
+    @Inject
+    private ProcesoRepository procesoRepository;
+
+    @Inject
+    private UnidadAdministrativaRepository unidadAdministrativaRepository;
 
     @Inject
     private UsuarioRepository usuarioRepository;
@@ -91,7 +111,7 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(EntidadDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
+    public Long create(EntidadDTO dto, UsuarioDTO usuarioDTO) throws RecursoNoEncontradoException, DatoDuplicadoException {
 
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
@@ -99,6 +119,10 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
 
         JEntidad jEntidad = converter.createEntity(dto);
         entidadRepository.create(jEntidad);
+
+        JUsuario jUsuario = usuarioRepository.findById(usuarioDTO.getCodigo());
+        usuarioRepository.anyadirNuevoUsuarioEntidad(jUsuario, jEntidad.getCodigo());
+
         return jEntidad.getCodigo();
     }
 
@@ -112,40 +136,32 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
 
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void delete(Long id) throws RecursoNoEncontradoException {
-        List<UnidadAdministrativaDTO> listaUas = unidadAdministrativaServiceFacade.getUnidadesAdministrativaByEntidadId(id, "es");
+        List<JUnidadAdministrativa> listaUas = unidadAdministrativaRepository.getUnidadesAdministrativaByEntidadId(id, "es");
         ProcedimientoFiltro procedimientoFiltro = new ProcedimientoFiltro();
 
         List<ProcedimientoGridDTO> listaProc;
         List<ServicioGridDTO> listaServ;
-        List<NormativaDTO> listaNormativa;
-
-        List<TipoMediaUADTO> listaTMediaUa;
-        List<TipoMediaEdificioDTO> listaTMediaEdificio;
-        List<TipoTramitacionDTO> listaTTramitacion;
-        List<PlatTramitElectronicaDTO> listaPlatTramitElec;
-        List<TipoProcedimientoDTO> listaTProcedimiento;
-        List<TipoPublicoObjetivoEntidadDTO> listaTObjetivo;
-        List<ProcesoDTO> listaProceso;
+        List<JNormativa> listaNormativa;
 
         if (!listaUas.isEmpty()) {
-            for (UnidadAdministrativaDTO ua : listaUas) {
+            for (JUnidadAdministrativa ua : listaUas) {
 
                 procedimientoFiltro.setIdUA(ua.getCodigo());
                 procedimientoFiltro.setIdEntidad(id);
                 procedimientoFiltro.setTipo("P");
-                listaProc = procedimientoServiceFacade.findProcedimientosByFiltro(procedimientoFiltro).getItems();
+                listaProc = procedimientoRepository.findProcedimientosPagedByFiltro(procedimientoFiltro);
                 if (!listaProc.isEmpty()) {
-                    listaProc.forEach(p -> procedimientoServiceFacade.deleteProcedimientoCompleto(p.getCodigo()));
+                    listaProc.forEach(p -> borrarProcedimientoBase(p.getCodigo()));
                 }
 
                 procedimientoFiltro.setIdUA(ua.getCodigo());
                 procedimientoFiltro.setTipo("S");
                 procedimientoFiltro.setIdEntidad(id);
 
-                listaServ = procedimientoServiceFacade.findServiciosByFiltro(procedimientoFiltro).getItems();
+                listaServ = procedimientoRepository.findServiciosPagedByFiltro(procedimientoFiltro);
                 if (!listaServ.isEmpty()) {
                     if (!listaServ.isEmpty()) {
-                        listaServ.forEach(p -> procedimientoServiceFacade.deleteProcedimientoCompleto(p.getCodigo()));
+                        listaServ.forEach(p -> borrarProcedimientoBase(p.getCodigo()));
                     }
                 }
             }
@@ -157,51 +173,28 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
         indexacionSIARepository.deleteByEntidad(id);
 
         //Borramos las normativas
-        listaNormativa = normativaServiceFacade.findByEntidad(id);
+        listaNormativa = normativaRepository.findByEntidad(id);
         if (!listaNormativa.isEmpty()) {
-            listaNormativa.forEach(nor -> normativaServiceFacade.delete(nor.getCodigo()));
+            listaNormativa.forEach(nor -> normativaRepository.delete(nor));
         }
 
         //Borramos los tipo media UA
-        listaTMediaUa = maestrasEntServiceFacade.findTipoMediaUAByEntidad(id);
-        if (!listaTMediaUa.isEmpty()) {
-            listaTMediaUa.forEach(tm -> maestrasEntServiceFacade.deleteTipoMediaUA(tm.getCodigo()));
-        }
-
-/*            listaTMediaFicha = maestrasEntServiceFacade.findTipoMediaFichaByEntidad(id);
-            if (!listaTMediaFicha.isEmpty()) {
-                listaTMediaFicha.forEach(tm -> maestrasEntServiceFacade.deleteTipoMediaFicha(tm.getCodigo()));
-            }*/
+        tipoMediaUARepository.deleteByEntidad(id);
 
         //Borramos los tipo media edificio
-        listaTMediaEdificio = maestrasEntServiceFacade.findTipoMediaEdificioByEntidad(id);
-        if (!listaTMediaEdificio.isEmpty()) {
-            listaTMediaEdificio.forEach(tm -> maestrasEntServiceFacade.deleteTipoMediaEdificio(tm.getCodigo()));
-        }
+        tipoMediaEdificioRepository.deleteByEntidad(id);
 
         //Borramos los tipo tramitación
-        listaTTramitacion = maestrasSupServiceFacade.findTipoTramitacionByEntidad(id);
-        if (!listaTTramitacion.isEmpty()) {
-            listaTTramitacion.forEach(tm -> maestrasSupServiceFacade.deleteTipoTramitacion(tm.getCodigo()));
-        }
+        tipoTramitacionRepository.deleteByEntidad(id);
 
         //Borramos las plantillas de tramitación
-        listaPlatTramitElec = platTramitElectronicaServiceFacade.findAll(id);
-        if (!listaPlatTramitElec.isEmpty()) {
-            listaPlatTramitElec.forEach(tm -> platTramitElectronicaServiceFacade.delete(tm.getCodigo()));
-        }
+        platTramitElectronicaRepository.deleteByEntidad(id);
 
         //Borramos los tipos de público objetivo entidad
-        listaTObjetivo = maestrasSupServiceFacade.findTipoPublicoObjetivoEntidadByEntidadId(id);
-        if (!listaTObjetivo.isEmpty()) {
-            listaTObjetivo.forEach(tm -> maestrasSupServiceFacade.deleteTipoPublicoObjetivoEntidad(tm.getCodigo()));
-        }
+        tipoPublicoObjetivoEntRepository.deleteByEntidad(id);
 
         //Borramos los tipos de procedimiento
-        listaTProcedimiento = maestrasSupServiceFacade.findAllTipoProcedimiento(id);
-        if (!listaTProcedimiento.isEmpty()) {
-            listaTProcedimiento.forEach(tm -> maestrasSupServiceFacade.deleteTipoProcedimiento(tm.getCodigo()));
-        }
+        tipoProcedimientoRepository.deleteByEntidad(id);
 
         //Borramos los usuarios segun entidad
         usuarioRepository.deleteByEntidad(id);
@@ -210,24 +203,42 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
         temaRepository.deleteByEntidad(id);
 
         //Eliminación del organigrama DIR3
-        unidadAdministrativaServiceFacade.eliminarOrganigrama(id);
+        unidadOrganicaRepository.eliminarRegistros(id);
 
         //Eliminación de plugins
         pluginRepository.deleteByEntidad(id);
 
-        listaProceso = procesoServiceFacade.findProcesoByEntidad(id);
-        if(!listaProceso.isEmpty()) {
-            listaProceso.forEach(p -> procesoServiceFacade.borrar(p.getCodigo()));
+        //Eliminacion de procesos
+        procesoRepository.deleteByEntidad(id);
+
+        //UAs
+        if (listaUas != null) {
+            for (JUnidadAdministrativa ua : listaUas) {
+                unidadAdministrativaRepository.deleteUA(ua.getCodigo());
+            }
         }
 
-        if (!listaUas.isEmpty()) {
-            listaUas.forEach(p -> unidadAdministrativaServiceFacade.delete(p.getCodigo()));
-        }
-
+        //Tipo de UAs
         tipoUnidadAdministrativaRepository.deleteByEntidad(id);
 
+        //Borramos definitivamente la entidad
         JEntidad jEntidad = entidadRepository.getReference(id);
         entidadRepository.delete(jEntidad);
+    }
+
+    private void borrarProcedimientoBase(Long id) {
+        auditoriaProcedimientoRepository.borrarAuditoriasByIdProcedimiento(id);
+
+        JProcedimiento jproc = procedimientoRepository.getReference(id);
+        JProcedimientoWorkflow jprocMod = procedimientoRepository.getWF(id, true);
+        if (jprocMod != null) {
+            procedimientoRepository.deleteWF(jprocMod.getCodigo());
+        }
+        JProcedimientoWorkflow jprocPub = procedimientoRepository.getWF(id, false);
+        if (jprocPub != null) {
+            procedimientoRepository.deleteWF(jprocPub.getCodigo());
+        }
+        procedimientoRepository.delete(jproc);
     }
 
     @Override
@@ -268,7 +279,7 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     //    }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<EntidadDTO> findByFiltroRest(EntidadFiltro filtro) {
         try {
             List<EntidadDTO> items = entidadRepository.findPagedByFiltroRest(filtro);

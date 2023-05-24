@@ -1,11 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.converter.TipoPublicoObjetivoConverter;
 import es.caib.rolsac2.persistence.converter.TipoPublicoObjetivoEntidadConverter;
-import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivoEntidad;
+import es.caib.rolsac2.persistence.model.traduccion.JTipoPublicoObjetivoEntidadTraduccion;
 import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
 import es.caib.rolsac2.service.model.Traduccion;
@@ -30,8 +28,7 @@ import java.util.Optional;
 @Stateless
 @Local(TipoPublicoObjetivoEntidadRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudRepository<JTipoPublicoObjetivoEntidad, Long>
-        implements TipoPublicoObjetivoEntidadRepository {
+public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudRepository<JTipoPublicoObjetivoEntidad, Long> implements TipoPublicoObjetivoEntidadRepository {
 
     @Inject
     private TipoPublicoObjetivoEntidadConverter converter;
@@ -81,44 +78,29 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder("SELECT count(j) FROM JTipoPublicoObjetivoEntidad j  " +
-                    " LEFT OUTER JOIN j.tipo te " +
-                    " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma " +
-                    " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma " +
-                    " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
+            sql = new StringBuilder("SELECT count(j) FROM JTipoPublicoObjetivoEntidad j  " + " LEFT OUTER JOIN j.tipo te " + " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma " + " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma " + " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
         } else if (isRest) {
-        	 sql = new StringBuilder("SELECT j FROM JTipoPublicoObjetivoEntidad j  " +
-                     " LEFT OUTER JOIN j.tipo te " +
-                     " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma " +
-                     " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma " +
-                     " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
+            sql = new StringBuilder("SELECT j FROM JTipoPublicoObjetivoEntidad j  " + " LEFT OUTER JOIN j.tipo te " + " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma " + " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma " + " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.identificador, tt.descripcion, tp.descripcion, te.empleadoPublico FROM JTipoPublicoObjetivoEntidad j" +
-                            " LEFT OUTER JOIN j.tipo te" +
-                            " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma" +
-                            " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma" +
-                            " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
+            sql = new StringBuilder("SELECT j.codigo, j.identificador, tt.descripcion, tp.descripcion, te.empleadoPublico FROM JTipoPublicoObjetivoEntidad j" + " LEFT OUTER JOIN j.tipo te" + " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma" + " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma" + " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
         }
 
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.codigo as string) like :filtro OR LOWER(j.identificador) LIKE :filtro "
-                    + " OR LOWER(tp.descripcion) LIKE :filtro "
-                    + " OR LOWER(tt.descripcion) LIKE :filtro ) ");
+            sql.append(" and ( cast(j.codigo as string) like :filtro OR LOWER(j.identificador) LIKE :filtro " + " OR LOWER(tp.descripcion) LIKE :filtro " + " OR LOWER(tt.descripcion) LIKE :filtro ) ");
         }
-        if(filtro.isRellenoEntidad()) {
+        if (filtro.isRellenoEntidad()) {
             sql.append(" and j.entidad.codigo = :idEntidad ");
         }
-        if(filtro.isRellenoCodigo()) {
+        if (filtro.isRellenoCodigo()) {
             sql.append(" and j.codigo = :codigo ");
         }
-        if(filtro.isRellenoCodigoTipo()) {
+        if (filtro.isRellenoCodigoTipo()) {
             sql.append(" and te.codigo = :codigoTipo ");
         }
-        if(filtro.isRellenoIdentificador()) {
+        if (filtro.isRellenoIdentificador()) {
             sql.append(" and LOWER(j.identificador) LIKE :identificador ");
         }
-        if(filtro.isRellenoTraducciones()) {
+        if (filtro.isRellenoTraducciones()) {
             sql.append(" and LOWER(tp.descripcion) LIKE :traducciones ");
         }
         if (filtro.getOrderBy() != null) {
@@ -148,12 +130,12 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
             query.setParameter("traducciones", filtro.getTraducciones());
         }
 
-        if(filtro.isRellenoCodigoTipo()) {
-        	query.setParameter("codigoTipo", filtro.getCodigoTipo());
+        if (filtro.isRellenoCodigoTipo()) {
+            query.setParameter("codigoTipo", filtro.getCodigoTipo());
         }
 
-        if(filtro.isRellenoIdentificador()) {
-        	query.setParameter("identificador", "%" + filtro.getIdentificador() + "%");
+        if (filtro.isRellenoIdentificador()) {
+            query.setParameter("identificador", "%" + filtro.getIdentificador() + "%");
         }
 
         return query;
@@ -175,8 +157,7 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
 
     @Override
     public Optional<JTipoPublicoObjetivoEntidad> findById(String id) {
-        TypedQuery<JTipoPublicoObjetivoEntidad> query = entityManager
-                .createNamedQuery(JTipoPublicoObjetivoEntidad.FIND_BY_ID, JTipoPublicoObjetivoEntidad.class);
+        TypedQuery<JTipoPublicoObjetivoEntidad> query = entityManager.createNamedQuery(JTipoPublicoObjetivoEntidad.FIND_BY_ID, JTipoPublicoObjetivoEntidad.class);
         query.setParameter("codigo", id);
         List<JTipoPublicoObjetivoEntidad> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
@@ -185,39 +166,37 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
 
     @Override
     public boolean existeIdentificador(String identificador) {
-        TypedQuery<Long> query =
-                entityManager.createNamedQuery(JTipoPublicoObjetivoEntidad.COUNT_BY_IDENTIFICADOR, Long.class);
+        TypedQuery<Long> query = entityManager.createNamedQuery(JTipoPublicoObjetivoEntidad.COUNT_BY_IDENTIFICADOR, Long.class);
         query.setParameter("identificador", identificador);
         return query.getSingleResult().longValue() >= 1L;
     }
 
     @Override
     public boolean existePublicoObjetivo(Long codigoPO) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT count(j) FROM JTipoPublicoObjetivoEntidad j where j.tipo.codigo = :codigoPO ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JTipoPublicoObjetivoEntidad j where j.tipo.codigo = :codigoPO ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoPO", codigoPO);
         Long resultado = (Long) query.getSingleResult();
         return resultado > 0;
     }
 
-	@Override
-	public List<TipoPublicoObjetivoEntidadDTO> findPagedByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro) {
-		Query query = getQuery(false, filtro, true);
-		query.setFirstResult(filtro.getPaginaFirst());
-		query.setMaxResults(filtro.getPaginaTamanyo());
+    @Override
+    public List<TipoPublicoObjetivoEntidadDTO> findPagedByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
 
-		List<JTipoPublicoObjetivoEntidad> jtipoPublicoObjetivoes = query.getResultList();
-		List<TipoPublicoObjetivoEntidadDTO> tipoPublicoObjetivoes = new ArrayList<>();
-		if (jtipoPublicoObjetivoes != null) {
-			for (JTipoPublicoObjetivoEntidad jtipoPublicoObjetivo : jtipoPublicoObjetivoes) {
-				TipoPublicoObjetivoEntidadDTO tipoPublicoObjetivo = converter.createDTO(jtipoPublicoObjetivo);
+        List<JTipoPublicoObjetivoEntidad> jtipoPublicoObjetivoes = query.getResultList();
+        List<TipoPublicoObjetivoEntidadDTO> tipoPublicoObjetivoes = new ArrayList<>();
+        if (jtipoPublicoObjetivoes != null) {
+            for (JTipoPublicoObjetivoEntidad jtipoPublicoObjetivo : jtipoPublicoObjetivoes) {
+                TipoPublicoObjetivoEntidadDTO tipoPublicoObjetivo = converter.createDTO(jtipoPublicoObjetivo);
 
-				tipoPublicoObjetivoes.add(tipoPublicoObjetivo);
-			}
-		}
-		return tipoPublicoObjetivoes;
-	}
+                tipoPublicoObjetivoes.add(tipoPublicoObjetivo);
+            }
+        }
+        return tipoPublicoObjetivoes;
+    }
 
     @Override
     public List<JTipoPublicoObjetivoEntidad> findPageByEntidad(Long idEntidad) {
@@ -230,10 +209,26 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
 
     @Override
     public void deleteByEntidad(Long idEntidad) {
-        String sql = "DELETE FROM JTipoPublicoObjetivoEntidad j where j.entidad.codigo = :entidad ";
+        String sqlTrad = "SELECT TRAD FROM JTipoPublicoObjetivoEntidadTraduccion trad INNER JOIN trad.tipoPublicoObjetivoEntidad j where j.entidad.codigo = :entidad ";
+        Query queryTrad = entityManager.createQuery(sqlTrad);
+        queryTrad.setParameter("entidad", idEntidad);
+        List<JTipoPublicoObjetivoEntidadTraduccion> jtrads = queryTrad.getResultList();
+        if (jtrads != null) {
+            for (JTipoPublicoObjetivoEntidadTraduccion jtrad : jtrads) {
+                entityManager.remove(jtrad);
+            }
+        }
+        entityManager.flush();
+
+
+        String sql = "SELECT j FROM JTipoPublicoObjetivoEntidad j where j.entidad.codigo = :entidad ";
         Query query = entityManager.createQuery(sql);
         query.setParameter("entidad", idEntidad);
-        int resultado = query.executeUpdate();
-        entityManager.flush();
+        List<JTipoPublicoObjetivoEntidad> jtipos = query.getResultList();
+        if (jtipos != null) {
+            for (JTipoPublicoObjetivoEntidad jtipo : jtipos) {
+                entityManager.remove(jtipo);
+            }
+        }
     }
 }

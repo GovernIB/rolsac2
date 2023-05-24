@@ -1,5 +1,24 @@
 package es.caib.rolsac2.ejb.facade;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
@@ -10,34 +29,69 @@ import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.ejb.util.JSONUtil;
 import es.caib.rolsac2.ejb.util.JSONUtilException;
-import es.caib.rolsac2.persistence.converter.*;
-import es.caib.rolsac2.persistence.model.*;
+import es.caib.rolsac2.persistence.converter.IndexacionConverter;
+import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
+import es.caib.rolsac2.persistence.converter.ProcedimientoAuditoriaConverter;
+import es.caib.rolsac2.persistence.converter.ProcedimientoTramiteConverter;
+import es.caib.rolsac2.persistence.converter.TipoFormaInicioConverter;
+import es.caib.rolsac2.persistence.converter.TipoLegitimacionConverter;
+import es.caib.rolsac2.persistence.converter.TipoProcedimientoConverter;
+import es.caib.rolsac2.persistence.converter.TipoSilencioAdministrativoConverter;
+import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
+import es.caib.rolsac2.persistence.converter.TipoViaConverter;
+import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
+import es.caib.rolsac2.persistence.model.JProcedimiento;
+import es.caib.rolsac2.persistence.model.JProcedimientoAuditoria;
+import es.caib.rolsac2.persistence.model.JProcedimientoTramite;
+import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
+import es.caib.rolsac2.persistence.model.JTema;
+import es.caib.rolsac2.persistence.model.JTipoTramitacion;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion;
-import es.caib.rolsac2.persistence.repository.*;
+import es.caib.rolsac2.persistence.repository.FicheroExternoRepository;
+import es.caib.rolsac2.persistence.repository.IndexacionRepository;
+import es.caib.rolsac2.persistence.repository.IndexacionSIARepository;
+import es.caib.rolsac2.persistence.repository.ProcedimientoAuditoriaRepository;
+import es.caib.rolsac2.persistence.repository.ProcedimientoDocumentoRepository;
+import es.caib.rolsac2.persistence.repository.ProcedimientoRepository;
+import es.caib.rolsac2.persistence.repository.ProcedimientoTramiteRepository;
+import es.caib.rolsac2.persistence.repository.TemaRepository;
+import es.caib.rolsac2.persistence.repository.TipoTramitacionRepository;
+import es.caib.rolsac2.persistence.repository.UnidadAdministrativaRepository;
 import es.caib.rolsac2.service.exception.AuditoriaException;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
-import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.Constantes;
+import es.caib.rolsac2.service.model.DocumentoTraduccion;
+import es.caib.rolsac2.service.model.FicheroDTO;
+import es.caib.rolsac2.service.model.IndexacionDTO;
+import es.caib.rolsac2.service.model.IndexacionSIADTO;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.Pagina;
+import es.caib.rolsac2.service.model.ProcedimientoBaseDTO;
+import es.caib.rolsac2.service.model.ProcedimientoDTO;
+import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
+import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
+import es.caib.rolsac2.service.model.ProcedimientoSolrDTO;
+import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
+import es.caib.rolsac2.service.model.ServicioDTO;
+import es.caib.rolsac2.service.model.ServicioGridDTO;
+import es.caib.rolsac2.service.model.TemaGridDTO;
+import es.caib.rolsac2.service.model.TipoTramitacionDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.auditoria.ProcedimientoAuditoria;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
-import es.caib.rolsac2.service.model.types.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.util.*;
+import es.caib.rolsac2.service.model.types.TypeIndexacion;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 
 /**
  * Implementación de los casos de uso de mantenimiento de personal. Es responsabilidad de esta caap definir el limite de
@@ -942,12 +996,13 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public String getEnlaceTelematico(ProcedimientoFiltro filtro) {
         return procedimientoRepository.getEnlaceTelematico(filtro);
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public ProcedimientoBaseDTO findProcedimientoBaseById(Long codigo) {
         JProcedimiento jproc = procedimientoRepository.findById(codigo);
         ProcedimientoBaseDTO proc = new ProcedimientoBaseDTO();
@@ -961,7 +1016,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<ProcedimientoBaseDTO> findProcedimientosByFiltroRest(ProcedimientoFiltro filtro) {
         List<ProcedimientoBaseDTO> items = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtro);
         long total = procedimientoRepository.countByFiltro(filtro);
@@ -1160,19 +1215,19 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-    public Pagina<ProcedimientoDocumentoDTO> findProcedimientoDocumentoByFiltroRest(ProcedimientoDocumentoFiltro filtro) {
-        try {
-            List<ProcedimientoDocumentoDTO> items = procedimientoDocumentoRepository.findPagedByFiltroRest(filtro);
-            long total = procedimientoDocumentoRepository.countByFiltro(filtro);
-            return new Pagina<>(items, total);
-        } catch (Exception e) {
-            LOG.error("Error", e);
-            List<ProcedimientoDocumentoDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
-        }
-    }
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+	public Pagina<ProcedimientoDocumentoDTO> findProcedimientoDocumentoByFiltroRest(ProcedimientoDocumentoFiltro filtro) {
+		try {
+			List<ProcedimientoDocumentoDTO> items = procedimientoDocumentoRepository.findPagedByFiltroRest(filtro);
+			long total = procedimientoDocumentoRepository.countByFiltro(filtro);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error("Error", e);
+			List<ProcedimientoDocumentoDTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
 
     @Override
     public IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA) {
@@ -1182,19 +1237,19 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-    public Pagina<ProcedimientoTramiteDTO> findProcedimientoTramiteByFiltroRest(ProcedimientoTramiteFiltro filtro) {
-        try {
-            List<ProcedimientoTramiteDTO> items = procedimientoTramiteRepository.findPagedByFiltroRest(filtro);
-            long total = procedimientoTramiteRepository.countByFiltro(filtro);
-            return new Pagina<>(items, total);
-        } catch (Exception e) {
-            LOG.error("Error", e);
-            List<ProcedimientoTramiteDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
-        }
-    }
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+	public Pagina<ProcedimientoTramiteDTO> findProcedimientoTramiteByFiltroRest(ProcedimientoTramiteFiltro filtro) {
+    	try {
+			List<ProcedimientoTramiteDTO> items = procedimientoTramiteRepository.findPagedByFiltroRest(filtro);
+			long total = procedimientoTramiteRepository.countByFiltro(filtro);
+			return new Pagina<>(items, total);
+		} catch (Exception e) {
+			LOG.error("Error", e);
+			List<ProcedimientoTramiteDTO> items = new ArrayList<>();
+			long total = items.size();
+			return new Pagina<>(items, total);
+		}
+	}
 }
 
 

@@ -80,6 +80,10 @@ public enum TypePerfiles {
         return perfil.equals(TypePerfiles.ADMINISTRADOR_CONTENIDOS.toString());
     }
 
+    public boolean isRestApi() {
+        return perfil.equals(TypePerfiles.RESTAPI.toString());
+    }
+
     public boolean isGestor() {
         return perfil.equals(TypePerfiles.GESTOR.toString());
     }

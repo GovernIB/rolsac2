@@ -133,9 +133,7 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
     }
 
     @Override
-	@RolesAllowed({ TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-			TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR,
-			TypePerfiles.RESTAPI_VALOR })
+	@RolesAllowed({TypePerfiles.RESTAPI_VALOR })
 	public Pagina<PlatTramitElectronicaDTO> findByFiltroRest(PlatTramitElectronicaFiltro filtro) {
 		try {
 			List<PlatTramitElectronicaDTO> items = platTramitElectronicaRepository.findPagedByFiltroRest(filtro);

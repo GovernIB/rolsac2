@@ -63,4 +63,6 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     List<UnidadAdministrativaDTO> findPagedByFiltroRest(UnidadAdministrativaFiltro fg);
 
     void deleteUA(Long id);
+
+    void deleteByEntidad(Long id);
 }

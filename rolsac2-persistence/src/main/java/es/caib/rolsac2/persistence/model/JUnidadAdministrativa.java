@@ -14,12 +14,7 @@ import java.util.Set;
 @SequenceGenerator(name = "ua-sequence", sequenceName = "RS2_UNIADM_SEQ", allocationSize = 1)
 @Table(name = "RS2_UNIADM", indexes = {@Index(name = "RS2_UNIADM_PK_I", columnList = "UNAD_CODIGO")})
 
-@NamedQueries({
-        @NamedQuery(name = JUnidadAdministrativa.FIND_BY_ID,
-                query = "select p from JUnidadAdministrativa p where p.codigo = :id"),
-        @NamedQuery(name = JUnidadAdministrativa.COUNT_BY_IDENTIFICADOR,
-                query = "select count(p) from JUnidadAdministrativa p where p.identificador = :identificador")
-})
+@NamedQueries({@NamedQuery(name = JUnidadAdministrativa.FIND_BY_ID, query = "select p from JUnidadAdministrativa p where p.codigo = :id"), @NamedQuery(name = JUnidadAdministrativa.COUNT_BY_IDENTIFICADOR, query = "select count(p) from JUnidadAdministrativa p where p.identificador = :identificador")})
 
 public class JUnidadAdministrativa extends BaseEntity {
 
@@ -85,33 +80,15 @@ public class JUnidadAdministrativa extends BaseEntity {
     private List<JUnidadAdministrativaTraduccion> traducciones;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "RS2_USERUA",
-            joinColumns = {
-                    @JoinColumn(name = "UAUS_CODUA")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "UAUS_CODUSER")
-            })
+    @JoinTable(name = "RS2_USERUA", joinColumns = {@JoinColumn(name = "UAUS_CODUA")}, inverseJoinColumns = {@JoinColumn(name = "UAUS_CODUSER")})
     private Set<JUsuario> usuarios;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "RS2_UADNOR",
-            joinColumns = {
-                    @JoinColumn(name = "UANO_CODUNA")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "UANO_CODNORM")
-            })
+    @JoinTable(name = "RS2_UADNOR", joinColumns = {@JoinColumn(name = "UANO_CODUNA")}, inverseJoinColumns = {@JoinColumn(name = "UANO_CODNORM")})
     private Set<JNormativa> normativas;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "RS2_UATEMA",
-            joinColumns = {
-                    @JoinColumn(name = "UATE_CODUNA")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "UATE_CODTEMA")
-            })
+    @JoinTable(name = "RS2_UATEMA", joinColumns = {@JoinColumn(name = "UATE_CODUNA")}, inverseJoinColumns = {@JoinColumn(name = "UATE_CODTEMA")})
     private Set<JTema> temas;
 
     public Long getCodigo() {
@@ -293,24 +270,7 @@ public class JUnidadAdministrativa extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JUnidadAdministrativa{" +
-                "id=" + codigo +
-                ", entidad=" + entidad +
-                ", tipo=" + tipo +
-                ", padre=" + padre +
-                ", codigoDIR3='" + codigoDIR3 + '\'' +
-                ", identificacion='" + identificador + '\'' +
-                ", abreviatura='" + abreviatura + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", fax='" + fax + '\'' +
-                ", email='" + email + '\'' +
-                ", dominio='" + dominio + '\'' +
-                ", responsableNombre='" + responsableNombre + '\'' +
-                ", responsableEmail='" + responsableEmail + '\'' +
-                ", responsableSexo=" + responsableSexo +
-                ", orden=" + orden +
-                ", version=" + version +
-                '}';
+        return "JUnidadAdministrativa{" + "id=" + codigo + ", tipo=" + tipo + ", padre=" + padre + ", codigoDIR3='" + codigoDIR3 + '\'' + ", identificacion='" + identificador + '\'' + ", abreviatura='" + abreviatura + '\'' + ", telefono='" + telefono + '\'' + ", fax='" + fax + '\'' + ", email='" + email + '\'' + ", dominio='" + dominio + '\'' + ", responsableNombre='" + responsableNombre + '\'' + ", responsableEmail='" + responsableEmail + '\'' + ", responsableSexo=" + responsableSexo + ", orden=" + orden + ", version=" + version + '}';
     }
 
     public UnidadAdministrativaDTO toDTO() {

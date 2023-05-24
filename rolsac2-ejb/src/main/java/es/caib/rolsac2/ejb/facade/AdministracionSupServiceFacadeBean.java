@@ -5,14 +5,9 @@ import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.ConfiguracionGlobalConverter;
 import es.caib.rolsac2.persistence.converter.EntidadConverter;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
-import es.caib.rolsac2.persistence.model.JConfiguracionGlobal;
-import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.persistence.model.JFicheroExterno;
-import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
-import es.caib.rolsac2.persistence.repository.ConfiguracionGlobalRepository;
-import es.caib.rolsac2.persistence.repository.EntidadRepository;
-import es.caib.rolsac2.persistence.repository.FicheroExternoRepository;
-import es.caib.rolsac2.persistence.repository.UnidadAdministrativaRepository;
+import es.caib.rolsac2.persistence.model.*;
+import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
+import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
@@ -70,6 +65,9 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
     private UnidadAdministrativaRepository unidadAdministrativaRepository;
 
     @Inject
+    private UsuarioRepository usuarioRepository;
+
+    @Inject
     private UnidadAdministrativaConverter unidadAdministrativaConverter;
 
     @Inject
@@ -80,10 +78,8 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long createEntidad(EntidadDTO dto)
-            throws RecursoNoEncontradoException, DatoDuplicadoException {
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long createEntidad(EntidadDTO dto, UsuarioDTO usuarioDTO) throws RecursoNoEncontradoException, DatoDuplicadoException {
         // Comprovam que el codiSia no existeix ja (
         if (dto.getCodigo() != null) { // .isPresent()) {
             throw new DatoDuplicadoException(dto.getCodigo());
@@ -101,7 +97,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
             ficheroExternoRepository.persistFicheroExterno(dto.getLogo().getCodigo(), jEntidad.getCodigo(), systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
         }
 
-
+        //Creamos la UA raiz
         UnidadAdministrativaDTO unidadAdministrativaDTO = new UnidadAdministrativaDTO();
         unidadAdministrativaDTO.setEntidad(dto);
         unidadAdministrativaDTO.setIdentificador(dto.getIdentificador());
@@ -109,15 +105,26 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
         unidadAdministrativaDTO.setVersion(1);
         JUnidadAdministrativa jUnidadAdministrativa = unidadAdministrativaConverter.createEntity(unidadAdministrativaDTO);
         jUnidadAdministrativa.setEntidad(jEntidad);
+        if (jUnidadAdministrativa.getTraducciones() != null) {
+            for (JUnidadAdministrativaTraduccion trad : jUnidadAdministrativa.getTraducciones()) {
+                trad.setNombre(dto.getIdentificador());
+            }
+        }
         unidadAdministrativaRepository.create(jUnidadAdministrativa);
+
+        //Anyadir la relacion de usuario con Entidad
+        JUsuario jUsuario = usuarioRepository.findById(usuarioDTO.getCodigo());
+        usuarioRepository.anyadirNuevoUsuarioEntidad(jUsuario, jEntidad.getCodigo());
+
+        //Anyadir la relacion de usuario con UA
+        usuarioRepository.anyadirNuevoUsuarioUA(jUsuario, jUnidadAdministrativa);
 
         return jEntidad.getCodigo();
     }
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void updateEntidad(EntidadDTO dto) throws RecursoNoEncontradoException {
         JEntidad jEntidad = entidadRepository.getReference(dto.getCodigo());
         if (dto.getLogo() != null) {
@@ -143,22 +150,21 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
             entidadConverter.mergeEntity(jEntidad, dto);
             jEntidad.setLogo(null);
         }
-         if(dto.getCssPersonalizado() != null) {
-             ficheroExternoRepository.persistFicheroExterno(dto.getCssPersonalizado().getCodigo(), dto.getCodigo(), systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
-             entidadConverter.mergeEntity(jEntidad, dto);
-             JFicheroExterno jCss = ficheroExternoRepository.getReference(dto.getCssPersonalizado().getCodigo());
-             jEntidad.setCssPersonalizado(jCss);
-         }else {
-             jEntidad.setCssPersonalizado(null);
-         }
+        if (dto.getCssPersonalizado() != null) {
+            ficheroExternoRepository.persistFicheroExterno(dto.getCssPersonalizado().getCodigo(), dto.getCodigo(), systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
+            entidadConverter.mergeEntity(jEntidad, dto);
+            JFicheroExterno jCss = ficheroExternoRepository.getReference(dto.getCssPersonalizado().getCodigo());
+            jEntidad.setCssPersonalizado(jCss);
+        } else {
+            jEntidad.setCssPersonalizado(null);
+        }
 
         entidadRepository.update(jEntidad);
     }
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void deleteEntidad(Long id) throws RecursoNoEncontradoException {
         JEntidad jEntidad = entidadRepository.getReference(id);
         entidadRepository.delete(jEntidad);
@@ -166,8 +172,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public EntidadDTO findEntidadById(Long id) {
         JEntidad jEntidad = entidadRepository.getReference(id);
         EntidadDTO entidadDTO = entidadConverter.createDTO(jEntidad);
@@ -178,8 +183,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<EntidadGridDTO> findEntidadByFiltro(EntidadFiltro filtro) {
         try {
             List<EntidadGridDTO> items = entidadRepository.findPagedByFiltro(filtro);
@@ -192,8 +196,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<EntidadDTO> findEntidadActivas() {
         try {
             List<EntidadDTO> entidadesActivas = new ArrayList<>();
@@ -209,16 +212,14 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<String> findRolesDefinidos(List<Long> idEntidades) {
-        return entidadRepository.findRolesDefinidos( idEntidades);
+        return entidadRepository.findRolesDefinidos(idEntidades);
     }
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void updateConfGlobal(ConfiguracionGlobalDTO dto) throws RecursoNoEncontradoException {
         JConfiguracionGlobal jConfiguracionGlobal = configuracionGlobalRepository.getReference(dto.getCodigo());
         configuracionGlobalConverter.mergeEntity(jConfiguracionGlobal, dto);
@@ -226,8 +227,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public ConfiguracionGlobalDTO findConfGlobalById(Long id) {
         JConfiguracionGlobal jConfiguracionGlobal = configuracionGlobalRepository.getReference(id);
         ConfiguracionGlobalDTO configuracionGlobalDTO = configuracionGlobalConverter.createDTO(jConfiguracionGlobal);
@@ -236,8 +236,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<ConfiguracionGlobalGridDTO> findConfGlobalByFiltro(ConfiguracionGlobalFiltro filtro) {
         try {
             List<ConfiguracionGlobalGridDTO> items = configuracionGlobalRepository.findPagedByFiltro(filtro);
@@ -250,22 +249,19 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public boolean existeIdentificadorEntidad(String identificador) {
         return entidadRepository.existeIdentificadorEntidad(identificador);
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public FicheroDTO getLogoEntidad(Long codigo) {
         if (codigo == null) {
             return null;
         }
 
-        return ficheroExternoRepository.getContentById(codigo,
-                systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
+        return ficheroExternoRepository.getContentById(codigo, systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
     }
 
 }
