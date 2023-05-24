@@ -58,153 +58,155 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         log.info("Ejecución proceso SIA");
         final ListaPropiedades detalles = new ListaPropiedades();
         final ResultadoProcesoProgramado res = new ResultadoProcesoProgramado();
-
-
-        /*if (params == null || params.getPropiedad("accion") == null || params.getPropiedad("entidad") == null) {
-            res.setFinalizadoOk(false);
-            detalles.addPropiedad("Informació del procés", "No están bien especificados los parámetros para la indexación");
-            res.setDetalles(detalles);
-            return res;
-        } else {*/
-
-        String accion;
-        if (pendiente) {
-            accion = "pendientes";
-        } else {
-            accion = params.getPropiedad("accion");
-        }
-
-        String id = null;
-        String tipo = null;
-        if (accion.equals(Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL)) {
-            id = params.getPropiedad("id");
-            tipo = params.getPropiedad("tipo");
-        }
-        detalles.addPropiedades(params);
-
-        Pagina<IndexacionSIADTO> datos = null;
-
-        IPluginSIA plugin = null;
+        final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        String fechaInicio = "La dada de inici es " + sdf.format(new Date());
+        detalles.addPropiedad("Informació del procés", fechaInicio);
 
         try {
-            plugin = (IPluginSIA) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.SIA, idEntidad);
-        } catch (Exception e) {
-            res.setFinalizadoOk(false);
-            detalles.addPropiedad("Informació del procés", "Error obteniendo plugin de indexacion.");
-            detalles.addPropiedad("Error", e.getLocalizedMessage());
-            res.setDetalles(detalles);
-            return res;
-        }
+            String accion;
+            if (pendiente) {
+                accion = "pendientes";
+            } else {
+                accion = params.getPropiedad("accion");
+            }
 
-        if (plugin == null) {
-            res.setFinalizadoOk(false);
-            detalles.addPropiedad("Informació del procés", "No está especificado el plugin de indexación");
-            res.setDetalles(detalles);
-            return res;
-        }
+            String id = null;
+            String tipo = null;
+            if (accion.equals(Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL)) {
+                id = params.getPropiedad("id");
+                tipo = params.getPropiedad("tipo");
+            }
+            detalles.addPropiedades(params);
 
+            Pagina<IndexacionSIADTO> datos = null;
 
-        boolean puntual = false;
-        ProcesoSIAFiltro filtro = new ProcesoSIAFiltro();
-        filtro.setIdEntidad(idEntidad);
-        filtro.setPaginaTamanyo(10000);
-        filtro.setPaginaFirst(0);
-        if (accion.equals(Constantes.INDEXAR_SIA_PENDIENTES)) {
-            datos = procesoServiceFacade.findSIAByFiltro(filtro);
-        } else if (accion.equals(Constantes.INDEXAR_SIA_COMPLETO)) {
-            datos = procedimientoService.getProcedimientosParaIndexacionSIA(idEntidad);
-        } else if (accion.equals(Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL)) {
-            if (id == null || tipo == null) {
+            IPluginSIA plugin = null;
+
+            try {
+                plugin = (IPluginSIA) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.SIA, idEntidad);
+            } catch (Exception e) {
                 res.setFinalizadoOk(false);
-                detalles.addPropiedad("Informació del procés", "El procediment no té codi per a indexar");
+                detalles.addPropiedad("Informació del procés", "Error obteniendo plugin de indexacion.");
+                detalles.addPropiedad("Error", e.getLocalizedMessage());
                 res.setDetalles(detalles);
                 return res;
             }
-            ProcedimientoBaseDTO procedimiento;
-            Long codigoWF = procedimientoService.getCodigoByWF(Long.valueOf(id), Constantes.PROCEDIMIENTO_DEFINITIVO);
-            if (codigoWF == null) {
-                codigoWF = procedimientoService.getCodigoByWF(Long.valueOf(id), Constantes.PROCEDIMIENTO_ENMODIFICACION);
-            }
-            if (tipo.equals("P")) {
-                procedimiento = procedimientoService.findProcedimientoById(codigoWF);
-            } else {
-                procedimiento = procedimientoService.findServicioById(codigoWF);
-            }
-            if (procedimiento.getCodigoSIA() != null) {
+
+            if (plugin == null) {
                 res.setFinalizadoOk(false);
-                detalles.addPropiedad("Informació del procés", "El procediment ja té codi SIA");
+                detalles.addPropiedad("Informació del procés", "No está especificado el plugin de indexación");
                 res.setDetalles(detalles);
                 return res;
             }
 
 
-            IndexacionSIADTO indexacionSIADTO = new IndexacionSIADTO();
-            indexacionSIADTO.setCodElemento(Long.valueOf(id));
-            indexacionSIADTO.setExiste(SiaUtils.SIAPENDIENTE_PROCEDIMIENTO_EXISTE);
-            if (procedimiento instanceof ProcedimientoDTO) {
-                indexacionSIADTO.setTipo(TypeIndexacion.PROCEDIMIENTO.toString());
-            } else {
-                indexacionSIADTO.setTipo(TypeIndexacion.SERVICIO.toString());
-            }
-            List<IndexacionSIADTO> lista = new ArrayList<>();
-            lista.add(indexacionSIADTO);
-            datos = new Pagina(lista, 1);
-            puntual = true;
-
-        }
-
-
-        inicializarTotalesACero();
-        StringBuilder mensajeTraza = new StringBuilder();
-
-        if (datos != null && datos.getItems() != null && !datos.getItems().isEmpty()) {
-
-            final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            String fechaInicio = "La dada de inici es " + sdf.format(new Date());
-
-            for (IndexacionSIADTO dato : datos.getItems()) {
-                switch (TypeIndexacion.fromString(dato.getTipo())) {
-                    case PROCEDIMIENTO:
-                        ResultadoSIA resultadoPro = indexarProcedimiento(dato, plugin, mensajeTraza, puntual);
-
-                        //Si es distinto null, significa que es un dato pendiente
-                        procedimientoService.actualizarSIA(dato, resultadoPro);
-
-                        break;
-                    case SERVICIO:
-                        totalServicios++;
-                        ResultadoSIA resultadoSrv = indexarServicio(dato, plugin, mensajeTraza, puntual);
-
-                        //Si es distinto null, significa que es un dato pendiente
-                        procedimientoService.actualizarSIA(dato, resultadoSrv);
-                        break;
+            boolean puntual = false;
+            ProcesoSIAFiltro filtro = new ProcesoSIAFiltro();
+            filtro.setIdEntidad(idEntidad);
+            filtro.setPaginaTamanyo(10000);
+            filtro.setPaginaFirst(0);
+            if (accion.equals(Constantes.INDEXAR_SIA_PENDIENTES)) {
+                datos = procesoServiceFacade.findSIAByFiltro(filtro);
+            } else if (accion.equals(Constantes.INDEXAR_SIA_COMPLETO)) {
+                datos = procedimientoService.getProcedimientosParaIndexacionSIA(idEntidad);
+            } else if (accion.equals(Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL)) {
+                if (id == null || tipo == null) {
+                    res.setFinalizadoOk(false);
+                    detalles.addPropiedad("Informació del procés", "El procediment no té codi per a indexar");
+                    res.setDetalles(detalles);
+                    return res;
+                }
+                ProcedimientoBaseDTO procedimiento;
+                Long codigoWF = procedimientoService.getCodigoByWF(Long.valueOf(id), Constantes.PROCEDIMIENTO_DEFINITIVO);
+                if (codigoWF == null) {
+                    codigoWF = procedimientoService.getCodigoByWF(Long.valueOf(id), Constantes.PROCEDIMIENTO_ENMODIFICACION);
+                }
+                if (tipo.equals("P")) {
+                    procedimiento = procedimientoService.findProcedimientoById(codigoWF);
+                } else {
+                    procedimiento = procedimientoService.findServicioById(codigoWF);
+                }
+                if (procedimiento.getCodigoSIA() != null) {
+                    res.setFinalizadoOk(false);
+                    detalles.addPropiedad("Informació del procés", "El procediment ja té codi SIA");
+                    res.setDetalles(detalles);
+                    return res;
                 }
 
+
+                IndexacionSIADTO indexacionSIADTO = new IndexacionSIADTO();
+                indexacionSIADTO.setCodElemento(Long.valueOf(id));
+                indexacionSIADTO.setExiste(SiaUtils.SIAPENDIENTE_PROCEDIMIENTO_EXISTE);
+                if (procedimiento instanceof ProcedimientoDTO) {
+                    indexacionSIADTO.setTipo(TypeIndexacion.PROCEDIMIENTO.toString());
+                } else {
+                    indexacionSIADTO.setTipo(TypeIndexacion.SERVICIO.toString());
+                }
+                List<IndexacionSIADTO> lista = new ArrayList<>();
+                lista.add(indexacionSIADTO);
+                datos = new Pagina(lista, 1);
+                puntual = true;
+
             }
 
 
+            inicializarTotalesACero();
+            StringBuilder mensajeTraza = new StringBuilder();
+
+            if (datos != null && datos.getItems() != null && !datos.getItems().isEmpty()) {
+
+
+                for (IndexacionSIADTO dato : datos.getItems()) {
+                    switch (TypeIndexacion.fromString(dato.getTipo())) {
+                        case PROCEDIMIENTO:
+                            ResultadoSIA resultadoPro = indexarProcedimiento(dato, plugin, mensajeTraza, puntual);
+
+                            //Si es distinto null, significa que es un dato pendiente
+                            procedimientoService.actualizarSIA(dato, resultadoPro);
+
+                            break;
+                        case SERVICIO:
+                            totalServicios++;
+                            ResultadoSIA resultadoSrv = indexarServicio(dato, plugin, mensajeTraza, puntual);
+
+                            //Si es distinto null, significa que es un dato pendiente
+                            procedimientoService.actualizarSIA(dato, resultadoSrv);
+                            break;
+                    }
+
+                }
+
+
+                String fechaFin = "La dada de fi es " + sdf.format(new Date());
+                res.setFinalizadoOk(true);
+                if (totalProcedimientos > 0) {
+                    detalles.addPropiedad("Procediments", "S'ha indexat " + totalProcedimientos + " (correctes:" + totalProcedimientosOK + " , error:" + totalProcedimientosERROR + ")");
+                }
+                if (totalServicios > 0) {
+                    detalles.addPropiedad("Serveis", "S'ha indexat " + totalServicios + " (correctes:" + totalServiciosOK + " , error:" + totalServiciosERROR + ")");
+                }
+                detalles.addPropiedad("Fin del procés", fechaFin);
+
+
+                res.setDetalles(detalles);
+            } else {
+
+                res.setFinalizadoOk(true);
+                detalles.addPropiedad("Informació del procés", "Sense dades per a indexar");
+                res.setDetalles(detalles);
+
+            }
+            res.setDetalles(detalles);
+            res.setMensajeErrorTraza(mensajeTraza.toString());
+
+        } catch (Exception e) {
+            log.error("Error en el proceso programado", e);
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
-            res.setFinalizadoOk(true);
-            detalles.addPropiedad("Informació del procés", fechaInicio);
-            if (totalProcedimientos > 0) {
-                detalles.addPropiedad("Procediments", "S'ha indexat " + totalProcedimientos + " (correctes:" + totalProcedimientosOK + " , error:" + totalProcedimientosERROR + ")");
-            }
-            if (totalServicios > 0) {
-                detalles.addPropiedad("Serveis", "S'ha indexat " + totalServicios + " (correctes:" + totalServiciosOK + " , error:" + totalServiciosERROR + ")");
-            }
             detalles.addPropiedad("Fin del procés", fechaFin);
-
-
             res.setDetalles(detalles);
-        } else {
-
-            res.setFinalizadoOk(true);
-            detalles.addPropiedad("Informació del procés", "Sense dades per a indexar");
-            res.setDetalles(detalles);
-
+            res.setMensajeErrorTraza("Se ha producido un error no controlado en el proceso SIA. " + e.getLocalizedMessage());
+            res.setFinalizadoOk(false);
         }
-        res.setDetalles(detalles);
-        res.setMensajeErrorTraza(mensajeTraza.toString());
         return res;
     }
 

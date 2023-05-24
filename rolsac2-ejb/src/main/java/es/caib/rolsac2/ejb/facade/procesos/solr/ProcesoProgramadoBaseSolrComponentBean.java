@@ -73,210 +73,219 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
         log.info("Ejecución proceso solr");
         final ListaPropiedades detalles = new ListaPropiedades();
         final ResultadoProcesoProgramado res = new ResultadoProcesoProgramado();
-
-        String accion;
-        if (pendiente) {
-            accion = "pendientes";
-        } else {
-            accion = params.getPropiedad("accion");
-        }
-
-        detalles.addPropiedades(params);
-
-        Pagina<IndexacionDTO> datos = null;
-
-        IPluginIndexacion plugin = null;
+        final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        String fechaInicio = "La dada de inici es " + sdf.format(new Date());
+        detalles.addPropiedad("Informació del procés", fechaInicio);
 
         try {
-            plugin = (IPluginIndexacion) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.INDEXACION, idEntidad);
-        } catch (Exception e) {
-            res.setFinalizadoOk(false);
-            detalles.addPropiedad("Informació del procés", "Error obteniendo plugin de indexacion.");
-            detalles.addPropiedad("Error", e.getLocalizedMessage());
-            res.setDetalles(detalles);
-            return res;
-        }
+            String accion;
+            if (pendiente) {
+                accion = "pendientes";
+            } else {
+                accion = params.getPropiedad("accion");
+            }
 
-        if (plugin == null) {
-            res.setFinalizadoOk(false);
-            detalles.addPropiedad("Informació del procés", "No está especificado el plugin de indexación");
-            res.setDetalles(detalles);
-            return res;
-        }
-        StringBuilder mensajeTraza = new StringBuilder();
+            detalles.addPropiedades(params);
 
-        ProcesoSolrFiltro filtro = new ProcesoSolrFiltro();
-        filtro.setIdEntidad(idEntidad);
-        filtro.setPaginaTamanyo(10000);
-        filtro.setPaginaFirst(0);
-        switch (accion) {
-            case Constantes.INDEXAR_SOLR_NORMATIVAS:
-                datos = normativaService.getNormativasParaIndexacion(idEntidad);
-                break;
-            case Constantes.INDEXAR_SOLR_PROCEDIMIENTOS:
-                datos = procedimientoService.getProcedimientosParaIndexacion(true, idEntidad);
-                break;
-            case Constantes.INDEXAR_SOLR_SERVICIOS:
-                datos = procedimientoService.getProcedimientosParaIndexacion(false, idEntidad);
-                break;
-            case Constantes.INDEXAR_SOLR_UAS:
-                datos = uaService.getUAsParaIndexacion(idEntidad);
-                break;
-            case Constantes.INDEXAR_SOLR_PENDIENTES:
-                filtro.setTipo(null);
-                datos = procesoServiceFacade.findSolrByFiltro(filtro);
-                break;
-            case Constantes.INDEXAR_SOLR_BORRAR_CADUCADAS:
-            case Constantes.INDEXAR_SOLR_BORRAR_TODO:
-                break;
-        }
+            Pagina<IndexacionDTO> datos = null;
 
-        inicializarTotalesACero();
+            IPluginIndexacion plugin = null;
 
-        //Variable que se utiliza para hacer un commit cada 5
-        int cuantos = 0;
+            try {
+                plugin = (IPluginIndexacion) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.INDEXACION, idEntidad);
+            } catch (Exception e) {
+                res.setFinalizadoOk(false);
+                detalles.addPropiedad("Informació del procés", "Error obteniendo plugin de indexacion.");
+                detalles.addPropiedad("Error", e.getLocalizedMessage());
+                res.setDetalles(detalles);
+                return res;
+            }
 
-        if (datos != null && datos.getItems() != null && !datos.getItems().isEmpty()) {
+            if (plugin == null) {
+                res.setFinalizadoOk(false);
+                detalles.addPropiedad("Informació del procés", "No está especificado el plugin de indexación");
+                res.setDetalles(detalles);
+                return res;
+            }
+            StringBuilder mensajeTraza = new StringBuilder();
 
-            final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            String fechaInicio = "La dada de inici es " + sdf.format(new Date());
+            ProcesoSolrFiltro filtro = new ProcesoSolrFiltro();
+            filtro.setIdEntidad(idEntidad);
+            filtro.setPaginaTamanyo(10000);
+            filtro.setPaginaFirst(0);
+            switch (accion) {
+                case Constantes.INDEXAR_SOLR_NORMATIVAS:
+                    datos = normativaService.getNormativasParaIndexacion(idEntidad);
+                    break;
+                case Constantes.INDEXAR_SOLR_PROCEDIMIENTOS:
+                    datos = procedimientoService.getProcedimientosParaIndexacion(true, idEntidad);
+                    break;
+                case Constantes.INDEXAR_SOLR_SERVICIOS:
+                    datos = procedimientoService.getProcedimientosParaIndexacion(false, idEntidad);
+                    break;
+                case Constantes.INDEXAR_SOLR_UAS:
+                    datos = uaService.getUAsParaIndexacion(idEntidad);
+                    break;
+                case Constantes.INDEXAR_SOLR_PENDIENTES:
+                    filtro.setTipo(null);
+                    datos = procesoServiceFacade.findSolrByFiltro(filtro);
+                    break;
+                case Constantes.INDEXAR_SOLR_BORRAR_CADUCADAS:
+                case Constantes.INDEXAR_SOLR_BORRAR_TODO:
+                    break;
+            }
 
-            for (IndexacionDTO dato : datos.getItems()) {
-                cuantos++;
+            inicializarTotalesACero();
 
-                // Si la acción es 1, es indexar
-                switch (TypeIndexacion.fromString(dato.getTipo())) {
-                    case PROCEDIMIENTO:
-                        ResultadoAccion resultadoPro;
-                        if (dato.getAccion() == 1) {
-                            resultadoPro = indexarProcedimiento(dato, plugin, mensajeTraza);
-                        } else {
-                            resultadoPro = desindexarProcedimiento(dato, plugin, mensajeTraza);
-                        }
-                        if (dato.getCodigo() != null) {
-                            //Si es distinto null, significa que es un dato pendiente
-                            procedimientoService.actualizarSolr(dato, resultadoPro);
-                        }
-                        break;
-                    case SERVICIO:
-                        totalServicios++;
-                        ResultadoAccion resultadoSrv;
-                        if (dato.getAccion() == 1) {
-                            resultadoSrv = indexarServicio(dato, plugin, mensajeTraza);
-                        } else {
-                            resultadoSrv = desindexarServicio(dato, plugin, mensajeTraza);
-                        }
+            //Variable que se utiliza para hacer un commit cada 5
+            int cuantos = 0;
 
-                        if (resultadoSrv.isCorrecto()) {
-                            totalServiciosOK++;
-                        } else {
-                            totalServiciosERROR++;
-                        }
-                        if (dato.getCodigo() != null) {
-                            //Si es distinto null, significa que es un dato pendiente
-                            procedimientoService.actualizarSolr(dato, resultadoSrv);
-                        }
-                        break;
-                    case UNIDAD_ADMINISTRATIVA:
-                        totalUas++;
-                        ResultadoAccion resultadoUA;
-                        if (dato.getAccion() == 1) {
-                            resultadoUA = indexarUA(dato, plugin, mensajeTraza);
-                        } else {
-                            resultadoUA = desindexarUA(dato, plugin, mensajeTraza);
-                        }
-                        if (resultadoUA.isCorrecto()) {
-                            totalUasOK++;
-                        } else {
-                            totalUasERROR++;
-                        }
-                        if (dato.getCodigo() != null) {
-                            //Si es distinto null, significa que es un dato pendiente
-                            uaService.actualizarSolr(dato, resultadoUA);
-                        }
-                        break;
-                    case NORMATIVA:
-                        totalNormativas++;
-                        ResultadoAccion resultadoNormativa;
-                        if (dato.getAccion() == 1) {
-                            resultadoNormativa = indexarNormativa(dato, plugin, mensajeTraza);
-                        } else {
-                            resultadoNormativa = desindexarNormativa(dato, plugin, mensajeTraza);
-                        }
-                        if (resultadoNormativa.isCorrecto()) {
-                            totalNormativasOK++;
-                        } else {
-                            totalNormativasERROR++;
-                        }
-                        if (dato.getCodigo() != null) {
-                            //Si es distinto null, significa que es un dato pendiente
-                            normativaService.actualizarSolr(dato, resultadoNormativa);
-                        }
-                        break;
+            if (datos != null && datos.getItems() != null && !datos.getItems().isEmpty()) {
+
+
+                for (IndexacionDTO dato : datos.getItems()) {
+                    cuantos++;
+
+                    // Si la acción es 1, es indexar
+                    switch (TypeIndexacion.fromString(dato.getTipo())) {
+                        case PROCEDIMIENTO:
+                            ResultadoAccion resultadoPro;
+                            if (dato.getAccion() == 1) {
+                                resultadoPro = indexarProcedimiento(dato, plugin, mensajeTraza);
+                            } else {
+                                resultadoPro = desindexarProcedimiento(dato, plugin, mensajeTraza);
+                            }
+                            if (dato.getCodigo() != null) {
+                                //Si es distinto null, significa que es un dato pendiente
+                                procedimientoService.actualizarSolr(dato, resultadoPro);
+                            }
+                            break;
+                        case SERVICIO:
+                            totalServicios++;
+                            ResultadoAccion resultadoSrv;
+                            if (dato.getAccion() == 1) {
+                                resultadoSrv = indexarServicio(dato, plugin, mensajeTraza);
+                            } else {
+                                resultadoSrv = desindexarServicio(dato, plugin, mensajeTraza);
+                            }
+
+                            if (resultadoSrv.isCorrecto()) {
+                                totalServiciosOK++;
+                            } else {
+                                totalServiciosERROR++;
+                            }
+                            if (dato.getCodigo() != null) {
+                                //Si es distinto null, significa que es un dato pendiente
+                                procedimientoService.actualizarSolr(dato, resultadoSrv);
+                            }
+                            break;
+                        case UNIDAD_ADMINISTRATIVA:
+                            totalUas++;
+                            ResultadoAccion resultadoUA;
+                            if (dato.getAccion() == 1) {
+                                resultadoUA = indexarUA(dato, plugin, mensajeTraza);
+                            } else {
+                                resultadoUA = desindexarUA(dato, plugin, mensajeTraza);
+                            }
+                            if (resultadoUA.isCorrecto()) {
+                                totalUasOK++;
+                            } else {
+                                totalUasERROR++;
+                            }
+                            if (dato.getCodigo() != null) {
+                                //Si es distinto null, significa que es un dato pendiente
+                                uaService.actualizarSolr(dato, resultadoUA);
+                            }
+                            break;
+                        case NORMATIVA:
+                            totalNormativas++;
+                            ResultadoAccion resultadoNormativa;
+                            if (dato.getAccion() == 1) {
+                                resultadoNormativa = indexarNormativa(dato, plugin, mensajeTraza);
+                            } else {
+                                resultadoNormativa = desindexarNormativa(dato, plugin, mensajeTraza);
+                            }
+                            if (resultadoNormativa.isCorrecto()) {
+                                totalNormativasOK++;
+                            } else {
+                                totalNormativasERROR++;
+                            }
+                            if (dato.getCodigo() != null) {
+                                //Si es distinto null, significa que es un dato pendiente
+                                normativaService.actualizarSolr(dato, resultadoNormativa);
+                            }
+                            break;
+                    }
                 }
+
+                if (cuantos % 5 == 0) {
+                    comitearIndexacion(plugin);
+                }
+
+                String fechaFin = "La dada de fi es " + sdf.format(new Date());
+                res.setFinalizadoOk(true);
+                if (totalProcedimientos > 0) {
+                    detalles.addPropiedad("Procediments", "S'ha indexat " + totalProcedimientos + " (correctes:" + totalProcedimientosOK + " , error:" + totalProcedimientosERROR + ")");
+                }
+                if (totalServicios > 0) {
+                    detalles.addPropiedad("Serveis", "S'ha indexat " + totalServicios + " (correctes:" + totalServiciosOK + " , error:" + totalServiciosERROR + ")");
+                }
+                if (totalNormativas > 0) {
+                    detalles.addPropiedad("Normatives", "S'ha indexat " + totalNormativas + " (correctes:" + totalNormativasOK + " , error:" + totalNormativasERROR + ")");
+                }
+                if (totalUas > 0) {
+                    detalles.addPropiedad("UnitatsAdmin.", "S'ha indexat " + totalUas + " (correctes:" + totalUasOK + " , error:" + totalUasERROR + ")");
+                }
+                detalles.addPropiedad("Fin del procés", fechaFin);
+
+
+                res.setDetalles(detalles);
+            } else if (accion.equals(Constantes.INDEXAR_SOLR_BORRAR_TODO)) {
+                try {
+                    plugin.desindexarAplicacion();
+                    res.setFinalizadoOk(true);
+                    detalles.addPropiedad("Informació del procés", "Desindexado toda la aplicacion");
+                    res.setDetalles(detalles);
+                    res.setFinalizadoOk(true);
+                } catch (IPluginIndexacionExcepcion e) {
+                    res.setFinalizadoOk(false);
+                    detalles.addPropiedad("Informació del procés", "Error desindexando toda la aplicación");
+                    res.setDetalles(detalles);
+                }
+            } else if (accion.equals(Constantes.INDEXAR_SOLR_BORRAR_CADUCADAS)) {
+                try {
+                    plugin.desindexarCaducados();
+                    res.setFinalizadoOk(true);
+                    detalles.addPropiedad("Informació del procés", "Desindexado los caducados");
+                    res.setDetalles(detalles);
+                    res.setFinalizadoOk(true);
+                } catch (IPluginIndexacionExcepcion e) {
+                    res.setFinalizadoOk(false);
+                    detalles.addPropiedad("Informació del procés", "Error desindexando los caducados");
+                    res.setDetalles(detalles);
+                }
+            } else {
+
+                res.setFinalizadoOk(true);
+                detalles.addPropiedad("Informació del procés", "Sense dades per a indexar");
+                res.setDetalles(detalles);
+
+
             }
 
-            if (cuantos % 5 == 0) {
-                comitearIndexacion(plugin);
-            }
+            //Se realiza un commit final porque pueden quedar de 1 a 4 datos sin comitear
+            comitearIndexacion(plugin);
 
+            res.setDetalles(detalles);
+            res.setMensajeErrorTraza(mensajeTraza.toString());
+        } catch (Exception e) {
+            log.error("Error en el proceso programado", e);
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
-            res.setFinalizadoOk(true);
-            detalles.addPropiedad("Informació del procés", fechaInicio);
-            if (totalProcedimientos > 0) {
-                detalles.addPropiedad("Procediments", "S'ha indexat " + totalProcedimientos + " (correctes:" + totalProcedimientosOK + " , error:" + totalProcedimientosERROR + ")");
-            }
-            if (totalServicios > 0) {
-                detalles.addPropiedad("Serveis", "S'ha indexat " + totalServicios + " (correctes:" + totalServiciosOK + " , error:" + totalServiciosERROR + ")");
-            }
-            if (totalNormativas > 0) {
-                detalles.addPropiedad("Normatives", "S'ha indexat " + totalNormativas + " (correctes:" + totalNormativasOK + " , error:" + totalNormativasERROR + ")");
-            }
-            if (totalUas > 0) {
-                detalles.addPropiedad("UnitatsAdmin.", "S'ha indexat " + totalUas + " (correctes:" + totalUasOK + " , error:" + totalUasERROR + ")");
-            }
             detalles.addPropiedad("Fin del procés", fechaFin);
-
-
             res.setDetalles(detalles);
-        } else if (accion.equals(Constantes.INDEXAR_SOLR_BORRAR_TODO)) {
-            try {
-                plugin.desindexarAplicacion();
-                res.setFinalizadoOk(true);
-                detalles.addPropiedad("Informació del procés", "Desindexado toda la aplicacion");
-                res.setDetalles(detalles);
-                res.setFinalizadoOk(true);
-            } catch (IPluginIndexacionExcepcion e) {
-                res.setFinalizadoOk(false);
-                detalles.addPropiedad("Informació del procés", "Error desindexando toda la aplicación");
-                res.setDetalles(detalles);
-            }
-        } else if (accion.equals(Constantes.INDEXAR_SOLR_BORRAR_CADUCADAS)) {
-            try {
-                plugin.desindexarCaducados();
-                res.setFinalizadoOk(true);
-                detalles.addPropiedad("Informació del procés", "Desindexado los caducados");
-                res.setDetalles(detalles);
-                res.setFinalizadoOk(true);
-            } catch (IPluginIndexacionExcepcion e) {
-                res.setFinalizadoOk(false);
-                detalles.addPropiedad("Informació del procés", "Error desindexando los caducados");
-                res.setDetalles(detalles);
-            }
-        } else {
-
-            res.setFinalizadoOk(true);
-            detalles.addPropiedad("Informació del procés", "Sense dades per a indexar");
-            res.setDetalles(detalles);
-
-
+            res.setMensajeErrorTraza("Se ha producido un error no controlado en el proceso Solr. " + e.getLocalizedMessage());
+            res.setFinalizadoOk(false);
         }
-
-        //Se realiza un commit final porque pueden quedar de 1 a 4 datos sin comitear
-        comitearIndexacion(plugin);
-
-        res.setDetalles(detalles);
-        res.setMensajeErrorTraza(mensajeTraza.toString());
         return res;
     }
 
