@@ -1,0 +1,136 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:t="http://back.rolsac2.caib.es/tags">
+<!--
+Pàgina amb el llistat de processos automàtics
+-->
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <!--<f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />-->
+            <f:viewAction action="#{viewProcesosMigracion.load}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="pageTitle">
+        <h:outputFormat value="#{labels['viewProcesosMigracion.titulo.pagina']}"/>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                        action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
+                        oncomplete="$('#form:actualizarBusqueda').click();">
+            </p:menuitem>
+        </c:forEach>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form >
+            <div class="m-10">
+                 <p:commandButton value="#{labels['viewProcesosSolr.refrescarDatos']}" icon="pi pi-refresh" iconPos="top"
+                                 actionListener="#{viewProcesosMigracion.buscar()}" styleClass="ml10 mt10 mb10"
+                                 process="@this" update="dataTable  messages">
+                </p:commandButton>
+                <p:dataTable id="dataTable" value="#{viewProcesosMigracion.lazyModelLogs}" var="proceso"
+                             paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTable"
+                             rows="#{viewProcesosMigracion.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                             first="#{viewProcesosMigracion.filtro.paginaFirst}"
+                             paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                             paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                             {NextPageLink} {LastPageLink}"
+                             currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                             emptyMessage="#{labels['dict.noHayDatos']}"
+                             selectionMode="single" selection="#{viewProcesosMigracion.datoSeleccionado}"
+                             rowKey="#{proceso.codigo}"
+                             reflow="true"
+                             sortBy="#{viewProcesosMigracion.filtroLog.orderBy}"
+                             sortOrder="#{viewProcesosMigracion.filtroLog.order}"
+                             style="min-height: 300px;margin-left:10px;margin-right:10px;"
+
+                >
+                    <p:ajax
+                            event="rowDblselect"
+                            oncomplete="triggerDblClick();"
+                            global="false"/>
+                    <p:ajax event="rowSelect" />
+                    <!--<p:ajax event="rowSelect" update="btnLanzar" />-->
+
+                    <f:facet name="{RowsPerPageLabel}">
+                        #{labels.dataTable_rowsPerPage}
+                    </f:facet>
+                    <p:column headerText="#{labels['dict.descripcion']}" styleClass="w140px">
+                        <f:facet name="header"/>
+                        <h:outputText value="#{proceso.proceso.descripcion}"/>
+                    </p:column>
+                    <p:column headerText="#{labels['dict.fechaInicio']}" styleClass="w160px">
+                        <f:facet name="header"/>
+                        <h:outputText value="#{proceso.fechaInicio}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="#{labels['dict.fechaFin']}" styleClass="w160px">
+                        <f:facet name="header"/>
+                        <h:outputText value="#{proceso.fechaFin}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="#{labels['dict.activo']}" styleClass="w130px">
+                        <f:facet name="header"/>
+                        <p:selectBooleanCheckbox value="#{proceso.proceso.activo}" disabled="true"></p:selectBooleanCheckbox>
+                    </p:column>
+                    <p:column headerText="#{labels['dict.resultado']}">
+                        <f:facet name="header"/>
+                        <h:outputText value="#{proceso.getListaPropiedadesPlano()}" escape="false" style="white-space:pre-line;" />
+                    </p:column>
+                    <p:column headerText="" styleClass="w50px">
+                        <p:commandButton value="" icon="pi pi-align-center" iconPos="center"
+                                         actionListener="#{viewProcesosMigracion.verErrores(proceso.codigo)}"
+                                         process="@this" update="messages" styleClass="h30px w30px">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:panel id="form">
+                <div class="row">
+                    <div class="ui-md-12 text-align-left ml10">
+                        <h:outputText value="#{labels['dict.opciones']}:" />
+                    </div>
+                    <div class="ui-md-12 text-align-left ml10">
+                        <p:selectBooleanCheckbox value="#{viewProcesosMigracion.borrarDatos}" styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.borrarDatos']}"/>
+                    </div>
+                    <div class="ui-md-12 text-align-left ml10">
+                        <p:selectBooleanCheckbox value="#{viewProcesosMigracion.cargarUas}" styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.cargarUas']}"/>
+                    </div>
+                <div class="ui-md-12 text-align-left ml10">
+                        <p:selectBooleanCheckbox value="#{viewProcesosMigracion.cargarNormativas}" styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.cargarNormativas']}"/>
+
+                </div>
+                <div class="ui-g-12 ui-md-12 ui-lg-12 text-align-left ml10">
+                        <p:selectBooleanCheckbox value="#{viewProcesosMigracion.cargarProcedimientos}" styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.cargarProcedimientos']}"/>
+
+                </div>
+                <div class="ui-g-12 ui-md-12 ui-lg-12 ml10">
+                        <p:commandButton value="#{labels['viewProcesosMigracion.ejecutar']}" icon="pi pi-file-o" iconPos="top"
+                                         actionListener="#{viewProcesosMigracion.ejecutar()}" styleClass="mr10"
+                                         process="@this" update="messages">
+                        </p:commandButton>
+
+                </div>
+            </div>
+
+
+             </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
