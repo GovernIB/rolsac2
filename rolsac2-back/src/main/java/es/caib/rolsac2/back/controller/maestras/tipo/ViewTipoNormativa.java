@@ -1,23 +1,5 @@
 package es.caib.rolsac2.back.controller.maestras.tipo;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
@@ -29,6 +11,18 @@ import es.caib.rolsac2.service.model.filtro.TipoNormativaFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Controlador per obtenir la vista dels procediments d'una unitat orgànica. El definim a l'scope de view perquè
@@ -81,7 +75,7 @@ public class ViewTipoNormativa extends AbstractController implements Serializabl
      */
     public void load() {
         LOG.debug("load");
-    	permisoAccesoVentana(ViewTipoNormativa.class);
+        permisoAccesoVentana(ViewTipoNormativa.class);
         this.setearIdioma();
         //Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoNormativaFiltro();
@@ -106,8 +100,7 @@ public class ViewTipoNormativa extends AbstractController implements Serializabl
             @Override
             public TipoNormativaGridDTO getRowData(String rowKey) {
                 for (TipoNormativaGridDTO pers : (List<TipoNormativaGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
@@ -118,8 +111,7 @@ public class ViewTipoNormativa extends AbstractController implements Serializabl
             }
 
             @Override
-            public List<TipoNormativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-                                                   Map<String, FilterMeta> filterBy) {
+            public List<TipoNormativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
@@ -172,7 +164,7 @@ public class ViewTipoNormativa extends AbstractController implements Serializabl
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoNormativa", modoAcceso, params, true, 850, 290);
+        UtilJSF.openDialog("dialogTipoNormativa", modoAcceso, params, true, 850, 360);
     }
 
 

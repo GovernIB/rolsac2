@@ -2,9 +2,12 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JProcedimientoAuditoria;
 import es.caib.rolsac2.persistence.util.JSONUtil;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaCMGridDTO;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
+import es.caib.rolsac2.service.model.auditoria.EstadisticaCMDTO;
 import es.caib.rolsac2.service.model.filtro.AuditoriaFiltro;
+import es.caib.rolsac2.service.model.filtro.CuadroMandoFiltro;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +18,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Stateless
@@ -63,6 +69,146 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
     @Override
     public List<AuditoriaGridDTO> findProcedimientoAuditoriasById(Long id) {
         return findAuditoriasById(id, "PROC");
+    }
+
+    @Override
+    public List<AuditoriaCMGridDTO> findAuditoriasUltimaSemana(CuadroMandoFiltro filtro) {
+        final List<AuditoriaCMGridDTO> auditorias = new ArrayList<>();
+        //Creamos fecha de una semana anterior
+        Date fechaAhora = new Date();
+        LocalDateTime ldt = LocalDateTime.ofInstant(fechaAhora.toInstant(), ZoneId.systemDefault()).minusDays(7);
+        Date fechaSemanaAnterior = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+
+        String sql = "SELECT j.codigo, wf.codigo, j.fechaModificacion, j.usuarioModificacion, j.usuarioPerfil, j.accion, t.nombre FROM JProcedimientoAuditoria j " +
+                "LEFT OUTER JOIN JProcedimientoWorkflow wf ON wf.procedimiento.codigo = j.procedimiento.codigo " +
+                "LEFT OUTER JOIN JProcedimientoWorkflowTraduccion t ON t.idioma = :idioma AND t.procedimientoWorkflow.codigo = j.procedimiento.codigo " +
+                "WHERE j.procedimiento.tipo = :tipo AND j.fechaModificacion >= :fecha " +
+                "AND j.fechaModificacion = (SELECT MAX(pr.fechaModificacion) FROM JProcedimientoAuditoria pr WHERE j.procedimiento.codigo = pr.procedimiento.codigo) " +
+                "AND (j.accion = 'A' OR j.accion = 'M') ";
+
+        if(filtro.isRellenoUa()) {
+            sql+= " AND wf.uaInstructor.codigo = :idUa";
+        } else if(filtro.isRellenoEntidad()) {
+            sql += " AND wf.uaInstructor.entidad.codigo = :idEntidad";
+        }
+
+
+        final Query query = entityManager.createQuery(sql);
+        query.setParameter("idioma", filtro.getIdioma());
+        query.setParameter("fecha", fechaSemanaAnterior);
+        query.setParameter("tipo", filtro.getTipo());
+        if(filtro.isRellenoUa()) {
+            query.setParameter("idUa", filtro.getIdUa());
+        } else if(filtro.isRellenoEntidad()) {
+            query.setParameter("idEntidad", filtro.getIdEntidad());
+        }
+
+        final List<Object[]> resultados = query.getResultList();
+        if (resultados != null && !resultados.isEmpty()) {
+            for (final Object[] resultado : resultados) {
+                final AuditoriaCMGridDTO registroAuditoria = new AuditoriaCMGridDTO();
+                registroAuditoria.setCodigo((Integer) resultado[0]);
+                registroAuditoria.setIdAuditado((Long) resultado[1]);
+                if (resultado[2] != null) {
+                    Timestamp fecha = (Timestamp) resultado[2];
+                    java.util.Date date = new java.util.Date(fecha.getTime());
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    registroAuditoria.setFecha(format.format(date));
+                }
+
+                registroAuditoria.setUsuario((String) resultado[3]);
+                registroAuditoria.setUsuarioPerfil((String) resultado[4]);
+                registroAuditoria.setAccion((String) resultado[5]);
+                registroAuditoria.setNombreAuditado((String) resultado[6]);
+                auditorias.add(registroAuditoria);
+            }
+        }
+        return auditorias;
+    }
+
+
+
+    public EstadisticaCMDTO countByFiltro(CuadroMandoFiltro filtro) {
+        //Obtenemos los 7 dias anteriores al de hoy
+        List<String> fechas = new ArrayList<>();
+        Date fechaAhora = new Date();
+        LocalDateTime fechaHoyLdt = LocalDateTime.ofInstant(fechaAhora.toInstant(), ZoneId.systemDefault()).withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime primerDiaLdt = fechaHoyLdt.minusDays(7);
+        LocalDateTime segundoDiaLdt = fechaHoyLdt.minusDays(6);
+        LocalDateTime tercerDiaLdt = fechaHoyLdt.minusDays(5);
+        LocalDateTime cuartoDiaLdt = fechaHoyLdt.minusDays(4);
+        LocalDateTime quintoDiaLDt = fechaHoyLdt.minusDays(3);
+        LocalDateTime sextoDiaLDt = fechaHoyLdt.minusDays(2);
+        LocalDateTime septimoDiaLdt = fechaHoyLdt.minusDays(1);
+        Date primerDia  = Date.from(primerDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
+        Date segundoDia  = Date.from(segundoDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
+        Date tercerDia  = Date.from(tercerDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
+        Date cuartoDia  = Date.from(cuartoDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
+        Date quintoDia  = Date.from(quintoDiaLDt.atZone(ZoneId.systemDefault()).toInstant());
+        Date sextoDia  = Date.from(sextoDiaLDt.atZone(ZoneId.systemDefault()).toInstant());
+        Date septimoDia  = Date.from(septimoDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
+        Date fechaHoy = Date.from(fechaHoyLdt.atZone(ZoneId.systemDefault()).toInstant());
+
+        String pattern = "dd/MM/yyyy";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+        fechas.add(simpleDateFormat.format(primerDia));
+        fechas.add(simpleDateFormat.format(segundoDia));
+        fechas.add(simpleDateFormat.format(tercerDia));
+        fechas.add(simpleDateFormat.format(cuartoDia));
+        fechas.add(simpleDateFormat.format(quintoDia));
+        fechas.add(simpleDateFormat.format(sextoDia));
+        fechas.add(simpleDateFormat.format(septimoDia));
+
+        String sql = "SELECT SUM(CASE WHEN (j.fechaModificacion BETWEEN :primerDia AND :segundoDia AND j.procedimiento.tipo = :tipo AND j.accion = :accion) THEN 1 ELSE 0 END), " +
+                "SUM(CASE WHEN (j.fechaModificacion BETWEEN :segundoDia AND :tercerDia AND j.procedimiento.tipo = :tipo AND j.accion = :accion) THEN 1 ELSE 0 END), " +
+                "SUM(CASE WHEN (j.fechaModificacion BETWEEN :tercerDia AND :cuartoDia AND j.procedimiento.tipo = :tipo AND j.accion = :accion) THEN 1 ELSE 0 END), " +
+                "SUM(CASE WHEN (j.fechaModificacion BETWEEN :cuartoDia AND :quintoDia AND j.procedimiento.tipo = :tipo AND j.accion = :accion) THEN 1 ELSE 0 END), " +
+                "SUM(CASE WHEN (j.fechaModificacion BETWEEN :quintoDia AND :sextoDia AND j.procedimiento.tipo = :tipo AND j.accion = :accion) THEN 1 ELSE 0 END), " +
+                "SUM(CASE WHEN (j.fechaModificacion BETWEEN :sextoDia AND :septimoDia AND j.procedimiento.tipo = :tipo AND j.accion = :accion) THEN 1 ELSE 0 END), " +
+                "SUM(CASE WHEN (j.fechaModificacion BETWEEN :septimoDia AND :fechaHoy AND j.procedimiento.tipo = :tipo AND j.accion = :accion) THEN 1 ELSE 0 END) " +
+                "FROM JProcedimientoAuditoria j LEFT OUTER JOIN JProcedimientoWorkflow wf ON wf.procedimiento.codigo = j.procedimiento.codigo WHERE 1 = 1 ";
+
+        if(filtro.isRellenoUa()) {
+            sql+= " AND wf.uaInstructor.codigo = :idUa";
+        } else if(filtro.isRellenoEntidad()) {
+            sql += " AND wf.uaInstructor.entidad.codigo = :idEntidad";
+        }
+
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("primerDia", primerDia);
+        query.setParameter("segundoDia", segundoDia);
+        query.setParameter("tercerDia", tercerDia);
+        query.setParameter("cuartoDia", cuartoDia);
+        query.setParameter("quintoDia", quintoDia);
+        query.setParameter("sextoDia", sextoDia);
+        query.setParameter("septimoDia", septimoDia);
+        query.setParameter("fechaHoy", fechaHoy);
+        query.setParameter("tipo", filtro.getTipo());
+        query.setParameter("accion", filtro.getAccion());
+        if(filtro.isRellenoUa()) {
+            query.setParameter("idUa", filtro.getIdUa());
+        } else if(filtro.isRellenoEntidad()) {
+            query.setParameter("idEntidad", filtro.getIdEntidad());
+        }
+
+        List<Long> resultadosPorDia = new ArrayList<>();
+        final Object[] resultado = (Object[]) query.getSingleResult();
+        if(resultado != null) {
+            resultadosPorDia.add(resultado[0] == null ? 0 : (Long) resultado[0]);
+            resultadosPorDia.add(resultado[1] == null ? 0 : (Long) resultado[1]);
+            resultadosPorDia.add(resultado[2] == null ? 0 : (Long) resultado[2]);
+            resultadosPorDia.add(resultado[3] == null ? 0 : (Long) resultado[3]);
+            resultadosPorDia.add(resultado[4] == null ? 0 : (Long) resultado[4]);
+            resultadosPorDia.add(resultado[5] == null ? 0 : (Long) resultado[5]);
+            resultadosPorDia.add(resultado[6] == null ? 0 : (Long) resultado[6]);
+        }
+
+        EstadisticaCMDTO estadistica = new EstadisticaCMDTO();
+        estadistica.setDiasSemana(fechas);
+        estadistica.setValores(resultadosPorDia);
+        return estadistica;
+
     }
 
     private List<AuditoriaGridDTO> findAuditoriasById(Long id, String tipo) {

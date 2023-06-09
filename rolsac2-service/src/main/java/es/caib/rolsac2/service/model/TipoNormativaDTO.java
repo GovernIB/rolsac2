@@ -15,6 +15,8 @@ public class TipoNormativaDTO extends ModelApi {
     private Long codigo;
     private String identificador;
     private Literal descripcion;
+    private Long codigoSIA;
+    private Long codigoBOIB;
 
     public TipoNormativaDTO() {
     }
@@ -87,6 +89,22 @@ public class TipoNormativaDTO extends ModelApi {
         return codigo.equals(that.codigo);
     }
 
+    public Long getCodigoSIA() {
+        return codigoSIA;
+    }
+
+    public void setCodigoSIA(Long codigoSIA) {
+        this.codigoSIA = codigoSIA;
+    }
+
+    public Long getCodigoBOIB() {
+        return codigoBOIB;
+    }
+
+    public void setCodigoBOIB(Long codigoBOIB) {
+        this.codigoBOIB = codigoBOIB;
+    }
+
     @Override
     public TipoNormativaDTO clone() {
         return new TipoNormativaDTO(this);
@@ -99,10 +117,6 @@ public class TipoNormativaDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "TipoNormativaDTO{" +
-                "id=" + codigo +
-                ", identificador=" + identificador +
-                ", descripcion=" + descripcion.toString() +
-                '}';
+        return "TipoNormativaDTO{" + "id=" + codigo + ", identificador=" + identificador + ", descripcion=" + descripcion.toString() + '}';
     }
 }

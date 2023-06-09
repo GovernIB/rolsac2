@@ -1,11 +1,11 @@
 package es.caib.rolsac2.persistence.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import es.caib.rolsac2.persistence.model.JProcedimientoTramite;
 import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Interface de las operaciones básicas sobre procs.
@@ -21,4 +21,6 @@ public interface ProcedimientoTramiteRepository extends CrudRepository<JProcedim
 	List<ProcedimientoTramiteDTO> findPagedByFiltroRest(ProcedimientoTramiteFiltro filtro);
 
 	long countByFiltro(ProcedimientoTramiteFiltro filtro);
+
+	String getEnlaceTelematico(ProcedimientoTramiteFiltro filtro);
 }

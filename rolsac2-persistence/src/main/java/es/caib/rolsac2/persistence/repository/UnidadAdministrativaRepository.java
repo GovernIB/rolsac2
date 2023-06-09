@@ -13,11 +13,15 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     UnidadAdministrativaDTO findUASimpleByID(Long id, String idioma, Long idEntidadRoot);
 
+    Boolean checkExsiteUa(Long idUa);
+
     Optional<JUnidadAdministrativa> findById(String id);
 
     List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro);
 
     List<JUnidadAdministrativa> getHijos(Long idUnitat, String idioma);
+
+    JUnidadAdministrativa findRootEntidad(Long idEntidad);
 
 
     Long getCountHijos(Long parentId);

@@ -54,6 +54,10 @@ public class JProcedimientoAuditoria {
     @Column(name = "PRAU_LTLFLJ", nullable = false)
     private String literalFlujo;
 
+    @Column(name = "PRAU_ACCION", nullable = false, length = 2)
+    private String accion;
+
+
     /**
      * Obtiene codigo.
      *
@@ -158,5 +162,13 @@ public class JProcedimientoAuditoria {
 
     public void setLiteralFlujo(String literalFlujo) {
         this.literalFlujo = literalFlujo;
+    }
+
+    public String getAccion() {
+        return accion;
+    }
+
+    public void setAccion(String accion) {
+        this.accion = accion;
     }
 }

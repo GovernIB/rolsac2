@@ -78,6 +78,22 @@ public interface NormativaServiceFacade {
      */
     Long countByEntidad(Long entidadId);
 
+    /**
+     * Devuelve el total de Normativas en la bbdd.
+     *
+     * @param
+     * @return
+     */
+    Long countAll();
+
+    /**
+     * Devuelve el total de Normativas relacionado con los parámetros del codigo de la Unidad Administrativa.
+     *
+     * @param uaId
+     * @return
+     */
+    Long countByUa(Long uaId);
+
 
     /**
      * Muestra las afectaciones relacioandas a una normativa.

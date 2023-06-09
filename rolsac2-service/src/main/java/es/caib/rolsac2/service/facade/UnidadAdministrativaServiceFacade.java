@@ -45,6 +45,8 @@ public interface UnidadAdministrativaServiceFacade {
      */
     UnidadAdministrativaDTO findUASimpleByID(Long id, String idioma, Long idEntidadRoot);
 
+    UnidadAdministrativaDTO findRootEntidad(Long idEntidad);
+
 
     /**
      * Crea un nueva ua a la base de datos.

@@ -88,7 +88,7 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
         // sql.append(" and j.unidadAdministrativa = :ua");
         // }
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.id as string) LIKE :filtro OR LOWER(j.identificador) LIKE :filtro " + " OR LOWER(t.descripcion) LIKE :filtro OR LOWER(t.cargoMasculino) LIKE :filtro " + " OR LOWER(t.cargoFemenino) LIKE :filtro OR LOWER(t.tratamientoMasculino) LIKE :filtro " + " OR LOWER(t.tratamientoFemenino) LIKE :filtro " + "OR LOWER(j.entidad.dir3) LIKE :filtro ) ");
+            sql.append(" and ( LOWER(j.identificador) LIKE :filtro " + " OR LOWER(t.descripcion) LIKE :filtro OR LOWER(t.cargoMasculino) LIKE :filtro " + " OR LOWER(t.cargoFemenino) LIKE :filtro OR LOWER(t.tratamientoMasculino) LIKE :filtro " + " OR LOWER(t.tratamientoFemenino) LIKE :filtro ) ");
         }
         if (filtro.isRellenoEntidad()) {
             sql.append(" and j.entidad.id = :entidad ");
@@ -103,7 +103,7 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
         Query query = entityManager.createQuery(sql.toString());
 
         if (filtro.isRellenoTexto()) {
-            query.setParameter("filtro", "%" + filtro.getTexto() + "%");
+            query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }
 
         if (filtro.isRellenoIdioma()) {

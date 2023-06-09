@@ -79,6 +79,10 @@ public enum TypeProcedimientoEstado {
             case MODIFICACION:
             case PENDIENTE_PUBLICAR:
                 return TypeProcedimientoWorkflow.MODIFICACION;
+            case PENDIENTE_BORRAR:
+                return TypeProcedimientoWorkflow.MODIFICACION;
+            case PENDIENTE_RESERVAR:
+                return TypeProcedimientoWorkflow.MODIFICACION;
             case BORRADO:
             case PUBLICADO:
             case RESERVA:

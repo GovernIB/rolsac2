@@ -208,7 +208,7 @@ public class SessionBean implements Serializable {
                 } else {
                     this.perfil = checkPerfilPosible();
                     actualizarPerfiles();
-                    actualizarUnidadAdministrativa(usuario);
+                    actualizarUnidadAdministrativa(usuario, perfil, sesionDTO);
                     actualizarEntidades();
                     if (perfil.equals(TypePerfiles.GESTOR)) {
                         try {
@@ -248,7 +248,7 @@ public class SessionBean implements Serializable {
         if (!perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
             Boolean permiso = checkPermisosPerfil(perfil);
             if (permiso) {
-                actualizarUnidadAdministrativa(usuario);
+                actualizarUnidadAdministrativa(usuario, perfil, sesionDTO);
                 if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR)) {
                     checkUaGestor(unidadActiva);
                 }
@@ -493,14 +493,29 @@ public class SessionBean implements Serializable {
      *
      * @param usuario
      */
-    public void actualizarUnidadAdministrativa(UsuarioDTO usuario) {
-        if (usuario.getUnidadesAdministrativas() != null && !usuario.getUnidadesAdministrativas().isEmpty()) {
-            UnidadAdministrativaGridDTO uAdm = usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).findFirst().orElse(null);
+    public void actualizarUnidadAdministrativa(UsuarioDTO usuario, TypePerfiles perfil, SesionDTO sesionDTO) {
+        if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR)) {
+            if (usuario.getUnidadesAdministrativas() != null && !usuario.getUnidadesAdministrativas().isEmpty()) {
+                UnidadAdministrativaGridDTO unidadSesion = usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getCodigo().compareTo(sesionDTO.getIdUa()) == 0).findFirst().orElse(null);
 
-            this.unidadActiva = uAdm == null ? uaService.getUnidadesAdministrativaByEntidadId(this.entidad.getCodigo(), lang).get(0) : uaService.findById(uAdm.getCodigo());
+                this.unidadActiva = unidadSesion == null ? uaService.findById(usuario.getUnidadesAdministrativas().get(0).getCodigo()) : uaService.findById(unidadSesion.getCodigo());
+            } else {
+                unidadActiva = uaService.getUnidadesAdministrativaByEntidadId(this.entidad.getCodigo(), lang).get(0);
+            }
         } else {
-            unidadActiva = uaService.getUnidadesAdministrativaByEntidadId(this.entidad.getCodigo(), lang).get(0);
+            if (sesionDTO.getIdUa() == null) {
+                this.unidadActiva = uaService.findRootEntidad(entidad.getCodigo());
+            } else {
+                this.unidadActiva = uaService.findById(sesionDTO.getIdUa());
+            }
         }
+
+    }
+
+    public void actualizarUaSesion() {
+        SesionDTO sesionDTO = systemServiceBean.findSesionById(obtenerUsuarioAutenticado().getCodigo());
+        sesionDTO.setIdUa(unidadActiva.getCodigo());
+        systemServiceBean.updateSesion(sesionDTO);
     }
 
     public List<UnidadAdministrativaGridDTO> obtenerUasEntidad() {
@@ -518,7 +533,7 @@ public class SessionBean implements Serializable {
         if (ent != null && entidades.contains(ent)) {
             entidad = administracionSupServiceFacade.findEntidadById(ent.getCodigo());
             UsuarioDTO usuario = obtenerUsuarioAutenticado();
-            actualizarUnidadAdministrativa(usuario);
+            actualizarUnidadAdministrativa(usuario, perfil, sesionDTO);
             sesionDTO.setIdEntidad(entidad.getCodigo());
             sesionDTO.setIdUa(unidadActiva.getCodigo());
             sesionDTO.setFechaUltimaSesion(new Date());
@@ -923,6 +938,7 @@ public class SessionBean implements Serializable {
             tiposViewIds.add("/monitorizacion/viewProcesosLog.xhtml");
             tiposViewIds.add("/monitorizacion/viewProcesosSolr.xhtml");
             tiposViewIds.add("/monitorizacion/viewProcesosSIA.xhtml");
+            tiposViewIds.add("/monitorizacion/viewProcesosMigracion.xhtml");
             tiposViewIds.add("/entidades/viewEntidadRaiz.xhtml");
             String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
             return tiposViewIds.contains(viewId);

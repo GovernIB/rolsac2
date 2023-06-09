@@ -1,13 +1,12 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
+import es.caib.rolsac2.service.utils.AuditoriaUtil;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
-import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
-import es.caib.rolsac2.service.utils.AuditoriaUtil;
 
 /**
  * Dades de una Unidad Administrativa.
@@ -46,7 +45,7 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
     /**
      * Abreviatura entidad
      **/
-    private String abreviatura;
+    private Literal abreviatura;
     /**
      * Telefono
      **/
@@ -366,7 +365,7 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
      *
      * @return abreviatura
      */
-    public String getAbreviatura() {
+    public Literal getAbreviatura() {
         return abreviatura;
     }
 
@@ -375,7 +374,7 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
      *
      * @param abreviatura abreviatura
      */
-    public void setAbreviatura(String abreviatura) {
+    public void setAbreviatura(Literal abreviatura) {
         this.abreviatura = abreviatura;
     }
 
@@ -716,9 +715,7 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
 
     @Override
     public String toString() {
-        return "UnidadAdministrativaDTO{" +
-                "codigo=" + codigo +
-                '}';
+        return "UnidadAdministrativaDTO{" + "codigo=" + codigo + '}';
     }
 
     /**
@@ -728,8 +725,7 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
      * @return int
      */
     public int compareTo(final UnidadAdministrativaDTO ua) {
-        if (ua == null)
-            throw new NullPointerException("ua");
+        if (ua == null) throw new NullPointerException("ua");
 
         return Long.compare(this.getCodigo(), ua.getCodigo());
     }

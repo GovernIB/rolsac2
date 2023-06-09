@@ -12,8 +12,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
         <f:metadata>
-<!--             <f:viewAction action="#{viewTipoSexo.load}"/> -->
-<!--             <f:viewAction action="#{viewTipoBoletin.load}"/> -->
+            <!--             <f:viewAction action="#{viewTipoSexo.load}"/> -->
+            <!--             <f:viewAction action="#{viewTipoBoletin.load}"/> -->
+            <f:viewAction action="#{viewCuadroControl.load}"/>
         </f:metadata>
     </ui:define>
 
@@ -31,207 +32,167 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="content">
-        <div class="px-5">
-            <h:form>
-                <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
-                                 action="#{viewConfiguracionesGlobales.buscar}" update="dataTable"/>
+        <h:form id="form">
+            <div class="container">
+                <p:panel header="#{labels['viewCuadroControl.ua']}" styleClass="text-center mt-2 panel-cm">
+                    <div class="row mt-2">
+                        <div class="col-12 col-md-3">
+                            <div class="row g-10 mb-3">
+                                <div class="col-12 text-center">
+                                    <p:commandButton id="uaGeneral"
+                                                     action="#{viewCuadroControl.abrirVentanaUA()}"
+                                                     icon="pi pi-sitemap"
+                                                     styleClass="w40px h25px iconoUAselector ml-2"
+                                                     value=" "
+                                                     process="@this">
+                                        <p:ajax event="dialogReturn" listener="#{viewCuadroControl.returnDialogoUA}"
+                                                process="@this"
+                                                update="uaSeleccionada contenidos statsSemana statsMensuales"/>
+                                    </p:commandButton>
+                                    <h:outputLabel value="#{labels['viewCuadroControl.seleccionUA']}"
+                                                   for="uaGeneral"></h:outputLabel>
+                                </div>
+                                <div class="col-12 text-center">
+                                    <p:selectBooleanCheckbox value="#{viewCuadroControl.buscarTodo}"
+                                                             itemLabel="Seleccionar totes les unitats">
+                                        <p:ajax listener="#{viewCuadroControl.cambioCheckTodasUa}"
+                                                update="uaSeleccionada contenidos statsSemana statsMensuales"/>
+                                    </p:selectBooleanCheckbox>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-9 my-auto">
+                            <h:panelGroup id="panelSeleccionada">
+                                <h:outputLabel value="#{labels['viewCuadroControl.uaSeleccionada']}: "
+                                               for="uaSeleccionada"/>
+                                <p:inputText id="uaSeleccionada"
+                                             value="#{viewCuadroControl.buscarTodo ? labels['viewCuadroControl.todas'] : viewCuadroControl.uaSeleccionada.nombre.getTraduccion(viewCuadroControl.idioma)}"
+                                             disabled="true" styleClass="w-50 ml-2"></p:inputText>
+                            </h:panelGroup>
 
-                <!--
-                <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500" widgetVar="panel" collapsed="true">
-                  <f:facet name="header">
-                    <p style="margin:10px">Cuadro control</p>
-                  </f:facet>
-
+                        </div>
+                    </div>
                 </p:panel>
-
-                -->
-                <br/><br/>
-
-
-                <h:outputText value="Gràfica resum última setmana" style="font-weight:bold; font-size:20px"/>
-
-
-                <br/><br/>
-
-                <h:form>
-
-                    <h:panelGrid columns="2" cellpadding="5">
-
-                        <h:outputLabel value="Unitats administratives:"/>
-
-
-                        <!--
-                        poner icono
-                        -->
-
-
-                        <my:unidadAdministrativaComponent id="uaGeneral"
-                                                          value="#{sessionBean.unidadActiva}"
-                                                          idioma="#{sessionBean.lang}"
-                                                          ocultarTexto="true" esCabecera="true">
-                        </my:unidadAdministrativaComponent>
-
-
-                    </h:panelGrid>
-
-                    <p:selectBooleanCheckbox value="#{selectBooleanView.value1}"
-                                             itemLabel="Seleccionar totes les unitats"/>
-
-                    <p:commandButton value="Buscar"/>
-
-
-                </h:form>
-
-
-                <br/><br/>
-
-
-                <p:layout styleClass="mt-3" style="min-width:400px;min-height:200px;">
-                    <p:layoutUnit position="west" size="50%">
-                        <h:outputText value="Darreres modificacions" style="font-weight:bold; font-size:20px"/>
-                        <br/><br/>
-
-                        <p:dataTable id="dataTable1" value="#{viewTipoSexo.lazyModel}" var="tipoSexo"
-                                     paginator="true" lazy="true" filterDelay="300" widgetVar="tipoSexoTable"
-                                     rows="#{viewTipoSexo.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
-                                     first="#{viewTipoSexo.filtro.paginaFirst}"
-                                     paginatorPosition="bottom" paginatorAlwaysVisible="true"
-                                     paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
-                                {NextPageLink} {LastPageLink}"
+            </div>
+            <div class="row mx-3 mt-3">
+                <div class="col-12 col-md-6 p-2">
+                    <p:panel header="#{labels['viewCuadroControl.ultimasModificaciones']}" styleClass="panel-cm">
+                        <h6>#{labels['viewCuadroControl.procedimientos']}</h6>
+                        <p:dataTable id="ultimosProcs" var="dto" value="#{viewCuadroControl.procedimientosModificados}"
+                                     selectionMode="single" selection="#{viewCuadroControl.procSeleccionado}"
+                                     paginator="true" rows="5" paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                                     {NextPageLink} {LastPageLink}"
                                      currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
-                                     emptyMessage="#{labels['dict.noHayDatos']}"
-                                     rowKey="#{tipoSexo.codigo}"
-                                     reflow="true"
-                                     sortBy="#{viewTipoSexo.filtro.orderBy}"
-                                     sortOrder="#{viewTipoSexo.filtro.order}"
-                        >
-                            <f:facet name="{RowsPerPageLabel}">
-                                #{labels.dataTable_rowsPerPage}
-                            </f:facet>
-                            <p:column sortBy="#{tipoSexo.codigo}">
-                                <f:facet name="header">#{labels['viewCuadroControl.tipus']}</f:facet>
-                                <h:outputText value="#{tipoSexo.codigo}"/>
+                                     emptyMessage="#{labels['dict.noHayDatos']}" rowKey="#{dto.codigo}"
+                                     reflow="true" paginatorPosition="bottom" paginatorAlwaysVisible="false">
+                            <p:column headerText="#{labels['dict.nombre']}" styleClass="w50">
+                                <h:outputText value="#{dto.nombreAuditado}"/>
                             </p:column>
-                            <p:column sortBy="#{tipoSexo.identificador}">
-                                <f:facet name="header">#{labels['viewCuadroControl.visible']}</f:facet>
-                                <h:outputText value="#{tipoSexo.identificador}"/>
+
+                            <p:column headerText="#{labels['viewCuadroControl.fechaModificacion']}">
+                                <h:outputText value="#{dto.fecha}"/>
                             </p:column>
-                            <p:column sortBy="#{tipoSexo.descripcion}" styleClass="overflow-datagrid-cell">
-                                <f:facet name="header">#{labels['viewCuadroControl.noVisible']}</f:facet>
-                                <h:outputText value="#{tipoSexo.descripcion.getTraduccion(sessionBean.lang)}"/>
+
+                            <p:column headerText="#{labels['dict.usuario']}">
+                                <h:outputText value="#{dto.usuario}"/>
                             </p:column>
-                            <p:column sortBy="#{tipoSexo.descripcion}" styleClass="overflow-datagrid-cell">
-                                <f:facet name="header">#{labels['viewCuadroControl.total']}</f:facet>
-                                <h:outputText value="#{tipoSexo.descripcion.getTraduccion(sessionBean.lang)}"/>
+
+                            <p:column styleClass="w10">
+                                <p:commandButton icon="pi pi-eye" styleClass="ml-2"
+                                                 actionListener="#{viewCuadroControl.consultarProcedimiento(dto.idAuditado)}"
+                                                 process="@this"/>
                             </p:column>
                         </p:dataTable>
 
+                        <hr/>
 
-                    </p:layoutUnit>
-
-                    <p:layoutUnit position="center">
-                        <h:outputText value="Nombre de continguts" style="font-weight:bold; font-size:20px"/>
-                        <br/><br/>
-
-
-                        <!--
-                        <p:dataTable id="dataTable2" value="#{viewTipoSexo.lazyModel}" var="tipoSexo"
-                                     lazy="true" filterDelay="300" widgetVar="tipoSexoTable"
-                                     rows="#{viewTipoSexo.filtro.paginaTamanyo}"
-                                     first="#{viewTipoSexo.filtro.paginaFirst}"
+                        <h6>#{labels['viewCuadroControl.servicios']}</h6>
+                        <p:dataTable id="ultimosServs" var="dto" value="#{viewCuadroControl.serviciosModificados}"
+                                     selectionMode="single" selection="#{viewCuadroControl.servSeleccionado}"
+                                     paginator="true" rows="5" paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                                     {NextPageLink} {LastPageLink}"
                                      currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
-                                     emptyMessage="#{labels['dict.noHayDatos']}"
-                                     rowKey="#{tipoSexo.codigo}"
-                                     reflow="true"
-                                     sortBy="#{viewTipoSexo.filtro.orderBy}"
-                                     sortOrder="#{viewTipoSexo.filtro.order}"
-                        >
+                                     emptyMessage="#{labels['dict.noHayDatos']}" rowKey="#{dto.codigo}"
+                                     reflow="true" paginatorPosition="bottom" paginatorAlwaysVisible="false">
+                            <p:column headerText="#{labels['dict.nombre']}" styleClass="w50">
+                                <h:outputText value="#{dto.nombreAuditado}"/>
+                            </p:column>
 
+                            <p:column headerText="#{labels['viewCuadroControl.fechaModificacion']}">
+                                <h:outputText value="#{dto.fecha}"/>
+                            </p:column>
 
-                          <p:column sortBy="#{tipoSexo.codigo}">
-                            <f:facet name="header">#{labels['viewCuadroControl.tipus']}</f:facet>
-                            <h:outputText value="#{tipoSexo.codigo}"/>
-                          </p:column>
-                          <p:column sortBy="#{tipoSexo.identificador}">
-                            <f:facet name="header">#{labels['viewCuadroControl.visible']}</f:facet>
-                            <h:outputText value="#{tipoSexo.identificador}"/>
-                          </p:column>
-                          <p:column sortBy="#{tipoSexo.descripcion}" styleClass="overflow-datagrid-cell">
-                            <f:facet name="header">#{labels['viewCuadroControl.noVisible']}</f:facet>
-                            <h:outputText value="#{tipoSexo.descripcion.getTraduccion(sessionBean.lang)}"/>
-                          </p:column>
-                          <p:column sortBy="#{tipoSexo.descripcion}" styleClass="overflow-datagrid-cell">
-                            <f:facet name="header">#{labels['viewCuadroControl.total']}</f:facet>
-                            <h:outputText value="#{tipoSexo.descripcion.getTraduccion(sessionBean.lang)}"/>
-                          </p:column>
+                            <p:column headerText="#{labels['dict.usuario']}">
+                                <h:outputText value="#{dto.usuario}"/>
+                            </p:column>
+
+                            <p:column styleClass="w10">
+                                <p:commandButton icon="pi pi-eye" styleClass="ml-2"
+                                                 actionListener="#{viewCuadroControl.consultarServicio(dto.idAuditado)}"
+                                                 process="@this"/>
+                            </p:column>
                         </p:dataTable>
-                        -->
-
-
-                        <p:dataTable var="contingut" value="#{dtBasicView.continguts}"
-                                     style="background-color:#edce6f;">
+                    </p:panel>
+                </div>
+                <div class="col-12 col-md-6 p-2">
+                    <p:panel header="#{labels['viewCuadroControl.numContenidos']}" styleClass="panel-cm">
+                        <p:dataTable id="contenidos" var="dto" value="#{viewCuadroControl.listaDtos}" reflow="true">
                             <p:column headerText="#{labels['viewCuadroControl.tipus']}" style="font-weight:bold">
-                                <h:outputText value="#{contingut.id}" style="color: blue;"/>
+                                <h:outputText value="#{labels[dto.titulos]}" style="color: blue;"/>
                             </p:column>
 
                             <p:column headerText="#{labels['viewCuadroControl.visible']}">
-                                <h:outputText value="#{contingut.year}"/>
+                                <h:outputText value="#{dto.numeroVisible}"/>
                             </p:column>
 
                             <p:column headerText="#{labels['viewCuadroControl.noVisible']}">
-                                <h:outputText value="#{contingut.brand}"/>
+                                <h:outputText value="#{dto.numeroNoVisible}"/>
                             </p:column>
 
                             <p:column headerText="#{labels['viewCuadroControl.total']}">
-                                <h:outputText value="#{contingut.color}"/>
+                                <h:outputText value="#{dto.numeroTotal}"/>
                             </p:column>
                         </p:dataTable>
-
-
-                    </p:layoutUnit>
-                </p:layout>
-
-                <br/><br/>
-
-
-                <h:outputText styleClass="mt-3" value="Estadístiques de l'unitat administrativa Presidència"
-                              style="font-weight:bold; font-size:20px"/>
-                <br/><br/>
-                <div class="card">
-                    <p:chart type="bar" model="#{chartView.barModel}" style="height:300px"/>
+                    </p:panel>
                 </div>
+                <div class="col-12">
+                    <p:panel header="#{labels['viewCuadroControl.estadisticas']}" styleClass="panel-cm">
+                        <p:tabView id="statsMensuales">
+                            <c:forEach items="#{viewCuadroControl.aplicaciones}" var="app" varStatus="stat">
+                                <p:tab id="app" title="#{labels['viewCuadroControl.' += app.toLowerCase()]}">
+                                    <div class="card">
+                                        <p:barChart type="bar" model="#{viewCuadroControl.graficosEstadisticas[stat.index]}" styleClass="cm-graf-semana"/>
+                                    </div>
+                                </p:tab>
+                            </c:forEach>
 
-                <br/><br/>
+                        </p:tabView>
+                    </p:panel>
+                </div>
+                <div class="col-12">
+                    <p:panel header="#{labels['viewCuadroControl.resumenSemana']}" styleClass="panel-cm">
+                        <p:tabView id="statsSemana">
+                            <p:tab id="altas" title="#{labels['viewCuadroControl.altas']}">
+                                <div class="card">
+                                    <p:barChart type="bar" model="#{viewCuadroControl.altasChartModel}" styleClass="cm-graf-semana"/>
+                                </div>
+                            </p:tab>
+                            <p:tab id="bajas" title="#{labels['viewCuadroControl.bajas']}">
+                                <div class="card" >
+                                    <p:barChart type="bar" model="#{viewCuadroControl.bajasChartModel}" styleClass="cm-graf-semana"/>
+                                </div>
+                            </p:tab>
+                            <p:tab id="modificaciones" title="#{labels['viewCuadroControl.modificaciones']}">
+                                <div class="card" >
+                                    <p:barChart type="bar" model="#{viewCuadroControl.modificacionesChartModel}" styleClass="cm-graf-semana"/>
+                                </div>
+                            </p:tab>
+                        </p:tabView>
+                    </p:panel>
+                </div>
+            </div>
+        </h:form>
 
-                <h:outputText styleClass="mt-3" value="Gràfica resum de la darrera setmana"
-                              style="font-weight:bold; font-size:20px"/>
-
-                <br/><br/>
-
-                <p:tabView>
-                    <p:tab title="Altes">
-                        <div class="card">
-                            <p:chart type="bar" model="#{chartView.barModel}" style="height:300px"/>
-                        </div>
-
-                    </p:tab>
-                    <p:tab title="Baixes">
-                        <div class="card">
-                            <p:chart type="bar" model="#{chartView.barModel}" style="height:300px"/>
-                        </div>
-
-                    </p:tab>
-                    <p:tab title="Modificacions">
-                        <div class="card">
-                            <p:chart type="bar" model="#{chartView.barModel}" style="height:300px"/>
-                        </div>
-
-                    </p:tab>
-                </p:tabView>
-
-
-            </h:form>
-        </div>
     </ui:define>
 
 </ui:composition>

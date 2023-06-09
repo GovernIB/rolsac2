@@ -249,7 +249,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-9">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
-                                       value="#{labels['dialogProcedimiento.organoCompetente']}:"
+                                       value="#{labels['dialogProcedimiento.organoInstructor']}:"
                                        for="txtOrgComp"/>
                         <p>
 
@@ -372,7 +372,7 @@
                             <f:selectItem itemLabel="#{labels['dict.presencial']}" itemValue="PRE"/>
                             <f:selectItem itemLabel="#{labels['dict.telefonico']}" itemValue="TFN"/>
                             <f:selectItem itemLabel="#{labels['dict.telematico']}" itemValue="TEL" id="telematico"/>
-                            <p:ajax update="txtTraPlantilla txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto txtOpcionTelematica"
+                            <p:ajax update="txtTraPlantilla txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto txtOpcionTelematica panelFormCanales"
                                     event="change" listener="#{dialogServicio.cambiaTipo}"/>
                         </p:selectManyCheckbox>
                     </div>
@@ -406,7 +406,8 @@
                 </div>
 
                 <h:panelGroup id="panelFormCanales">
-                    <h:panelGroup id="panelPlantilla"  rendered="#{dialogServicio.isOpcionTelematicaPlantilla()}">
+                    <h:panelGroup id="panelPlantilla"  rendered="#{dialogServicio.isOpcionTelematicaPlantilla() and
+                    dialogServicio.canalesSeleccionados.contains('TEL')}">
                         <div id="divPlantilla" class="form-row" style="height:100px !important;">
                             <div class="form-group col-md-5">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0"
@@ -432,7 +433,7 @@
                             </div>
                         </div>
                     </h:panelGroup>
-                    <h:panelGroup id="panelDatosTelematico" rendered="#{dialogServicio.isOpcionTelematicaDatos()}">
+                    <h:panelGroup id="panelDatosTelematico" rendered="#{dialogServicio.isOpcionTelematicaDatos() and dialogServicio.canalesSeleccionados.contains('TEL')}">
                         <div id="divDatosTelematico1" class="form-row">
                             <div class="form-grup col-md-4">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.identificador']}:"
@@ -497,7 +498,7 @@
                             </div>
                         </div>
                     </h:panelGroup>
-                    <h:panelGroup id="panelUrlTelematico" rendered="#{dialogServicio.isOpcionTelematicaUrl()}">
+                    <h:panelGroup id="panelUrlTelematico" rendered="#{dialogServicio.isOpcionTelematicaUrl() and dialogServicio.canalesSeleccionados.contains('TEL')}">
                         <div id="divUrlTelematico" class="form-row" style="height:100px !important;">
                             <div class="form-group col-md-6">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.url']}:"

@@ -137,6 +137,7 @@ body {
 
 #footer {
     font-size: 12px;
+    min-height: 70px;
 }
 
 a {
@@ -390,11 +391,21 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 .w20 {
     width: 20%;
 }
-
+.w19 {
+    width: 19%;
+}
+.w18 {
+    width: 18%;
+}
+.w17 {
+    width: 17%;
+}
+.w16 {
+    width: 16%;
+}
 .w15 {
     width: 15%;
 }
-
 .w10 {
     width: 10%;
 }
@@ -1502,6 +1513,24 @@ a.iconoXarxes {
     text-align: left;
 }
 
+
+/*Clases para el cuadro de mando*/
+
+.cuadre-comandament-ua {
+    border: 1px solid #b8bdc2;
+    border-radius: 5px;
+}
+
+.panel-cm .ui-panel-titlebar.ui-widget-header {
+    font-size: 20px;
+}
+
+.cm-graf-semana .chartjs-render-monitor {
+    max-height: 70vh !important;
+    max-width: 80vw !important;
+    margin: auto !important;
+}
+
 .pt1  { padding-top:1px; }
 .pt2  { padding-top:2px; }
 .pt3  { padding-top:3px; }
@@ -1670,3 +1699,7 @@ a.iconoXarxes {
 .ml19 { margin-left:19px; }
 .ml20 { margin-left:20px; }
 
+.g-5 {gap: .5em;}
+.g-10 {gap: 1em;}
+.g-15 {gap: 1.5em;}
+.g-20 {gap: 2em;}

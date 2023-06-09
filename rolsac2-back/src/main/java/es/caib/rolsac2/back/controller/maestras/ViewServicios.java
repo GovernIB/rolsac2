@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
@@ -24,10 +25,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -43,6 +41,9 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     @EJB
     private MaestrasSupServiceFacade maestrasSupService;
+
+    @EJB
+    PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;
     private ServicioGridDTO datoSeleccionado;
     private ProcedimientoFiltro filtro;
     private LazyDataModel<ServicioGridDTO> lazyModel;
@@ -52,6 +53,10 @@ public class ViewServicios extends AbstractController implements Serializable {
     private List<TipoPublicoObjetivoDTO> listTipoPublicoObjetivo;
     private List<TipoFormaInicioDTO> listTipoFormaInicio;
     private List<TipoLegitimacionDTO> listTipoLegitimacion;
+    private List<TipoTramitacionDTO> listPlantillas;
+    private List<PlatTramitElectronicaDTO> listPlataformas;
+
+    private String[] canalesSeleccionados;
 
     public LazyDataModel<ServicioGridDTO> getLazyModel() {
         return lazyModel;
@@ -115,14 +120,29 @@ public class ViewServicios extends AbstractController implements Serializable {
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setTipo("S");
+        filtro.setEsProcedimiento(Boolean.FALSE);
+        canalesSeleccionados = new String[0];
     }
 
     private void cargarFiltros() {
+        filtro.setEsProcedimiento(Boolean.FALSE);
         listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
         listTipoSilencio = maestrasSupService.findAllTipoSilencio();
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
         listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
         listTipoPublicoObjetivo = maestrasSupService.findAllTiposPublicoObjetivo();
+        listPlantillas = new ArrayList<>();
+        TipoTramitacionDTO plantillaFake = new TipoTramitacionDTO();
+        Literal literal = Literal.createInstance();
+        List<Traduccion> traduccions = new ArrayList<>();
+        traduccions.add(new Traduccion("es", "Ninguna"));
+        traduccions.add(new Traduccion("es", "Cap"));
+        literal.setTraducciones(traduccions);
+        plantillaFake.setCodigo(-1l);
+        plantillaFake.setDescripcion(literal);
+        listPlantillas.add(plantillaFake);
+        listPlantillas.addAll(maestrasSupService.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), null));
+        listPlataformas = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
     }
 
     public void nuevoProcedimiento() {
@@ -332,6 +352,9 @@ public class ViewServicios extends AbstractController implements Serializable {
                         filtro.setIdUAsHijas(unidadesHijasAux.subList(0, 999));
                         filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));
                     }
+                    if(canalesSeleccionados!= null && canalesSeleccionados.length > 0) {
+                        filtro.setCanales(Arrays.asList(canalesSeleccionados));
+                    }
                     Pagina<ServicioGridDTO> pagina = procedimientoService.findServiciosByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
@@ -499,5 +522,29 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void setListTipoLegitimacion(List<TipoLegitimacionDTO> listTipoLegitimacion) {
         this.listTipoLegitimacion = listTipoLegitimacion;
+    }
+
+    public List<TipoTramitacionDTO> getListPlantillas() {
+        return listPlantillas;
+    }
+
+    public void setListPlantillas(List<TipoTramitacionDTO> listPlantillas) {
+        this.listPlantillas = listPlantillas;
+    }
+
+    public List<PlatTramitElectronicaDTO> getListPlataformas() {
+        return listPlataformas;
+    }
+
+    public void setListPlataformas(List<PlatTramitElectronicaDTO> listPlataformas) {
+        this.listPlataformas = listPlataformas;
+    }
+
+    public String[] getCanalesSeleccionados() {
+        return canalesSeleccionados;
+    }
+
+    public void setCanalesSeleccionados(String[] canalesSeleccionados) {
+        this.canalesSeleccionados = canalesSeleccionados;
     }
 }
