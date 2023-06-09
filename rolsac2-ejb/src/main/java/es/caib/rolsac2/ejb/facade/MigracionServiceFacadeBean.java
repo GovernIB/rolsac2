@@ -4,7 +4,9 @@ import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.repository.MigracionRepository;
 import es.caib.rolsac2.service.facade.MigracionServiceFacade;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -34,6 +36,7 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
 
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String ejecutarMetodo(String metodo, Long param1, Long param2) {
         return migracionRepository.ejecutarMetodo(metodo, param1, param2);
     }
