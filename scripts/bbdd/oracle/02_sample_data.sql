@@ -47,6 +47,11 @@ VALUES (RS2_PLUGIN_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'Plugin de indexacion si
         '[{"codigo":"url","valor":"http://pre-sia2.redsara.es/axis2/services/wsSIAActualizarActuaciones","orden":null}]',
         'pluginsib.indexacion.sia.', 'SIA');
 
+Insert into ROLSAC2.RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
+VALUES (RS2_PLUGIN_SEQ.NEXTVAL, RS2_ENTIDA_SEQ.CURRVAL, 'Plugin de envío de email', 'es.caib.rolsac2.commons.plugins.email.emailSmtp.EmailSmtpPlugin',
+        '[{"codigo":"jndi","valor":"es.caib.rolsac2.mail","orden":null}]',
+        'pluginsib.email.smtp.', 'EMA');
+
 
 /** Los 3 tipos de publico objetivo basico que son 1.Ciudadano 2.Empresa 3.Administración . **/
 INSERT INTO ROLSAC2.RS2_TIPOPUB(TPPO_CODIGO, TPPO_IDENTI, TPPO_EMPPUB)
