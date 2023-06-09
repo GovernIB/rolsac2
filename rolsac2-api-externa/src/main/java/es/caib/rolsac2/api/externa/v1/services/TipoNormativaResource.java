@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,9 +31,11 @@ import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaTipoNormativa;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import es.caib.rolsac2.service.model.filtro.TipoNormativaFiltro;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_NORMATIVA)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_NORMATIVA, name = Constantes.ENTIDAD_TIPO_NORMATIVA)
@@ -42,6 +43,9 @@ public class TipoNormativaResource {
 
 	@EJB
 	private MaestrasSupServiceFacade tipoNormativaService;
+
+	@EJB
+	private SystemServiceFacade systemService;
 
 	/**
 	 * Listado de TiposNormativa.
@@ -53,11 +57,11 @@ public class TipoNormativaResource {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistarTiposNormativa", summary = "Lista de tipos de normativa", description = "Lista todos los tipos de normativa disponibles")
+	@Operation(operationId = "listarTiposNormativa", summary = "Lista de tipos de normativa", description = "Lista todos los tipos de normativa disponibles")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoNormativa.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistarTiposNormativa(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+	public Response listarTiposNormativa(
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@RequestBody(description = "Filtro: " + FiltroTipoNormativa.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoNormativa.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoNormativa.class))) FiltroTipoNormativa filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
@@ -69,6 +73,8 @@ public class TipoNormativaResource {
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
@@ -96,7 +102,7 @@ public class TipoNormativaResource {
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoNormativa.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getTipoNormativa(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@Parameter(description = "Código de tipo de normativa", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo)
 			throws Exception, ValidationException {
 
@@ -104,6 +110,8 @@ public class TipoNormativaResource {
 		fg.setCodigo(new Long(codigo));
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();

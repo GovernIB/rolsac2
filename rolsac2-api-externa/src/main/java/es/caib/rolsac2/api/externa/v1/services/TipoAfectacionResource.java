@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,9 +31,11 @@ import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaTipoAfectacion;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoAfectacionDTO;
 import es.caib.rolsac2.service.model.filtro.TipoAfectacionFiltro;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_AFECTACION)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_AFECTACION, name = Constantes.ENTIDAD_TIPO_AFECTACION)
@@ -42,6 +43,9 @@ public class TipoAfectacionResource {
 
 	@EJB
 	private MaestrasSupServiceFacade tipoAfectacionService;
+
+	@EJB
+	private SystemServiceFacade systemService;
 
 	/**
 	 * Listado de TiposAfectacion.
@@ -53,11 +57,11 @@ public class TipoAfectacionResource {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistarTiposAfectacion", summary = "Lista de tipos de afectación", description = "Lista todos los tipos de afectación disponibles")
+	@Operation(operationId = "listarTiposAfectacion", summary = "Lista de tipos de afectación", description = "Lista todos los tipos de afectación disponibles")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoAfectacion.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistarTiposAfectacion(
-	@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+	public Response listarTiposAfectacion(
+	@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 	@RequestBody(description = "Filtro: " + FiltroTipoAfectacion.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoAfectacion.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoAfectacion.class))) FiltroTipoAfectacion filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
@@ -69,6 +73,8 @@ public class TipoAfectacionResource {
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
@@ -96,7 +102,7 @@ public class TipoAfectacionResource {
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoAfectacion.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getTipoAfectacion(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@Parameter(description = "Código de tipo de afectación", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo)
 			throws Exception, ValidationException {
 
@@ -105,6 +111,8 @@ public class TipoAfectacionResource {
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();

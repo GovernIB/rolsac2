@@ -33,7 +33,7 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
 			"\"identificador\":\"string\"," + Constantes.SALTO_LINEA +
 			"\"codEnti\":0," + Constantes.SALTO_LINEA +
 			"\"texto\":\"string\"," + Constantes.SALTO_LINEA +
-			"\"idUA\":0 (Usar -1 para recuperar las UA que no tienen padre)," + Constantes.SALTO_LINEA +
+			"\"idUA\":0 . Recupera la UA asociada al código indicado y sus hijas directas (Usar -1 para recuperar las UA que no tienen padre)," + Constantes.SALTO_LINEA +
 			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA +
 			"\"orden\":{\"campo\":\"" + CAMPO_ORD_UA_ORDEN + "\",\"tipoOrden\":\"ASC/DESC\"}" +
 			"}"

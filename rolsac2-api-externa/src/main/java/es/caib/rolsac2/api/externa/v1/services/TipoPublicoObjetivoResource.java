@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,9 +31,11 @@ import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaTipoPublicoObjetivo;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
 import es.caib.rolsac2.service.model.filtro.TipoPublicoObjetivoFiltro;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PUBLICO)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PUBLICO, name = Constantes.ENTIDAD_PUBLICO)
@@ -42,6 +43,9 @@ public class TipoPublicoObjetivoResource {
 
 	@EJB
 	private MaestrasSupServiceFacade tipoPublicoObjetivoService;
+
+	@EJB
+	private SystemServiceFacade systemService;
 
 	/**
 	 * Listado de TiposPublicoObjetivo.
@@ -53,11 +57,11 @@ public class TipoPublicoObjetivoResource {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistarTiposPublicoObjetivo", summary = "Lista de tipos de publico objetivo SIA", description = "Lista todos los tipos de publico objetivo SIA disponibles")
+	@Operation(operationId = "listarTiposPublicoObjetivo", summary = "Lista de tipos de publico objetivo SIA", description = "Lista todos los tipos de publico objetivo SIA disponibles")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoPublicoObjetivo.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistarTiposPublicoObjetivo(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+	public Response listarTiposPublicoObjetivo(
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@RequestBody(description = "Filtro: " + FiltroTipoPublicoObjetivo.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoPublicoObjetivo.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoPublicoObjetivo.class))) FiltroTipoPublicoObjetivo filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
@@ -68,6 +72,8 @@ public class TipoPublicoObjetivoResource {
 		TipoPublicoObjetivoFiltro fg = filtro.toTipoPublicoObjetivoFiltro();
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
@@ -95,7 +101,7 @@ public class TipoPublicoObjetivoResource {
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoPublicoObjetivo.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getTipoPublicoObjetivo(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@Parameter(description = "Código de tipo de publico objetivo SIA", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo)
 			throws Exception, ValidationException {
 
@@ -103,6 +109,8 @@ public class TipoPublicoObjetivoResource {
 		fg.setCodigo(new Long(codigo));
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();

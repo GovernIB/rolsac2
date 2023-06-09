@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -31,10 +30,15 @@ import es.caib.rolsac2.api.externa.v1.model.filters.FiltroTipoProcedimiento;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaTipoProcedimiento;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.facade.EntidadServiceFacade;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
+import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoProcedimientoDTO;
+import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoProcedimientoFiltro;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_PROCEDIMIENTO)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_PROCEDIMIENTO, name = Constantes.ENTIDAD_TIPO_PROCEDIMIENTO)
@@ -42,6 +46,12 @@ public class TipoProcedimientoResource {
 
 	@EJB
 	private MaestrasSupServiceFacade tipoProcedimientoService;
+
+	@EJB
+	private SystemServiceFacade systemService;
+
+	@EJB
+	private EntidadServiceFacade entidadService;
 
 	/**
 	 * Listado de TiposProcedimiento.
@@ -53,11 +63,11 @@ public class TipoProcedimientoResource {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistarTiposProcedimiento", summary = "Lista de tipos de procedimiento", description = "Lista todos los tipos de procedimiento disponibles")
+	@Operation(operationId = "listarTiposProcedimiento", summary = "Lista de tipos de procedimiento", description = "Lista todos los tipos de procedimiento disponibles")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoProcedimiento.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistarTiposProcedimiento(
-	@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+	public Response listarTiposProcedimiento(
+	@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 	@RequestBody(description = "Filtro: " + FiltroTipoProcedimiento.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoProcedimiento.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoProcedimiento.class))) FiltroTipoProcedimiento filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
@@ -69,6 +79,17 @@ public class TipoProcedimientoResource {
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else if(filtro.getIdEntidad() != null) {
+			EntidadFiltro filtroEntidad = new EntidadFiltro();
+			filtroEntidad.setCodigo(filtro.getIdEntidad());
+			Pagina<EntidadDTO> resultadoBusqueda = entidadService.findByFiltroRest(filtroEntidad);
+			if(resultadoBusqueda.getTotal() > 0 && resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest() != null && !resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest().isEmpty()) {
+				fg.setIdioma(resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest());
+			} else {
+				fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+			}
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
@@ -96,7 +117,7 @@ public class TipoProcedimientoResource {
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoProcedimiento.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getTipoProcedimiento(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@Parameter(description = "Código de tipo de procedimiento", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo)
 			throws Exception, ValidationException {
 
@@ -105,6 +126,8 @@ public class TipoProcedimientoResource {
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();

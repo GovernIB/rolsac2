@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,9 +31,11 @@ import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaTipoFormaInicio;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
 import es.caib.rolsac2.service.model.filtro.TipoFormaInicioFiltro;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_FORMA)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TIPO_FORMA, name = Constantes.ENTIDAD_TIPO_FORMA)
@@ -42,6 +43,9 @@ public class TipoFormaInicioResource {
 
 	@EJB
 	private MaestrasSupServiceFacade tipoFormaInicioService;
+
+	@EJB
+	private SystemServiceFacade systemService;
 
 	/**
 	 * Listado de TiposFormaInicio.
@@ -53,11 +57,11 @@ public class TipoFormaInicioResource {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistarTiposFormaInicio", summary = "Lista de tipos de forma de inicio", description = "Lista todos los tipos de forma de inicio disponibles")
+	@Operation(operationId = "listarTiposFormaInicio", summary = "Lista de tipos de forma de inicio", description = "Lista todos los tipos de forma de inicio disponibles")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoFormaInicio.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistarTiposFormaInicio(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+	public Response listarTiposFormaInicio(
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@RequestBody(description = "Filtro: " + FiltroTipoFormaInicio.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoFormaInicio.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoFormaInicio.class))) FiltroTipoFormaInicio filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
@@ -69,6 +73,8 @@ public class TipoFormaInicioResource {
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
@@ -96,7 +102,7 @@ public class TipoFormaInicioResource {
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoFormaInicio.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getTipoFormaInicio(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@Parameter(description = "Código de tipo de forma de inicio", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo)
 			throws Exception, ValidationException {
 
@@ -104,6 +110,8 @@ public class TipoFormaInicioResource {
 		fg.setCodigo(new Long(codigo));
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();

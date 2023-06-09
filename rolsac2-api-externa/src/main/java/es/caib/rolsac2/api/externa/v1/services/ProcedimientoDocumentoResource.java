@@ -32,9 +32,11 @@ import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaProcedimientoDocumento;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PROCEDIMIENTO_DOCUMENTO)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PROCEDIMIENTO_DOCUMENTO, name = Constantes.ENTIDAD_PROCEDIMIENTO_DOCUMENTO)
@@ -42,6 +44,9 @@ public class ProcedimientoDocumentoResource {
 
 	@EJB
 	private ProcedimientoServiceFacade procedimientoService;
+
+	@EJB
+	private SystemServiceFacade systemService;
 
 
 	/**
@@ -54,11 +59,11 @@ public class ProcedimientoDocumentoResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistar", summary = "Lista los procedimientos documentos", description = "Lista los procedimientos documentos disponibles en funcion de los filtros")
+	@Operation(operationId = "listar", summary = "Lista los procedimientos documentos", description = "Lista los procedimientos documentos disponibles en funcion de los filtros")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoDocumento.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistar(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+	public Response listar(
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@RequestBody(description = "Filtro de procedimiento documentos: "
 					+ FiltroProcedimientoDocumento.SAMPLE, name = "filtro", content = @Content(example = FiltroProcedimientoDocumento.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroProcedimientoDocumento.class))) FiltroProcedimientoDocumento filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
@@ -71,6 +76,8 @@ public class ProcedimientoDocumentoResource {
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
@@ -105,13 +112,15 @@ public class ProcedimientoDocumentoResource {
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getPorId(
 			@Parameter(description = "Código procedimiento documento", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo,
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang)
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang)
 			throws Exception, ValidationException {
 
 		ProcedimientoDocumentoFiltro fg = new ProcedimientoDocumentoFiltro();
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 		fg.setCodigo(new Long(codigo));
 

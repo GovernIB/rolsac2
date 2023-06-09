@@ -15,112 +15,121 @@ import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
 @Schema(name = "FiltroTipoTramitacion", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
 public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
 
-	 private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoTramitacion.class);
+	private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoTramitacion.class);
 
-		public static final String SAMPLE = Constantes.SALTO_LINEA +
-				"{"	+
-				"\"texto\":\"string\"," + Constantes.SALTO_LINEA +
-				"\"faseProc\":0," + Constantes.SALTO_LINEA +
-				"\"codPlatTramitacion\":0," + Constantes.SALTO_LINEA +
-				"\"plantilla\":\"boolean\"," + Constantes.SALTO_LINEA +
-				"\"filtroPaginacion\":{\"page\":0,\"size\":10}" +
-				"}";
+	public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"texto\":\"string\"," + Constantes.SALTO_LINEA
+			+ "\"faseProc\":0," + Constantes.SALTO_LINEA + "\"codPlatTramitacion\":0," + Constantes.SALTO_LINEA
+			+ "\"plantilla\":\"boolean\"," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA
+			+ "\"filtroPaginacion\":{\"page\":0,\"size\":10}" + "}";
 
-		public static final String SAMPLE_JSON =
-				"{" +
-				"\"texto\":null," 						+
-				"\"plantilla\":null," 						+
-				"\"faseProc\":null," +
-				"\"codPlatTramitacion\":null," +
-				"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
-				"}";
+	public static final String SAMPLE_JSON = "{" + "\"texto\":null," + "\"plantilla\":null," + "\"faseProc\":null,"
+			+ "\"codPlatTramitacion\":null," + "\"idEntidad\":null,"
+			+ "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" + "}";
 
-		/** texto. **/
-		@Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
-		private String texto;
+	/** texto. **/
+	@Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+	private String texto;
 
-		@Schema(name = "faseProc", description = "faseProc", type = SchemaType.INTEGER, required = false)
-	    private Integer faseProc;
+	@Schema(name = "faseProc", description = "faseProc", type = SchemaType.INTEGER, required = false)
+	private Integer faseProc;
 
-		@Schema(name = "codPlatTramitacion", description = "codPlatTramitacion", type = SchemaType.INTEGER, required = false)
-	    private Long codPlatTramitacion;
+	/**
+	 * Indica la entidad
+	 **/
+	@Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+	private Long idEntidad;
 
-	    /**
-	     * Indica si es de tipo plantilla
-	     **/
-		@Schema(name = "plantilla", description = "plantilla", type = SchemaType.BOOLEAN, required = false)
-	    private Boolean plantilla;
+	@Schema(name = "codPlatTramitacion", description = "codPlatTramitacion", type = SchemaType.INTEGER, required = false)
+	private Long codPlatTramitacion;
 
-		/** FiltroPaginacion. **/
-		@Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
-		private FiltroPaginacion filtroPaginacion;
+	/**
+	 * Indica si es de tipo plantilla
+	 **/
+	@Schema(name = "plantilla", description = "plantilla", type = SchemaType.BOOLEAN, required = false)
+	private Boolean plantilla;
 
-		/**
-		 * @return the texto
-		 */
-		public String getTexto() {
-			return texto;
+	/** FiltroPaginacion. **/
+	@Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+	private FiltroPaginacion filtroPaginacion;
+
+	/**
+	 * @return the texto
+	 */
+	public String getTexto() {
+		return texto;
+	}
+
+	/**
+	 * @param texto the texto to set
+	 */
+	public void setTexto(String texto) {
+		this.texto = texto;
+	}
+
+	public TipoTramitacionFiltro toTipoTramitacionFiltro() {
+		TipoTramitacionFiltro resultado = new TipoTramitacionFiltro();
+
+		if (this.texto != null && !this.texto.isEmpty()) {
+			resultado.setTexto(texto);
 		}
 
-		/**
-		 * @param texto the texto to set
-		 */
-		public void setTexto(String texto) {
-			this.texto = texto;
+		if (this.plantilla != null) {
+			resultado.setTipoPlantilla(plantilla);
 		}
 
-		public TipoTramitacionFiltro toTipoTramitacionFiltro() {
-			TipoTramitacionFiltro resultado = new TipoTramitacionFiltro();
-
-			if (this.texto != null && !this.texto.isEmpty()) {
-				resultado.setTexto(texto);
-			}
-
-			if (this.plantilla != null) {
-				resultado.setTipoPlantilla(plantilla);
-			}
-
-			if (this.faseProc != null) {
-				resultado.setFaseProc(faseProc);
-			}
-
-			if (this.codPlatTramitacion != null) {
-				resultado.setCodPlatTramitacion(codPlatTramitacion);
-			}
-
-			return resultado;
-
+		if (this.faseProc != null) {
+			resultado.setFaseProc(faseProc);
 		}
 
-		public FiltroPaginacion getFiltroPaginacion() {
-			return filtroPaginacion;
+		if (this.codPlatTramitacion != null) {
+			resultado.setCodPlatTramitacion(codPlatTramitacion);
 		}
 
-		public void setFiltroPaginacion(FiltroPaginacion filtroPaginacion) {
-			this.filtroPaginacion = filtroPaginacion;
+		if (this.idEntidad != null) {
+			resultado.setIdEntidad(idEntidad);
 		}
 
-		public Boolean getPlantilla() {
-			return plantilla;
-		}
+		return resultado;
 
-		public void setPlantilla(Boolean plantilla) {
-			this.plantilla = plantilla;
-		}
+	}
 
-		public Integer getFaseProc() {
-			return faseProc;
-		}
+	public FiltroPaginacion getFiltroPaginacion() {
+		return filtroPaginacion;
+	}
 
-		public void setFaseProc(Integer faseProc) {
-			this.faseProc = faseProc;
-		}
+	public void setFiltroPaginacion(FiltroPaginacion filtroPaginacion) {
+		this.filtroPaginacion = filtroPaginacion;
+	}
 
-		public Long getCodPlatTramitacion() {
-			return codPlatTramitacion;
-		}
+	public Boolean getPlantilla() {
+		return plantilla;
+	}
 
-		public void setCodPlatTramitacion(Long codPlatTramitacion) {
-			this.codPlatTramitacion = codPlatTramitacion;
-		}
+	public void setPlantilla(Boolean plantilla) {
+		this.plantilla = plantilla;
+	}
+
+	public Integer getFaseProc() {
+		return faseProc;
+	}
+
+	public void setFaseProc(Integer faseProc) {
+		this.faseProc = faseProc;
+	}
+
+	public Long getCodPlatTramitacion() {
+		return codPlatTramitacion;
+	}
+
+	public void setCodPlatTramitacion(Long codPlatTramitacion) {
+		this.codPlatTramitacion = codPlatTramitacion;
+	}
+
+	public Long getIdEntidad() {
+		return idEntidad;
+	}
+
+	public void setIdEntidad(Long idEntidad) {
+		this.idEntidad = idEntidad;
+	}
 }

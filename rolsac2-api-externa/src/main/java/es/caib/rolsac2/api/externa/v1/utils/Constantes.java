@@ -16,8 +16,8 @@ public class Constantes {
 	/** Version del api (minusculas, sin espacios) **/
 	public static final String API_VERSION_BARRA = "/" + API_VERSION + "/";
 
-	/** Idioma por defecto. solo para Swagger **/
-	public static final String IDIOMA_DEFECTO = "ca";
+//	/** Idioma por defecto. solo para Swagger **/
+//	public static final String IDIOMA_DEFECTO = "ca";
 
 	// Mensajes
 
@@ -166,12 +166,6 @@ public class Constantes {
 	public static final String ENTIDAD_TIPO_VIA = "tipos_via";
 	public static final String URL_TIPO_VIA = ENTIDAD_TIPO_VIA + "/{0}";
 
-//	public static final String ENTIDAD_TIPO_PUBLICO = "tipos_publico";
-//	public static final String URL_TIPO_PUBLICO = ENTIDAD_TIPO_PUBLICO + "/{0}";
-//
-//	public static final String ENTIDAD_TIPO_PUBLICO_ENTIDAD = "tipos_publico_entidad";
-//	public static final String URL_TIPO_PUBLICO_ENTIDAD = ENTIDAD_TIPO_PUBLICO_ENTIDAD + "/{0}";
-
 	public static final String ENTIDAD_TIPO_MEDIA_EDIFICIO = "tipos_media_edificio";
 	public static final String URL_TIPO_MEDIA_EDIFICIO = ENTIDAD_TIPO_MEDIA_EDIFICIO + "/{0}";
 
@@ -219,6 +213,10 @@ public class Constantes {
 
 	public static final String ENTIDAD_LOPD_LEGITIMACION = "lopdLegitimacion";
 	public static final String URL_LOPD_LEGITIMACION = ENTIDAD_LOPD_LEGITIMACION + "/{0}";
+
+	public static final String ESTADOWF_DEFECTO = "D";
+
+	public static final String ESTADISITICAS = "estadisticas";
 
 	public static String mensaje200(final int numeroElementos) {
 		String res = MSJ_200_GENERICO;

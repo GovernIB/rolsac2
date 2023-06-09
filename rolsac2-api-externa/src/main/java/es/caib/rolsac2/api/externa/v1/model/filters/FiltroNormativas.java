@@ -38,6 +38,7 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 			"\"fechaAprobacion\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA +
 //			"\"hijasActivas\":\"false\"," + Constantes.SALTO_LINEA +
 //			"\"todasUnidadesOrganicas\":\"false\"," + Constantes.SALTO_LINEA +
+			"\"idEntidad\":0," + Constantes.SALTO_LINEA +
 			"\"texto\":\"string\"," + Constantes.SALTO_LINEA +
 			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
 			"}";
@@ -52,6 +53,7 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 			"\"fechaAprobacion\":null," +
 //			"\"hijasActivas\":false," +
 //			"\"todasUnidadesOrganicas\":false," +
+			"\"idEntidad\":null," 						+
 			"\"texto\":null," +
 			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
 			"}";
@@ -114,6 +116,20 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 		this.texto = texto;
 	}
 
+    /**
+     * Entidad
+     */
+	@Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+    private Long idEntidad;
+
+	public Long getIdEntidad() {
+		return idEntidad;
+	}
+
+	public void setIdEntidad(Long idEntidad) {
+		this.idEntidad = idEntidad;
+	}
+
 	public NormativaFiltro toNormativaFiltro() {
 		NormativaFiltro resultado = new NormativaFiltro();
 
@@ -148,7 +164,10 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 		if (this.idUAsHijas != null) {
 			resultado.setIdUAsHijas(idUAsHijas);
 			resultado.setHijasActivas(true);
+		}
 
+		if (this.idEntidad != null) {
+			resultado.setIdEntidad(idEntidad);
 		}
 
 		if (this.idUA != null) {

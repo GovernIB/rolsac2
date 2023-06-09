@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,9 +31,11 @@ import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaDocumentoNormati
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.DocumentoNormativaDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.filtro.DocumentoNormativaFiltro;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_DOCUMENTO_NORMATIVA)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_DOCUMENTO_NORMATIVA, name = Constantes.ENTIDAD_DOCUMENTO_NORMATIVA)
@@ -42,6 +43,9 @@ public class DocumentoNormativaResource {
 
 	@EJB
 	private NormativaServiceFacade normativaService;
+
+	@EJB
+	private SystemServiceFacade systemService;
 
 	/**
 	 * Listado de procedimientoDocumentos.
@@ -53,11 +57,11 @@ public class DocumentoNormativaResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistar", summary = "Lista los normativas documentos", description = "Lista los normativas documentos disponibles en funcion de los filtros")
+	@Operation(operationId = "listar", summary = "Lista los normativas documentos", description = "Lista los normativas documentos disponibles en funcion de los filtros")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaDocumentoNormativa.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistar(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+	public Response listar(
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@RequestBody(description = "Filtro de documentos normativa: "
 					+ FiltroDocumentoNormativa.SAMPLE, name = "filtro", content = @Content(example = FiltroDocumentoNormativa.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroDocumentoNormativa.class))) FiltroDocumentoNormativa filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
@@ -70,6 +74,8 @@ public class DocumentoNormativaResource {
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
@@ -98,13 +104,15 @@ public class DocumentoNormativaResource {
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getPorId(
 			@Parameter(description = "Código documento normativa", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo,
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang)
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang)
 			throws Exception, ValidationException {
 
 		DocumentoNormativaFiltro fg = new DocumentoNormativaFiltro();
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 		fg.setCodigo(new Long(codigo));
 

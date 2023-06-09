@@ -178,7 +178,7 @@
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoPublicoObjetivoResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoSexoResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoViaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoMediaEdificioResource</endpointClass>
+                                <!--<endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoMediaEdificioResource</endpointClass>-->
 <!--                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoMediaFichaResource</endpointClass> -->
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoMediaUAResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoProcedimientoResource</endpointClass>
@@ -189,8 +189,9 @@
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TemaResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoPublicoObjetivoEntidadResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.DocumentoNormativaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.ProcedimientoTramiteResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.ProcedimientoDocumentoResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TramiteResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.EstadisticaResource</endpointClass>
+<!--                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.ProcedimientoDocumentoResource</endpointClass> -->
                             </endpointClasses>
                             <output>${project.build.directory}/openapi/openapi.json</output>
                             <info>

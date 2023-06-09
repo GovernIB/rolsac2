@@ -68,11 +68,18 @@ public class DocumentoNormativa extends EntidadBase<DocumentoNormativa> {
 	public DocumentoNormativa(DocumentoNormativaDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
 		super(elem, urlBase, idioma, hateoasEnabled);
 
-		FicheroDTO fichero = null;
-		if (elem.getDocumentos() != null) {
-			fichero = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null
-					: elem.getDocumentos().getDocumentoTraduccion(idioma).getFicheroDTO();
-			this.fichero = fichero == null ? null : fichero.getCodigo();
+		if(elem.getDocumentos() != null) {
+			Long fichero = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idioma).getFichero();
+
+			if(fichero == null) {
+				FicheroDTO ficheroDTO = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idioma).getFicheroDTO();
+
+				if(ficheroDTO != null) {
+					fichero = ficheroDTO.getCodigo();
+				}
+			}
+
+			this.fichero = fichero;
 		}
 
 		generaLinks(urlBase);
@@ -104,7 +111,11 @@ public class DocumentoNormativa extends EntidadBase<DocumentoNormativa> {
 		this.codigo = codigo;
 	}
 
-//	public String getCodigoTabla() {
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	//	public String getCodigoTabla() {
 //		return codigoTabla;
 //	}
 //

@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -31,10 +30,15 @@ import es.caib.rolsac2.api.externa.v1.model.filters.FiltroPlatTramitElectronica;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaPlatTramitElectronica;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.facade.EntidadServiceFacade;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
+import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
+import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PLATAFORMA)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PLATAFORMA, name = Constantes.ENTIDAD_PLATAFORMA)
@@ -42,6 +46,12 @@ public class PlatTramitElectronicaResource {
 
 	@EJB
 	private PlatTramitElectronicaServiceFacade platTramitElectronicaService;
+
+	@EJB
+	private SystemServiceFacade systemService;
+
+	@EJB
+	private EntidadServiceFacade entidadService;
 
 	/**
 	 * Listado de TiposTramitacion.
@@ -53,11 +63,11 @@ public class PlatTramitElectronicaResource {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistarPlatTramitElectronica", summary = "Lista de plataformas de tramitación electrónica", description = "Lista todos las plataformas de tramitación electrónica disponibles")
+	@Operation(operationId = "listarPlatTramitElectronica", summary = "Lista de plataformas de tramitación electrónica", description = "Lista todos las plataformas de tramitación electrónica disponibles")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaPlatTramitElectronica.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistarPlatTramitElectronica(
-	@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+	public Response listarPlatTramitElectronica(
+	@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 	@RequestBody(description = "Filtro: " + FiltroPlatTramitElectronica.SAMPLE, name = "filtro", content = @Content(example = FiltroPlatTramitElectronica.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroPlatTramitElectronica.class))) FiltroPlatTramitElectronica filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
@@ -69,6 +79,17 @@ public class PlatTramitElectronicaResource {
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else if(filtro.getIdEntidad() != null) {
+			EntidadFiltro filtroEntidad = new EntidadFiltro();
+			filtroEntidad.setCodigo(filtro.getIdEntidad());
+			Pagina<EntidadDTO> resultadoBusqueda = entidadService.findByFiltroRest(filtroEntidad);
+			if(resultadoBusqueda.getTotal() > 0 && resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest() != null && !resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest().isEmpty()) {
+				fg.setIdioma(resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest());
+			} else {
+				fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+			}
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		// si no vienen los filtros se completan con los datos por defecto
@@ -96,7 +117,7 @@ public class PlatTramitElectronicaResource {
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaPlatTramitElectronica.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
 	public Response getPlatTramitElectronica(
-			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @DefaultValue(Constantes.IDIOMA_DEFECTO) @QueryParam("lang") final String lang,
+			@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
 			@Parameter(description = "Código de plataforma de tramitación electrónica", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo)
 			throws Exception, ValidationException {
 
@@ -105,6 +126,8 @@ public class PlatTramitElectronicaResource {
 
 		if (lang != null) {
 			fg.setIdioma(lang);
+		} else {
+			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
 		}
 
 		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();

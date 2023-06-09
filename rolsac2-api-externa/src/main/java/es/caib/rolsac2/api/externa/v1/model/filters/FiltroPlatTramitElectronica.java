@@ -36,7 +36,7 @@ public class FiltroPlatTramitElectronica extends EntidadJson<FiltroPlatTramitEle
 		private String texto;
 
 	    /**
-	     * Indica si es de tipo plantilla
+	     * Indica la entidad
 	     **/
 		@Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
 	    private Long idEntidad;

@@ -55,10 +55,10 @@ public class TipoBoletinResource {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON , MediaType.APPLICATION_FORM_URLENCODED })
 	@Path("/")
-	@Operation(operationId = "llistarBoletines", summary = "Lista de boletines", description = "Lista todos los boletines disponibles")
+	@Operation(operationId = "listarBoletines", summary = "Lista de boletines", description = "Lista todos los boletines disponibles")
 	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoBoletin.class)))
 	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response llistarBoletines(
+	public Response listarBoletines(
 	@RequestBody(description = "Filtro: " + FiltroTipoBoletin.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoBoletin.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoBoletin.class))) FiltroTipoBoletin filtro)
 			throws DelegateException, ExcepcionAplicacion, ValidationException {
 
@@ -116,18 +116,4 @@ public class TipoBoletinResource {
 		return new RespuestaTipoBoletin(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()),
 				resultadoBusqueda.getTotal(), lista);
 	}
-
-//	private RespuestaTipoBoletin getRespuestaSimple(TipoBoletinFiltro fg) throws DelegateException {
-//		TipoBoletinDTO resultadoBusqueda = tipoBoletinService.findTipoBoletinById(fg.getIdEntidad());
-//
-//		List<TipoBoletin> lista = new ArrayList<TipoBoletin>();
-//
-//		if (resultadoBusqueda != null) {
-//			lista.add(new TipoBoletin(resultadoBusqueda, null, fg.getIdioma(), true));
-//		}
-//
-//		return new RespuestaTipoBoletin(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), 1,
-//				lista);
-//	}
-
 }

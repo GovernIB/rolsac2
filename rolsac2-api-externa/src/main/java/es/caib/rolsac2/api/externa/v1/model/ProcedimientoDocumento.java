@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 
 /**
@@ -75,8 +76,19 @@ public class ProcedimientoDocumento extends EntidadBase<ProcedimientoDocumento> 
 
 		if(elem.getDocumentos() != null) {
 			Long fichero = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idioma).getFichero();
-			this.fichero = fichero == null ? null : fichero;
+
+			if(fichero == null) {
+				FicheroDTO ficheroDTO = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idioma).getFicheroDTO();
+
+				if(ficheroDTO != null) {
+					fichero = ficheroDTO.getCodigo();
+				}
+			}
+
+			this.fichero = fichero;
 		}
+
+		generaLinks(urlBase);
 	}
 
 	public ProcedimientoDocumento() {

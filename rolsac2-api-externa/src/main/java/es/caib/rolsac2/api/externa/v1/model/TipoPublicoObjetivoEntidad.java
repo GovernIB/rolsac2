@@ -46,7 +46,7 @@ public class TipoPublicoObjetivoEntidad extends EntidadBase<TipoPublicoObjetivoE
 	// -- LINKS--//
 	// -- se duplican las entidades para poder generar la clase link en funcion de
 	// la propiedad principal (sin "link_")
-	/** boletin **/
+	/** publico_objetivo_sia **/
 	@Schema(description = "link_publico_objetivo_sia", required = false)
 	private Link link_publico_objetivo_sia;
 	@JsonIgnore
