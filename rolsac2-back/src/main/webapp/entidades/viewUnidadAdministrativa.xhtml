@@ -168,15 +168,13 @@
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewUnidadAdministrativa.nuevaUnidadAdministrativa}"
                                      process="@this" rendered="#{!viewUnidadAdministrativa.isAdmContenidos() and !viewUnidadAdministrativa.isModoConsulta()}"
-                                     onstart="PF('blocker').show();"
-                                     oncomplete="PF('blocker').hide()" >
+                                      >
                         <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
                     <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                      actionListener="#{viewUnidadAdministrativa.editarUnidadAdministrativa}"
-                                     process="@form" update="messages" onstart="PF('blocker').show();"
-                                     oncomplete="PF('blocker').hide()" rendered="#{!viewUnidadAdministrativa.isModoConsulta()}"
+                                     process="@form" update="messages"  rendered="#{!viewUnidadAdministrativa.isModoConsulta()}"
                                      disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}">
                         <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                 update="messages dataTable"/>
