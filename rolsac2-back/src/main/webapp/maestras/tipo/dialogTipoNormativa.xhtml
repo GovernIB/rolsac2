@@ -96,27 +96,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                     </my:literalComponent>
                 </div>
-            <div class="ui-g-12 ui-md-2 ui-lg-1">
-                <p:outputLabel value="#{labels['dict.codigoSIA']}:" for="txtCodigoSIA"
-                />
-            </div>
-            <div class="ui-g-12 ui-md-10 ui-lg-5">
-                <p:inputNumber id="txtCodigoSIA" value="#{dialogTipoNormativa.data.codigoSIA}"
-                               styleClass="w95"
-                               disabled="#{dialogTipoNormativa.isModoConsulta()}" minValue="0"
-                               maxValue="999999999" decimalPlaces="0"/>
-
-            </div>
-            <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.codigoBOIB']}:" for="txtCodigoBOIB"
-                    />
-            </div>
-            <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputNumber id="txtCodigoBOIB" value="#{dialogTipoNormativa.data.codigoBOIB}"
-                                   styleClass="w95"
-                                   disabled="#{dialogTipoNormativa.isModoConsulta()}" minValue="0"
-                                   maxValue="999999999" decimalPlaces="0"/>
-            </div>
             </div>
         </p:panel>
 

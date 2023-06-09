@@ -315,7 +315,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
         if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
             final Map<String, String> params = new HashMap<>();
             params.put("ID", uaSeleccionada.getCodigo().toString());
-            UtilJSF.openDialog("/entidades/dialogUnidadAdministrativa", modoAcceso, params, true, 1030, 633);
+            UtilJSF.openDialog("/superadministrador/dialogUnidadAdministrativa", modoAcceso, params, true, 1530, 733);
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("unidadesAdministrativas", data.getUnidadesAdministrativas());
             final Map<String, String> params = new HashMap<>();

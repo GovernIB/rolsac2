@@ -19,10 +19,8 @@
     <ui:define name="breadcrumbBoton">
         <c:choose>
             <c:when test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD)  }">
-
                 <p:ajax event="eventoUpdate" oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}"
-                        update="form:dataTable">
-                </p:ajax>
+                        update="form:dataTable"/>
             </c:when>
         </c:choose>
 
@@ -30,7 +28,7 @@
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
             <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
-                        actionListener="#{viewUnidadAdministrativa.cambiarUAbuscarEvt(ua)}"
+                        action="#{viewUnidadAdministrativa.cambiarUAbuscarEvt(ua)}"
                         update="migaPan @form form:dataTable"
                         process="@this"
                         disabled="#{sessionBean.getPerfil() == TypePerfiles.GESTOR and sessionBean.checkUaGestor(ua)}"
@@ -176,23 +174,21 @@
                     <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                      actionListener="#{viewUnidadAdministrativa.editarUnidadAdministrativa}"
                                      process="@form" update="messages" onstart="PF('blocker').show();"
-                                     oncomplete="PF('blocker').hide()" rendered="#{!viewUnidadAdministrativa.isModoConsulta()}"
-                                     disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}">
+                                     oncomplete="PF('blocker').hide()" rendered="#{!viewUnidadAdministrativa.isModoConsulta()}">
                         <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
-                    <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" icon="pi pi-eye" iconPos="top"
+                    <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" icon="pi pi-pencil" iconPos="top"
                                      actionListener="#{viewUnidadAdministrativa.consultarUnidadAdministrativa()}"
                                      process="@form" update="messages" onstart="PF('blocker').show();"
                                      oncomplete="PF('blocker').hide()" rendered="#{viewUnidadAdministrativa.isModoConsulta()}">
                         <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
-                    <p:commandButton id="btnBorrar" value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
                                      action="#{viewUnidadAdministrativa.borrarUnidadAdministrativa}"
                                      process="@form" update="messages dataTable"
-                                     rendered="#{!viewUnidadAdministrativa.isAdmContenidos()}"
-                                     disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}">
+                                     rendered="#{!viewUnidadAdministrativa.isAdmContenidos()}">
                         <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                     </p:commandButton>
                     <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
@@ -215,7 +211,6 @@
                          sortOrder="#{viewUnidadAdministrativa.filtro.order}"
                          style="min-height: 300px;"
             >
-                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar" process="@form"/>
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"

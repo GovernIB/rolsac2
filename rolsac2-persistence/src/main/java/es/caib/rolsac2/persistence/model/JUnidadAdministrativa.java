@@ -39,12 +39,14 @@ public class JUnidadAdministrativa extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UNAD_UNADPADRE")
     private JUnidadAdministrativa padre;
-    
     @Column(name = "UNAD_DIR3", length = 20)
     private String codigoDIR3;
 
     @Column(name = "UNAD_IDENTI", length = 50)
     private String identificador;
+
+    @Column(name = "UNAD_ABREVI", length = 10)
+    private String abreviatura;
 
     @Column(name = "UNAD_TFNO", length = 9)
     private String telefono;
@@ -135,6 +137,14 @@ public class JUnidadAdministrativa extends BaseEntity {
 
     public void setIdentificador(String unadIdenti) {
         this.identificador = unadIdenti;
+    }
+
+    public String getAbreviatura() {
+        return abreviatura;
+    }
+
+    public void setAbreviatura(String unadAbrevi) {
+        this.abreviatura = unadAbrevi;
     }
 
     public String getTelefono() {
@@ -260,7 +270,7 @@ public class JUnidadAdministrativa extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JUnidadAdministrativa{" + "id=" + codigo + ", tipo=" + tipo + ", padre=" + padre + ", codigoDIR3='" + codigoDIR3 + '\'' + ", identificacion='" + identificador + '\'' + ", telefono='" + telefono + '\'' + ", fax='" + fax + '\'' + ", email='" + email + '\'' + ", dominio='" + dominio + '\'' + ", responsableNombre='" + responsableNombre + '\'' + ", responsableEmail='" + responsableEmail + '\'' + ", responsableSexo=" + responsableSexo + ", orden=" + orden + ", version=" + version + '}';
+        return "JUnidadAdministrativa{" + "id=" + codigo + ", tipo=" + tipo + ", padre=" + padre + ", codigoDIR3='" + codigoDIR3 + '\'' + ", identificacion='" + identificador + '\'' + ", abreviatura='" + abreviatura + '\'' + ", telefono='" + telefono + '\'' + ", fax='" + fax + '\'' + ", email='" + email + '\'' + ", dominio='" + dominio + '\'' + ", responsableNombre='" + responsableNombre + '\'' + ", responsableEmail='" + responsableEmail + '\'' + ", responsableSexo=" + responsableSexo + ", orden=" + orden + ", version=" + version + '}';
     }
 
     public UnidadAdministrativaDTO toDTO() {
@@ -269,6 +279,7 @@ public class JUnidadAdministrativa extends BaseEntity {
         ua.setCodigoDIR3(this.getCodigoDIR3());
         ua.setIdentificador(this.getIdentificador());
         ua.setOrden(this.getOrden());
+        ua.setAbreviatura(this.getAbreviatura());
         ua.setDominio(this.getDominio());
         ua.setVersion(this.getVersion());
 
@@ -288,21 +299,18 @@ public class JUnidadAdministrativa extends BaseEntity {
         Literal url = new Literal();
         Literal presentacion = new Literal();
         Literal responsableCV = new Literal();
-        Literal abreviatura = new Literal();
         if (this.getTraducciones() != null) {
             for (JUnidadAdministrativaTraduccion trad : this.getTraducciones()) {
                 nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
                 url.add(new Traduccion(trad.getIdioma(), trad.getUrl()));
                 presentacion.add(new Traduccion(trad.getIdioma(), trad.getPresentacion()));
                 responsableCV.add(new Traduccion(trad.getIdioma(), trad.getResponsableCV()));
-                abreviatura.add(new Traduccion(trad.getIdioma(), trad.getAbreviatura()));
             }
         }
         ua.setNombre(nombre);
         ua.setUrl(url);
         ua.setPresentacion(presentacion);
         ua.setResponsable(responsableCV);
-        ua.setAbreviatura(abreviatura);
 
         return ua;
     }

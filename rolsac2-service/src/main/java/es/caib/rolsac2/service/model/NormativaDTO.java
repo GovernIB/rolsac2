@@ -1,10 +1,10 @@
 package es.caib.rolsac2.service.model;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 /**
  * Dades de una normativa.
@@ -17,15 +17,15 @@ public class NormativaDTO extends ModelApi {
 
     private TipoBoletinDTO boletinOficial;
 
-    //    private AfectacionDTO afectacion;
+//    private AfectacionDTO afectacion;
     private TipoNormativaDTO tipoNormativa;
     private String numero;
     private LocalDate fechaAprobacion;
-    //    private TipoBoletinDTO tipoBoletin;
+//    private TipoBoletinDTO tipoBoletin;
     private LocalDate fechaBoletin;
     private String numeroBoletin;
     private Literal urlBoletin;
-    private Literal nombreResponsable;
+    private String nombreResponsable;
     private Literal nombre;
     private EntidadDTO entidad;
 
@@ -35,8 +35,7 @@ public class NormativaDTO extends ModelApi {
 
     private List<AfectacionDTO> afectaciones;
 
-    public NormativaDTO() {
-    }
+    public NormativaDTO(){}
 
     public NormativaDTO(NormativaDTO otro) {
         if (otro != null) {
@@ -114,11 +113,11 @@ public class NormativaDTO extends ModelApi {
         this.urlBoletin = urlBoletin;
     }
 
-    public Literal getNombreResponsable() {
+    public String getNombreResponsable() {
         return nombreResponsable;
     }
 
-    public void setNombreResponsable(Literal nombreResponsable) {
+    public void setNombreResponsable(String nombreResponsable) {
         this.nombreResponsable = nombreResponsable;
     }
 
@@ -146,29 +145,17 @@ public class NormativaDTO extends ModelApi {
         this.entidad = entidad;
     }
 
-    public List<DocumentoNormativaDTO> getDocumentosNormativa() {
-        return documentosNormativa;
-    }
+    public List<DocumentoNormativaDTO> getDocumentosNormativa() { return documentosNormativa; }
 
-    public void setDocumentosNormativa(List<DocumentoNormativaDTO> documentosNormativa) {
-        this.documentosNormativa = documentosNormativa;
-    }
+    public void setDocumentosNormativa(List<DocumentoNormativaDTO> documentosNormativa) { this.documentosNormativa = documentosNormativa; }
 
-    public List<UnidadAdministrativaGridDTO> getUnidadesAdministrativas() {
-        return unidadesAdministrativas;
-    }
+    public List<UnidadAdministrativaGridDTO> getUnidadesAdministrativas() { return unidadesAdministrativas; }
 
-    public void setUnidadesAdministrativas(List<UnidadAdministrativaGridDTO> unidadesAdministrativas) {
-        this.unidadesAdministrativas = unidadesAdministrativas;
-    }
+    public void setUnidadesAdministrativas(List<UnidadAdministrativaGridDTO> unidadesAdministrativas) { this.unidadesAdministrativas = unidadesAdministrativas; }
 
-    public List<AfectacionDTO> getAfectaciones() {
-        return afectaciones;
-    }
+    public List<AfectacionDTO> getAfectaciones() { return afectaciones; }
 
-    public void setAfectaciones(List<AfectacionDTO> afectaciones) {
-        this.afectaciones = afectaciones;
-    }
+    public void setAfectaciones(List<AfectacionDTO> afectaciones) { this.afectaciones = afectaciones; }
 
     @Override
     public boolean equals(Object o) {
@@ -185,7 +172,10 @@ public class NormativaDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "NormativaDTO{" + "id=" + codigo + ", numero='" + numero + '\'' + '}';
+        return "NormativaDTO{" +
+                "id=" + codigo +
+                ", numero='" + numero + '\'' +
+                '}';
     }
 
     public NormativaGridDTO convertDTOtoGridDTO() {

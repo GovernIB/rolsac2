@@ -1,5 +1,6 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JNormativaTraduccion;
 
 import javax.persistence.*;
@@ -10,8 +11,14 @@ import java.util.Set;
 
 @Entity
 @SequenceGenerator(name = "normativa-sequence", sequenceName = "RS2_NORMA_SEQ", allocationSize = 1)
-@Table(name = "RS2_NORMA", indexes = {@Index(name = "RS2_NORMA_PK_I", columnList = "NORM_CODIGO")})
-@NamedQueries({@NamedQuery(name = JNormativa.FIND_BY_ID, query = "select p from JNormativa p where p.codigo = :codigo")})
+@Table(name = "RS2_NORMA",
+        indexes = {
+                @Index(name = "RS2_NORMA_PK_I", columnList = "NORM_CODIGO")
+        })
+@NamedQueries({
+        @NamedQuery(name = JNormativa.FIND_BY_ID,
+                query = "select p from JNormativa p where p.codigo = :codigo")
+})
 public class JNormativa extends BaseEntity {
 
     public static final String FIND_BY_ID = "normativa.FIND_BY_ID";
@@ -46,6 +53,9 @@ public class JNormativa extends BaseEntity {
     @Column(name = "NORM_BOLENUM", length = 50)
     private String numeroBoletin;
 
+    @Column(name = "NORM_RESPNOM")
+    private String nombreResponsable;
+
     /**
      * Descripción
      */
@@ -68,7 +78,13 @@ public class JNormativa extends BaseEntity {
     private List<JAfectacion> afectacionesOrigen;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "RS2_UADNOR", joinColumns = {@JoinColumn(name = "UANO_CODNORM")}, inverseJoinColumns = {@JoinColumn(name = "UANO_CODUNA")})
+    @JoinTable(name = "RS2_UADNOR",
+            joinColumns = {
+                    @JoinColumn(name = "UANO_CODNORM")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "UANO_CODUNA")
+            })
     private Set<JUnidadAdministrativa> unidadesAdministrativas;
 
     public Long getCodigo() {
@@ -135,17 +151,21 @@ public class JNormativa extends BaseEntity {
         this.numeroBoletin = normBolenum;
     }
 
+    public String getNombreResponsable() {
+        return nombreResponsable;
+    }
+
+    public void setNombreResponsable(String normRespnom) {
+        this.nombreResponsable = normRespnom;
+    }
+
     public List<JNormativaTraduccion> getDescripcion() {
         return descripcion;
     }
 
-    public List<JDocumentoNormativa> getDocumentosNormativa() {
-        return documentosNormativa;
-    }
+    public List<JDocumentoNormativa> getDocumentosNormativa() { return documentosNormativa; }
 
-    public void setDocumentosNormativa(List<JDocumentoNormativa> documentosNormativa) {
-        this.documentosNormativa = documentosNormativa;
-    }
+    public void setDocumentosNormativa(List<JDocumentoNormativa> documentosNormativa) { this.documentosNormativa = documentosNormativa; }
 
     public List<JAfectacion> getAfectaciones() {
         return afectaciones;
@@ -195,6 +215,18 @@ public class JNormativa extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JNormativa{" + "codigo=" + codigo + ", entidad=" + entidad + ", tipoNormativa=" + tipoNormativa + ", numero='" + numero + '\'' + ", fechaAprobacion=" + fechaAprobacion + ", boletinOficial=" + boletinOficial + ", fechaBoletin=" + fechaBoletin + ", numeroBoletin='" + numeroBoletin + '\'' + '\'' + ", descripcion=" + descripcion + ", documentosNormativa=" + documentosNormativa + '}';
+        return "JNormativa{" +
+                "codigo=" + codigo +
+                ", entidad=" + entidad +
+                ", tipoNormativa=" + tipoNormativa +
+                ", numero='" + numero + '\'' +
+                ", fechaAprobacion=" + fechaAprobacion +
+                ", boletinOficial=" + boletinOficial +
+                ", fechaBoletin=" + fechaBoletin +
+                ", numeroBoletin='" + numeroBoletin + '\'' +
+                ", nombreResponsable='" + nombreResponsable + '\'' +
+                ", descripcion=" + descripcion +
+                ", documentosNormativa=" + documentosNormativa +
+                '}';
     }
 }

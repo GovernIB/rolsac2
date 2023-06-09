@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
+import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,7 +10,11 @@ import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "ua-trad-sequence", sequenceName = "RS2_TRAUNAD_SEQ", allocationSize = 1)
-@Table(name = "RS2_TRAUNAD", indexes = {@Index(name = "RS2_TRAUNAD_PK_I", columnList = "TRUA_CODIGO")})
+@Table(name = "RS2_TRAUNAD",
+        indexes = {
+                @Index(name = "RS2_TRAUNAD_PK_I", columnList = "TRUA_CODIGO")
+        }
+)
 public class JUnidadAdministrativaTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ua-trad-sequence")
@@ -35,9 +40,6 @@ public class JUnidadAdministrativaTraduccion {
     @Lob
     @Column(name = "TRUA_RSPCV")
     private String responsableCV;
-
-    @Column(name = "TRUA_ABREVI")
-    private String abreviatura;
 
     public static List<JUnidadAdministrativaTraduccion> createInstance(List<String> idiomas) {
         List<JUnidadAdministrativaTraduccion> traducciones = new ArrayList<>();
@@ -105,14 +107,6 @@ public class JUnidadAdministrativaTraduccion {
         this.responsableCV = truaRspcv;
     }
 
-    public String getAbreviatura() {
-        return abreviatura;
-    }
-
-    public void setAbreviatura(String abreviatura) {
-        this.abreviatura = abreviatura;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -128,6 +122,14 @@ public class JUnidadAdministrativaTraduccion {
 
     @Override
     public String toString() {
-        return "JUnidadAdministrativaTraduccion{" + "id=" + codigo + ", unidadAdministrativa=" + unidadAdministrativa + ", idioma='" + idioma + '\'' + ", nombre='" + nombre + '\'' + ", presentacion='" + presentacion + '\'' + ", url='" + url + '\'' + ", responsableCV='" + responsableCV + '\'' + '}';
+        return "JUnidadAdministrativaTraduccion{" +
+                "id=" + codigo +
+                ", unidadAdministrativa=" + unidadAdministrativa +
+                ", idioma='" + idioma + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", presentacion='" + presentacion + '\'' +
+                ", url='" + url + '\'' +
+                ", responsableCV='" + responsableCV + '\'' +
+                '}';
     }
 }

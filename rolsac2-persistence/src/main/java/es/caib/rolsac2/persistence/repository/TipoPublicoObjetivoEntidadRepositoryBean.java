@@ -127,7 +127,7 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
         }
 
         if (filtro.isRellenoTraducciones()) {
-            query.setParameter("traducciones", "%" + filtro.getTraducciones().toLowerCase() + "%");
+            query.setParameter("traducciones", filtro.getTraducciones());
         }
 
         if (filtro.isRellenoCodigoTipo()) {

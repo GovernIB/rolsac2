@@ -1,9 +1,7 @@
 package es.caib.rolsac2.back.converters;
 
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
-import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -12,8 +10,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Named
 @ViewScoped
@@ -32,19 +28,7 @@ public class TipoTramitacionConverter implements Converter, Serializable {
         }
 
         if (s != null && s.trim().length() > 0) {
-            if(s.equals("-1")) {
-                TipoTramitacionDTO plantillaFake = new TipoTramitacionDTO();
-                Literal literal = Literal.createInstance();
-                List<Traduccion> traduccions = new ArrayList<>();
-                traduccions.add(new Traduccion("es", "Ninguna"));
-                traduccions.add(new Traduccion("es", "Cap"));
-                literal.setTraducciones(traduccions);
-                plantillaFake.setCodigo(-1l);
-                plantillaFake.setDescripcion(literal);
-                return plantillaFake;
-            } else {
-                return maestrasSupServiceFacade.findTipoTramitacionById(Long.parseLong(s));
-            }
+            return maestrasSupServiceFacade.findTipoTramitacionById(Long.parseLong(s));
         } else {
             return null;
         }

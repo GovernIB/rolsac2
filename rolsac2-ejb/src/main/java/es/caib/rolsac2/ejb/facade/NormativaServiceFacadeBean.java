@@ -286,18 +286,6 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long countAll() {
-        return normativaRepository.countAll();
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long countByUa(Long uaId) {
-        return normativaRepository.countByUa(uaId);
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<AfectacionDTO> findAfectacionesByNormativa(Long idNormativa) {
         List<JAfectacion> afectaciones = afectacionRepository.findAfectacionesRelacionadas(idNormativa);
         List<AfectacionDTO> afectacionesDTO = new ArrayList<>();

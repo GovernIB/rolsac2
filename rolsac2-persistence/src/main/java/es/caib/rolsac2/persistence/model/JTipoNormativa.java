@@ -1,5 +1,6 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoNormativaTraduccion;
 
 import javax.persistence.*;
@@ -13,8 +14,17 @@ import java.util.Objects;
  */
 @Entity
 @SequenceGenerator(name = "tipo-normativa-sequence", sequenceName = "RS2_TIPONOR_SEQ", allocationSize = 1)
-@Table(name = "RS2_TIPONOR", indexes = {@Index(name = "RS2_TIPONOR_PK", columnList = "TPNO_CODIGO")})
-@NamedQueries({@NamedQuery(name = JTipoNormativa.FIND_BY_ID, query = "select p from JTipoNormativa p where p.codigo = :id"), @NamedQuery(name = JTipoNormativa.COUNT_BY_IDENTIFICADOR, query = "select count(p) from JTipoNormativa p where p.identificador = :identificador")})
+@Table(name = "RS2_TIPONOR",
+        indexes = {
+                @Index(name = "RS2_TIPONOR_PK", columnList = "TPNO_CODIGO")
+        }
+)
+@NamedQueries({
+        @NamedQuery(name = JTipoNormativa.FIND_BY_ID,
+                query = "select p from JTipoNormativa p where p.codigo = :id"),
+        @NamedQuery(name = JTipoNormativa.COUNT_BY_IDENTIFICADOR,
+                query = "select count(p) from JTipoNormativa p where p.identificador = :identificador")
+})
 public class JTipoNormativa extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -43,12 +53,6 @@ public class JTipoNormativa extends BaseEntity {
     @Column(name = "TPNO_IDENTI", length = 50)
     private String identificador;
 
-    @Column(name = "TPNO_CODSIA")
-    private Long codigoSIA;
-
-    @Column(name = "TPNO_IDBOIB")
-    private Long codigoBOIB;
-
     /**
      * Descripcion
      */
@@ -58,7 +62,7 @@ public class JTipoNormativa extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return codigo
+     * @return  codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -67,7 +71,7 @@ public class JTipoNormativa extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id id
+     * @param id  id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -76,7 +80,7 @@ public class JTipoNormativa extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return identificador
+     * @return  identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -85,7 +89,7 @@ public class JTipoNormativa extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificador identificador
+     * @param identificador  identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -94,33 +98,17 @@ public class JTipoNormativa extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return descripcion
+     * @return  descripcion
      */
     public List<JTipoNormativaTraduccion> getDescripcion() {
         return descripcion;
     }
 
-    public Long getCodigoSIA() {
-        return codigoSIA;
-    }
-
-    public void setCodigoSIA(Long codSIA) {
-        this.codigoSIA = codSIA;
-    }
-
-    public Long getCodigoBOIB() {
-        return codigoBOIB;
-    }
-
-    public void setCodigoBOIB(Long codBOIB) {
-        this.codigoBOIB = codBOIB;
-    }
-
     /**
      * Obtiene descripcion.
      *
-     * @param idioma idioma
-     * @return descripcion
+     * @param idioma  idioma
+     * @return  descripcion
      */
     public String getDescripcion(String idioma) {
         if (descripcion == null || descripcion.isEmpty()) {
@@ -137,7 +125,7 @@ public class JTipoNormativa extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion descripcion
+     * @param descripcion  descripcion
      */
     public void setDescripcion(List<JTipoNormativaTraduccion> descripcion) {
         if (this.descripcion == null || this.descripcion.isEmpty()) {
@@ -163,6 +151,10 @@ public class JTipoNormativa extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JTipoNormativa{" + "codigo=" + codigo + ", identificador='" + identificador + '\'' + ", descripcion=" + descripcion + '}';
+        return "JTipoNormativa{" +
+                "codigo=" + codigo +
+                ", identificador='" + identificador + '\'' +
+                ", descripcion=" + descripcion +
+                '}';
     }
 }

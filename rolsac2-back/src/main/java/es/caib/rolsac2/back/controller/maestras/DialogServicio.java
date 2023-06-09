@@ -299,7 +299,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
             if (uaSeleccionada != null) {
-                this.data.setUaInstructor(uaSeleccionada);
+                this.data.setUaResponsable(uaSeleccionada);
                 uaRaiz = Boolean.valueOf(uaSeleccionada.esRaiz()).toString();
                 if (!uaSeleccionada.esRaiz()) {
                     this.data.setComun(0); //Es raro que lo estuviese como comun pero por si acaso
@@ -353,14 +353,6 @@ public class DialogServicio extends AbstractController implements Serializable {
         if (data.getTemas() == null || data.getTemas().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
             return;
-        }
-
-        for(TemaGridDTO temaPadre : temasPadre) {
-            if(data.getTemas().stream()
-                    .filter(t -> t.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString())).findAny().orElse(null) == null) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
-                return;
-            }
         }
 
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
@@ -434,8 +426,6 @@ public class DialogServicio extends AbstractController implements Serializable {
                 data.getTipoTramitacion().setTramiteParametros(null);
                 data.getTipoTramitacion().setCodPlatTramitacion(null);
             }
-        } else {
-            this.data.setTipoTramitacion(null);
         }
 
         if (this.data.getTipoTramitacion() != null) {

@@ -26,8 +26,6 @@ public class NormativaFiltro extends AbstractFiltro {
 
     private List<Long> idUAsHijas;
 
-    private List<Long> idsUAsHijasAux;
-
     private boolean todasUnidadesOrganicas = false;
 
 	private Integer codigoProcedimiento;
@@ -93,14 +91,6 @@ public class NormativaFiltro extends AbstractFiltro {
         this.idUAsHijas = idUAsHijas;
     }
 
-    public List<Long> getIdsUAsHijasAux() {
-        return idsUAsHijasAux;
-    }
-
-    public void setIdsUAsHijasAux(List<Long> idsUAsHijasAux) {
-        this.idsUAsHijasAux = idsUAsHijasAux;
-    }
-
     public boolean isTodasUnidadesOrganicas() {
         return todasUnidadesOrganicas;
     }
@@ -139,8 +129,6 @@ public class NormativaFiltro extends AbstractFiltro {
     public boolean isRellenoHijasActivas() {
         return hijasActivas;
     }
-
-    public boolean isRellenoUasAux() {return idsUAsHijasAux != null; }
 
     public boolean isRellenoTodasUnidadesOrganicas() { return this.todasUnidadesOrganicas;
     }

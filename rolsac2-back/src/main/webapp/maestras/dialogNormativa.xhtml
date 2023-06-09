@@ -170,14 +170,8 @@
                             <h:outputText value="#{labels['dialogNormativa.nombreResponsable']}:"
                                           for="txtNombreResponsable"/>
                         </p>
-                        <my:literalComponent id="txtNombreResponsable"
-                                             literal="#{dialogNormativa.data.nombreResponsable}"
-                                             soloLecture="#{dialogNormativa.isModoConsulta()}"
-                                             required="#{empty param['formDialog:closeButton']}"
-                                             idioma="#{dialogNormativa.idioma}"
-                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                             nombreLiteral="#{labels['dialogNormativa.nombreResponsable']}"/>
+                        <p:inputText id="txtNombreResponsable" value="#{dialogNormativa.data.nombreResponsable}"
+                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="255"/>
                     </div>
                 </div>
             </p:panel>

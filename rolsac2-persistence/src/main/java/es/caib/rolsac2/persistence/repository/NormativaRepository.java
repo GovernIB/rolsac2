@@ -19,10 +19,6 @@ public interface NormativaRepository extends CrudRepository<JNormativa, Long> {
 
     Long countByEntidad(Long entidadId);
 
-    Long countByUa(Long uaId);
-
-    Long countAll();
-
     boolean existeTipoNormativa(Long codigoTipoNor);
 
     boolean existeBoletin(Long codigoBol);

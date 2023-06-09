@@ -30,11 +30,7 @@ public enum TypePropiedadConfiguracion {
     /**
      * UA COMUN
      **/
-    UA_COMUN("es.caib.rolsac2.comun.ua"),
-    /**
-     * Propiedad para obtener el idioma de la aplicacion por defecto
-     */
-    IDIOMA_DEFECTO("idiomaDefecto");
+    UA_COMUN("es.caib.rolsac2.comun.ua");
 
 
     /**

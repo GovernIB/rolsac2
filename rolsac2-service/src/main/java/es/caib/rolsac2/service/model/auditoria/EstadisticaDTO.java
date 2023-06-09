@@ -1,109 +1,241 @@
 package es.caib.rolsac2.service.model.auditoria;
 
-import es.caib.rolsac2.service.model.ModelApi;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
-import java.util.List;
 import java.util.Objects;
 
-@Schema(name = "EstadisticaDTO")
-public class EstadisticaDTO extends ModelApi {
+/**
+ * Clase de negocio necesaria para la impresión del report de estadística.
+ *
+ * @author INDRA
+ */
+public class EstadisticaDTO implements Comparable<EstadisticaDTO> {
+
+    /**
+     * Serial version UID.
+     **/
+    private static final long serialVersionUID = 133830303728753054L;
+
+    /**
+     * Codigo
+     **/
     private Long codigo;
 
-    private Long codProcedimiento;
+    /**
+     * Organo
+     **/
+    private String organo;
 
-    private Long codUa;
+    /**
+     * Nombre
+     **/
+    private String nombre;
 
-    private String tipo;
+    /**
+     * Apellido1
+     **/
+    private String ape1;
 
-    private String identificadorApp;
+    /**
+     * Apellido2
+     **/
+    private String ape2;
 
-    private List<EstadisticaAccesoDTO> accesos;
+    /**
+     * Contenido
+     **/
+    private String contenido;
 
+    /**
+     * Número de modificaciones
+     **/
+    private Integer modificaciones;
+
+
+    /**
+     * Constructor.
+     **/
     public EstadisticaDTO() {
-
+        super();
     }
 
-    public EstadisticaDTO(EstadisticaDTO otro) {
-        if (otro != null) {
-            this.codigo = otro.codigo;
-            this.codProcedimiento = otro.codProcedimiento;
-            this.codUa = otro.codUa;
-            this.tipo = otro.tipo;
-            this.identificadorApp = otro.identificadorApp;
-        }
-    }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+
+    /**
+     * Establece codigo.
+     *
+     * @param codigo codigo a establecer
+     */
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
-    public Long getCodProcedimiento() {
-        return codProcedimiento;
+
+    /**
+     * Obtiene organo.
+     *
+     * @return organo
+     */
+    public String getOrgano() {
+        return organo;
     }
 
-    public void setCodProcedimiento(Long codProcedimiento) {
-        this.codProcedimiento = codProcedimiento;
+
+    /**
+     * Establece organo.
+     *
+     * @param organo organo a establecer
+     */
+    public void setOrgano(final String organo) {
+        this.organo = organo;
     }
 
-    public Long getCodUa() {
-        return codUa;
+
+    /**
+     * Obtiene nombre.
+     *
+     * @return nombre
+     */
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setCodUa(Long codUa) {
-        this.codUa = codUa;
+
+    /**
+     * Establece nombre.
+     *
+     * @param nombre nombre a establecer
+     */
+    public void setNombre(final String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getTipo() {
-        return tipo;
+
+    /**
+     * Obtiene ape1.
+     *
+     * @return ape1
+     */
+    public String getApe1() {
+        return ape1;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+
+    /**
+     * Establece ape1.
+     *
+     * @param ape1 ape1 a establecer
+     */
+    public void setApe1(final String ape1) {
+        this.ape1 = ape1;
     }
 
-    public String getIdentificadorApp() {
-        return identificadorApp;
+
+    /**
+     * Obtiene ape2.
+     *
+     * @return ape2
+     */
+    public String getApe2() {
+        return ape2;
     }
 
-    public void setIdentificadorApp(String identificadorApp) {
-        this.identificadorApp = identificadorApp;
+
+    /**
+     * Establece ape2.
+     *
+     * @param ape2 ape2 a establecer
+     */
+    public void setApe2(final String ape2) {
+        this.ape2 = ape2;
     }
 
-    public List<EstadisticaAccesoDTO> getAccesos() {
-        return accesos;
+
+    /**
+     * Obtiene contenido.
+     *
+     * @return contenido
+     */
+    public String getContenido() {
+        return contenido;
     }
 
-    public void setAccesos(List<EstadisticaAccesoDTO> accesos) {
-        this.accesos = accesos;
+
+    /**
+     * Establece contenido.
+     *
+     * @param contenido contenido a establecer
+     */
+    public void setContenido(final String contenido) {
+        this.contenido = contenido;
+    }
+
+
+    /**
+     * Obtiene modificaciones.
+     *
+     * @return modificaciones
+     */
+    public Integer getModificaciones() {
+        return modificaciones;
+    }
+
+
+    /**
+     * Establece modificaciones.
+     *
+     * @param modificaciones modificaciones a establecer
+     */
+    public void setModificaciones(final Integer modificaciones) {
+        this.modificaciones = modificaciones;
+    }
+
+
+    @Override
+    public int compareTo(final EstadisticaDTO o) {
+        return this.getCodigo().compareTo(o.getCodigo());
     }
 
     @Override
-    public EstadisticaDTO clone() {
-        return new EstadisticaDTO(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EstadisticaDTO that = (EstadisticaDTO) o;
-        return codigo.equals(that.codigo);
+    public boolean equals(final Object objeto) {
+        boolean retorno;
+        if (objeto == null) {
+            retorno = false;
+        } else if (!(objeto instanceof EstadisticaDTO)) {
+            retorno = false;
+        } else {
+            final EstadisticaDTO est = (EstadisticaDTO) objeto;
+            if (est.getCodigo() == null || this.getCodigo() == null) {
+                retorno = false;
+            } else {
+                retorno = est.getCodigo().compareTo(this.getCodigo()) == 0;
+            }
+        }
+        return retorno;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo);
+        return Objects.hash(this.getCodigo());
     }
 
-    @Override
-    public String toString() {
-        return "EstadisticaDTO{" +
-                "codigo=" + codigo +
-                '}';
+    public static EstadisticaDTO cast(final Object[] resultado, final String tipo) {
+        final EstadisticaDTO est = new EstadisticaDTO();
+        est.setNombre((String) resultado[1]);
+        est.setApe1((String) resultado[2]);
+        est.setApe2((String) resultado[3]);
+        est.setOrgano((String) resultado[4]);
+        est.setModificaciones(resultado[5] == null ? 0 : Integer.valueOf(resultado[5].toString()));
+        est.setContenido(tipo);
+
+        return est;
     }
+
 }

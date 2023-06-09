@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.JNormativa;
+import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,7 +10,10 @@ import java.util.Objects;
 
 @Entity
 @SequenceGenerator(name = "normativa-trad-sequence", sequenceName = "RS2_TRANORM_SEQ", allocationSize = 1)
-@Table(name = "RS2_TRANORM", indexes = {@Index(name = "RS2_TRANORM_PK_I", columnList = "TRNO_CODIGO")})
+@Table(name = "RS2_TRANORM",
+        indexes = {
+                @Index(name = "RS2_TRANORM_PK_I", columnList = "TRNO_CODIGO")
+        })
 public class JNormativaTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "normativa-trad-sequence")
@@ -28,9 +32,6 @@ public class JNormativaTraduccion {
 
     @Column(name = "TRNO_URL", length = 500)
     private String urlBoletin;
-
-//    @Column(name = "TRNO_RESPNOM")
-//    private String nombreResponsable;
 
     public static List<JNormativaTraduccion> createInstance(List<String> idiomas) {
         List<JNormativaTraduccion> traducciones = new ArrayList<>();
@@ -74,21 +75,9 @@ public class JNormativaTraduccion {
         this.titulo = trnoTitul;
     }
 
-    public String getUrlBoletin() {
-        return urlBoletin;
-    }
+    public String getUrlBoletin() { return urlBoletin; }
 
-    public void setUrlBoletin(String urlBoletin) {
-        this.urlBoletin = urlBoletin;
-    }
-
-//    public String getNombreResponsable() {
-//        return nombreResponsable;
-//    }
-//
-//    public void setNombreResponsable(String nombreResponsable) {
-//        this.nombreResponsable = nombreResponsable;
-//    }
+    public void setUrlBoletin(String urlBoletin) { this.urlBoletin = urlBoletin; }
 
     @Override
     public boolean equals(Object o) {
@@ -105,6 +94,12 @@ public class JNormativaTraduccion {
 
     @Override
     public String toString() {
-        return "JNormativaTraduccion{" + "codigo=" + codigo + ", normativa=" + normativa + ", idioma='" + idioma + '\'' + ", titulo='" + titulo + '\'' + ", urlBoletin='" + urlBoletin + '\'' + '}';
+        return "JNormativaTraduccion{" +
+                "codigo=" + codigo +
+                ", normativa=" + normativa +
+                ", idioma='" + idioma + '\'' +
+                ", titulo='" + titulo + '\'' +
+                ", urlBoletin='" + urlBoletin + '\'' +
+                '}';
     }
 }

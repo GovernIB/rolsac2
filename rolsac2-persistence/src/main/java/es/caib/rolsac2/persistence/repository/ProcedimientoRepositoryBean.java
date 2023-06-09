@@ -2,12 +2,9 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
-import es.caib.rolsac2.persistence.converter.NormativaConverter;
 import es.caib.rolsac2.persistence.converter.PlatTramitElectronicaConverter;
 import es.caib.rolsac2.persistence.converter.ProcedimientoConverter;
 import es.caib.rolsac2.persistence.converter.ProcedimientoTramiteConverter;
-import es.caib.rolsac2.persistence.converter.TipoMateriaSIAConverter;
-import es.caib.rolsac2.persistence.converter.TipoPublicoObjetivoEntidadConverter;
 import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
 import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoMateriaSIAPK;
@@ -57,15 +54,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Inject
     private ProcedimientoConverter converter;
-
-    @Inject
-    private TipoPublicoObjetivoEntidadConverter publicoObjetivoConverter;
-
-    @Inject
-    private TipoMateriaSIAConverter materiaSiaConverter;
-
-    @Inject
-    private NormativaConverter normativaConverter;
 
     @Inject
     private ProcedimientoServiceFacade procedimientoService;
@@ -216,6 +204,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         query.setMaxResults(filtro.getPaginaTamanyo());
         List<ProcedimientoBaseDTO> procs = new ArrayList<>();
 
+
+        //3opciones todos (si publicado envio publi, si pubnli=null envio mod, )solo publi, solo mod
+
         JProcedimientoWorkflow seleccionado = null;
 
         if (filtro.getEstadoWF() != null) {
@@ -270,7 +261,15 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
                     }
                     break;
+
             }
+            //	if (jprocs != null) {
+            //  for (JProcedimiento jproc : jprocs) {
+
+
+            //  }
+            // }
+
         } else {
             List<JProcedimientoWorkflow> jprocsA = query.getResultList();
             for (Object proc : jprocsA) {
@@ -302,21 +301,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
-    public Long countByUa(Long uaId) {
-        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='P' ";
-        TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-        query.setParameter("uaId", uaId);
-        return query.getSingleResult();
-    }
-
-    @Override
-    public Long countAll() {
-        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE a.tipo='P' ";
-        TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-        return query.getSingleResult();
-    }
-
-    @Override
     public Long countServicioByEntidad(Long entidadId) {
         String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c LEFT OUTER JOIN c.entidad d WHERE d.codigo= :entidadId and a.tipo='S' ";
         TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
@@ -324,83 +308,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return query.getSingleResult();
     }
 
-    @Override
-    public Long countServicioByUa(Long uaId) {
-        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='S' ";
-        TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-        query.setParameter("uaId", uaId);
-        return query.getSingleResult();
-    }
-
-    @Override
-    public Long countAllServicio() {
-        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE a.tipo='S' ";
-        TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-        return query.getSingleResult();
-    }
-
-    @Override
-    public Long countProcEstadoByUa(Long uaId, String estado) {
-        switch (estado) {
-            case "1": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='P' and b.estado='P' ";
-                TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-                query.setParameter("uaId", uaId);
-                return query.getSingleResult();
-            }
-            case "2": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='P' and b.estado!='P' ";
-                TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-                query.setParameter("uaId", uaId);
-                return query.getSingleResult();
-            }
-            case "3": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b WHERE a.tipo='P' and b.estado='P' ";
-                TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-                return query.getSingleResult();
-            }
-            default: {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b WHERE a.tipo='P' and b.estado!='P' ";
-                TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-                return query.getSingleResult();
-            }
-        }
-    }
-
-    @Override
-    public Long countServEstadoByUa(Long uaId, String estado) {
-        switch (estado) {
-            case "1": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='S' and b.estado='P' ";
-                TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-                query.setParameter("uaId", uaId);
-                return query.getSingleResult();
-            }
-            case "2": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='S' and b.estado!='P' ";
-                TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-                query.setParameter("uaId", uaId);
-                return query.getSingleResult();
-            }
-            case "3": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b WHERE a.tipo='S' and b.estado='P' ";
-                TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-                return query.getSingleResult();
-            }
-            default: {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b WHERE a.tipo='S' and b.estado!='P' ";
-                TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
-                return query.getSingleResult();
-            }
-        }
-    }
-
-    public Boolean checkExsiteProcedimiento(Long idProc) {
-        String sql = "SELECT COUNT (j) FROM JProcedimiento j WHERE j.codigo = :codigo";
-        Query query = entityManager.createQuery(sql, Long.class);
-        query.setParameter("codigo", idProc);
-        return (Long) query.getSingleResult() > 0;
-    }
 
     @Override
     public Long getCodigoByWF(Long id, boolean procedimientoEnmodificacion) {
@@ -727,58 +634,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         return lista;
     }
-
-    @Override
-    public List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF) {
-        List<TipoPublicoObjetivoEntidadDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
-        Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("codigoProcWF", codigoWF);
-        List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
-        if (jlista != null && !jlista.isEmpty()) {
-            for (JProcedimientoPublicoObjectivo elemento : jlista) {
-                if (elemento.getTipoPublicoObjetivo() != null) {
-                    lista.add(publicoObjetivoConverter.createDTO(elemento.getTipoPublicoObjetivo()));
-                }
-            }
-        }
-        return lista;
-    }
-
-    @Override
-    public List<TipoMateriaSIADTO> getMateriaSIAByWFRest(Long codigoWF) {
-        List<TipoMateriaSIADTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
-        Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("codigoProcWF", codigoWF);
-        List<JProcedimientoMateriaSIA> jlista = query.getResultList();
-        if (jlista != null && !jlista.isEmpty()) {
-            for (JProcedimientoMateriaSIA elemento : jlista) {
-                if (elemento.getTipoMateriaSIA() != null) {
-                    lista.add(materiaSiaConverter.createDTO(elemento.getTipoMateriaSIA()));
-                }
-            }
-        }
-        return lista;
-    }
-
-    @Override
-    public List<NormativaDTO> getNormativasByWFRest(Long codigoWF) {
-        List<NormativaDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
-        Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("codigoProcWF", codigoWF);
-        List<JProcedimientoNormativa> jlista = query.getResultList();
-        if (jlista != null && !jlista.isEmpty()) {
-            for (JProcedimientoNormativa elemento : jlista) {
-                if (elemento.getNormativa() != null) {
-                    lista.add(normativaConverter.createDTO(elemento.getNormativa()));
-                }
-            }
-        }
-        return lista;
-    }
-
 
     @Override
     public boolean existeProcedimientoConFormaInicio(Long codigoForIni) {
@@ -1599,61 +1454,49 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public String getEnlaceTelematico(ProcedimientoFiltro filtro) {
         List<ProcedimientoBaseDTO> lista = this.findProcedimientosPagedByFiltroRest(filtro);
         ServicioDTO serv = null;
-        ProcedimientoDTO proc = null;
         String res = "";
         if (lista != null && !lista.isEmpty()) {
-            if (lista.get(0) instanceof ServicioDTO) {
-                serv = (ServicioDTO) lista.get(0);
-            }
+            serv = (ServicioDTO) lista.get(0);
         }
 
         if (serv != null) {
             res = montarUrl(serv, filtro.getIdioma());
         }
 
+
         return res;
     }
 
-    private String montarUrl(ProcedimientoBaseDTO base, String lang) {
-        ServicioDTO serv = null;
-        TipoTramitacionDTO servTr = null;
-
-        if (base instanceof ServicioDTO) {
-            serv = (ServicioDTO) base;
-            servTr = serv.getTipoTramitacion();
-        }
-
+    private String montarUrl(ServicioDTO serv, String lang) {
+        TipoTramitacionDTO servTr = serv.getTipoTramitacion();
         String res = "";
-
-        if (servTr != null) {
-
-            try {
-                final String idTramite = servTr.getTramiteId();
-                final String numVersion = servTr.getTramiteVersion().toString();
-                final String parametros;
-                if (servTr.getTramiteParametros() == null) {
-                    parametros = "";
-                } else {
-                    parametros = servTr.getTramiteParametros();
-                }
-                final String idTramiteRolsac = serv.getCodigo().toString();
-
-                String url = servTr.getCodPlatTramitacion().getUrlAcceso().getTraduccion(lang);
-
-                url = url.replace("${idTramitePlataforma}", idTramite);
-                url = url.replace("${versionTramitePlatorma}", numVersion);
-                url = url.replace("${parametros}", parametros);
-                url = url.replace("${servicio}", String.valueOf(true));
-                url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
-
-
-                res = url;
-            } catch (final Exception e) {
-
-                // si ocurre un error es porque alguno de los campos de url del trámite no
-                // existen. buscamos en la url externa.
-                res = servTr.getUrlTramitacion();
+        try {
+            final String idTramite = servTr.getTramiteId();
+            final String numVersion = servTr.getTramiteVersion().toString();
+            final String idioma = lang;
+            final String parametros;
+            if (servTr.getTramiteParametros() == null) {
+                parametros = "";
+            } else {
+                parametros = servTr.getTramiteParametros();
             }
+            final String idTramiteRolsac = serv.getCodigo().toString();
+
+            String url = servTr.getCodPlatTramitacion().getUrlAcceso().getTraduccion(lang);
+
+            url = url.replace("${idTramitePlataforma}", idTramite);
+            url = url.replace("${versionTramitePlatorma}", numVersion);
+            url = url.replace("${parametros}", parametros);
+            url = url.replace("${servicio}", String.valueOf(true));
+            url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
+
+
+            res = url;
+        } catch (final Exception e) {
+
+            // si ocurre un error es porque alguno de los campos de url del trámite no
+            // existen. buscamos en la url externa.
+            res = servTr.getUrlTramitacion();
         }
 
         return res;
@@ -1799,14 +1642,11 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoVolcadoSIA()) {
             switch (filtro.getVolcadoSIA()) {
-                case "A":
-                    sql.append(" AND j.estadoSIA='A'");
-                    break;
-                case "B":
-                    sql.append(" AND j.estadoSIA='B'");
+                case "S":
+                    sql.append(" AND j.codigoSIA is not null ");
                     break;
                 case "N":
-                    sql.append(" AND j.estadoSIA is null");
+                    sql.append(" AND j.codigoSIA is null ");
                     break;
                 default:
                     break;
@@ -1871,7 +1711,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     if (ambosWf) {
                         sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitPresencial is true OR j.tipoTramitacion.tramitPresencial is true)) ");
                     } else {
-                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitPresencial is true OR j.tipoTramitacion.tramitPresencial is true)) OR AND WF.tramitPresencial is true");
+                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitPresencial is true OR j.tipoTramitacion.tramitPresencial is true)) ");
                     }
                     break;
                 case "T":
@@ -1892,83 +1732,19 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     break;
             }
         }
-        if (filtro.isRellenoCanales()) {
-            for (String canal : filtro.getCanales()) {
-                switch (canal) {
-                    case "P":
-                        if (ambosWf) {
-                            sql.append(" AND WF.tramitPresencial is true OR WF2.tramitPresencial is true ");
-                        } else {
-                            sql.append(" AND WF.tramitPresencial is true");
-                        }
-                        break;
-                    case "T":
-                        if (ambosWf) {
-                            sql.append(" AND WF.tramitElectronica is true OR WF2.tramitElectronica is true ");
-                        } else {
-                            sql.append(" AND WF.tramitElectronica is true ");
-                        }
-                        break;
-                    case "F":
-                        if (ambosWf) {
-                            sql.append(" AND WF.tramitTelefonica is true OR WF2.tramitTelefonica is true ");
-                        } else {
-                            sql.append(" AND WF.tramitTelefonica is true ");
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
         if (filtro.isRellenoPlantilla()) {
-            if(filtro.getEsProcedimiento()) {
-                if (ambosWf) {
-                    if (filtro.getPlantilla().getCodigo().compareTo(-1l) == 0) {
-                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND j.tipoTramitacionPlantilla.codigo is null ) ");
-                    } else {
-                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND j.tipoTramitacionPlantilla.codigo = :plantilla ) ");
-                    }
-                } else {
-                    if (filtro.getPlantilla().getCodigo().compareTo(-1l) == 0) {
-                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND j.tipoTramitacionPlantilla.codigo is null ) ");
-                    } else {
-                        sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND j.tipoTramitacionPlantilla.codigo = :plantilla ) ");
-                    }
-                }
+            if (ambosWf) {
+                sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND j.tipoTramitacionPlantilla.codigo = :plantilla )  ");
             } else {
-                if (ambosWf) {
-                    if (filtro.getPlantilla().getCodigo().compareTo(-1l) == 0) {
-                        sql.append(" AND (WF.tramiteElectronicoPlantilla.codigo is null AND WF.tramitElectronica is true) OR (WF2.tramiteElectronicoPlantilla.codigo is null AND WF2.tramitElectronica is true) ");
-                    } else {
-                        sql.append(" AND WF.tramiteElectronicoPlantilla.codigo = :plantilla OR WF2.tramiteElectronicoPlantilla.codigo = :plantilla   ");
-                    }
-                } else {
-                    if (filtro.getPlantilla().getCodigo().compareTo(-1l) == 0) {
-                        sql.append(" AND (WF.tramiteElectronicoPlantilla.codigo is null AND WF.tramitElectronica is true) ");
-                    } else {
-                        sql.append(" AND WF.tramiteElectronicoPlantilla.codigo = :plantilla ");
-                    }
-                }
+                sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND j.tipoTramitacionPlantilla.codigo = :plantilla )  ");
             }
-
-
         }
         if (filtro.isRellenoPlataforma()) {
-            if(filtro.getEsProcedimiento()) {
-                if (ambosWf) {
-                    sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion as tipo inner join tipo.codPlatTramitacion plataforma where (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND ( plataforma.codigo = :plataforma) ) ");
-                } else {
-                    sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion as tipo inner join tipo.codPlatTramitacion plataforma where (t.procedimiento.codigo = WF.codigo) AND ( plataforma.codigo = :plataforma) ) ");
-                }
+            if (ambosWf) {
+                sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion as tipo inner join tipo.codPlatTramitacion plataforma where (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND ( plataforma.codigo = :plataforma) ) ");
             } else {
-                if (ambosWf) {
-                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t inner join t.codPlatTramitacion as plataforma where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF2.tramiteElectronico.codigo  ) AND ( plataforma.codigo = :plataforma) )");
-                } else {
-                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t inner join t.codPlatTramitacion as plataforma where (t.codigo = WF.tramiteElectronico.codigo ) AND ( plataforma.codigo = :plataforma) ) ");
-                }
+                sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion as tipo inner join tipo.codPlatTramitacion plataforma where (t.procedimiento.codigo = WF.codigo) AND ( plataforma.codigo = :plataforma) ) ");
             }
-
         }
         if (filtro.isRellenoComun()) {
             if (ambosWf) {
@@ -2074,7 +1850,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoPlataforma()) {
             query.setParameter("plataforma", filtro.getPlataforma().getCodigo());
         }
-        if (filtro.isRellenoPlantilla() && filtro.getPlantilla().getCodigo().compareTo(-1l) != 0) {
+        if (filtro.isRellenoPlantilla()) {
             query.setParameter("plantilla", filtro.getPlantilla().getCodigo());
         }
         if (filtro.isRellenoComun()) {
@@ -2098,162 +1874,4 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         List<JProcedimiento> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
-
-    public ProcedimientoConverter getConverter() {
-        return converter;
-    }
-
-    public void setConverter(ProcedimientoConverter converter) {
-        this.converter = converter;
-    }
-
-    public TipoPublicoObjetivoEntidadConverter getPublicoObjetivoConverter() {
-        return publicoObjetivoConverter;
-    }
-
-    public void setPublicoObjetivoConverter(TipoPublicoObjetivoEntidadConverter publicoObjetivoConverter) {
-        this.publicoObjetivoConverter = publicoObjetivoConverter;
-    }
-
-    public TipoMateriaSIAConverter getMateriaSiaConverter() {
-        return materiaSiaConverter;
-    }
-
-    public void setMateriaSiaConverter(TipoMateriaSIAConverter materiaSiaConverter) {
-        this.materiaSiaConverter = materiaSiaConverter;
-    }
-
-    @Override
-    public List<TipoMateriaSIADTO> getMateriaSIAByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF) {
-        List<TipoMateriaSIADTO> lista = new ArrayList<>();
-
-        StringBuilder sql  = null;
-
-        switch (enlaceWF) {
-        case "A":
-            sql = new StringBuilder(
-                    "SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoWF and j.procedimientoWF.codigo = :codigoWF2 ");
-            break;
-        case "T":
-        default:
-            sql = new StringBuilder(
-                    "SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoWF or j.procedimientoWF.codigo = :codigoWF2 ");
-        }
-
-        Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("codigoWF", codigoWF);
-        query.setParameter("codigoWF2", codigoWF2);
-        List<JProcedimientoMateriaSIA> jlista = query.getResultList();
-        if (jlista != null && !jlista.isEmpty()) {
-            for (JProcedimientoMateriaSIA elemento : jlista) {
-                if (elemento.getTipoMateriaSIA() != null) {
-                    lista.add(materiaSiaConverter.createDTO(elemento.getTipoMateriaSIA()));
-                }
-            }
-        }
-        return lista;
-    }
-
-    @Override
-    public List<NormativaDTO> getNormativasByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF) {
-        List<NormativaDTO> lista = new ArrayList<>();
-
-        StringBuilder sql  = null;
-
-        switch (enlaceWF) {
-        case "A":
-            sql = new StringBuilder(
-                    "SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoWF and j.procedimiento.codigo = :codigoWF2 ");
-            break;
-        case "T":
-        default:
-            sql = new StringBuilder(
-                    "SELECT j FROM JProcedimientoMateriaSIA j where j.procedimiento.codigo = :codigoWF or j.procedimiento.codigo = :codigoWF2 ");
-        }
-
-        Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("codigoWF", codigoWF);
-        query.setParameter("codigoWF2", codigoWF2);
-        List<JProcedimientoNormativa> jlista = query.getResultList();
-        if (jlista != null && !jlista.isEmpty()) {
-            for (JProcedimientoNormativa elemento : jlista) {
-                 if (elemento.getNormativa() != null) {
-                     lista.add(normativaConverter.createDTO(elemento.getNormativa()));
-                }
-            }
-        }
-        return lista;
-    }
-
-    @Override
-    public List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF, Long codigoWF2,
-            String enlaceWF) {
-        List<TipoPublicoObjetivoEntidadDTO> lista = new ArrayList<>();
-
-        StringBuilder sql  = null;
-
-        switch (enlaceWF) {
-        case "A":
-            sql = new StringBuilder(
-                    "SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoWF and j.procedimiento.codigo = :codigoWF2 ");
-            break;
-        case "T":
-        default:
-            sql = new StringBuilder(
-                    "SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoWF or j.procedimiento.codigo = :codigoWF2 ");
-        }
-
-        Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("codigoWF", codigoWF);
-        query.setParameter("codigoWF2", codigoWF2);
-        List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
-        if (jlista != null && !jlista.isEmpty()) {
-            for (JProcedimientoPublicoObjectivo elemento : jlista) {
-                if (elemento.getTipoPublicoObjetivo() != null) {
-                    lista.add(publicoObjetivoConverter.createDTO(elemento.getTipoPublicoObjetivo()));
-                }
-            }
-        }
-        return lista;
-    }
-
-    @Override
-    public List<ProcedimientoDocumentoDTO> getDocumentosByListaDocumentos(JListaDocumentos listaDocumentos,
-            JListaDocumentos listaDocumentos2, String enlaceWF) {
-        List<ProcedimientoDocumentoDTO> docs = new ArrayList<>();
-        if (listaDocumentos != null) {
-            List<JProcedimientoDocumento> jdocs = getDocumentos(listaDocumentos.getCodigo());
-            if (jdocs != null) {
-                for (JProcedimientoDocumento jdoc : jdocs) {
-                    ProcedimientoDocumentoDTO doc = jdoc.toModel();
-                    docs.add(doc);
-                }
-            }
-        }
-
-        if (listaDocumentos2 != null) {
-            List<JProcedimientoDocumento> jdocs = getDocumentos(listaDocumentos2.getCodigo());
-            if (jdocs != null) {
-                for (JProcedimientoDocumento jdoc : jdocs) {
-                    if(!contiene(docs,jdoc)) {
-                    	 ProcedimientoDocumentoDTO doc = jdoc.toModel();
-                         docs.add(doc);
-                    }
-
-                }
-            }
-        }
-
-        return docs;
-    }
-
-	private boolean contiene(List<ProcedimientoDocumentoDTO> docs, JProcedimientoDocumento jdoc) {
-		for(ProcedimientoDocumentoDTO doc : docs) {
-			if(doc.getCodigo().longValue() == jdoc.getCodigo().longValue()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 }

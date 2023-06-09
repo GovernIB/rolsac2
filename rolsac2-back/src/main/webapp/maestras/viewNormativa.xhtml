@@ -63,21 +63,19 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                 <p:ajax event="dialogReturn" listener="#{viewNormativa.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                              actionListener="#{viewNormativa.editarNormativa}"
-                                             process="@form" update="messages" rendered="#{!viewNormativa.isModoConsulta()}"
-                                             disabled="#{viewNormativa.datoSeleccionado == null}">
+                                             process="@form" update="messages" rendered="#{!viewNormativa.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewNormativa.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" icon="pi pi-pencil" iconPos="top"
+                            <p:commandButton value="#{labels['dict.consultar']}" icon="pi pi-pencil" iconPos="top"
                                              actionListener="#{viewNormativa.consultarNormativa()}"
                                              process="@form" update="messages" rendered="#{viewNormativa.isModoConsulta()}">
                             </p:commandButton>
-                            <p:commandButton id="btnBorrar" value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
                                              action="#{viewNormativa.borrarNormativa}"
-                                             process="@form" update="messages dataTable"
-                                             disabled="#{viewNormativa.datoSeleccionado == null}">
+                                             process="@form" update="messages dataTable">
                                 <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
@@ -140,7 +138,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                 <p:ajax process="@this" event="change" partialSubmit="true" listener="#{viewNormativa.filtroUnidadOrganicasChange}" />
                             </p:selectBooleanCheckbox>
                         </div>
-                        <div class="ui-g-12 text-center">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2 text-center">
                             <p:commandButton value="#{labels['dict.limpiarFiltro']}"
                                              actionListener="#{viewNormativa.limpiarFiltro()}" iconPos="top"
                                              icon="pi pi-trash" update="messages dataTable filtroAvanzado"
@@ -169,7 +167,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          sortOrder="#{viewNormativa.filtro.order}"
                          style="min-height: 300px;"
             >
-                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar" process="@form"/>
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"

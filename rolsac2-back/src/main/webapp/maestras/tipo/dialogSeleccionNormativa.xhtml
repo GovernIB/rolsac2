@@ -68,24 +68,24 @@
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{normativa.titulo}" headerText="#{labels['dict.titulo']}" styleClass="w45">
+                <p:column sortBy="#{normativa.titulo}" headerText="#{labels['dict.titulo']}" styleClass="w50">
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.titulo.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
-                <p:column sortBy="#{normativa.tipoNormativa}" headerText="#{labels['viewNormativas.tipoNormativa']}" >
+                <p:column sortBy="#{normativa.tipoNormativa}" headerText="#{labels['viewNormativas.tipoNormativa']}">
                     <f:facet name="header"/>
                     <h:outputText
                             value="#{normativa.tipoNormativa}"/>
                 </p:column>
-                <p:column sortBy="#{normativa.numero}" headerText="#{labels['viewNormativas.numero']}" >
+                <p:column sortBy="#{normativa.numero}" headerText="#{labels['viewNormativas.numero']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.numero}"/>
                 </p:column>
-                <p:column sortBy="#{normativa.boletinOficial}" headerText="#{labels['viewNormativas.boletin']}" styleClass="w10">
+                <p:column sortBy="#{normativa.boletinOficial}" headerText="#{labels['viewNormativas.boletin']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.boletinOficial}"/>
                 </p:column>
-                <p:column sortBy="#{normativa.fechaAprobacion}" headerText="#{labels['viewNormativas.fechaAprobacion']}" styleClass="w17">
+                <p:column sortBy="#{normativa.fechaAprobacion}" headerText="#{labels['viewNormativas.fechaAprobacion']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.fechaAprobacion}"/>
                 </p:column>

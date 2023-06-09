@@ -42,7 +42,7 @@ public class DialogAlertas extends AbstractController implements Serializable {
 
     public void load() throws EmailPluginException {
         destinatarios = new ArrayList<>();
-//        destinatarios.add(destinatario);
+        destinatarios.add(destinatario);
         anexos = new ArrayList<>();
         /*anexo = new AnexoEmail();
         anexo.setFileName("fichero");
@@ -56,7 +56,6 @@ public class DialogAlertas extends AbstractController implements Serializable {
     }
 
     public void envioEmail() throws EmailPluginException {
-        destinatarios.add(destinatario);
         resultado = emailServiceFacade.envioEmail(destinatarios, asunto, mensaje, anexos, sessionBean.getEntidad().getCodigo());
         System.out.println("Resultado envio email: " + resultado);
         UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "Mensaje envidado correctamente");

@@ -44,8 +44,6 @@ public class ProcesosAsyncTaskFacadeBean implements ProcesosAsyncTaskFacade {
     @EJB(beanName = "procesoProgramadoSiaComponent")
     private ProcesoProgramadoFacade procesoProgramadoSiaComponent;
 
-    @EJB(beanName = "procesoProgramadoMigracionComponent")
-    private ProcesoProgramadoFacade procesoProgramadoMigracionComponent;
 
     @EJB(beanName = "procesoProgramadoSiaPuntualComponent")
     private ProcesoProgramadoFacade procesoProgramadoSiaPuntualComponent;

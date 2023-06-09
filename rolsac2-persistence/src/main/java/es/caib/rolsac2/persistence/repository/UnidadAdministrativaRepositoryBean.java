@@ -83,14 +83,6 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         return uadto;
     }
 
-    @Override
-    public Boolean checkExsiteUa(Long idUa) {
-        String sql = "SELECT COUNT (j) FROM JUnidadAdministrativa j WHERE j.codigo = :codigo";
-        Query query = entityManager.createQuery(sql, Long.class);
-        query.setParameter("codigo", idUa);
-        return (Long) query.getSingleResult() > 0;
-    }
-
     private UnidadAdministrativaDTO getPadre(String idioma, JUnidadAdministrativa jUnidadAdministrativa) {
         if (jUnidadAdministrativa.getPadre() == null) {
             UnidadAdministrativaDTO uaPadre = jpaToDto(jUnidadAdministrativa, idioma);
@@ -221,9 +213,17 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma LEFT OUTER JOIN j.entidad je ");
 
+            if (filtro.isRellenoCodigoNormativa()) {
+                sql.append(new StringBuilder(" LEFT OUTER JOIN j.normativas jn ON jn.codigo = :codigoNormativa "));
+            }
+
             sql.append(new StringBuilder(" where 1 = 1  "));
         } else if (isRest) {
             sql = new StringBuilder("SELECT j FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma LEFT OUTER JOIN j.entidad je ");
+
+            if (filtro.isRellenoCodigoNormativa()) {
+                sql.append(new StringBuilder(" LEFT OUTER JOIN j.normativas jn ON jn.codigo = :codigoNormativa "));
+            }
 
             sql.append(new StringBuilder(" where 1 = 1  "));
 
@@ -255,7 +255,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         }
 
         if (filtro.isRellenoIdentificador()) {
-            sql.append(" and LOWER(j.identificador) LIKE :identificador ");
+            sql.append(" and LOWER(jtipo.identificador) LIKE :identificador ");
         }
 
         if (filtro.isRellenoNombre()) {
@@ -264,10 +264,6 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
 
         if (filtro.isRellenoCodigo()) {
             sql.append(" and j.codigo = :codigo ");
-        }
-
-        if(filtro.isRellenoCodigoNormativa()){
-            sql.append(" AND EXISTS (SELECT 1 FROM JNormativaUnidadAdministrativa nor WHERE j.codigo = nor.unidadAdministrativa.codigo AND nor.normativa.codigo = :codigoNor) ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -302,7 +298,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             query.setParameter("codigo", filtro.getCodigo());
         }
         if (filtro.isRellenoCodigoNormativa()) {
-            query.setParameter("codigoNor", filtro.getCodigoNormativa());
+            query.setParameter("codigoNormativa", filtro.getCodigoNormativa());
         }
 
         return query;
@@ -318,14 +314,6 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         query.setParameter("idUnidadPadre", idUnitat);
         query.setParameter("idioma", idioma);
         return query.getResultList();
-    }
-
-    @Override
-    public JUnidadAdministrativa findRootEntidad(Long idEntidad) {
-        String sql = "SELECT j FROM JUnidadAdministrativa j WHERE j.padre is null AND j.entidad.codigo = :idEntidad";
-        Query query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
-        query.setParameter("idEntidad", idEntidad);
-        return (JUnidadAdministrativa) query.getSingleResult();
     }
 
     @Override

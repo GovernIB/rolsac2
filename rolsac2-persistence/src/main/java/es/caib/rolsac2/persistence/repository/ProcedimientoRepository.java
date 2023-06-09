@@ -39,21 +39,7 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     Long countByEntidad(Long entidadId);
 
-    Long countByUa(Long uaId);
-
-    Long countAll();
-
     Long countServicioByEntidad(Long entidadId);
-
-    Long countServicioByUa(Long uaId);
-
-    Long countAllServicio();
-
-    Long countProcEstadoByUa(Long uaId, String estado);
-
-    Long countServEstadoByUa(Long uaId, String estado);
-
-    Boolean checkExsiteProcedimiento(Long idProc);
 
     JProcedimientoWorkflow getWF(Long id, boolean procedimientoEnmodificacion);
 
@@ -111,6 +97,7 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     JProcedimientoWorkflow getWFByCodigoWF(Long codigoWF);
 
+
     Long obtenerCountPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro);
 
     /**
@@ -165,19 +152,4 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
     Pagina<IndexacionSIADTO> getProcedimientosParaIndexacionSIA(Long idEntidad);
 
     String getEnlaceTelematico(ProcedimientoFiltro filtro);
-
-	List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF);
-
-	List<TipoMateriaSIADTO> getMateriaSIAByWFRest(Long codigoWF);
-
-	List<NormativaDTO> getNormativasByWFRest(Long codigoWF);
-
-	List<TipoMateriaSIADTO> getMateriaSIAByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
-
-	List<NormativaDTO> getNormativasByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
-
-	List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
-
-	List<ProcedimientoDocumentoDTO> getDocumentosByListaDocumentos(JListaDocumentos listaDocumentos, JListaDocumentos listaDocumentos2,
-			String enlaceWF);
 }

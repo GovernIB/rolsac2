@@ -78,7 +78,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String obtenerPropiedadConfiguracion(TypePropiedadConfiguracion propiedad) {
         ConfiguracionGlobalGridDTO conf = configGlobal.findByPropiedad(propiedad.toString());
         if (conf != null && conf.getValor() != null && !conf.getValor().isEmpty()) {
