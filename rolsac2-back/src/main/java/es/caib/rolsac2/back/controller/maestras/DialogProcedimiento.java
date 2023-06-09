@@ -314,6 +314,13 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             return;
         }
 
+        for (TemaGridDTO temaPadre : temasPadre) {
+            if (data.getTemas().stream().filter(t -> t.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString())).findAny().orElse(null) == null) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
+                return;
+            }
+        }
+
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         params.put("ID", this.data.getCodigo().toString());
         params.put("ESTADO", data.getEstado().toString());
@@ -795,7 +802,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("normativasSeleccionadas", data.getNormativas());
             final Map<String, String> params = new HashMap<>();
-            UtilJSF.openDialog("tipo/dialogSeleccionNormativa", modoAcceso, params, true, 1040, 460);
+            UtilJSF.openDialog("tipo/dialogSeleccionNormativa", modoAcceso, params, true, 1040, 510);
         }
 
     }

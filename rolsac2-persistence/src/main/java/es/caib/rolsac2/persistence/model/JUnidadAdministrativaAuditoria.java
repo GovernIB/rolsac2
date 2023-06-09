@@ -60,6 +60,9 @@ public class JUnidadAdministrativaAuditoria {
     @Column(name = "UAAU_LTLFLJ", nullable = false)
     private String literalFlujo;
 
+    @Column(name = "UAAU_ACCION", nullable = false, length = 2)
+    private String accion;
+
     /**
      * Obtiene codigo.
      *
@@ -164,5 +167,13 @@ public class JUnidadAdministrativaAuditoria {
 
     public void setLiteralFlujo(String literalFlujo) {
         this.literalFlujo = literalFlujo;
+    }
+
+    public String getAccion() {
+        return accion;
+    }
+
+    public void setAccion(String accion) {
+        this.accion = accion;
     }
 }

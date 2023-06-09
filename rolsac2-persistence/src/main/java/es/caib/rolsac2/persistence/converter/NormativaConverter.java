@@ -1,9 +1,11 @@
 package es.caib.rolsac2.persistence.converter;
 
-import es.caib.rolsac2.persistence.model.JAfectacion;
 import es.caib.rolsac2.persistence.model.JNormativa;
 import es.caib.rolsac2.persistence.model.traduccion.JNormativaTraduccion;
-import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.NormativaDTO;
+import es.caib.rolsac2.service.model.NormativaGridDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,49 +16,43 @@ import java.util.List;
 import java.util.Objects;
 
 
-@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-        uses = {EntidadConverter.class, TipoBoletinConverter.class, TipoNormativaConverter.class, DocumentoNormativaConverter.class})
-public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
+@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {EntidadConverter.class, TipoBoletinConverter.class, TipoNormativaConverter.class, DocumentoNormativaConverter.class})
+public interface NormativaConverter extends Converter<JNormativa, NormativaDTO> {
 
     @Override
-    @Mapping(target = "nombre",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
-    @Mapping(target = "urlBoletin",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"urlBoletin\"))")
+    @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
+    @Mapping(target = "urlBoletin", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"urlBoletin\"))")
+    @Mapping(target = "nombreResponsable", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombreResponsable\"))")
     @Mapping(target = "documentosNormativa", ignore = true)
     @Mapping(target = "unidadesAdministrativas", ignore = true)
     @Mapping(target = "afectaciones", ignore = true)
     NormativaDTO createDTO(JNormativa entity);
 
-    @Mapping(target = "titulo",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
+    @Mapping(target = "titulo", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
     @Mapping(target = "tipoNormativa", source = "tipoNormativa.identificador")
     @Mapping(target = "boletinOficial", source = "boletinOficial.nombre")
     NormativaGridDTO createGridDTO(JNormativa entity);
 
     @Override
-    @Mapping(target = "descripcion",
-            expression = "java(convierteLiteralToTraduccion(jNormativa,dto))")
+    @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(jNormativa,dto))")
     @Mapping(target = "documentosNormativa", ignore = true)
     @Mapping(target = "unidadesAdministrativas", ignore = true)
     @Mapping(target = "afectaciones", ignore = true)
     JNormativa createEntity(NormativaDTO dto);
 
     @Override
-    @Mapping(target = "descripcion",
-            expression = "java(convierteLiteralToTraduccion(entity,dto))")
+    @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "documentosNormativa", ignore = true)
     @Mapping(target = "unidadesAdministrativas", ignore = true)
     @Mapping(target = "afectaciones", ignore = true)
     void mergeEntity(@MappingTarget JNormativa entity, NormativaDTO dto);
 
-    default Literal convierteTraduccionToLiteral(List<JNormativaTraduccion> traducciones, String nombreLiteral){
+    default Literal convierteTraduccionToLiteral(List<JNormativaTraduccion> traducciones, String nombreLiteral) {
         Literal resultado = null;
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
-            resultado.setCodigo(traducciones.stream().map(t -> t.getNormativa().getCodigo()).findFirst()
-                    .orElse(null));
+            resultado.setCodigo(traducciones.stream().map(t -> t.getNormativa().getCodigo()).findFirst().orElse(null));
             for (JNormativaTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
                 trad.setCodigo(traduccion.getCodigo());
@@ -66,8 +62,10 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
 
                 if ("nombre".equals(nombreLiteral)) {
                     literal = traduccion.getTitulo();
-                } else if("urlBoletin".equals(nombreLiteral)){
+                } else if ("urlBoletin".equals(nombreLiteral)) {
                     literal = traduccion.getUrlBoletin();
+//                } else if ("nombreResponsable".equals(nombreLiteral)) {
+//                    literal = traduccion.getNombreResponsable();
                 } else {
                     literal = null;
                 }
@@ -79,8 +77,7 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
         return resultado;
     }
 
-    default List<JNormativaTraduccion> convierteLiteralToTraduccion(
-            JNormativa jNormativa, NormativaDTO normativaDTO){
+    default List<JNormativaTraduccion> convierteLiteralToTraduccion(JNormativa jNormativa, NormativaDTO normativaDTO) {
         List<String> idiomasPermitidos = List.of(jNormativa.getEntidad().getIdiomasPermitidos().split(";"));
         //Comprobamos si aún no se ha creado la entidad
         if (jNormativa.getDescripcion() == null || jNormativa.getDescripcion().isEmpty()) {
@@ -115,9 +112,13 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO>{
                 traduccion.setTitulo(normativaDTO.getNombre().getTraduccion(traduccion.getIdioma()));
             }
 
-            if(normativaDTO.getUrlBoletin() != null) {
+            if (normativaDTO.getUrlBoletin() != null) {
                 traduccion.setUrlBoletin(normativaDTO.getUrlBoletin().getTraduccion(traduccion.getIdioma()));
             }
+
+//            if (normativaDTO.getNombreResponsable() != null) {
+//                traduccion.setNombreResponsable(normativaDTO.getNombreResponsable().getTraduccion(traduccion.getIdioma()));
+//            }
         }
         return jNormativa.getDescripcion();
     }

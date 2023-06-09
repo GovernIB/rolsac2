@@ -20,6 +20,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
+import es.caib.rolsac2.service.model.types.TypeAccionAuditoria;
 import es.caib.rolsac2.service.model.types.TypeEstadoDir3;
 import es.caib.rolsac2.service.model.types.TypeIndexacion;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -175,7 +176,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
         dto.setCodigo(jUnidadAdministrativa.getCodigo());
         UnidadAdministrativaDTO dtoAntiguo = UnidadAdministrativaDTO.createInstance();
-        crearAuditoria(dtoAntiguo, dto, perfil, "auditoria.flujo.CREAR");
+        crearAuditoria(dtoAntiguo, dto, perfil, "auditoria.flujo.CREAR", TypeAccionAuditoria.ALTA.toString());
 
         return jUnidadAdministrativa.getCodigo();
     }
@@ -229,7 +230,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         converter.mergeEntity(jUnidadAdministrativa, dto);
         unidadAdministrativaRepository.update(jUnidadAdministrativa);
         indexacionRepository.guardarIndexar(jUnidadAdministrativa.getCodigo(), TypeIndexacion.UNIDAD_ADMINISTRATIVA, jUnidadAdministrativa.getEntidad().getCodigo(), 1);
-        crearAuditoria(dtoAntiguo, dto, perfil, null);
+        crearAuditoria(dtoAntiguo, dto, perfil, null, TypeAccionAuditoria.MODIFICACION.toString());
     }
 
     @Override
@@ -257,6 +258,12 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public UnidadAdministrativaDTO findUASimpleByID(Long id, String idioma, Long idEntidadRoot) {
         return unidadAdministrativaRepository.findUASimpleByID(id, idioma, idEntidadRoot);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public UnidadAdministrativaDTO findRootEntidad(Long idEntidad) {
+        return converter.createDTO(unidadAdministrativaRepository.findRootEntidad(idEntidad));
     }
 
     @Override
@@ -414,7 +421,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
      * @param uaAntigua
      * @param uaNueva
      */
-    private void crearAuditoria(final UnidadAdministrativaDTO uaAntigua, final UnidadAdministrativaDTO uaNueva, TypePerfiles perfil, String literalFlujo) {
+    private void crearAuditoria(final UnidadAdministrativaDTO uaAntigua, final UnidadAdministrativaDTO uaNueva, TypePerfiles perfil, String literalFlujo, String accion) {
 
         List<AuditoriaCambio> cambios = new ArrayList<>();
         AuditoriaCambio cambio = null;
@@ -432,6 +439,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
                 jUniAdminAuditoria.setUsuarioModificacion(uaNueva.getUsuarioAuditoria());
                 jUniAdminAuditoria.setUsuarioPerfil(perfil.toString());
                 jUniAdminAuditoria.setLiteralFlujo(literalFlujo);
+                jUniAdminAuditoria.setAccion(accion);
                 this.auditoriaRepository.guardar(jUniAdminAuditoria);
 
             } catch (final JSONUtilException e) {
@@ -510,7 +518,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public String obtenerCodigoDIR3(Long uaInstructor) {
         return unidadAdministrativaRepository.obtenerCodigoDIR3(uaInstructor);
     }

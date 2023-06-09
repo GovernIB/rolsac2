@@ -357,6 +357,17 @@
                                                     title="#{labels['viewEntidadRaiz.titulo']}">
                                                 <span class="mb-0 float-right">#{labels['viewEntidadRaiz.titulo']}</span>
                                             </p:link>
+
+                                            <p:outputLabel
+                                                    styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
+                                                    value="#{labels['menu.label.mon.entidad.migracion']}"></p:outputLabel>
+
+                                            <p:link id="viewProcesosMigracion"
+                                                    styleClass="pb-4 dropdown-item mobil"
+                                                    outcome="/monitorizacion/viewProcesosMigracion.xhtml"
+                                                    title="#{labels['viewProcesosMigracion.titulo.pagina']}">
+                                                <span class="mb-0 float-right">#{labels['viewProcesosMigracion.titulo.pagina']}</span>
+                                            </p:link>
                                         </div>
                                     </li>
                                     <li class="menuD nav-item mt-3 mb-1 opcion-menu"
@@ -519,36 +530,6 @@
                                                 title="#{labels['viewUnidadAdministrativa.titulo']}">
 									<span class="mb-0 float-right #{view.viewId eq '/entidades/viewUnidadAdministrativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
 										#{labels['viewUnidadAdministrativa.titulo']}</span>
-                                        </p:link></li>
-                                    <!--<li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link styleClass="#{sessionBean.isActive('viewSeccion.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
-                                                outcome="/superadministrador/viewSeccion.xhtml"
-                                                title="#{labels['viewSeccion.titulo']}"
-                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewSeccion.titulo'}]); return true;">
-                                        <span class="mb-0 float-right ">
-                                            #{labels['viewSeccion.titulo']}</span>
-                                        </p:link></li>
-                                    <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link styleClass="#{sessionBean.isActive('viewPersonal.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
-                                                outcome="/maestras/viewPersonal.xhtml"
-                                                title="#{labels['viewPersonal.titulo']}"
-                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewPersonal.titulo'}]); return true;">
-                                            <span class="mb-0 float-right">#{labels['viewPersonal.titulo']}</span>
-                                        </p:link></li>
-                                    <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link styleClass="#{sessionBean.isActive('viewFichas.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
-                                                outcome="/maestras/viewFichas.xhtml"
-                                                title="#{labels['viewFichas.titulo']}"
-                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewFichas.titulo'}]); return true;">
-                                            <span class="mb-0 float-right">#{labels['viewFichas.titulo']}</span>
-                                        </p:link></li>-->
-                                    <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewNormativas"
-                                                outcome="/maestras/viewNormativa.xhtml"
-                                                title="#{labels['viewNormativas.titulo.pagina']}">
-                                            <span class="mb-0 float-right #{view.viewId eq '/maestras/viewNormativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
-                                                #{labels['viewNormativas.titulo.pagina']}
-                                            </span>
                                         </p:link></li>
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
                                         <p:link id="viewProcedimientos"

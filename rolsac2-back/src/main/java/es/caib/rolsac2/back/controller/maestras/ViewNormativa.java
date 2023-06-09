@@ -178,6 +178,11 @@ public class ViewNormativa extends AbstractController implements Serializable {
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
                     }
+                    if(filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
+                        List<Long> unidadesHijasAux = new ArrayList<>(filtro.getIdUAsHijas());
+                        filtro.setIdUAsHijas(unidadesHijasAux.subList(0, 999));
+                        filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));
+                    }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<NormativaGridDTO> pagina = normativaServiceFacade.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());

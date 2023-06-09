@@ -57,6 +57,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     private List<TemaGridDTO> temas;
 
+    private Boolean esProcedimiento;
+
+    private List<String> canales;
+
     public Long getCodigoProc() {
         return codigoProc;
     }
@@ -427,6 +431,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return fechaPublicacionHasta != null && !fechaPublicacionHasta.isEmpty();
     }
 
+    public boolean isRellenoEstadoWF() {
+        return estadoWF != null && !estadoWF.isEmpty();
+    }
+
     public boolean isRellenoCodigoDir3SIA() {
         return codigoDir3SIA != null && !codigoDir3SIA.isEmpty();
     }
@@ -535,5 +543,25 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 	@Override
     protected String getDefaultOrder() {
         return "id";
+    }
+
+    public Boolean getEsProcedimiento() {
+        return esProcedimiento;
+    }
+
+    public void setEsProcedimiento(Boolean esProcedimiento) {
+        this.esProcedimiento = esProcedimiento;
+    }
+
+    public List<String> getCanales() {
+        return canales;
+    }
+
+    public void setCanales(List<String> canales) {
+        this.canales = canales;
+    }
+
+    public boolean isRellenoCanales() {
+        return canales != null && !canales.isEmpty();
     }
 }

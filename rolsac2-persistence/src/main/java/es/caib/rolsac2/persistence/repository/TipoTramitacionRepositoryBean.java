@@ -121,8 +121,8 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         JProcedimientoWorkflow jprocWF = entityManager.find(JProcedimientoWorkflow.class, idServicioWF);
         jprocWF.setTramiteElectronico(null);
         entityManager.merge(jprocWF);
-        JTipoTramitacion jTipoTramitacion = entityManager.find(JTipoTramitacion.class, codigo);
         entityManager.flush();
+        JTipoTramitacion jTipoTramitacion = entityManager.find(JTipoTramitacion.class, codigo);
         entityManager.remove(jTipoTramitacion);
         entityManager.flush();
 
@@ -165,6 +165,9 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         if (filtro.isRellenoFaseProc()) {
             sql.append(" and j.faseProc = :faseProc ");
         }
+        if (filtro.isRellenoEntidad()) {
+            sql.append(" and j.entidad.codigo = :idEntidad ");
+        }
         if (filtro.isRellenoCodPlatTramitacion()) {
             sql.append(" and p.codigo = :codPlatTramitacion ");
         }
@@ -196,6 +199,9 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         }
         if (filtro.isRellenoFaseProc()) {
             query.setParameter("faseProc", filtro.getFaseProc());
+        }
+        if (filtro.isRellenoCodPlatTramitacion()) {
+            query.setParameter("codPlatTramitacion", filtro.getCodPlatTramitacion());
         }
 
         return query;

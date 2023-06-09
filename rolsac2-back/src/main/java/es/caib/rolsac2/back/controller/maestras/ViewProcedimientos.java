@@ -121,17 +121,30 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        filtro.setEsProcedimiento(Boolean.TRUE);
         filtro.setTipo("P");
     }
 
     private void cargarFiltros() {
+        filtro.setEsProcedimiento(Boolean.TRUE);
         listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
         listTipoSilencio = maestrasSupService.findAllTipoSilencio();
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
         listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
         listTipoPublicoObjetivo = maestrasSupService.findAllTiposPublicoObjetivo();
         listFinVias = maestrasSupService.findAllTipoVia();
-        listPlantillas = maestrasSupService.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), null);
+        listPlantillas = new ArrayList<>();
+        TipoTramitacionDTO plantillaFake = new TipoTramitacionDTO();
+        Literal literal = Literal.createInstance();
+        List<Traduccion> traduccions = new ArrayList<>();
+        traduccions.add(new Traduccion("es", "Ninguna"));
+        traduccions.add(new Traduccion("es", "Cap"));
+        literal.setTraducciones(traduccions);
+        plantillaFake.setCodigo(-1l);
+        plantillaFake.setDescripcion(literal);
+        listPlantillas.add(plantillaFake);
+        listPlantillas.addAll(maestrasSupService.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), null));
+
         listPlataformas = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
     }
 

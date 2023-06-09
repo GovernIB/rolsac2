@@ -13,51 +13,41 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-        uses = {EntidadConverter.class, TipoUnidadAdministrativaObjetivoConverter.class,
-                TipoSexoConverter.class})
+@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {EntidadConverter.class, TipoUnidadAdministrativaObjetivoConverter.class, TipoSexoConverter.class})
 public interface UnidadAdministrativaConverter extends Converter<JUnidadAdministrativa, UnidadAdministrativaDTO> {
 
     @Override
-    @Mapping(target = "nombre",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
-    @Mapping(target = "presentacion",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"presentacion\"))")
-    @Mapping(target = "url",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"url\"))")
-    @Mapping(target = "responsable",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"responsableCV\"))")
+    @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
+    @Mapping(target = "abreviatura", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"abreviatura\"))")
+    @Mapping(target = "presentacion", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"presentacion\"))")
+    @Mapping(target = "url", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"url\"))")
+    @Mapping(target = "responsable", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"responsableCV\"))")
     @Mapping(target = "usuariosUnidadAdministrativa", expression = "java(convertUsuariostoDTO(entity.getUsuarios()))")
     @Mapping(target = "temas", expression = "java(convertTematoDTO(entity.getTemas()))")
     UnidadAdministrativaDTO createDTO(JUnidadAdministrativa entity);
 
-    @Mapping(target = "nombre",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
-    @Mapping(target = "presentacion",
-            ignore = true)
-    @Mapping(target = "url",
-            ignore = true)
+    @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
+    @Mapping(target = "presentacion", ignore = true)
+    @Mapping(target = "url", ignore = true)
     @Mapping(target = "entidad", ignore = true)
     @Mapping(target = "responsableSexo", ignore = true)
+    @Mapping(target = "abreviatura", ignore = true)
     @Mapping(target = "padre", expression = "java(createTreeDTOSinPadre(entity.getPadre()))")
     @Named("createTreeDTO")
     UnidadAdministrativaDTO createTreeDTO(JUnidadAdministrativa entity);
 
-    @Mapping(target = "nombre",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
-    @Mapping(target = "presentacion",
-            ignore = true)
-    @Mapping(target = "url",
-            ignore = true)
+    @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
+    @Mapping(target = "presentacion", ignore = true)
+    @Mapping(target = "url", ignore = true)
     @Mapping(target = "entidad", ignore = true)
     @Mapping(target = "responsableSexo", ignore = true)
+    @Mapping(target = "abreviatura", ignore = true)
     @Mapping(target = "padre", ignore = true)
     @Named("createTreeDTOSinPadre")
     UnidadAdministrativaDTO createTreeDTOSinPadre(JUnidadAdministrativa entity);
 
     @Override
-    @Mapping(target = "traducciones",
-            expression = "java(convierteLiteralToTraduccion(jUnidadAdministrativa,dto))")
+    @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(jUnidadAdministrativa,dto))")
     @Mapping(target = "padre", ignore = true)
     @Mapping(target = "usuarios", ignore = true)
     @Mapping(target = "temas", ignore = true)
@@ -68,8 +58,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "responsableSexo", ignore = true)
     @Mapping(target = "padre", ignore = true)
     @Mapping(target = "tipo", ignore = true)
-    @Mapping(target = "traducciones",
-            expression = "java(convierteLiteralToTraduccion(entity,dto))")
+    @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "usuarios", ignore = true)
     @Mapping(target = "temas", ignore = true)
     void mergeEntity(@MappingTarget JUnidadAdministrativa entity, UnidadAdministrativaDTO dto);
@@ -91,8 +80,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     }
 
 
-    default List<JUnidadAdministrativaTraduccion> convierteLiteralToTraduccion(
-            JUnidadAdministrativa jUnidadAdministrativa, UnidadAdministrativaDTO unidadAdministrativa) {
+    default List<JUnidadAdministrativaTraduccion> convierteLiteralToTraduccion(JUnidadAdministrativa jUnidadAdministrativa, UnidadAdministrativaDTO unidadAdministrativa) {
         List<String> idiomasPermitidos = List.of(unidadAdministrativa.getEntidad().getIdiomasPermitidos().split(";"));
 
         if (jUnidadAdministrativa.getTraducciones() == null || jUnidadAdministrativa.getTraducciones().isEmpty()) {
@@ -134,18 +122,19 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
             if (unidadAdministrativa.getResponsable() != null) {
                 traduccion.setResponsableCV(unidadAdministrativa.getResponsable().getTraduccion(traduccion.getIdioma()));
             }
+            if (unidadAdministrativa.getAbreviatura() != null) {
+                traduccion.setAbreviatura(unidadAdministrativa.getAbreviatura().getTraduccion(traduccion.getIdioma()));
+            }
         }
         return jUnidadAdministrativa.getTraducciones();
     }
 
-    default Literal convierteTraduccionToLiteral(List<JUnidadAdministrativaTraduccion> traducciones,
-                                                 String nombreLiteral) {
+    default Literal convierteTraduccionToLiteral(List<JUnidadAdministrativaTraduccion> traducciones, String nombreLiteral) {
         Literal resultado = null;
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
-            resultado.setCodigo(traducciones.stream().map(t -> t.getUnidadAdministrativa().getCodigo()).findFirst()
-                    .orElse(null));
+            resultado.setCodigo(traducciones.stream().map(t -> t.getUnidadAdministrativa().getCodigo()).findFirst().orElse(null));
             for (JUnidadAdministrativaTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
                 trad.setCodigo(traduccion.getCodigo());
@@ -166,6 +155,9 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
                     case "responsableCV":
                         literal = traduccion.getResponsableCV();
                         break;
+                    case "abreviatura":
+                        literal = traduccion.getAbreviatura();
+                        break;
                     default:
                         literal = null;
                         break;
@@ -182,8 +174,8 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
 
     default List<UsuarioGridDTO> convertUsuariostoDTO(Set<JUsuario> usuarios) {
         List<UsuarioGridDTO> usuariosUA = new ArrayList<>();
-        if(usuarios != null) {
-            for(JUsuario usuario : usuarios) {
+        if (usuarios != null) {
+            for (JUsuario usuario : usuarios) {
                 UsuarioGridDTO usuarioGridDTO = new UsuarioGridDTO();
                 usuarioGridDTO.setCodigo(usuario.getCodigo());
                 usuarioGridDTO.setNombre(usuario.getNombre());
@@ -198,8 +190,8 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
 
     default List<TemaGridDTO> convertTematoDTO(Set<JTema> temas) {
         List<TemaGridDTO> temasDTO = new ArrayList<>();
-        if(temas != null) {
-            for(JTema tema : temas) {
+        if (temas != null) {
+            for (JTema tema : temas) {
                 TemaGridDTO temaGridDTO = new TemaGridDTO();
                 temaGridDTO.setCodigo(tema.getCodigo());
                 temaGridDTO.setIdentificador(tema.getIdentificador());
@@ -207,11 +199,10 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
                 temaGridDTO.setMathPath(tema.getMathPath());
 
                 Literal resultado = null;
-                if(tema.getDescripcion() != null) {
+                if (tema.getDescripcion() != null) {
                     resultado = new Literal();
-                    resultado.setCodigo(tema.getDescripcion().stream().map(t -> t.getTema().getCodigo()).findFirst()
-                            .orElse(null));
-                    for(JTemaTraduccion trad : tema.getDescripcion()) {
+                    resultado.setCodigo(tema.getDescripcion().stream().map(t -> t.getTema().getCodigo()).findFirst().orElse(null));
+                    for (JTemaTraduccion trad : tema.getDescripcion()) {
                         Traduccion traduccion = new Traduccion();
                         traduccion.setCodigo(trad.getCodigo());
                         traduccion.setIdioma(trad.getIdioma());
@@ -220,7 +211,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
                     }
                 }
                 temaGridDTO.setDescripcion(resultado);
-                if(tema.getTemaPadre() != null) {
+                if (tema.getTemaPadre() != null) {
                     temaGridDTO.setTemaPadre(tema.getTemaPadre().getIdentificador());
                 }
                 temasDTO.add(temaGridDTO);

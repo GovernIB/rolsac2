@@ -1,5 +1,8 @@
 package es.caib.rolsac2.service.facade;
 
+import java.util.List;
+import java.util.Optional;
+
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
@@ -7,16 +10,28 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
-import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.DocumentoTraduccion;
+import es.caib.rolsac2.service.model.IndexacionDTO;
+import es.caib.rolsac2.service.model.IndexacionSIADTO;
+import es.caib.rolsac2.service.model.NormativaDTO;
+import es.caib.rolsac2.service.model.Pagina;
+import es.caib.rolsac2.service.model.ProcedimientoBaseDTO;
+import es.caib.rolsac2.service.model.ProcedimientoDTO;
+import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
+import es.caib.rolsac2.service.model.ProcedimientoGridDTO;
+import es.caib.rolsac2.service.model.ProcedimientoSolrDTO;
+import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
+import es.caib.rolsac2.service.model.ServicioDTO;
+import es.caib.rolsac2.service.model.ServicioGridDTO;
+import es.caib.rolsac2.service.model.TemaDTO;
+import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
+import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadDTO;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Servicio para los casos de uso de mantenimiento del proc/serv.
@@ -189,7 +204,28 @@ public interface ProcedimientoServiceFacade {
 
     ProcedimientoBaseDTO convertirDTO(Object obj);
 
-    String getEnlaceTelematico(ProcedimientoFiltro filtro);
+    String getEnlaceTelematicoByServicio(ProcedimientoFiltro filtro);
+
+    String getEnlaceTelematicoByTramite(ProcedimientoTramiteFiltro filtro);
 
     ProcedimientoBaseDTO findProcedimientoBaseById(Long codigo);
+
+	List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByProc(Long codigo, String estadoWF);
+
+	List<TipoMateriaSIADTO> getTipoMateriaByProc(Long codigo, String estadoWF);
+
+	List<ProcedimientoDocumentoDTO> getDocumentosByProc(Long codigo, String estadoWF);
+
+	List<ProcedimientoDocumentoDTO> getDocumentosLOPDByProc(Long codigo, String estadoWF);
+
+	List<NormativaDTO> getNormativasByProc(Long codigo, String estadoWF);
+
+	List<TemaDTO> getTemasByProc(Long codigo, String estadoWF);
+
+	List<ProcedimientoDocumentoDTO> getDocumentosByTram(Long codigo);
+
+	List<ProcedimientoDocumentoDTO> getModelosByTram(Long codigo);
+
+	Long getCodigoModificacion(Long codProc);
+
 }
