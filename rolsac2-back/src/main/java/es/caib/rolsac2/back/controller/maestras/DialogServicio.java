@@ -153,9 +153,9 @@ public class DialogServicio extends AbstractController implements Serializable {
                 data = (ServicioDTO) UtilJSF.getValorMochilaByKey("SERV");
             }
             dataOriginal = (ServicioDTO) data.clone();
-            if (data.getTipoTramitacion() == null) {
+            /*if (data.getTipoTramitacion() == null) {
                 data.setTipoTramitacion(TipoTramitacionDTO.createInstance(sessionBean.getIdiomasPermitidosList()));
-            }
+            }*/
 
             if (data.isTramitElectronica()) {
                 if (data.getPlantillaSel() != null && data.getPlantillaSel().getCodigo() != null) {
