@@ -75,6 +75,7 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
             String cargarDatosUA = params.getPropiedad("cargarUas");
             String cargarDatosNormativas = params.getPropiedad("cargarNormativas");
             String cargarDatosProcedimientos = params.getPropiedad("cargarProcedimientos");
+            String cargarDatosServicios = params.getPropiedad("cargarServicios");
             Long entidad = Long.valueOf(params.getPropiedad("entidad"));
             Long uaRaiz = Long.valueOf(params.getPropiedad("uaRaiz"));
             String usuarios = params.getPropiedad("usuarios");
@@ -123,18 +124,56 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
             }
 
             if (cargarDatosNormativas != null && "true".equals(cargarDatosNormativas)) {
-                String result = migracionService.migrarNormativas(entidad);
-                mensajeTraza.append(result);
+                mensajeTraza.append("INICI MIGRACIO NORMATIVAs \n");
+                List<BigDecimal> idNormativas = migracionService.getNormativas(idEntidad);
+                if (idNormativas != null && !idNormativas.isEmpty()) {
+                    // Recorre el array en bloques de 10 elementos
+                    for (int i = 0; i < idNormativas.size(); i += TAMANYO_BLOQUE) {
+
+                        // Obtiene el bloque actual de 10 elementos
+                        List<BigDecimal> bloque = obtenerBloque(idNormativas, i, TAMANYO_BLOQUE);
+                        String result = migracionService.migrarNormativas(bloque, entidad);
+                        mensajeTraza.append(result);
+                    }
+
+                }
+                mensajeTraza.append("FI MIGRACIO NORMATIVAs \n");
                 detalles.addPropiedad("Cargar datos Normativas", "Ejecutado correctamente");
             }
 
             if (cargarDatosProcedimientos != null && "true".equals(cargarDatosProcedimientos)) {
-                String result = migracionService.migrarProcedimientos(entidad, uaRaiz);
-                mensajeTraza.append(result);
-                detalles.addPropiedad("Cargar datos Procedimientos", "Ejecutado correctamente");
 
-                String result2 = migracionService.migrarServicios(entidad, uaRaiz);
-                mensajeTraza.append(result2);
+                mensajeTraza.append("INICI MIGRACIO PROCEDIMIENTOS \n");
+                List<BigDecimal> idProcedimientos = migracionService.getProcedimientos(idEntidad, uaRaiz);
+                if (idProcedimientos != null && !idProcedimientos.isEmpty()) {
+                    // Recorre el array en bloques de 10 elementos
+                    for (int i = 0; i < idProcedimientos.size(); i += TAMANYO_BLOQUE) {
+
+                        // Obtiene el bloque actual de 10 elementos
+                        List<BigDecimal> bloque = obtenerBloque(idProcedimientos, i, TAMANYO_BLOQUE);
+                        String result = migracionService.migrarProcedimientos(bloque, entidad, uaRaiz);
+                        mensajeTraza.append(result);
+                    }
+                }
+                mensajeTraza.append("FI MIGRACIO PROCEDIMIENTOS \n");
+                detalles.addPropiedad("Cargar datos Procedimientos", "Ejecutado correctamente");
+            }
+
+            if (cargarDatosServicios != null && "true".equals(cargarDatosServicios)) {
+
+                mensajeTraza.append("INICI MIGRACIO SERVICIOS \n");
+                List<BigDecimal> idServicios = migracionService.getServicios(idEntidad, uaRaiz);
+                if (idServicios != null && !idServicios.isEmpty()) {
+                    // Recorre el array en bloques de 10 elementos
+                    for (int i = 0; i < idServicios.size(); i += TAMANYO_BLOQUE) {
+
+                        // Obtiene el bloque actual de 10 elementos
+                        //List<BigDecimal> bloque = obtenerBloque(idServicios, i, TAMANYO_BLOQUE);
+                        //String result = migracionService.migrarServicios(bloque, entidad, uaRaiz);
+                        //mensajeTraza.append(result);
+                    }
+                }
+                mensajeTraza.append("FI MIGRACIO SERVICIOS \n");
                 detalles.addPropiedad("Cargar datos Servicios", "Ejecutado correctamente");
             }
             detalles.addPropiedad("Fin del procés", fechaFin);

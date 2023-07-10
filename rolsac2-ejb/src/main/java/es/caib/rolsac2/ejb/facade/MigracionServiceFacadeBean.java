@@ -58,8 +58,6 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<BigDecimal> getUAs(Long idEntidad, Long idUARaiz) {
-        StringBuilder resultado = new StringBuilder();
-        resultado.append("INICI MIGRACIO UAs \n");
         return migracionRepository.getUAs(idEntidad, idUARaiz);
     }
 
@@ -95,54 +93,61 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
         return resultado.toString();
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<BigDecimal> getNormativas(Long idEntidad) {
+        return migracionRepository.getNormativas(idEntidad);
+    }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public String migrarNormativas(Long idEntidad) {
+    public String migrarNormativas(List<BigDecimal> idNormativas, Long idEntidad) {
         StringBuilder resultado = new StringBuilder();
-        resultado.append("INICI MIGRACIO NORMATIVES \n");
-        List<BigDecimal> idNormativas = migracionRepository.getNormativas(idEntidad);
         if (idNormativas != null) {
             for (BigDecimal idNormativa : idNormativas) {
                 String resultadoNormativa = migracionRepository.importarNormativa(idNormativa.longValue(), idEntidad);
                 resultado.append(resultadoNormativa);
             }
         }
-        resultado.append("FI MIGRACIO NORMATIVES \n");
         return resultado.toString();
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<BigDecimal> getProcedimientos(Long idEntidad, Long idUARaiz) {
+        return migracionRepository.getProcedimientos(idEntidad, idUARaiz);
+    }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public String migrarProcedimientos(Long idEntidad, Long idUARaiz) {
+    public String migrarProcedimientos(List<BigDecimal> idProcedimientos, Long idEntidad, Long idUARaiz) {
         StringBuilder resultado = new StringBuilder();
-        resultado.append("INICI MIGRACIO PROCEDIMENTS \n");
-        List<BigDecimal> idProcedimientos = migracionRepository.getProcedimientos(idEntidad, idUARaiz);
         if (idProcedimientos != null) {
             for (BigDecimal idProcedimiento : idProcedimientos) {
                 String resultadoProc = migracionRepository.importarProcedimiento(idProcedimiento.longValue(), idEntidad);
                 resultado.append(resultadoProc);
             }
         }
-        resultado.append("FI MIGRACIO PROCEDIMENTS \n");
         return resultado.toString();
+    }
+
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<BigDecimal> getServicios(Long idEntidad, Long idUARaiz) {
+        return migracionRepository.getServicios(idEntidad, idUARaiz);
     }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public String migrarServicios(Long idEntidad, Long idUARaiz) {
+    public String migrarServicios(List<BigDecimal> idServicios, Long idEntidad, Long idUARaiz) {
         StringBuilder resultado = new StringBuilder();
-
-        resultado.append("INICI MIGRACIO SERVEIS \n");
-        List<BigDecimal> idServicios = migracionRepository.getServicios(idEntidad, idUARaiz);
         if (idServicios != null) {
             for (BigDecimal idServicio : idServicios) {
                 String resultadoProc = migracionRepository.importarServicio(idServicio.longValue(), idEntidad);
                 resultado.append(resultadoProc);
             }
         }
-        resultado.append("FI MIGRACIO SERVEIS \n");
         return resultado.toString();
     }
 

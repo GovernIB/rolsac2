@@ -326,7 +326,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         if (dto.getDocumentos() != null) {
             for (String idioma : dto.getDocumentos().getIdiomas()) {
                 if (dto.getDocumentos().getTraduccion(idioma) != null) {
-                    ficheroExternoRepository.persistFicheroExterno(dto.getNormativa().getCodigo(), dto.getNormativa().getCodigo(), systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
+                    ficheroExternoRepository.persistFicheroExterno(jDocumentoNormativa.getCodigo(), dto.getNormativa().getCodigo(), systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
                 }
             }
         }
@@ -341,7 +341,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         if (dto.getDocumentos() != null) {
             for (String idioma : dto.getDocumentos().getIdiomas()) {
                 if (dto.getDocumentos().getTraduccion(idioma) != null) {
-                    ficheroExternoRepository.persistFicheroExterno(dto.getNormativa().getCodigo(), dto.getNormativa().getCodigo(), systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
+                    ficheroExternoRepository.persistFicheroExterno(jDocumentoNormativa.getCodigo(), dto.getNormativa().getCodigo(), systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
                 }
             }
         }

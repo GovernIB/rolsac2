@@ -80,7 +80,7 @@ public class Inicio extends EntidadBase<Inicio> {
 		this.codigo = codigo;
 	}
 
-	public String getSilencio() {
+	public String getIdentificador() {
 		return identificador;
 	}
 

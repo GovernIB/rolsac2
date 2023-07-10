@@ -48,7 +48,24 @@ public interface MigracionServiceFacade {
      * @param idEntidad
      * @return
      */
-    String migrarNormativas(Long idEntidad);
+    List<BigDecimal> getNormativas(Long idEntidad);
+
+    /**
+     * Ejecuta el método de migrar normativas
+     *
+     * @param idEntidad
+     * @return
+     */
+    String migrarNormativas(List<BigDecimal> idNormativas, Long idEntidad);
+
+    /**
+     * Obtiene la lista de procedimientos
+     *
+     * @param idEntidad
+     * @param idUARaiz
+     * @return
+     */
+    List<BigDecimal> getProcedimientos(Long idEntidad, Long idUARaiz);
 
     /**
      * Ejecuta el método de migrar procedimientos y servicios.
@@ -56,9 +73,18 @@ public interface MigracionServiceFacade {
      * @param idEntidad
      * @return
      */
-    String migrarProcedimientos(Long idEntidad, Long idUARaiz);
+    String migrarProcedimientos(List<BigDecimal> idProcedimientos, Long idEntidad, Long idUARaiz);
 
-    String migrarServicios(Long idEntidad, Long idUARaiz);
+    /**
+     * Obtienes la lista de servicios.
+     *
+     * @param idEntidad
+     * @param idUARaiz
+     * @return
+     */
+    List<BigDecimal> getServicios(Long idEntidad, Long idUARaiz);
+
+    String migrarServicios(List<BigDecimal> idServicios, Long idEntidad, Long idUARaiz);
 
     /**
      * Activa las secuencias y restricciones.

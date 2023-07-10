@@ -62,6 +62,7 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
     private boolean cargarUas;
     private boolean cargarNormativas;
     private boolean cargarProcedimientos;
+    private boolean cargarServicios;
     private boolean cargarUsuarios;
 
     //Usuarios
@@ -93,6 +94,7 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
         cargarNormativas = true;
         cargarProcedimientos = true;
         cargarUsuarios = true;
+        cargarServicios = false;
 
         uas = migracionServiceFacade.getUnidadAdministrativasRaiz();
         if (uas != null && !uas.isEmpty()) {
@@ -180,6 +182,7 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
         listaPropiedades.addPropiedad("cargarUas", cargarUas ? "true" : "false");
         listaPropiedades.addPropiedad("cargarNormativas", cargarNormativas ? "true" : "false");
         listaPropiedades.addPropiedad("cargarProcedimientos", cargarProcedimientos ? "true" : "false");
+        listaPropiedades.addPropiedad("cargarServicios", cargarServicios ? "true" : "false");
         listaPropiedades.addPropiedad("cargarUsuarios", cargarUsuarios ? "true" : "false");
         listaPropiedades.addPropiedad("entidad", UtilJSF.getSessionBean().getEntidad().getCodigo().toString());
         String sUsuarios = "";
@@ -379,5 +382,13 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
 
     public void setCargarUsuarios(boolean cargarUsuarios) {
         this.cargarUsuarios = cargarUsuarios;
+    }
+
+    public boolean isCargarServicios() {
+        return cargarServicios;
+    }
+
+    public void setCargarServicios(boolean cargarServicios) {
+        this.cargarServicios = cargarServicios;
     }
 }
