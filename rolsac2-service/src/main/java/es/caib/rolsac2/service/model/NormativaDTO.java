@@ -35,12 +35,15 @@ public class NormativaDTO extends ModelApi {
 
     private List<AfectacionDTO> afectaciones;
 
+    private Boolean vigente;
+
     public NormativaDTO() {
     }
 
     public NormativaDTO(NormativaDTO otro) {
         if (otro != null) {
             this.codigo = otro.codigo;
+            this.vigente = otro.vigente;
             this.boletinOficial = otro.boletinOficial == null ? null : otro.boletinOficial.clone();
             this.tipoNormativa = otro.tipoNormativa == null ? null : otro.tipoNormativa.clone();
             this.numero = otro.getNumero();
@@ -170,6 +173,14 @@ public class NormativaDTO extends ModelApi {
         this.afectaciones = afectaciones;
     }
 
+    public Boolean getVigente() {
+        return vigente;
+    }
+
+    public void setVigente(Boolean vigente) {
+        this.vigente = vigente;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -196,6 +207,7 @@ public class NormativaDTO extends ModelApi {
         normativaGridDTO.setBoletinOficial(this.boletinOficial == null ? null : this.boletinOficial.getIdentificador());
         normativaGridDTO.setFechaAprobacion(this.fechaAprobacion == null ? null : this.fechaAprobacion.toString());
         normativaGridDTO.setTitulo(this.nombre);
+        normativaGridDTO.setVigente(this.vigente);
         return normativaGridDTO;
 
     }

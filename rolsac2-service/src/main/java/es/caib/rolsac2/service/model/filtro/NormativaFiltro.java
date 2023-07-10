@@ -1,34 +1,34 @@
 package es.caib.rolsac2.service.model.filtro;
 
-import es.caib.rolsac2.service.model.TipoBoletinDTO;
-import es.caib.rolsac2.service.model.TipoNormativaDTO;
-
 import java.time.LocalDate;
 import java.util.List;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import es.caib.rolsac2.service.model.TipoBoletinDTO;
+import es.caib.rolsac2.service.model.TipoNormativaDTO;
 
 public class NormativaFiltro extends AbstractFiltro {
 
-    private String texto;
+	private String texto;
 
-    private TipoNormativaDTO tipoNormativa;
+	private String nombre;
 
-    private TipoBoletinDTO tipoBoletin;
+	private TipoNormativaDTO tipoNormativa;
 
-    private LocalDate fechaAprobacion;
+	private TipoBoletinDTO tipoBoletin;
+
+	private LocalDate fechaAprobacion;
 
 	private LocalDate fechaBoletin;
 
-    private String numero;
+	private String numero;
 
-    private boolean hijasActivas = false;
+	private boolean hijasActivas = false;
 
-    private List<Long> idUAsHijas;
+	private List<Long> idUAsHijas;
 
-    private List<Long> idsUAsHijasAux;
+	private List<Long> idsUAsHijasAux;
 
-    private boolean todasUnidadesOrganicas = false;
+	private boolean todasUnidadesOrganicas = false;
 
 	private Integer codigoProcedimiento;
 
@@ -36,97 +36,121 @@ public class NormativaFiltro extends AbstractFiltro {
 
 	private Long codigo;
 
-    @Override
-    protected String getDefaultOrder() {
-        return "id";
-    }
+	private Boolean vigente;
 
-    public String getTexto() {
-        return texto;
-    }
 
-    public void setTexto(String texto) {
-        this.texto = texto;
-    }
+	@Override
+	protected String getDefaultOrder() {
+		return "id";
+	}
 
-    public TipoNormativaDTO getTipoNormativa() {
-        return tipoNormativa;
-    }
+	public String getTexto() {
+		return texto;
+	}
 
-    public void setTipoNormativa(TipoNormativaDTO tipoNormativa) {
-        this.tipoNormativa = tipoNormativa;
-    }
+	public void setTexto(String texto) {
+		this.texto = texto;
+	}
 
-    public TipoBoletinDTO getTipoBoletin() {
-        return tipoBoletin;
-    }
+	public TipoNormativaDTO getTipoNormativa() {
+		return tipoNormativa;
+	}
 
-    public void setTipoBoletin(TipoBoletinDTO tipoBoletin) {
-        this.tipoBoletin = tipoBoletin;
-    }
+	public void setTipoNormativa(TipoNormativaDTO tipoNormativa) {
+		this.tipoNormativa = tipoNormativa;
+	}
 
-    public LocalDate getFechaAprobacion() {
-        return fechaAprobacion;
-    }
+	public TipoBoletinDTO getTipoBoletin() {
+		return tipoBoletin;
+	}
 
-    public LocalDate getFechaBoletin() {
-        return fechaBoletin;
-    }
+	public void setTipoBoletin(TipoBoletinDTO tipoBoletin) {
+		this.tipoBoletin = tipoBoletin;
+	}
 
-    public void setFechaBoletin(LocalDate fechaBoletin) {
-        this.fechaBoletin = fechaBoletin;
-    }
+	public LocalDate getFechaAprobacion() {
+		return fechaAprobacion;
+	}
 
-    public boolean isHijasActivas() {
-        return hijasActivas;
-    }
+	public LocalDate getFechaBoletin() {
+		return fechaBoletin;
+	}
 
-    public void setHijasActivas(boolean hijasActivas) {
-        this.hijasActivas = hijasActivas;
-    }
+	public void setFechaBoletin(LocalDate fechaBoletin) {
+		this.fechaBoletin = fechaBoletin;
+	}
 
-    public List<Long> getIdUAsHijas() {
-        return idUAsHijas;
-    }
+	public boolean isHijasActivas() {
+		return hijasActivas;
+	}
 
-    public void setIdUAsHijas(List<Long> idUAsHijas) {
-        this.idUAsHijas = idUAsHijas;
-    }
+	public void setHijasActivas(boolean hijasActivas) {
+		this.hijasActivas = hijasActivas;
+	}
 
-    public List<Long> getIdsUAsHijasAux() {
-        return idsUAsHijasAux;
-    }
+	public List<Long> getIdUAsHijas() {
+		return idUAsHijas;
+	}
 
-    public void setIdsUAsHijasAux(List<Long> idsUAsHijasAux) {
-        this.idsUAsHijasAux = idsUAsHijasAux;
-    }
+	public void setIdUAsHijas(List<Long> idUAsHijas) {
+		this.idUAsHijas = idUAsHijas;
+	}
 
-    public boolean isTodasUnidadesOrganicas() {
-        return todasUnidadesOrganicas;
-    }
+	public List<Long> getIdsUAsHijasAux() {
+		return idsUAsHijasAux;
+	}
 
-    public void setTodasUnidadesOrganicas(boolean todasUnidadesOrganicas) {
-        this.todasUnidadesOrganicas = todasUnidadesOrganicas;
-    }
+	public void setIdsUAsHijasAux(List<Long> idsUAsHijasAux) {
+		this.idsUAsHijasAux = idsUAsHijasAux;
+	}
 
-    /**
-     * Esta relleno el texto
-     *
-     * @return
-     */
-    public boolean isRellenoTexto() {
-        return texto != null && !texto.isEmpty();
-    }
+	public boolean isTodasUnidadesOrganicas() {
+		return todasUnidadesOrganicas;
+	}
 
-    public boolean isRellenoFechaAprobacion() { return fechaAprobacion != null; }
+	public void setTodasUnidadesOrganicas(boolean todasUnidadesOrganicas) {
+		this.todasUnidadesOrganicas = todasUnidadesOrganicas;
+	}
 
-    public boolean isRellenoCodigo() { return codigo != null; }
+	public Boolean getVigente() {
+		return vigente;
+	}
 
-    public boolean isRellenoFechaBoletin() { return fechaBoletin != null; }
+	public void setVigente(Boolean vigente) {
+		this.vigente = vigente;
+	}
 
-    public boolean isRellenoTipoNormativa() {
-        return tipoNormativa != null && tipoNormativa.getCodigo() != null;
-    }
+	public Boolean isVigente() {
+		return vigente != null;
+	}
+	/**
+	 * Esta relleno el texto
+	 *
+	 * @return
+	 */
+	public boolean isRellenoTexto() {
+		return texto != null && !texto.isEmpty();
+	}
+
+	public boolean isRellenoNombre() {
+		return nombre != null && !nombre.isEmpty();
+	}
+
+	public boolean isRellenoFechaAprobacion() {
+		return fechaAprobacion != null;
+	}
+
+	public boolean isRellenoCodigo() {
+		return codigo != null;
+	}
+
+	public boolean isRellenoFechaBoletin() {
+		return fechaBoletin != null;
+	}
+
+	public boolean isRellenoTipoNormativa() {
+		return tipoNormativa != null && tipoNormativa.getCodigo() != null;
+	}
 
 	public boolean isRellenoTipoBoletin() {
 		return tipoBoletin != null && tipoBoletin.getCodigo() != null;
@@ -136,16 +160,21 @@ public class NormativaFiltro extends AbstractFiltro {
 		this.fechaAprobacion = fechaAprobacion;
 	}
 
-    public boolean isRellenoHijasActivas() {
-        return hijasActivas;
-    }
+	public boolean isRellenoHijasActivas() {
+		return hijasActivas;
+	}
 
-    public boolean isRellenoUasAux() {return idsUAsHijasAux != null; }
+	public boolean isRellenoUasAux() {
+		return idsUAsHijasAux != null;
+	}
 
-    public boolean isRellenoTodasUnidadesOrganicas() { return this.todasUnidadesOrganicas;
-    }
+	public boolean isRellenoTodasUnidadesOrganicas() {
+		return this.todasUnidadesOrganicas;
+	}
 
-    public boolean isRellenoNumero() { return numero != null && !numero.isEmpty(); }
+	public boolean isRellenoNumero() {
+		return numero != null && !numero.isEmpty();
+	}
 
 	public String getNumero() {
 		return numero;
@@ -177,5 +206,13 @@ public class NormativaFiltro extends AbstractFiltro {
 
 	public void setCodigo(Long codigo) {
 		this.codigo = codigo;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 }

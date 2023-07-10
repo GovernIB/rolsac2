@@ -25,6 +25,11 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
     private Integer orden;
 
     /**
+     * Numero
+     */
+    private Integer numeroTabla = 0;
+
+    /**
      * Titulo
      */
     private Literal titulo;
@@ -48,6 +53,12 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
      * Fecha de aprobacion
      */
     private String fechaAprobacion;
+
+
+    /**
+     * Vigencia de la normativa
+     */
+    private Boolean vigente;
 
 
     /**
@@ -212,6 +223,14 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
         this.orden = orden;
     }
 
+    public Boolean getVigente() {
+        return vigente;
+    }
+
+    public void setVigente(Boolean vigente) {
+        this.vigente = vigente;
+    }
+
     /**
      * Se hace a este nivel manualmente el clonar.
      *
@@ -225,6 +244,7 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
         tipo.setOrden(this.getOrden());
         tipo.setFechaAprobacion(this.getFechaAprobacion());
         tipo.setIdString(this.getIdString());
+        tipo.setVigente(this.getVigente());
         if (this.getTitulo() != null) {
             tipo.setTitulo((Literal) this.getTitulo().clone());
         }
@@ -332,5 +352,13 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
         }
         return 0;
     }
+
+    public Integer getNumeroTabla() {
+		return numeroTabla;
+	}
+
+	public void setNumeroTabla(Integer numeroTabla) {
+		this.numeroTabla = numeroTabla;
+	}
 
 }

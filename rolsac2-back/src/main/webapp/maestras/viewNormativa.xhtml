@@ -140,6 +140,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                 <p:ajax process="@this" event="change" partialSubmit="true" listener="#{viewNormativa.filtroUnidadOrganicasChange}" />
                             </p:selectBooleanCheckbox>
                         </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-2">
+                            <h:outputText value="#{labels['viewNormativas.estado']}:" for="txtEstado" />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
+                            <p:selectBooleanCheckbox id="txtEstado" value="#{viewNormativa.filtro.vigente}">
+                            </p:selectBooleanCheckbox>
+                        </div>
                         <div class="ui-g-12 text-center">
                             <p:commandButton value="#{labels['dict.limpiarFiltro']}"
                                              actionListener="#{viewNormativa.limpiarFiltro()}" iconPos="top"
@@ -201,6 +208,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                           headerText="#{labels['viewNormativas.fechaAprobacion']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.fechaAprobacion}"/>
+                </p:column>
+                <p:column
+                          headerText="#{labels['viewNormativas.estado']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{normativa.vigente ? labels['viewNormativas.vigente'] : labels['viewNormativas.derogada']}"></h:outputText>
                 </p:column>
             </p:dataTable>
             <h:outputScript>

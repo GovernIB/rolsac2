@@ -50,6 +50,16 @@
                  life="5000"
                  escape="false"/>
         <div class="ui-g-12 ui-md-8 pl-4 panel-container">
+            <p:panel id="formVigente" header="#{labels['dialogNormativa.estado']}">
+                <div class="form-row align-content-center align-items-center">
+                    <div class="form-group col-md-10 mb-0">
+                        <p:selectBooleanCheckbox value="#{dialogNormativa.data.vigente}"
+                                                 label="#{labels['dialogNormativa.vigencia']}"
+                                                    itemLabel="#{labels['dialogNormativa.vigencia']}">
+                        </p:selectBooleanCheckbox>
+                    </div>
+                </div>
+            </p:panel>
             <p:panel id="formDatos" header="#{labels['dialogNormativa.datos']}">
                 <div class="form-row">
                     <div class="form-group col-md-10">

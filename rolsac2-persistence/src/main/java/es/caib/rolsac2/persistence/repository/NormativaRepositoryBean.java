@@ -42,10 +42,14 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         } else if (isRest) {
             sql = new StringBuilder("SELECT j from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u where 1 = 1 ");
         } else {
-            sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u WHERE 1 = 1 ");
+            sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion, j.vigente FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u WHERE 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and (LOWER(t.titulo) LIKE :filtro OR LOWER(j.tipoNormativa.identificador) LIKE :filtro " + " OR LOWER(cast(j.numero as string)) LIKE :filtro OR LOWER(j.boletinOficial.nombre) LIKE :filtro " + " OR LOWER(cast (j.fechaAprobacion as string)) LIKE :filtro ) ");
+        }
+
+        if (filtro.isRellenoNombre()) {
+            sql.append(" and (LOWER(t.titulo) LIKE :filtro ) ");
         }
 
         if (filtro.isRellenoEntidad()) {
@@ -83,6 +87,12 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             sql.append(" and j.codigo = :codigo ");
         }
 
+        if(filtro.isVigente() && filtro.getVigente()) {
+            sql.append(" and j.vigente is true ");
+        } else if(filtro.isVigente() && !filtro.getVigente()) {
+            sql.append(" and j.vigente is false");
+        }
+
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -92,6 +102,9 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoNombre()) {
+            query.setParameter("filtro", "%" + filtro.getNombre().toLowerCase() + "%");
         }
         if (filtro.isRellenoIdioma()) {
             query.setParameter("idioma", filtro.getIdioma());
@@ -166,6 +179,7 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
                 normativaGridDTO.setNumero((String) jNormativa[3]);
                 normativaGridDTO.setBoletinOficial(((JTipoBoletin) jNormativa[4]).getNombre());
                 normativaGridDTO.setFechaAprobacion(Utils.dateToString((LocalDate) jNormativa[5]));
+                normativaGridDTO.setVigente((Boolean) jNormativa[6]);
 
                 normativa.add(normativaGridDTO);
             }
