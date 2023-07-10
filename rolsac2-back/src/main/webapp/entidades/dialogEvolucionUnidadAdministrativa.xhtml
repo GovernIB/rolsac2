@@ -1,0 +1,116 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:my="http://java.sun.com/jsf/composite/components"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam id="MODO_ACCESO" name="MODO_ACCESO"
+				value="#{dialogEvolucionUnidadAdministrativa.modoAcceso}" />
+			<f:viewParam id="ID" name="ID"
+				value="#{dialogEvolucionUnidadAdministrativa.id}" />
+			<f:viewAction action="#{dialogEvolucionUnidadAdministrativa.load}" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="pageTitleDialog">
+		<h:outputFormat
+			value="#{labels['dialogEvolucionUnidadAdministrativa.detalle']} "
+			rendered="#{!dialogUnidadAdministrativa.isModoAlta()}" />
+		<h:outputFormat
+			value="#{labels['dialogEvolucionUnidadAdministrativa.detalle']} "
+			rendered="#{dialogUnidadAdministrativa.isModoAlta()}" />
+	</ui:define>
+
+	<ui:define name="contentDialog">
+		<p:growl id="messagesDialog" globalOnly="false" showDetail="false"
+			life="5000" escape="false" />
+
+		<div class="row" style="margin-right: 0px;">
+			<div class="ui-g-12 ui-md-9 pl-4 panel-container" style="width: 100%">
+				<p:panel id="formDatos">
+					<div class="form-row">
+						<div class="form-group col-md-3">
+							<p:commandButton value="#{labels['dict.evolucionBasica']}" style="width: 130px;"
+								action="#{dialogEvolucionUnidadAdministrativa.irEvolucionBasica}"
+								process="@all" />
+						</div>
+						<div class="form-group col-md-9">
+							<h:outputText value="#{labels['dict.evolucionBasicaTexto']}"
+								style="margin-right:4px;margin-top:5px;" />
+						</div>
+					</div>
+					<separator width="5px" />
+					<div class="form-row">
+						<div class="form-group col-md-3">
+							<p:commandButton value="#{labels['dict.evolucionFusion']}" style="width: 130px;"
+								action="#{dialogEvolucionUnidadAdministrativa.irEvolucionFusion}"
+								process="@all" />
+						</div>
+						<div class="form-group col-md-9">
+							<h:outputText value="#{labels['dict.evolucionFusionTexto']}"
+								style="margin-right:4px;margin-top:5px;" />
+						</div>
+					</div>
+					<separator width="5px" />
+					<div class="form-row">
+						<div class="form-group col-md-3">
+							<p:commandButton value="#{labels['dict.evolucionDivision']}" style="width: 130px;"
+								action="#{dialogEvolucionUnidadAdministrativa.irEvolucionDivision}"
+								process="@all" />
+						</div>
+						<div class="form-group col-md-9">
+							<h:outputText value="#{labels['dict.evolucionDivisionTexto']}"
+								style="margin-right:4px;margin-top:5px;" />
+						</div>
+					</div>
+					<separator width="5px" />
+					<div class="form-row">
+						<div class="form-group col-md-3">
+							<p:commandButton value="#{labels['dict.evolucionCompetencias']}" style="width: 130px;"
+								action="#{dialogEvolucionUnidadAdministrativa.irEvolucionCompetencias}"
+								process="@all" />
+						</div>
+						<div class="form-group col-md-9">
+							<h:outputText
+								value="#{labels['dict.evolucionCompetenciasTexto']}"
+								style="margin-right:4px;margin-top:5px;" />
+						</div>
+					</div>
+					<separator width="5px" />
+					<div class="form-row">
+						<div class="form-group col-md-3">
+							<p:commandButton value="#{labels['dict.evolucionDependencia']}" style="width: 130px;"
+								action="#{dialogEvolucionUnidadAdministrativa.irEvolucionDependencia}"
+								process="@all" />
+						</div>
+						<div class="form-group col-md-9">
+							<h:outputText value="#{labels['dict.evolucionDependenciaTexto']}"
+								style="margin-right:4px;margin-top:5px;" />
+						</div>
+					</div>
+				</p:panel>
+
+			</div>
+		</div>
+
+
+	</ui:define>
+	<ui:define name="contentFooterDialogLeft">
+
+	</ui:define>
+	<ui:define name="contentFooterDialogRight">
+		<p:commandButton action="#{dialogEvolucionUnidadAdministrativa.ayuda}"
+			icon="pi pi-info-circle" iconPos="top"
+			value="#{labels['dict.ayuda']}" process="@this" />
+		<p:commandButton
+			action="#{dialogEvolucionUnidadAdministrativa.cerrar}"
+			id="closeButton" value="#{labels['dict.cerrar']}"
+			update="messagesDialog" process="@all" oncomplete="stopCargando()"
+			onstart="startCargando()" />
+
+	</ui:define>
+</ui:composition>
+</html>

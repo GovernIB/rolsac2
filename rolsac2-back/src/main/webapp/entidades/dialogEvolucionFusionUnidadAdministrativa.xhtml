@@ -1,0 +1,300 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:my="http://java.sun.com/jsf/composite/components"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam id="MODO_ACCESO" name="MODO_ACCESO"
+				value="#{dialogEvolucionFusionUnidadAdministrativa.modoAcceso}" />
+			<f:viewParam id="ID" name="ID"
+				value="#{dialogEvolucionFusionUnidadAdministrativa.id}" />
+			<f:viewAction
+				action="#{dialogEvolucionFusionUnidadAdministrativa.load}" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="pageTitleDialog">
+		<h:outputFormat
+			value="#{labels['dialogEvolucionFusionUnidadAdministrativa.detalle']} "
+			rendered="#{!dialogEvolucionFusionUnidadAdministrativa.isModoAlta()}" />
+		<h:outputFormat
+			value="#{labels['dialogEvolucionFusionUnidadAdministrativa.detalle']} "
+			rendered="#{dialogEvolucionFusionUnidadAdministrativa.isModoAlta()}" />
+	</ui:define>
+	<ui:define name="contentIdioma">
+
+		<span class="pi pi-tag mt-1" />
+		<h:outputText value="#{labels['dict.idioma']}:"
+			style="margin-right:4px;margin-top:5px;" />
+		<p:selectOneButton id="opcionIdioma"
+			value="#{dialogEvolucionFusionUnidadAdministrativa.idioma}"
+			styleClass="botoneraRed" unselectable="false" maxlength="50">
+			<f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}"
+				var="idioma" itemValue="#{idioma}"
+				itemLabel="#{labels['idiomas.' += idioma]}" />
+			<p:ajax process="@this"
+				update="formDialog:txtOrigen2 formDialog:txtOrigen formDialog:txtFechaBaja formDialog:selectNormativa formDialog:txtFechaBaja2 formDialog:selectNormativa2 formDialog:txtCrear formDialog:txtCrear2" />
+		</p:selectOneButton>
+
+	</ui:define>
+	<ui:define name="contentDialog">
+		<p:growl id="messagesDialog" globalOnly="false" sticky="true"
+			showDetail="true" life="5000" escape="false" />
+
+		<p:wizard nextLabel="#{labels['dict.siguiente']}"
+			backLabel="#{labels['dict.atras']}"
+			flowListener="#{dialogEvolucionFusionUnidadAdministrativa.onFlowProcess}">
+			<p:tab id="origen"
+				title="#{labels['dialogEvolucionUnidadAdministrativa.uasOrigen']}">
+				<p:panel style="height:330px;">
+					<p:messages />
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<p class="mb-0">
+								<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+									value="#{labels['dialogEvolucionUnidadAdministrativa.fechaBaja']}:"
+									for="txtFechaBaja" />
+							</p>
+							<p:calendar id="txtFechaBaja"
+								requiredMessage="#{labels['dict.obligatorio.fechaBaja']}"
+								required="true" showOn="button"
+								value="#{dialogEvolucionFusionUnidadAdministrativa.fechaBaja}"
+								pattern="dd/MM/yyyy" />
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:"
+								for="selectNormativa" />
+							<p:autoComplete id="selectNormativa" var="normativa"
+								forceSelection="true" styleClass="w95"
+								value="#{dialogEvolucionFusionUnidadAdministrativa.normativa}"
+								itemLabel="#{normativa.codigo} #{normativa.nombre.getTraduccion(dialogEvolucionFusionUnidadAdministrativa.idioma)}"
+								itemValue="#{normativa}" converter="#{normativaDTOConverter}"
+								autoHighlight="false"
+								completeMethod="#{dialogEvolucionFusionUnidadAdministrativa.completeNormativa}"
+								dropdown="true" placeholder="#{dict.text_placeholder_lista}"
+								size="95" minQueryLength="3" cache="true" cacheTimeout="60000"
+								scrollHeight="200">
+							</p:autoComplete>
+						</div>
+					</div>
+					<div class="row">
+						<div class="ui-g-12 ui-md-4 pr-1"
+							style="width: 720px; margin-left: 8px;">
+							<div class="row left-container mx-0">
+								<div class="col-12 left-container-header text-center">
+									<p class="left-container-tit mt-2 mb-1">#{labels['dialogEvolucionFusionUnidadAdministrativa.uaOrigen']}</p>
+								</div>
+								<div class="col-10 p-1">
+									<p:dataTable id="txtOrigen" var="td"
+										value="#{dialogEvolucionFusionUnidadAdministrativa.selectedUnidades}"
+										emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+										scrollHeight="120" paginator="false" selectionMode="single"
+										selection="#{dialogEvolucionFusionUnidadAdministrativa.uaSeleccionada}"
+										rowKey="#{td.codigo}" styleClass="noHeader">
+
+										<!-- Necesario para actualizar en controlador la fila seleccionada -->
+										<p:ajax event="rowSelect" global="false" />
+										<p:ajax event="rowUnselect" />
+
+										<p:column headerText="#{labels['msg.tablaVacia']}"
+											styleClass="text-center w75">
+											<h:outputText
+												value="#{td.nombre.getTraduccion(dialogEvolucionFusionUnidadAdministrativa.idioma)}" />
+										</p:column>
+
+									</p:dataTable>
+								</div>
+								<div
+									class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+									<p:commandButton title="#{labels['dict.nuevo']}"
+										icon="pi pi-plus" styleClass="text-success" process="@this"
+										actionListener="#{dialogEvolucionFusionUnidadAdministrativa.anyadirUAs()}"
+										rendered="#{!dialogEvolucionFusionUnidadAdministrativa.isModoConsulta()}">
+										<p:ajax event="dialogReturn"
+											listener="#{dialogEvolucionFusionUnidadAdministrativa.returnDialogo}"
+											process="@this"
+											update="formDialog finalizar messagesDialog txtOrigen" />
+									</p:commandButton>
+									<p:commandButton title="#{labels['dict.eliminar']}"
+										icon="pi pi-minus" styleClass="text-danger"
+										action="#{dialogEvolucionFusionUnidadAdministrativa.borrarUA()}"
+										process="@this"
+										update="formDialog finalizar txtOrigen messagesDialog"
+										rendered="#{!dialogEvolucionFusionUnidadAdministrativa.isModoConsulta()}" />
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+				</p:panel>
+
+			</p:tab>
+			<p:tab id="destino"
+				title="#{labels['dialogEvolucionUnidadAdministrativa.uasDestino']}">
+				<p:panel style="height:330px;">
+					<p:messages />
+
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionUnidadAdministrativa.uaDestino']}:"
+								for="txtCrear" />
+							<p>
+								<my:literalComponent id="txtCrear"
+									literal="#{dialogEvolucionFusionUnidadAdministrativa.uaDestino}"
+									disabled="#{dialogEvolucionFusionUnidadAdministrativa.isModoConsulta()}"
+									soloLecture="#{dialogEvolucionFusionUnidadAdministrativa.isModoConsulta()}"
+									required="true"
+									idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+									idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+									idioma="#{dialogEvolucionFusionUnidadAdministrativa.idioma}"
+									nombreLiteral="#{labels['dialogEvolucionUnidadAdministrativa.uaDestino']}">
+									<f:validator
+										validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" />
+								</my:literalComponent>
+							</p>
+							<p:commandButton id="btnEditar" value="#{labels['dict.nuevo']}"
+								icon="pi pi-file-o" iconPos="top" update="formDialog messagesDialog"
+								actionListener="#{dialogEvolucionFusionUnidadAdministrativa.editarUnidadAdministrativa()}"
+								process="@this">
+							</p:commandButton>
+
+						</div>
+					</div>
+				</p:panel>
+			</p:tab>
+
+			<p:tab id="finalizar"
+				title="#{labels['dialogEvolucionUnidadAdministrativa.finalizar']}">
+				<p:panel
+					header="#{labels['dialogEvolucionUnidadAdministrativa.resumen']}"
+					style="height:330px;">
+					<p:messages />
+					<div class="form-row">
+						<div class="form-group col-md-12">#{labels['dialogEvolucionFusionUnidadAdministrativa.resumen']}</div>
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p class="mb-0">
+								<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+									value="#{labels['dialogEvolucionUnidadAdministrativa.fechaBaja']}:*"
+									for="txtFechaBaja2" />
+							</p>
+							<p:calendar id="txtFechaBaja2" showOn="button" disabled="true"
+								value="#{dialogEvolucionFusionUnidadAdministrativa.fechaBaja}"
+								pattern="dd/MM/yyyy" />
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:"
+								for="selectNormativa2" />
+							<p:autoComplete id="selectNormativa2" var="normativa"
+								forceSelection="true" styleClass="w95" disabled="true"
+								value="#{dialogEvolucionFusionUnidadAdministrativa.normativa}"
+								itemLabel="#{normativa.codigo} #{normativa.nombre.getTraduccion(dialogEvolucionFusionUnidadAdministrativa.idioma)}"
+								itemValue="#{normativa}" converter="#{normativaDTOConverter}"
+								autoHighlight="false"
+								completeMethod="#{dialogEvolucionFusionUnidadAdministrativa.completeNormativa}"
+								placeholder="#{dict.text_placeholder_lista}" size="100"
+								minQueryLength="3" cache="true" cacheTimeout="60000"
+								scrollHeight="200">
+							</p:autoComplete>
+						</div>
+					</div>
+
+					<!-- Unidades Administrativas origen -->
+					<div class="row">
+						<div class="ui-g-12 ui-md-4 pr-1"
+							style="width: 720px; margin-left: 8px;">
+							<div class="row left-container mx-0">
+								<div class="col-12 left-container-header text-center">
+									<p class="left-container-tit mt-2 mb-1">#{labels['dialogEvolucionFusionUnidadAdministrativa.uaOrigen']}</p>
+								</div>
+								<div class="col-10 p-1">
+									<p:dataTable id="txtOrigen2" var="td"
+										value="#{dialogEvolucionFusionUnidadAdministrativa.selectedUnidades}"
+										emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+										scrollHeight="120" paginator="false" selectionMode="single"
+										disabledSelection="true"
+										selection="#{dialogEvolucionFusionUnidadAdministrativa.uaSeleccionada}"
+										rowKey="#{td.codigo}" styleClass="noHeader">
+
+										<!-- Necesario para actualizar en controlador la fila seleccionada -->
+										<p:ajax event="rowSelect" global="false" />
+										<p:ajax event="rowUnselect" />
+
+										<p:column headerText="#{labels['msg.tablaVacia']}"
+											styleClass="text-center w75">
+											<h:outputText
+												value="#{td.nombre.getTraduccion(dialogEvolucionFusionUnidadAdministrativa.idioma)}" />
+										</p:column>
+
+									</p:dataTable>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+
+					<!-- Unidad Administrativa a crear -->
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionUnidadAdministrativa.uaDestino']}:"
+								for="txtCrear2" />
+							<p>
+								<my:literalComponent id="txtCrear2"
+									literal="#{dialogEvolucionFusionUnidadAdministrativa.uaDestino}"
+									disabled="#{dialogEvolucionFusionUnidadAdministrativa.isModoConsulta()}"
+									soloLecture="true"
+									idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+									idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+									idioma="#{dialogEvolucionFusionUnidadAdministrativa.idioma}"
+									nombreLiteral="#{labels['dialogEvolucionUnidadAdministrativa.uaDestino']}">
+									<f:validator
+										validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" />
+								</my:literalComponent>
+							</p>
+
+						</div>
+					</div>
+				</p:panel>
+
+				<p:commandButton
+					action="#{dialogEvolucionFusionUnidadAdministrativa.evolucionar}"
+					style="float: right; margin-top: 3px;"
+					value="#{labels['dict.aceptar']}" update="messagesDialog "
+					rendered="#{!dialogEvolucionFusionUnidadAdministrativa.isModoConsulta()}"
+					process="@all" />
+			</p:tab>
+
+		</p:wizard>
+
+
+
+	</ui:define>
+	<ui:define name="contentFooterDialogLeft">
+
+	</ui:define>
+	<ui:define name="contentFooterDialogRight">
+		<p:commandButton action="#{dialogEvolucionUnidadAdministrativa.ayuda}"
+			icon="pi pi-info-circle" iconPos="top"
+			value="#{labels['dict.ayuda']}" process="@this" />
+		<p:commandButton
+			action="#{dialogEvolucionUnidadAdministrativa.cerrar}"
+			id="closeButton" value="#{labels['dict.cerrar']}" process="@this" />
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -193,6 +193,14 @@
                                      disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}">
                         <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                     </p:commandButton>
+                    <p:commandButton id="btnEvolucionar" value="#{labels['dict.evolucionar']}" icon="pi pi-directions" iconPos="top"
+                                     actionListener="#{viewUnidadAdministrativa.evolucionarUnidadAdministrativa}"
+                                     process="@form" update="messages"
+                                     rendered="#{!viewUnidadAdministrativa.isAdmContenidos()}"
+                                     disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}">
+                    <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
+                                update="messages dataTable"/>
+                    </p:commandButton>
                     <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
                                      action="#{viewUnidadAdministrativa.ayuda}" process="@this" update="messages"/>
                 </f:facet>
@@ -213,7 +221,7 @@
                          sortOrder="#{viewUnidadAdministrativa.filtro.order}"
                          style="min-height: 300px;"
             >
-                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar" process="@form"/>
+                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar @form:btnEvolucionar" process="@form"/>
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"

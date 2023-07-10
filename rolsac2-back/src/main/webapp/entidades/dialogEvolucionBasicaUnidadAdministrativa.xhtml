@@ -1,0 +1,244 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:my="http://java.sun.com/jsf/composite/components"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam id="MODO_ACCESO" name="MODO_ACCESO"
+				value="#{dialogEvolucionBasicaUnidadAdministrativa.modoAcceso}" />
+			<f:viewParam id="ID" name="ID"
+				value="#{dialogEvolucionBasicaUnidadAdministrativa.id}" />
+			<f:viewAction
+				action="#{dialogEvolucionBasicaUnidadAdministrativa.load}" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="pageTitleDialog">
+		<h:outputFormat
+			value="#{labels['dialogEvolucionBasicaUnidadAdministrativa.detalle']} "
+			rendered="#{!dialogEvolucionBasicaUnidadAdministrativa.isModoAlta()}" />
+		<h:outputFormat
+			value="#{labels['dialogEvolucionBasicaUnidadAdministrativa.detalle']} "
+			rendered="#{dialogEvolucionBasicaUnidadAdministrativa.isModoAlta()}" />
+	</ui:define>
+	<ui:define name="contentIdioma">
+
+		<span class="pi pi-tag mt-1" />
+		<h:outputText value="#{labels['dict.idioma']}:"
+			style="margin-right:4px;margin-top:5px;" />
+		<p:selectOneButton id="opcionIdioma"
+			value="#{dialogEvolucionBasicaUnidadAdministrativa.idioma}"
+			styleClass="botoneraRed" unselectable="false" maxlength="50">
+			<f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}"
+				var="idioma" itemValue="#{idioma}"
+				itemLabel="#{labels['idiomas.' += idioma]}" />
+			<p:ajax process="@this"
+				update="formDialog:txtOrigen formDialog:txtOrigen2 formDialog:txtFechaBaja formDialog:selectNormativa formDialog:txtFechaBaja2 formDialog:selectNormativa2 formDialog:txtCrear formDialog:txtCrear2" />
+		</p:selectOneButton>
+		<!-- 		<p:commandButton action="#{dialogUnidadAdministrativa.traducir}" -->
+		<!-- 			icon="pi pi-compass" iconPos="top" value="#{labels['dict.traducir']}" -->
+		<!-- 			style="margin-left:10px" update="messagesDialog " process="@this" -->
+		<!-- 			rendered="#{!dialogUnidadAdministrativa.isModoConsulta() and dialogUnidadAdministrativa.tradExiste()}"> -->
+		<!-- 			<p:ajax event="dialogReturn" -->
+		<!-- 				listener="#{dialogUnidadAdministrativa.returnDialogTraducir}" -->
+		<!-- 				process="@this" -->
+		<!-- 				update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo" /> -->
+		<!-- 		</p:commandButton> -->
+	</ui:define>
+	<ui:define name="contentDialog">
+		<p:growl id="messagesDialog" globalOnly="false" sticky="true"
+			showDetail="true" life="5000" escape="false" />
+
+		<p:wizard nextLabel="#{labels['dict.siguiente']}"
+			backLabel="#{labels['dict.atras']}"
+			flowListener="#{dialogEvolucionBasicaUnidadAdministrativa.onFlowProcess}">
+			<p:tab id="origen"
+				title="#{labels['dialogEvolucionUnidadAdministrativa.uasOrigen']}">
+				<p:panel style="height:330px;">
+					<p:messages />
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel
+								value="#{labels['dialogEvolucionUnidadAdministrativa.uaOrigen']}:"
+								for="txtOrigen" styleClass="mb-1 pt-0" />
+							<p:inputText id="txtOrigen" styleClass="w95" readonly="true"
+								value="#{dialogEvolucionBasicaUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionBasicaUnidadAdministrativa.idioma)}" />
+						</div>
+					</div>
+					<div class="form-row">
+
+						<div class="form-group col-md-4">
+							<p class="mb-0">
+								<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+									value="#{labels['dialogEvolucionUnidadAdministrativa.fechaBaja']}:"
+									for="txtFechaBaja" />
+							</p>
+							<p:calendar id="txtFechaBaja"
+								requiredMessage="#{labels['dict.obligatorio.fechaBaja']}"
+								required="true" showOn="button"
+								value="#{dialogEvolucionBasicaUnidadAdministrativa.fechaBaja}"
+								pattern="dd/MM/yyyy" />
+						</div>
+
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:"
+								for="selectNormativa" />
+							<p:autoComplete id="selectNormativa" var="normativa"
+								forceSelection="true" styleClass="w95"
+								value="#{dialogEvolucionBasicaUnidadAdministrativa.normativa}"
+								itemLabel="#{normativa.codigo} #{normativa.nombre.getTraduccion(dialogEvolucionBasicaUnidadAdministrativa.idioma)}"
+								itemValue="#{normativa}" converter="#{normativaDTOConverter}"
+								autoHighlight="false" dropdown="true"
+								completeMethod="#{dialogEvolucionBasicaUnidadAdministrativa.completeNormativa}"
+								placeholder="#{dict.text_placeholder_lista}" size="95"
+								minQueryLength="3" cache="true" cacheTimeout="60000"
+								scrollHeight="200">
+							</p:autoComplete>
+						</div>
+					</div>
+				</p:panel>
+
+			</p:tab>
+			<p:tab id="destino"
+				title="#{labels['dialogEvolucionUnidadAdministrativa.uasDestino']}">
+				<p:panel style="height:330px;">
+					<p:messages />
+
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionUnidadAdministrativa.uaDestino']}:"
+								for="txtCrear" />
+							<p>
+								<my:literalComponent id="txtCrear"
+									literal="#{dialogEvolucionBasicaUnidadAdministrativa.uaDestino}"
+									disabled="#{dialogEvolucionBasicaUnidadAdministrativa.isModoConsulta()}"
+									soloLecture="#{dialogEvolucionBasicaUnidadAdministrativa.isModoConsulta()}"
+									required="true"
+									idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+									idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+									idioma="#{dialogEvolucionBasicaUnidadAdministrativa.idioma}"
+									nombreLiteral="#{labels['dialogEvolucionUnidadAdministrativa.uaDestino']}">
+									<f:validator
+										validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" />
+								</my:literalComponent>
+							</p>
+							<!-- 							<p:commandButton id="btnEditar" value="#{labels['dict.editar']}" -->
+							<!-- 								icon="pi pi-pencil" iconPos="top" -->
+							<!-- 								actionListener="#{dialogEvolucionBasicaUnidadAdministrativa.editarUnidadAdministrativa}" -->
+							<!-- 								process="@form" update="messagesDialog"> -->
+							<!-- 							</p:commandButton> -->
+
+						</div>
+					</div>
+				</p:panel>
+			</p:tab>
+
+			<p:tab id="finalizar"
+				title="#{labels['dialogEvolucionUnidadAdministrativa.finalizar']}">
+				<p:panel
+					header="#{labels['dialogEvolucionUnidadAdministrativa.resumen']}"
+					style="height:330px;">
+					<p:messages />
+					<div class="form-row">
+						<div class="form-group col-md-12">#{labels['dialogEvolucionBasicaUnidadAdministrativa.resumen']}</div>
+					</div>
+
+					<!-- Unidad Administrativa origen -->
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel
+								value="#{labels['dialogEvolucionUnidadAdministrativa.uaOrigen']}:"
+								for="txtOrigen2" styleClass="mb-1 pt-0" />
+							<p:inputText id="txtOrigen2" styleClass="w95" readonly="true"
+								value="#{dialogEvolucionBasicaUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionBasicaUnidadAdministrativa.idioma)}" />
+						</div>
+					</div>
+
+					<!-- Unidad Administrativa a crear -->
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionUnidadAdministrativa.uaDestino']}:"
+								for="txtCrear2" />
+							<p>
+								<my:literalComponent id="txtCrear2"
+									literal="#{dialogEvolucionBasicaUnidadAdministrativa.uaDestino}"
+									disabled="#{dialogEvolucionBasicaUnidadAdministrativa.isModoConsulta()}"
+									soloLecture="true"
+									idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+									idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+									idioma="#{dialogEvolucionBasicaUnidadAdministrativa.idioma}"
+									nombreLiteral="#{labels['dialogEvolucionUnidadAdministrativa.uaDestino']}">
+									<f:validator
+										validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" />
+								</my:literalComponent>
+							</p>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p class="mb-0">
+								<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+									value="#{labels['dialogEvolucionUnidadAdministrativa.fechaBaja']}:*"
+									for="txtFechaBaja2" />
+							</p>
+							<p:calendar id="txtFechaBaja2" showOn="button" disabled="true"
+								value="#{dialogEvolucionBasicaUnidadAdministrativa.fechaBaja}"
+								pattern="dd/MM/yyyy" />
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:"
+								for="selectNormativa2" />
+							<p:autoComplete id="selectNormativa2" var="normativa"
+								forceSelection="true" styleClass="w95" disabled="true"
+								value="#{dialogEvolucionBasicaUnidadAdministrativa.normativa}"
+								itemLabel="#{normativa.codigo} #{normativa.nombre.getTraduccion(dialogEvolucionBasicaUnidadAdministrativa.idioma)}"
+								itemValue="#{normativa}" converter="#{normativaDTOConverter}"
+								autoHighlight="false"
+								completeMethod="#{dialogEvolucionBasicaUnidadAdministrativa.completeNormativa}"
+								placeholder="#{dict.text_placeholder_lista}" size="100"
+								minQueryLength="3" cache="true" cacheTimeout="60000"
+								scrollHeight="200">
+							</p:autoComplete>
+						</div>
+					</div>
+				</p:panel>
+
+				<p:commandButton
+					action="#{dialogEvolucionBasicaUnidadAdministrativa.evolucionar}"
+					style="float: right; margin-top: 3px;"
+					value="#{labels['dict.aceptar']}" update="messagesDialog "
+					rendered="#{!dialogEvolucionBasicaUnidadAdministrativa.isModoConsulta()}"
+					process="@all" />
+			</p:tab>
+
+
+
+		</p:wizard>
+
+	</ui:define>
+	<ui:define name="contentFooterDialogLeft">
+
+	</ui:define>
+	<ui:define name="contentFooterDialogRight">
+		<p:commandButton action="#{dialogEvolucionUnidadAdministrativa.ayuda}"
+			icon="pi pi-info-circle" iconPos="top"
+			value="#{labels['dict.ayuda']}" process="@this" />
+		<p:commandButton
+			action="#{dialogEvolucionUnidadAdministrativa.cerrar}"
+			id="closeButton" value="#{labels['dict.cerrar']}" process="@this" />
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -142,6 +142,14 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         }
     }
 
+    public void evolucionarUnidadAdministrativa() {
+        if (datoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+        	abrirVentanaEvolucion(TypeModoAcceso.EDICION);
+        }
+    }
+
     public void consultarUnidadAdministrativa() {
         if (datoSeleccionado != null) {
             abrirVentana(TypeModoAcceso.CONSULTA);
@@ -173,6 +181,16 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
         UtilJSF.openDialog("dialogUnidadAdministrativa", modoAcceso, params, true, 975, 733);
+    }
+
+    private void abrirVentanaEvolucion(TypeModoAcceso modoAcceso) {
+        // Muestra dialogo
+        final Map<String, String> params = new HashMap<>();
+        if (this.datoSeleccionado != null
+                && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
+            params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
+        }
+        UtilJSF.openDialog("dialogEvolucionUnidadAdministrativa", modoAcceso, params, true, 775, 424);
     }
 
     public void borrarUnidadAdministrativa() {

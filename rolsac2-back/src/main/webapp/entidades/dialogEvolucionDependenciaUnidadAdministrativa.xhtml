@@ -1,0 +1,204 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:my="http://java.sun.com/jsf/composite/components"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam id="MODO_ACCESO" name="MODO_ACCESO"
+				value="#{dialogEvolucionDependenciaUnidadAdministrativa.modoAcceso}" />
+			<f:viewParam id="ID" name="ID"
+				value="#{dialogEvolucionDependenciaUnidadAdministrativa.id}" />
+			<f:viewAction
+				action="#{dialogEvolucionDependenciaUnidadAdministrativa.load}" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="pageTitleDialog">
+		<h:outputFormat
+			value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.detalle']} "
+			rendered="#{!dialogEvolucionDependenciaUnidadAdministrativa.isModoAlta()}" />
+		<h:outputFormat
+			value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.detalle']} "
+			rendered="#{dialogEvolucionDependenciaUnidadAdministrativa.isModoAlta()}" />
+	</ui:define>
+	<ui:define name="contentIdioma">
+
+		<span class="pi pi-tag mt-1" />
+		<h:outputText value="#{labels['dict.idioma']}:"
+			style="margin-right:4px;margin-top:5px;" />
+		<p:selectOneButton id="opcionIdioma"
+			value="#{dialogEvolucionDependenciaUnidadAdministrativa.idioma}"
+			styleClass="botoneraRed" unselectable="false" maxlength="50">
+			<f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}"
+				var="idioma" itemValue="#{idioma}"
+				itemLabel="#{labels['idiomas.' += idioma]}" />
+			<p:ajax process="@this"
+				update="formDialog:txtOrigen formDialog:txtOrigen2 " />
+		</p:selectOneButton>
+
+	</ui:define>
+	<ui:define name="contentDialog">
+		<p:growl id="messagesDialog" globalOnly="false" sticky="true"
+			showDetail="true" life="5000" escape="false" />
+
+		<p:wizard nextLabel="#{labels['dict.siguiente']}"
+			backLabel="#{labels['dict.atras']}"
+			flowListener="#{dialogEvolucionDependenciaUnidadAdministrativa.onFlowProcess}">
+			<p:tab id="origen"
+				title="#{labels['dialogEvolucionUnidadAdministrativa.uasOrigen']}">
+				<p:panel style="height:330px;">
+					<p:messages />
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel
+								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.cambioDependencia']}:"
+								for="txtOrigen" styleClass="mb-1 pt-0" />
+							<p:inputText id="txtOrigen" styleClass="w95" readonly="true"
+								value="#{dialogEvolucionDependenciaUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}" />
+						</div>
+					</div>
+
+				</p:panel>
+
+			</p:tab>
+			<p:tab id="destino"
+				title="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.cambiarDependencia']}">
+				<p:panel style="height:330px;">
+					<p:messages />
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.organicoPadre']}:"
+								for="selectOrganico" />
+							<p:autoComplete id="selectOrganico" var="organico"
+								forceSelection="true" styleClass="w95"
+								value="#{dialogEvolucionDependenciaUnidadAdministrativa.organicoPadre}"
+								itemLabel="#{organico.codigo} #{organico.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}"
+								itemValue="#{organico}"
+								converter="#{unidadAdministrativaDTOConverter}"
+								autoHighlight="false" required="true"
+								completeMethod="#{dialogEvolucionDependenciaUnidadAdministrativa.completeUnidadAdministrativa}"
+								dropdown="true" placeholder="#{dict.text_placeholder_lista}"
+								size="95" minQueryLength="3" cache="true" cacheTimeout="60000"
+								scrollHeight="200">
+							</p:autoComplete>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.funcionalPadre']}:"
+								for="selectFuncional" />
+							<p:autoComplete id="selectFuncional" var="funcional"
+								forceSelection="true" styleClass="w95"
+								value="#{dialogEvolucionDependenciaUnidadAdministrativa.funcionalPadre}"
+								itemLabel="#{funcional.codigo} #{funcional.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}"
+								itemValue="#{funcional}"
+								converter="#{unidadAdministrativaDTOConverter}"
+								autoHighlight="false" required="true"
+								completeMethod="#{dialogEvolucionDependenciaUnidadAdministrativa.completeUnidadAdministrativa}"
+								dropdown="true" placeholder="#{dict.text_placeholder_lista}"
+								size="95" minQueryLength="3" cache="true" cacheTimeout="60000"
+								scrollHeight="200">
+							</p:autoComplete>
+						</div>
+					</div>
+
+
+				</p:panel>
+			</p:tab>
+
+			<p:tab id="finalizar"
+				title="#{labels['dialogEvolucionUnidadAdministrativa.finalizar']}">
+				<p:panel
+					header="#{labels['dialogEvolucionUnidadAdministrativa.resumen']}"
+					style="height:330px;">
+					<p:messages />
+					<div class="form-row">
+						<div class="form-group col-md-12">#{labels['dialogEvolucionDependenciaUnidadAdministrativa.resumen']}</div>
+					</div>
+
+					<!-- Unidad Administrativa cambio -->
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel
+								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.cambioDependencia']}:"
+								for="txtOrigen2" styleClass="mb-1 pt-0" />
+							<p:inputText id="txtOrigen2" styleClass="w95" readonly="true"
+								value="#{dialogEvolucionDependenciaUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}" />
+						</div>
+					</div>
+
+
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.organicoPadre']}:"
+								for="selectOrganico2" />
+							<p:autoComplete id="selectOrganico2" var="organico"
+								forceSelection="true" styleClass="w95"
+								value="#{dialogEvolucionDependenciaUnidadAdministrativa.organicoPadre}"
+								itemLabel="#{organico.codigo} #{organico.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}"
+								itemValue="#{organico}"
+								converter="#{unidadAdministrativaDTOConverter}"
+								autoHighlight="false" disabled="true"
+								completeMethod="#{dialogEvolucionDependenciaUnidadAdministrativa.completeUnidadAdministrativa}"
+								placeholder="#{dict.text_placeholder_lista}" size="100"
+								minQueryLength="3" cache="true" cacheTimeout="60000"
+								scrollHeight="200">
+							</p:autoComplete>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.funcionalPadre']}:"
+								for="selectFuncional2" />
+							<p:autoComplete id="selectFuncional2" var="funcional"
+								forceSelection="true" styleClass="w95"
+								value="#{dialogEvolucionDependenciaUnidadAdministrativa.funcionalPadre}"
+								itemLabel="#{funcional.codigo} #{funcional.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}"
+								itemValue="#{funcional}"
+								converter="#{unidadAdministrativaDTOConverter}"
+								autoHighlight="false" disabled="true"
+								completeMethod="#{dialogEvolucionDependenciaUnidadAdministrativa.completeUnidadAdministrativa}"
+								placeholder="#{dict.text_placeholder_lista}" size="100"
+								minQueryLength="3" cache="true" cacheTimeout="60000"
+								scrollHeight="200">
+							</p:autoComplete>
+						</div>
+					</div>
+
+
+				</p:panel>
+
+				<p:commandButton
+					action="#{dialogEvolucionDependenciaUnidadAdministrativa.evolucionar}"
+					style="float: right; margin-top: 3px;"
+					value="#{labels['dict.aceptar']}" update="messagesDialog "
+					rendered="#{!dialogEvolucionDependenciaUnidadAdministrativa.isModoConsulta()}"
+					process="@all" />
+			</p:tab>
+
+		</p:wizard>
+
+	</ui:define>
+	<ui:define name="contentFooterDialogLeft">
+
+	</ui:define>
+	<ui:define name="contentFooterDialogRight">
+		<p:commandButton action="#{dialogEvolucionUnidadAdministrativa.ayuda}"
+			icon="pi pi-info-circle" iconPos="top"
+			value="#{labels['dict.ayuda']}" process="@this" />
+		<p:commandButton
+			action="#{dialogEvolucionUnidadAdministrativa.cerrar}"
+			id="closeButton" value="#{labels['dict.cerrar']}" process="@this" />
+
+	</ui:define>
+</ui:composition>
+</html>
