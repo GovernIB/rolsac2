@@ -74,6 +74,12 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 	private boolean tramitElectronica;
 	private boolean tramitTelefonica;
 
+	private String idTramite;
+
+	private String identificadorPlataforma;
+
+	private Integer version;
+
 	public Long getCodigoProc() {
 		return codigoProc;
 	}
@@ -358,6 +364,30 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 		this.mensajesPendiente = mensajesPendiente;
 	}
 
+	public String getIdTramite() {
+		return idTramite;
+	}
+
+	public void setIdTramite(String idTramite) {
+		this.idTramite = idTramite;
+	}
+
+	public String getIdentificadorPlataforma() {
+		return identificadorPlataforma;
+	}
+
+	public void setIdentificadorPlataforma(String identificadorPlataforma) {
+		this.identificadorPlataforma = identificadorPlataforma;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
 	/**
 	 * Esta relleno el texto
 	 *
@@ -593,7 +623,7 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 	}
 
 	public boolean isRellenoProcedimiento() {
-		return procedimiento != null && procedimiento.getCodigo() != null;
+		return procedimiento != null && procedimiento.getCodigoWF() != null;
 	}
 
 	public boolean isRellenoTipoTramitacion() {
@@ -618,5 +648,18 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 
 	public void setEstadoWF(String estadoWF) {
 		this.estadoWF = estadoWF;
+	}
+
+
+	public boolean isRellenoIdTramite(){
+		return idTramite != null;
+	}
+
+	public boolean isRellenoIdPlataforma() {
+		return identificadorPlataforma != null;
+	}
+
+	public boolean isRellenoVersion() {
+		return version != null;
 	}
 }

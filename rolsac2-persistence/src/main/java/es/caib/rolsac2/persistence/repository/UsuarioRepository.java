@@ -37,5 +37,7 @@ public interface UsuarioRepository extends CrudRepository<JUsuario, Long> {
 
     List<JUsuarioEntidad> findUsuariosByEntidad(Long idEntidad);
 
+    boolean existeUsuarioUA(Long idUsuario, Long idUA);
+
     void anyadirNuevoUsuarioUA(JUsuario jUsuario, JUnidadAdministrativa jUnidadAdministrativa);
 }

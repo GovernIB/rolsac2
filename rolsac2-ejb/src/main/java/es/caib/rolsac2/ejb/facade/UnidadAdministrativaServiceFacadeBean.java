@@ -540,7 +540,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<UnidadAdministrativaDTO> findByFiltroRest(UnidadAdministrativaFiltro fg) {
         try {
             List<UnidadAdministrativaDTO> items = unidadAdministrativaRepository.findPagedByFiltroRest(fg);

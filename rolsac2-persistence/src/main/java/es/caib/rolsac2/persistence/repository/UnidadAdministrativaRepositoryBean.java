@@ -204,7 +204,8 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
                     unidadAdministrativaGridDTO.setTipo(((JTipoUnidadAdministrativa) jUnidadAdmin[1]).getIdentificador());
                 }
                 if (jUnidadAdmin[2] != null) {
-                    unidadAdministrativaGridDTO.setNombrePadre(createLiteral((String) jUnidadAdmin[2], filtro.getIdioma()));
+                    unidadAdministrativaGridDTO.setNombrePadre(getTraducccion((JUnidadAdministrativa) jUnidadAdmin[2], filtro.getIdioma()));
+                    //unidadAdministrativaGridDTO.setNombrePadre(createLiteral((String) jUnidadAdmin[2], filtro.getIdioma()));
                 }
                 unidadAdministrativaGridDTO.setOrden((Integer) jUnidadAdmin[3]);
                 unidadAdministrativaGridDTO.setNombre(createLiteral((String) jUnidadAdmin[4], filtro.getIdioma()));
@@ -213,6 +214,26 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             }
         }
         return unidadAdmin;
+    }
+
+    public Literal getTraducccion(JUnidadAdministrativa ua, String idioma) {
+        if (ua == null) {
+            return null;
+        }
+
+        if (idioma != null) {
+            for (JUnidadAdministrativaTraduccion trad : ua.getTraducciones()) {
+                if (trad != null && idioma.equals(trad.getIdioma())) {
+                    return createLiteral(trad.getNombre(), idioma);
+                }
+            }
+        }
+
+        if (ua.getTraducciones() != null && !ua.getTraducciones().isEmpty()) {
+            return createLiteral(ua.getTraducciones().get(0).getNombre(), ua.getTraducciones().get(0).getIdioma());
+        }
+
+        return null;
     }
 
     private Query getQuery(boolean isTotal, UnidadAdministrativaFiltro filtro, boolean isRest) {
@@ -228,7 +249,8 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             sql.append(new StringBuilder(" where 1 = 1  "));
 
         } else {
-            sql = new StringBuilder("SELECT j.codigo, jtipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma " + " LEFT OUTER JOIN j.entidad je " + " LEFT OUTER JOIN j.tipo jtipo where 1 = 1 AND je.codigo=:codEnti");
+            //sql = new StringBuilder("SELECT j.codigo, jtipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma " + " LEFT OUTER JOIN j.entidad je " + " LEFT OUTER JOIN j.tipo jtipo where 1 = 1 AND je.codigo=:codEnti");
+            sql = new StringBuilder("SELECT j.codigo, jtipo, padre, j.orden, t.nombre, j.codigoDIR3 FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre padre where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and (LOWER(jtipo.identificador) LIKE :filtro " + " OR LOWER(j.codigoDIR3) LIKE :filtro OR cast(j.id as string) like :filtro " + " OR LOWER(t.nombre) LIKE :filtro OR LOWER(cast(j.orden as string)) LIKE :filtro " + " OR LOWER(tpd.nombre) LIKE :filtro OR LOWER(cast(je.codigo as string)) LIKE :filtro ) ");
@@ -251,7 +273,8 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         }
 
         if (filtro.isRellenoCodEnti()) {
-            sql.append(" and je.codigo=:codEnti ");
+            //sql.append(" and je.codigo=:codEnti ");
+            sql.append(" and j.entidad.codigo=:codEnti ");
         }
 
         if (filtro.isRellenoIdentificador()) {
@@ -266,7 +289,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             sql.append(" and j.codigo = :codigo ");
         }
 
-        if(filtro.isRellenoCodigoNormativa()){
+        if (filtro.isRellenoCodigoNormativa()) {
             sql.append(" AND EXISTS (SELECT 1 FROM JNormativaUnidadAdministrativa nor WHERE j.codigo = nor.unidadAdministrativa.codigo AND nor.normativa.codigo = :codigoNor) ");
         }
 
@@ -274,7 +297,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
         }
-
+        //sql = new StringBuilder("SELECT j.codigo,j.orden, t.nombre, j.codigoDIR3 FROM JUnidadAdministrativaLite j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma  where 1 = 1 AND je =:codEnti and j.codigo = :idUA order by j.codigo asc ");
         Query query = entityManager.createQuery(sql.toString());
 
         if (filtro.isRellenoTexto()) {

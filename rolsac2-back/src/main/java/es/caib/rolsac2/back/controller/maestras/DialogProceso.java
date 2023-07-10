@@ -12,10 +12,7 @@ import es.caib.rolsac2.service.model.ProcesoDTO;
 import es.caib.rolsac2.service.model.ProcesoGridDTO;
 import es.caib.rolsac2.service.model.Propiedad;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-import es.caib.rolsac2.service.model.types.TypeTipoProceso;
+import es.caib.rolsac2.service.model.types.*;
 import es.caib.rolsac2.service.utils.UtilComparador;
 import es.caib.rolsac2.service.utils.UtilJSON;
 import org.primefaces.PrimeFaces;
@@ -119,35 +116,35 @@ public class DialogProceso extends AbstractController implements Serializable {
         //Verificamos que si se da de alta un proceso dependiente de un plugin, el plugin esté dado de alta
         switch (data.getIdentificadorProceso()) {
             case "SOLR": {
-                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(), TypeTipoProceso.SOLR.toString())) {
+                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(), TypePluginEntidad.INDEXACION.toString())) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProceso.faltaPluginSOLR"), true);
                     return false;
                 }
                 break;
             }
             case "SOLR_PUNT": {
-                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(), TypeTipoProceso.SOLR_PUNT.toString())) {
+                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(),TypePluginEntidad.INDEXACION.toString())) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProceso.faltaPluginSOLR"), true);
                     return false;
                 }
                 break;
             }
             case "SIA": {
-                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(), TypeTipoProceso.SIA.toString())) {
+                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(), TypePluginEntidad.SIA.toString())) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProceso.faltaPluginSIA"), true);
                     return false;
                 }
                 break;
             }
             case "SIA_PUNT": {
-                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(), TypeTipoProceso.SIA_PUNT.toString())) {
+                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(), TypePluginEntidad.SIA.toString())) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProceso.faltaPluginSIA"), true);
                     return false;
                 }
                 break;
             }
             case "DIR3": {
-                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(), TypeTipoProceso.DIR3.toString())) {
+                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(), TypePluginEntidad.DIR3.toString())) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProceso.faltaPluginDIR3"), true);
                     return false;
                 }

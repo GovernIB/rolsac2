@@ -57,12 +57,6 @@ public class JProcedimiento extends BaseEntity {
     private Date siaFecha;
 
     /**
-     * Codigo Dir3 SIA
-     */
-    @Column(name = "PROC_SIADIR3", length = 20)
-    private String codigoDir3SIA;
-
-    /**
      * Mensajes
      */
     @Column(name = "PROC_MENSA")
@@ -205,24 +199,6 @@ public class JProcedimiento extends BaseEntity {
     }
 
     /**
-     * Obtiene codigo dir 3 sia.
-     *
-     * @return codigo dir 3 sia
-     */
-    public String getCodigoDir3SIA() {
-        return codigoDir3SIA;
-    }
-
-    /**
-     * Establece codigo dir 3 sia.
-     *
-     * @param procSiadir3 proc siadir 3
-     */
-    public void setCodigoDir3SIA(String procSiadir3) {
-        this.codigoDir3SIA = procSiadir3;
-    }
-
-    /**
      * Obtiene mensajes.
      *
      * @return mensajes
@@ -329,6 +305,6 @@ public class JProcedimiento extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JProcedimiento{" + "codigo=" + codigo + ", tipo='" + tipo + '\'' + ", codigoSIA=" + codigoSIA + ", estadoSIA=" + estadoSIA + ", siaFecha=" + siaFecha + ", codigoDir3SIA='" + codigoDir3SIA + '\'' + '}';
+        return "JProcedimiento{" + "codigo=" + codigo + ", tipo='" + tipo + '\'' + ", codigoSIA=" + codigoSIA + ", estadoSIA=" + estadoSIA + ", siaFecha=" + siaFecha + '}';
     }
 }

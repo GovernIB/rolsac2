@@ -8,7 +8,7 @@ public enum TypeProcedimientoWorkflow {
     /**
      * ESTADO PUBLICADO
      **/
-    PUBLICADO(false),
+    DEFINITIVO(false),
     /**
      * <P>ADMINISTRADOR ENTIDAD</P>
      * <P>Responsable de la configuració del sistema a nivell d’entitat.</P>
@@ -35,7 +35,7 @@ public enum TypeProcedimientoWorkflow {
 
 
     public boolean isPublicado() {
-        return perfil == TypeProcedimientoWorkflow.PUBLICADO.getValor();
+        return perfil == TypeProcedimientoWorkflow.DEFINITIVO.getValor();
     }
 
     public boolean isModificado() {

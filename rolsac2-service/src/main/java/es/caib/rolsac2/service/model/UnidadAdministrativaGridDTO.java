@@ -17,6 +17,8 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
 
     private String identificador;
 
+    private Integer numero = 0;
+
     /**
      * Codigo DIR3
      */
@@ -233,4 +235,12 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
     public int hashCode() {
         return Objects.hash(codigo, codigoDIR3, nombrePadre, tipo, orden, nombre);
     }
+
+	public Integer getNumero() {
+		return numero;
+	}
+
+	public void setNumero(Integer numero) {
+		this.numero = numero;
+	}
 }

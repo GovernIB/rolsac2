@@ -23,6 +23,11 @@ public class TemaGridDTO extends ModelApi implements Comparable<TemaGridDTO> {
     private Long entidad;
 
     /**
+     * Numero
+     */
+    private Integer numero;
+
+    /**
      * Identificador
      */
     private String identificador;
@@ -273,4 +278,12 @@ public class TemaGridDTO extends ModelApi implements Comparable<TemaGridDTO> {
         tipo.setRelacionado(this.isRelacionado());
         return tipo;
     }
+
+    public Integer getNumero() {
+		return numero;
+	}
+
+	public void setNumero(Integer numero) {
+		this.numero = numero;
+	}
 }

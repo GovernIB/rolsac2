@@ -135,6 +135,7 @@ public class JProcedimientoDocumento {
 
                     DocumentoTraduccion doctrad = new DocumentoTraduccion();
                     doctrad.setIdioma(traduccion.getIdioma());
+                    doctrad.setCodigo(jdocTrad.getCodigo());
 
                     FicheroDTO fichero = new FicheroDTO();
                     fichero.setCodigo(jdocTrad.getFichero());

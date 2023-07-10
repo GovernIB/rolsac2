@@ -77,11 +77,6 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private Literal terminoResolucion;
     private Literal observaciones;
 
-    private Literal lopdFinalidad;
-    private Literal lopdDestinatario;
-    private Literal lopdDerechos;
-    private Literal lopdInfoAdicional;
-
     /*** Lista de objetos **/
     private List<TipoPublicoObjetivoEntidadGridDTO> publicosObjetivo;
     private List<TipoMateriaSIAGridDTO> materiasSIA;
@@ -291,39 +286,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     public void setLopdResponsable(String lopdResponsable) {
         this.lopdResponsable = lopdResponsable;
     }
-
-    public Literal getLopdFinalidad() {
-        return lopdFinalidad;
-    }
-
-    public void setLopdFinalidad(Literal lopdFinalidad) {
-        this.lopdFinalidad = lopdFinalidad;
-    }
-
-    public Literal getLopdDestinatario() {
-        return lopdDestinatario;
-    }
-
-    public void setLopdDestinatario(Literal lopdDestinatario) {
-        this.lopdDestinatario = lopdDestinatario;
-    }
-
-    public Literal getLopdDerechos() {
-        return lopdDerechos;
-    }
-
-    public void setLopdDerechos(Literal lopdDerechos) {
-        this.lopdDerechos = lopdDerechos;
-    }
-
-    public Literal getLopdInfoAdicional() {
-        return lopdInfoAdicional;
-    }
-
-    public void setLopdInfoAdicional(Literal lopdInfoAdicional) {
-        this.lopdInfoAdicional = lopdInfoAdicional;
-    }
-
+ 
     public Integer getCodigoSIA() {
         return codigoSIA;
     }

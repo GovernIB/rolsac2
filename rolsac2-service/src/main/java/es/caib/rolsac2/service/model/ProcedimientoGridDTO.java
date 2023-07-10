@@ -29,6 +29,11 @@ public class ProcedimientoGridDTO extends ModelApi {
     private Long codigoWFPub;
 
     /**
+     * Numero
+     */
+    private Integer numero = 0;
+
+    /**
      * Tipo
      */
     private String tipo;
@@ -469,4 +474,12 @@ public class ProcedimientoGridDTO extends ModelApi {
     public String toString() {
         return "ProcedimientoDTO{" + "codigo=" + codigo + ", nombre='" + nombre + '\'' + ", codigoSIA='" + codigoSIA + '\'' + '}';
     }
+
+	public Integer getNumero() {
+		return numero;
+	}
+
+	public void setNumero(Integer numero) {
+		this.numero = numero;
+	}
 }

@@ -32,7 +32,7 @@ public class JProcesoLog extends BaseEntity {
      * Codigo
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "proces-sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "proces-log-sequence")
     @Column(name = "PROCLOG_CODIGO", unique = true, nullable = false, precision = 10)
     private Long codigo;
 

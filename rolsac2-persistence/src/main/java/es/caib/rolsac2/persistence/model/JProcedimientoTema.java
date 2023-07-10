@@ -36,7 +36,7 @@ public class JProcedimientoTema {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public JProcedimientoTemaPK getCodigo() {
         return codigo;
@@ -45,7 +45,7 @@ public class JProcedimientoTema {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(JProcedimientoTemaPK id) {
         this.codigo = id;
@@ -54,7 +54,7 @@ public class JProcedimientoTema {
     /**
      * Obtiene tema.
      *
-     * @return  tema
+     * @return tema
      */
     public JTema getTema() {
         return tema;
@@ -63,7 +63,7 @@ public class JProcedimientoTema {
     /**
      * Establece tema.
      *
-     * @param prtmCodtema  prtm codtema
+     * @param prtmCodtema prtm codtema
      */
     public void setTema(JTema prtmCodtema) {
         this.tema = prtmCodtema;
@@ -72,7 +72,7 @@ public class JProcedimientoTema {
     /**
      * Obtiene procedimiento.
      *
-     * @return  procedimiento
+     * @return procedimiento
      */
     public JProcedimientoWorkflow getProcedimiento() {
         return procedimiento;
@@ -81,7 +81,7 @@ public class JProcedimientoTema {
     /**
      * Establece procedimiento.
      *
-     * @param prtmCodprwf  prtm codprwf
+     * @param prtmCodprwf prtm codprwf
      */
     public void setProcedimiento(JProcedimientoWorkflow prtmCodprwf) {
         this.procedimiento = prtmCodprwf;

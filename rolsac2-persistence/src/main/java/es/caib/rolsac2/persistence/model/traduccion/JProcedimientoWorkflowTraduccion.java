@@ -55,22 +55,6 @@ public class JProcedimientoWorkflowTraduccion {
     @Column(name = "TRPW_PRRESO")
     private String terminoResolucion;
 
-    /**
-     * PARA PROC: LOPD
-     **/
-
-    @Column(name = "TRPW_LOPDFI")
-    private String lopdFinalidad;
-
-    @Column(name = "TRPW_LOPDDS")
-    private String lopdDestinatario;
-
-    @Column(name = "TRPW_LOPDDR")
-    private String lopdDerechos;
-
-    @Column(name = "TRPW_LOPDIA")
-    private Long lopdInfoAdicional;
-
     public static List<JProcedimientoWorkflowTraduccion> createInstance(List<String> idiomas) {
         List<JProcedimientoWorkflowTraduccion> traducciones = new ArrayList<>();
         for (String idioma : idiomas) {
@@ -176,39 +160,7 @@ public class JProcedimientoWorkflowTraduccion {
     public void setTerminoResolucion(String trpwPrreso) {
         this.terminoResolucion = trpwPrreso;
     }
-
-    public String getLopdFinalidad() {
-        return lopdFinalidad;
-    }
-
-    public void setLopdFinalidad(String lopdFinalidad) {
-        this.lopdFinalidad = lopdFinalidad;
-    }
-
-    public String getLopdDestinatario() {
-        return lopdDestinatario;
-    }
-
-    public void setLopdDestinatario(String lopdDestinatario) {
-        this.lopdDestinatario = lopdDestinatario;
-    }
-
-    public String getLopdDerechos() {
-        return lopdDerechos;
-    }
-
-    public void setLopdDerechos(String lopdDerechos) {
-        this.lopdDerechos = lopdDerechos;
-    }
-
-    public Long getLopdInfoAdicional() {
-        return lopdInfoAdicional;
-    }
-
-    public void setLopdInfoAdicional(Long lopdInfoAdicional) {
-        this.lopdInfoAdicional = lopdInfoAdicional;
-    }
-
+ 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -126,7 +126,7 @@ public interface ProcedimientoServiceFacade {
      * @param filtro
      * @return
      */
-    int countByFiltro(ProcedimientoFiltro filtro);
+    Long countByFiltro(ProcedimientoFiltro filtro);
 
     Long countByEntidad(Long entidadId);
 
@@ -227,5 +227,17 @@ public interface ProcedimientoServiceFacade {
 	List<ProcedimientoDocumentoDTO> getModelosByTram(Long codigo);
 
 	Long getCodigoModificacion(Long codProc);
+
+	List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByCodProcWF(Long codigo);
+
+	List<ProcedimientoDocumentoDTO> getDocumentosLOPDByCodProcWF(Long codigo);
+
+	List<ProcedimientoDocumentoDTO> getDocumentosByCodProcWF(Long codigo);
+
+	List<TemaDTO> getTemasByCodProcWF(Long codigo);
+
+	List<NormativaDTO> getNormativasByCodProcWF(Long codigo);
+
+	List<TipoMateriaSIADTO> getTipoMateriaByCodProcWF(Long codigo);
 
 }

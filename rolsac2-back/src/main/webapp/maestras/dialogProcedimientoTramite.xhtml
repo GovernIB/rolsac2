@@ -156,6 +156,7 @@
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimientoTramite.idioma}"
                                                  literal="#{dialogProcedimientoTramite.data.nombre}"
+                                                 maxlength="255"
                                                  nombreLiteral="#{labels['dialogProcedimientoTramite.nombreTramite']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalComponent>
@@ -197,6 +198,7 @@
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimientoTramite.idioma}"
                                                  literal="#{dialogProcedimientoTramite.data.documentacion}"
+                                                 maxlength="4000"
                                                  nombreLiteral="#{labels['dialogProcedimientoTramite.documentacion']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalComponent>
@@ -219,6 +221,7 @@
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimientoTramite.idioma}"
                                                  literal="#{dialogProcedimientoTramite.data.terminoMaximo}"
+                                                 maxlength="512"
                                                  nombreLiteral="#{labels['dialogProcedimientoTramite.terminoMaximo']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalComponent>
@@ -257,6 +260,7 @@
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimientoTramite.idioma}"
                                                  literal="#{dialogProcedimientoTramite.data.observacion}"
+                                                 maxlength="4000"
                                                  nombreLiteral="#{labels['dialogProcedimientoTramite.observaciones']}">
                             </my:literalComponent>
                         </p>

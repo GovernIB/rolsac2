@@ -66,7 +66,7 @@ public enum TypeProcedimientoEstado {
             case BORRADO:
             case PUBLICADO:
             case RESERVA:
-                return TypeProcedimientoWorkflow.PUBLICADO;
+                return TypeProcedimientoWorkflow.DEFINITIVO;
             default:
                 return null;
         }
@@ -86,7 +86,7 @@ public enum TypeProcedimientoEstado {
             case BORRADO:
             case PUBLICADO:
             case RESERVA:
-                return TypeProcedimientoWorkflow.PUBLICADO;
+                return TypeProcedimientoWorkflow.DEFINITIVO;
             default:
                 return null;
         }

@@ -20,6 +20,8 @@ public interface FicheroExternoRepository extends CrudRepository<JFicheroExterno
      */
     FicheroDTO getContentById(Long idFichero, String pathAlmacenamientoFicheros);
 
+    FicheroDTO getMetadata(Long idFichero, String pathAlmacenamientoFicheros);
+
 
     /**
      * Crea fichero externo temporal. Deberá c posteriormente para consolidarse, si no se enlaza se borrará tras 24h.

@@ -17,6 +17,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String tipo;
     private Integer codigoSIA;
     private Long codigoProc;
+
+    private Long codigoWF;
     private Long codigoTram;
     private String estadoSIA;
     private String siaFecha;
@@ -61,12 +63,27 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     private List<String> canales;
 
+    private String idTramite;
+
+    private String identificadorPlataforma;
+
+    private Integer version;
+
     public Long getCodigoProc() {
         return codigoProc;
     }
 
     public void setCodigoProc(Long codigoProc) {
         this.codigoProc = codigoProc;
+    }
+
+
+    public Long getCodigoWF() {
+        return codigoWF;
+    }
+
+    public void setCodigoWF(Long codigoWF) {
+        this.codigoWF = codigoWF;
     }
 
     public Long getCodigoTram() {
@@ -381,6 +398,34 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.mensajesPendiente = mensajesPendiente;
     }
 
+    public String getIdTramite() {
+        return idTramite;
+    }
+
+    public void setIdTramite(String idTramite) {
+        this.idTramite = idTramite;
+    }
+
+    public String getIdentificadorPlataforma() {
+        return identificadorPlataforma;
+    }
+
+    public void setIdentificadorPlataforma(String identificadorPlataforma) {
+        this.identificadorPlataforma = identificadorPlataforma;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public boolean isRellenoCodigoWF() {
+        return this.codigoWF != null;
+    }
+
     /**
      * Esta relleno el texto
      *
@@ -564,4 +609,18 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public boolean isRellenoCanales() {
         return canales != null && !canales.isEmpty();
     }
+
+    public boolean isRellenoIdTramite(){
+        return idTramite != null;
+    }
+
+    public boolean isRellenoIdPlataforma() {
+        return identificadorPlataforma != null;
+    }
+
+    public boolean isRellenoVersion() {
+        return version != null;
+    }
+
+
 }

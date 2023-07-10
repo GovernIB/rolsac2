@@ -22,9 +22,13 @@ public class ServicioGridDTO extends ModelApi {
     private String estado;
     private String estadoSIA;
     public Date siaFecha;
-    private String codigoDir3SIA;
     private Integer codigoSIA;
     private String nombre;
+
+    /**
+     * Numero
+     */
+    private Integer numero = 0;
 
     private LocalDate fecha;
     /**
@@ -90,13 +94,6 @@ public class ServicioGridDTO extends ModelApi {
         this.codigoSIA = codigoSIA;
     }
 
-    public String getCodigoDir3SIA() {
-        return codigoDir3SIA;
-    }
-
-    public void setCodigoDir3SIA(String codigoDir3SIA) {
-        this.codigoDir3SIA = codigoDir3SIA;
-    }
 
     public String getNombre() {
         return nombre;
@@ -258,4 +255,12 @@ public class ServicioGridDTO extends ModelApi {
     public String toString() {
         return "ProcedimientoDTO{" + "codigo=" + codigo + ", nombre='" + nombre + '\'' + ", codigoSIA='" + codigoSIA + '\'' + '}';
     }
+
+	public Integer getNumero() {
+		return numero;
+	}
+
+	public void setNumero(Integer numero) {
+		this.numero = numero;
+	}
 }

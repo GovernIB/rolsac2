@@ -56,7 +56,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          value="#{dialogLiteral.textosEnIdioma[idioma]}" rows="5" cols="30"
                                          styleClass="w95"
                                          autoResize="false"
-                                         required="#{dialogLiteral.calcularRequired(idioma)}"/>
+                                         required="#{dialogLiteral.calcularRequired(idioma)}"
+                                         maxlength="#{dialogLiteral.maxlength}"/>
                     </div>
                 </c:forEach>
             </div>

@@ -71,6 +71,8 @@ public class LiteralComponent extends UIInput implements NamingContainer {
     private String soloLecture;
 
     private CommandButton btnAbrir;
+
+    private Integer maxlength;
     //private CommandButton btnAbrir;
 
     // Actions
@@ -117,6 +119,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             textoInicializado.setValue("true"); // Lo marcamos como ya inicializado
             literal = (Literal) getAttributes().get("literal");
             idioma = (String) getAttributes().get("idioma");
+            maxlength = (Integer) getAttributes().get("maxlength");
             String ocultarTexto = (String) getAttributes().get("ocultarTexto");
             if (ocultarTexto != null && "true".equalsIgnoreCase(ocultarTexto)) {
                 ((InputText) texto).setStyle("display:none;");
@@ -348,6 +351,10 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             UtilJSF.anyadirMochila("required", isObligatorio());
             String nombreLiteral = (String) getAttributes().get("nombreLiteral");
             UtilJSF.anyadirMochila("nombreLiteral", nombreLiteral);
+            Integer maxlength = (Integer) getAttributes().get("maxlength");
+            if(maxlength != null) {
+                UtilJSF.anyadirMochila("maxlength", maxlength);
+            }
             Integer valores = ((String) getAttributes().get("idiomasPermitidos")).split(";").length;
             Integer height = (valores >= 4) ? 750 : valores * 200;
             UtilJSF.openDialog(direccion, modoAcceso, params, true, 1050, height);
@@ -673,5 +680,13 @@ public class LiteralComponent extends UIInput implements NamingContainer {
 
     public void setBtnAbrir(CommandButton btnAbrir) {
         this.btnAbrir = btnAbrir;
+    }
+
+    public Integer getMaxlength() {
+        return maxlength;
+    }
+
+    public void setMaxlength(Integer maxlength) {
+        this.maxlength = maxlength;
     }
 }

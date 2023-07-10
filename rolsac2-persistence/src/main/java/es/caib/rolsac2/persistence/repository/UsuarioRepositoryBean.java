@@ -200,6 +200,13 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
     }
 
     @Override
+    public boolean existeUsuarioUA(Long idUsuario, Long idUA) {
+        Query query = entityManager.createQuery("SELECT COUNT(*) FROM  JUsuarioUnidadAdministrativa WHERE  usuario=" + idUsuario + " AND unidadAdministrativa=" + idUA + " ");
+        Long resultado = (Long) query.getSingleResult();
+        return resultado.compareTo(0l) != 0;
+    }
+
+    @Override
     public void anyadirNuevoUsuarioUA(JUsuario jUsuario, JUnidadAdministrativa jUnidadAdministrativa) {
         JUsuarioUnidadAdministrativa jUsuarioUnidad = new JUsuarioUnidadAdministrativa();
         JUsuarioUnidadAdministrativaPK pk = new JUsuarioUnidadAdministrativaPK();

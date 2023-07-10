@@ -37,6 +37,8 @@
         <cc:attribute name="idiomasObligatorios" type="String" shortDescription="Idiomas obligatorios"></cc:attribute>
         <cc:attribute name="nombreLiteral" type="String"
                       shortDescription="Nombre del componente multiidioma que se edita"></cc:attribute>
+		<cc:attribute name="maxlength" type="Integer" default="9999"
+					  shortDescription="Largo máximo de los campos"></cc:attribute>
 
     </cc:interface>
     <cc:implementation>
@@ -44,7 +46,7 @@
         	<c:choose>
 				<c:when test="#{cc.tipo == null || !cc.tipo.equals('html')}">
 					<p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1  #{cc.estiloInput}"
-								 disabled="#{cc.isModoConsulta()}">
+								 disabled="#{cc.isModoConsulta()}" maxlength="#{cc.maxlength}">
 		                <p:ajax event="change" listener="#{cc.actualizarLiteral}" update="btnAbrir"/>
 		            </p:inputText>
 		             <p:commandButton id="btnAbrir"

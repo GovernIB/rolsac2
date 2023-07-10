@@ -85,6 +85,17 @@ Plantilla.
                  life="5000"
                  escape="false"/>
 
+        <p:idleMonitor id="idleMonitor" timeout="#{session.maxInactiveInterval*1000 - 120000}" onidle="PF('sesionDialog').show()">
+        </p:idleMonitor>
+
+        <p:dialog id="sesionDialog" widgetVar="sesionDialog"
+                   responsive="true" width="400" height="200" showHeader="false" resizable="false" modal="true">
+            <div class="container text-center mt-5">
+                <p class="text-justify">#{labels['dict.sesionCaducada']} </p>
+                <p:link outcome="/index" value="#{labels['dict.inicio']}" styleClass="btn btn-danger"></p:link>
+            </div>
+        </p:dialog>
+
 
 
         <h:form>

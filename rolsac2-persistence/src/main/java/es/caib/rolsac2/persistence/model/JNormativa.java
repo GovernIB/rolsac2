@@ -46,6 +46,9 @@ public class JNormativa extends BaseEntity {
     @Column(name = "NORM_BOLENUM", length = 50)
     private String numeroBoletin;
 
+    @Column(name = "NORM_VIGENT", length = 1, nullable = false)
+    private Boolean vigente;
+
     /**
      * Descripción
      */
@@ -161,6 +164,14 @@ public class JNormativa extends BaseEntity {
 
     public void setAfectacionesOrigen(List<JAfectacion> afectacionesOrigen) {
         this.afectacionesOrigen = afectacionesOrigen;
+    }
+
+    public Boolean getVigente() {
+        return vigente;
+    }
+
+    public void setVigente(Boolean vigente) {
+        this.vigente = vigente;
     }
 
     public void setDescripcion(List<JNormativaTraduccion> descripcion) {

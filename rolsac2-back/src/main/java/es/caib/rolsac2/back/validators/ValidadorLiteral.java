@@ -1,6 +1,8 @@
 package es.caib.rolsac2.back.validators;
 
 import es.caib.rolsac2.back.controller.component.LiteralComponent;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -21,6 +23,7 @@ public class ValidadorLiteral implements Validator {
             LiteralComponent literalComponent = (LiteralComponent) component;
 
             String estado = literalComponent.comprobarEstado();
+
             if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
 
                 literalComponent.setEstiloInput("bordeRojoRequired");
@@ -40,6 +43,26 @@ public class ValidadorLiteral implements Validator {
                 msg.setSeverity(FacesMessage.SEVERITY_ERROR);
                 throw new ValidatorException(msg);
 
+            } else if(literalComponent.getAttributes().get("maxlength") != null) {
+                Integer length = (Integer) literalComponent.getAttributes().get("maxlength");
+                //Si no es el largo por defecto, revisamos si se pasan
+                if(length != 9999) {
+                    Literal literal = (Literal) literalComponent.getAttributes().get("literal");
+                    for(Traduccion trad : literal.getTraducciones()) {
+                        if(trad.getLiteral().length() > length) {
+                            literalComponent.setEstiloInput("bordeRojoRequired");
+                            Object[] param = new Object[3];
+                            param[0] = literalComponent.getAttributes().get("nombreLiteral").toString();
+                            param[1] = trad.getIdioma();
+                            param[2] = length.toString();
+                            String mensajeError = getLiteral(context, "dict.maxlength", param);
+                            FacesMessage msg =
+                                    new FacesMessage(mensajeError, mensajeError);
+                            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+                            throw new ValidatorException(msg);
+                        }
+                    }
+                }
             } else {
 
                 literalComponent.setEstiloInput("");

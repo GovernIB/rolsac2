@@ -72,6 +72,27 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         }
     }
 
+    @Override
+    public FicheroDTO getMetadata(Long idFichero, String pathAlmacenamientoFicheros) {
+        // Obtiene metadatos fichero
+        final JFicheroExterno fic = entityManager.find(JFicheroExterno.class, idFichero);
+        if (fic == null) {
+            throw new FicheroExternoException("No existe fichero con id: " + idFichero);
+        }
+
+        // Obtiene path fichero
+        String pathFile = pathAlmacenamientoFicheros + "/"
+                + fic.getReferencia();
+
+        final FicheroDTO cf = new FicheroDTO();
+        cf.setCodigo(fic.getCodigo());
+        cf.setTipo(TypeFicheroExterno.fromString(fic.getTipo()));
+        cf.setFilename(fic.getFilename());
+        cf.setReferencia(pathFile);
+
+        return cf;
+    }
+
 
     @Override
     public Long createFicheroExterno(byte[] content, String fileName, TypeFicheroExterno tipoFicheroExterno, Long elementoFicheroExterno, String pathAlmacenamientoFicheros) {

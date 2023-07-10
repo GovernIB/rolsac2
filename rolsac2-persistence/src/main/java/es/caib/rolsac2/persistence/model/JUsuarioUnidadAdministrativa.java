@@ -33,7 +33,7 @@ public class JUsuarioUnidadAdministrativa {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public JUsuarioUnidadAdministrativaPK getCodigo() {
         return codigo;
@@ -42,7 +42,7 @@ public class JUsuarioUnidadAdministrativa {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(JUsuarioUnidadAdministrativaPK id) {
         this.codigo = id;
@@ -51,7 +51,7 @@ public class JUsuarioUnidadAdministrativa {
     /**
      * Obtiene usuario.
      *
-     * @return  usuario
+     * @return usuario
      */
     public JUsuario getUsuario() {
         return usuario;
@@ -60,7 +60,7 @@ public class JUsuarioUnidadAdministrativa {
     /**
      * Establece usuario.
      *
-     * @param usuario  usuario
+     * @param usuario usuario
      */
     public void setUsuario(JUsuario usuario) {
         this.usuario = usuario;
@@ -69,7 +69,7 @@ public class JUsuarioUnidadAdministrativa {
     /**
      * Obtiene unidad administrativa.
      *
-     * @return  unidad administrativa
+     * @return unidad administrativa
      */
     public JUnidadAdministrativa getUnidadAdministrativa() {
         return unidadAdministrativa;
@@ -78,7 +78,7 @@ public class JUsuarioUnidadAdministrativa {
     /**
      * Establece unidad administrativa.
      *
-     * @param unidadAdministrativa  unidad administrativa
+     * @param unidadAdministrativa unidad administrativa
      */
     public void setUnidadAdministrativa(JUnidadAdministrativa unidadAdministrativa) {
         this.unidadAdministrativa = unidadAdministrativa;

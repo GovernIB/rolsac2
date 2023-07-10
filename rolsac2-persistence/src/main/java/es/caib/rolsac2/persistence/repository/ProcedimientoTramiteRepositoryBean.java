@@ -16,6 +16,7 @@ import javax.persistence.TypedQuery;
 import es.caib.rolsac2.persistence.converter.ProcedimientoTramiteConverter;
 import es.caib.rolsac2.persistence.converter.TipoTramitacionConverter;
 import es.caib.rolsac2.persistence.model.JProcedimientoTramite;
+import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
@@ -34,8 +35,8 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
 	@Inject
 	private ProcedimientoTramiteConverter converter;
 
-    @Inject
-    TipoTramitacionConverter tipoTramitacionConverter;
+	@Inject
+	TipoTramitacionConverter tipoTramitacionConverter;
 
 	protected ProcedimientoTramiteRepositoryBean() {
 		super(JProcedimientoTramite.class);
@@ -68,25 +69,18 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
 		List<ProcedimientoTramiteDTO> entidades = new ArrayList<>();
 		if (jentidades != null) {
 			for (JProcedimientoTramite jtramite : jentidades) {
-                ProcedimientoTramiteDTO tramite = converter.createDTO(jtramite);
-                tramite.setTramitElectronica(jtramite.isTramitElectronica());
-                tramite.setTramitPresencial(jtramite.isTramitPresencial());
-                tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
-                if (jtramite.getTipoTramitacion() != null) {
-                    //tramite.setTipoTramitacion(tramite.getTipoTramitacion());
-                    tramite.setPlantillaSel(null);
-                } else if (jtramite.getTipoTramitacionPlantilla() != null) {
-                    tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
-                    tramite.setTipoTramitacion(null);
-                }
-//                if (jtramite.getListaDocumentos() != null) {
-//                    tramite.setListaDocumentos(this.getDocumentosByListaDocumentos(jtramite.getListaDocumentos()));
-//                }
-//                if (jtramite.getListaModelos() != null) {
-//                    tramite.setListaModelos(this.getDocumentosByListaDocumentos(jtramite.getListaModelos()));
-//                }
-                entidades.add(tramite);
-            }
+				ProcedimientoTramiteDTO tramite = converter.createDTO(jtramite);
+				tramite.setTramitElectronica(jtramite.isTramitElectronica());
+				tramite.setTramitPresencial(jtramite.isTramitPresencial());
+				tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
+				if (jtramite.getTipoTramitacion() != null) {
+					tramite.setPlantillaSel(null);
+				} else if (jtramite.getTipoTramitacionPlantilla() != null) {
+					tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
+					tramite.setTipoTramitacion(null);
+				}
+				entidades.add(tramite);
+			}
 		}
 		return entidades;
 	}
@@ -109,21 +103,21 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
 				} else if (filtro.getEstadoWF().equals("M")) {
 					sql = new StringBuilder(
 							"SELECT j from JProcedimientoTramite j INNER JOIN j.procedimiento p ON p.workflow = true LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
-				 } else if (filtro.getEstadoWF().equals("T")) {
-					 sql = new StringBuilder(
-								"SELECT j from JProcedimientoTramite j LEFT JOIN j.procedimiento p ON p.workflow = true or p.workflow is null LEFT JOIN j.procedimiento p2 ON p2.workflow = false or p2.workflow is null LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
-				 } else {
-					 sql = new StringBuilder(
-								"SELECT j from JProcedimientoTramite j LEFT OUTER JOIN j.procedimiento p ON p.workflow = true or p.workflow = false LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
+				} else if (filtro.getEstadoWF().equals("T")) {
+					sql = new StringBuilder(
+							"SELECT j from JProcedimientoTramite j LEFT JOIN j.procedimiento p ON p.workflow = true or p.workflow is null LEFT JOIN j.procedimiento p2 ON p2.workflow = false or p2.workflow is null LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
+				} else {
+					sql = new StringBuilder(
+							"SELECT j from JProcedimientoTramite j LEFT OUTER JOIN j.procedimiento p ON p.workflow = true or p.workflow = false LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
 
-				 }
+				}
 			} else {
 				sql = new StringBuilder(
 						"SELECT j from JProcedimientoTramite j LEFT OUTER JOIN j.procedimiento p ON p.workflow = true or p.workflow = false LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
 			}
 		} else {
 			sql = new StringBuilder(
-					"SELECT j from JProcedimientoTramite j LEFT OUTER JOIN j.procedimiento p ON p.workflow = true or p.workflow = false LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
+					"SELECT j from JProcedimientoTramite j LEFT OUTER JOIN j.procedimiento p LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
 		}
 
 		if (filtro.isRellenoTexto()) {
@@ -149,7 +143,12 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
 		}
 
 		if (filtro.isRellenoProcedimiento()) {
-			sql.append(" and p.procedimiento.codigo = :procedimiento ");
+			sql.append(" and p.codigo = :procedimiento ");
+		}
+
+		if (filtro.isRellenoEntidad()) {
+			sql.append(
+					" AND (p.uaInstructor.codigo in (SELECT u FROM JUnidadAdministrativa e WHERE u.entidad.codigo = :idEntidad)) ");
 		}
 
 		if (filtro.isRellenoTipoTramitacion()) {
@@ -166,6 +165,21 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
 
 		if (filtro.isRellenoFechaCierre()) {
 			sql.append(" and j.fechaCierre = :fechaCierre ");
+		}
+
+		if (filtro.isRellenoIdTramite()) {
+			sql.append(
+					" and EXISTS(SELECT t FROM JTipoTramitacion t WHERE (j.tipoTramitacion.codigo = t.codigo OR j.tipoTramitacionPlantilla.codigo = t.codigo) AND t.tramiteId = :idTramite)");
+		}
+
+		if (filtro.isRellenoVersion()) {
+			sql.append(
+					" and EXISTS(SELECT t FROM JTipoTramitacion t WHERE (j.tipoTramitacion.codigo = t.codigo OR j.tipoTramitacionPlantilla.codigo = t.codigo) AND t.tramiteVersion = :version)");
+		}
+
+		if (filtro.isRellenoIdPlataforma()) {
+			sql.append(
+					" and EXISTS(SELECT t FROM JTipoTramitacion t INNER JOIN t.codPlatTramitacion plataforma WHERE (j.tipoTramitacion.codigo = t.codigo OR j.tipoTramitacionPlantilla.codigo = t.codigo) AND plataforma.identificador = :idPlataforma)");
 		}
 
 		if (filtro.getOrderBy() != null) {
@@ -194,12 +208,16 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
 			query.setParameter("fase", filtro.getFase());
 		}
 
+		if (filtro.isRellenoEntidad()) {
+			query.setParameter("idEntidad", filtro.getIdEntidad());
+		}
+
 		if (filtro.isRellenoUnidadAdministrativa()) {
 			query.setParameter("unidadAdministrativa", filtro.getUnidadAdministrativa().getCodigo());
 		}
 
 		if (filtro.isRellenoProcedimiento()) {
-			query.setParameter("procedimiento", filtro.getProcedimiento().getCodigo());
+			query.setParameter("procedimiento", filtro.getProcedimiento().getCodigoWF());
 		}
 
 		if (filtro.isRellenoTipoTramitacion()) {
@@ -217,6 +235,15 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
 		if (filtro.isRellenoFechaCierre()) {
 			query.setParameter("fechaCierre", filtro.getFechaCierre());
 		}
+		if (filtro.isRellenoIdTramite()) {
+			query.setParameter("idTramite", filtro.getIdTramite());
+		}
+		if (filtro.isRellenoIdPlataforma()) {
+			query.setParameter("idPlataforma", filtro.getIdentificadorPlataforma());
+		}
+		if (filtro.isRellenoVersion()) {
+			query.setParameter("version", filtro.getVersion());
+		}
 
 		if (filtro.getOrderBy() != null) {
 			sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
@@ -232,61 +259,69 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
 	}
 
 	/**
-     * Obtiene el enlace telematico de un servicio..
-     *
-     * @param idServicio Id servicio
-     * @param lang       Idioma, por defecto, ca.
-     * @return Devuelve la url.
-     * @throws DelegateException
-     * @ejb.interface-method
-     * @ejb.permission role-name="${role.system},${role.admin},${role.super},${role.oper}"
-     */
-    @Override
-    public String getEnlaceTelematico(ProcedimientoTramiteFiltro filtro) {
-        List<ProcedimientoTramiteDTO> lista = findPagedByFiltroRest(filtro);
-        String res = "";
-        if (lista != null && !lista.isEmpty()) {
-        	res = montarUrl(lista.get(0), filtro.getIdioma());
-        }
+	 * Obtiene el enlace telematico de un servicio..
+	 *
+	 * @param  Id servicio
+	 * @param    Idioma, por defecto, ca.
+	 * @return Devuelve la url.
+	 * @throws
+	 * @ejb.interface-method
+	 * @ejb.permission role-name="${role.system},${role.admin},${role.super},${role.oper}"
+	 */
+	@Override
+	public String getEnlaceTelematico(ProcedimientoTramiteFiltro filtro) {
+		List<ProcedimientoTramiteDTO> lista = findPagedByFiltroRest(filtro);
+		String res = "";
+		if (lista != null && !lista.isEmpty()) {
+			res = montarUrl(lista.get(0), filtro.getIdioma());
+		}
 
-        return res;
-    }
+		return res;
+	}
 
 	private String montarUrl(ProcedimientoTramiteDTO serv, String lang) {
-		TipoTramitacionDTO servTr = serv.getTipoTramitacion();
 
-		String res = "";
+		if(serv.isTramitElectronica()) {
+			TipoTramitacionDTO tramitacionPlat = serv.getTipoTramitacion();
+			TipoTramitacionDTO tramPlantilla = serv.getPlantillaSel();
+			if(tramPlantilla != null) {
+				final String idTramite = tramPlantilla.getTramiteId();
+				final String numVersion = tramPlantilla.getTramiteVersion() == null ? "" : tramPlantilla.getTramiteVersion().toString();
+				final String parametros = tramPlantilla.getTramiteParametros() == null ? "" : tramitacionPlat.getTramiteParametros();
+				final String idTramiteRolsac = serv.getCodigo() == null ? "" : serv.getCodigo().toString();
 
-		if (servTr != null) {
-
-			try {
-				final String idTramite = servTr.getTramiteId();
-				final String numVersion = servTr.getTramiteVersion() == null ? "" : servTr.getTramiteVersion().toString();
-				final String parametros;
-				if (servTr.getTramiteParametros() == null) {
-					parametros = "";
-				} else {
-					parametros = servTr.getTramiteParametros();
-				}
-				final String idTramiteRolsac = serv.getCodigo().toString();
-
-				String url = servTr.getCodPlatTramitacion().getUrlAcceso().getTraduccion(lang);
-
+				final PlatTramitElectronicaDTO plataforma = tramPlantilla.getCodPlatTramitacion();
+				String url = plataforma.getUrlAcceso().getTraduccion(lang);
 				url = url.replace("${idTramitePlataforma}", idTramite);
 				url = url.replace("${versionTramitePlatorma}", numVersion);
 				url = url.replace("${parametros}", parametros);
 				url = url.replace("${servicio}", String.valueOf(true));
 				url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
 
-				res = url;
-			} catch (final Exception e) {
+				return url;
 
-				// si ocurre un error es porque alguno de los campos de url del trámite no
-				// existen. buscamos en la url externa.
-				res = servTr.getUrlTramitacion();
+			} else if(tramitacionPlat != null) {
+				final String idTramite = tramitacionPlat.getTramiteId();
+				final String numVersion = tramitacionPlat.getTramiteVersion() == null ? "" : tramitacionPlat.getTramiteVersion().toString();
+				final String parametros = tramitacionPlat.getTramiteParametros() == null ? "" : tramitacionPlat.getTramiteParametros();
+				final String idTramiteRolsac = serv.getCodigo() == null ? "" : serv.getCodigo().toString();
+
+				if (tramitacionPlat.getCodPlatTramitacion() != null) {
+					final PlatTramitElectronicaDTO plataforma = tramitacionPlat.getCodPlatTramitacion();
+					String url = plataforma.getUrlAcceso().getTraduccion(lang);
+
+					url = url.replace("${idTramitePlataforma}", idTramite);
+					url = url.replace("${versionTramitePlatorma}", numVersion);
+					url = url.replace("${parametros}", parametros);
+					url = url.replace("${servicio}", String.valueOf(false));
+					url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
+
+					return url;
+				} else {
+					return tramitacionPlat.getUrl().getTraduccion(lang);
+				}
 			}
 		}
-
-		return res;
+		return "";
 	}
 }

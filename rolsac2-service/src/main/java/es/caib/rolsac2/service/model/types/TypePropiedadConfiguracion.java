@@ -34,7 +34,9 @@ public enum TypePropiedadConfiguracion {
     /**
      * Propiedad para obtener el idioma de la aplicacion por defecto
      */
-    IDIOMA_DEFECTO("idiomaDefecto");
+    IDIOMA_DEFECTO("idiomaDefecto"),
+
+    URL_BASE("url.base");
 
 
     /**

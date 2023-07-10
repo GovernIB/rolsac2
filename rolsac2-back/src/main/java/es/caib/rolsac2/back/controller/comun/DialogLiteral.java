@@ -46,6 +46,8 @@ public class DialogLiteral extends AbstractController implements Serializable {
 
     private String nombreLiteral;
 
+    private Integer maxlength;
+
     public void load() {
         LOG.debug("init");
         //Inicializamos combos/desplegables/inputs
@@ -66,6 +68,9 @@ public class DialogLiteral extends AbstractController implements Serializable {
 
         required = (boolean) UtilJSF.getValorMochilaByKey("required");
         nombreLiteral = (String) UtilJSF.getValorMochilaByKey("nombreLiteral");
+
+        Integer length = (Integer) UtilJSF.getValorMochilaByKey("maxlength");
+        maxlength = length != null ? length : 9999;
 
         UtilJSF.vaciarMochila();//sessionBean.vaciarMochila();
         LOG.debug("Modo acceso " + this.getModoAcceso());
@@ -189,5 +194,13 @@ public class DialogLiteral extends AbstractController implements Serializable {
 
     public void setNombreLiteral(String nombreLiteral) {
         this.nombreLiteral = nombreLiteral;
+    }
+
+    public Integer getMaxlength() {
+        return maxlength;
+    }
+
+    public void setMaxlength(Integer maxlength) {
+        this.maxlength = maxlength;
     }
 }

@@ -21,6 +21,11 @@ public class UsuarioGridDTO extends ModelApi {
     private String identificador;
 
     /**
+     * Numero
+     */
+    private Integer numero = 0;
+
+	/**
      * Entidad
      */
     private String entidad;
@@ -201,4 +206,13 @@ public class UsuarioGridDTO extends ModelApi {
         tipo.setIdString(this.getIdString());
         return tipo;
     }
+
+    public Integer getNumero() {
+		return numero;
+	}
+
+	public void setNumero(Integer numero) {
+		this.numero = numero;
+	}
+
 }

@@ -79,6 +79,7 @@ public class JProcedimientoWorkflow {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_TIPVIA", nullable = false)
     private JTipoVia tipoVia;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_LSTDOC")
     private JListaDocumentos listaDocumentos;
@@ -107,14 +108,6 @@ public class JProcedimientoWorkflow {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_PRTIPSIAD")
     private JTipoSilencioAdministrativo silencioAdministrativo;
-
-    /**
-     * PARA PROC: FIN VIA ADMINISTRATIVA
-     **/
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRWF_PRTIPFVIA")
-    private JTipoVia finVia;
-
 
     /**
      * PARA SERVICIO: SI TIENE TASA
@@ -323,16 +316,7 @@ public class JProcedimientoWorkflow {
     public void setDatosPersonalesLegitimacion(JTipoLegitimacion datosPersonalesLegitimacion) {
         this.datosPersonalesLegitimacion = datosPersonalesLegitimacion;
     }
-
-    public JTipoVia getFinVia() {
-        return finVia;
-    }
-
-    public void setFinVia(JTipoVia finVia) {
-        this.finVia = finVia;
-    }
-
-
+ 
     public Date getFechaPublicacion() {
         return fechaPublicacion;
     }

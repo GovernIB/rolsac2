@@ -19,6 +19,8 @@ public interface FicheroServiceFacade {
      */
     FicheroDTO getContentById(Long idFichero);
 
+    FicheroDTO getContentMetadata(Long idFichero);
+
     /**
      * Devuelve el ficheroDTO sin el contenido
      *
