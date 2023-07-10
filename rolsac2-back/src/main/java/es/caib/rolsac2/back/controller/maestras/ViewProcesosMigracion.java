@@ -4,10 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.*;
-import es.caib.rolsac2.service.model.IndexacionSIADTO;
-import es.caib.rolsac2.service.model.ListaPropiedades;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.ProcesoLogGridDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcesoLogFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSIAFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
@@ -21,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -48,6 +46,8 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
     @EJB
     private ProcesoTimerServiceFacade procesoTimerServiceFacade;
 
+    @EJB
+    private AdministracionEntServiceFacade usuarioService;
 
     private LazyDataModel<ProcesoLogGridDTO> lazyModelLogs;
 
@@ -62,7 +62,15 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
     private boolean cargarUas;
     private boolean cargarNormativas;
     private boolean cargarProcedimientos;
+    private boolean cargarUsuarios;
 
+    //Usuarios
+    private List<UsuarioDTO> usuarios;
+    private UsuarioGridDTO usuarioSeleccionado;
+
+    //UA
+    private List<UnidadAdministrativaDTO> uas;
+    private UnidadAdministrativaDTO uaSeleccionado;
 
     public void load() {
         this.setearIdioma();
@@ -82,8 +90,28 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
 
         borrarDatos = false;
         cargarUas = true;
-        cargarNormativas = false;
-        cargarProcedimientos = false;
+        cargarNormativas = true;
+        cargarProcedimientos = true;
+        cargarUsuarios = true;
+
+        uas = migracionServiceFacade.getUnidadAdministrativasRaiz();
+        if (uas != null && !uas.isEmpty()) {
+            for (UnidadAdministrativaDTO ua : uas) {
+                if (ua.getCodigo().compareTo(1l) == 0) {
+                    uaSeleccionado = ua;
+                    break;
+                }
+            }
+
+            if (uaSeleccionado == null) {
+                uaSeleccionado = uas.get(0);
+            }
+        }
+
+        usuarios = new ArrayList<>();
+        String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+        UsuarioDTO usuarioDTO = usuarioService.findUsuarioByIdentificador(usuario);
+        usuarios.add(usuarioDTO);
     }
 
     public void verErrores(Long codigo) {
@@ -152,6 +180,24 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
         listaPropiedades.addPropiedad("cargarUas", cargarUas ? "true" : "false");
         listaPropiedades.addPropiedad("cargarNormativas", cargarNormativas ? "true" : "false");
         listaPropiedades.addPropiedad("cargarProcedimientos", cargarProcedimientos ? "true" : "false");
+        listaPropiedades.addPropiedad("cargarUsuarios", cargarUsuarios ? "true" : "false");
+        listaPropiedades.addPropiedad("entidad", UtilJSF.getSessionBean().getEntidad().getCodigo().toString());
+        String sUsuarios = "";
+        if (usuarios != null && !usuarios.isEmpty()) {
+            for (UsuarioDTO usuario : usuarios) {
+                sUsuarios += usuario.getCodigo() + ",";
+            }
+            if (sUsuarios.endsWith(",")) {
+                sUsuarios = sUsuarios.substring(0, sUsuarios.length() - 1);
+            }
+        }
+        listaPropiedades.addPropiedad("usuarios", sUsuarios);
+
+        String uaRaiz = "1";
+        if (uaSeleccionado != null) {
+            uaRaiz = uaSeleccionado.getCodigo().toString();
+        }
+        listaPropiedades.addPropiedad("uaRaiz", uaRaiz);
         procesoTimerServiceFacade.procesadoManual("MIGRA_PUNT", listaPropiedades, idEntidad);
         UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcesos.procesoLanzado"));
     }
@@ -192,6 +238,59 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
             return this.filtro.getTexto();
         }
         return "";
+    }
+
+    /********************************************************************************************************************************
+     * Funciones relativas al manejo de la relación de Usuarios
+     *********************************************************************************************************************************/
+
+    /**
+     * Abrir dialogo de Selección de Usuarios
+     */
+    public void abrirDialogUsuarios(TypeModoAcceso modoAcceso) {
+
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", usuarioSeleccionado.getCodigo().toString());
+            UtilJSF.openDialog("/entidades/dialogUsuario", modoAcceso, params, true, 700, 300);
+        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+            UtilJSF.anyadirMochila("usuarios", usuarios);
+            UtilJSF.anyadirMochila("usuariosUnidadAdministrativa", usuarios);
+            UtilJSF.anyadirMochila("unidadAdministrativa", UtilJSF.getSessionBean().getUnidadActiva());
+            final Map<String, String> params = new HashMap<>();
+            UtilJSF.openDialog("/entidades/dialogSeleccionUsuariosUnidadAdministrativa", modoAcceso, params, true, 1040, 460);
+        }
+    }
+
+    /**
+     * Método para dar de alta usuarios en una UA
+     */
+    public void anyadirUsuarios() {
+        abrirDialogUsuarios(TypeModoAcceso.ALTA);
+    }
+
+    /**
+     * Método para consultar el detalle de un usuario en una UA
+     */
+    public void consultarUsuario() {
+        if (usuarioSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogUsuarios(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    /**
+     * Método para borrar un usuario en una UA
+     */
+    public void borrarUsuario() {
+        if (usuarioSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            usuarios.remove(usuarioSeleccionado);
+            usuarioSeleccionado = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
     }
 
     public LazyDataModel<ProcesoLogGridDTO> getLazyModelLogs() {
@@ -240,5 +339,45 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
 
     public void setCargarProcedimientos(boolean cargarProcedimientos) {
         this.cargarProcedimientos = cargarProcedimientos;
+    }
+
+    public List<UnidadAdministrativaDTO> getUas() {
+        return uas;
+    }
+
+    public void setUas(List<UnidadAdministrativaDTO> uas) {
+        this.uas = uas;
+    }
+
+    public UnidadAdministrativaDTO getUaSeleccionado() {
+        return uaSeleccionado;
+    }
+
+    public void setUaSeleccionado(UnidadAdministrativaDTO uaSeleccionado) {
+        this.uaSeleccionado = uaSeleccionado;
+    }
+
+    public List<UsuarioDTO> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(List<UsuarioDTO> usuarios) {
+        this.usuarios = usuarios;
+    }
+
+    public UsuarioGridDTO getUsuarioSeleccionado() {
+        return usuarioSeleccionado;
+    }
+
+    public void setUsuarioSeleccionado(UsuarioGridDTO usuarioSeleccionado) {
+        this.usuarioSeleccionado = usuarioSeleccionado;
+    }
+
+    public boolean isCargarUsuarios() {
+        return cargarUsuarios;
+    }
+
+    public void setCargarUsuarios(boolean cargarUsuarios) {
+        this.cargarUsuarios = cargarUsuarios;
     }
 }

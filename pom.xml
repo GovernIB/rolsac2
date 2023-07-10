@@ -42,8 +42,8 @@
         <persistenceXml.hibernate.showSql>true</persistenceXml.hibernate.showSql>
         <!-- Altres substitucions a aplicar dins els descriptors. -->
         <!-- Es poden sobreescriure passant la propietat al maven amb -D -->
-        <!--<webXml.loginConfig.authMethod>BASIC</webXml.loginConfig.authMethod>-->
-        <webXml.loginConfig.authMethod>KEYCLOAK</webXml.loginConfig.authMethod>
+        <webXml.loginConfig.authMethod>BASIC</webXml.loginConfig.authMethod>
+        <!--<webXml.loginConfig.authMethod>KEYCLOAK</webXml.loginConfig.authMethod>-->
         <webXml.loginConfig.realmName>Govern de les Illes Balears</webXml.loginConfig.realmName>
         <commons-io.version>2.6</commons-io.version>
         <jakarta.version>3.0.2</jakarta.version>
@@ -73,6 +73,11 @@
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
+                <artifactId>rolsac2-api-externa</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-ejb</artifactId>
                 <version>1.0.0</version>
                 <type>ejb</type>
@@ -91,7 +96,7 @@
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
-                <artifactId>rolsac2-api-externa</artifactId>
+                <artifactId>rolsac2-rest-api-externa</artifactId>
                 <version>1.0.0</version>
                 <type>war</type>
             </dependency>
@@ -693,8 +698,9 @@
 	    <module>rolsac2-service</module>
 	    <module>rolsac2-back</module>
 	    <module>rolsac2-api-interna</module>
-	    <module>rolsac2-api-externa</module>
+	    <module>rolsac2-rest-api-externa</module>
+        <module>rolsac2-api-externa</module>
 	    <module>rolsac2-ear</module>
-	</modules>
+    </modules>
 
 </project>

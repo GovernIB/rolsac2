@@ -100,22 +100,96 @@ Pàgina amb el llistat de processos automàtics
                     <div class="ui-md-12 text-align-left ml10">
                         <h:outputText value="#{labels['dict.opciones']}:" />
                     </div>
-                    <div class="ui-md-12 text-align-left ml10">
-                        <p:selectBooleanCheckbox value="#{viewProcesosMigracion.borrarDatos}" styleClass="ml-2"
-                                                 itemLabel="#{labels['viewProcesosMigracion.borrarDatos']}"/>
+                </div>
+                <div class="row">
+                    <div class="ui-md-2 text-align-right ml10">
+                        <h:outputText value="Unidad administrativa Base:" style="margin-right: 10px; vertical-align: sub;"/>
                     </div>
+                    <div class="ui-md-8 text-align-left ">
+                        <p:selectOneMenu id="txtOpcion" value="#{viewProcesosMigracion.uaSeleccionado}">
+                            <f:selectItems value="#{viewProcesosMigracion.uas}" var="ua"
+                                           itemValue="#{ua}" itemLabel="#{ua.nombre.getTraduccion(sessionBean.lang)}" />
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="ui-md-2 text-align-right ml10">
+                        Usuarios asociados a la UA base (Sólo si se carga las unidades administrativas):
+                    </div>
+                    <div class="ui-md-8 text-align-left ">
+                        <div class="row left-container mx-0">
+                            <div class="col-9 p-1">
+                                <p:dataTable id="dataTableUsuarios" var="td"
+                                             value="#{viewProcesosMigracion.usuarios}"
+                                             emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
+                                             paginator="false" selectionMode="single"
+                                             selection="#{viewProcesosMigracion.usuarioSeleccionado}"
+                                             rowKey="#{td.codigo}" styleClass="noHeader">
+
+                                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                                    <p:ajax event="rowSelect" global="false"/>
+                                    <p:ajax event="rowUnselect"/>
+
+
+                                    <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
+                                        <h:outputText value="#{td.identificador}"/>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </div>
+                            <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                                <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                                 process="@this"
+                                                 actionListener="#{viewProcesosMigracion.anyadirUsuarios()}"
+                                                 rendered="#{!viewProcesosMigracion.isModoConsulta()}">
+                                    <p:ajax event="dialogReturn" process="@this"
+                                            update="messages dataTableUsuarios"/>
+                                </p:commandButton>
+                                <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                                 action="#{viewProcesosMigracion.borrarUsuario()}"
+                                                 process="@this" update="dataTableUsuarios messages"
+                                                 rendered="#{!viewProcesosMigracion.isModoConsulta()}"/>
+                                <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                                 action="#{viewProcesosMigracion.consultarUsuario()}"
+                                                 process="@this" update="dataTableUsuarios messages"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                     <div class="ui-md-12 text-align-left ml10">
+                        <p:selectBooleanCheckbox id="chkBorrar" value="#{viewProcesosMigracion.borrarDatos}" styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.borrarDatos']}">
+                            <p:ajax process="@this"  event="change" update="chkCargarProc chkBorrar chkCargarUsuarios" />
+                        </p:selectBooleanCheckbox>
+                    </div>
+
                     <div class="ui-md-12 text-align-left ml10">
-                        <p:selectBooleanCheckbox value="#{viewProcesosMigracion.cargarUas}" styleClass="ml-2"
-                                                 itemLabel="#{labels['viewProcesosMigracion.cargarUas']}"/>
+                        <p:selectBooleanCheckbox id="chkCargarUsuarios" value="#{viewProcesosMigracion.cargarUsuarios}" styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.cargarUsuarios']}">
+                            <p:ajax process="@this"  event="change" update="chkCargarProc chkCargarUAs" />
+                        </p:selectBooleanCheckbox>
+                    </div>
+
+
+                    <div class="ui-md-12 text-align-left ml10">
+                        <p:selectBooleanCheckbox id="chkCargarUAs" value="#{viewProcesosMigracion.cargarUas}" styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.cargarUas']}">
+                            <p:ajax process="@this"  event="change" update="chkCargarProc chkCargarUAs chkCargarUsuarios" />
+                        </p:selectBooleanCheckbox>
                     </div>
                 <div class="ui-md-12 text-align-left ml10">
                         <p:selectBooleanCheckbox value="#{viewProcesosMigracion.cargarNormativas}" styleClass="ml-2"
-                                                 itemLabel="#{labels['viewProcesosMigracion.cargarNormativas']}"/>
+                                                 itemLabel="#{labels['viewProcesosMigracion.cargarNormativas']}">
+                            <p:ajax process="@this" event="change" partialSubmit="true" />
+                        </p:selectBooleanCheckbox>
 
                 </div>
                 <div class="ui-g-12 ui-md-12 ui-lg-12 text-align-left ml10">
-                        <p:selectBooleanCheckbox value="#{viewProcesosMigracion.cargarProcedimientos}" styleClass="ml-2"
-                                                 itemLabel="#{labels['viewProcesosMigracion.cargarProcedimientos']}"/>
+                        <p:selectBooleanCheckbox id="chkCargarProc" value="#{viewProcesosMigracion.cargarProcedimientos}" styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.cargarProcedimientos']}" >
+                            <p:ajax process="@this"  event="change" update="chkCargarProc chkCargarUAs" />
+                        </p:selectBooleanCheckbox>
 
                 </div>
                 <div class="ui-g-12 ui-md-12 ui-lg-12 ml10">

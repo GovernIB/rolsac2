@@ -42,8 +42,12 @@
         <!-- API EXTERNA START -->
         <dependency>
             <groupId>es.caib.rolsac2</groupId>
-            <artifactId>rolsac2-api-externa</artifactId>
+            <artifactId>rolsac2-rest-api-externa</artifactId>
             <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>es.caib.rolsac2</groupId>
+            <artifactId>rolsac2-api-externa</artifactId>
         </dependency>
         <!-- API EXTERNA END -->
         <!-- API INTERNA START -->
@@ -79,6 +83,7 @@
             <groupId>es.caib.rolsac2</groupId>
             <artifactId>rolsac2-commons</artifactId>
         </dependency>
+
         
     </dependencies>
 
@@ -121,9 +126,9 @@
                         <!-- API EXTERNA START -->
                         <webModule>
                             <groupId>es.caib.rolsac2</groupId>
-                            <artifactId>rolsac2-api-externa</artifactId>
+                            <artifactId>rolsac2-rest-api-externa</artifactId>
                             <contextRoot>/rolsac2api/externa</contextRoot>
-                            <bundleFileName>rolsac2-api-externa.war</bundleFileName>
+                            <bundleFileName>rolsac2-rest-api-externa.war</bundleFileName>
                         </webModule>
                         <!-- API EXTERNA END -->
                         <!-- API INTERNA START -->

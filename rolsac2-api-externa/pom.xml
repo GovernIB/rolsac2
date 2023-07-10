@@ -1,20 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>rolsac2</artifactId>
         <groupId>es.caib.rolsac2</groupId>
         <version>1.0.0</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>rolsac2-api-externa</artifactId>
-    <packaging>war</packaging>
-    <name>rolsac2 - API REST - EXTERNA</name>
-    <description>API REST EXTERNA de rolsac2</description>
+    <packaging>jar</packaging>
+
+    <name>rolsac2- API-EXTERNA</name>
+    <description>Mòdul amb els models de dades del API REST de rolsac2</description>
 
     <dependencies>
-        <!-- Especificacions i llibreries proporcionades per JBoss -->
         <dependency>
             <groupId>org.jboss.spec</groupId>
             <artifactId>jboss-javaee-8.0</artifactId>
@@ -50,11 +49,11 @@
             <scope>provided</scope>
         </dependency>
 
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>commons-lang</groupId>
@@ -104,204 +103,9 @@
             <artifactId>rolsac2-persistence</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!--         Swagger -->
-        <!-- 		<dependency> -->
-        <!-- 			<groupId>io.springfox</groupId> -->
-        <!-- 			<artifactId>springfox-swagger-ui</artifactId> -->
-        <!-- 			<version>2.7.0</version> -->
-        <!-- 		</dependency> -->
-        <!-- 		<dependency> -->
-        <!-- 			<groupId>io.springfox</groupId> -->
-        <!-- 			<artifactId>springfox-swagger2</artifactId> -->
-        <!-- 			<version>2.7.0</version> -->
-        <!-- 		</dependency> -->
-
     </dependencies>
 
     <build>
         <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-                    <webResources>
-                        <webResource>
-                            <directory>src\main\jboss\${webXml.loginConfig.authMethod}</directory>
-                            <targetPath>/WEB-INF</targetPath>
-                        </webResource>
-                    </webResources>
-                </configuration>
-
-
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-                    <webResources>
-                        <resource>
-                            <directory>${project.build.directory}/openapi</directory>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
-            <!-- Genera el descriptor openapi.json de forma estàtica després el posarem l'arrel del WAR -->
-            <plugin>
-                <groupId>org.apache.geronimo</groupId>
-                <artifactId>geronimo-openapi-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>generate-openapi.json</id>
-                        <goals>
-                            <goal>openapi.json</goal>
-                        </goals>
-                        <configuration>
-                            <application>es.caib.rolsac2.api.externa.JAXRSConfiguration</application>
-                            <endpointClasses>
-<!--                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.PersonalResource</endpointClass> -->
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoBoletinResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.UAResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.NormativaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.ServiciosResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.ProcedimientosResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoAfectacionResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoSilencioAdministrativoResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoUnidadAdministrativaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoNormativaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoFormaInicioResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoLegitimacionResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoMateriaSiaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoPublicoObjetivoResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoSexoResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoViaResource</endpointClass>
-                                <!--<endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoMediaEdificioResource</endpointClass>-->
-<!--                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoMediaFichaResource</endpointClass> -->
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoMediaUAResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoProcedimientoResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoTramitacionResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.EntidadesResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.PlatTramitElectronicaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.FicheroResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TemaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TipoPublicoObjetivoEntidadResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.DocumentoNormativaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.TramiteResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.api.externa.v1.services.EstadisticaResource</endpointClass>
-<!--                                 <endpointClass>es.caib.rolsac2.api.externa.v1.services.ProcedimientoDocumentoResource</endpointClass> -->
-                            </endpointClasses>
-                            <output>${project.build.directory}/openapi/openapi.json</output>
-                            <info>
-                                <version>${project.version}</version>
-                                <title>${project.name}</title>
-                                <description>${project.description}</description>
-                            </info>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
-
-    <profiles>
-        <!-- Profile per incloure swagger-ui dins el mòdul -->
-        <profile>
-            <id>swagger-ui</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <!-- La darrera versió disponible: https://github.com/swagger-api/swagger-ui/releases -->
-                <swagger-ui.version>3.35.1</swagger-ui.version>
-            </properties>
-            <build>
-                <plugins>
-                    <!-- Davalla la versió de swagger-ui -->
-                    <plugin>
-                        <groupId>com.googlecode.maven-download-plugin</groupId>
-                        <artifactId>download-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>swagger-ui</id>
-                                <phase>validate</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <skipCache>true</skipCache>
-                                    <url>
-                                        https://github.com/swagger-api/swagger-ui/archive/v${swagger-ui.version}.tar.gz
-                                    </url>
-                                    <unpack>true</unpack>
-                                    <outputDirectory>${project.build.directory}</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Canvia l'adreça de la configuració d'exemple per la real, ./openapi.json -->
-                    <plugin>
-                        <groupId>com.google.code.maven-replacer-plugin</groupId>
-                        <artifactId>replacer</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <file>${project.build.directory}/swagger-ui-${swagger-ui.version}/dist/index.html</file>
-                            <replacements>
-                                <replacement>
-                                    <token>https://petstore.swagger.io/v2/swagger.json</token>
-                                    <value>./openapi.json</value>
-                                </replacement>
-                            </replacements>
-                        </configuration>
-                    </plugin>
-                    <!-- Inclou el swagger-ui dins el war -->
-                    <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <configuration>
-                            <webResources combine.children="append">
-                                <resource>
-                                    <directory>${project.build.directory}/swagger-ui-${swagger-ui.version}/dist
-                                    </directory>
-                                </resource>
-                            </webResources>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <!-- Realitza els tests arrancant automàticament un JBoss ubicat a la variable d'entorn JBOSS_HOME -->
-        <profile>
-            <id>arq-jboss-managed</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.wildfly.arquillian</groupId>
-                    <artifactId>wildfly-arquillian-container-managed</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-        <!-- Realitza els tests connectant a una instància de JBoss en marxa a localhost -->
-        <profile>
-            <id>arq-jboss-remote</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.wildfly.arquillian</groupId>
-                    <artifactId>wildfly-arquillian-container-remote</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>

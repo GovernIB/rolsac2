@@ -61,7 +61,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <scope>test</scope>
+            <!--<scope>test</scope>-->
         </dependency>
         <!-- Per tests amb Arquillian -->
         <dependency>
