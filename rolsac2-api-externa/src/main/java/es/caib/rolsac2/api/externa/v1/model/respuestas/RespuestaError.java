@@ -4,11 +4,11 @@ import javax.validation.ValidationException;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.exception.NotFoundException;
 import es.caib.rolsac2.api.externa.v1.exception.ParamException;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 
 /**

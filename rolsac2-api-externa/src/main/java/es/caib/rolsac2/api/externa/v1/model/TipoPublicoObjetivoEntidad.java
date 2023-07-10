@@ -1,7 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.time.LocalDate;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -13,10 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.EntidadDTO;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
-import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadDTO;
 
 /**

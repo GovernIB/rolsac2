@@ -5,23 +5,19 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
+import es.caib.rolsac2.api.externa.v1.model.order.CampoOrden;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
-import es.caib.rolsac2.api.externa.v1.model.order.CampoOrden;
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.NormativaGridDTO;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
-import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
 import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
-import es.caib.rolsac2.service.model.TipoProcedimientoDTO;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
-import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
-import es.caib.rolsac2.service.model.TipoViaDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 
 /**
@@ -52,6 +48,9 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 			+ "\"codigoSia\":0," + Constantes.SALTO_LINEA
 			+ "\"codigoPlantilla\":0," + Constantes.SALTO_LINEA
 			+ "\"codigoPlataforma\":0," + Constantes.SALTO_LINEA
+			+ "\"idTramite\":0," + Constantes.SALTO_LINEA
+			+ "\"idPlataforma\":0," + Constantes.SALTO_LINEA
+			+ "\"version\":0," + Constantes.SALTO_LINEA
 			+ "\"estado\":\"S/M/P/T/R/U/B\", (S=Pendiente Publicar, M=En modificación, P=Publicado, T=Pendiente reservar, R=Reservado, U=Pendiente borrar, B=Borrado)" + Constantes.SALTO_LINEA
 			+ "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA
 			+ "\"listaCodigosNormativas\":[0]," + Constantes.SALTO_LINEA
@@ -60,35 +59,38 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 			+ "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA
 			+ "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA
 			+ "\"idEntidad\":0," + Constantes.SALTO_LINEA
+			+ "\"vigente\": (S/N)," + Constantes.SALTO_LINEA
 			+ "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA
-			+ "\"listaOrden\":[{\"campo\":\""
-			+ CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}," + "{\"campo\":\""
-			+ CAMPO_ORD_PROCEDIMIENTO_FECHA_ACTUALIZACION + "\",\"tipoOrden\":\"ASC/DESC\"}," + "{\"campo\":\""
-			+ CAMPO_ORD_PROCEDIMIENTO_CODIGO + "\",\"tipoOrden\":\"ASC/DESC\"}" + "]"
+			+ "\"orden\":{\"campo\":\""
+			+ CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}"
 			+ "}";
 
 	public static final String SAMPLE_JSON = "{"
-			+ "\"codigoUA\":null,"
-			+ "\"codigoUADir3\":null,"
-			+ "\"textos\":null,"
-			+ "\"titulo\":null,"
-			+ "\"codigo\":null,"
-			+ "\"volcadoSia\":null,"
-			+ "\"estadoWF\":null,"
-			+ "\"comun\":null,"
-			+ "\"codigoSia\":null,"
-			+ "\"codigoPlantilla\":null,"
-			+ "\"codigoPlataforma\":null,"
-			+ "\"estado\":null,"
-			+ "\"fechaActualizacionSia\":null,"
-			+ "\"listaCodigosNormativas\":null,"
-			+ "\"listaCodigosPublicosObjetivos\":null,"
-			+ "\"listaCodigosMaterias\":null,"
-			+ "\"fechaPublicacionDesde\":null,"
-			+ "\"fechaPublicacionHasta\":null,"
-			+ "\"idEntidad\":null,"
-			+ "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"},"
-			+ "\"listaOrden\":null"
+			+ "\n	\"codigoUA\":null,"
+			+ "\n	\"codigoUADir3\":null,"
+			+ "\n	\"textos\":null,"
+			+ "\n	\"titulo\":null,"
+			+ "\n	\"codigo\":null,"
+			+ "\n	\"volcadoSia\":null,"
+			+ "\n	\"estadoWF\":null,"
+			+ "\n	\"comun\":null,"
+			+ "\n	\"codigoSia\":null,"
+			+ "\n	\"codigoPlantilla\":null,"
+			+ "\n	\"codigoPlataforma\":null,"
+			+ "\n	\"idTramite\":null,"
+			+ "\n	\"idPlataforma\":null,"
+			+ "\n	\"version\":null,"
+			+ "\n	\"estado\":null,"
+			+ "\n	\"fechaActualizacionSia\":null,"
+			+ "\n	\"listaCodigosNormativas\":null,"
+			+ "\n	\"listaCodigosPublicosObjetivos\":null,"
+			+ "\n	\"listaCodigosMaterias\":null,"
+			+ "\n	\"fechaPublicacionDesde\":null,"
+			+ "\n	\"fechaPublicacionHasta\":null,"
+			+ "\n	\"idEntidad\":null,"
+			+ "\n	\"vigente\":null,"
+			+ "\n	\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"},"
+			+ "\n	\"orden\":null"
 			+ "}";
 
 	/** FiltroPaginacion. **/
@@ -97,7 +99,7 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 
 	/** Lista de campos a ordenar. **/
 	@Schema(description = "Lista de campos por los que ordenar", required = false)
-	private List<CampoOrden> listaOrden;
+	private CampoOrden orden;
 
 	/** listaCodigosNormativas. **/
 	@Schema(description = "listaCodigosNormativas", required = false)
@@ -180,6 +182,18 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 	/** fechaActualizacionSia. **/
 	@Schema(description = "fechaActualizacionSia", type = SchemaType.STRING, required = false)
 	private String fechaActualizacionSia;
+
+	@Schema(description = "idTramite", type = SchemaType.STRING, required = false)
+	private String idTramite;
+
+	@Schema(description = "idPlataforma", type = SchemaType.STRING, required = false)
+	private String idPlataforma;
+
+	@Schema(description = "version", type = SchemaType.STRING, required = false)
+	private Integer version;
+
+	@Schema(description = "vigente", type = SchemaType.STRING, required = false)
+	private String vigente;
 
 	/**
 	 * @return the textos
@@ -376,6 +390,30 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 		this.estadoWF = estadoWF;
 	}
 
+	public String getIdTramite() {
+		return idTramite;
+	}
+
+	public void setIdTramite(String idTramite) {
+		this.idTramite = idTramite;
+	}
+
+	public String getIdPlataforma() {
+		return idPlataforma;
+	}
+
+	public void setIdPlataforma(String idPlataforma) {
+		this.idPlataforma = idPlataforma;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
 	public ProcedimientoFiltro toProcedimientoFiltro() {
 		ProcedimientoFiltro resultado = new ProcedimientoFiltro();
 
@@ -490,13 +528,36 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 			resultado.setSiaFecha(fechaActualizacionSia);
 		}
 
+		if (this.vigente != null) {
+			resultado.setTramiteVigente(vigente);
+		}
+
 		if(this.codigoPlantilla!=null) {
 			TipoTramitacionDTO plan = new TipoTramitacionDTO();
 			plan.setCodigo(codigoPlantilla);
 			resultado.setPlantilla(plan);
 		}
 
+		if(this.idPlataforma != null) {
+			resultado.setIdentificadorPlataforma(this.idPlataforma);
+		}
+
+		if(this.idTramite != null) {
+			resultado.setIdTramite(idTramite);
+		}
+
+		if(this.version != null) {
+			resultado.setVersion(version);
+		}
+
+		if(orden != null) {
+			resultado.setOrderBy(orden.getCampo());
+			resultado.setOrder(orden.getTipoOrden());
+		}
+
+
 		resultado.setTipo("S");
+		resultado.setEsProcedimiento(false);
 
 		return resultado;
 	}
@@ -510,18 +571,12 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 		this.filtroPaginacion = filtroPaginacion;
 	}
 
-	/**
-	 * @return the listaOrden
-	 */
-	public List<CampoOrden> getListaOrden() {
-		return listaOrden;
+	public CampoOrden getOrden() {
+		return orden;
 	}
 
-	/**
-	 * @param listaOrden the listaOrden to set
-	 */
-	public void setListaOrden(List<CampoOrden> listaOrden) {
-		this.listaOrden = listaOrden;
+	public void setOrden(CampoOrden orden) {
+		this.orden = orden;
 	}
 
 	public Long getIdEntidad() {
@@ -532,4 +587,11 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 		this.idEntidad = idEntidad;
 	}
 
+	public String getVigente() {
+		return vigente;
+	}
+
+	public void setVigente(String vigente) {
+		this.vigente = vigente;
+	}
 }

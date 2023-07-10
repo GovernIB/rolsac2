@@ -1,6 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.io.IOException;
 import java.util.Calendar;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,15 +9,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.api.externa.v1.utils.Utiles;
-import es.caib.rolsac2.service.model.ServicioDTO;
-import es.caib.rolsac2.service.model.ServicioGridDTO;
 import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
 
 /**

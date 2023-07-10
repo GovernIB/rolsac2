@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import es.caib.rolsac2.api.externa.v1.model.Normativa;
 import es.caib.rolsac2.api.externa.v1.model.ProcedimientoDocumento;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;

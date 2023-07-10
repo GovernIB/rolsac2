@@ -2,10 +2,9 @@ package es.caib.rolsac2.api.externa.v1.model.order;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
-import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
 
 /**
  * FiltroUA.
@@ -15,7 +14,7 @@ import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
  */
 @XmlRootElement
 @Schema(name = "CampoOrden", type = SchemaType.STRING, description = "Campo a ordenar")
-public class CampoOrden extends EntidadJson<CampoOrden>  {
+public class CampoOrden extends EntidadJson<CampoOrden> {
 
 	/** campo. **/
 	@Schema(required = false, type = SchemaType.STRING, name = "campo", description = "Campo")

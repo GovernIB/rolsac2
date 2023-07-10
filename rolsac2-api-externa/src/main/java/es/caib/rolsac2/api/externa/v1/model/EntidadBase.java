@@ -1,6 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,19 +7,14 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.api.externa.v1.utils.Utiles;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
-import es.caib.rolsac2.api.externa.v1.utils.Utiles;
 
 /**
  * RespuestaBase. Estructura de respuesta que contiene la información comun a
@@ -112,7 +106,7 @@ public abstract class EntidadBase<V> extends EntidadJson<V> {
 	public Link generaLink(Long codigo, String entidad, String url, String urlBase, String descripcion) {
 		if (codigo != null) {
 			return new Link(entidad, codigo.toString(),
-					(StringUtils.isEmpty(urlBase) ? Constantes.URL_BASE : urlBase) + url.replace("{0}", codigo + ""),
+					(StringUtils.isEmpty(urlBase) ? Constantes.URL_BASE : urlBase + Constantes.URL_MODULO + Constantes.API_VERSION + "/") + url.replace("{0}", codigo + ""),
 					descripcion, hateoasEnabled);
 		}
 		return null;

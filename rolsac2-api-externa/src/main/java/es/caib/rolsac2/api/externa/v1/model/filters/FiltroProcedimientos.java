@@ -5,14 +5,14 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
+import es.caib.rolsac2.api.externa.v1.model.order.CampoOrden;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
-import es.caib.rolsac2.api.externa.v1.model.order.CampoOrden;
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.NormativaGridDTO;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
@@ -71,10 +71,8 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 			+ "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA
 			+ "\"idEntidad\":0," + Constantes.SALTO_LINEA
 			+ "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA
-			+ "\"listaOrden\":[{\"campo\":\""
-			+ CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}," + "{\"campo\":\""
-			+ CAMPO_ORD_PROCEDIMIENTO_FECHA_ACTUALIZACION + "\",\"tipoOrden\":\"ASC/DESC\"}," + "{\"campo\":\""
-			+ CAMPO_ORD_PROCEDIMIENTO_CODIGO + "\",\"tipoOrden\":\"ASC/DESC\"}" + "]"
+			+ "\"orden\":{\"campo\":\""
+			+ CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}"
 			+ "}";
 
 	public static final String SAMPLE_JSON = "{"
@@ -107,7 +105,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 			+ "\"fechaPublicacionHasta\":null,"
 			+ "\"idEntidad\":null,"
 			+ "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"},"
-			+ "\"listaOrden\":null"
+			+ "\"orden\":null"
 			+ "}";
 
 	/** FiltroPaginacion. **/
@@ -121,8 +119,8 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     private Long idEntidad;
 
 	/** Lista de campos a ordenar. **/
-	@Schema(description = "Lista de campos por los que ordenar", required = false)
-	private List<CampoOrden> listaOrden;
+	@Schema(description = "Campo por el que se tiene que ordenar", required = false)
+	private CampoOrden orden;
 
 	/** listaCodigosNormativas. **/
 	@Schema(description = "listaCodigosNormativas", required = false)
@@ -653,6 +651,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 		}
 
 		resultado.setTipo("P");
+		resultado.setEsProcedimiento(true);
 
 		return resultado;
 	}
@@ -674,18 +673,11 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 		this.idEntidad = idEntidad;
 	}
 
-	/**
-	 * @return the listaOrden
-	 */
-	public List<CampoOrden> getListaOrden() {
-		return listaOrden;
+	public CampoOrden getOrden() {
+		return orden;
 	}
 
-	/**
-	 * @param listaOrden the listaOrden to set
-	 */
-	public void setListaOrden(List<CampoOrden> listaOrden) {
-		this.listaOrden = listaOrden;
+	public void setOrden(CampoOrden orden) {
+		this.orden = orden;
 	}
-
 }

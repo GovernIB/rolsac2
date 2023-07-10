@@ -1,18 +1,14 @@
 package es.caib.rolsac2.api.externa.v1.model.filters;
 
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
+import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
@@ -36,29 +32,37 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
 //			"\"fechaPublicacion\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA +
 //			"\"fechaCierre\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA +
 			"\"codigoUnidadAdministrativa\":0," + Constantes.SALTO_LINEA +
-			"\"codigoProcedimiento\":0," + Constantes.SALTO_LINEA +
+//			"\"codigoProcedimiento\":0," + Constantes.SALTO_LINEA +
+			"\"codigoProcedimientoWF\":0," + Constantes.SALTO_LINEA +
 			"\"codigoTipoTramitacion\":0," + Constantes.SALTO_LINEA +
-			"\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA +
+			"\"idTramite\":0," + Constantes.SALTO_LINEA +
+			"\"idPlataforma\":0," + Constantes.SALTO_LINEA +
+			"\"version\":0," + Constantes.SALTO_LINEA +
+//			"\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA +
 //			"\"fechaInicio\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA +
 			"\"idEntidad\":0," + Constantes.SALTO_LINEA +
 			"\"texto\":\"string\"," + Constantes.SALTO_LINEA +
 			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
 			"}";
 
-	public static final String SAMPLE_JSON = "{" +
-			"\"orden\":null," +
-			"\"fase\":null," +
+	public static final String SAMPLE_JSON = "{"
+			+ "\n	\"orden\":null,"
+			+ "\n	\"fase\":null,"
 //			"\"fechaPublicacion\":null," +
-			"\"codigoUnidadAdministrativa\":null," +
-			"\"codigoProcedimiento\":null,"+
-			"\"codigoTipoTramitacion\":null,"+
+			+ "\n	\"codigoUnidadAdministrativa\":null,"
+			+ "\n	\"codigoProcedimientoWF\":null,"
+//			+ "\n	\"codigoProcedimiento\":null,"
+			+ "\n	\"codigoTipoTramitacion\":null,"
 //			"\"fechaInicio\":null," +
 //			"\"fechaCierre\":null," +
- 			"\"estadoWF\":null," +
- 			"\"idEntidad\":null," +
-			"\"texto\":null," +
-			"\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
-			"}";
+// 			+ "\n	\"estadoWF\":null,"
+ 			+ "\n	\"idEntidad\":null,"
+			+ "\n	\"idTramite\":null,"
+			+ "\n	\"idPlataforma\":null,"
+			+ "\n	\"version\":null,"
+			+ "\n	\"texto\":null,"
+			+ "\n	\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}"
+			+ "\n}";
 
 	@Schema(name = "orden", description = "orden", type = SchemaType.INTEGER, required = false)
     private Integer orden;
@@ -78,7 +82,10 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
     @Schema(name = "codigoProcedimiento", description = "codigoProcedimiento", type = SchemaType.INTEGER, required = false)
     private Long codigoProcedimiento;
 
-    @Schema(name = "codigoTipoTramitacion", description = "codigoTipoTramitacion", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoProcedimientoWF", description = "codigoProcedimientoWF", type = SchemaType.INTEGER, required = false)
+    private Long codigoProcedimientoWF;
+
+	@Schema(name = "codigoTipoTramitacion", description = "codigoTipoTramitacion", type = SchemaType.INTEGER, required = false)
     private Long codigoTipoTramitacion;
 
 //    @Schema(description = "fechaPublicacion", name = "fechaPublicacion", type = SchemaType.STRING, required = false)
@@ -105,12 +112,30 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
 	@Schema(name = "estadoWF", description = "estadoWF", type = SchemaType.STRING, required = false)
 	private String estadoWF;
 
+	@Schema(description = "idTramite", type = SchemaType.STRING, required = false)
+	private String idTramite;
+
+	@Schema(description = "idPlataforma", type = SchemaType.STRING, required = false)
+	private String idPlataforma;
+
+	@Schema(description = "version", type = SchemaType.STRING, required = false)
+	private Integer version;
+
 	public String getEstadoWF() {
 		return estadoWF;
 	}
 
 	public void setEstadoWF(String estadoWF) {
 		this.estadoWF = estadoWF;
+	}
+
+
+    public Long getCodigoProcedimientoWF() {
+		return codigoProcedimientoWF;
+	}
+
+	public void setCodigoProcedimientoWF(Long codigoProcedimientoWF) {
+		this.codigoProcedimientoWF = codigoProcedimientoWF;
 	}
 
 	/**
@@ -133,6 +158,30 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
 	 */
 	public void setTexto(String texto) {
 		this.texto = texto;
+	}
+
+	public String getIdTramite() {
+		return idTramite;
+	}
+
+	public void setIdTramite(String idTramite) {
+		this.idTramite = idTramite;
+	}
+
+	public String getIdPlataforma() {
+		return idPlataforma;
+	}
+
+	public void setIdPlataforma(String idPlataforma) {
+		this.idPlataforma = idPlataforma;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 
 	public ProcedimientoTramiteFiltro toProcedimientoTramiteFiltro() {
@@ -160,9 +209,15 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
 			resultado.setUnidadAdministrativa(unidadAdministrativa);
 		}
 
-		if (this.codigoProcedimiento != null) {
+//		if (this.codigoProcedimiento != null) {
+//			ProcedimientoDTO procedimiento = new ProcedimientoDTO();
+//			procedimiento.setCodigo(codigoProcedimiento);
+//			resultado.setProcedimiento(procedimiento);
+//		}
+
+		if (this.codigoProcedimientoWF != null) {
 			ProcedimientoDTO procedimiento = new ProcedimientoDTO();
-			procedimiento.setCodigo(codigoProcedimiento);
+			procedimiento.setCodigoWF(codigoProcedimientoWF);
 			resultado.setProcedimiento(procedimiento);
 		}
 
@@ -172,10 +227,22 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
 			resultado.setTipoTramitacion(tipoTramitacion);
 		}
 
-		if (this.estadoWF != null) {
-			resultado.setEstadoWF(estadoWF);
-		} else {
-			resultado.setEstadoWF("T");
+//		if (this.estadoWF != null) {
+//			resultado.setEstadoWF(estadoWF);
+//		} else {
+//			resultado.setEstadoWF("T");
+//		}
+
+		if(this.idPlataforma != null) {
+			resultado.setIdentificadorPlataforma(this.idPlataforma);
+		}
+
+		if(this.idTramite != null) {
+			resultado.setIdTramite(idTramite);
+		}
+
+		if(this.version != null) {
+			resultado.setVersion(version);
 		}
 
 		return resultado;

@@ -1,12 +1,11 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
@@ -15,9 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
-import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
 
 /**

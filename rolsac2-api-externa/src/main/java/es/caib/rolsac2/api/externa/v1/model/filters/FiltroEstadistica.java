@@ -3,7 +3,6 @@ package es.caib.rolsac2.api.externa.v1.model.filters;
 import es.caib.rolsac2.api.externa.v1.model.EntidadJson;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.filtro.EstadisticaFiltro;
-import es.caib.rolsac2.service.model.filtro.TipoSexoFiltro;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;

@@ -158,6 +158,9 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
     @Schema(description = "responsable", type = SchemaType.STRING, required = false)
     private String responsable;
 
+    @Schema(description = "abreviatura", type = SchemaType.STRING, required = false)
+    private String abreviatura;
+
     public UnidadAdministrativa() {
         super();
     }
@@ -452,4 +455,11 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
         this.responsable = responsable;
     }
 
+    public String getAbreviatura() {
+        return abreviatura;
+    }
+
+    public void setAbreviatura(String abreviatura) {
+        this.abreviatura = abreviatura;
+    }
 }
