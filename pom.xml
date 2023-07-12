@@ -42,8 +42,8 @@
         <persistenceXml.hibernate.showSql>true</persistenceXml.hibernate.showSql>
         <!-- Altres substitucions a aplicar dins els descriptors. -->
         <!-- Es poden sobreescriure passant la propietat al maven amb -D -->
-        <webXml.loginConfig.authMethod>BASIC</webXml.loginConfig.authMethod>
-        <!--<webXml.loginConfig.authMethod>KEYCLOAK</webXml.loginConfig.authMethod>-->
+        <!--<webXml.loginConfig.authMethod>BASIC</webXml.loginConfig.authMethod>-->
+        <webXml.loginConfig.authMethod>KEYCLOAK</webXml.loginConfig.authMethod>
         <webXml.loginConfig.realmName>Govern de les Illes Balears</webXml.loginConfig.realmName>
         <commons-io.version>2.6</commons-io.version>
         <jakarta.version>3.0.2</jakarta.version>
