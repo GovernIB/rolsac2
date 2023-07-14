@@ -59,6 +59,13 @@ public interface MigracionServiceFacade {
     String migrarNormativas(List<BigDecimal> idNormativas, Long idEntidad);
 
     /**
+     * Ejecuta el metodo de migrar normativas afectaciones
+     *
+     * @return
+     */
+    String migrarNormativasAfe();
+
+    /**
      * Obtiene la lista de procedimientos
      *
      * @param idEntidad

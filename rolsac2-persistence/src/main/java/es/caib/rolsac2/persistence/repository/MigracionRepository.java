@@ -102,4 +102,12 @@ public interface MigracionRepository extends CrudRepository<JProceso, Long> {
      * @return
      */
     String importarUsuario(String idUsuario);
+
+    /**
+     * Importar normativas afectaciones
+     *
+     * @param idEntidad
+     * @return
+     */
+    String importarNormativasAfectaciones();
 }

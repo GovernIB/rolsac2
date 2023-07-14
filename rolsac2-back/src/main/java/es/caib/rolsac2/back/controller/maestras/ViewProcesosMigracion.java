@@ -89,10 +89,10 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
         // Generamos una búsqueda
         buscar();
 
-        borrarDatos = false;
+        borrarDatos = true;
         cargarUas = true;
         cargarNormativas = true;
-        cargarProcedimientos = true;
+        cargarProcedimientos = false;
         cargarUsuarios = true;
         cargarServicios = false;
 

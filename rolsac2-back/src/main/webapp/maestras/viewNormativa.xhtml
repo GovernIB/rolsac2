@@ -147,6 +147,18 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <p:selectBooleanCheckbox id="txtEstado" value="#{viewNormativa.filtro.vigente}">
                             </p:selectBooleanCheckbox>
                         </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-2">
+                            <h:outputText value="#{labels['viewNormativas.vigente']}:" for="txtVigente" />
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
+                             <p:selectOneMenu id="txtVigente" value="#{viewNormativa.filtro.vigente}"
+                                             styleClass="w95"  >
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="#{labels['dict.vigente']}" itemValue="true"/>
+                                <f:selectItem itemLabel="#{labels['dict.derogada']}" itemValue="false"/>
+                                 <f:converter converterId="javax.faces.Boolean" />
+                            </p:selectOneMenu>
+                        </div>
                         <div class="ui-g-12 text-center">
                             <p:commandButton value="#{labels['dict.limpiarFiltro']}"
                                              actionListener="#{viewNormativa.limpiarFiltro()}" iconPos="top"

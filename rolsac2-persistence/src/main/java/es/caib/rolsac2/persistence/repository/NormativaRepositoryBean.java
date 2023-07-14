@@ -43,6 +43,7 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             sql = new StringBuilder("SELECT j from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u where 1 = 1 ");
         } else {
             sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion, j.vigente FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u WHERE 1 = 1 ");
+            //sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion, j.vigente FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  WHERE 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and (LOWER(t.titulo) LIKE :filtro OR LOWER(j.tipoNormativa.identificador) LIKE :filtro " + " OR LOWER(cast(j.numero as string)) LIKE :filtro OR LOWER(j.boletinOficial.nombre) LIKE :filtro " + " OR LOWER(cast (j.fechaAprobacion as string)) LIKE :filtro ) ");
@@ -58,7 +59,7 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
         if ((filtro.isRellenoHijasActivas() && !filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {
             sql.append(" AND (u.codigo IN (:idUAs) ) ");
-        } else if((filtro.isRellenoHijasActivas() && filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {
+        } else if ((filtro.isRellenoHijasActivas() && filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {
             sql.append(" AND (u.codigo IN (:idUAs) OR u.codigo IN (:idUAsAux))");
         } else if (filtro.isRellenoIdUA()) {
             sql.append(" and ( u.codigo = :idUA) ");
@@ -87,10 +88,12 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             sql.append(" and j.codigo = :codigo ");
         }
 
-        if(filtro.isVigente() && filtro.getVigente()) {
-            sql.append(" and j.vigente is true ");
-        } else if(filtro.isVigente() && !filtro.getVigente()) {
-            sql.append(" and j.vigente is false");
+        if (filtro.isRellenoVigente()) {
+            if (filtro.getVigente()) {
+                sql.append(" and j.vigente is true ");
+            } else {
+                sql.append(" and j.vigente is false");
+            }
         }
 
         if (filtro.getOrderBy() != null) {

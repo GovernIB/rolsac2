@@ -137,6 +137,8 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                     }
 
                 }
+                String result = migracionService.migrarNormativasAfe();
+                mensajeTraza.append(result);
                 mensajeTraza.append("FI MIGRACIO NORMATIVAs \n");
                 detalles.addPropiedad("Cargar datos Normativas", "Ejecutado correctamente");
             }

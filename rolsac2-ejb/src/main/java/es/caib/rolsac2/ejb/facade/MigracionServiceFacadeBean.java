@@ -67,8 +67,8 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
         StringBuilder resultado = new StringBuilder();
         if (idUAs != null) {
             for (BigDecimal idUA : idUAs) {
-                String resultadoNormativa = migracionRepository.importarUA(idUA.longValue(), idEntidad, idUARaiz);
-                resultado.append(resultadoNormativa);
+                String resultadoUA = migracionRepository.importarUA(idUA.longValue(), idEntidad, idUARaiz);
+                resultado.append(resultadoUA);
 
                 /** Creamos las relaciones de los usuarios con la UA raiz **/
                 if (idUARaiz.compareTo(idUA.longValue()) == 0) {
@@ -111,6 +111,14 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
         }
         return resultado.toString();
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public String migrarNormativasAfe() {
+        String resultadoNormativa = migracionRepository.importarNormativasAfectaciones();
+        return resultadoNormativa;
+    }
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})

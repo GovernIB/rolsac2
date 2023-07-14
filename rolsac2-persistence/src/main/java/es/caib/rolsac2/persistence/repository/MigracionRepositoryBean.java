@@ -73,36 +73,8 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
         return query.getResultList();
     }
 
-    public String importarNormativaOld(Long idNormativa, Long codigoEntidad) {
-        StoredProcedureQuery query = this.entityManager.createStoredProcedureQuery("MIGRAR_NORMATIVA");
-        String resultado = "";
-        try {
-            query.registerStoredProcedureParameter("codigoNormativa", Long.class, ParameterMode.IN);
-            query.registerStoredProcedureParameter("codigoEntidad", Long.class, ParameterMode.IN);
-            query.registerStoredProcedureParameter("resultado", String.class, ParameterMode.INOUT);
-
-            query.setParameter("codigoNormativa", idNormativa);
-            query.setParameter("codigoEntidad", codigoEntidad);
-            query.setParameter("resultado", resultado);
-
-            // call the stored procedure and get the result
-            query.execute();
-            //query.executeUpdate();
-        } catch (Exception e) {
-            LOG.error("Error importando normativa ", e);
-            return e.getLocalizedMessage();
-        } finally {
-            //entityManager.getTransaction().commit();
-            //entityManager.close();
-            //query.unwrap(ProcedureOutputs.class).release();
-        }
-
-        String retorno = "   " + query.getOutputParameterValue("resultado") + "\n";
-        return retorno;
-    }
 
     @Override
-    // @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String importarNormativa(Long idNormativa, Long codigoEntidad) {
         StoredProcedureQuery query = this.entityManager.createStoredProcedureQuery("MIGRAR_NORMATIVA");
         String resultado = "";
@@ -120,6 +92,27 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             //query.executeUpdate();
         } catch (Exception e) {
             LOG.error("Error importando normativa ", e);
+            return e.getLocalizedMessage();
+        }
+        String retorno = "     " + query.getOutputParameterValue("resultado") + "\n";
+        query.unwrap(ProcedureOutputs.class).release();
+        return retorno;
+    }
+
+    @Override
+    public String importarNormativasAfectaciones() {
+        StoredProcedureQuery query = this.entityManager.createStoredProcedureQuery("MIGRAR_NORMATIVAS_AFE");
+        String resultado = "";
+        try {
+            query.registerStoredProcedureParameter("resultado", String.class, ParameterMode.INOUT);
+
+            query.setParameter("resultado", resultado);
+
+            // call the stored procedure and get the result
+            query.execute();
+            //query.executeUpdate();
+        } catch (Exception e) {
+            LOG.error("Error importando normativas afectaciones ", e);
             return e.getLocalizedMessage();
         }
         String retorno = "     " + query.getOutputParameterValue("resultado") + "\n";
