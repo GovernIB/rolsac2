@@ -219,7 +219,7 @@ BEGIN
                                ROLSAC1_TRADUA.TUN_PRESEN,
                                ROLSAC1_TRADUA.TUN_URL,
                                TUN_CVRESP,
-                               TUN_ABREVI
+                               ROLSAC1_TRADUA.TUN_ABREVI
                            );
 
         END LOOP;
