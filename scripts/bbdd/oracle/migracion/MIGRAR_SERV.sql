@@ -211,6 +211,10 @@ create or replace PROCEDURE "MIGRAR_SERV" (codigo NUMBER, codigoEntidad NUMBER, 
     CODIGOSIA   NUMBER(10,0);
     CODIGOSIAR2 NUMBER(10,0);
     CODIGOSIAEXIST NUMBER(2,0);
+    CODIGO_PROCWF NUMBER(10,0);
+    EXISTE_MAT_PRC NUMBER(2,0);
+    TIPOTRAM_PLANTILLA  NUMBER(10,0);
+    TIPOTRAM NUMBER(10,0);
 BEGIN
 
     dbms_lob.createtemporary(l_clob, TRUE);
@@ -303,6 +307,10 @@ BEGIN
                          INTERNO := 0;
                      END IF;
 
+                    SELECT RS2_PRCWF_SEQ.NEXTVAL
+                     INTO CODIGO_PROCWF
+                     FROM DUAL;
+                  
                      INSERT INTO RS2_PRCWF(
                         PRWF_CODIGO,
                         PRWF_CODPROC,
@@ -338,7 +346,7 @@ BEGIN
                         PRWF_SVTREL,
                         PROC_LOPDACT*/)
                     SELECT
-                        RS2_PRCWF_SEQ.NEXTVAL,
+                        CODIGO_PROCWF,
                         codigo,
                         WF,
                         WFESTADO,
@@ -393,7 +401,7 @@ BEGIN
                             TRPW_PRRESO*/)
                            VALUES (
                             RS2_TRAPRWF_SEQ.NEXTVAL,
-                            RS2_PRCWF_SEQ.CURRVAL,
+                            CODIGO_PROCWF,
                             ROLSAC1_TRADSERV.TSR_CODIDI,
                             ROLSAC1_TRADSERV.TSR_NOMBRE, 
                             ROLSAC1_TRADSERV.TSR_OBJETO, 
@@ -404,18 +412,64 @@ BEGIN
 
                     END LOOP;
                     
+                    /** INTRODUCIMOS LAS MATERIAS. **/
+                FOR ROLSAC1_MATERIAS IN cursorMateriasRolsac1(codigo) 
+                LOOP  
+                   dbms_output.put_line('materias: ' || ROLSAC1_MATERIAS.SRM_CODMAT);
+                    
+                    /** METEMOS EL TEMA **/
+                    INSERT INTO  RS2_PRCTEM (PRTM_CODPRWF, PRTM_CODTEMA)
+                      VALUES (CODIGO_PROCWF,ROLSAC1_MATERIAS.SRM_CODMAT );
+
+                    SELECT COUNT(TPMS_CODIGO)
+                      INTO CODIGOSIAEXIST
+                      FROM RS2_TIPOMSI
+                     WHERE TPMS_CODSIA IN (
+                                SELECT MAT_CODSIA
+                                 FROM R1_MATERIAS
+                                WHERE MAT_CODI = ROLSAC1_MATERIAS.SRM_CODMAT
+                            );
+                            
+                   
+                    /** METEMOS EL TIPO SIA **/  
+                    IF CODIGOSIAEXIST > 0 
+                    THEN
+                         SELECT TPMS_CODIGO
+                          INTO CODIGOSIAR2
+                          FROM RS2_TIPOMSI
+                         WHERE TPMS_CODSIA IN (
+                                    SELECT MAT_CODSIA
+                                     FROM R1_MATERIAS
+                                    WHERE MAT_CODI = ROLSAC1_MATERIAS.SRM_CODMAT
+                                )
+                           AND ROWNUM = 1;
+                           
+                        SELECT COUNT(*)
+                          INTO EXISTE_MAT_PRC
+                          FROM RS2_PRCMAS
+                          WHERE PRMS_CODPRWF = CODIGO_PROCWF
+                           AND  PRMS_TIPMSIA = CODIGOSIAR2;
+
+                        /** SI EXSITE TIPO SIA, NO VOLVERLO A METER **/
+                        IF EXISTE_MAT_PRC = 0 
+                        THEN 
+                            INSERT INTO RS2_PRCMAS(PRMS_CODPRWF, PRMS_TIPMSIA)
+                            VALUES (CODIGO_PROCWF, CODIGOSIAR2);
+                        END IF;
+                    END IF;
+                END LOOP;
                      /** INTRODUCIMOS LAS NORMATIVAS. **/
                 FOR ROLSAC1_NORMATIVA IN cursorNormativasRolsac1(codigo) 
                 LOOP
                     INSERT INTO RS2_PRCNOR(PRWF_CODIGO, NORM_CODIGO)
-                    VALUES (RS2_PRCWF_SEQ.CURRVAL, ROLSAC1_NORMATIVA.SRN_CODNOR);
+                    VALUES (CODIGO_PROCWF, ROLSAC1_NORMATIVA.SRN_CODNOR);
                 END LOOP;
 
                 /** INTRODUCIMOS LOS PUBLICO OBJETIVOS. **/
                 FOR ROLSAC1_PUBOBJ IN cursorPublicoRolsac1(codigo) 
                 LOOP
                     INSERT INTO RS2_PRCPUB(PRPO_CODPRWF, PRPO_TIPPOBJ)
-                    VALUES (RS2_PRCWF_SEQ.CURRVAL, ROLSAC1_PUBOBJ.PSR_CODPOB);
+                    VALUES (CODIGO_PROCWF, ROLSAC1_PUBOBJ.PSR_CODPOB);
                 END LOOP;
                                 
                 /** INTRODUCIMOS LAS MATERIAS. **/
@@ -443,7 +497,7 @@ BEGIN
                            AND ROWNUM = 1;
                            
                         INSERT INTO RS2_PRCMAS(PRMS_CODPRWF, PRMS_TIPMSIA)
-                        VALUES (RS2_PRCWF_SEQ.CURRVAL, CODIGOSIAR2);
+                        VALUES (CODIGO_PROCWF, CODIGOSIAR2);
                     END IF;
                 END LOOP;
                     commit;

@@ -3,7 +3,8 @@ create or replace PROCEDURE "MIGRAR_PROC" (codigo NUMBER, codigoEntidad NUMBER, 
     /** GRANT: GRANT SELECT ON R1_PROCEDIMIENTOS TO ROLSAC2;
                GRANT SELECT ON R1_PROCEDIMIENTOS_TRAD TO ROLSAC2; 
                GRANT SELECT ON ROLSAC.RSC_SERVIC TO ROLSAC2;
-               GRANT SELECT ON ROLSAC.RSC_TRASER TO ROLSAC2; 
+               GRANT SELECT ON ROLSAC.RSC_TRASER TO ROLSAC2;  
+               GRANT SELECT ON ROLSAC.RSC_TRATRA TO ROLSAC2;
 
                GRANT SELECT ON R1_PROCEDIMIENTOS_NORM TO ROLSAC2;
                GRANT SELECT ON ROLSAC.RSC_SERNOR TO ROLSAC2;
@@ -201,6 +202,10 @@ create or replace PROCEDURE "MIGRAR_PROC" (codigo NUMBER, codigoEntidad NUMBER, 
         SELECT *  
           FROM R1_PROCEDIMIENTOS_MATE
          WHERE PRM_CODPRO = codPRO;
+    CURSOR cursorTramitesRolsac1 ( codPRO NUMBER) IS 
+        SELECT *  
+          FROM R1_TRAMITES
+         WHERE TRA_CODPRO = codPRO;        
     maximoId    NUMBER;
     VALOR       NUMBER;
     EXISTE      NUMBER;
@@ -215,6 +220,11 @@ create or replace PROCEDURE "MIGRAR_PROC" (codigo NUMBER, codigoEntidad NUMBER, 
     CODIGOSIA   NUMBER(10,0);
     CODIGOSIAR2 NUMBER(10,0);
     CODIGOSIAEXIST NUMBER(2,0);
+    CODIGO_UA   NUMBER(10,0);
+    CODIGO_PROCWF NUMBER(10,0);
+    EXISTE_MAT_PRC NUMBER(2,0);
+    TIPOTRAM_PLANTILLA  NUMBER(10,0);
+    TIPOTRAM NUMBER(10,0);
 BEGIN
 
     dbms_lob.createtemporary(l_clob, TRUE);
@@ -225,16 +235,16 @@ BEGIN
         INTO EXISTE 
         FROM RS2_PROC
         WHERE PROC_CODIGO = codigo;
- 
+
         SELECT COUNT(*)
         INTO EXISTE_TRAD
         FROM R1_PROCEDIMIENTOS_TRAD
         WHERE TPR_CODPRO = codigo;
-        
-         
+
+
 
         NOMBRE := 'SIN TRAD';
-         
+
         IF EXISTE_TRAD > 0
         THEN 
             SELECT TPR_NOMBRE
@@ -243,12 +253,12 @@ BEGIN
              WHERE TPR_CODPRO = codigo 
                AND ROWNUM = 1;
         END IF; 
-   
+
         SELECT PRO_VALIDA
           INTO PRO_VALIDA
           FROM R1_PROCEDIMIENTOS
           WHERE PRO_CODI = codigo;
-                
+
         IF EXISTE = 0 
         THEN   
              /** CAPTURAMOS POR SI SE PRODUCE UN ERROR NO PREVISTO */
@@ -279,8 +289,8 @@ BEGIN
                     PRO_FECACT
             FROM R1_PROCEDIMIENTOS
         WHERE PRO_CODI = codigo; 
- 
-       
+
+
                  /** SEGUN ROLSAC1, VALIDACION ES:
                  PUBLICA = 1, INTERNA = 2, RESERVA = 3 BAJA = 4;
                  PUBLICA SERA DEFINITIVO Y PUBLICADO
@@ -310,6 +320,10 @@ BEGIN
                      INTERNO := 0;
                  END IF;
 
+                SELECT RS2_PRCWF_SEQ.NEXTVAL
+                  INTO CODIGO_PROCWF
+                  FROM DUAL;
+
                  INSERT INTO RS2_PRCWF(
                     PRWF_CODIGO,
                     PRWF_CODPROC,
@@ -328,12 +342,12 @@ BEGIN
                     /*PRWF_PRCODUAC,*/
                     PRWF_PRTIPINIC,
                     PRWF_PRTIPSIAD,
-                    /*PRWF_PRTIPFVIA,
+                    /*PRWF_PRTIPFVIA, */
                     PRWF_SVTASA,
-                    PRWF_SVTPRE,*/
+                    /*PRWF_SVTPRE,*/
                     PRWF_FECPUB,
                     PRWF_FECCAD,
-                    /*PRWF_TIPPRO,*/
+                    PRWF_TIPPRO,
                     PRWF_TIPVIA,
                     /*PROC_LOPDRESP,
                     PRWF_SVPRES,
@@ -345,7 +359,7 @@ BEGIN
                     /*PRWF_SVTREL,
                     PROC_LOPDACT*/)
                 SELECT
-                    RS2_PRCWF_SEQ.NEXTVAL,
+                    CODIGO_PROCWF,
                     codigo,
                     WF,
                     WFESTADO,
@@ -362,42 +376,154 @@ BEGIN
                     /*PRWF_PRCODUAC,*/
                     PRO_CODINI,
                     PRO_CODSIL,
-                    /*PRWF_PRTIPFVIA,
-                    PRWF_SVTASA,
-                    PRWF_SVTPRE,*/
+                    /*PRWF_PRTIPFVIA,*/
+                    PRO_TAXA,
+                    /*PRWF_SVTPRE,*/
                     PRO_FECPUB,
                     PRO_FECCAD,
-                    /*PRWF_TIPPRO,*/
+                    PRO_CODFAM,
                     PRO_INDICA,
                     /*PROC_LOPDRESP,
                     PRWF_SVPRES,
                     PRWF_SVELEC,
                     PRWF_SVTEL,*/
                     PRO_COMUN,
-                    PRO_APOHAB,
-                    PRO_FUNHAB
+                    coalesce(PRO_APOHAB,0),
+                    coalesce(PRO_FUNHAB,0)
                     /*PRWF_SVTREL,
                     PROC_LOPDACT*/
                FROM R1_PROCEDIMIENTOS
               WHERE PRO_CODI = codigo;
-       
+
+                 /** INTRODUCIMOS LOS PUBLICO OBJETIVOS. **/
+                FOR ROLSAC1_TRAMITES IN cursorTramitesRolsac1(codigo) 
+                LOOP
+                    SELECT PRO_CODUNA
+                      INTO CODIGO_UA
+                      FROM R1_PROCEDIMIENTOS
+                    WHERE PRO_CODI = codigo;
+                    
+                    TIPOTRAM_PLANTILLA := NULL;
+                    TIPOTRAM := NULL;
+                    
+                    
+                    IF ROLSAC1_TRAMITES.TRA_CODPLN IS NOT NULL
+                    THEN 
+                        TIPOTRAM_PLANTILLA := ROLSAC1_TRAMITES.TRA_CODPLN;
+                    ELSE 
+                        /** CREAMOS LA INFORMACIÓN DE TIPO TRAMITACION **/
+                        SELECT RS2_TRMPRE_SEQ.NEXTVAL 
+                          INTO TIPOTRAM
+                          FROM DUAL;
+                          
+                          INSERT INTO RS2_TRMPRE(PRES_CODIGO,   
+                                                 PRES_TRPRES,
+                                                 PRES_TRELEC,
+                                                 PRES_TRTEL,
+                                                 PRES_INTPTR,
+                                                 PRES_INTTID,
+                                                 PRES_FASEPROC,
+                                                 PRES_INTTVE,
+                                                 PRES_INTTPA,
+                                                 PRES_PLANTI,
+                                                 PRES_CODENTI
+                                                 )
+                                        VALUES (TIPOTRAM,
+                                                 coalesce(ROLSAC1_TRAMITES.TRA_CPRESE,0),
+                                                 coalesce(ROLSAC1_TRAMITES.TRA_CTELEM,0),
+                                                 0, /** EL ELECTRONICO SOLO EN SERVICIOS **/
+                                                 ROLSAC1_TRAMITES.TRA_CODPLT,
+                                                 ROLSAC1_TRAMITES.TRA_IDTRAMTEL,
+                                                 ROLSAC1_TRAMITES.TRA_FASE,
+                                                 ROLSAC1_TRAMITES.TRA_VERSIO,
+                                                 ROLSAC1_TRAMITES.TRA_PARAMS,
+                                                 0,
+                                                 1);
+                                                 
+                                                 
+                       INSERT INTO RS2_TRATPTRA(TRTT_CODIGO,
+                                                TRTT_CODTPTRA,
+                                                TRTT_IDIOMA,
+                                                TRTT_DESCRI,
+                                                TRTT_URL)
+                       SELECT RS2_TRATPTRA_SEQ.NEXTVAL,
+                              TIPOTRAM,
+                              TTR_CODIDI,
+                              TTR_DESCRI,
+                              TTR_ULRTRA
+                        FROM R1_TRAMITES_TRAD
+                        WHERE TTR_CODTTR = ROLSAC1_TRAMITES.TRA_CODI;
+                    END IF;
+                    
+                    dbms_output.put_line('TIPOTRAM_PLANTILLA: ' || TIPOTRAM_PLANTILLA ||
+                    'TIPOTRAM: ' || TIPOTRAM);
+
+                    INSERT INTO RS2_PRCTRM (PRTA_CODIGO,
+                                            PRTA_CODUAC,
+                                            PRTA_CODPRWF,
+                                            PRTA_TRMPRE,
+                                            PRTA_LSTDOC,
+                                            LSDO_CODIGO,
+                                            PRTA_TASA,
+                                            PRTA_FECPUB,
+                                            PRTA_FECINI,
+                                            PRTA_FECCIE,
+                                            PRTA_FASE,
+                                            PRTA_TRPRES,
+                                            PRTA_TRELEC,
+                                            PRTA_TRTEL,
+                                            PRTA_ORDEN,
+                                            PRTA_TRMTRM)
+                     VALUES (
+                                ROLSAC1_TRAMITES.TRA_CODI,
+                                CODIGO_UA,
+                                CODIGO_PROCWF,
+                                TIPOTRAM_PLANTILLA,
+                                NULL,
+                                NULL,
+                                0,
+                                ROLSAC1_TRAMITES.TRA_DATPUBL,
+                                ROLSAC1_TRAMITES.TRA_DATINICI,
+                                ROLSAC1_TRAMITES.TRA_DATTANCAMENT,                               
+                                ROLSAC1_TRAMITES.TRA_FASE,
+                                coalesce(ROLSAC1_TRAMITES.TRA_CPRESE,0),
+                                coalesce(ROLSAC1_TRAMITES.TRA_CTELEM,0),
+                                0,
+                                ROLSAC1_TRAMITES.TRA_ORDEN,
+                                TIPOTRAM);
+
+                                INSERT INTO RS2_TRAPRTA
+                                (TRTA_CODIGO,TRTA_CODPRTA,TRTA_IDIOMA,TRTA_REQUISITOS,TRTA_NOMBRE,TRTA_DOCUM,TRTA_OBSERV,TRTA_TERMIN)
+                                SELECT RS2_TRAPRTA_SEQ.NEXTVAL, ROLSAC1_TRAMITES.TRA_CODI,TTR_CODIDI,TTR_REQUI,TTR_NOMBRE,TTR_DOCUME,TTR_DESCRI,TTR_PLAZOS
+                                FROM R1_TRAMITES_TRAD
+                                WHERE TTR_CODTTR = ROLSAC1_TRAMITES.TRA_CODI;
+                                
+
+                END LOOP;
+
                 /** INTRODUCIMOS LAS NORMATIVAS. **/
                 FOR ROLSAC1_NORMATIVA IN cursorNormativasRolsac1(codigo) 
                 LOOP
                     INSERT INTO RS2_PRCNOR(PRWF_CODIGO, NORM_CODIGO)
-                    VALUES (RS2_PRCWF_SEQ.CURRVAL, ROLSAC1_NORMATIVA.PRN_CODNOR);
+                    VALUES (CODIGO_PROCWF, ROLSAC1_NORMATIVA.PRN_CODNOR);
                 END LOOP;
 
                 /** INTRODUCIMOS LOS PUBLICO OBJETIVOS. **/
                 FOR ROLSAC1_PUBOBJ IN cursorPublicoRolsac1(codigo) 
                 LOOP
                     INSERT INTO RS2_PRCPUB(PRPO_CODPRWF, PRPO_TIPPOBJ)
-                    VALUES (RS2_PRCWF_SEQ.CURRVAL, ROLSAC1_PUBOBJ.PPR_CODPOB);
+                    VALUES (CODIGO_PROCWF, ROLSAC1_PUBOBJ.PPR_CODPOB);
                 END LOOP;
-                                
+
                 /** INTRODUCIMOS LAS MATERIAS. **/
                 FOR ROLSAC1_MATERIAS IN cursorMateriasRolsac1(codigo) 
                 LOOP  
+                   dbms_output.put_line('materias: ' || ROLSAC1_MATERIAS.PRM_CODMAT);
+                    
+                    /** METEMOS EL TEMA **/
+                    INSERT INTO  RS2_PRCTEM (PRTM_CODPRWF, PRTM_CODTEMA)
+                      VALUES (CODIGO_PROCWF,ROLSAC1_MATERIAS.PRM_CODMAT );
+
                     SELECT COUNT(TPMS_CODIGO)
                       INTO CODIGOSIAEXIST
                       FROM RS2_TIPOMSI
@@ -406,7 +532,9 @@ BEGIN
                                  FROM R1_MATERIAS
                                 WHERE MAT_CODI = ROLSAC1_MATERIAS.PRM_CODMAT
                             );
-                       
+                            
+                   
+                    /** METEMOS EL TIPO SIA **/  
                     IF CODIGOSIAEXIST > 0 
                     THEN
                          SELECT TPMS_CODIGO
@@ -419,11 +547,21 @@ BEGIN
                                 )
                            AND ROWNUM = 1;
                            
-                        INSERT INTO RS2_PRCMAS(PRMS_CODPRWF, PRMS_TIPMSIA)
-                        VALUES (RS2_PRCWF_SEQ.CURRVAL, CODIGOSIAR2);
+                        SELECT COUNT(*)
+                          INTO EXISTE_MAT_PRC
+                          FROM RS2_PRCMAS
+                          WHERE PRMS_CODPRWF = CODIGO_PROCWF
+                           AND  PRMS_TIPMSIA = CODIGOSIAR2;
+
+                        /** SI EXSITE TIPO SIA, NO VOLVERLO A METER **/
+                        IF EXISTE_MAT_PRC = 0 
+                        THEN 
+                            INSERT INTO RS2_PRCMAS(PRMS_CODPRWF, PRMS_TIPMSIA)
+                            VALUES (CODIGO_PROCWF, CODIGOSIAR2);
+                        END IF;
                     END IF;
                 END LOOP;
-                 
+
                 /** INTRODUCIMOS LAS TRADUCCIONES **/ 
                 FOR ROLSAC1_TRADPROC IN cursorTradPROCEDsROLSAC1(codigo)
                 LOOP
@@ -434,30 +572,33 @@ BEGIN
                         TRPW_NOMBRE,
                         TRPW_OBJETO,
                         TRPW_DESTIN,
-                        TRPW_OBSER
+                        TRPW_OBSER,
+                        TRPW_PRRESO
                         /*TRPW_DPFINA,
                         TRPW_DPDEST,
                         TRPW_DPDOC,
-                        TRPW_SVREQ,
-                        TRPW_PRRESO*/)
+                        TRPW_SVREQ,*/)
                        VALUES (
                         RS2_TRAPRWF_SEQ.NEXTVAL,
-                        RS2_PRCWF_SEQ.CURRVAL,
+                        CODIGO_PROCWF,
                         ROLSAC1_TRADPROC.TPR_CODIDI,
                         ROLSAC1_TRADPROC.TPR_NOMBRE, 
                         ROLSAC1_TRADPROC.TPR_RESUME, 
                         ROLSAC1_TRADPROC.TPR_DESTIN,
-                        ROLSAC1_TRADPROC.TPR_OBSERV
+                        ROLSAC1_TRADPROC.TPR_OBSERV,
+                        ROLSAC1_TRADPROC.TPR_RESOLUCION
                        );
 
                 END LOOP;
                 commit;
-                dbms_lob.writeappend(l_clob, length('El proc ' || codigo || ' "' || NOMBRE || '" se ha migrado.'), 'El proc ' || codigo || ' "' || NOMBRE || '" se ha migrado.');
+                dbms_lob.writeappend(l_clob, length('El proc ' || codigo || ' 1"' || NOMBRE || '" se ha migrado.'), 'El proc ' || codigo || ' 1"' || NOMBRE || '" se ha migrado.');
                 EXCEPTION 
                 WHEN OTHERS THEN
                     rollback;
-                   dbms_lob.writeappend(l_clob, length('El proc ' || codigo || ' "' ||NOMBRE ||'" ha dado el error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '. \n'), 'El proc ' || codigo || ' "' ||NOMBRE ||'" ha dado el error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '. \n');
-                   rollback;
+                    dbms_output.put_line('SQLCODE:' || SQLCODE);
+                     dbms_output.put_line('SQLERRM:' || SQLERRM);
+                    dbms_lob.writeappend(l_clob, length('El proc ' || codigo || ' 2"' ||NOMBRE ||'" ha dado el error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '. \n'), 'El proc ' || codigo || ' 2"' ||NOMBRE ||'" ha dado el error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '. \n');
+                 
               END;
         ELSE 
             dbms_lob.writeappend(l_clob, length('El proc ' || codigo || ' "' ||NOMBRE ||'" ya existe. \n'), 'El proc ' || codigo || ' "' ||NOMBRE ||'" ya existe. \n');

@@ -125,8 +125,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     @Override
     public List<UnidadAdministrativaDTO> getHijosSimple(Long idPadre, String idioma, UnidadAdministrativaDTO padre) {
 
-        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.identificador, t.nombre " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma " + " LEFT OUTER JOIN j.padre jp LEFT OUTER JOIN jp.traducciones pt ON pt.idioma = :idioma ");
-        sql.append(" WHERE j.padre.codigo = :idPadre ");
+        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.identificador, t.nombre " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma " + " LEFT OUTER JOIN j.padre jp LEFT OUTER JOIN jp.traducciones pt ON pt.idioma = :idioma   WHERE j.padre.codigo = :idPadre ORDER BY j.orden ");
 
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("idPadre", idPadre);

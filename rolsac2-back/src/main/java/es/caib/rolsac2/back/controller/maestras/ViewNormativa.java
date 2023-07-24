@@ -62,10 +62,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
         this.setearIdioma();
 
         permisoAccesoVentana(ViewNormativa.class);
-        filtro = new NormativaFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
-        filtro.setIdioma(sessionBean.getLang());
-        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        limpiarFiltro();
         cargarFiltros();
         // Generamos una búsqueda
         buscar();
@@ -129,6 +126,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        filtro.setOrder("DESCENDING");
         this.buscar();
     }
 

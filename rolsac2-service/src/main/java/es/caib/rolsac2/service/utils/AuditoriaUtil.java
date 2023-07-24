@@ -293,6 +293,10 @@ public final class AuditoriaUtil {
         if ((traduccion == null || traduccion.isEmpty()) && (traduccion2 == null || traduccion2.isEmpty())) {
             return true;
         }
+
+        if ((traduccion == null && traduccion2 != null) || (traduccion2 == null && traduccion != null)) {
+            return false;
+        }
         return traduccion.equals(traduccion2);
     }
 

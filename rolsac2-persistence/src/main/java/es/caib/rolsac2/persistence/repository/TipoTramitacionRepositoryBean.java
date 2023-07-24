@@ -308,9 +308,23 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
 
             // si ocurre un error es porque alguno de los campos de url del trámite no
             // existen. buscamos en la url externa.
-            res = obj.getUrlTramitacion();
+            res = getTraducccionUrl(obj.getTraducciones(), lang);
+
         }
 
         return res;
+    }
+
+    private String getTraducccionUrl(List<JTipoTramitacionTraduccion> traducciones, String lang) {
+        if (traducciones == null || traducciones.isEmpty()) {
+            return null;
+        } else {
+            for (JTipoTramitacionTraduccion trad : traducciones) {
+                if (trad.getIdioma().equals(lang)) {
+                    return trad.getUrl();
+                }
+            }
+            return traducciones.get(0).getUrl();
+        }
     }
 }

@@ -71,6 +71,18 @@ create or replace PROCEDURE "MIGRAR_NORMATIVA" (codigoNormativa NUMBER, codigoEn
         SELECT * 
         FROM  R1_NORMAT_TRAD
         WHERE TNO_CODNOR = codNOR;
+    CURSOR cursorUAsNORMATIVASsROLSAC1 (codNOR NUMBER) IS
+        SELECT * 
+        FROM  R1_UNIADM_NORM
+        WHERE UNN_CODNOR = codNOR;
+    CURSOR cursorAfectaOrigenNormsROLSAC1 (codNOR NUMBER) IS
+        SELECT * 
+        FROM  R1_NORMAT_AFECTA
+        WHERE AFE_CODNOR = codNOR;  
+    CURSOR cursorAfectaDestiNormsROLSAC1 (codNOR NUMBER) IS
+        SELECT * 
+        FROM  R1_NORMAT_AFECTA
+        WHERE AFE_CODNOA = codNOR;    
     maximoId    NUMBER;
     VALOR       NUMBER;
     EXISTE      NUMBER;
@@ -79,6 +91,9 @@ create or replace PROCEDURE "MIGRAR_NORMATIVA" (codigoNormativa NUMBER, codigoEn
     EXISTE_TRAD_ES NUMBER(2,0);
     EXISTE_TRAD_CA NUMBER(2,0);
     l_clob      CLOB := EMPTY_CLOB;
+    TOTAL_TRADS    NUMBER(2,0);
+    EXISTE_RELACION NUMBER(2,0);
+    EXISTE_NORMATIVA NUMBER(2,0);
 BEGIN
 
     dbms_lob.createtemporary(l_clob, TRUE);
@@ -102,7 +117,12 @@ BEGIN
             NOMBRE := SUBSTR(NOMBRE, 0 , 49) || '...';
        END IF;
 
-       IF EXISTE = 0 
+      SELECT COUNT(*)
+        INTO TOTAL_TRADS
+        FROM R1_NORMAT_TRAD
+       WHERE TNO_CODNOR = codigoNormativa;    
+      
+       IF EXISTE = 0 AND TOTAL_TRADS > 0
        THEN   
              /** CAPTURAMOS POR SI SE PRODUCE UN ERROR NO PREVISTO */
             BEGIN 
@@ -122,11 +142,11 @@ BEGIN
                     NOR_CODI,
                     codigoEntidad,
                     coalesce( NOR_CODTIP, 66),
-                    NOR_NUMERO,
+                    NOR_NUMNOR,
                     coalesce (NOR_FECHA, TO_DATE('1960/01/01', 'yyyy/mm/dd')),
                     NOR_CODBOL, 
                     NOR_FECBOL,
-                    NOR_NUMNOR,
+                    NOR_NUMERO,
                     CASE NOR_VALIDA WHEN NULL THEN 'V' WHEN 1 THEN 'V' WHEN 0 THEN 'D' ELSE 'V' END,
                     CASE NOR_VALIDA WHEN NULL THEN 1 WHEN 1 THEN 1 WHEN 0 THEN 0 ELSE 1 END
              FROM R1_NORMAT
@@ -183,28 +203,86 @@ BEGIN
                           WHERE TRNO_CODTPNO = codigoNormativa
                             AND TRNO_IDIOMA = 'ca';
                 END IF;
+                
+                /** La relacion de UAs con Normativas **/
+                FOR normUA IN cursorUAsNORMATIVASsROLSAC1(codigoNormativa)
+                LOOP
+                    SELECT COUNT(*)
+                      INTO EXISTE_RELACION
+                      FROM RS2_UADNOR
+                      WHERE UANO_CODNORM = codigoNormativa
+                        AND UANO_CODUNA = normUA.UNN_CODUNA;
+                        
+                    IF EXISTE_RELACION = 0
+                    THEN 
+                        INSERT INTO RS2_UADNOR (UANO_CODNORM, UANO_CODUNA)
+                          VALUES (codigoNormativa,normUA.UNN_CODUNA); 
+                    END IF;
+                END LOOP;
+                
+                /** La afectacion con Normativas DE ORIGEN **/
+                FOR normAFECTA IN cursorAfectaOrigenNormsROLSAC1(codigoNormativa)
+                LOOP
+                    SELECT COUNT(*)
+                      INTO EXISTE_RELACION
+                      FROM RS2_AFECTA
+                      WHERE AFNO_NORORG = codigoNormativa
+                        AND AFNO_NORAFE = normAFECTA.AFE_CODNOA;
+                    
+                      
+                     SELECT COUNT(*)
+                      INTO EXISTE_NORMATIVA
+                      FROM RS2_NORMA
+                      WHERE NORM_CODIGO = normAFECTA.AFE_CODNOA;
+                    
+                        
+                    IF EXISTE_RELACION = 0 AND EXISTE_NORMATIVA = 1
+                    THEN 
+                        INSERT INTO RS2_AFECTA (AFNO_CODIGO, AFNO_TIPAFNO, AFNO_NORORG, AFNO_NORAFE)
+                          VALUES (RS2_AFECTA_SEQ.nextval, normAFECTA.AFE_CODTIA, codigoNormativa, normAFECTA.AFE_CODNOA); 
+                    END IF;
+                END LOOP;
+                
+                /** La afectacion con Normativas DE DESTINO **/
+                FOR normAFECTA IN cursorAfectaDestiNormsROLSAC1(codigoNormativa)
+                LOOP
+                    SELECT COUNT(*)
+                      INTO EXISTE_RELACION
+                      FROM RS2_AFECTA
+                      WHERE AFNO_NORAFE = codigoNormativa
+                        AND AFNO_NORORG = normAFECTA.AFE_CODNOR;
+                    
+                      
+                     SELECT COUNT(*)
+                      INTO EXISTE_NORMATIVA
+                      FROM RS2_NORMA
+                      WHERE NORM_CODIGO = normAFECTA.AFE_CODNOR;
+                    
+                        
+                    IF EXISTE_RELACION = 0 AND EXISTE_NORMATIVA = 1
+                    THEN 
+                        INSERT INTO RS2_AFECTA (AFNO_CODIGO, AFNO_TIPAFNO, AFNO_NORORG, AFNO_NORAFE)
+                          VALUES (RS2_AFECTA_SEQ.nextval, normAFECTA.AFE_CODTIA, normAFECTA.AFE_CODNOR, codigoNormativa); 
+                    END IF;
+                END LOOP;
+                
+                COMMIT;
                 dbms_lob.writeappend(l_clob, length('La NORM ' || codigoNormativa || ' "' || NOMBRE || '" se ha migrado.'), 'La NORM ' || codigoNormativa || ' "' || NOMBRE || '" se ha migrado.');
                 EXCEPTION 
                 WHEN OTHERS THEN
                    ROLLBACK;
                    dbms_lob.writeappend(l_clob, length('La NORM ' || codigoNormativa || ' "' || NOMBRE || '" ha dado el error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '.'), 'La NORM ' || codigoNormativa || ' "' || NOMBRE || '" ha dado el error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '.');
               END;
-              COMMIT;
        ELSE 
-            dbms_lob.writeappend(l_clob, length('La normativa ' || codigoNormativa || ' "' || NOMBRE || '" ya existe.'), 'La normativa ' || codigoNormativa || ' "' || NOMBRE || '" ya existe.');
-
+            IF TOTAL_TRADS = 0
+            THEN
+                dbms_lob.writeappend(l_clob, length('La normativa ' || codigoNormativa || ' "' || NOMBRE || '" no tiene traducciones.'), 'La normativa ' || codigoNormativa || ' "' || NOMBRE || '" no tiene traducciones.');
+            ELSE 
+                dbms_lob.writeappend(l_clob, length('La normativa ' || codigoNormativa || ' "' || NOMBRE || '" ya existe.'), 'La normativa ' || codigoNormativa || ' "' || NOMBRE || '" ya existe.');
+            END IF;
        END IF;
 
-
-    /** SETEAMOS LA SECUENCIA AL MÁXIMO CÓDIGO. 
-    SELECT MAX(NORM_CODIGO) INTO maximoId FROM RS2_NORMA;
-
-    EXECUTE IMMEDIATE 'ALTER SEQUENCE RS2_NORMA_SEQ INCREMENT BY ' || maximoId;
-    SELECT RS2_NORMA_SEQ.NEXTVAL INTO VALOR FROM DUAL;
-    EXECUTE IMMEDIATE 'ALTER SEQUENCE RS2_NORMA_SEQ INCREMENT BY 1';
-    **/
-    COMMIT; 
-
+ 
     dbms_lob.close(l_clob);
     resultado := l_clob;
 EXCEPTION 
@@ -212,7 +290,7 @@ EXCEPTION
             ROLLBACK;
             dbms_output.put_line('SQLCODE:' || SQLCODE);
             dbms_output.put_line('SQLERRM:' || SQLERRM);
-            dbms_lob.writeappend(l_clob, length('SE HA PRODUCIDO UN ERROR\n'), 'SE HA PRODUCIDO UN ERROR\n');
+            dbms_lob.writeappend(l_clob, length('SE HA PRODUCIDO UN ERROR CON ' || codigoNormativa || ' \n'), 'SE HA PRODUCIDO UN ERROR CON ' || codigoNormativa || ' \n');
             dbms_lob.writeappend(l_clob, length('El error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '. \n'), 'El error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '. \n');
             dbms_lob.close(l_clob);
             resultado := l_clob;

@@ -16,8 +16,7 @@ import java.util.Objects;
 @Entity
 @SequenceGenerator(name = "tipo-tramitacion-sequence", sequenceName = "RS2_TRMPRE_SEQ", allocationSize = 1)
 @Table(name = "RS2_TRMPRE", indexes = {@Index(name = "RS2_TRMPRE_PK_I", columnList = "PRES_CODIGO")})
-@NamedQueries({
-        @NamedQuery(name = JTipoTramitacion.FIND_BY_ID, query = "select p from JTipoTramitacion p where p.codigo = :id")})
+@NamedQueries({@NamedQuery(name = JTipoTramitacion.FIND_BY_ID, query = "select p from JTipoTramitacion p where p.codigo = :id")})
 public class JTipoTramitacion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -58,12 +57,6 @@ public class JTipoTramitacion extends BaseEntity {
     @Column(name = "PRES_TRTEL", nullable = false, precision = 1, scale = 0)
     private boolean tramitTelefonica;
 
-
-    /**
-     * URL tramitación
-     */
-    @Column(name = "PRES_EXTURL", nullable = false, length = 500)
-    private String urlTramitacion;
 
     /**
      * Código plataforma tramitación
@@ -159,24 +152,6 @@ public class JTipoTramitacion extends BaseEntity {
      */
     public void setTramitElectronica(boolean tramitElectronica) {
         this.tramitElectronica = tramitElectronica;
-    }
-
-    /**
-     * Obtiene url tramitacion.
-     *
-     * @return url tramitacion
-     */
-    public String getUrlTramitacion() {
-        return urlTramitacion;
-    }
-
-    /**
-     * Establece url tramitacion.
-     *
-     * @param urlTramitacion url tramitacion
-     */
-    public void setUrlTramitacion(String urlTramitacion) {
-        this.urlTramitacion = urlTramitacion;
     }
 
     /**
@@ -347,10 +322,8 @@ public class JTipoTramitacion extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof JTipoTramitacion))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof JTipoTramitacion)) return false;
         JTipoTramitacion that = (JTipoTramitacion) o;
         return Objects.equals(codigo, that.codigo);
     }
@@ -382,7 +355,6 @@ public class JTipoTramitacion extends BaseEntity {
         this.setTramiteId(tipoTramitacion.getTramiteId());
         this.setTramiteVersion(tipoTramitacion.getTramiteVersion());
         this.setTramiteParametros(tipoTramitacion.getTramiteParametros());
-        this.setUrlTramitacion(tipoTramitacion.getUrlTramitacion());
         this.setTramitPresencial(tipoTramitacion.isTramitPresencial());
         this.setTramitElectronica(tipoTramitacion.isTramitElectronica());
         if (this.getTraducciones() != null && tipoTramitacion.getUrl() != null) {

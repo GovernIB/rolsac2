@@ -16,8 +16,7 @@ import java.util.ResourceBundle;
 @FacesValidator("es.caib.rolsac2.back.validators.ValidadorLiteral")
 public class ValidadorLiteral implements Validator {
 
-    public void validate(FacesContext context, UIComponent component,
-                         Object value) throws ValidatorException {
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
         if (component instanceof LiteralComponent && component != null) {
             LiteralComponent literalComponent = (LiteralComponent) component;
@@ -38,26 +37,24 @@ public class ValidadorLiteral implements Validator {
                 } else {
                     mensajeError = "El literal és obligatori.";
                 }
-                FacesMessage msg =
-                        new FacesMessage(mensajeError, mensajeError);
+                FacesMessage msg = new FacesMessage(mensajeError, mensajeError);
                 msg.setSeverity(FacesMessage.SEVERITY_ERROR);
                 throw new ValidatorException(msg);
 
-            } else if(literalComponent.getAttributes().get("maxlength") != null) {
+            } else if (literalComponent.getAttributes().get("maxlength") != null) {
                 Integer length = (Integer) literalComponent.getAttributes().get("maxlength");
                 //Si no es el largo por defecto, revisamos si se pasan
-                if(length != 9999) {
+                if (length != 9999) {
                     Literal literal = (Literal) literalComponent.getAttributes().get("literal");
-                    for(Traduccion trad : literal.getTraducciones()) {
-                        if(trad.getLiteral().length() > length) {
+                    for (Traduccion trad : literal.getTraducciones()) {
+                        if (trad.getLiteral() != null && trad.getLiteral().length() > length) {
                             literalComponent.setEstiloInput("bordeRojoRequired");
                             Object[] param = new Object[3];
                             param[0] = literalComponent.getAttributes().get("nombreLiteral").toString();
                             param[1] = trad.getIdioma();
                             param[2] = length.toString();
                             String mensajeError = getLiteral(context, "dict.maxlength", param);
-                            FacesMessage msg =
-                                    new FacesMessage(mensajeError, mensajeError);
+                            FacesMessage msg = new FacesMessage(mensajeError, mensajeError);
                             msg.setSeverity(FacesMessage.SEVERITY_ERROR);
                             throw new ValidatorException(msg);
                         }
