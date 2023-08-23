@@ -156,7 +156,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
 
     @Override
     public List<BigDecimal> getUAs(Long idEntidad, Long idUARaiz) {
-        Query query = this.entityManager.createNativeQuery(" SELECT UNA_CODI  FROM ROLSAC.RSC_UNIADM " + " WHERE CHECK_CUELGA_UA_PROC(UNA_CODI, " + idUARaiz + ") = 1 " + " ORDER BY OBTENER_PROF_UA(UNA_CODI) ");
+        Query query = this.entityManager.createNativeQuery(" SELECT UNA_CODI  FROM R1_UNIADM " + " WHERE CHECK_CUELGA_UA_PROC(UNA_CODI, " + idUARaiz + ") = 1 " + " ORDER BY OBTENER_PROF_UA(UNA_CODI) ");
         return query.getResultList();
     }
 
@@ -189,7 +189,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
 
     @Override
     public List<UnidadAdministrativaDTO> getUnidadAdministrativasRaiz() {
-        String sql = "select una_codi, " + "    ( SELECT TUN_NOMBRE FROM  ROLSAC.RSC_TRAUNA WHERE TUN_CODUNA = UA.una_codi and tun_codidi = 'ca'), " + "    ( SELECT TUN_NOMBRE FROM  ROLSAC.RSC_TRAUNA WHERE TUN_CODUNA = UA.una_codi and tun_codidi = 'es')  " + " from R1_UNIADM UA where una_coduna is null";
+        String sql = "select una_codi, " + "    ( SELECT TUN_NOMBRE FROM  R1_UNIADM_TRAD WHERE TUN_CODUNA = UA.una_codi and tun_codidi = 'ca'), " + "    ( SELECT TUN_NOMBRE FROM  R1_UNIADM_TRAD WHERE TUN_CODUNA = UA.una_codi and tun_codidi = 'es')  " + " from R1_UNIADM UA where una_coduna is null";
         Query query = this.entityManager.createNativeQuery(sql);
         List<Object[]> valores = query.getResultList();
         List<UnidadAdministrativaDTO> retorno = new ArrayList<>();
