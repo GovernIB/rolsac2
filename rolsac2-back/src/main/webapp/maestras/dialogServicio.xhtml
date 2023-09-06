@@ -309,6 +309,15 @@
 
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.keywords']}:"
+                                       for="txtKeywords" />
+                        <p>
+                            <p:inputText id="txtKeywords" value="#{dialogServicio.data.keywords}" styleClass="w95" />
+                        </p>
+                    </div>
+                </div>
             </p:panel>
             <p:panel header="#{labels['dialogServicio.datos.contacto']}" styleClass="panel" id="formDatosContacto">
                 <div class="form-row">

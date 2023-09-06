@@ -366,6 +366,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         if (dto.getObservaciones() != null) {
             traduccion.setObservaciones(dto.getObservaciones().getTraduccion(traduccion.getIdioma()));
         }
+        if (dto.getKeywords() != null) {
+            traduccion.setKeywords(dto.getKeywords().getTraduccion(traduccion.getIdioma()));
+        }
     }
 
     @Override
@@ -721,7 +724,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             proc.setDatosPersonalesLegitimacion(tipoLegitimacionConverter.createDTO(jprocWF.getDatosPersonalesLegitimacion()));
         }
 
-        // proc.setComun(jprocWF.isComun());
         Literal nombreProcedimientoWorkFlow = new Literal();
         Literal requisitos = new Literal();
         Literal datosPersonalesDestinatario = new Literal();
@@ -730,6 +732,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         Literal destinatarios = new Literal();
         Literal terminoResolucion = new Literal();
         Literal observaciones = new Literal();
+        Literal keywords = new Literal();
 
         if (jprocWF.getTraducciones() != null) {
             for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
@@ -741,6 +744,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                 destinatarios.add(new Traduccion(trad.getIdioma(), trad.getDestinatarios()));
                 terminoResolucion.add(new Traduccion(trad.getIdioma(), trad.getTerminoResolucion()));
                 observaciones.add(new Traduccion(trad.getIdioma(), trad.getObservaciones()));
+                keywords.add(new Traduccion(trad.getIdioma(), trad.getKeywords()));
             }
         }
         proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
@@ -751,6 +755,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setDestinatarios(destinatarios);
         proc.setTerminoResolucion(terminoResolucion);
         proc.setObservaciones(observaciones);
+        proc.setKeywords(keywords);
         // proc.setLopdInfoAdicional(lopdInfoAdicional);
         proc.setMateriasSIA(procedimientoRepository.getMateriaGridSIAByWF(proc.getCodigoWF()));
         proc.setPublicosObjetivo(procedimientoRepository.getTipoPubObjEntByWF(proc.getCodigoWF()));
@@ -914,7 +919,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             proc.setDatosPersonalesLegitimacion(tipoLegitimacionConverter.createDTO(jprocWF.getDatosPersonalesLegitimacion()));
         }
 
-        // proc.setComun(jprocWF.isComun());
         Literal nombreProcedimientoWorkFlow = new Literal();
         Literal requisitos = new Literal();
         Literal datosPersonalesDestinatario = new Literal();
@@ -923,6 +927,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         Literal destinatarios = new Literal();
         Literal terminoResolucion = new Literal();
         Literal observaciones = new Literal();
+        Literal keywords = new Literal();
 
         if (jprocWF.getTraducciones() != null) {
             for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
@@ -934,6 +939,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                 destinatarios.add(new Traduccion(trad.getIdioma(), trad.getDestinatarios()));
                 terminoResolucion.add(new Traduccion(trad.getIdioma(), trad.getTerminoResolucion()));
                 observaciones.add(new Traduccion(trad.getIdioma(), trad.getObservaciones()));
+                keywords.add(new Traduccion(trad.getIdioma(), trad.getKeywords()));
             }
         }
         proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
@@ -944,6 +950,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setDestinatarios(destinatarios);
         proc.setTerminoResolucion(terminoResolucion);
         proc.setObservaciones(observaciones);
+        proc.setKeywords(keywords);
         // proc.setLopdInfoAdicional(lopdInfoAdicional);
         proc.setMateriasSIA(procedimientoRepository.getMateriaGridSIAByWF(proc.getCodigoWF()));
         proc.setPublicosObjetivo(procedimientoRepository.getTipoPubObjEntByWF(proc.getCodigoWF()));

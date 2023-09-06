@@ -365,7 +365,6 @@
 
                                     </div>
                                 </div>
-
                                 <div class="form-row">
                                     <div class="form-group col-md-9">
                                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.organoInstructor']}:"
@@ -447,6 +446,23 @@
 
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.keywords']}:"
+                                       for="txtKeywords" />
+                         <p>
+                             <my:literalComponent id="txtKeywords" styleClass="w95"
+                                                  value="#{dialogProcedimiento.data.keywords}"
+                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
+                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                  idioma="#{dialogProcedimiento.idioma}"
+                                                  literal="#{dialogProcedimiento.data.keywords}"
+                                                  nombreLiteral="#{labels['dialogProcedimiento.keywords']}" />
+                         </p>
+                    </div>
+                </div>
+
             </p:panel>
 
             <p:panel header="#{labels['dialogProcedimiento.datos.contacto']}" styleClass="panel" id="formDatosContacto">

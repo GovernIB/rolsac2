@@ -155,6 +155,7 @@ public class JProcedimientoWorkflow {
 
     @Column(name = "PRWF_HABFUN", nullable = false)
     private String habilitadoFuncionario;
+
     /**
      * Traducciones
      */
@@ -316,7 +317,7 @@ public class JProcedimientoWorkflow {
     public void setDatosPersonalesLegitimacion(JTipoLegitimacion datosPersonalesLegitimacion) {
         this.datosPersonalesLegitimacion = datosPersonalesLegitimacion;
     }
- 
+
     public Date getFechaPublicacion() {
         return fechaPublicacion;
     }

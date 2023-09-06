@@ -76,6 +76,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private Literal destinatarios;
     private Literal terminoResolucion;
     private Literal observaciones;
+    private Literal keywords;
 
     /*** Lista de objetos **/
     private List<TipoPublicoObjetivoEntidadGridDTO> publicosObjetivo;
@@ -98,6 +99,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private boolean pendienteMensajesGestor = false;
     private boolean pendienteMensajesSupervisor = false;
 
+
     public static ProcedimientoBaseDTO createInstance(List<String> idiomas) {
         ProcedimientoBaseDTO proc = new ProcedimientoBaseDTO();
         proc.setWorkflow(TypeProcedimientoWorkflow.MODIFICACION);
@@ -110,6 +112,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
         proc.setDestinatarios(Literal.createInstance(idiomas));
         proc.setTerminoResolucion(Literal.createInstance(idiomas));
         proc.setObservaciones(Literal.createInstance(idiomas));
+        proc.setKeywords(Literal.createInstance(idiomas));
         proc.setPendienteIndexar(false);
         proc.setPendienteMensajesGestor(false);
         proc.setPendienteMensajesSupervisor(false);
@@ -286,7 +289,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     public void setLopdResponsable(String lopdResponsable) {
         this.lopdResponsable = lopdResponsable;
     }
- 
+
     public Integer getCodigoSIA() {
         return codigoSIA;
     }
@@ -556,6 +559,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
+    }
+
+    public Literal getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(Literal keywords) {
+        this.keywords = keywords;
     }
 
     @Override
