@@ -7,6 +7,7 @@ import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -218,4 +219,40 @@ public interface UnidadAdministrativaServiceFacade {
     Pagina<UnidadAdministrativaDTO> findByFiltroRest(UnidadAdministrativaFiltro fg);
 
     EntidadRaizDTO getUaRaizByProcedimiento(Long codProcedimiento);
+
+    /**
+     * Evolucion básica de una UA.
+     *
+     * @param ua
+     * @param fechaBaja
+     * @param nombreNuevo
+     * @param entidad
+     */
+    void evolucionBasica(UnidadAdministrativaDTO ua, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad);
+
+    /**
+     * Devuelve la normativa de baja de una UA
+     *
+     * @param codigoUA
+     * @return
+     */
+    NormativaDTO getNormativaBaja(Long codigoUA);
+
+    /**
+     * Evolución dependencia de una UA.
+     *
+     * @param codigoUA
+     * @param codigoUAPadre
+     * @param entidad
+     */
+    void evolucionDependencia(Long codigoUA, Long codigoUAPadre, EntidadDTO entidad);
+
+    /**
+     * Comprueba si el padreNuevo cuelga del padreAntiguo
+     *
+     * @param padreAntiguo
+     * @param padreNuevo
+     * @return
+     */
+    boolean checkCuelga(UnidadAdministrativaDTO padreAntiguo, UnidadAdministrativaDTO padreNuevo);
 }

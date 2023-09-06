@@ -50,6 +50,41 @@
 
         <div class="row" style="margin-right: 0px;">
             <div class="ui-g-12 ui-md-9 pl-4 panel-container">
+                <p:panel header="#{labels['dialogUnidadAdministrativa.datosBaja']}" id="formDatosBaja" rendered="#{dialogUnidadAdministrativa.data.isBorrado()}">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <p class="mb-1">
+                                <p:outputLabel value=" " />
+                            </p>
+                            <p:outputLabel value="#{labels['dialogUnidadAdministrativa.bajaInfo']}"  styleClass="mt-1 pt-0 iconoRojo" />
+                        </div>
+                        <div class="form-group col-md-8">
+                            <p class="mb-1">
+                                <h:outputText styleClass="mr-2 mb-1" value="#{labels['dict.fechaBaja']}:" />
+                            </p>
+                             <p:inputText value="#{dialogUnidadAdministrativa.data.fechaBaja}"  disabled="true"  styleClass="w95" >
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                            </p:inputText>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <p class="mb-1">
+                                <p:outputLabel value=" " />
+                            </p>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <p class="mb-1">
+                                <h:outputText styleClass="mr-2 mb-1" value="#{labels['dict.normativaBaja']}:" />
+                            </p>
+                            <p:inputText id="txtNormativaBajaNoasociada" value="#{labels['dialogUnidadAdministrativa.bajaSinNormativa']}"
+                                         styleClass="w95" disabled="true" rendered="#{empty dialogUnidadAdministrativa.normativaBaja}"/>
+                            <p:inputText id="txtNormativaBaja" value="#{dialogUnidadAdministrativa.normativaBaja.nombre.getTraduccion(dialogUnidadAdministrativa.idioma)}"
+                                         styleClass="w85" disabled="true" rendered="#{!empty dialogUnidadAdministrativa.normativaBaja}"/>
+                            <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                             action="#{dialogUnidadAdministrativa.consultarNormativa}" styleClass="ml-1"
+                                             process="@this"  update="messagesDialog" />
+                        </div>
+                    </div>
+                </p:panel>
                 <p:panel header="#{labels['dialogUnidadAdministrativa.datos']}" id="formDatos">
                     <div class="form-row">
                         <div class="form-group col-md-3">

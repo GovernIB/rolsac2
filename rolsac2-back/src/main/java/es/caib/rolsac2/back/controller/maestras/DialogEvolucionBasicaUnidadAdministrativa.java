@@ -1,103 +1,105 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import java.io.Serializable;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
 
 @Named
 @ViewScoped
 public class DialogEvolucionBasicaUnidadAdministrativa extends EvolucionController implements Serializable {
-	private static final Logger LOG = LoggerFactory.getLogger(DialogEvolucionBasicaUnidadAdministrativa.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DialogEvolucionBasicaUnidadAdministrativa.class);
 
-	private UnidadAdministrativaDTO dataDestino;
+    private UnidadAdministrativaDTO dataDestino;
 
-	public void load() {
-		LOG.debug("init1");
+    public void load() {
+        LOG.debug("init1");
 
-		this.setearIdioma();
-		if (id != null && id.split(",").length > 1) {
-			ids = id.split(",");
-		}
+        this.setearIdioma();
+        if (id != null && id.split(",").length > 1) {
+            ids = id.split(",");
+        }
 
-		if (ids != null && ids.length > 0) {
-			data = unidadAdministrativaServiceFacade.findById(Long.valueOf(ids[0]));
-		} else if (id != null) {
-			data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
-		}
+        if (ids != null && ids.length > 0) {
+            data = unidadAdministrativaServiceFacade.findById(Long.valueOf(ids[0]));
+        } else if (id != null) {
+            data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
+        }
 
-		uaDestino = new Literal();
+        uaDestino = new Literal();
 
-		Traduccion traduccionModificada;
-		String textoTraduccion = "";
+        Traduccion traduccionModificada;
+        String textoTraduccion = "";
 
-		for (Traduccion traduccion : data.getNombre().getTraducciones()) {
-			textoTraduccion = traduccion.getLiteral() + " (DUPLICADO)";
+        for (Traduccion traduccion : data.getNombre().getTraducciones()) {
+            textoTraduccion = traduccion.getLiteral() + " (DUPLICADO)";
 
-			traduccionModificada = new Traduccion(traduccion.getIdioma(), textoTraduccion);
+            traduccionModificada = new Traduccion(traduccion.getIdioma(), textoTraduccion);
 
-			uaDestino.add(traduccionModificada);
-		}
-	}
+            uaDestino.add(traduccionModificada);
+        }
+    }
 
-	public void evolucionar() {
-		FacesMessage msg = new FacesMessage("Successful", "Aceptar pendiente de implementación");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-	}
+    public void evolucionar() {
 
-	public void editarUnidadAdministrativa() {
-		FacesMessage msg = new FacesMessage("Successful", "Edición pendiente de implementación");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-	}
+        unidadAdministrativaServiceFacade.evolucionBasica(data, fechaBaja, uaDestino, normativa, UtilJSF.getSessionBean().getEntidad());
 
-	public void evolucionar2() {
-//		if (!verificarGuardar()) {
-//			return;
-//		}
+        final DialogResult result = new DialogResult();
+        result.setCanceled(false);
+        UtilJSF.closeDialog(result);
+    }
 
-		UnidadAdministrativaDTO dataAntigua = (UnidadAdministrativaDTO) data.clone();
-		dataDestino = (UnidadAdministrativaDTO) data.clone();
-//		data.setFechaBaja(fechaBaja);
-		dataDestino.setNombre(uaDestino);
+    public void editarUnidadAdministrativa() {
+        FacesMessage msg = new FacesMessage("Successful", "Edición pendiente de implementación");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
 
-		unidadAdministrativaServiceFacade.update(data, dataAntigua, sessionBean.getPerfil());
+    public void evolucionar2() {
+        //		if (!verificarGuardar()) {
+        //			return;
+        //		}
 
-		unidadAdministrativaServiceFacade.create(dataDestino, sessionBean.getPerfil());
+        UnidadAdministrativaDTO dataAntigua = (UnidadAdministrativaDTO) data.clone();
+        dataDestino = (UnidadAdministrativaDTO) data.clone();
+        //		data.setFechaBaja(fechaBaja);
+        dataDestino.setNombre(uaDestino);
 
-//		if (this.data.getCodigo() == null) {
-//			unidadAdministrativaServiceFacade.create(this.data, sessionBean.getPerfil());
-//		} else {
-//			unidadAdministrativaServiceFacade.update(this.data, this.dataAntigua, sessionBean.getPerfil());
-//		}
+        unidadAdministrativaServiceFacade.update(data, dataAntigua, sessionBean.getPerfil());
 
-		// Retornamos resultados
-		final DialogResult result = new DialogResult();
-		if (this.getModoAcceso() != null) {
-			result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
-		} else {
-			result.setModoAcceso(TypeModoAcceso.CONSULTA);
-		}
-		result.setResult(data);
-		UtilJSF.closeDialog(result);
-	}
+        unidadAdministrativaServiceFacade.create(dataDestino, sessionBean.getPerfil());
 
-	public UnidadAdministrativaDTO getDataDestino() {
-		return dataDestino;
-	}
+        //		if (this.data.getCodigo() == null) {
+        //			unidadAdministrativaServiceFacade.create(this.data, sessionBean.getPerfil());
+        //		} else {
+        //			unidadAdministrativaServiceFacade.update(this.data, this.dataAntigua, sessionBean.getPerfil());
+        //		}
 
-	public void setDataDestino(UnidadAdministrativaDTO dataDestino) {
-		this.dataDestino = dataDestino;
-	}
+        // Retornamos resultados
+        final DialogResult result = new DialogResult();
+        if (this.getModoAcceso() != null) {
+            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+        } else {
+            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+        }
+        result.setResult(data);
+        UtilJSF.closeDialog(result);
+    }
+
+    public UnidadAdministrativaDTO getDataDestino() {
+        return dataDestino;
+    }
+
+    public void setDataDestino(UnidadAdministrativaDTO dataDestino) {
+        this.dataDestino = dataDestino;
+    }
 }

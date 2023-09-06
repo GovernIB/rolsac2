@@ -3,7 +3,9 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +44,20 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
             params.put(TypeParametroVentana.ID.toString(), data.getCodigo().toString());
         }
         UtilJSF.openDialog("dialogEvolucionFusionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 540);
+    }
+
+    /**
+     * Si viene de una evolución, comprobar que ha ido ok.
+     *
+     * @param event
+     */
+    public void returnDialogo(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        // Verificamos si se ha modificado
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogEvolucionUnidadAdministrativa.evolucionCorrecta"));
+        }
     }
 
     public void irEvolucionDivision() {

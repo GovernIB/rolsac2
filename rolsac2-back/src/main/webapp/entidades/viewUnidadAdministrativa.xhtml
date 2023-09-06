@@ -163,6 +163,8 @@
                                                                                      value="#{viewUnidadAdministrativa.filtroTexto}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
                                      actionListener="#{viewUnidadAdministrativa.buscar()}" process="@form"/>
+                    <p:selectBooleanCheckbox value="#{viewUnidadAdministrativa.mostrarOcultas}" styleClass="ml-2"
+                                             itemLabel="#{labels['viewUnidadAdministrativa.mostrarOcultas']}"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
@@ -229,6 +231,10 @@
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
+                <p:column headerText=" " styleClass="w60px">
+                    <f:facet name="header"/>
+                    <i class="#{unidadAdministrativa.getIcon()} font30px"></i>
+                </p:column>
                 <p:column sortBy="#{unidadAdministrativa.codigo}" headerText="#{labels['dict.codigo']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{unidadAdministrativa.codigo}"/>

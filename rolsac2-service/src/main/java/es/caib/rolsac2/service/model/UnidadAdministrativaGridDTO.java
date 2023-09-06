@@ -51,9 +51,12 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
      * Nombre
      */
     private Literal nombre;
-    //private Literal presentacion;
-    //private Literal url;
-    //private Literal responsable;
+    /**
+     * Estado, siendo:
+     * V (Vigente)
+     * X (Borrado)
+     */
+    private String estado;
 
     /**
      * Instancia una nueva Unidad administrativa grid dto.
@@ -236,11 +239,51 @@ public class UnidadAdministrativaGridDTO extends ModelApi {
         return Objects.hash(codigo, codigoDIR3, nombrePadre, tipo, orden, nombre);
     }
 
-	public Integer getNumero() {
-		return numero;
-	}
+    public Integer getNumero() {
+        return numero;
+    }
 
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-	}
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    /**
+     * Icono de visibilidad
+     *
+     * @return
+     */
+    public String getIcon() {
+        //El valor V es de Vigente
+        if (this.getEstado() != null && this.getEstado().equals("V")) {
+            return "pi pi-eye iconoVerde";
+        } else {
+            return "pi pi-eye-slash iconoRojo";
+        }
+    }
+
+    /**
+     * Comprueba si es vigente
+     *
+     * @return
+     */
+    public boolean isVigente() {
+        return (this.getEstado() != null && this.getEstado().equals("V"));
+    }
+
+    /**
+     * Comprueba si no es vigente.
+     *
+     * @return
+     */
+    public boolean isNotVigente() {
+        return !(this.getEstado() != null && this.getEstado().equals("V"));
+    }
 }

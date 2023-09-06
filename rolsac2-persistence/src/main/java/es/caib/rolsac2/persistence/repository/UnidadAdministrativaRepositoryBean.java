@@ -5,6 +5,7 @@ import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
+import es.caib.rolsac2.persistence.util.ConstantesNegocio;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 import es.caib.rolsac2.service.model.types.TypeIndexacion;
@@ -125,7 +126,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     @Override
     public List<UnidadAdministrativaDTO> getHijosSimple(Long idPadre, String idioma, UnidadAdministrativaDTO padre) {
 
-        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.identificador, t.nombre " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma " + " LEFT OUTER JOIN j.padre jp LEFT OUTER JOIN jp.traducciones pt ON pt.idioma = :idioma   WHERE j.padre.codigo = :idPadre ORDER BY j.orden ");
+        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.identificador, t.nombre " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma " + " LEFT OUTER JOIN j.padre jp LEFT OUTER JOIN jp.traducciones pt ON pt.idioma = :idioma   WHERE j.estado = '" + ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_VIGENTE + "' AND j.padre.codigo = :idPadre ORDER BY j.orden ");
 
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("idPadre", idPadre);
@@ -209,6 +210,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
                 unidadAdministrativaGridDTO.setOrden((Integer) jUnidadAdmin[3]);
                 unidadAdministrativaGridDTO.setNombre(createLiteral((String) jUnidadAdmin[4], filtro.getIdioma()));
                 unidadAdministrativaGridDTO.setCodigoDIR3((String) jUnidadAdmin[5]);
+                unidadAdministrativaGridDTO.setEstado((String) jUnidadAdmin[6]);
                 unidadAdmin.add(unidadAdministrativaGridDTO);
             }
         }
@@ -249,7 +251,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
 
         } else {
             //sql = new StringBuilder("SELECT j.codigo, jtipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma " + " LEFT OUTER JOIN j.entidad je " + " LEFT OUTER JOIN j.tipo jtipo where 1 = 1 AND je.codigo=:codEnti");
-            sql = new StringBuilder("SELECT j.codigo, jtipo, padre, j.orden, t.nombre, j.codigoDIR3 FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre padre where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, jtipo, padre, j.orden, t.nombre, j.codigoDIR3, j.estado FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre padre where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and (LOWER(jtipo.identificador) LIKE :filtro " + " OR LOWER(j.codigoDIR3) LIKE :filtro OR cast(j.id as string) like :filtro " + " OR LOWER(t.nombre) LIKE :filtro OR LOWER(cast(j.orden as string)) LIKE :filtro " + " OR LOWER(tpd.nombre) LIKE :filtro OR LOWER(cast(je.codigo as string)) LIKE :filtro ) ");
@@ -269,6 +271,9 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
 
         if (filtro.isRellenoCodigoDIR3()) {
             sql.append(" and LOWER(j.codigoDIR3) LIKE :codigoDIR3 ");
+        }
+        if (filtro.isRellenoEstado()) {
+            sql.append(" and j.estado LIKE :estado ");
         }
 
         if (filtro.isRellenoCodEnti()) {
@@ -314,6 +319,9 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         if (filtro.isRellenoCodigoDIR3()) {
             query.setParameter("codigoDIR3", "%" + filtro.getCodigoDIR3().toLowerCase() + "%");
         }
+        if (filtro.isRellenoEstado()) {
+            query.setParameter("estado", filtro.getEstado());
+        }
         if (filtro.isRellenoIdUA() && filtro.getIdUA().longValue() != -1) {
             query.setParameter("idUA", filtro.getIdUA());
         }
@@ -355,9 +363,9 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         Query query = null;
         String sql;
         if (idUnitat != null) {
-            sql = "SELECT t FROM JUnidadAdministrativa j LEFT OUTER JOIN j.tipo t ON t.idioma=:idioma WHERE j.tipo.codigo=:idTipo ";
+            sql = "SELECT t FROM JUnidadAdministrativa j LEFT OUTER JOIN j.tipo t LEFT OUTER JOIN t.traducciones trad ON trad.idioma= :idioma  WHERE j.tipo.codigo=:idTipo ";
         } else {
-            sql = "SELECT t FROM JUnidadAdministrativa j LEFT OUTER JOIN j.tipo t ON t.idioma=:idioma ";
+            sql = "SELECT t FROM JUnidadAdministrativa j LEFT OUTER JOIN j.tipo t LEFT OUTER JOIN t.traducciones trad ON trad.idioma= :idioma  ";
         }
         query = entityManager.createQuery(sql, JTipoUnidadAdministrativa.class);
 
@@ -426,6 +434,16 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         Query query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
         query.setParameter("entidadId", entidadId);
         query.setParameter("idioma", idioma);
+        return query.getResultList();
+    }
+
+
+    @Override
+    public List<JUnidadAdministrativa> getUnidadesAdministrativaByPadre(Long codigoUAOriginal) {
+        String sql = "SELECT ua FROM JUnidadAdministrativa ua  WHERE ua.padre.codigo=:codigoUAOriginal";
+
+        Query query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
+        query.setParameter("codigoUAOriginal", codigoUAOriginal);
         return query.getResultList();
     }
 
@@ -681,5 +699,13 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
                 entityManager.remove(jua);
             }
         }
+    }
+
+    @Override
+    public void marcarBaja(Long codigo, Date fechaBaja) {
+        JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigo);
+        jua.setFechaBaja(fechaBaja);
+        jua.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_BORRADA);
+        entityManager.merge(jua);
     }
 }

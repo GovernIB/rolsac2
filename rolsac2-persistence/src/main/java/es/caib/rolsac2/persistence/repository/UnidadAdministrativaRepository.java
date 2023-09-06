@@ -6,6 +6,7 @@ import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,4 +70,8 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     void deleteUA(Long id);
 
     void deleteByEntidad(Long id);
+
+    void marcarBaja(Long codigo, Date fechaBaja);
+
+    List<JUnidadAdministrativa> getUnidadesAdministrativaByPadre(Long codigoUAOriginal);
 }

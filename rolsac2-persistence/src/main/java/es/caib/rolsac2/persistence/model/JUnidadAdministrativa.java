@@ -6,6 +6,7 @@ import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class JUnidadAdministrativa extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UNAD_UNADPADRE")
     private JUnidadAdministrativa padre;
-    
+
     @Column(name = "UNAD_DIR3", length = 20)
     private String codigoDIR3;
 
@@ -88,6 +89,20 @@ public class JUnidadAdministrativa extends BaseEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "RS2_UATEMA", joinColumns = {@JoinColumn(name = "UATE_CODUNA")}, inverseJoinColumns = {@JoinColumn(name = "UATE_CODTEMA")})
     private Set<JTema> temas;
+
+    /**
+     * Estado siendo los valores:
+     * A ALTA
+     * B BAJA
+     */
+    @Column(name = "UNAD_ESTADO", length = 1)
+    private String estado;
+
+    /**
+     * Fecha de baja.
+     */
+    @Column(name = "UNAD_FECBAJ")
+    private Date fechaBaja;
 
     public Long getCodigo() {
         return codigo;
@@ -243,6 +258,22 @@ public class JUnidadAdministrativa extends BaseEntity {
         } else {
             this.traducciones.addAll(traducciones);
         }
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Date getFechaBaja() {
+        return fechaBaja;
+    }
+
+    public void setFechaBaja(Date fechaBaja) {
+        this.fechaBaja = fechaBaja;
     }
 
     @Override

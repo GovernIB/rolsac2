@@ -35,8 +35,7 @@
 			<f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}"
 				var="idioma" itemValue="#{idioma}"
 				itemLabel="#{labels['idiomas.' += idioma]}" />
-			<p:ajax process="@this"
-				update="formDialog:txtOrigen formDialog:txtOrigen2 " />
+			<p:ajax process="@this" update="formDialog:txtOrigen formDialog:txtOrigen2 " />
 		</p:selectOneButton>
 
 	</ui:define>
@@ -71,44 +70,21 @@
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
-								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.organicoPadre']}:"
-								for="selectOrganico" />
-							<p:autoComplete id="selectOrganico" var="organico"
-								forceSelection="true" styleClass="w95"
-								value="#{dialogEvolucionDependenciaUnidadAdministrativa.organicoPadre}"
-								itemLabel="#{organico.codigo} #{organico.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}"
-								itemValue="#{organico}"
-								converter="#{unidadAdministrativaDTOConverter}"
-								autoHighlight="false" required="true"
-								completeMethod="#{dialogEvolucionDependenciaUnidadAdministrativa.completeUnidadAdministrativa}"
-								dropdown="true" placeholder="#{dict.text_placeholder_lista}"
-								size="95" minQueryLength="3" cache="true" cacheTimeout="60000"
-								scrollHeight="200">
-							</p:autoComplete>
-						</div>
-					</div>
+								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.padre']}:"
+								for="selectPadre" />
 
-					<div class="form-row">
+						</div>
 						<div class="form-group col-md-12">
-							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
-								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.funcionalPadre']}:"
-								for="selectFuncional" />
-							<p:autoComplete id="selectFuncional" var="funcional"
-								forceSelection="true" styleClass="w95"
-								value="#{dialogEvolucionDependenciaUnidadAdministrativa.funcionalPadre}"
-								itemLabel="#{funcional.codigo} #{funcional.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}"
-								itemValue="#{funcional}"
-								converter="#{unidadAdministrativaDTOConverter}"
-								autoHighlight="false" required="true"
-								completeMethod="#{dialogEvolucionDependenciaUnidadAdministrativa.completeUnidadAdministrativa}"
-								dropdown="true" placeholder="#{dict.text_placeholder_lista}"
-								size="95" minQueryLength="3" cache="true" cacheTimeout="60000"
-								scrollHeight="200">
-							</p:autoComplete>
+							<p:inputText id="txtPadre" styleClass="w95" readonly="true"
+										 value="#{dialogEvolucionDependenciaUnidadAdministrativa.padre.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}" />
+							<my:unidadAdministrativaComponent id="selectPadre"
+														  value="#{dialogEvolucionDependenciaUnidadAdministrativa.padre}"
+														  idioma="#{sessionBean.lang}"
+														  ocultarTexto="true" esCabecera="false"
+								>
+							</my:unidadAdministrativaComponent>
 						</div>
 					</div>
-
-
 				</p:panel>
 			</p:tab>
 
@@ -133,47 +109,25 @@
 						</div>
 					</div>
 
-
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
-								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.organicoPadre']}:"
-								for="selectOrganico2" />
-							<p:autoComplete id="selectOrganico2" var="organico"
-								forceSelection="true" styleClass="w95"
-								value="#{dialogEvolucionDependenciaUnidadAdministrativa.organicoPadre}"
-								itemLabel="#{organico.codigo} #{organico.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}"
-								itemValue="#{organico}"
-								converter="#{unidadAdministrativaDTOConverter}"
-								autoHighlight="false" disabled="true"
-								completeMethod="#{dialogEvolucionDependenciaUnidadAdministrativa.completeUnidadAdministrativa}"
-								placeholder="#{dict.text_placeholder_lista}" size="100"
-								minQueryLength="3" cache="true" cacheTimeout="60000"
-								scrollHeight="200">
-							</p:autoComplete>
+										   value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.antiguoPadre']}:"
+										   for="txtPadreAntiguo" />
+							<p:inputText id="txtPadreAntiguo" styleClass="w95" readonly="true"
+										 value="#{dialogEvolucionDependenciaUnidadAdministrativa.padreAntiguo.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}" />
 						</div>
 					</div>
 
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
-								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.funcionalPadre']}:"
-								for="selectFuncional2" />
-							<p:autoComplete id="selectFuncional2" var="funcional"
-								forceSelection="true" styleClass="w95"
-								value="#{dialogEvolucionDependenciaUnidadAdministrativa.funcionalPadre}"
-								itemLabel="#{funcional.codigo} #{funcional.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}"
-								itemValue="#{funcional}"
-								converter="#{unidadAdministrativaDTOConverter}"
-								autoHighlight="false" disabled="true"
-								completeMethod="#{dialogEvolucionDependenciaUnidadAdministrativa.completeUnidadAdministrativa}"
-								placeholder="#{dict.text_placeholder_lista}" size="100"
-								minQueryLength="3" cache="true" cacheTimeout="60000"
-								scrollHeight="200">
-							</p:autoComplete>
+								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.nuevoPadre']}:"
+								for="txtPadreNuevo" />
+							<p:inputText id="txtPadreNuevo" styleClass="w95" readonly="true"
+										 value="#{dialogEvolucionDependenciaUnidadAdministrativa.padre.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}" />
 						</div>
 					</div>
-
 
 				</p:panel>
 

@@ -66,6 +66,8 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
     private Map<String, List<TemaGridDTO>> temasHijosRelacionados;
 
+    private NormativaDTO normativaBaja;
+
     @EJB
     private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
@@ -102,6 +104,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             data.setResponsable(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setUsuariosUnidadAdministrativa(new ArrayList<>());
             data.setTemas(new ArrayList<>());
+            data.setEstado("V"); //Vigente
             dataOriginal = (UnidadAdministrativaDTO) data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
@@ -119,9 +122,27 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         }
         this.construirArbol();
 
+        if (this.data.isBorrado() && data.getNormativas() != null && !data.getNormativas().isEmpty()) {
+            normativaBaja = data.getNormativas().get(0);// unidadAdministrativaServiceFacade.getNormativaBaja(data.getCodigo());
+        }
+
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
         dataOriginal = (UnidadAdministrativaDTO) data.clone();
+    }
+
+    /**
+     * Consultar normativa
+     */
+    public void consultarNormativa() {
+        if (data.getNormativas() == null || data.getNormativas().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", data.getNormativas().get(0).getCodigo().toString());
+            String ruta = "/maestras/dialogNormativa";
+            UtilJSF.openDialog(ruta, TypeModoAcceso.CONSULTA, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+        }
     }
 
     public void traducir() {
@@ -175,28 +196,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
     }
 
     private boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getCodigoDIR3(), dataOriginal.getCodigoDIR3()) != 0
-                || !dataOriginal.getTemas().equals(data.getTemas())
-                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
-                || UtilComparador.compareTo(data.getAbreviatura(), dataOriginal.getAbreviatura()) != 0
-                || UtilComparador.compareTo(data.getTelefono(), dataOriginal.getTelefono()) != 0
-                || UtilComparador.compareTo(data.getFax(), dataOriginal.getFax()) != 0
-                || UtilComparador.compareTo(data.getEmail(), dataOriginal.getEmail()) != 0
-                || UtilComparador.compareTo(data.getDominio(), dataOriginal.getDominio()) != 0
-                || UtilComparador.compareTo(data.getResponsableEmail(), dataOriginal.getResponsableEmail()) != 0
-                || UtilComparador.compareTo(data.getResponsableNombre(), dataOriginal.getResponsableNombre()) != 0
-                || UtilComparador.compareTo(data.getPresentacion(), dataOriginal.getPresentacion()) != 0
-                || UtilComparador.compareTo(data.getUrl(), dataOriginal.getUrl()) != 0
-                || UtilComparador.compareTo(data.getResponsable(), dataOriginal.getResponsable()) != 0
-                || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0
-                || (data.getTipo() != null && dataOriginal.getTipo() != null && UtilComparador.compareTo(data.getTipo().getCodigo(), dataOriginal.getTipo().getCodigo()) != 0)
-                || ((data.getTipo() == null || dataOriginal.getTipo() == null) && (data.getTipo() != null || dataOriginal.getTipo() != null))
-                || (data.getResponsableSexo() != null && dataOriginal.getResponsableSexo() != null && UtilComparador.compareTo(data.getResponsableSexo().getCodigo(), dataOriginal.getResponsableSexo().getCodigo()) != 0)
-                || ((data.getResponsableSexo() == null || dataOriginal.getResponsableSexo() == null) && (data.getResponsableSexo() != null || dataOriginal.getResponsableSexo() != null))
-                || UtilComparador.compareTo(data.getUsuarioAuditoria(), dataOriginal.getUsuarioAuditoria()) != 0
-                || !data.getUsuariosUnidadAdministrativa().equals(dataOriginal.getUsuariosUnidadAdministrativa())
-                || UtilComparador.compareTo(data.getOrden(), dataOriginal.getOrden()) != 0;
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getCodigoDIR3(), dataOriginal.getCodigoDIR3()) != 0 || !dataOriginal.getTemas().equals(data.getTemas()) || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0 || UtilComparador.compareTo(data.getAbreviatura(), dataOriginal.getAbreviatura()) != 0 || UtilComparador.compareTo(data.getTelefono(), dataOriginal.getTelefono()) != 0 || UtilComparador.compareTo(data.getFax(), dataOriginal.getFax()) != 0 || UtilComparador.compareTo(data.getEmail(), dataOriginal.getEmail()) != 0 || UtilComparador.compareTo(data.getDominio(), dataOriginal.getDominio()) != 0 || UtilComparador.compareTo(data.getResponsableEmail(), dataOriginal.getResponsableEmail()) != 0 || UtilComparador.compareTo(data.getResponsableNombre(), dataOriginal.getResponsableNombre()) != 0 || UtilComparador.compareTo(data.getPresentacion(), dataOriginal.getPresentacion()) != 0 || UtilComparador.compareTo(data.getUrl(), dataOriginal.getUrl()) != 0 || UtilComparador.compareTo(data.getResponsable(), dataOriginal.getResponsable()) != 0 || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0 || (data.getTipo() != null && dataOriginal.getTipo() != null && UtilComparador.compareTo(data.getTipo().getCodigo(), dataOriginal.getTipo().getCodigo()) != 0) || ((data.getTipo() == null || dataOriginal.getTipo() == null) && (data.getTipo() != null || dataOriginal.getTipo() != null)) || (data.getResponsableSexo() != null && dataOriginal.getResponsableSexo() != null && UtilComparador.compareTo(data.getResponsableSexo().getCodigo(), dataOriginal.getResponsableSexo().getCodigo()) != 0) || ((data.getResponsableSexo() == null || dataOriginal.getResponsableSexo() == null) && (data.getResponsableSexo() != null || dataOriginal.getResponsableSexo() != null)) || UtilComparador.compareTo(data.getUsuarioAuditoria(), dataOriginal.getUsuarioAuditoria()) != 0 || !data.getUsuariosUnidadAdministrativa().equals(dataOriginal.getUsuariosUnidadAdministrativa()) || UtilComparador.compareTo(data.getOrden(), dataOriginal.getOrden()) != 0;
     }
 
     public void cerrarDefinitivo() {
@@ -211,8 +211,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
     }
 
     private boolean verificarGuardar() {
-        if (Objects.isNull(this.data.getCodigo())
-                && unidadAdministrativaServiceFacade.checkIdentificador(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo()) && unidadAdministrativaServiceFacade.checkIdentificador(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
@@ -226,8 +225,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.email.novalido"), true);
             return false;
         }
-        if (Objects.nonNull(this.data.getTelefono())
-                && !ValidacionTipoUtils.esTelefonoValido(this.data.getTelefono())) {
+        if (Objects.nonNull(this.data.getTelefono()) && !ValidacionTipoUtils.esTelefonoValido(this.data.getTelefono())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.telefono.novalido"), true);
             return false;
         }
@@ -392,23 +390,23 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         if (hoja.getMathPath() == null) {
             for (TemaGridDTO tema : data.getTemas()) {
                 if (tema.getMathPath().equals(hoja.getCodigo().toString())) {
-                    if(temasPadreAnyadidos.isEmpty()) {
+                    if (temasPadreAnyadidos.isEmpty()) {
                         nodo = new DefaultTreeNode(tema, arbol);
                         temasPadreAnyadidos.add(tema);
                         arbol.setExpanded(true);
                         this.construirArbolDesdeHoja(tema, nodo);
-                    } else if(!temasPadreAnyadidos.contains(tema)) {
+                    } else if (!temasPadreAnyadidos.contains(tema)) {
                         nodo = new DefaultTreeNode(tema, arbol);
                         temasPadreAnyadidos.add(tema);
                         arbol.setExpanded(true);
                         this.construirArbolDesdeHoja(tema, nodo);
                     }
 
-                } else if(tema.getMathPath().contains(hoja.getCodigo().toString())) {
+                } else if (tema.getMathPath().contains(hoja.getCodigo().toString())) {
                     String[] niveles = tema.getMathPath().split(";");
                     String idPadre = niveles[1];
                     TemaGridDTO temaPadre = temaServiceFacade.findGridById(Long.valueOf(idPadre));
-                    if(!temasPadreAnyadidos.contains(temaPadre) && !data.getTemas().contains(temaPadre)) {
+                    if (!temasPadreAnyadidos.contains(temaPadre) && !data.getTemas().contains(temaPadre)) {
                         temasPadreAnyadidos.add(temaPadre);
                         temaPadre.setRelacionado(true);
                         nodo = new DefaultTreeNode(temaPadre, arbol);
@@ -423,20 +421,20 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
                 Integer nivelHijo = tema.getMathPath().split(";").length;
 
                 if (tema.getMathPath().contains(hoja.getCodigo().toString()) && nivelHijo == nivel) {
-                    if(temasPadreAnyadidos.isEmpty()) {
+                    if (temasPadreAnyadidos.isEmpty()) {
                         nodo = new DefaultTreeNode(tema, arbol);
                         arbol.setExpanded(true);
                         this.construirArbolDesdeHoja(tema, nodo);
-                    } else if(!temasPadreAnyadidos.contains(tema)){
+                    } else if (!temasPadreAnyadidos.contains(tema)) {
                         nodo = new DefaultTreeNode(tema, arbol);
                         arbol.setExpanded(true);
                         this.construirArbolDesdeHoja(tema, nodo);
                     }
-                }  else if(tema.getMathPath().contains(hoja.getCodigo().toString())) {
+                } else if (tema.getMathPath().contains(hoja.getCodigo().toString())) {
                     String[] niveles = tema.getMathPath().split(";");
                     String idPadre = niveles[nivel];
                     TemaGridDTO temaPadre = temaServiceFacade.findGridById(Long.valueOf(idPadre));
-                    if(!temasPadreAnyadidos.contains(temaPadre) && !data.getTemas().contains(temaPadre)) {
+                    if (!temasPadreAnyadidos.contains(temaPadre) && !data.getTemas().contains(temaPadre)) {
                         temasPadreAnyadidos.add(temaPadre);
                         temaPadre.setRelacionado(true);
                         nodo = new DefaultTreeNode(temaPadre, arbol);
@@ -576,5 +574,13 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
     public void setTemasHijosRelacionados(Map<String, List<TemaGridDTO>> temasHijosRelacionados) {
         this.temasHijosRelacionados = temasHijosRelacionados;
+    }
+
+    public NormativaDTO getNormativaBaja() {
+        return normativaBaja;
+    }
+
+    public void setNormativaBaja(NormativaDTO normativaBaja) {
+        this.normativaBaja = normativaBaja;
     }
 }

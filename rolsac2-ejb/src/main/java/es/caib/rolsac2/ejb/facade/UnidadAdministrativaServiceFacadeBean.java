@@ -12,6 +12,7 @@ import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
 import es.caib.rolsac2.persistence.converter.UnidadOrganicaConverter;
 import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.repository.*;
+import es.caib.rolsac2.persistence.util.ConstantesNegocio;
 import es.caib.rolsac2.service.exception.AuditoriaException;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
@@ -64,6 +65,9 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     private ProcedimientoRepository procedimientoRepository;
 
     @Inject
+    private NormativaRepository normativaRepository;
+
+    @Inject
     private IndexacionRepository indexacionRepository;
 
     @Inject
@@ -93,6 +97,9 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Inject
     private UnidadOrganicaConverter unidadOrganicaConverter;
+
+    @Inject
+    private UnidadAdministrativaConverter unidadAdministrativaConverter;
 
 
     @Override
@@ -537,6 +544,101 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
             return null;
         }
         return entidadRaizRepository.getEntidadRaizByUA(codigoUA);
+    }
+
+    @Override
+    public void evolucionBasica(UnidadAdministrativaDTO ua, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad) {
+
+        Long codigoUAOriginal = ua.getCodigo();
+        unidadAdministrativaRepository.marcarBaja(ua.getCodigo(), fechaBaja);
+        JUnidadAdministrativa juaOriginal = unidadAdministrativaRepository.findById(codigoUAOriginal);
+
+        UnidadAdministrativaDTO nueva = (UnidadAdministrativaDTO) ua.clone();
+        nueva.setEntidad(entidad);
+        nueva.setCodigo(null);
+        nueva.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_VIGENTE);
+        nueva.setFechaBaja(null);
+        nueva.setNombre(nombreNuevo);
+        nueva.setVersion(0);
+        JUnidadAdministrativa jnueva = unidadAdministrativaConverter.createEntity(nueva);
+        jnueva.setPadre(juaOriginal.getPadre());
+        unidadAdministrativaRepository.create(jnueva);
+
+        //Mover todos los datos de procedimientos/servicios a la nueva UA
+        procedimientoRepository.actualizarUA(codigoUAOriginal, jnueva.getCodigo());
+
+        //Mover todos los datos de normativas y ususarios a la nueva UA
+        jnueva = unidadAdministrativaRepository.findById(jnueva.getCodigo());
+        if (juaOriginal.getNormativas() != null) {
+            if (jnueva.getNormativas() == null) {
+                jnueva.setNormativas(new HashSet<>());
+            }
+            for (JNormativa jnormativa : juaOriginal.getNormativas()) {
+                jnueva.getNormativas().add(jnormativa);
+            }
+
+            if (normativa == null) {
+                juaOriginal.setNormativas(null);
+            } else {
+                Set<JNormativa> normativaCierre = new HashSet<>();
+                normativaCierre.add(normativaRepository.getReference(normativa.getCodigo()));
+                juaOriginal.setNormativas(normativaCierre);
+            }
+        }
+
+        if (juaOriginal.getUsuarios() != null) {
+            if (jnueva.getUsuarios() == null) {
+                jnueva.setUsuarios(new HashSet<>());
+            }
+            for (JUsuario jusuario : juaOriginal.getUsuarios()) {
+                jnueva.getUsuarios().add(jusuario);
+            }
+
+            juaOriginal.setUsuarios(null);
+        }
+
+        unidadAdministrativaRepository.update(juaOriginal);
+        unidadAdministrativaRepository.update(jnueva);
+
+        //Cambiamos las uas que tengan de padre el original
+        List<JUnidadAdministrativa> jhijos = unidadAdministrativaRepository.getUnidadesAdministrativaByPadre(codigoUAOriginal);
+        if (jhijos != null && !jhijos.isEmpty()) {
+            for (JUnidadAdministrativa jhijo : jhijos) {
+                jhijo.setPadre(jnueva);
+                unidadAdministrativaRepository.update(jhijo);
+            }
+        }
+
+    }
+
+    @Override
+    public NormativaDTO getNormativaBaja(Long codigoUA) {
+        return normativaRepository.getNormativaBaja(codigoUA);
+    }
+
+    @Override
+    public void evolucionDependencia(Long codigoUA, Long codigoUAPadre, EntidadDTO entidad) {
+        JUnidadAdministrativa juaOriginal = unidadAdministrativaRepository.findById(codigoUA);
+        JUnidadAdministrativa juaPadre = unidadAdministrativaRepository.findById(codigoUAPadre);
+        juaOriginal.setPadre(juaPadre);
+        unidadAdministrativaRepository.update(juaOriginal);
+    }
+
+    @Override
+    public boolean checkCuelga(UnidadAdministrativaDTO padreAntiguo, UnidadAdministrativaDTO padreNuevo) {
+        JUnidadAdministrativa jelemento = unidadAdministrativaRepository.findById(padreNuevo.getCodigo());
+        Long codigoOriginal = padreAntiguo.getCodigo();
+        int bucle = 0;
+        while (bucle < 10 && jelemento.getPadre() != null) {
+            Long codigoPadre = jelemento.getPadre().getCodigo();
+            if (codigoPadre.compareTo(codigoOriginal) == 0) {
+                return true;
+            }
+            jelemento = unidadAdministrativaRepository.findById(codigoPadre);
+            bucle++;
+        }
+
+        return false;
     }
 
     @Override

@@ -38,15 +38,6 @@
 			<p:ajax process="@this"
 				update="formDialog:txtOrigen formDialog:txtOrigen2 formDialog:txtFechaBaja formDialog:selectNormativa formDialog:txtFechaBaja2 formDialog:selectNormativa2 formDialog:txtCrear formDialog:txtCrear2" />
 		</p:selectOneButton>
-		<!-- 		<p:commandButton action="#{dialogUnidadAdministrativa.traducir}" -->
-		<!-- 			icon="pi pi-compass" iconPos="top" value="#{labels['dict.traducir']}" -->
-		<!-- 			style="margin-left:10px" update="messagesDialog " process="@this" -->
-		<!-- 			rendered="#{!dialogUnidadAdministrativa.isModoConsulta() and dialogUnidadAdministrativa.tradExiste()}"> -->
-		<!-- 			<p:ajax event="dialogReturn" -->
-		<!-- 				listener="#{dialogUnidadAdministrativa.returnDialogTraducir}" -->
-		<!-- 				process="@this" -->
-		<!-- 				update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo" /> -->
-		<!-- 		</p:commandButton> -->
 	</ui:define>
 	<ui:define name="contentDialog">
 		<p:growl id="messagesDialog" globalOnly="false" sticky="true"
@@ -125,16 +116,9 @@
 									idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
 									idioma="#{dialogEvolucionBasicaUnidadAdministrativa.idioma}"
 									nombreLiteral="#{labels['dialogEvolucionUnidadAdministrativa.uaDestino']}">
-									<f:validator
-										validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" />
+									<f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" />
 								</my:literalComponent>
 							</p>
-							<!-- 							<p:commandButton id="btnEditar" value="#{labels['dict.editar']}" -->
-							<!-- 								icon="pi pi-pencil" iconPos="top" -->
-							<!-- 								actionListener="#{dialogEvolucionBasicaUnidadAdministrativa.editarUnidadAdministrativa}" -->
-							<!-- 								process="@form" update="messagesDialog"> -->
-							<!-- 							</p:commandButton> -->
-
 						</div>
 					</div>
 				</p:panel>

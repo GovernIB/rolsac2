@@ -5,6 +5,7 @@ import es.caib.rolsac2.service.utils.AuditoriaUtil;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -117,6 +118,23 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
     private String usuarioAuditoria;
 
     /**
+     * Estado segun ConstantesNegocio, resumen rapido:
+     * V Vigente
+     * X Borrada
+     */
+    private String estado;
+
+    /**
+     * Fecha baja
+     */
+    private Date fechaBaja;
+
+    /**
+     * Normativas
+     */
+    private List<NormativaDTO> normativas;
+
+    /**
      * Instancia una nueva Unidad administrativa dto.
      */
     public UnidadAdministrativaDTO() {
@@ -145,6 +163,8 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
         this.usuariosUnidadAdministrativa = otro.usuariosUnidadAdministrativa;
         this.orden = otro.orden;
         this.padre = otro.padre == null ? null : (UnidadAdministrativaDTO) otro.padre.clone();
+        this.estado = otro.estado;
+        this.fechaBaja = otro.fechaBaja;
     }
 
     /**
@@ -636,6 +656,30 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
         this.version = version;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Date getFechaBaja() {
+        return fechaBaja;
+    }
+
+    public void setFechaBaja(Date fechaBaja) {
+        this.fechaBaja = fechaBaja;
+    }
+
+    public List<NormativaDTO> getNormativas() {
+        return normativas;
+    }
+
+    public void setNormativas(List<NormativaDTO> normativas) {
+        this.normativas = normativas;
+    }
+
     /**
      * Se hace a este nivel manualmente el clonar.
      *
@@ -656,6 +700,8 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
         tipo.setOrden(this.orden);
         tipo.setUsuarioAuditoria(this.usuarioAuditoria);
         tipo.setHijos(this.hijos);
+        tipo.setEstado(this.estado);
+        tipo.setFechaBaja(this.fechaBaja);
 
         if (this.getPresentacion() != null) {
             tipo.setPresentacion((Literal) this.getPresentacion().clone());
@@ -781,5 +827,32 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
         }
         uaGrid.setNombre(this.getNombre());
         return uaGrid;
+    }
+
+    /**
+     * Comprueba si es vigente
+     *
+     * @return
+     */
+    public boolean isVigente() {
+        return (this.getEstado() != null && this.getEstado().equals("V"));
+    }
+
+    /**
+     * Comprueba si no es vigente.
+     *
+     * @return
+     */
+    public boolean isNotVigente() {
+        return !(this.getEstado() != null && this.getEstado().equals("V"));
+    }
+
+    /**
+     * Comprueba si no es vigente.
+     *
+     * @return
+     */
+    public boolean isBorrado() {
+        return (this.getEstado() != null && this.getEstado().equals("X"));
     }
 }

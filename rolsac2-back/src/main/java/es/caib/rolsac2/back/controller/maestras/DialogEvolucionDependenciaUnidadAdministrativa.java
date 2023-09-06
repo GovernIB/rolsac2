@@ -1,93 +1,124 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import es.caib.rolsac2.back.model.DialogResult;
+import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.apache.commons.lang3.StringUtils;
+import org.primefaces.event.FlowEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named
 @ViewScoped
 public class DialogEvolucionDependenciaUnidadAdministrativa extends EvolucionController implements Serializable {
-	private static final Logger LOG = LoggerFactory.getLogger(DialogEvolucionDependenciaUnidadAdministrativa.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DialogEvolucionDependenciaUnidadAdministrativa.class);
 
-	private UnidadAdministrativaDTO funcionalPadre;
-	private UnidadAdministrativaDTO organicoPadre;
+    private UnidadAdministrativaDTO padre;
+    private UnidadAdministrativaDTO padreAntiguo;
 
-	public void load() {
-		LOG.debug("init1");
+    public void load() {
+        LOG.debug("init1");
 
-		this.setearIdioma();
-		if (id != null && id.split(",").length > 1) {
-			ids = id.split(",");
-		}
+        this.setearIdioma();
+        if (id != null && id.split(",").length > 1) {
+            ids = id.split(",");
+        }
 
-		if (ids != null && ids.length > 0) {
-			data = unidadAdministrativaServiceFacade.findById(Long.valueOf(ids[0]));
-		} else if (id != null) {
-			data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
-		}
-	}
+        if (ids != null && ids.length > 0) {
+            data = unidadAdministrativaServiceFacade.findById(Long.valueOf(ids[0]));
+        } else if (id != null) {
+            data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
+        }
 
-	public void evolucionar() {
-		FacesMessage msg = new FacesMessage("Successful", "Aceptar pendiente de implementación");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-	}
+        padreAntiguo = data.getPadre();
+        padre = data.getPadre();
+    }
 
-	public List<UnidadAdministrativaDTO> completeUnidadAdministrativa(final String query) {
-		List<UnidadAdministrativaDTO> suggestions = new ArrayList<UnidadAdministrativaDTO>();
-		UnidadAdministrativaFiltro filtro = new UnidadAdministrativaFiltro();
-		filtro.setIdioma(getIdioma());
+    public String onFlowProcess(FlowEvent event) {
 
-		if (query == null || query.isBlank()) {
-			filtro.setPaginaFirst(0);
-			filtro.setPaginaTamanyo(10);
-		}
+        if (event.getOldStep().contains("destino")) {
+            String comprobar = "";
 
-		filtro.setNombre(StringUtils.stripAccents(query.toLowerCase()));
+            if (data.getCodigo().compareTo(padre.getCodigo()) == 0) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogEvolucionDependenciaUnidadAdministrativa.error.elMismo"), true);
+                return event.getOldStep();
+            }
 
-		Pagina<UnidadAdministrativaDTO> resultado = unidadAdministrativaServiceFacade.findByFiltroRest(filtro);
+            if (padreAntiguo.getCodigo().compareTo(padre.getCodigo()) == 0) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogEvolucionDependenciaUnidadAdministrativa.error.sinCambios"), true);
+                return event.getOldStep();
+            }
 
-		if (resultado != null) {
-			suggestions = resultado.getItems();
-		}
+            //Comprobamos si cuelga del mismo arbol
+            if (unidadAdministrativaServiceFacade.checkCuelga(data, padre)) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogEvolucionDependenciaUnidadAdministrativa.error.cuelgaUA"), true);
+                return event.getOldStep();
+            }
+        }
 
-		return suggestions;
-	}
+        return event.getNewStep();
+    }
 
-	public Literal getUaDestino() {
-		return uaDestino;
-	}
+    public void evolucionar() {
+        unidadAdministrativaServiceFacade.evolucionDependencia(data.getCodigo(), padre.getCodigo(), UtilJSF.getSessionBean().getEntidad());
 
-	public void setUaDestino(Literal uaDestino) {
-		this.uaDestino = uaDestino;
-	}
+        final DialogResult result = new DialogResult();
+        result.setCanceled(false);
+        UtilJSF.closeDialog(result);
+    }
 
-	public UnidadAdministrativaDTO getFuncionalPadre() {
-		return funcionalPadre;
-	}
+    public List<UnidadAdministrativaDTO> completeUnidadAdministrativa(final String query) {
+        List<UnidadAdministrativaDTO> suggestions = new ArrayList<UnidadAdministrativaDTO>();
+        UnidadAdministrativaFiltro filtro = new UnidadAdministrativaFiltro();
+        filtro.setIdioma(getIdioma());
 
-	public void setFuncionalPadre(UnidadAdministrativaDTO funcionalPadre) {
-		this.funcionalPadre = funcionalPadre;
-	}
+        if (query == null || query.isBlank()) {
+            filtro.setPaginaFirst(0);
+            filtro.setPaginaTamanyo(10);
+        }
 
-	public UnidadAdministrativaDTO getOrganicoPadre() {
-		return organicoPadre;
-	}
+        filtro.setNombre(StringUtils.stripAccents(query.toLowerCase()));
 
-	public void setOrganicoPadre(UnidadAdministrativaDTO organicoPadre) {
-		this.organicoPadre = organicoPadre;
-	}
+        Pagina<UnidadAdministrativaDTO> resultado = unidadAdministrativaServiceFacade.findByFiltroRest(filtro);
+
+        if (resultado != null) {
+            suggestions = resultado.getItems();
+        }
+
+        return suggestions;
+    }
+
+    public Literal getUaDestino() {
+        return uaDestino;
+    }
+
+    public void setUaDestino(Literal uaDestino) {
+        this.uaDestino = uaDestino;
+    }
+
+    public UnidadAdministrativaDTO getPadre() {
+        return padre;
+    }
+
+    public void setPadre(UnidadAdministrativaDTO padre) {
+        this.padre = padre;
+    }
+
+    public UnidadAdministrativaDTO getPadreAntiguo() {
+        return padreAntiguo;
+    }
+
+    public void setPadreAntiguo(UnidadAdministrativaDTO padreAntiguo) {
+        this.padreAntiguo = padreAntiguo;
+    }
 }

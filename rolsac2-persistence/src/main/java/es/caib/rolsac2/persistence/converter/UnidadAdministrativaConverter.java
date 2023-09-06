@@ -1,8 +1,10 @@
 package es.caib.rolsac2.persistence.converter;
 
+import es.caib.rolsac2.persistence.model.JNormativa;
 import es.caib.rolsac2.persistence.model.JTema;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUsuario;
+import es.caib.rolsac2.persistence.model.traduccion.JNormativaTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
 import es.caib.rolsac2.service.model.*;
@@ -24,6 +26,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "responsable", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"responsableCV\"))")
     @Mapping(target = "usuariosUnidadAdministrativa", expression = "java(convertUsuariostoDTO(entity.getUsuarios()))")
     @Mapping(target = "temas", expression = "java(convertTematoDTO(entity.getTemas()))")
+    @Mapping(target = "normativas", expression = "java(convertNormativasDTO(entity.getNormativas()))")
     UnidadAdministrativaDTO createDTO(JUnidadAdministrativa entity);
 
     @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
@@ -51,6 +54,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "padre", ignore = true)
     @Mapping(target = "usuarios", ignore = true)
     @Mapping(target = "temas", ignore = true)
+    @Mapping(target = "normativas", ignore = true)
     JUnidadAdministrativa createEntity(UnidadAdministrativaDTO dto);
 
     @Override
@@ -61,6 +65,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "usuarios", ignore = true)
     @Mapping(target = "temas", ignore = true)
+    @Mapping(target = "normativas", ignore = true)
     void mergeEntity(@MappingTarget JUnidadAdministrativa entity, UnidadAdministrativaDTO dto);
 
     default List<UnidadAdministrativaDTO> createDTOs(List<JUnidadAdministrativa> entities) {
@@ -219,5 +224,31 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
         }
 
         return temasDTO;
+    }
+
+    default List<NormativaDTO> convertNormativasDTO(Set<JNormativa> normativas) {
+        List<NormativaDTO> normativasDTO = new ArrayList<>();
+        if (normativas != null) {
+            for (JNormativa normativa : normativas) {
+                NormativaDTO normativaDTO = new NormativaDTO();
+                normativaDTO.setCodigo(normativa.getCodigo());
+
+                Literal resultado = null;
+                if (normativa.getDescripcion() != null) {
+                    resultado = new Literal();
+                    for (JNormativaTraduccion trad : normativa.getDescripcion()) {
+                        Traduccion traduccion = new Traduccion();
+                        traduccion.setCodigo(trad.getCodigo());
+                        traduccion.setIdioma(trad.getIdioma());
+                        traduccion.setLiteral(trad.getTitulo());
+                        resultado.add(traduccion);
+                    }
+                }
+                normativaDTO.setNombre(resultado);
+                normativasDTO.add(normativaDTO);
+            }
+        }
+
+        return normativasDTO;
     }
 }

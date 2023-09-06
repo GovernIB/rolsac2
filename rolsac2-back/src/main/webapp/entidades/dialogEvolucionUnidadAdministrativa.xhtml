@@ -35,7 +35,10 @@
 						<div class="form-group col-md-3">
 							<p:commandButton value="#{labels['dict.evolucionBasica']}" style="width: 130px;"
 								action="#{dialogEvolucionUnidadAdministrativa.irEvolucionBasica}"
-								process="@all" />
+								process="@all" >
+								<p:ajax event="dialogReturn" listener="#{dialogEvolucionUnidadAdministrativa.returnDialogo}"
+										update="messagesDialog"/>
+							</p:commandButton>
 						</div>
 						<div class="form-group col-md-9">
 							<h:outputText value="#{labels['dict.evolucionBasicaTexto']}"
@@ -47,7 +50,10 @@
 						<div class="form-group col-md-3">
 							<p:commandButton value="#{labels['dict.evolucionFusion']}" style="width: 130px;"
 								action="#{dialogEvolucionUnidadAdministrativa.irEvolucionFusion}"
-								process="@all" />
+								process="@all" >
+								<p:ajax event="dialogReturn" listener="#{dialogEvolucionUnidadAdministrativa.returnDialogo}"
+										update="messagesDialog"/>
+							</p:commandButton>
 						</div>
 						<div class="form-group col-md-9">
 							<h:outputText value="#{labels['dict.evolucionFusionTexto']}"
@@ -59,7 +65,10 @@
 						<div class="form-group col-md-3">
 							<p:commandButton value="#{labels['dict.evolucionDivision']}" style="width: 130px;"
 								action="#{dialogEvolucionUnidadAdministrativa.irEvolucionDivision}"
-								process="@all" />
+								process="@all">
+								<p:ajax event="dialogReturn" listener="#{dialogEvolucionUnidadAdministrativa.returnDialogo}"
+										update="messagesDialog"/>
+							</p:commandButton>
 						</div>
 						<div class="form-group col-md-9">
 							<h:outputText value="#{labels['dict.evolucionDivisionTexto']}"
@@ -71,7 +80,10 @@
 						<div class="form-group col-md-3">
 							<p:commandButton value="#{labels['dict.evolucionCompetencias']}" style="width: 130px;"
 								action="#{dialogEvolucionUnidadAdministrativa.irEvolucionCompetencias}"
-								process="@all" />
+								process="@all">
+								<p:ajax event="dialogReturn" listener="#{dialogEvolucionUnidadAdministrativa.returnDialogo}"
+										update="messagesDialog"/>
+							</p:commandButton>
 						</div>
 						<div class="form-group col-md-9">
 							<h:outputText
@@ -84,7 +96,10 @@
 						<div class="form-group col-md-3">
 							<p:commandButton value="#{labels['dict.evolucionDependencia']}" style="width: 130px;"
 								action="#{dialogEvolucionUnidadAdministrativa.irEvolucionDependencia}"
-								process="@all" />
+								process="@all" >
+								<p:ajax event="dialogReturn" listener="#{dialogEvolucionUnidadAdministrativa.returnDialogo}"
+										update="messagesDialog"/>
+							</p:commandButton>
 						</div>
 						<div class="form-group col-md-9">
 							<h:outputText value="#{labels['dict.evolucionDependenciaTexto']}"
