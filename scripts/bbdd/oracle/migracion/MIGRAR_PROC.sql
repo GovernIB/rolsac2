@@ -206,6 +206,17 @@ create or replace PROCEDURE "MIGRAR_PROC" (codigo NUMBER, codigoEntidad NUMBER, 
         SELECT *  
           FROM R1_TRAMITES
          WHERE TRA_CODPRO = codPRO;        
+    CURSOR cursorDocumentos(codPRO NUMBER) IS
+      SELECT *
+        FROM R1_PROCEDIMIENTOS_DOC
+       WHERE DOC_CODPRO = codPRO
+       ORDER BY DOC_ORDEN;
+   CURSOR cursorDocumentosTram(codTRA NUMBER,tipo NUMBER) IS
+      SELECT *
+        FROM R1_TRAMITES_DOC
+       WHERE DTR_CODTRA = codTRA
+         AND DTR_TIPUS = tipo
+       ORDER BY DTR_ORDEN;
     maximoId    NUMBER;
     VALOR       NUMBER;
     EXISTE      NUMBER;
@@ -225,6 +236,15 @@ create or replace PROCEDURE "MIGRAR_PROC" (codigo NUMBER, codigoEntidad NUMBER, 
     EXISTE_MAT_PRC NUMBER(2,0);
     TIPOTRAM_PLANTILLA  NUMBER(10,0);
     TIPOTRAM NUMBER(10,0);
+    LSTDOC NUMBER(10,0);
+    LSLOPD NUMBER(10,0);
+    EXISTE_ARCHIVOS_LOPD NUMBER(2,0);
+    EXISTE_ARCHIVOS      NUMBER(2,0);
+    orden  NUMBER(2,0);
+    TOTAL_DOC_TRAM_RELACIONADO NUMBER(2,0);
+    TOTAL_DOC_TRAM_MODELOS NUMBER(2,0);
+    LSTDOCTRAM NUMBER(10,0);
+    LDSOCODIGO NUMBER(10,0);
 BEGIN
 
     dbms_lob.createtemporary(l_clob, TRUE);
@@ -290,7 +310,36 @@ BEGIN
             FROM R1_PROCEDIMIENTOS
         WHERE PRO_CODI = codigo; 
 
-
+                /** LA INFORMACIï¿½N DE LOS DOCUMENTOS. **/  
+                SELECT COUNT(*)
+                  INTO EXISTE_ARCHIVOS_LOPD
+                  FROM R1_PROCEDIMIENTOS_TRAD
+                 WHERE TPR_CODPRO = codigo
+                   AND TPR_LOPDIA IS NOT NULL;   
+                   
+                IF EXISTE_ARCHIVOS_LOPD > 0
+                THEN
+                   SELECT RS2_LSTDOC_SEQ.NEXTVAL
+                     INTO LSLOPD
+                     FROM DUAL;
+                     
+                  INSERT INTO RS2_LSTDOC (LSDO_CODIGO) VALUES (LSLOPD);
+                END IF;
+                
+                SELECT COUNT(*) 
+                  INTO EXISTE_ARCHIVOS
+                  FROM R1_PROCEDIMIENTOS_DOC 
+                 WHERE DOC_CODPRO = codigo ;
+                
+                IF EXISTE_ARCHIVOS > 0
+                THEN
+                   SELECT RS2_LSTDOC_SEQ.NEXTVAL
+                     INTO LSTDOC
+                     FROM DUAL;
+                     
+                     INSERT INTO RS2_LSTDOC (LSDO_CODIGO) VALUES (LSTDOC);
+                END IF; 
+                
                  /** SEGUN ROLSAC1, VALIDACION ES:
                  PUBLICA = 1, INTERNA = 2, RESERVA = 3 BAJA = 4;
                  PUBLICA SERA DEFINITIVO Y PUBLICADO
@@ -355,9 +404,9 @@ BEGIN
                     PRWF_SVTEL,*/
                     PRWF_COMUN,
                     PRWF_HABAPO,
-                    PRWF_HABFUN
-                    /*PRWF_SVTREL,
-                    PROC_LOPDACT*/)
+                    PRWF_HABFUN,
+                    PRWF_LSTDOC,
+                    PRWF_LSLOPD)
                 SELECT
                     CODIGO_PROCWF,
                     codigo,
@@ -389,9 +438,9 @@ BEGIN
                     PRWF_SVTEL,*/
                     PRO_COMUN,
                     coalesce(PRO_APOHAB,0),
-                    coalesce(PRO_FUNHAB,0)
-                    /*PRWF_SVTREL,
-                    PROC_LOPDACT*/
+                    case when PRO_FUNHAB = 1 THEN 'S' else 'N' end,
+                    LSTDOC,
+                    LSLOPD
                FROM R1_PROCEDIMIENTOS
               WHERE PRO_CODI = codigo;
 
@@ -411,7 +460,7 @@ BEGIN
                     THEN 
                         TIPOTRAM_PLANTILLA := ROLSAC1_TRAMITES.TRA_CODPLN;
                     ELSE 
-                        /** CREAMOS LA INFORMACIÓN DE TIPO TRAMITACION **/
+                        /** CREAMOS LA INFORMACIï¿½N DE TIPO TRAMITACION **/
                         SELECT RS2_TRMPRE_SEQ.NEXTVAL 
                           INTO TIPOTRAM
                           FROM DUAL;
@@ -431,14 +480,14 @@ BEGIN
                                         VALUES (TIPOTRAM,
                                                  coalesce(ROLSAC1_TRAMITES.TRA_CPRESE,0),
                                                  coalesce(ROLSAC1_TRAMITES.TRA_CTELEM,0),
-                                                 0, /** EL ELECTRONICO SOLO EN SERVICIOS **/
+                                                 0, /** EL TELEFONICO SOLO EN SERVICIOS **/
                                                  ROLSAC1_TRAMITES.TRA_CODPLT,
                                                  ROLSAC1_TRAMITES.TRA_IDTRAMTEL,
                                                  ROLSAC1_TRAMITES.TRA_FASE,
                                                  ROLSAC1_TRAMITES.TRA_VERSIO,
                                                  ROLSAC1_TRAMITES.TRA_PARAMS,
                                                  0,
-                                                 1);
+                                                 codigoEntidad);
                                                  
                                                  
                        INSERT INTO RS2_TRATPTRA(TRTT_CODIGO,
@@ -449,15 +498,45 @@ BEGIN
                        SELECT RS2_TRATPTRA_SEQ.NEXTVAL,
                               TIPOTRAM,
                               TTR_CODIDI,
-                              TTR_DESCRI,
+                              NULL,/*TTR_DESCRI,*/
                               TTR_ULRTRA
                         FROM R1_TRAMITES_TRAD
                         WHERE TTR_CODTTR = ROLSAC1_TRAMITES.TRA_CODI;
                     END IF;
                     
-                    dbms_output.put_line('TIPOTRAM_PLANTILLA: ' || TIPOTRAM_PLANTILLA ||
-                    'TIPOTRAM: ' || TIPOTRAM);
-
+                     SELECT COUNT(*)
+                          INTO TOTAL_DOC_TRAM_MODELOS
+                          FROM R1_TRAMITES_DOC
+                         WHERE DTR_CODTRA = ROLSAC1_TRAMITES.TRA_CODI
+                           AND DTR_TIPUS = 0 ;  
+                         
+                         SELECT COUNT(*)
+                          INTO TOTAL_DOC_TRAM_RELACIONADO
+                          FROM R1_TRAMITES_DOC
+                         WHERE DTR_CODTRA = ROLSAC1_TRAMITES.TRA_CODI
+                           AND DTR_TIPUS = 1 ;  
+                           
+                    LSTDOCTRAM := NULL;
+                    LDSOCODIGO := NULL;
+                    IF TOTAL_DOC_TRAM_MODELOS > 0 
+                    THEN
+                        SELECT RS2_LSTDOC_SEQ.NEXTVAL
+                         INTO LDSOCODIGO
+                         FROM DUAL;
+                         
+                        INSERT INTO RS2_LSTDOC (LSDO_CODIGO) VALUES (LDSOCODIGO);
+                    END IF;
+                    
+                    IF TOTAL_DOC_TRAM_RELACIONADO > 0 
+                    THEN
+                         SELECT RS2_LSTDOC_SEQ.NEXTVAL
+                         INTO LSTDOCTRAM
+                         FROM DUAL;
+                         
+                        INSERT INTO RS2_LSTDOC (LSDO_CODIGO) VALUES (LSTDOCTRAM);
+                    END IF;
+                    
+                    
                     INSERT INTO RS2_PRCTRM (PRTA_CODIGO,
                                             PRTA_CODUAC,
                                             PRTA_CODPRWF,
@@ -479,8 +558,8 @@ BEGIN
                                 CODIGO_UA,
                                 CODIGO_PROCWF,
                                 TIPOTRAM_PLANTILLA,
-                                NULL,
-                                NULL,
+                                LSTDOCTRAM,
+                                LDSOCODIGO,
                                 0,
                                 ROLSAC1_TRAMITES.TRA_DATPUBL,
                                 ROLSAC1_TRAMITES.TRA_DATINICI,
@@ -492,13 +571,52 @@ BEGIN
                                 ROLSAC1_TRAMITES.TRA_ORDEN,
                                 TIPOTRAM);
 
-                                INSERT INTO RS2_TRAPRTA
-                                (TRTA_CODIGO,TRTA_CODPRTA,TRTA_IDIOMA,TRTA_REQUISITOS,TRTA_NOMBRE,TRTA_DOCUM,TRTA_OBSERV,TRTA_TERMIN)
-                                SELECT RS2_TRAPRTA_SEQ.NEXTVAL, ROLSAC1_TRAMITES.TRA_CODI,TTR_CODIDI,TTR_REQUI,TTR_NOMBRE,TTR_DOCUME,TTR_DESCRI,TTR_PLAZOS
-                                FROM R1_TRAMITES_TRAD
-                                WHERE TTR_CODTTR = ROLSAC1_TRAMITES.TRA_CODI;
-                                
 
+                        /** INSERTAMOS LAS TRADUCCIONES **/
+                        INSERT INTO RS2_TRAPRTA
+                        (TRTA_CODIGO,TRTA_CODPRTA,TRTA_IDIOMA,TRTA_REQUISITOS,TRTA_NOMBRE,TRTA_DOCUM,TRTA_OBSERV,TRTA_TERMIN)
+                        SELECT RS2_TRAPRTA_SEQ.NEXTVAL, ROLSAC1_TRAMITES.TRA_CODI,TTR_CODIDI,TTR_REQUI,TTR_NOMBRE,TTR_DOCUME,TTR_DESCRI,TTR_PLAZOS
+                        FROM R1_TRAMITES_TRAD
+                        WHERE TTR_CODTTR = ROLSAC1_TRAMITES.TRA_CODI;
+                      
+                      IF LSTDOCTRAM IS NOT  NULL
+                      THEN
+                            orden := 0;
+                            FOR documento IN cursorDocumentosTram(ROLSAC1_TRAMITES.TRA_CODI, 0)
+                            LOOP
+                                INSERT INTO RS2_DOCPR
+                                            (DOPR_CODIGO, DOPR_ORDEN, DOCPR_CODLSD)
+                                  VALUES (RS2_DOCPR_SEQ.NEXTVAL,ORDEN,LSTDOCTRAM);
+                                
+                                 INSERT INTO RS2_TRADOPR
+                                            (TRDP_CODIGO,TRDP_CODDOPR, TRDP_IDIOMA, TRDP_TITULO, TRDP_DESCRI,TRDP_FICROL1)
+                                    SELECT RS2_TRADOPR_SEQ.NEXTVAL,RS2_DOCPR_SEQ.CURRVAL, TDO_CODIDI, TDO_TITULO,TDO_DESCRI, TDO_CODARC
+                                      FROM R1_TRAMITES_DOC_TRAD
+                                     WHERE TDO_CODTRA = documento.DTR_CODI
+                                    ;
+                                  orden := orden + 1;
+                            END LOOP;
+                      END IF;
+                      
+                      IF LDSOCODIGO IS NOT  NULL
+                      THEN
+                            orden := 0;
+                            FOR documento IN cursorDocumentosTram(ROLSAC1_TRAMITES.TRA_CODI, 1)
+                            LOOP
+                                INSERT INTO RS2_DOCPR
+                                            (DOPR_CODIGO, DOPR_ORDEN, DOCPR_CODLSD)
+                                  VALUES (RS2_DOCPR_SEQ.NEXTVAL,ORDEN,LDSOCODIGO);
+                                
+                                 INSERT INTO RS2_TRADOPR
+                                            (TRDP_CODIGO,TRDP_CODDOPR, TRDP_IDIOMA, TRDP_TITULO, TRDP_DESCRI,TRDP_FICROL1)
+                                    SELECT RS2_TRADOPR_SEQ.NEXTVAL,RS2_DOCPR_SEQ.CURRVAL, TDO_CODIDI, TDO_TITULO,TDO_DESCRI, TDO_CODARC
+                                      FROM R1_TRAMITES_DOC_TRAD
+                                     WHERE TDO_CODTRA = documento.DTR_CODI
+                                    ;
+                                  orden := orden + 1;
+                            END LOOP;
+                      END IF; 
+                        
                 END LOOP;
 
                 /** INTRODUCIMOS LAS NORMATIVAS. **/
@@ -589,7 +707,41 @@ BEGIN
                         ROLSAC1_TRADPROC.TPR_RESOLUCION
                        );
 
+
+                        /** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
+                        IF LSLOPD IS NOT NULL AND ROLSAC1_TRADPROC.TPR_LOPDIA IS NOT NULL
+                        THEN
+                            INSERT INTO RS2_DOCPR
+                                    (DOPR_CODIGO, DOPR_ORDEN, DOCPR_CODLSD)
+                            VALUES (RS2_DOCPR_SEQ.NEXTVAL,0,LSLOPD);
+                            
+                            INSERT INTO RS2_TRADOPR
+                                    (TRDP_CODIGO,TRDP_CODDOPR, TRDP_IDIOMA, TRDP_TITULO, TRDP_DESCRI,TRDP_FICROL1)
+                                    VALUES (RS2_TRADOPR_SEQ.NEXTVAL,RS2_DOCPR_SEQ.CURRVAL, ROLSAC1_TRADPROC.TPR_CODIDI, '','', ROLSAC1_TRADPROC.TPR_LOPDIA);
+                        END IF;
                 END LOOP;
+                
+                /** SI HAY DOCS, CREAMOS LOS FICHEROS. **/                     
+                IF LSTDOC IS NOT NULL
+                THEN
+                    orden := 0;
+                    FOR documento IN cursorDocumentos(codigo)
+                    LOOP
+                        INSERT INTO RS2_DOCPR
+                                    (DOPR_CODIGO, DOPR_ORDEN, DOCPR_CODLSD)
+                          VALUES (RS2_DOCPR_SEQ.NEXTVAL,ORDEN,LSTDOC);
+                        
+                         INSERT INTO RS2_TRADOPR
+                                    (TRDP_CODIGO,TRDP_CODDOPR, TRDP_IDIOMA, TRDP_TITULO, TRDP_DESCRI,TRDP_FICROL1)
+                            SELECT RS2_TRADOPR_SEQ.NEXTVAL,RS2_DOCPR_SEQ.CURRVAL, TDO_CODIDI, TDO_TITULO,TDO_DESCRI, TDO_CODARC
+                              FROM R1_PROCEDIMIENTOS_DOC_TRAD
+                             WHERE TDO_CODDOC = documento.DOC_CODI
+                               AND TDO_CODARC IN (SELECT ARC_CODI FROM R1_ARCHIV WHERE ARC_DATOS IS NOT NULL)
+                            ;
+                          orden := orden + 1;
+                    END LOOP;
+                END IF;
+                
                 commit;
                 dbms_lob.writeappend(l_clob, length('El proc ' || codigo || ' 1"' || NOMBRE || '" se ha migrado.'), 'El proc ' || codigo || ' 1"' || NOMBRE || '" se ha migrado.');
                 EXCEPTION 

@@ -4,6 +4,7 @@ import es.caib.rolsac2.commons.utils.GeneradorId;
 import es.caib.rolsac2.persistence.model.JFicheroExterno;
 import es.caib.rolsac2.service.exception.FicheroExternoException;
 import es.caib.rolsac2.service.model.FicheroDTO;
+import es.caib.rolsac2.service.model.migracion.FicheroRolsac1;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -16,10 +17,10 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -49,8 +50,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         }
 
         // Obtiene path fichero
-        String pathFile = pathAlmacenamientoFicheros + "/"
-                + fic.getReferencia();
+        String pathFile = pathAlmacenamientoFicheros + "/" + fic.getReferencia();
 
         // Obtiene contenido fichero
         try {
@@ -67,8 +67,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
 
             return cf;
         } catch (final IOException e) {
-            throw new FicheroExternoException("Error al acceder al fichero "
-                    + id + " con path " + pathFile, e);
+            throw new FicheroExternoException("Error al acceder al fichero " + id + " con path " + pathFile, e);
         }
     }
 
@@ -81,8 +80,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         }
 
         // Obtiene path fichero
-        String pathFile = pathAlmacenamientoFicheros + "/"
-                + fic.getReferencia();
+        String pathFile = pathAlmacenamientoFicheros + "/" + fic.getReferencia();
 
         final FicheroDTO cf = new FicheroDTO();
         cf.setCodigo(fic.getCodigo());
@@ -108,17 +106,14 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         jFicheroExterno.setTemporal(true);
         jFicheroExterno.setTipo(tipoFicheroExterno.getTipo());
         if (elementoFicheroExterno == null) {
-            jFicheroExterno.setReferencia("temp/" + GeneradorId.generarId() + "."
-                    + FilenameUtils.getExtension(fileName));
+            jFicheroExterno.setReferencia("temp/" + GeneradorId.generarId() + "." + FilenameUtils.getExtension(fileName));
         } else {
-            jFicheroExterno.setReferencia(tipoFicheroExterno.getRuta() + elementoFicheroExterno + "/" + GeneradorId.generarId() + "."
-                    + FilenameUtils.getExtension(fileName));
+            jFicheroExterno.setReferencia(tipoFicheroExterno.getRuta() + elementoFicheroExterno + "/" + GeneradorId.generarId() + "." + FilenameUtils.getExtension(fileName));
         }
         entityManager.persist(jFicheroExterno);
 
         // Almacena fichero
-        final String pathAbsolutoFichero = pathAlmacenamientoFicheros + "/"
-                + jFicheroExterno.getReferencia();
+        final String pathAbsolutoFichero = pathAlmacenamientoFicheros + "/" + jFicheroExterno.getReferencia();
         try {
             // FileUtils de apache.
             final ByteArrayInputStream bis = new ByteArrayInputStream(content);
@@ -132,9 +127,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
             //FileUtils.copy(bis, file);
             //bis.close();
         } catch (final IOException ex) {
-            throw new FicheroExternoException("Error al crear fichero externo "
-                    + jFicheroExterno.getCodigo() + " con path " + pathAbsolutoFichero,
-                    ex);
+            throw new FicheroExternoException("Error al crear fichero externo " + jFicheroExterno.getCodigo() + " con path " + pathAbsolutoFichero, ex);
         }
 
         return jFicheroExterno.getCodigo();
@@ -142,9 +135,51 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
     }
 
     @Override
+    public Long createFicheroExternoMigracion(byte[] content, String fileName, TypeFicheroExterno tipoFicheroExterno, Long elementoFicheroExterno, String pathAlmacenamientoFicheros, Long codigoMigracion) {
+        if (tipoFicheroExterno == null || content == null || fileName == null) {
+            throw new FicheroExternoException("Ningún parámetro puede ser nulo");
+        }
+
+        JFicheroExterno jFicheroExterno = new JFicheroExterno();
+        //jFicheroExterno.setCodigo(codigoMigracion);
+        jFicheroExterno.setBorrar(false);
+        jFicheroExterno.setFecha(new java.util.Date());
+        jFicheroExterno.setIdElemento(elementoFicheroExterno);
+        jFicheroExterno.setFilename(fileName);
+        jFicheroExterno.setTemporal(false);
+        jFicheroExterno.setTipo(tipoFicheroExterno.getTipo());
+        if (elementoFicheroExterno == null) {
+            jFicheroExterno.setReferencia("temp/" + GeneradorId.generarId() + "." + FilenameUtils.getExtension(fileName));
+        } else {
+            jFicheroExterno.setReferencia(tipoFicheroExterno.getRuta() + elementoFicheroExterno + "/" + GeneradorId.generarId() + "." + FilenameUtils.getExtension(fileName));
+        }
+        entityManager.persist(jFicheroExterno);
+        //entityManager.merge(jFicheroExterno);
+
+        // Almacena fichero
+        final String pathAbsolutoFichero = pathAlmacenamientoFicheros + "/" + jFicheroExterno.getReferencia();
+        try {
+            // FileUtils de apache.
+            final ByteArrayInputStream bis = new ByteArrayInputStream(content);
+            final File file = new File(pathAbsolutoFichero);
+            FileUtils.copyInputStreamToFile(bis, file);
+            bis.close();
+
+            //FileUtils de fundacionbit
+            //final OutputStream file = new FileOutputStream(pathAbsolutoFichero);
+            //InputStream bis = new ByteArrayInputStream(content);
+            //FileUtils.copy(bis, file);
+            //bis.close();
+        } catch (final IOException ex) {
+            throw new FicheroExternoException("Error al crear fichero externo " + jFicheroExterno.getCodigo() + " con path " + pathAbsolutoFichero, ex);
+        }
+        return jFicheroExterno.getCodigo();
+    }
+
+    @Override
     public void persistFicheroExterno(Long codigoFichero, Long idElemento, String pathAlmacenamientoFicheros) {
         JFicheroExterno jFicheroExterno = entityManager.find(JFicheroExterno.class, codigoFichero);
-        if (!jFicheroExterno.isBorrar() && jFicheroExterno.isTemporal()) {
+        if (jFicheroExterno != null && !jFicheroExterno.isBorrar() && jFicheroExterno.isTemporal()) {
             jFicheroExterno.setTemporal(false);
             if (jFicheroExterno.getReferencia().startsWith("temp/")) {
 
@@ -152,8 +187,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
                 TypeFicheroExterno tipoFicheroExterno = TypeFicheroExterno.fromString(jFicheroExterno.getTipo());
                 String referenciaAntigua = jFicheroExterno.getReferencia();
                 String referenciaNueva;
-                referenciaNueva = tipoFicheroExterno.getRuta() + codigoFichero + "/" + GeneradorId.generarId() + "."
-                        + FilenameUtils.getExtension(jFicheroExterno.getFilename());
+                referenciaNueva = tipoFicheroExterno.getRuta() + codigoFichero + "/" + GeneradorId.generarId() + "." + FilenameUtils.getExtension(jFicheroExterno.getFilename());
 
                 //La movemos
                 try {
@@ -183,8 +217,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
     public void purgeFicherosExternos(String pathAlmacenamientoFicheros) {
 
         //Primero borramos los marcados como pendientes para borrar
-        final Query query = entityManager.createQuery(
-                "select f from JFicheroExterno f where f.borrar = TRUE");
+        final Query query = entityManager.createQuery("select f from JFicheroExterno f where f.borrar = TRUE");
         final List<JFicheroExterno> results = query.getResultList();
         if (results != null) {
             for (final JFicheroExterno jFicheroExterno : results) {
@@ -193,8 +226,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
                 entityManager.remove(jFicheroExterno);
 
                 // Borramos fichero en disco
-                final String pathAbsoluteFichero = pathAlmacenamientoFicheros
-                        + jFicheroExterno.getReferencia();
+                final String pathAbsoluteFichero = pathAlmacenamientoFicheros + jFicheroExterno.getReferencia();
                 final File file = new File(pathAbsoluteFichero);
                 final boolean deleted = FileUtils.deleteQuietly(file);
                 if (!deleted) {
@@ -205,8 +237,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         }
 
         //Segundo borramos los que llevan un dia creados y no se han confirmado
-        final Query query2 = entityManager.createQuery(
-                "select f from JFicheroExterno f where f.temporal = TRUE and f.fecha <= TO_DATE(''" + getFechaAyer() + "','DD/MM/YYYY')");
+        final Query query2 = entityManager.createQuery("select f from JFicheroExterno f where f.temporal = TRUE and f.fecha <= TO_DATE(''" + getFechaAyer() + "','DD/MM/YYYY')");
         final List<JFicheroExterno> results2 = query2.getResultList();
         if (results2 != null) {
             for (final JFicheroExterno jFicheroExterno : results2) {
@@ -215,19 +246,59 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
                 entityManager.remove(jFicheroExterno);
 
                 // Borramos fichero en disco
-                final String pathAbsoluteFichero = pathAlmacenamientoFicheros
-                        + jFicheroExterno.getReferencia();
+                final String pathAbsoluteFichero = pathAlmacenamientoFicheros + jFicheroExterno.getReferencia();
                 final File file = new File(pathAbsoluteFichero);
                 final boolean deleted = FileUtils.deleteQuietly(file);
                 if (!deleted) {
-                    LOG.error("No se ha podido borrar fichero "
-                            + pathAbsoluteFichero);
+                    LOG.error("No se ha podido borrar fichero " + pathAbsoluteFichero);
                     throw new FicheroExternoException("No se ha podido borrar el fichero : " + jFicheroExterno.getCodigo() + " con url : " + pathAbsoluteFichero);
                 }
 
             }
         }
 
+    }
+
+    @Override
+    public FicheroRolsac1 getFicheroRolsac(long idArchivo, String rutaRolsac1) throws IOException {
+        final Query query = entityManager.createNativeQuery("select ARC_CODI, ARC_NOMBRE,ARC_MIME,ARC_PESO,ARC_DATOS FROM R1_ARCHIV WHERE ARC_CODI = " + idArchivo);
+        FicheroRolsac1 ficheroRolsac1 = new FicheroRolsac1();
+        final Object[] resultado = (Object[]) query.getSingleResult();
+        ficheroRolsac1.setCodigo(idArchivo);
+        ficheroRolsac1.setFilename((String) resultado[1]);
+        ficheroRolsac1.setMimetype((String) resultado[2]);
+        ficheroRolsac1.setPeso((BigDecimal) resultado[3]);
+        if (resultado[4] != null) {
+            try {
+                Blob blob = (Blob) resultado[4];
+                byte[] bytes = blob.getBytes(1l, (int) blob.length());
+                ficheroRolsac1.setContenido(bytes);
+            } catch (SQLException e) {
+                LOG.error("Error obteniendo bytes del idArchivo " + idArchivo, e);
+            }
+        }
+        if (ficheroRolsac1.getContenido() == null) {
+            ficheroRolsac1.setContenido(obtenerContenidoRolsac1(idArchivo, rutaRolsac1));
+        } else {
+            String parar = "";
+        }
+
+        return ficheroRolsac1;
+    }
+
+    private byte[] obtenerContenidoRolsac1(long idArchivo, String rutaRolsac1) throws IOException {
+        byte[] contenido = null;
+        try (InputStream in = new FileInputStream(obtenerRutaArchivoExportadoEnFilesystem(idArchivo, rutaRolsac1))) {
+            contenido = IOUtils.toByteArray(in);
+        } catch (final IOException e) {
+            LOG.error("Error obteniendo fichero ", e);
+            throw e;
+        }
+        return contenido;
+    }
+
+    private static String obtenerRutaArchivoExportadoEnFilesystem(final Long archivo, final String rutaRolsac1) throws IOException {
+        return null;
     }
 
     /**

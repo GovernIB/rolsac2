@@ -136,9 +136,7 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         } else if (isRest) {
             sql = new StringBuilder("SELECT j FROM JTipoTramitacion j JOIN j.codPlatTramitacion p LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            // sql = new StringBuilder("SELECT j.codigo, j.identificador, j.descripcion FROM JTipoTramitacion j where 1
-            // = 1 ");
-            sql = new StringBuilder("SELECT j.codigo, j.tramitPresencial, j.tramitElectronica, j.urlTramitacion, p.identificador, " + " j.tramiteId, j.tramiteVersion, j.tramiteParametros FROM JTipoTramitacion j " + " JOIN j.codPlatTramitacion p where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, j.tramitPresencial, j.tramitElectronica, '', p.identificador, " + " j.tramiteId, j.tramiteVersion, j.tramiteParametros FROM JTipoTramitacion j " + " JOIN j.codPlatTramitacion p where 1 = 1 ");
         }
         // if (filtro.isRellenoIdUA()) {
         // sql.append(" and j.unidadAdministrativa = :ua");
@@ -153,7 +151,7 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
                     // " and ( cast(j.id as string) like :filtro OR (t.idioma.identificador = :idioma AND
                     // LOWER(t.literal) LIKE
                     // :filtro) OR LOWER(j.identificador) LIKE :filtro )");
-                    " and ( cast(j.codigo as string) like :filtro OR " + " cast(j.tramitPresencial as string) like :filtro OR " + " cast(j.tramitElectronica as string) like :filtro OR " + " cast(j.urlTramitacion as string) like :filtro OR " + " cast(p.identificador as string) like :filtro OR " + " cast(j.tramiteId as string) like :filtro OR " + " cast(j.tramiteVersion as string) like :filtro OR " + " cast(j.tramiteParametros as string) like :filtro)");
+                    " and ( cast(j.codigo as string) like :filtro OR " + " cast(j.tramitPresencial as string) like :filtro OR " + " cast(j.tramitElectronica as string) like :filtro OR " + " cast(p.identificador as string) like :filtro OR " + " cast(j.tramiteId as string) like :filtro OR " + " cast(j.tramiteVersion as string) like :filtro OR " + " cast(j.tramiteParametros as string) like :filtro)");
         }
 
         if (filtro.isRellenoTipoPlantilla()) {

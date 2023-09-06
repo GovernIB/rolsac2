@@ -94,6 +94,7 @@ create or replace PROCEDURE "MIGRAR_NORMATIVA" (codigoNormativa NUMBER, codigoEn
     TOTAL_TRADS    NUMBER(2,0);
     EXISTE_RELACION NUMBER(2,0);
     EXISTE_NORMATIVA NUMBER(2,0);
+    EXISTE_UA        NUMBER(2,0);
 BEGIN
 
     dbms_lob.createtemporary(l_clob, TRUE);
@@ -213,7 +214,13 @@ BEGIN
                       WHERE UANO_CODNORM = codigoNormativa
                         AND UANO_CODUNA = normUA.UNN_CODUNA;
                         
-                    IF EXISTE_RELACION = 0
+                    SELECT COUNT(*)
+                      INTO EXISTE_UA
+                      FROM RS2_UNIADM
+                      WHERE UNAD_CODIGO = normUA.UNN_CODUNA;
+                    
+                        
+                    IF EXISTE_RELACION = 0 AND EXISTE_UA = 1
                     THEN 
                         INSERT INTO RS2_UADNOR (UANO_CODNORM, UANO_CODUNA)
                           VALUES (codigoNormativa,normUA.UNN_CODUNA); 

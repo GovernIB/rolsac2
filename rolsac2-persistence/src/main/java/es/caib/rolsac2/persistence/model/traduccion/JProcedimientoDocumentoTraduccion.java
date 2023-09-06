@@ -1,20 +1,14 @@
 package es.caib.rolsac2.persistence.model.traduccion;
 
-import es.caib.rolsac2.persistence.model.BaseEntity;
 import es.caib.rolsac2.persistence.model.JProcedimientoDocumento;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
-
 @Entity
 @SequenceGenerator(name = "procedimiento-doc-trad-sequence", sequenceName = "RS2_TRADOPR_SEQ", allocationSize = 1)
-@Table(name = "RS2_TRADOPR",
-        indexes = {
-                @Index(name = "RS2_TRADOPR_PK_I", columnList = "TRDP_CODIGO")
-        }
-)
+@Table(name = "RS2_TRADOPR", indexes = {@Index(name = "RS2_TRADOPR_PK_I", columnList = "TRDP_CODIGO")})
 public class JProcedimientoDocumentoTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-doc-trad-sequence")
@@ -36,6 +30,9 @@ public class JProcedimientoDocumentoTraduccion {
 
     @Column(name = "TRDP_FICHER")
     private Long fichero;
+
+    @Column(name = "TRDP_FICROL1")
+    private Long ficheroRolsac1;
 
     public static List<JProcedimientoDocumentoTraduccion> createInstance(List<String> idiomas) {
         List<JProcedimientoDocumentoTraduccion> traducciones = new ArrayList<>();
@@ -95,4 +92,11 @@ public class JProcedimientoDocumentoTraduccion {
         this.fichero = fichero;
     }
 
+    public Long getFicheroRolsac1() {
+        return ficheroRolsac1;
+    }
+
+    public void setFicheroRolsac1(Long ficheroRolsac1) {
+        this.ficheroRolsac1 = ficheroRolsac1;
+    }
 }

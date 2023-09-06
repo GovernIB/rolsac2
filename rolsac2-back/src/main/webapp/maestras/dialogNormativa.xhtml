@@ -55,7 +55,8 @@
                     <div class="form-group col-md-10 mb-0">
                         <p:selectBooleanCheckbox value="#{dialogNormativa.data.vigente}"
                                                  label="#{labels['dialogNormativa.vigencia']}"
-                                                    itemLabel="#{labels['dialogNormativa.vigencia']}">
+                                                    itemLabel="#{labels['dialogNormativa.vigencia']}"
+                                                 disabled="#{dialogNormativa.isModoConsulta()}">
                         </p:selectBooleanCheckbox>
                     </div>
                 </div>
@@ -389,7 +390,9 @@
                         <p:column headerText="#{labels['dialogNormativa.normativaOrigen']}" styleClass="w75">
                             <h:outputText value="#{td.normativaOrigen.titulo.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
-
+                        <p:column headerText="#{labels['dialogNormativa.normativaAfectada']}" styleClass="w75">
+                            <h:outputText value="#{td.normativaAfectada.titulo.getTraduccion(dialogNormativa.idioma)}"/>
+                        </p:column>
 
                     </p:dataTable>
                 </div>

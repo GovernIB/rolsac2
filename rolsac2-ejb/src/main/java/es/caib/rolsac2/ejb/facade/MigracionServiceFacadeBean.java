@@ -5,12 +5,18 @@ import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUsuario;
 import es.caib.rolsac2.persistence.model.JUsuarioUnidadAdministrativa;
+import es.caib.rolsac2.persistence.repository.FicheroExternoRepository;
 import es.caib.rolsac2.persistence.repository.MigracionRepository;
 import es.caib.rolsac2.persistence.repository.UnidadAdministrativaRepository;
 import es.caib.rolsac2.persistence.repository.UsuarioRepository;
 import es.caib.rolsac2.service.facade.MigracionServiceFacade;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.migracion.FicheroInfo;
+import es.caib.rolsac2.service.model.migracion.FicheroRolsac1;
+import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -42,6 +48,9 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
 
     @Inject
     private MigracionRepository migracionRepository;
+
+    @Inject
+    private FicheroExternoRepository ficheroRepository;
 
     @Inject
     private UnidadAdministrativaRepository uaRepository;
@@ -196,6 +205,56 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
             }
         }
         resultado.append("FI MIGRACIO USUARIOS \n");
+        return resultado.toString();
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public String desactivarRestriccionDocumento() {
+        return migracionRepository.desactivarRestriccionDocumento();
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public String activarRestriccionDocumento() {
+        return migracionRepository.activarRestriccionDocumento();
+    }
+
+    @Override
+    public List<FicheroInfo> getDocumentosProcedimientos(Long idEntidad, Long uaRaiz) {
+        return migracionRepository.getDocumentos(idEntidad, uaRaiz, true, false);
+    }
+
+    @Override
+    public List<FicheroInfo> getDocumentosNormativas(Long idEntidad, Long uaRaiz) {
+        return migracionRepository.getDocumentos(idEntidad, uaRaiz, false, true);
+    }
+
+    /**
+     * log.
+     */
+    private static Logger log = LoggerFactory.getLogger(MigracionServiceFacadeBean.class);
+
+
+    @Override
+    public String migrarDocumentos(FicheroInfo infoDoc, Long entidad, Long uaRaiz, String pathAlmacenamientoRolsac1, String pathAlmacenamiento, TypeFicheroExterno tipoficheroExterno) {
+        StringBuilder resultado = new StringBuilder();
+        try {
+            FicheroRolsac1 ficheroRolsac1 = ficheroRepository.getFicheroRolsac(infoDoc.getCodigoFicheroRolsac1(), pathAlmacenamientoRolsac1);
+            Long idPadre;
+            if (tipoficheroExterno == TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS) {
+                idPadre = migracionRepository.getProcedimiento(infoDoc.getCodigoDocumentoTraduccion());
+            } else {
+                idPadre = migracionRepository.getNormativa(infoDoc.getCodigoDocumentoTraduccion());
+            }
+            infoDoc.setCodigoPadre(idPadre);
+            Long idFichero = ficheroRepository.createFicheroExternoMigracion(ficheroRolsac1.getContenido(), ficheroRolsac1.getFilename(), tipoficheroExterno, idPadre, pathAlmacenamiento, ficheroRolsac1.getCodigo());
+            migracionRepository.migrarArchivo(idFichero, infoDoc.getCodigoDocumentoTraduccion(), tipoficheroExterno);
+            resultado.append("Fichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " migrado correctamente \n");
+        } catch (Exception e) {
+            log.error("Error migrando fichero " + infoDoc, e);
+            resultado.append("Fichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " ha dado un error. Error:" + e.getLocalizedMessage() + " \n");
+        }
         return resultado.toString();
     }
 }

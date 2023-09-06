@@ -2,6 +2,8 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JProceso;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.migracion.FicheroInfo;
+import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -106,8 +108,58 @@ public interface MigracionRepository extends CrudRepository<JProceso, Long> {
     /**
      * Importar normativas afectaciones
      *
-     * @param idEntidad
      * @return
      */
     String importarNormativasAfectaciones();
+
+    /**
+     * Desactivar restriccion FK de documentos a archivo
+     *
+     * @return
+     */
+    String desactivarRestriccionDocumento();
+
+    /**
+     * Activar restriccion FK de documentos a archivo
+     *
+     * @return
+     */
+    String activarRestriccionDocumento();
+
+    /**
+     * Obtiene todos los archivos.
+     *
+     * @param idEntidad
+     * @param uaRaiz
+     * @return
+     */
+    List<FicheroInfo> getDocumentos(Long idEntidad, Long uaRaiz, boolean soloProcedimientos, boolean soloServicios);
+
+
+    Long getNormativa(Long codigo);
+
+    /**
+     * Comprueba si ya existe le archivo.
+     *
+     * @param idDoc
+     * @return
+     */
+    boolean existeArchivo(Long idDoc);
+
+    /**
+     * Devuelve el id Padre
+     *
+     * @param codigoDocumentoTraduccion
+     * @return
+     */
+    Long getProcedimiento(Long codigoDocumentoTraduccion);
+
+    /**
+     * Migrar Archivo
+     *
+     * @param idFichero
+     * @param codigoFicheroRolsac1
+     * @param tipoficheroExterno
+     */
+    void migrarArchivo(Long idFichero, Long codigoFicheroRolsac1, TypeFicheroExterno tipoficheroExterno);
 }

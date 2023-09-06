@@ -402,6 +402,12 @@ public class ConstantesNegocio {
     public static final String PARAMETRO_CODIGO_NIVEL_ADM_UNI = "4";
     public static final String PARAMETRO_CODIGO_CV = "10";
 
+    //Constantes para los estados de una UA
+    public static final String UNIDADADMINISTRATIVA_ESTADO_BORRADOR = "B";
+    public static final String UNIDADADMINISTRATIVA_ESTADO_VIGENTE = "V";
+    public static final String UNIDADADMINISTRATIVA_ESTADO_EVOLUCIONADA = "E";
+    public static final String UNIDADADMINISTRATIVA_ESTADO_BORRADA = "X";
+
     /**
      * Constructor vacio.
      **/

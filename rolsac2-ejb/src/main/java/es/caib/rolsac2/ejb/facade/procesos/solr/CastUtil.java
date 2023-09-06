@@ -58,7 +58,7 @@ public class CastUtil {
                 if (procedimiento.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma) != null) {
                     descripcionPadre.addIdioma(enumIdioma, procedimiento.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma));
                 }
-                searchText.addIdioma(enumIdioma, tramite.getNombre().getTraduccion(keyIdioma) + " " + tramite.getObservacion().getTraduccion(keyIdioma));
+                searchText.addIdioma(enumIdioma, tramite.getNombre().getTraduccion(keyIdioma) + " " + tramite.getObservacion().getTraduccion(keyIdioma) + " " + procedimiento.getKeywords());
                 searchTextOptional.addIdioma(enumIdioma, tramite.getDocumentacion().getTraduccion(keyIdioma));
 
                 if (procedimiento != null) {
@@ -178,7 +178,7 @@ public class CastUtil {
                 // text.
                 titulo.addIdioma(enumIdioma, servicio.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma));
                 descripcion.addIdioma(enumIdioma, servicio.getObjeto().getTraduccion(keyIdioma));
-                searchText.addIdioma(enumIdioma, servicio.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma) + " " + servicio.getObjeto().getTraduccion(keyIdioma));
+                searchText.addIdioma(enumIdioma, servicio.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma) + " " + servicio.getObjeto().getTraduccion(keyIdioma) + " " + servicio.getKeywords());
 
                 final StringBuffer textoOptional = new StringBuffer();
 
@@ -744,7 +744,7 @@ public class CastUtil {
                 // text.
                 titulo.addIdioma(enumIdioma, proc.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma));
                 descripcion.addIdioma(enumIdioma, proc.getObjeto().getTraduccion(keyIdioma));
-                searchText.addIdioma(enumIdioma, proc.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma) + " " + proc.getObjeto().getTraduccion(keyIdioma));
+                searchText.addIdioma(enumIdioma, proc.getNombreProcedimientoWorkFlow().getTraduccion(keyIdioma) + " " + proc.getObjeto().getTraduccion(keyIdioma) + " " + proc.getKeywords());
 
                 final StringBuffer textoOptional = new StringBuffer();
 

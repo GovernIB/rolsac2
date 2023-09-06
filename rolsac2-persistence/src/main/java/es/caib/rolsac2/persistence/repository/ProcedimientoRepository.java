@@ -166,18 +166,25 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     String getEnlaceTelematico(ProcedimientoFiltro filtro);
 
-	List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF);
+    List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF);
 
-	List<TipoMateriaSIADTO> getMateriaSIAByWFRest(Long codigoWF);
+    List<TipoMateriaSIADTO> getMateriaSIAByWFRest(Long codigoWF);
 
-	List<NormativaDTO> getNormativasByWFRest(Long codigoWF);
+    List<NormativaDTO> getNormativasByWFRest(Long codigoWF);
 
-	List<TipoMateriaSIADTO> getMateriaSIAByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
+    List<TipoMateriaSIADTO> getMateriaSIAByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
 
-	List<NormativaDTO> getNormativasByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
+    List<NormativaDTO> getNormativasByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
 
-	List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
+    List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
 
-	List<ProcedimientoDocumentoDTO> getDocumentosByListaDocumentos(JListaDocumentos listaDocumentos, JListaDocumentos listaDocumentos2,
-			String enlaceWF);
+    List<ProcedimientoDocumentoDTO> getDocumentosByListaDocumentos(JListaDocumentos listaDocumentos, JListaDocumentos listaDocumentos2, String enlaceWF);
+
+    /**
+     * Actualiza la UA de todos
+     *
+     * @param codigoUAOriginal
+     * @param codigoUANueva
+     */
+    void actualizarUA(Long codigoUAOriginal, Long codigoUANueva);
 }

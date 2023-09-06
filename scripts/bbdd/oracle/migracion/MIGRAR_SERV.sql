@@ -197,6 +197,11 @@ create or replace PROCEDURE "MIGRAR_SERV" (codigo NUMBER, codigoEntidad NUMBER, 
         SELECT *  
           FROM R1_SERVICIOS_MATE
          WHERE SRM_CODSER = codSER;
+    CURSOR cursorDocumentos(codSer NUMBER) IS
+      SELECT *
+        FROM R1_SERVICIOS_DOC
+       WHERE DSR_CODSER = codSer
+       ORDER BY DSR_ORDEN;
     maximoId    NUMBER;
     VALOR       NUMBER;
     EXISTE      NUMBER(2,0);
@@ -215,6 +220,18 @@ create or replace PROCEDURE "MIGRAR_SERV" (codigo NUMBER, codigoEntidad NUMBER, 
     EXISTE_MAT_PRC NUMBER(2,0);
     TIPOTRAM_PLANTILLA  NUMBER(10,0);
     TIPOTRAM NUMBER(10,0);
+    CODPLN NUMBER(10,0);
+    TRAID  VARCHAR2(50);
+    TRAVER NUMBER(3,0);
+    CTELEM NUMBER(1,0);
+    CPRESE NUMBER(1,0);
+    CTELEF NUMBER(1,0);
+    PARAMS VARCHAR2(300); 
+    LSTDOC NUMBER(10,0);
+    LSLOPD NUMBER(10,0);
+    EXISTE_ARCHIVOS_LOPD NUMBER(2,0);
+    EXISTE_ARCHIVOS      NUMBER(2,0);
+    orden  NUMBER(2,0);
 BEGIN
 
     dbms_lob.createtemporary(l_clob, TRUE);
@@ -251,6 +268,97 @@ BEGIN
          THEN   
                  /** CAPTURAMOS POR SI SE PRODUCE UN ERROR NO PREVISTO */
                 BEGIN 
+                
+                 /** EL TIPOTRAM_PLANTILLA EN SERVICIOS SIEMPRE ES NULL AL MIGRARLO, NO HAY PLANTILLAS EN ROLSAC1 SERVICIOS **/
+                 TIPOTRAM_PLANTILLA := NULL;
+                 TIPOTRAM := NULL;
+                 SELECT  SER_TRAID,
+                         SER_TRAVER,
+                         SER_CTELEM,
+                         SER_CPRESE,
+                         SER_CTELEF,
+                         SER_PARAMS
+                   INTO TRAID,
+                        TRAVER,
+                        CTELEM,
+                        CPRESE,
+                        CTELEF,
+                        PARAMS
+                     FROM R1_SERVICIOS
+                     WHERE SER_CODI = codigo;   
+                
+                  /** CREAMOS LA INFORMACI�N DE TIPO TRAMITACION **/
+                    SELECT RS2_TRMPRE_SEQ.NEXTVAL 
+                      INTO TIPOTRAM
+                      FROM DUAL;
+                      
+                      INSERT INTO RS2_TRMPRE(PRES_CODIGO,   
+                                             PRES_TRPRES,
+                                             PRES_TRELEC,
+                                             PRES_TRTEL,
+                                             PRES_INTPTR,
+                                             PRES_INTTID,
+                                             PRES_FASEPROC,
+                                             PRES_INTTVE,
+                                             PRES_INTTPA,
+                                             PRES_PLANTI,
+                                             PRES_CODENTI
+                                             )
+                                    VALUES (TIPOTRAM,
+                                             coalesce(CPRESE,0),
+                                             coalesce(CTELEM,0),
+                                             CTELEF,
+                                             CODPLN,
+                                             TRAID,
+                                             NULL,
+                                             TRAVER,
+                                             PARAMS,
+                                             0,
+                                             codigoEntidad);
+                                             
+                                             
+                   INSERT INTO RS2_TRATPTRA(TRTT_CODIGO,
+                                            TRTT_CODTPTRA,
+                                            TRTT_IDIOMA,
+                                            TRTT_DESCRI,
+                                            TRTT_URL)
+                   SELECT RS2_TRATPTRA_SEQ.NEXTVAL,
+                          TIPOTRAM,
+                          TSR_CODIDI,
+                          NULL, /*TTR_DESCRI,*/
+                          TSR_ULRSER
+                    FROM R1_SERVICIOS_TRAD
+                    WHERE TSR_CODSER = codigo;
+                    
+                  /** LA INFORMACI�N DE LOS DOCUMENTOS. **/  
+                SELECT COUNT(*)
+                  INTO EXISTE_ARCHIVOS_LOPD
+                  FROM R1_SERVICIOS_TRAD
+                 WHERE TSR_CODSER = codigo
+                   AND TSR_LOPDIA IS NOT NULL;   
+                   
+                IF EXISTE_ARCHIVOS_LOPD > 0
+                THEN
+                   SELECT RS2_LSTDOC_SEQ.NEXTVAL
+                     INTO LSLOPD
+                     FROM DUAL;
+                     
+                  INSERT INTO RS2_LSTDOC (LSDO_CODIGO) VALUES (LSLOPD);
+                END IF;
+                
+                SELECT COUNT(*) 
+                  INTO EXISTE_ARCHIVOS
+                  FROM R1_SERVICIOS_DOC 
+                 WHERE DSR_CODSER = codigo ;
+                
+                IF EXISTE_ARCHIVOS > 0
+                THEN
+                   SELECT RS2_LSTDOC_SEQ.NEXTVAL
+                     INTO LSTDOC
+                     FROM DUAL;
+                     
+                     INSERT INTO RS2_LSTDOC (LSDO_CODIGO) VALUES (LSTDOC);
+                END IF; 
 
                  /** MIGRAMOS LOS DATOS BASE EN UN NUEVO CAMPO EN ROLSAC2  */
                  INSERT INTO RS2_PROC
@@ -258,15 +366,7 @@ BEGIN
                         PROC_TIPO, 
                         PROC_SIACOD, 
                         PROC_SIAEST, 
-                        PROC_SIAFC, /*
-                        PROC_MENSA, 
-                        PROC_PDTIDX, 
-                        PROC_DATIDX, 
-                        PROC_DATINX, 
-                        PROC_ERRIDX, 
-                        PROC_ERRSIA, 
-                        PROC_PDTGST, 
-                        PROC_PDTSUP, */
+                        PROC_SIAFC, 
                         PROC_FECACT)
                      SELECT 
                         SER_CODI,
@@ -316,7 +416,6 @@ BEGIN
                         PRWF_CODPROC,
                         PRWF_WF,
                         PRWF_WFESTADO,
-                        /*PRWF_WFUSUA,*/
                         PRWF_CODUAR,
                         PRWF_CODUAI,
                         PRWF_INTERNO,
@@ -324,61 +423,40 @@ BEGIN
                         PRWF_RSEMA,
                         PRWF_RSTFNO,
                         PRWF_DPTIPLEGI,
-                        /*PRWF_LSTDOC,
-                        PRWF_LSLOPD,
-                        PRWF_PRCODUAC,
-                        PRWF_PRTIPINIC,
-                        PRWF_PRTIPSIAD,
-                        PRWF_PRTIPFVIA,
-                        PRWF_SVTASA,
-                        PRWF_SVTPRE,*/
+                        PRWF_SVTPRE,
                         PRWF_FECPUB,
                         PRWF_FECCAD,
-                        /*PRWF_TIPPRO,
-                        PRWF_TIPVIA,
-                        PROC_LOPDRESP,
+                        PRWF_COMUN, 
+                        PRWF_SVTREL,
+                        PROC_LOPDACT,
                         PRWF_SVPRES,
                         PRWF_SVELEC,
-                        PRWF_SVTEL,*/
-                        PRWF_COMUN
-                        /*PRWF_HABAPO,
-                        PRWF_HABFUN, 
-                        PRWF_SVTREL,
-                        PROC_LOPDACT*/)
+                        PRWF_SVTEL,
+                        PRWF_LSTDOC,
+                        PRWF_LSLOPD)
                     SELECT
                         CODIGO_PROCWF,
                         codigo,
                         WF,
                         WFESTADO,
-                        /*PRWF_WFUSUA,*/
                         SER_SERRSP,
-                        coalesce (SER_INSTRU,SER_SERRSP),
+                        SER_SERRSP,
                         INTERNO,
                         coalesce (SER_NOMRSP, 'Desconegut'),
                         SER_CORREO,
                         SER_TELEFO,
                         SER_CODLEG,
-                        /*PRWF_LSTDOC,
-                        PRWF_LSLOPD,
-                        PRWF_PRCODUAC,
-                        ROLSAC1_SERV.SER_CODINI,
-                        ROLSAC1_SERV.SER_CODSIL,
-                        PRWF_PRTIPFVIA,
-                        PRWF_SVTASA,
-                        PRWF_SVTPRE,*/
+                        TIPOTRAM_PLANTILLA,
                         SER_FECPUB,
                         SER_FECDES,
-                        /*PRWF_TIPPRO,
-                        ROLSAC1_SERV.SER_INDICA,
-                        PROC_LOPDRESP,
-                        PRWF_SVPRES,
-                        PRWF_SVELEC,
-                        PRWF_SVTEL,*/
-                        SER_COMUN
-                        /*ROLSAC1_SERV.SER_APOHAB,
-                        ROLSAC1_SERV.SER_FUNHAB,
-                        PRWF_SVTREL,
-                        PROC_LOPDACT*/
+                        SER_COMUN,
+                        TIPOTRAM,
+                        SER_CLOPD,
+                        SER_CPRESE,
+                        SER_CTELEM,
+                        SER_CTELEF,
+                        LSTDOC,
+                        LSLOPD
                      FROM R1_SERVICIOS
                      WHERE SER_CODI = codigo;
 
@@ -393,12 +471,8 @@ BEGIN
                             TRPW_OBJETO,
                             TRPW_DESTIN,
                             TRPW_OBSER,
-                            TRPW_SVREQ
-                            /*TRPW_DPFINA,
-                            TRPW_DPDEST,
-                            TRPW_DPDOC,
                             TRPW_SVREQ,
-                            TRPW_PRRESO*/)
+                            TRPW_PRRESO)
                            VALUES (
                             RS2_TRAPRWF_SEQ.NEXTVAL,
                             CODIGO_PROCWF,
@@ -407,11 +481,45 @@ BEGIN
                             ROLSAC1_TRADSERV.TSR_OBJETO, 
                             ROLSAC1_TRADSERV.TSR_DESTIN,
                             ROLSAC1_TRADSERV.TSR_OBSERV,
-                            ROLSAC1_TRADSERV.TSR_ULRSER
+                            ROLSAC1_TRADSERV.TSR_ULRSER,
+                            ROLSAC1_TRADSERV.TSR_REQUIS
                            );
+                           
+                           
+                            /** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
+                            IF LSLOPD IS NOT NULL AND ROLSAC1_TRADSERV.TSR_LOPDIA IS NOT NULL
+                            THEN
+                                INSERT INTO RS2_DOCPR
+                                        (DOPR_CODIGO, DOPR_ORDEN, DOCPR_CODLSD)
+                                VALUES (RS2_DOCPR_SEQ.NEXTVAL,0,LSLOPD);
+                                
+                                INSERT INTO RS2_TRADOPR
+                                        (TRDP_CODIGO,TRDP_CODDOPR, TRDP_IDIOMA, TRDP_TITULO, TRDP_DESCRI,TRDP_FICROL1)
+                                        VALUES (RS2_TRADOPR_SEQ.NEXTVAL,RS2_DOCPR_SEQ.CURRVAL, ROLSAC1_TRADSERV.TSR_CODIDI, '','', ROLSAC1_TRADSERV.TSR_LOPDIA);
+                            END IF;
 
                     END LOOP;
                     
+                     
+                    /** SI HAY DOCS, CREAMOS LOS FICHEROS. **/                     
+                    IF LSTDOC IS NOT NULL
+                    THEN
+                        orden := 0;
+                        FOR documento IN cursorDocumentos(codigo)
+                        LOOP
+                            INSERT INTO RS2_DOCPR
+                                        (DOPR_CODIGO, DOPR_ORDEN, DOCPR_CODLSD)
+                              VALUES (RS2_DOCPR_SEQ.NEXTVAL,ORDEN,LSTDOC);
+                            
+                             INSERT INTO RS2_TRADOPR
+                                        (TRDP_CODIGO,TRDP_CODDOPR, TRDP_IDIOMA, TRDP_TITULO, TRDP_DESCRI,TRDP_FICROL1)
+                                SELECT RS2_TRADOPR_SEQ.NEXTVAL,RS2_DOCPR_SEQ.CURRVAL, TDS_CODIDI, TDS_TITULO,TDS_DESCRI, TDS_CODARC
+                                  FROM R1_SERVICIOS_DOC_TRAD
+                                 WHERE TDS_CODDSR = documento.DSR_CODI
+                                ;
+                              orden := orden + 1;
+                        END LOOP;
+                    END IF;
                     /** INTRODUCIMOS LAS MATERIAS. **/
                 FOR ROLSAC1_MATERIAS IN cursorMateriasRolsac1(codigo) 
                 LOOP  
@@ -471,35 +579,7 @@ BEGIN
                     INSERT INTO RS2_PRCPUB(PRPO_CODPRWF, PRPO_TIPPOBJ)
                     VALUES (CODIGO_PROCWF, ROLSAC1_PUBOBJ.PSR_CODPOB);
                 END LOOP;
-                                
-                /** INTRODUCIMOS LAS MATERIAS. **/
-                FOR ROLSAC1_MATERIAS IN cursorMateriasRolsac1(codigo) 
-                LOOP  
-                    SELECT COUNT(TPMS_CODIGO)
-                      INTO CODIGOSIAEXIST
-                      FROM RS2_TIPOMSI
-                     WHERE TPMS_CODSIA IN (
-                                SELECT MAT_CODSIA
-                                 FROM R1_MATERIAS
-                                WHERE MAT_CODI = ROLSAC1_MATERIAS.SRM_CODMAT
-                            );
-                       
-                    IF CODIGOSIAEXIST > 0 
-                    THEN
-                         SELECT TPMS_CODIGO
-                          INTO CODIGOSIAR2
-                          FROM RS2_TIPOMSI
-                         WHERE TPMS_CODSIA IN (
-                                    SELECT MAT_CODSIA
-                                     FROM R1_MATERIAS
-                                    WHERE MAT_CODI = ROLSAC1_MATERIAS.SRM_CODMAT
-                                )
-                           AND ROWNUM = 1;
-                           
-                        INSERT INTO RS2_PRCMAS(PRMS_CODPRWF, PRMS_TIPMSIA)
-                        VALUES (CODIGO_PROCWF, CODIGOSIAR2);
-                    END IF;
-                END LOOP;
+                        
                     commit;
                     dbms_lob.writeappend(l_clob, length('El serv ' || codigo || ' "' || NOMBRE || '" se ha migrado.'), 'El serv ' || codigo || ' "' || NOMBRE || '" se ha migrado.');
 

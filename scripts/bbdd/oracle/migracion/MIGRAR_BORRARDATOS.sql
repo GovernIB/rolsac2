@@ -176,6 +176,13 @@ BEGIN
         DELETE FROM RS2_UNIADM WHERE UNAD_CODIGO = UA.UNAD_CODIGO;
   END LOOP;
 
+  /** BORRAMOS LA DOCUMENTACION DE PROCEDIMIENTO, DOCUMENTACION DE NORMATIVAS Y FICHEROS PARA ASEGURARNOS**/
+  DELETE FROM RS2_TRADOPR;
+  DELETE FROM RS2_DOCPR;
+  DELETE FROM RS2_TRADONO;
+  DELETE FROM RS2_DOCNORM;
+  DELETE FROM RS2_FICEXT;
+
   /** ACTIVAMOS LA FK **/
   EXECUTE IMMEDIATE 'ALTER TABLE RS2_UNIADM ENABLE CONSTRAINT RS2_UNIADM_UNIADM_FK';
 
@@ -188,7 +195,7 @@ EXCEPTION
     WHEN OTHERS THEN
             ROLLBACK;
             dbms_output.put_line('SQLCODE:' || SQLCODE);
-             dbms_output.put_line('SQLERRM:' || SQLERRM);
+            dbms_output.put_line('SQLERRM:' || SQLERRM);
             dbms_lob.writeappend(l_clob, length('SE HA PRODUCIDO UN ERROR\n'), 'SE HA PRODUCIDO UN ERROR\n');
             dbms_lob.writeappend(l_clob, length('El error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '. \n'), 'El error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '. \n');
             dbms_lob.close(l_clob);

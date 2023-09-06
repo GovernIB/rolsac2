@@ -7,7 +7,6 @@ import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoMateriaSIAPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoNormativaPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoPublicoObjectivoPK;
-import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoDocumentoTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
@@ -1854,6 +1853,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 sql.append(" AND ( wf.estado = :estado) ");
             }
         }
+        if (filtro.isRellenoEstados()) {
+            if (ambosWf) {
+                sql.append(" AND ( wf.estado IN (:estados) OR wf2.estado in (:estados)) ");
+            } else {
+                sql.append(" AND ( wf.estado IN (:estados)) ");
+            }
+        }
         if (filtro.isRellenoFinVia()) {
             if (ambosWf) {
                 sql.append(" AND (wf.tipoVia.codigo = :finVia or wf2.tipoVia.codigo = :finVia) ");
@@ -1864,7 +1870,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoTramiteVigente()) {
             //ROLSAC1
             //t.fase = 1 AND (t.dataInici > current_date OR t.dataInici IS NULL) AND (t.dataTancament < current_date OR t.dataTancament IS NULL)
-            if(filtro.getEsProcedimiento()) {
+            if (filtro.getEsProcedimiento()) {
                 if ("S".equals(filtro.getTramiteVigente())) {
                     if (ambosWf) {
                         sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t where t.fase = 1 and (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND (t.fechaInicio < current_date OR t.fechaInicio IS NULL) AND (t.fechaCierre > current_date OR t.fechaCierre IS NULL) )");
@@ -2127,6 +2133,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoEstado()) {
             query.setParameter("estado", filtro.getEstado());
         }
+        if (filtro.isRellenoEstados()) {
+            query.setParameter("estados", filtro.getEstados());
+        }
         if (filtro.isRellenoCodigoUaDir3()) {
             query.setParameter("codigoUaDir3", "%" + filtro.getCodigoUaDir3().toUpperCase() + "%");
         }
@@ -2179,8 +2188,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if ("nombre".equals(order)) {
             return "t.nombre " + (ascendente ? " asc " : "desc ") + " , t2.nombre ";
         }
-        if("fechaPublicacion".equals(order)) {
-            if(ambosWf) {
+        if ("fechaPublicacion".equals(order)) {
+            if (ambosWf) {
                 return "CASE WHEN WF.fechaPublicacion is null THEN WF2.fechaPublicacion ELSE WF.fechaPublicacion END";
             } else {
                 return "WF.fechaPublicacion";
@@ -2336,6 +2345,19 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         return docs;
+    }
+
+    @Override
+    public void actualizarUA(Long codigoUAOriginal, Long codigoUANueva) {
+        Query queryUAResponsable = entityManager.createQuery("update JProcedimientoWorkflow  set uaResponsable = " + codigoUANueva + " WHERE uaResponsable = " + codigoUAOriginal);
+        queryUAResponsable.executeUpdate();
+
+        Query queryUAInstructor = entityManager.createQuery("update JProcedimientoWorkflow  set uaInstructor = " + codigoUANueva + " WHERE uaInstructor = " + codigoUAOriginal);
+        queryUAInstructor.executeUpdate();
+
+        Query queryUATramites = entityManager.createQuery("update JProcedimientoTramite  set unidadAdministrativa = " + codigoUANueva + " WHERE unidadAdministrativa = " + codigoUAOriginal);
+        queryUATramites.executeUpdate();
+
     }
 
     private boolean contiene(List<ProcedimientoDocumentoDTO> docs, JProcedimientoDocumento jdoc) {

@@ -302,4 +302,23 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         query.setParameter("idEntidad", idEntidad);
         return query.getResultList();
     }
+
+    @Override
+    public NormativaDTO getNormativaBaja(Long codigoUA) {
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JNormativaUnidadAdministrativa j where j.normativa.codigo = :codigoUA ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoUA", codigoUA);
+        Long resultado = (Long) query.getSingleResult();
+        //O hay 1 normativa o hay ninguna
+        if (resultado.compareTo(1l) == 0) {
+            sql = new StringBuilder("SELECT j.normativa FROM JNormativaUnidadAdministrativa j where j.normativa.codigo = :codigoUA ");
+            query = entityManager.createQuery(sql.toString());
+            query.setParameter("codigoUA", codigoUA);
+            JNormativa jnorma = (JNormativa) query.getResultList().get(0);
+            return converter.createDTO(jnorma);
+        } else {
+            return null;
+        }
+    }
+
 }

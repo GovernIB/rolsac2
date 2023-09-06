@@ -41,6 +41,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private List<TipoMateriaSIAGridDTO> materias;
     private List<NormativaGridDTO> normativas;
     private String estado;
+    private List<String> estados;
     private boolean hijasActivas = false;
     private List<Long> idUAsHijas;
 
@@ -143,14 +144,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     }
 
     public String getEstadoWF() {
-		return estadoWF;
-	}
+        return estadoWF;
+    }
 
-	public void setEstadoWF(String estadoWF) {
-		this.estadoWF = estadoWF;
-	}
+    public void setEstadoWF(String estadoWF) {
+        this.estadoWF = estadoWF;
+    }
 
-	public TipoSilencioAdministrativoDTO getSilencioAdministrativo() {
+    public TipoSilencioAdministrativoDTO getSilencioAdministrativo() {
         return silencioAdministrativo;
     }
 
@@ -196,6 +197,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public List<String> getEstados() {
+        return estados;
+    }
+
+    public void setEstados(List<String> estados) {
+        this.estados = estados;
     }
 
     public List<TipoPublicoObjetivoEntidadGridDTO> getPublicoObjetivos() {
@@ -266,6 +275,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
             return texto.toString().substring(0, texto.toString().length() - 1);
         }
     }
+
     public List<Long> getTemasId() {
         List<Long> idTemas = new ArrayList<>();
         for (TemaGridDTO tema : temas) {
@@ -508,6 +518,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return estado != null && !estado.isEmpty();
     }
 
+    public boolean isRellenoEstados() {
+        return estados != null && !estados.isEmpty();
+    }
+
     public boolean isRellenoNormativas() {
         return normativas != null && !normativas.isEmpty();
     }
@@ -519,6 +533,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public boolean isRellenoMaterias() {
         return materias != null && !materias.isEmpty();
     }
+
     public boolean isRellenoTemas() {
         return temas != null && !temas.isEmpty();
     }
@@ -527,7 +542,9 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return hijasActivas;
     }
 
-    public boolean isRellenoUasAux() {return idsUAsHijasAux != null; }
+    public boolean isRellenoUasAux() {
+        return idsUAsHijasAux != null;
+    }
 
     public boolean isRellenoTodasUnidadesOrganicas() {
         return todasUnidadesOrganicas;
@@ -561,31 +578,31 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return mensajesPendiente != null && !mensajesPendiente.isEmpty();
     }
 
-	public String getFechaPublicacionDesde() {
-		return fechaPublicacionDesde;
-	}
+    public String getFechaPublicacionDesde() {
+        return fechaPublicacionDesde;
+    }
 
-	public void setFechaPublicacionDesde(String fechaPublicacionDesde) {
-		this.fechaPublicacionDesde = fechaPublicacionDesde;
-	}
+    public void setFechaPublicacionDesde(String fechaPublicacionDesde) {
+        this.fechaPublicacionDesde = fechaPublicacionDesde;
+    }
 
-	public String getFechaPublicacionHasta() {
-		return fechaPublicacionHasta;
-	}
+    public String getFechaPublicacionHasta() {
+        return fechaPublicacionHasta;
+    }
 
-	public void setFechaPublicacionHasta(String fechaPublicacionHasta) {
-		this.fechaPublicacionHasta = fechaPublicacionHasta;
-	}
+    public void setFechaPublicacionHasta(String fechaPublicacionHasta) {
+        this.fechaPublicacionHasta = fechaPublicacionHasta;
+    }
 
-	public String getCodigoUaDir3() {
-		return codigoUaDir3;
-	}
+    public String getCodigoUaDir3() {
+        return codigoUaDir3;
+    }
 
-	public void setCodigoUaDir3(String codigoUaDir3) {
-		this.codigoUaDir3 = codigoUaDir3;
-	}
+    public void setCodigoUaDir3(String codigoUaDir3) {
+        this.codigoUaDir3 = codigoUaDir3;
+    }
 
-	@Override
+    @Override
     protected String getDefaultOrder() {
         return "id";
     }
@@ -610,7 +627,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return canales != null && !canales.isEmpty();
     }
 
-    public boolean isRellenoIdTramite(){
+    public boolean isRellenoIdTramite() {
         return idTramite != null;
     }
 

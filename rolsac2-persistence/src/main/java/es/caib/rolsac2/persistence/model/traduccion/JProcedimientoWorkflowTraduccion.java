@@ -40,8 +40,12 @@ public class JProcedimientoWorkflowTraduccion {
 
     @Column(name = "TRPW_DPDEST")
     private String datosPersonalesDestinatario;
+
     @Column(name = "TRPW_DPDOC")
     private Long documentoLOPD;
+
+    @Column(name = "TRPW_KEYWORD")
+    private String keywords;
 
     /**
      * PARA PROC: REQUISITOS
@@ -160,7 +164,15 @@ public class JProcedimientoWorkflowTraduccion {
     public void setTerminoResolucion(String trpwPrreso) {
         this.terminoResolucion = trpwPrreso;
     }
- 
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

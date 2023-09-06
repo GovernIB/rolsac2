@@ -111,7 +111,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 idsUa.add(sessionBean.getUnidadActiva().getCodigo());
                 filtro.setIdUAsHijas(idsUa);
             }
-        } else if(filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()){
+        } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
             filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
         }
     }
@@ -122,6 +122,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setEsProcedimiento(Boolean.TRUE);
+        filtro.setOrder("DESCENDING");
         filtro.setTipo("P");
     }
 
@@ -306,9 +307,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
      * El buscar desde el evento de seleccionar una UA.
      */
     public void buscarEvt() {
-        if(filtro.isTodasUnidadesOrganicas()) {
+        if (filtro.isTodasUnidadesOrganicas()) {
             filtroUnidadOrganicasChange();
-        } else if(filtro.isHijasActivas()) {
+        } else if (filtro.isHijasActivas()) {
             filtroHijasActivasChange();
         }
         if (filtro.getIdUA() == null || filtro.getIdUA().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
@@ -343,7 +344,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
                     }
-                    if(filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
+                    if (filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
                         List<Long> unidadesHijasAux = new ArrayList<>(filtro.getIdUAsHijas());
                         filtro.setIdUAsHijas(unidadesHijasAux.subList(0, 999));
                         filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));

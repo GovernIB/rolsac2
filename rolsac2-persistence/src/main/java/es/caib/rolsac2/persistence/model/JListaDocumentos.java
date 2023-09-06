@@ -7,10 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @SequenceGenerator(name = "lista-doc-sequence", sequenceName = "RS2_LSTDOC_SEQ", allocationSize = 1)
-@Table(name = "RS2_LSTDOC",
-        indexes = {
-                @Index(name = "RS2_LSTDOC_PK_I", columnList = "LSDO_CODIGO")
-        })
+@Table(name = "RS2_LSTDOC", indexes = {@Index(name = "RS2_LSTDOC_PK_I", columnList = "LSDO_CODIGO")})
 public class JListaDocumentos {
     /**
      * Codigo

@@ -109,7 +109,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                 idsUa.add(sessionBean.getUnidadActiva().getCodigo());
                 filtro.setIdUAsHijas(idsUa);
             }
-        } else if(filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()){
+        } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
             filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
         }
     }
@@ -121,6 +121,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setTipo("S");
         filtro.setEsProcedimiento(Boolean.FALSE);
+        filtro.setOrder("DESCENDING");
         canalesSeleccionados = new String[0];
     }
 
@@ -151,7 +152,7 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void dblClickProcedimiento() {
         if (datoSeleccionado != null) {
-            if (datoSeleccionado.getCodigoWFMod() != null && !isInformador())  {
+            if (datoSeleccionado.getCodigoWFMod() != null && !isInformador()) {
                 editarProcedimiento();
             } else if (datoSeleccionado.getCodigoWFPub() != null || isInformador()) {
                 consultarProcedimiento();
@@ -308,9 +309,9 @@ public class ViewServicios extends AbstractController implements Serializable {
      * El buscar desde el evento de seleccionar una UA.
      */
     public void buscarEvt() {
-        if(filtro.isTodasUnidadesOrganicas()) {
+        if (filtro.isTodasUnidadesOrganicas()) {
             filtroUnidadOrganicasChange();
-        } else if(filtro.isHijasActivas()) {
+        } else if (filtro.isHijasActivas()) {
             filtroHijasActivasChange();
         }
         if (filtro.getIdUA() == null || filtro.getIdUA().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
@@ -327,8 +328,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             public ServicioGridDTO getRowData(String rowKey) {
                 if (getWrappedData() != null) {
                     for (ServicioGridDTO proc : (List<ServicioGridDTO>) getWrappedData()) {
-                        if (proc.getCodigo().toString().equals(rowKey))
-                            return proc;
+                        if (proc.getCodigo().toString().equals(rowKey)) return proc;
                     }
                 }
                 return null;
@@ -340,19 +340,18 @@ public class ViewServicios extends AbstractController implements Serializable {
             }
 
             @Override
-            public List<ServicioGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-                                              Map<String, FilterMeta> filterBy) {
+            public List<ServicioGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
                     }
-                    if(filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
+                    if (filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
                         List<Long> unidadesHijasAux = new ArrayList<>(filtro.getIdUAsHijas());
                         filtro.setIdUAsHijas(unidadesHijasAux.subList(0, 999));
                         filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));
                     }
-                    if(canalesSeleccionados!= null && canalesSeleccionados.length > 0) {
+                    if (canalesSeleccionados != null && canalesSeleccionados.length > 0) {
                         filtro.setCanales(Arrays.asList(canalesSeleccionados));
                     }
                     Pagina<ServicioGridDTO> pagina = procedimientoService.findServiciosByFiltro(filtro);

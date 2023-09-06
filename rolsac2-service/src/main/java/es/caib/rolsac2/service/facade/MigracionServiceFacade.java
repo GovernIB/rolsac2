@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.facade;
 
 
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.migracion.FicheroInfo;
+import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 
 import javax.annotation.security.RolesAllowed;
@@ -74,6 +76,7 @@ public interface MigracionServiceFacade {
      */
     List<BigDecimal> getProcedimientos(Long idEntidad, Long idUARaiz);
 
+
     /**
      * Ejecuta el método de migrar procedimientos y servicios.
      *
@@ -119,4 +122,46 @@ public interface MigracionServiceFacade {
      * @return
      */
     String migrarUsuarios();
+
+    /**
+     * Desactiva el FK de documentos hacia ficheros
+     *
+     * @return
+     */
+    String desactivarRestriccionDocumento();
+
+    /**
+     * Activa el FK de documentos hacia ficheros
+     *
+     * @return
+     */
+    String activarRestriccionDocumento();
+
+    /**
+     * Obtiene la lista de archivos
+     *
+     * @param idEntidad
+     * @param idUARaiz
+     * @return
+     */
+    List<FicheroInfo> getDocumentosProcedimientos(Long idEntidad, Long idUARaiz);
+
+    /**
+     * Obtiene la lista de archivos
+     *
+     * @param idEntidad
+     * @param idUARaiz
+     * @return
+     */
+    List<FicheroInfo> getDocumentosNormativas(Long idEntidad, Long idUARaiz);
+
+    /**
+     * Migra el documento.
+     *
+     * @param ficheroInfo
+     * @param entidad
+     * @param uaRaiz
+     * @return
+     */
+    String migrarDocumentos(FicheroInfo ficheroInfo, Long entidad, Long uaRaiz, String pathAlmacenamientoRolsac1, String pathAlmacenamiento, TypeFicheroExterno tipoficheroExterno);
 }

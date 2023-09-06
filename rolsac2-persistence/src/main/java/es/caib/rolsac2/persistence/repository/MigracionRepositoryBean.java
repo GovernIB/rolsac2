@@ -1,9 +1,14 @@
 package es.caib.rolsac2.persistence.repository;
 
+import es.caib.rolsac2.persistence.model.JDocumentoNormativaTraduccion;
+import es.caib.rolsac2.persistence.model.JFicheroExterno;
 import es.caib.rolsac2.persistence.model.JProceso;
+import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoDocumentoTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.migracion.FicheroInfo;
+import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import org.hibernate.procedure.ProcedureOutputs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +74,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
 
     @Override
     public List<BigDecimal> getServicios(Long idEntidad, Long codigoUARaiz) {
-        Query query = this.entityManager.createNativeQuery("   SELECT SER_CODI  FROM R1_SERVICIOS WHERE CHECK_CUELGA_UA_PROC(SER_INSTRU, " + codigoUARaiz + ") = 1");
+        Query query = this.entityManager.createNativeQuery("   SELECT SER_CODI  FROM R1_SERVICIOS WHERE CHECK_CUELGA_UA_PROC(SER_SERRSP, " + codigoUARaiz + ") = 1");
         return query.getResultList();
     }
 
@@ -121,6 +126,109 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
     }
 
     @Override
+    public String desactivarRestriccionDocumento() {
+        StoredProcedureQuery query = this.entityManager.createStoredProcedureQuery("DESACTIVAR_RESTRICCIONES_DOCS");
+        String resultado = "";
+        try {
+
+            // call the stored procedure and get the result
+            query.execute();
+            //query.executeUpdate();
+        } catch (Exception e) {
+            LOG.error("Error importando usuario ", e);
+            return e.getLocalizedMessage();
+        }
+        String retorno = "ok";
+        query.unwrap(ProcedureOutputs.class).release();
+        return retorno;
+    }
+
+    @Override
+    public String activarRestriccionDocumento() {
+        StoredProcedureQuery query = this.entityManager.createStoredProcedureQuery("ACTIVAR_RESTRICCIONES_DOCS");
+        String resultado = "";
+        try {
+
+            // call the stored procedure and get the result
+            query.execute();
+            //query.executeUpdate();
+        } catch (Exception e) {
+            LOG.error("Error importando usuario ", e);
+            return e.getLocalizedMessage();
+        }
+        String retorno = "ok";
+        query.unwrap(ProcedureOutputs.class).release();
+        return retorno;
+    }
+
+    @Override
+    public List<FicheroInfo> getDocumentos(Long idEntidad, Long uaRaiz, boolean soloProcedimiento, boolean soloNormativas) {
+        Query query;
+        if (soloProcedimiento) {
+            query = this.entityManager.createQuery(" SELECT p.codigo, p.ficheroRolsac1  FROM JProcedimientoDocumentoTraduccion p where p.fichero is null and p.ficheroRolsac1 is not null");
+        } else {
+            query = this.entityManager.createQuery(" SELECT p.codigo, p.ficheroRolsac1  FROM JDocumentoNormativaTraduccion p where p.documento is null and p.ficheroRolsac1 is not null");
+        }
+
+        List<FicheroInfo> retorno = new ArrayList<>();
+        List<Object[]> resultados = query.getResultList();
+        if (resultados != null) {
+            for (Object[] resultado : resultados) {
+                FicheroInfo fichero = new FicheroInfo();
+                fichero.setCodigoDocumentoTraduccion((Long) resultado[0]);
+                fichero.setCodigoFicheroRolsac1((Long) resultado[1]);
+                retorno.add(fichero);
+            }
+        }
+        return retorno;
+    }
+
+
+    @Override
+    public Long getProcedimiento(Long codigo) {
+        JProcedimientoDocumentoTraduccion jProcedimientoDocumentoTraduccion = entityManager.find(JProcedimientoDocumentoTraduccion.class, codigo);
+        Long codigoListaDoc = jProcedimientoDocumentoTraduccion.getDocumento().getListaDocumentos();
+        List<Long> resultados = entityManager.createQuery("Select procwf.procedimiento.codigo from JProcedimientoWorkflow procwf where procwf.listaDocumentos = " + codigoListaDoc + " or procwf.listaDocumentosLOPD = " + codigoListaDoc).getResultList();
+        if (resultados != null && !resultados.isEmpty()) {
+            //Lo devolvemos el procedimiento base
+            return (Long) resultados.get(0);
+        }
+
+        List<Long> resultadosTramite = entityManager.createQuery("Select tram.procedimiento.procedimiento.codigo from JProcedimientoTramite tram where tram.listaDocumentos = " + codigoListaDoc + " or tram.listaModelos = " + codigoListaDoc).getResultList();
+        if (resultadosTramite != null && !resultadosTramite.isEmpty()) {
+            return (Long) resultadosTramite.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public void migrarArchivo(Long idFichero, Long codigoPadre, TypeFicheroExterno tipoficheroExterno) {
+        if (tipoficheroExterno == TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS) {
+            JProcedimientoDocumentoTraduccion doc = this.entityManager.find(JProcedimientoDocumentoTraduccion.class, codigoPadre);
+            doc.setFichero(idFichero);
+            entityManager.merge(doc);
+        } else {
+            JDocumentoNormativaTraduccion doc = this.entityManager.find(JDocumentoNormativaTraduccion.class, codigoPadre);
+            JFicheroExterno jficheroExterno = this.entityManager.find(JFicheroExterno.class, idFichero);
+            doc.setDocumento(jficheroExterno);
+            entityManager.merge(doc);
+        }
+    }
+
+    @Override
+    public Long getNormativa(Long codigo) {
+        JDocumentoNormativaTraduccion jDocumentoNormativaTraduccion = entityManager.find(JDocumentoNormativaTraduccion.class, codigo);
+        return jDocumentoNormativaTraduccion.getDocumentoNormativa().getNormativa().getCodigo();
+    }
+
+    @Override
+    public boolean existeArchivo(Long idDoc) {
+        Query query = this.entityManager.createQuery("select count(p) from JFicheroExterno p where p.codigo = " + idDoc);
+        return ((Long) query.getSingleResult()) > 0l;
+    }
+
+
+    @Override
     public String importarProcedimiento(Long idProc, Long codigoEntidad) {
         return importarProcedimientoServicio("MIGRAR_PROC", idProc, codigoEntidad);
     }
@@ -156,7 +264,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
 
     @Override
     public List<BigDecimal> getUAs(Long idEntidad, Long idUARaiz) {
-        Query query = this.entityManager.createNativeQuery(" SELECT UNA_CODI  FROM R1_UNIADM " + " WHERE CHECK_CUELGA_UA_PROC(UNA_CODI, " + idUARaiz + ") = 1 " + " ORDER BY OBTENER_PROF_UA(UNA_CODI) ");
+        Query query = this.entityManager.createNativeQuery(" SELECT UNA_CODI  FROM ROLSAC.RSC_UNIADM " + " WHERE CHECK_CUELGA_UA_PROC(UNA_CODI, " + idUARaiz + ") = 1 " + " ORDER BY OBTENER_PROF_UA(UNA_CODI) ");
         return query.getResultList();
     }
 
@@ -189,7 +297,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
 
     @Override
     public List<UnidadAdministrativaDTO> getUnidadAdministrativasRaiz() {
-        String sql = "select una_codi, " + "    ( SELECT TUN_NOMBRE FROM  R1_UNIADM_TRAD WHERE TUN_CODUNA = UA.una_codi and tun_codidi = 'ca'), " + "    ( SELECT TUN_NOMBRE FROM  R1_UNIADM_TRAD WHERE TUN_CODUNA = UA.una_codi and tun_codidi = 'es')  " + " from R1_UNIADM UA where una_coduna is null";
+        String sql = "select una_codi, " + "    ( SELECT TUN_NOMBRE FROM  ROLSAC.RSC_TRAUNA WHERE TUN_CODUNA = UA.una_codi and tun_codidi = 'ca'), " + "    ( SELECT TUN_NOMBRE FROM  ROLSAC.RSC_TRAUNA WHERE TUN_CODUNA = UA.una_codi and tun_codidi = 'es')  " + " from R1_UNIADM UA where una_coduna is null";
         Query query = this.entityManager.createNativeQuery(sql);
         List<Object[]> valores = query.getResultList();
         List<UnidadAdministrativaDTO> retorno = new ArrayList<>();

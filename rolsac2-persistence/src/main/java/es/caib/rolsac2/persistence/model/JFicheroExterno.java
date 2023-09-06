@@ -8,10 +8,7 @@ import java.util.Date;
  */
 @Entity
 @SequenceGenerator(name = "fichero-ext-sequence", sequenceName = "RS2_FICEXT_SEQ", allocationSize = 1)
-@Table(name = "RS2_FICEXT",
-        indexes = {
-                @Index(name = "RS2_FICEXT_PK_I", columnList = "FIE_REFDOC")
-        })
+@Table(name = "RS2_FICEXT", indexes = {@Index(name = "RS2_FICEXT_PK_I", columnList = "FIE_REFDOC")})
 public class JFicheroExterno {
     /**
      * Codigo
@@ -67,7 +64,7 @@ public class JFicheroExterno {
     /**
      * Obtiene referencia.
      *
-     * @return  referencia
+     * @return referencia
      */
     public String getReferencia() {
         return referencia;
@@ -76,7 +73,7 @@ public class JFicheroExterno {
     /**
      * Establece referencia.
      *
-     * @param id  id
+     * @param id id
      */
     public void setReferencia(String id) {
         this.referencia = id;
@@ -85,7 +82,7 @@ public class JFicheroExterno {
     /**
      * Obtiene fecha.
      *
-     * @return  fecha
+     * @return fecha
      */
     public Date getFecha() {
         return fecha;
@@ -94,7 +91,7 @@ public class JFicheroExterno {
     /**
      * Establece fecha.
      *
-     * @param fieReffec  fie reffec
+     * @param fieReffec fie reffec
      */
     public void setFecha(Date fieReffec) {
         this.fecha = fieReffec;
@@ -103,7 +100,7 @@ public class JFicheroExterno {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -112,7 +109,7 @@ public class JFicheroExterno {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -121,7 +118,7 @@ public class JFicheroExterno {
     /**
      * Is borrar boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isBorrar() {
         return borrar;
@@ -130,7 +127,7 @@ public class JFicheroExterno {
     /**
      * Establece borrar.
      *
-     * @param borrar  borrar
+     * @param borrar borrar
      */
     public void setBorrar(boolean borrar) {
         this.borrar = borrar;
@@ -139,7 +136,7 @@ public class JFicheroExterno {
     /**
      * Is temporal boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isTemporal() {
         return temporal;
@@ -148,7 +145,7 @@ public class JFicheroExterno {
     /**
      * Establece temporal.
      *
-     * @param temporal  temporal
+     * @param temporal temporal
      */
     public void setTemporal(boolean temporal) {
         this.temporal = temporal;
@@ -157,7 +154,7 @@ public class JFicheroExterno {
     /**
      * Obtiene filename.
      *
-     * @return  filename
+     * @return filename
      */
     public String getFilename() {
         return filename;
@@ -166,7 +163,7 @@ public class JFicheroExterno {
     /**
      * Establece filename.
      *
-     * @param filename  filename
+     * @param filename filename
      */
     public void setFilename(String filename) {
         this.filename = filename;
@@ -175,7 +172,7 @@ public class JFicheroExterno {
     /**
      * Obtiene tipo.
      *
-     * @return  tipo
+     * @return tipo
      */
     public String getTipo() {
         return tipo;
@@ -184,7 +181,7 @@ public class JFicheroExterno {
     /**
      * Establece tipo.
      *
-     * @param tipo  tipo
+     * @param tipo tipo
      */
     public void setTipo(String tipo) {
         this.tipo = tipo;
@@ -193,7 +190,7 @@ public class JFicheroExterno {
     /**
      * Obtiene id elemento.
      *
-     * @return  id elemento
+     * @return id elemento
      */
     public Long getIdElemento() {
         return idElemento;
@@ -202,9 +199,10 @@ public class JFicheroExterno {
     /**
      * Establece id elemento.
      *
-     * @param idElemento  id elemento
+     * @param idElemento id elemento
      */
     public void setIdElemento(Long idElemento) {
         this.idElemento = idElemento;
     }
+ 
 }

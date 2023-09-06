@@ -247,8 +247,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<NormativaDTO> findByEntidad(Long idEntidad) {
         List<JNormativa> jNormativas = normativaRepository.findByEntidad(idEntidad);
         List<NormativaDTO> normativas = new ArrayList<>();
@@ -301,6 +300,15 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     public List<AfectacionDTO> findAfectacionesByNormativa(Long idNormativa) {
         List<JAfectacion> afectaciones = afectacionRepository.findAfectacionesRelacionadas(idNormativa);
         List<AfectacionDTO> afectacionesDTO = new ArrayList<>();
+        for (JAfectacion afectacion : afectaciones) {
+            AfectacionDTO afectacionDTO = new AfectacionDTO();
+            afectacionDTO.setCodigo(afectacion.getCodigo());
+            afectacionDTO.setNormativaOrigen(converter.createDTO(afectacion.getNormativaOrigen()).convertDTOtoGridDTO());
+            afectacionDTO.setNormativaAfectada(converter.createDTO(afectacion.getNormativaAfectada()).convertDTOtoGridDTO());
+            afectacionDTO.setTipo(tipoAfectacionConverter.createDTO(afectacion.getTipoAfectacion()));
+            afectacionesDTO.add(afectacionDTO);
+        }
+        afectaciones = afectacionRepository.findAfectacionesOrigen(idNormativa);
         for (JAfectacion afectacion : afectaciones) {
             AfectacionDTO afectacionDTO = new AfectacionDTO();
             afectacionDTO.setCodigo(afectacion.getCodigo());
@@ -482,35 +490,35 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         //procedimientoRepository.actualizarSolr(indexacionDTO, resultadoAccion);
     }
 
-	@Override
+    @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-	public Pagina<NormativaDTO> findByFiltroRest(NormativaFiltro filtro) {
-		try {
-			List<NormativaDTO> items = normativaRepository.findPagedByFiltroRest(filtro);
-			long total = normativaRepository.countByFiltro(filtro);
-			return new Pagina<>(items, total);
-		} catch (Exception e) {
-			LOG.error("Error", e);
-			List<NormativaDTO> items = new ArrayList<>();
-			long total = items.size();
-			return new Pagina<>(items, total);
-		}
-	}
+    public Pagina<NormativaDTO> findByFiltroRest(NormativaFiltro filtro) {
+        try {
+            List<NormativaDTO> items = normativaRepository.findPagedByFiltroRest(filtro);
+            long total = normativaRepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            List<NormativaDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
 
-	@Override
+    @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
-	public Pagina<DocumentoNormativaDTO> findDocumentoNormativaByFiltroRest(DocumentoNormativaFiltro filtro) {
-		try {
-			List<DocumentoNormativaDTO> items = documentoNormativaRepository.findPagedByFiltroRest(filtro);
-			long total = documentoNormativaRepository.countByFiltro(filtro);
-			return new Pagina<>(items, total);
-		} catch (Exception e) {
-			LOG.error("Error", e);
-			List<DocumentoNormativaDTO> items = new ArrayList<>();
-			long total = items.size();
-			return new Pagina<>(items, total);
-		}
-	}
+    public Pagina<DocumentoNormativaDTO> findDocumentoNormativaByFiltroRest(DocumentoNormativaFiltro filtro) {
+        try {
+            List<DocumentoNormativaDTO> items = documentoNormativaRepository.findPagedByFiltroRest(filtro);
+            long total = documentoNormativaRepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            List<DocumentoNormativaDTO> items = new ArrayList<>();
+            long total = items.size();
+            return new Pagina<>(items, total);
+        }
+    }
 
 
     /*******************************************************************************************************************

@@ -8,7 +8,10 @@ public enum TypePropiedadConfiguracion {
      * Propiedad para obtener el path de los ficheros externos
      */
     PATH_FICHEROS_EXTERNOS("ficherosExternos.path"),
-
+    /**
+     * Propiedad para obtener el path de los ficheros externos
+     */
+    PATH_FICHEROS_ROLSAC1("ficherosRolsac1.path"),
     /**
      * Propiedad para indicar el intérvalo de tiempo de los procesos
      */
@@ -21,12 +24,7 @@ public enum TypePropiedadConfiguracion {
     /**
      * LOPD
      **/
-    LOPD_FINALIDAD("es.caib.rolsac2.lopd.finalidad"),
-    LOPD_DESTINATARIO("es.caib.rolsac2.lopd.destinatario"),
-    LOPD_DERECHOS("es.caib.rolsac2.lopd.derechos"),
-    LOPD_RESPONSABLE("es.caib.rolsac2.lopd.responsable"),
-    LOPD_CABECERA("es.caib.rolsac2.lopd.cabecera"),
-    LOPD_PLANTILLA("es.caib.rolsac2.lopd.plantilla"),
+    LOPD_FINALIDAD("es.caib.rolsac2.lopd.finalidad"), LOPD_DESTINATARIO("es.caib.rolsac2.lopd.destinatario"), LOPD_DERECHOS("es.caib.rolsac2.lopd.derechos"), LOPD_RESPONSABLE("es.caib.rolsac2.lopd.responsable"), LOPD_CABECERA("es.caib.rolsac2.lopd.cabecera"), LOPD_PLANTILLA("es.caib.rolsac2.lopd.plantilla"),
     /**
      * UA COMUN
      **/

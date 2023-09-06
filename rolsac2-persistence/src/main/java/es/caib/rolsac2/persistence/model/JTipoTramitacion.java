@@ -338,7 +338,7 @@ public class JTipoTramitacion extends BaseEntity {
         return "JTipoTramitacion{" + "id=" + codigo + '}';
        /* return "JTipoTramitacion{" + "id=" + codigo + ", tramitPresencial="
                 + tramitPresencial + ", plantilla=" + plantilla + ", tramitElectronica=" + tramitElectronica
-                + ", urlTramitacion='" + urlTramitacion + '\'' + ", codPlatTramitacion=" + codPlatTramitacion
+                + '\'' + ", codPlatTramitacion=" + codPlatTramitacion
                 + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion + ", tramiteParametros='"
                 + tramiteParametros + '\'' + '}'; **/
     }

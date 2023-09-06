@@ -1,23 +1,5 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
@@ -30,6 +12,18 @@ import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -47,6 +41,8 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
 
     private UnidadAdministrativaFiltro filtro;
 
+    private boolean mostrarOcultas;
+
     public LazyDataModel<UnidadAdministrativaGridDTO> getLazyModel() {
         return lazyModel;
     }
@@ -61,6 +57,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
         filtro.setCodEnti(sessionBean.getEntidad().getCodigo());
+        mostrarOcultas = false;
         // Generamos una búsqueda
         buscar();
     }
@@ -89,14 +86,18 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
 
     public void buscar() {
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        if (mostrarOcultas) {
+            filtro.setEstado(null);
+        } else {
+            filtro.setEstado("V");
+        }
         lazyModel = new LazyDataModel<>() {
             private static final long serialVersionUID = 1L;
 
             @Override
             public UnidadAdministrativaGridDTO getRowData(String rowKey) {
                 for (UnidadAdministrativaGridDTO pers : (List<UnidadAdministrativaGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
@@ -107,8 +108,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
             }
 
             @Override
-            public List<UnidadAdministrativaGridDTO> load(int first, int pageSize, String sortField,
-                                                          SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<UnidadAdministrativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
@@ -138,7 +138,11 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            abrirVentana(TypeModoAcceso.EDICION);
+            if (datoSeleccionado.isVigente()) {
+                abrirVentana(TypeModoAcceso.EDICION);
+            } else {
+                abrirVentana(TypeModoAcceso.CONSULTA);
+            }
         }
     }
 
@@ -146,7 +150,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-        	abrirVentanaEvolucion(TypeModoAcceso.EDICION);
+            abrirVentanaEvolucion(TypeModoAcceso.EDICION);
         }
     }
 
@@ -157,7 +161,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     }
 
     public void dobleClickUa() {
-        if(isInformador()) {
+        if (isInformador()) {
             this.consultarUnidadAdministrativa();
         } else {
             this.editarUnidadAdministrativa();
@@ -176,8 +180,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     private void abrirVentana(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.datoSeleccionado != null
-                && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
+        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
         UtilJSF.openDialog("dialogUnidadAdministrativa", modoAcceso, params, true, 975, 733);
@@ -186,11 +189,10 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     private void abrirVentanaEvolucion(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.datoSeleccionado != null
-                && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
+        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogEvolucionUnidadAdministrativa", modoAcceso, params, true, 775, 424);
+        UtilJSF.openDialog("dialogEvolucionUnidadAdministrativa", modoAcceso, params, true, 775, 400);
     }
 
     public void borrarUnidadAdministrativa() {
@@ -232,5 +234,13 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
 
     public boolean isAdmContenidos() {
         return sessionBean.isPerfil(TypePerfiles.ADMINISTRADOR_CONTENIDOS);
+    }
+
+    public boolean isMostrarOcultas() {
+        return mostrarOcultas;
+    }
+
+    public void setMostrarOcultas(boolean mostrarOcultas) {
+        this.mostrarOcultas = mostrarOcultas;
     }
 }

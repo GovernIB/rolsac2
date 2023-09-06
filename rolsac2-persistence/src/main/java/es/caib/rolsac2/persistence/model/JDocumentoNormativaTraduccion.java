@@ -1,4 +1,5 @@
 package es.caib.rolsac2.persistence.model;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +10,8 @@ import java.util.Objects;
  */
 @Entity
 @SequenceGenerator(name = "documento-normativa-traduccion-sequence", sequenceName = "RS2_TRADONO_SEQ", allocationSize = 1)
-@Table(name = "RS2_TRADONO", indexes = {
-        @Index(name = "RS2_TRADONO_UK", columnList = "TRDN_CODDONO, TRDN_IDIOMA")
-})
-@NamedQueries({
-        @NamedQuery(name = JDocumentoNormativaTraduccion.FIND_BY_ID,
-                query = "select p from JDocumentoNormativaTraduccion p where p.codigo = :codigo")
-})
+@Table(name = "RS2_TRADONO", indexes = {@Index(name = "RS2_TRADONO_UK", columnList = "TRDN_CODDONO, TRDN_IDIOMA")})
+@NamedQueries({@NamedQuery(name = JDocumentoNormativaTraduccion.FIND_BY_ID, query = "select p from JDocumentoNormativaTraduccion p where p.codigo = :codigo")})
 public class JDocumentoNormativaTraduccion extends BaseEntity {
 
     /**
@@ -48,19 +44,19 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Titulo
      **/
-    @Column(name ="TRDN_TITULO", length = 512)
+    @Column(name = "TRDN_TITULO", length = 512)
     private String titulo;
 
     /**
      * Url
      **/
-    @Column(name="TRDN_URL", length = 512)
+    @Column(name = "TRDN_URL", length = 512)
     private String url;
 
     /**
      * Descripcion
      **/
-    @Column(name="TRDN_DESCR", length = 4000)
+    @Column(name = "TRDN_DESCR", length = 4000)
     private String descripcion;
 
     /**
@@ -70,12 +66,18 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     @JoinColumn(name = "TRDN_FICHER", nullable = false)
     private JFicheroExterno documento;
 
+    /**
+     * Documento
+     **/
+    @Column(name = "TRDN_FICROL1")
+    private Long ficheroRolsac1;
+
 
     /**
      * Crea una instancia de list.
      *
-     * @param idiomas  idiomas
-     * @return  list
+     * @param idiomas idiomas
+     * @return list
      */
     public static List<JDocumentoNormativaTraduccion> createInstance(List<String> idiomas) {
         List<JDocumentoNormativaTraduccion> traducciones = new ArrayList<>();
@@ -91,7 +93,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -100,7 +102,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -109,7 +111,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Obtiene documento normativa.
      *
-     * @return  documento normativa
+     * @return documento normativa
      */
     public JDocumentoNormativa getDocumentoNormativa() {
         return documentoNormativa;
@@ -118,7 +120,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Establece documento normativa.
      *
-     * @param documentoNormativa  documento normativa
+     * @param documentoNormativa documento normativa
      */
     public void setDocumentoNormativa(JDocumentoNormativa documentoNormativa) {
         this.documentoNormativa = documentoNormativa;
@@ -127,7 +129,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Obtiene idioma.
      *
-     * @return  idioma
+     * @return idioma
      */
     public String getIdioma() {
         return idioma;
@@ -136,7 +138,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Establece idioma.
      *
-     * @param idioma  idioma
+     * @param idioma idioma
      */
     public void setIdioma(String idioma) {
         this.idioma = idioma;
@@ -145,7 +147,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Obtiene titulo.
      *
-     * @return  titulo
+     * @return titulo
      */
     public String getTitulo() {
         return titulo;
@@ -154,7 +156,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Establece titulo.
      *
-     * @param titulo  titulo
+     * @param titulo titulo
      */
     public void setTitulo(String titulo) {
         this.titulo = titulo;
@@ -163,7 +165,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Obtiene url.
      *
-     * @return  url
+     * @return url
      */
     public String getUrl() {
         return url;
@@ -172,7 +174,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Establece url.
      *
-     * @param url  url
+     * @param url url
      */
     public void setUrl(String url) {
         this.url = url;
@@ -181,7 +183,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public String getDescripcion() {
         return descripcion;
@@ -190,7 +192,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
@@ -199,7 +201,7 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Obtiene documento.
      *
-     * @return  documento
+     * @return documento
      */
     public JFicheroExterno getDocumento() {
         return documento;
@@ -208,10 +210,18 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
     /**
      * Establece documento.
      *
-     * @param documento  documento
+     * @param documento documento
      */
     public void setDocumento(JFicheroExterno documento) {
         this.documento = documento;
+    }
+
+    public Long getFicheroRolsac1() {
+        return ficheroRolsac1;
+    }
+
+    public void setFicheroRolsac1(Long ficheroRolsac1) {
+        this.ficheroRolsac1 = ficheroRolsac1;
     }
 
     @Override
@@ -229,14 +239,6 @@ public class JDocumentoNormativaTraduccion extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JDocumentoNormativaTraduccion{" +
-                "codigo=" + codigo +
-                ", documentoNormativa=" + documentoNormativa +
-                ", idioma='" + idioma + '\'' +
-                ", titulo='" + titulo + '\'' +
-                ", url='" + url + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", documento=" + documento +
-                '}';
+        return "JDocumentoNormativaTraduccion{" + "codigo=" + codigo + ", documentoNormativa=" + documentoNormativa + ", idioma='" + idioma + '\'' + ", titulo='" + titulo + '\'' + ", url='" + url + '\'' + ", descripcion='" + descripcion + '\'' + ", documento=" + documento + '}';
     }
 }

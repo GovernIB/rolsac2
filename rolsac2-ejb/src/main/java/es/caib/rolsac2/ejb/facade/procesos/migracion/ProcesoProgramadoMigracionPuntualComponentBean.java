@@ -3,9 +3,13 @@ package es.caib.rolsac2.ejb.facade.procesos.migracion;
 import es.caib.rolsac2.ejb.facade.procesos.ProcesoProgramadoFacade;
 import es.caib.rolsac2.service.facade.MigracionServiceFacade;
 import es.caib.rolsac2.service.facade.ProcesoServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.ListaPropiedades;
 import es.caib.rolsac2.service.model.ResultadoProcesoProgramado;
+import es.caib.rolsac2.service.model.migracion.FicheroInfo;
+import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +48,8 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
     @Inject
     private MigracionServiceFacade migracionService;
 
+    @Inject
+    private SystemServiceFacade systemService;
     /**
      * log.
      */
@@ -76,6 +82,7 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
             String cargarDatosNormativas = params.getPropiedad("cargarNormativas");
             String cargarDatosProcedimientos = params.getPropiedad("cargarProcedimientos");
             String cargarDatosServicios = params.getPropiedad("cargarServicios");
+            String cargarDocumentos = params.getPropiedad("cargarDocumentos");
             Long entidad = Long.valueOf(params.getPropiedad("entidad"));
             Long uaRaiz = Long.valueOf(params.getPropiedad("uaRaiz"));
             String usuarios = params.getPropiedad("usuarios");
@@ -83,9 +90,6 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
 
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
             res.setFinalizadoOk(true);
-
-            //Primero desactivamos posibles restricciones (no hace ya falta)
-            //migracionService.ejecutarDesactivarRestricciones();
 
             if (borrarDatos != null && "true".equals(borrarDatos)) {
                 String result = migracionService.ejecutarMetodo("MIGRAR_BORRARDATOS", entidad.toString(), uaRaiz.toString()) + "\n";
@@ -143,6 +147,11 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                 detalles.addPropiedad("Cargar datos Normativas", "Ejecutado correctamente");
             }
 
+            if ((cargarDatosProcedimientos != null && "true".equals(cargarDatosProcedimientos)) || (cargarDatosServicios != null && "true".equals(cargarDatosServicios))) {
+                mensajeTraza.append("DESACTIVAMOS RESTRICCION DOCUMENTOS \n");
+                String result = migracionService.desactivarRestriccionDocumento();
+                mensajeTraza.append(result + "\n");
+            }
             if (cargarDatosProcedimientos != null && "true".equals(cargarDatosProcedimientos)) {
 
                 mensajeTraza.append("INICI MIGRACIO PROCEDIMIENTOS \n");
@@ -170,19 +179,45 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                     for (int i = 0; i < idServicios.size(); i += TAMANYO_BLOQUE) {
 
                         // Obtiene el bloque actual de 10 elementos
-                        //List<BigDecimal> bloque = obtenerBloque(idServicios, i, TAMANYO_BLOQUE);
-                        //String result = migracionService.migrarServicios(bloque, entidad, uaRaiz);
-                        //mensajeTraza.append(result);
+                        List<BigDecimal> bloque = obtenerBloque(idServicios, i, TAMANYO_BLOQUE);
+                        String result = migracionService.migrarServicios(bloque, entidad, uaRaiz);
+                        mensajeTraza.append(result);
                     }
                 }
                 mensajeTraza.append("FI MIGRACIO SERVICIOS \n");
                 detalles.addPropiedad("Cargar datos Servicios", "Ejecutado correctamente");
             }
+            if (cargarDocumentos != null && "true".equals(cargarDocumentos)) {
+                mensajeTraza.append("MIGRAMOS DOCUMENTOS DOCUMENTOS \n");
+                String rutaRolsac1 = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_ROLSAC1);
+                String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+                List<FicheroInfo> idDocs = migracionService.getDocumentosProcedimientos(idEntidad, uaRaiz);
+
+                if (idDocs != null && !idDocs.isEmpty()) {
+                    // Lo vamos a recorrer uno a uno, porque como hay creación de documentos en físico, mejor que si falla 1, no falle todo un bloque
+                    for (int i = 0; i < idDocs.size(); i++) {
+                        String result = migracionService.migrarDocumentos(idDocs.get(i), entidad, uaRaiz, rutaRolsac1, ruta, TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS);
+                        mensajeTraza.append(result);
+                    }
+                }
+                idDocs = migracionService.getDocumentosNormativas(idEntidad, uaRaiz);
+
+                if (idDocs != null && !idDocs.isEmpty()) {
+                    // Lo vamos a recorrer uno a uno, porque como hay creación de documentos en físico, mejor que si falla 1, no falle todo un bloque
+                    for (int i = 0; i < idDocs.size(); i++) {
+                        String result = migracionService.migrarDocumentos(idDocs.get(i), entidad, uaRaiz, rutaRolsac1, ruta, TypeFicheroExterno.NORMATIVA_DOCUMENTO);
+                        mensajeTraza.append(result);
+                    }
+                }
+                mensajeTraza.append("FI MIGRACIO DOCUMENTOS \n");
+                detalles.addPropiedad("Cargar datos Documentos", "Ejecutado correctamente");
+            }
+            if ((cargarDatosProcedimientos != null && "true".equals(cargarDatosProcedimientos)) || (cargarDatosServicios != null && "true".equals(cargarDatosServicios))) {
+                mensajeTraza.append("ACTIVAMOS RESTRICCION DOCUMENTOS \n");
+                String result = migracionService.activarRestriccionDocumento();
+                mensajeTraza.append(result + "\n");
+            }
             detalles.addPropiedad("Fin del procés", fechaFin);
-
-
-            res.setDetalles(detalles);
-
             res.setDetalles(detalles);
             res.setMensajeErrorTraza(mensajeTraza.toString());
         } catch (Exception e) {
@@ -218,6 +253,19 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
         return bloque;  // Retorna el bloque de elementos
     }
 
+    //Método para obtener un bloque de elementos
+    private List<Long> obtenerBloqueLong(List<Long> idUAs, int inicio, Integer tamanoBloque) {
+        int fin = Math.min(inicio + tamanoBloque, idUAs.size());  // Calcula el índice final del bloque
+        int tamano = fin - inicio;  // Calcula el tamaño real del bloque
 
+        List<Long> bloque = new ArrayList<>();  // Crea un nuevo array para el bloque
+
+        // Copia los elementos del array original al bloque
+        for (int i = inicio; i < fin; i++) {
+            bloque.add(idUAs.get(i));
+        }
+
+        return bloque;  // Retorna el bloque de elementos
+    }
 
 }
