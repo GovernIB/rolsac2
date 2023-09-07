@@ -221,11 +221,13 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<FicheroInfo> getDocumentosProcedimientos(Long idEntidad, Long uaRaiz) {
         return migracionRepository.getDocumentos(idEntidad, uaRaiz, true, false);
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<FicheroInfo> getDocumentosNormativas(Long idEntidad, Long uaRaiz) {
         return migracionRepository.getDocumentos(idEntidad, uaRaiz, false, true);
     }
@@ -237,6 +239,7 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
 
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String migrarDocumentos(FicheroInfo infoDoc, Long entidad, Long uaRaiz, String pathAlmacenamientoRolsac1, String pathAlmacenamiento, TypeFicheroExterno tipoficheroExterno) {
         StringBuilder resultado = new StringBuilder();
         try {

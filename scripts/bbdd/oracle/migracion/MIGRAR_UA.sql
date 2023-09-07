@@ -85,22 +85,8 @@ AS
     ***/
 
     CURSOR cursorTradUAsROLSAC1 (codUA NUMBER) IS
-        SELECT  TUN_CODIDI ,
-                TUN_NOMBRE,
-                TUN_PRESEN,
-                TUN_URL,
-                dbms_lob.substr@ROLSAC( (SELECT TUN_CVRESP FROM dual@ROLSAC), 4000, 1)      AS TUN_CVRESP1,
-                dbms_lob.substr@ROLSAC( (SELECT TUN_CVRESP FROM dual@ROLSAC), 4000, 4001)   AS TUN_CVRESP2,
-                dbms_lob.substr@ROLSAC( (SELECT TUN_CVRESP FROM dual@ROLSAC), 4000, 8001)   AS TUN_CVRESP3,
-                dbms_lob.substr@ROLSAC( (SELECT TUN_CVRESP FROM dual@ROLSAC), 4000, 12001)  AS TUN_CVRESP4,
-                /*
-                dbms_lob.substr(TUN_CVRESP, 4000, 1)      AS TUN_CVRESP1,
-                dbms_lob.substr(TUN_CVRESP, 4000, 4001)   AS TUN_CVRESP2,
-                dbms_lob.substr(TUN_CVRESP, 4000, 8001)   AS TUN_CVRESP3,
-                dbms_lob.substr(TUN_CVRESP, 4000, 12001)  AS TUN_CVRESP4
-                 */
-                TUN_ABREVI
-          FROM  R1_UNIADM_TRAD
+        SELECT * 
+          FROM R1_UNIADM_TRAD
          WHERE TUN_CODUNA = codUA;
     CURSOR cursorUserUAsROLSAC1 (codUA NUMBER) IS
         SELECT *
@@ -179,50 +165,30 @@ BEGIN
         FROM R1_UNIADM
         WHERE UNA_CODI = codigoUA;
 
-        /** INTRODUCIMOS LAS TRADUCCIONES **/
+        /** INTRODUCIMOS LAS TRADUCCIONES **/ 
         FOR ROLSAC1_TRADUA IN cursorTradUAsROLSAC1(codigoUA)
         LOOP
+            INSERT INTO RS2_TRAUNAD(
+                TRUA_CODIGO, 
+                TRUA_CODUNAD,
+                TRUA_IDIOMA,
+                TRUA_NOMBRE,
+                TRUA_PRESEN,
+                TRUA_URLWEB,
+                TRUA_RSPCV,
+                TRUA_ABREVI )
+               VALUES (
+                RS2_TRAUNAD_SEQ.NEXTVAL,
+                codigoUA,
+                ROLSAC1_TRADUA.TUN_CODIDI,
+                ROLSAC1_TRADUA.TUN_NOMBRE,
+                ROLSAC1_TRADUA.TUN_PRESEN,
+                ROLSAC1_TRADUA.TUN_URL,
+                ROLSAC1_TRADUA.TUN_CVRESP,
+                ROLSAC1_TRADUA.TUN_ABREVI
+               );
 
-                                dbms_lob.createtemporary(TUN_CVRESP, TRUE);
-                                dbms_lob.open(TUN_CVRESP, dbms_lob.lob_readwrite);
-                                IF ROLSAC1_TRADUA.TUN_CVRESP1 IS NOT NULL AND LENGTH(ROLSAC1_TRADUA.TUN_CVRESP1) > 0
-                                THEN
-                                    dbms_lob.writeappend(TUN_CVRESP, length(ROLSAC1_TRADUA.TUN_CVRESP1), ROLSAC1_TRADUA.TUN_CVRESP1);
-                                END IF;
-                                IF ROLSAC1_TRADUA.TUN_CVRESP2 IS NOT NULL AND LENGTH(ROLSAC1_TRADUA.TUN_CVRESP2) > 0
-                                THEN
-                                    dbms_lob.writeappend(TUN_CVRESP, length(ROLSAC1_TRADUA.TUN_CVRESP2), ROLSAC1_TRADUA.TUN_CVRESP2);
-                                END IF;
-                                IF ROLSAC1_TRADUA.TUN_CVRESP3 IS NOT NULL AND LENGTH(ROLSAC1_TRADUA.TUN_CVRESP3) > 0
-                                THEN
-                                    dbms_lob.writeappend(TUN_CVRESP, length(ROLSAC1_TRADUA.TUN_CVRESP3), ROLSAC1_TRADUA.TUN_CVRESP3);
-                                END IF;
-                                IF ROLSAC1_TRADUA.TUN_CVRESP4 IS NOT NULL AND LENGTH(ROLSAC1_TRADUA.TUN_CVRESP4) > 0
-                                THEN
-                                    dbms_lob.writeappend(TUN_CVRESP, length(ROLSAC1_TRADUA.TUN_CVRESP4), ROLSAC1_TRADUA.TUN_CVRESP4);
-                                END IF;
-
-                    INSERT INTO RS2_TRAUNAD(
-                        TRUA_CODIGO,
-                        TRUA_CODUNAD,
-                        TRUA_IDIOMA,
-                        TRUA_NOMBRE,
-                        TRUA_PRESEN,
-                        TRUA_URLWEB,
-                        TRUA_RSPCV,
-                        TRUA_ABREVI)
-                    VALUES (
-                               RS2_TRAUNAD_SEQ.NEXTVAL,
-                               codigoUA,
-                               ROLSAC1_TRADUA.TUN_CODIDI,
-                               ROLSAC1_TRADUA.TUN_NOMBRE,
-                               ROLSAC1_TRADUA.TUN_PRESEN,
-                               ROLSAC1_TRADUA.TUN_URL,
-                               TUN_CVRESP,
-                               ROLSAC1_TRADUA.TUN_ABREVI
-                           );
-
-        END LOOP;
+         END LOOP; 
 
         SELECT COUNT(*)
         INTO EXISTE_TRAD_ES
