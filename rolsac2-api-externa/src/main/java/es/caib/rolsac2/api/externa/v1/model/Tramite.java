@@ -51,15 +51,15 @@ public class Tramite extends EntidadBase<Tramite> {
     private String terminoMaximo;
 
     @Schema(description = "fechaPublicacion", name = "fechaPublicacion", type = SchemaType.STRING, required = false)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date fechaPublicacion;
 
     @Schema(description = "fechaInicio", name = "fechaInicio", type = SchemaType.STRING, required = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date fechaInicio;
 
     @Schema(description = "fechaCierre", name = "fechaCierre", type = SchemaType.STRING, required = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date fechaCierre;
 
     /**

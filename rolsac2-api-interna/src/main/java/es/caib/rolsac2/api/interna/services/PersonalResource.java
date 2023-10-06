@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response;
  * Es pot establir la seguretat a nivell url-pattern/http-method a dins web.xml, però d'altra banda, aquesta
  * ja està establerta a nivell de la capa de serveis.
  *
- * @author areus
+ * @author Indra
  */
 @Path("personal")
 @Produces(MediaType.APPLICATION_JSON)
@@ -39,16 +39,8 @@ public class PersonalResource {
      */
     @GET
     @Operation(operationId = "getPersonal", summary = "Retorna una lista pagina de personal")
-    @APIResponse(
-            responseCode = "200",
-            description = "Llista de personal",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Pagina.class)))
-    public Response getPersonal(
-            @Parameter(description = "Primer resultat, per defecte 0")
-            @DefaultValue("0") @QueryParam("firstResult") int firstResult,
-            @Parameter(description = "Nombre màxim de resultats, per defecte 10")
-            @DefaultValue("10") @QueryParam("maxResult") int maxResult) {
+    @APIResponse(responseCode = "200", description = "Llista de personal", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pagina.class)))
+    public Response getPersonal(@Parameter(description = "Primer resultat, per defecte 0") @DefaultValue("0") @QueryParam("firstResult") int firstResult, @Parameter(description = "Nombre màxim de resultats, per defecte 10") @DefaultValue("10") @QueryParam("maxResult") int maxResult) {
 
 
         PersonalFiltro filtro = new PersonalFiltro();
@@ -68,13 +60,9 @@ public class PersonalResource {
     @GET
     @Path("{id}")
     @Operation(operationId = "getPersonal", summary = "Tiene un personal")
-    @APIResponse(responseCode = "200",
-            description = "Personal",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = PersonalGridDTO.class)))
+    @APIResponse(responseCode = "200", description = "Personal", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonalGridDTO.class)))
     @APIResponse(responseCode = "404", description = "Recurs no trobat")
-    public Response get(@Parameter(description = "L'identificador del personal", required = true)
-                        @PathParam("id") Long id) {
+    public Response get(@Parameter(description = "L'identificador del personal", required = true) @PathParam("id") Long id) {
         PersonalDTO persona = personalService.findById(id);
         if (persona == null) {
             throw new NotFoundException();

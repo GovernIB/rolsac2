@@ -190,6 +190,8 @@
                                 <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.DocumentoNormativaResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TramiteResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.EstadisticaResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TestGetResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TestPostResource</endpointClass>
 <!--                                 <endpointClass>services.v1.es.caib.rolsac2.rest.api.externa.ProcedimientoDocumentoResource</endpointClass> -->
                             </endpointClasses>
                             <output>${project.build.directory}/openapi/openapi.json</output>

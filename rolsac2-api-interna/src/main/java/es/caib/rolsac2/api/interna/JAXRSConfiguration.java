@@ -27,21 +27,12 @@ import javax.ws.rs.core.Application;
  * Els mètodes d'actualització/borrat, PUT/DELETE, retornen un 204 si ha anat bé (ja que no retornen cap entity),
  * o 404 si no es troba el recurs.
  *
- * @author areus
+ * @author Indra
  */
 @ApplicationPath("/services")
 @SecurityScheme(securitySchemeName = "basicAuth", type = SecuritySchemeType.HTTP, scheme = "basic")
 @SecurityScheme(securitySchemeName = "bearerAuth", type = SecuritySchemeType.HTTP, scheme = "bearer")
-@OpenAPIDefinition(
-        info = @Info(title = "API REST INTERNA", version = "1.0.0"),
-        servers = {
-                @Server(url = "/rolsac2api/interna")
-        },
-        security = {
-                @SecurityRequirement(name = "basicAuth"),
-                @SecurityRequirement(name = "bearerAuth")
-        }
-)
+@OpenAPIDefinition(info = @Info(title = "API REST INTERNA", version = "1.0.0"), servers = {@Server(url = "/rolsac2api/interna")}, security = {@SecurityRequirement(name = "basicAuth"), @SecurityRequirement(name = "bearerAuth")})
 public class JAXRSConfiguration extends Application {
 
     private static final Logger LOG = LoggerFactory.getLogger(JAXRSConfiguration.class);

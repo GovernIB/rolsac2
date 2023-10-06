@@ -24,14 +24,11 @@ import javax.ws.rs.core.Application;
  * Els mètodes d'actualització/borrat, PUT/DELETE, retornen un 204 si ha anat bé (ja que no retornen cap entity),
  * o 404 si no es troba el recurs.
  *
- * @author areus
+ * @author Indra
  */
 @ApplicationPath("/services")
-@OpenAPIDefinition(
-        info = @Info(title = "API REST EXTERNA", version = "1.0.0"),
-        servers = {
-                @Server(url = "/rolsac2api/externa",description = "localhost")
-        }
+/** Si se depura en local, cambiar de rolsa2api a rolsac2-rest-api-externa **/
+@OpenAPIDefinition(info = @Info(title = "API REST EXTERNA", version = "1.0.0"), servers = {@Server(url = "/rolsac2api/externa", description = "localhost")}
 
 )
 public class JAXRSConfiguration extends Application {
