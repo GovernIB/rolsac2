@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Filtre per aplicar als recursos com openapi.json que es puguin obtenir via peticions CORS.
  *
- * @author areus
+ * @author Indra
  */
 @WebFilter(urlPatterns = "/openapi.json")
 public class CORSServletFilter extends HttpFilter {
@@ -19,8 +19,7 @@ public class CORSServletFilter extends HttpFilter {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         // si és una cridada CORS
         if (request.getHeader("Origin") != null) {

@@ -5,7 +5,7 @@ import java.util.Locale;
 /**
  * La unitat té procediments associats i per tat no es pot esborrar
  *
- * @author areus
+ * @author Indra
  */
 public class UnitatTeProcedimentsException extends ServiceException {
 

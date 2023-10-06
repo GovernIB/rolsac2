@@ -1,11 +1,7 @@
 package es.caib.rolsac2.commons.rest.filters;
 
 import javax.annotation.Priority;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.container.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
@@ -16,7 +12,7 @@ import javax.ws.rs.ext.Provider;
  * Veure: https://www.html5rocks.com/en/tutorials/cors/
  * Activam {@link PreMatching} perquè cal capturar les cridades amb el mètode OPTIONS quen no corresponen a cap resource
  *
- * @author areus
+ * @author Indra
  */
 @Provider
 @PreMatching
@@ -68,7 +64,6 @@ public class CORSRestFilter implements ContainerRequestFilter, ContainerResponse
      * Indica si és una petició preflight que és una petició amb el mètode OPTIONS i una capçalera Origin.
      */
     private static boolean isPreflightRequest(ContainerRequestContext request) {
-        return request.getHeaderString("Origin") != null
-                && request.getMethod().equalsIgnoreCase("OPTIONS");
+        return request.getHeaderString("Origin") != null && request.getMethod().equalsIgnoreCase("OPTIONS");
     }
 }

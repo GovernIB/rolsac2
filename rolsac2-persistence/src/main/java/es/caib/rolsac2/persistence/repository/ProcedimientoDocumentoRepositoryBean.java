@@ -1,8 +1,9 @@
 package es.caib.rolsac2.persistence.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import es.caib.rolsac2.persistence.converter.ProcedimientoDocumentoConverter;
+import es.caib.rolsac2.persistence.model.JProcedimientoDocumento;
+import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
+import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -11,22 +12,19 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import es.caib.rolsac2.persistence.converter.ProcedimientoDocumentoConverter;
-import es.caib.rolsac2.persistence.model.JProcedimientoDocumento;
-import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
-import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementación del repositorio de Personal.
  *
- * @author areus
+ * @author Indra
  */
 @Stateless
 @Local(ProcedimientoRepository.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-public class ProcedimientoDocumentoRepositoryBean extends AbstractCrudRepository<JProcedimientoDocumento, Long>
-        implements  ProcedimientoDocumentoRepository {
+public class ProcedimientoDocumentoRepositoryBean extends AbstractCrudRepository<JProcedimientoDocumento, Long> implements ProcedimientoDocumentoRepository {
 
     protected ProcedimientoDocumentoRepositoryBean() {
         super(JProcedimientoDocumento.class);
@@ -34,8 +32,7 @@ public class ProcedimientoDocumentoRepositoryBean extends AbstractCrudRepository
 
     @Override
     public Optional<JProcedimientoDocumento> findById(String id) {
-        TypedQuery<JProcedimientoDocumento> query =
-                entityManager.createNamedQuery(JProcedimientoDocumento.FIND_BY_ID, JProcedimientoDocumento.class);
+        TypedQuery<JProcedimientoDocumento> query = entityManager.createNamedQuery(JProcedimientoDocumento.FIND_BY_ID, JProcedimientoDocumento.class);
         query.setParameter("id", id);
         List<JProcedimientoDocumento> result = query.getResultList();
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
@@ -51,20 +48,20 @@ public class ProcedimientoDocumentoRepositoryBean extends AbstractCrudRepository
 
     @Override
     public List<ProcedimientoDocumentoDTO> findPagedByFiltroRest(ProcedimientoDocumentoFiltro filtro) {
-  	  	Query query = getQuery(false, filtro, true);
-  		query.setFirstResult(filtro.getPaginaFirst());
-  		query.setMaxResults(filtro.getPaginaTamanyo());
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
 
-  		List<JProcedimientoDocumento> jentidades = query.getResultList();
-  		List<ProcedimientoDocumentoDTO> entidades = new ArrayList<>();
-  		if (jentidades != null) {
-  			for (JProcedimientoDocumento jentidad : jentidades) {
-  				ProcedimientoDocumentoDTO entidad = jentidad.toModel();
+        List<JProcedimientoDocumento> jentidades = query.getResultList();
+        List<ProcedimientoDocumentoDTO> entidades = new ArrayList<>();
+        if (jentidades != null) {
+            for (JProcedimientoDocumento jentidad : jentidades) {
+                ProcedimientoDocumentoDTO entidad = jentidad.toModel();
 
-  				entidades.add(entidad);
-  			}
-  		}
-  		return entidades;
+                entidades.add(entidad);
+            }
+        }
+        return entidades;
     }
 
     private Query getQuery(boolean isTotal, ProcedimientoDocumentoFiltro filtro, boolean isRest) {
@@ -72,13 +69,13 @@ public class ProcedimientoDocumentoRepositoryBean extends AbstractCrudRepository
         if (isTotal) {
             sql = new StringBuilder("select count(j) from JProcedimientoDocumento j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
         } else if (isRest) {
-        	sql = new StringBuilder("SELECT j from JProcedimientoDocumento j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j from JProcedimientoDocumento j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-      	  sql = new StringBuilder("SELECT j from JProcedimientoDocumento j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j from JProcedimientoDocumento j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
         }
 
         if (filtro.isRellenoTexto()) {
-            sql.append(" and (LOWER(t.titulo) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro " );
+            sql.append(" and (LOWER(t.titulo) LIKE :filtro OR LOWER(t.descripcion) LIKE :filtro ");
         }
 
         if (filtro.isRellenoDocumento()) {
@@ -86,7 +83,7 @@ public class ProcedimientoDocumentoRepositoryBean extends AbstractCrudRepository
         }
 
         if (filtro.isRellenoCodigo()) {
-        	sql.append(" and j.codigo = :codigo ");
+            sql.append(" and j.codigo = :codigo ");
         }
 
         if (filtro.getOrderBy() != null) {
@@ -104,11 +101,11 @@ public class ProcedimientoDocumentoRepositoryBean extends AbstractCrudRepository
         }
 
         if (filtro.isRellenoDocumento()) {
-      	  query.setParameter("documento", filtro.getDocumento().getCodigo());
+            query.setParameter("documento", filtro.getDocumento().getCodigo());
         }
 
         if (filtro.isRellenoCodigo()) {
-        	query.setParameter("codigo", filtro.getCodigo());
+            query.setParameter("codigo", filtro.getCodigo());
         }
 
         if (filtro.getOrderBy() != null) {

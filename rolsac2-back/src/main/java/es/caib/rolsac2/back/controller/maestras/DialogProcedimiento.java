@@ -91,7 +91,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private boolean mostrarRefreshSIA = false;
 
     private String textoValor;
-    private String comunUA;
+    private Literal comunUA;
+    private Literal responsableUA;
+    private Literal lopdResponsable;
     private static final Logger LOG = LoggerFactory.getLogger(DialogProcedimiento.class);
     private final Integer FASE_INICIACION = 1;
     private boolean esSoloGuardar;
@@ -122,7 +124,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
-            dataOriginal = (ProcedimientoDTO) data.clone();
+
 
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             if (id != null && !id.isEmpty()) {
@@ -130,7 +132,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             } else {
                 data = (ProcedimientoDTO) UtilJSF.getValorMochilaByKey("PROC");
             }
-            dataOriginal = (ProcedimientoDTO) data.clone();
+
             UtilJSF.vaciarMochila();
         }
         temasTabla = new ArrayList<>();
@@ -142,7 +144,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         uaRaiz = Boolean.valueOf(this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz()).toString();
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
-        comunUA = sessionBean.getEntidad().getUaComun().getTraduccion(this.getIdioma());
+        comunUA = sessionBean.getEntidad().getUaComun();
         listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
         listTipoSilencio = maestrasSupService.findAllTipoSilencio();
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
@@ -157,6 +159,24 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                     break;
                 }
             }
+        }
+
+        actualizarResponsable();
+        dataOriginal = (ProcedimientoDTO) data.clone();
+    }
+
+    /**
+     * Actualiza el literal de resonsable
+     */
+    public void actualizarResponsable() {
+        if (data.getComun() == 0) {
+            if (data.getUaResponsable() == null) {
+                lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
+            } else {
+                lopdResponsable = data.getUaResponsable().getNombre();
+            }
+        } else {
+            lopdResponsable = comunUA;
         }
     }
 
@@ -207,7 +227,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         ProcedimientoDTO datoDTO = (ProcedimientoDTO) respuesta.getResult();
 
         if (datoDTO != null) {
-            data.setDatosPersonalesDestinatario(datoDTO.getDatosPersonalesDestinatario());
+            data.setLopdInfoAdicional(datoDTO.getLopdInfoAdicional());
         }
     }
 
@@ -1310,14 +1330,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         this.listTipoVia = listTipoVia;
     }
 
-    public String getComunUA() {
-        return comunUA;
-    }
-
-    public void setComunUA(String comunUA) {
-        this.comunUA = comunUA;
-    }
-
     public TreeNode getTemaSeleccionado() {
         return temaSeleccionado;
     }
@@ -1406,5 +1418,28 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         this.mostrarRefreshSIA = mostrarRefreshSIA;
     }
 
+    public Literal getComunUA() {
+        return comunUA;
+    }
+
+    public void setComunUA(Literal comunUA) {
+        this.comunUA = comunUA;
+    }
+
+    public Literal getResponsableUA() {
+        return responsableUA;
+    }
+
+    public void setResponsableUA(Literal responsableUA) {
+        this.responsableUA = responsableUA;
+    }
+
+    public Literal getLopdResponsable() {
+        return lopdResponsable;
+    }
+
+    public void setLopdResponsable(Literal lopdResponsable) {
+        this.lopdResponsable = lopdResponsable;
+    }
 }
 

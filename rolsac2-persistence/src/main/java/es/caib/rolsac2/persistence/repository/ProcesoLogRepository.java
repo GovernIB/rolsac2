@@ -7,28 +7,33 @@ import es.caib.rolsac2.service.model.ProcesoLogGridDTO;
 import es.caib.rolsac2.service.model.ResultadoProcesoProgramado;
 import es.caib.rolsac2.service.model.filtro.ProcesoLogFiltro;
 
-
 import java.util.Date;
 import java.util.List;
 
 public interface ProcesoLogRepository extends CrudRepository<JProcesoLog, Long> {
 
-  Long auditarInicioProceso(String idProceso, Long idEntidad);
+    Long auditarInicioProceso(String idProceso, Long idEntidad);
 
-  void auditarFinProceso(String idProceso, Long instanciaProceso, ResultadoProcesoProgramado resultadoProceso);
+    void auditarFinProceso(String idProceso, Long instanciaProceso, ResultadoProcesoProgramado resultadoProceso);
 
-  Date obtenerUltimaEjecucion(Long idProceso);
+    void auditarFinErrorProceso(String idProceso, Long instanciaProceso, ResultadoProcesoProgramado resultadoProceso);
 
-  Integer listarTotal(final ProcesoLogFiltro filtro);
+    Date obtenerUltimaEjecucion(Long idProceso);
 
-  List<ProcesoLogGridDTO> listar(final ProcesoLogFiltro filtro);
+    Integer listarTotal(final ProcesoLogFiltro filtro);
 
-  ProcesoLogDTO obtenerProcesoLogPorCodigo(final Long codigo);
+    List<ProcesoLogGridDTO> listar(final ProcesoLogFiltro filtro);
 
-  Date obtenerUltimaEjecucionCorrecta(final Long idProceso);
+    ProcesoLogDTO obtenerProcesoLogPorCodigo(final Long codigo);
 
-  List<ProcesoLogGridDTO> listar(final String idioma, final String tipo);
+    Date obtenerUltimaEjecucionCorrecta(final Long idProceso);
 
-  ProcesoLogDTO convertProcesoLog(JProcesoLog jProcesoLog);
+    List<ProcesoLogGridDTO> listar(final String idioma, final String tipo);
 
+    ProcesoLogDTO convertProcesoLog(JProcesoLog jProcesoLog);
+
+    /**
+     * Audita la mitad del proceso
+     **/
+    void auditarMitadProceso(Long instanciaProceso, String detalles);
 }

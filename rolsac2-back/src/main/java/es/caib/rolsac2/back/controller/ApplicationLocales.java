@@ -15,7 +15,7 @@ import java.util.Locale;
 /**
  * Proporciona les opcions d'idioma.
  *
- * @author areus
+ * @author Indra
  */
 @Named
 @ApplicationScoped
@@ -39,8 +39,7 @@ public class ApplicationLocales {
     private void init() {
         LOG.info("Inicialitzat idiomes disponibles");
         available = new ArrayList<>();
-        context.getApplication().getSupportedLocales()
-                .forEachRemaining(available::add);
+        context.getApplication().getSupportedLocales().forEachRemaining(available::add);
         LOG.info("Idiomes disponibles: " + available);
     }
 }

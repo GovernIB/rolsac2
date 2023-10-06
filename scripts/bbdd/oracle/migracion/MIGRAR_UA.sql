@@ -83,6 +83,8 @@ AS
             TRUA_RSPCV    --> RESPONSABLE CV
             TRUA_ABREVI   --> ABREVIACION
     ***/
+    
+     
 
     CURSOR cursorTradUAsROLSAC1 (codUA NUMBER) IS
         SELECT * 
@@ -92,6 +94,11 @@ AS
         SELECT *
           FROM  R1_UNIADM_USU
          WHERE UNU_CODUNA = codUA;
+    CURSOR cursorMateriasRolsac1 (codUA NUMBER) IS 
+        SELECT *  
+          FROM  R1_UNIADM_MATE
+         WHERE UNM_CODUNA = codUA
+           AND UNM_CODMAT IN (SELECT TEMA_CODIGO FROM RS2_TEMA);
     maximoIdUAS NUMBER;
     VALOR       NUMBER;
     INDEXAR     BOOLEAN;
@@ -105,6 +112,9 @@ AS
     EXISTE_TRAD_ES NUMBER(2,0);
     EXISTE_TRAD_CA NUMBER(2,0);
     TUN_CVRESP     CLOB := EMPTY_CLOB;
+    CODIGOSIAEXIST NUMBER(2,0);
+    CODIGOSIAR2 NUMBER(10,0);
+    EXISTE_MAT_PRC number(2,0);
 BEGIN
 
         /** RS2_UNIADM **/
@@ -204,7 +214,16 @@ BEGIN
           AND TRUA_IDIOMA =  'ca'
         ;
 
-        /** SI NO EXISTE LA TRADUCCION EN ESPAÃ`OL, DUPLICAMOS LA CATALAN **/
+        /** INTRODUCIMOS LAS MATERIAS. **/
+        FOR ROLSAC1_MATERIAS IN cursorMateriasRolsac1(codigoUA) 
+        LOOP  
+            /**  dbms_output.put_line('materias: ' || ROLSAC1_MATERIAS.PRM_CODMAT); **/
+            INSERT INTO  RS2_UATEMA (UATE_CODUNA, UATE_CODTEMA)
+              VALUES (codigoUA,ROLSAC1_MATERIAS.UNM_CODMAT );
+                   
+        END LOOP;
+            
+        /** SI NO EXISTE LA TRADUCCION EN ESPANYOL, DUPLICAMOS LA CATALAN **/
         IF EXISTE_TRAD_ES = 0 AND EXISTE_TRAD_CA = 1
                             THEN
                                  INSERT INTO RS2_TRAUNAD(

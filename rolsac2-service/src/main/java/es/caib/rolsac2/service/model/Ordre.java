@@ -7,7 +7,7 @@ import java.util.Objects;
  * Immutable.
  *
  * @param <T> enumeració que conté els camps vàlids per ordenar
- * @author areus
+ * @author Indra
  */
 public class Ordre<T extends Enum<T> & Atribut> {
 

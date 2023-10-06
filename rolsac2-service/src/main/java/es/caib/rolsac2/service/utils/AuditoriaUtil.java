@@ -186,10 +186,10 @@ public final class AuditoriaUtil {
                     retorno = "Pendent publicar";
                     break;
                 case PENDIENTE_RESERVAR:
-                    retorno = "Pendent reservar";
+                    retorno = "Pendent reserva";
                     break;
                 case RESERVA:
-                    retorno = "Reservat";
+                    retorno = "Reserva";
                     break;
             }
         }

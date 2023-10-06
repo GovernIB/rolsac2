@@ -11,9 +11,9 @@ import javax.faces.convert.FacesConverter;
  * Però si mapejam a un Map (com en el cas dels filtres d'una cerca), cal que apliquem expressament
  * aquest conversor si volem rebre un enum enlloc d'un string.
  *
- * @author areus
+ * @author Indra
  */
-@FacesConverter(value="estatPublicacioConverter")
+@FacesConverter(value = "estatPublicacioConverter")
 public class EstatPublicacioConverter extends EnumConverter {
 
     public EstatPublicacioConverter() {

@@ -4,11 +4,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.container.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
@@ -24,7 +20,7 @@ import static es.caib.rolsac2.commons.rest.RestConstants.SUPPORTED_LOCALES;
  * Filtre per garantir que la petició és retorna amb un dels idiomes soportats, segons les preferències
  * indicades a la petició.
  *
- * @author areus
+ * @author Indra
  */
 @Provider
 @PreMatching
@@ -45,10 +41,7 @@ public class LocaleRequestFilter implements ContainerRequestFilter, ContainerRes
     @PostConstruct
     private void init() {
         String supportedLocalesParam = servletContext.getInitParameter(SUPPORTED_LOCALES);
-        supportedLocales = Stream.of(supportedLocalesParam.split(","))
-                .map(String::trim)
-                .map(Locale::forLanguageTag)
-                .collect(Collectors.toList());
+        supportedLocales = Stream.of(supportedLocalesParam.split(",")).map(String::trim).map(Locale::forLanguageTag).collect(Collectors.toList());
     }
 
     /**

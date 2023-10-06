@@ -12,6 +12,7 @@ import es.caib.rolsac2.ejb.util.JSONUtil;
 import es.caib.rolsac2.ejb.util.JSONUtilException;
 import es.caib.rolsac2.persistence.converter.*;
 import es.caib.rolsac2.persistence.model.*;
+import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion;
 import es.caib.rolsac2.persistence.repository.*;
@@ -345,11 +346,11 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         if (dto.getNombreProcedimientoWorkFlow() != null) {
             traduccion.setNombre(dto.getNombreProcedimientoWorkFlow().getTraduccion(traduccion.getIdioma()));
         }
-        if (dto.getDatosPersonalesDestinatario() != null) {
-            traduccion.setDatosPersonalesDestinatario(dto.getDatosPersonalesDestinatario().getTraduccion(traduccion.getIdioma()));
+        if (dto.getLopdInfoAdicional() != null) {
+            traduccion.setDatosPersonalesDestinatario(dto.getLopdInfoAdicional().getTraduccion(traduccion.getIdioma()));
         }
-        if (dto.getDatosPersonalesFinalidad() != null) {
-            traduccion.setDatosPersonalesFinalidad(dto.getDatosPersonalesFinalidad().getTraduccion(traduccion.getIdioma()));
+        if (dto.getLopdFinalidad() != null) {
+            traduccion.setDatosPersonalesFinalidad(dto.getLopdFinalidad().getTraduccion(traduccion.getIdioma()));
         }
         if (dto.getRequisitos() != null) {
             traduccion.setRequisitos(dto.getRequisitos().getTraduccion(traduccion.getIdioma()));
@@ -748,8 +749,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             }
         }
         proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
-        proc.setDatosPersonalesDestinatario(datosPersonalesDestinatario);
-        proc.setDatosPersonalesFinalidad(detDatosPersonalesFinalidad);
         proc.setRequisitos(requisitos);
         proc.setObjeto(objeto);
         proc.setDestinatarios(destinatarios);
@@ -899,6 +898,23 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         }
         if (jprocWF.getUaInstructor() != null) {
             proc.setUaInstructor(jprocWF.getUaInstructor().toDTO());
+
+            //Obtenemos la info de lopd de la entidad asociada a la ua instructora
+            if (jprocWF.getUaInstructor().getEntidad() != null && jprocWF.getUaInstructor().getEntidad().getDescripcion() != null) {
+                Literal lopdInfoAdicional = new Literal();
+                Literal lopdDerechos = new Literal();
+                Literal lopdFinalidad = new Literal();
+
+                for (JEntidadTraduccion jtrad : jprocWF.getUaInstructor().getEntidad().getDescripcion()) {
+                    lopdInfoAdicional.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDerechos()));
+                    lopdDerechos.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDerechos()));
+                    lopdFinalidad.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdFinalidad()));
+                }
+
+                proc.setLopdInfoAdicional(lopdInfoAdicional);
+                proc.setLopdDerechos(lopdDerechos);
+                proc.setLopdFinalidad(lopdFinalidad);
+            }
         }
         if (jprocWF.getUaCompetente() != null) {
             proc.setUaCompetente(jprocWF.getUaCompetente().toDTO());
@@ -921,8 +937,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         Literal nombreProcedimientoWorkFlow = new Literal();
         Literal requisitos = new Literal();
-        Literal datosPersonalesDestinatario = new Literal();
-        Literal detDatosPersonalesFinalidad = new Literal();
         Literal objeto = new Literal();
         Literal destinatarios = new Literal();
         Literal terminoResolucion = new Literal();
@@ -933,8 +947,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
                 nombreProcedimientoWorkFlow.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
                 requisitos.add(new Traduccion(trad.getIdioma(), trad.getRequisitos()));
-                datosPersonalesDestinatario.add(new Traduccion(trad.getIdioma(), trad.getDatosPersonalesDestinatario()));
-                detDatosPersonalesFinalidad.add(new Traduccion(trad.getIdioma(), trad.getDatosPersonalesFinalidad()));
                 objeto.add(new Traduccion(trad.getIdioma(), trad.getObjeto()));
                 destinatarios.add(new Traduccion(trad.getIdioma(), trad.getDestinatarios()));
                 terminoResolucion.add(new Traduccion(trad.getIdioma(), trad.getTerminoResolucion()));
@@ -943,8 +955,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             }
         }
         proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
-        proc.setDatosPersonalesDestinatario(datosPersonalesDestinatario);
-        proc.setDatosPersonalesFinalidad(detDatosPersonalesFinalidad);
         proc.setRequisitos(requisitos);
         proc.setObjeto(objeto);
         proc.setDestinatarios(destinatarios);

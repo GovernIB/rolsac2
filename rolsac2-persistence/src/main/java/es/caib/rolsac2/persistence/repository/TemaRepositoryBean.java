@@ -234,4 +234,26 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
 
         entityManager.flush();
     }
+
+    @Override
+    public List<TemaGridDTO> getTemasByUas(List<Long> uas) {
+        Query query = entityManager.createQuery("SELECT distinct j.temas FROM  JUnidadAdministrativa j WHERE  j.codigo IN (:uas) ");
+        query.setParameter("uas", uas);
+        List<JTema> jtemas = query.getResultList();
+        List<TemaGridDTO> temas = new ArrayList<>();
+        if (jtemas != null) {
+            for (JTema jtema : jtemas) {
+                TemaGridDTO temaGridDTO = new TemaGridDTO();
+                temaGridDTO.setCodigo(jtema.getCodigo());
+                temaGridDTO.setEntidad(jtema.getEntidad().getCodigo());
+                temaGridDTO.setIdentificador(jtema.getIdentificador());
+                if (jtema.getTemaPadre() != null) {
+                    temaGridDTO.setTemaPadre(jtema.getTemaPadre().getIdentificador());
+                }
+
+                temas.add(temaGridDTO);
+            }
+        }
+        return temas;
+    }
 }

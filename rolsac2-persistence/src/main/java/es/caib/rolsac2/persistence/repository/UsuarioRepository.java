@@ -41,5 +41,5 @@ public interface UsuarioRepository extends CrudRepository<JUsuario, Long> {
 
     void anyadirNuevoUsuarioUA(JUsuario jUsuario, JUnidadAdministrativa jUnidadAdministrativa);
 
-
+    List<UsuarioGridDTO> getUsuariosByUas(List<Long> uas);
 }

@@ -54,7 +54,6 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     @Inject
     private TipoNormativaRepository tipoNormativaRepository;
 
-
     @Inject
     private NormativaConverter converter;
 

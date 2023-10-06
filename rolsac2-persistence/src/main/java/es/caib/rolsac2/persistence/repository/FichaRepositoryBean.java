@@ -17,13 +17,12 @@ import java.util.Optional;
 /**
  * Implementación del repositorio de Personal.
  *
- * @author areus
+ * @author Indra
  */
 @Stateless
 @Local(FichaRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class FichaRepositoryBean extends AbstractCrudRepository<JFicha, Long>
-        implements FichaRepository {
+public class FichaRepositoryBean extends AbstractCrudRepository<JFicha, Long> implements FichaRepository {
 
     protected FichaRepositoryBean() {
         super(JFicha.class);

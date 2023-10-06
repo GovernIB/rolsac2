@@ -3,7 +3,7 @@ package es.caib.rolsac2.commons.rest.error;
 /**
  * Bean per modelar un error de client a l'API REST
  *
- * @author areus
+ * @author Indra
  */
 public class ErrorBean {
 

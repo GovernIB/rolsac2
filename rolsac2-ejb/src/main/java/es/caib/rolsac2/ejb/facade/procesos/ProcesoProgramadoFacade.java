@@ -20,8 +20,10 @@ public interface ProcesoProgramadoFacade {
     /**
      * Ejecuta proceso.
      *
-     * @param params parámetros
+     * @param instanciaProceso El id del proceso para ir actualizandolo
+     * @param params           parámetros
+     * @param idEntidad        idEntidad
      */
-    ResultadoProcesoProgramado ejecutar(ListaPropiedades params, Long idEntidad);
+    ResultadoProcesoProgramado ejecutar(Long instanciaProceso, ListaPropiedades params, Long idEntidad);
 
 }

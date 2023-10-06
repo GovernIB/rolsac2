@@ -12,7 +12,7 @@ import static java.lang.annotation.ElementType.TYPE;
 /**
  * Anotació per marcar beans al que s'ha d'aplicar el {@link LoggerInterceptor}.
  *
- * @author areus
+ * @author Indra
  */
 @Inherited
 @InterceptorBinding

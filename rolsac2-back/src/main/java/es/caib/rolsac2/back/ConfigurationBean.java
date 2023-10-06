@@ -9,7 +9,7 @@ import static javax.faces.annotation.FacesConfig.Version.JSF_2_3;
  * Permet injectar la majoria d'objectes de JSF.
  * Veure punts 5.6.3 i 5.9 de l'especificació JSF.
  *
- * @author areus
+ * @author Indra
  */
 @FacesConfig(version = JSF_2_3)
 public class ConfigurationBean {

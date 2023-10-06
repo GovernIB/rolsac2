@@ -2,15 +2,14 @@ package es.caib.rolsac2.persistence.model;
 
 import javax.persistence.*;
 
-/** 
+/**
  * La Clase J configuracion global.
  */
 @Entity
 @SequenceGenerator(name = "configuracion-sequence", sequenceName = "RS2_CNFGLO_SEQ", allocationSize = 1)
 @Table(name = "RS2_CNFGLO", indexes = {@Index(name = "RS2_CNFGLO_PK_I", columnList = "CFG_CODIGO")})
 
-@NamedQueries({@NamedQuery(name = JConfiguracionGlobal.FIND_BY_ID,
-        query = "select p from JConfiguracionGlobal p where p.codigo = :id")})
+@NamedQueries({@NamedQuery(name = JConfiguracionGlobal.FIND_BY_ID, query = "select p from JConfiguracionGlobal p where p.codigo = :id")})
 
 public class JConfiguracionGlobal {
 
@@ -51,7 +50,7 @@ public class JConfiguracionGlobal {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -60,7 +59,7 @@ public class JConfiguracionGlobal {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -69,7 +68,7 @@ public class JConfiguracionGlobal {
     /**
      * Obtiene propiedad.
      *
-     * @return  propiedad
+     * @return propiedad
      */
     public String getPropiedad() {
         return propiedad;
@@ -78,7 +77,7 @@ public class JConfiguracionGlobal {
     /**
      * Establece propiedad.
      *
-     * @param cfgProp  cfg prop
+     * @param cfgProp cfg prop
      */
     public void setPropiedad(String cfgProp) {
         this.propiedad = cfgProp;
@@ -87,7 +86,7 @@ public class JConfiguracionGlobal {
     /**
      * Obtiene valor.
      *
-     * @return  valor
+     * @return valor
      */
     public String getValor() {
         return valor;
@@ -96,7 +95,7 @@ public class JConfiguracionGlobal {
     /**
      * Establece valor.
      *
-     * @param cfgValor  cfg valor
+     * @param cfgValor cfg valor
      */
     public void setValor(String cfgValor) {
         this.valor = cfgValor;
@@ -105,7 +104,7 @@ public class JConfiguracionGlobal {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public String getDescripcion() {
         return descripcion;
@@ -114,7 +113,7 @@ public class JConfiguracionGlobal {
     /**
      * Establece descripcion.
      *
-     * @param cfgDescr  cfg descr
+     * @param cfgDescr cfg descr
      */
     public void setDescripcion(String cfgDescr) {
         this.descripcion = cfgDescr;
@@ -123,7 +122,7 @@ public class JConfiguracionGlobal {
     /**
      * Obtiene no modificable.
      *
-     * @return  no modificable
+     * @return no modificable
      */
     public Boolean getNoModificable() {
         return noModificable;
@@ -132,7 +131,7 @@ public class JConfiguracionGlobal {
     /**
      * Establece no modificable.
      *
-     * @param cfgNomod  cfg nomod
+     * @param cfgNomod cfg nomod
      */
     public void setNoModificable(Boolean cfgNomod) {
         this.noModificable = cfgNomod;

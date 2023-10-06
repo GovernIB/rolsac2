@@ -136,7 +136,7 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
      * Buscar
      */
     public void buscar() {
-
+        //Thread.currentThread().getStackTrace()
         lazyModelLogs = new LazyDataModel<ProcesoLogGridDTO>() {
             @Override
             public ProcesoLogGridDTO getRowData(String rowKey) {

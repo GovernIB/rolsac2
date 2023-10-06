@@ -352,7 +352,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
             String nombreLiteral = (String) getAttributes().get("nombreLiteral");
             UtilJSF.anyadirMochila("nombreLiteral", nombreLiteral);
             Integer maxlength = (Integer) getAttributes().get("maxlength");
-            if(maxlength != null) {
+            if (maxlength != null) {
                 UtilJSF.anyadirMochila("maxlength", maxlength);
             }
             Integer valores = ((String) getAttributes().get("idiomasPermitidos")).split(";").length;
@@ -388,17 +388,13 @@ public class LiteralComponent extends UIInput implements NamingContainer {
      * @return
      */
     private boolean isCompleto() {
-        return this.literal != null && this.literal.getTraduccion(Constantes.IDIOMA_CATALAN) != null
-                && !this.literal.getTraduccion(Constantes.IDIOMA_CATALAN).trim().isEmpty()
-                && this.literal.getTraduccion(Constantes.IDIOMA_ESPANYOL) != null
-                && !this.literal.getTraduccion(Constantes.IDIOMA_ESPANYOL).trim().isEmpty();
+        return this.literal != null && this.literal.getTraduccion(Constantes.IDIOMA_CATALAN) != null && !this.literal.getTraduccion(Constantes.IDIOMA_CATALAN).trim().isEmpty() && this.literal.getTraduccion(Constantes.IDIOMA_ESPANYOL) != null && !this.literal.getTraduccion(Constantes.IDIOMA_ESPANYOL).trim().isEmpty();
     }
 
     public String comprobarEstado() {
         if (getAttributes().get("idiomasPermitidos") != null && getAttributes().get("idiomasObligatorios") != null) {
             List<String> idiomasPermitidos = List.of(((String) getAttributes().get("idiomasPermitidos")).split(";"));
-            List<String> idiomasObligatorios = List
-                    .of(((String) getAttributes().get("idiomasObligatorios")).split(";"));
+            List<String> idiomasObligatorios = List.of(((String) getAttributes().get("idiomasObligatorios")).split(";"));
             Literal literal = (Literal) getAttributes().get("literal");
             if (literal == null) {
                 return ICONO_ROJO;
@@ -420,8 +416,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
 
                 // Verificamos que los campos obligatorios estén todos
                 for (Traduccion traduccion : literal.getTraducciones()) {
-                    if ((traduccion.getLiteral() == null || traduccion.getLiteral().trim().isEmpty())
-                            && idiomasPermitidos.contains(traduccion.getIdioma())) {
+                    if ((traduccion.getLiteral() == null || traduccion.getLiteral().trim().isEmpty()) && idiomasPermitidos.contains(traduccion.getIdioma())) {
                         if (idiomasObligatorios.contains(traduccion.getIdioma())) {
                             return ICONO_ROJO;
                         }
@@ -432,8 +427,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
                 return ICONO_AMARILLO;
             }
             for (Traduccion traduccion : literal.getTraducciones()) {
-                if ((traduccion.getLiteral() == null || traduccion.getLiteral().trim().isEmpty())
-                        && idiomasPermitidos.contains(traduccion.getIdioma())) {
+                if ((traduccion.getLiteral() == null || traduccion.getLiteral().trim().isEmpty()) && idiomasPermitidos.contains(traduccion.getIdioma())) {
                     if (idiomasObligatorios.contains(traduccion.getIdioma())) {
                         return ICONO_ROJO;
                     }

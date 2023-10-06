@@ -4,11 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Priority;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.container.*;
 import javax.ws.rs.ext.Provider;
 
 /**
@@ -18,7 +14,7 @@ import javax.ws.rs.ext.Provider;
  * Els filtres s'ordenen per prioritat ascendent a l'entrada i prioritat descendent a la sortida. Això assegura que
  * a l'entrada sigui el primer i a la sortida el darrer.
  *
- * @author areus
+ * @author Indra
  */
 @Provider
 @PreMatching
@@ -45,7 +41,6 @@ public class LoggingRequestFilter implements ContainerRequestFilter, ContainerRe
      */
     @Override
     public void filter(ContainerRequestContext request, ContainerResponseContext response) {
-        LOG.debug("Response: " + request.getMethod() + " " + request.getUriInfo().getRequestUri()
-                + " = " + response.getStatus());
+        LOG.debug("Response: " + request.getMethod() + " " + request.getUriInfo().getRequestUri() + " = " + response.getStatus());
     }
 }

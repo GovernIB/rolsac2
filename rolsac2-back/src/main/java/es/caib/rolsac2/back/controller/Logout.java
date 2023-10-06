@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Bean per implementar l'acció de logout.
  *
- * @author areus
+ * @author Indra
  */
 @Named
 @RequestScoped

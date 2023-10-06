@@ -12,7 +12,7 @@ import javax.servlet.annotation.WebListener;
 /**
  * Executat a l'inici del desplegament de l'aplicació web, així com en l'aturada.
  *
- * @author areus
+ * @author Indra
  */
 @WebListener
 public class StartupListener implements ServletContextListener {
@@ -29,10 +29,7 @@ public class StartupListener implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        LOG.info("\nWebApp " + version.getProjectName() + ":"
-                + "\n  + Version: " + version.getVersion()
-                + "\n  + BuildTime: " + version.getBuildTime()
-                + "\n  + Revision: " + version.getScmRevision());
+        LOG.info("\nWebApp " + version.getProjectName() + ":" + "\n  + Version: " + version.getVersion() + "\n  + BuildTime: " + version.getBuildTime() + "\n  + Revision: " + version.getScmRevision());
     }
 
     /**

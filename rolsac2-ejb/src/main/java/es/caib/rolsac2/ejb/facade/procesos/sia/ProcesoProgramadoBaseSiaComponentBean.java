@@ -54,7 +54,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
     private static Logger log = LoggerFactory.getLogger(ProcesoProgramadoBaseSiaComponentBean.class);
 
 
-    public ResultadoProcesoProgramado ejecutarPadre(final ListaPropiedades params, boolean pendiente, Long idEntidad) {
+    public ResultadoProcesoProgramado ejecutarPadre(final Long instanciaProceso, final ListaPropiedades params, boolean pendiente, Long idEntidad) {
         log.info("Ejecución proceso SIA");
         final ListaPropiedades detalles = new ListaPropiedades();
         final ResultadoProcesoProgramado res = new ResultadoProcesoProgramado();

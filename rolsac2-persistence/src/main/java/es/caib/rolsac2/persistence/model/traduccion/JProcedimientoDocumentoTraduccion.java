@@ -25,7 +25,7 @@ public class JProcedimientoDocumentoTraduccion {
     @Column(name = "TRDP_TITULO")
     private String titulo;
 
-    @Column(name = "TRDP_DESCRI", length = 4000)
+    @Column(name = "TRDP_DESCRI")
     private String descripcion;
 
     @Column(name = "TRDP_FICHER")

@@ -5,7 +5,7 @@ import java.util.Locale;
 /**
  * Excepció per indicar que el recurs sol·licitat en una operació no s'ha trobat.
  *
- * @author areus
+ * @author Indra
  */
 public class ProblemaFicherosException extends ServiceException {
 

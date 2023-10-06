@@ -6,14 +6,14 @@ import java.io.Serializable;
 /**
  * Encapçula la informació d'un usuari.
  * Està marcada amb @Vetoed per impedir que CDI la instancii directament. Es generarà amb el producer corresponent.
- * 
- * @author areus
+ *
+ * @author Indra
  */
 @Vetoed
 public class UserInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private final String username;
     private final String nom;
     private final String llinatges;

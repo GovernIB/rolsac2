@@ -12,6 +12,7 @@ import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import org.primefaces.PrimeFaces;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -91,7 +93,9 @@ public class DialogServicio extends AbstractController implements Serializable {
     private String id = "";
 
     private String textoValor;
-    private String comunUA;
+    private Literal comunUA;
+    private Literal responsableUA;
+    private Literal lopdResponsable;
     private String uaRaiz;
 
     private static final Logger LOG = LoggerFactory.getLogger(DialogServicio.class);
@@ -144,7 +148,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
-            dataOriginal = (ServicioDTO) data.clone();
+
 
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             if (id != null && !id.isEmpty()) {
@@ -152,7 +156,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             } else {
                 data = (ServicioDTO) UtilJSF.getValorMochilaByKey("SERV");
             }
-            dataOriginal = (ServicioDTO) data.clone();
+
             /*if (data.getTipoTramitacion() == null) {
                 data.setTipoTramitacion(TipoTramitacionDTO.createInstance(sessionBean.getIdiomasPermitidosList()));
             }*/
@@ -188,7 +192,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
-        comunUA = sessionBean.getEntidad().getUaComun().getTraduccion(this.getIdioma());
+        comunUA = sessionBean.getEntidad().getUaComun();
         listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
         listTipoSilencio = maestrasSupService.findAllTipoSilencio();
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
@@ -207,6 +211,52 @@ public class DialogServicio extends AbstractController implements Serializable {
                     break;
                 }
             }
+        }
+
+        //Revisamos literales y clonamos
+        //revisarLiterales();
+        actualizarResponsable();
+        dataOriginal = (ServicioDTO) data.clone();
+    }
+
+    /**
+     * Actualiza el literal de resonsable
+     */
+    public void actualizarResponsable() {
+        if (data.getComun() == 0) {
+            if (data.getUaResponsable() == null) {
+                lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
+            } else {
+                lopdResponsable = data.getUaResponsable().getNombre();
+            }
+        } else {
+            lopdResponsable = comunUA;
+        }
+    }
+
+    private void revisarLiterales() {
+        List<String> idiomas = sessionBean.getIdiomasPermitidosList();
+
+        if (data.getNombreProcedimientoWorkFlow() == null) {
+            data.setNombreProcedimientoWorkFlow(Literal.createInstance(idiomas));
+        }
+        if (data.getRequisitos() == null) {
+            data.setRequisitos(Literal.createInstance(idiomas));
+        }
+        if (data.getObjeto() == null) {
+            data.setObjeto(Literal.createInstance(idiomas));
+        }
+        if (data.getDestinatarios() == null) {
+            data.setDestinatarios(Literal.createInstance(idiomas));
+        }
+        if (data.getTerminoResolucion() == null) {
+            data.setTerminoResolucion(Literal.createInstance(idiomas));
+        }
+        if (data.getObservaciones() == null) {
+            data.setObservaciones(Literal.createInstance(idiomas));
+        }
+        if (data.getKeywords() == null) {
+            data.setKeywords(Literal.createInstance(idiomas));
         }
     }
 
@@ -270,7 +320,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         ServicioDTO datoDTO = (ServicioDTO) respuesta.getResult();
 
         if (datoDTO != null) {
-            data.setDatosPersonalesDestinatario(datoDTO.getDatosPersonalesDestinatario());
+            data.setLopdInfoAdicional(datoDTO.getLopdInfoAdicional());
         }
     }
 
@@ -355,9 +405,8 @@ public class DialogServicio extends AbstractController implements Serializable {
             return;
         }
 
-        for(TemaGridDTO temaPadre : temasPadre) {
-            if(data.getTemas().stream()
-                    .filter(t -> t.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString())).findAny().orElse(null) == null) {
+        for (TemaGridDTO temaPadre : temasPadre) {
+            if (data.getTemas().stream().filter(t -> t.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString())).findAny().orElse(null) == null) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
                 return;
             }
@@ -453,6 +502,20 @@ public class DialogServicio extends AbstractController implements Serializable {
             guardarSinCheck();
         } else {
             guardarFlujoSinCheck();
+        }
+    }
+
+    public void validacionListaNoVacia(ComponentSystemEvent event) {
+        List<Object> datos = (List<Object>) ((DataTable) event.getSource()).getValue();
+        if (datos.isEmpty()) {
+            String msgError = (String) event.getComponent().getAttributes().get("paramMsgError");
+            if (msgError == null || msgError.isEmpty()) {
+                msgError = "Lista vacía, debe introducir algun dato";
+            }
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError);
+            FacesContext.getCurrentInstance().validationFailed();
+            //throw new ValidatorException(new FacesMessage(msgError));
+
         }
     }
 
@@ -1248,11 +1311,11 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.temasTabla = temasTabla;
     }
 
-    public String getComunUA() {
+    public Literal getComunUA() {
         return comunUA;
     }
 
-    public void setComunUA(String comunUA) {
+    public void setComunUA(Literal comunUA) {
         this.comunUA = comunUA;
     }
 
@@ -1310,6 +1373,22 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void setMostrarRefreshSIA(boolean mostrarRefreshSIA) {
         this.mostrarRefreshSIA = mostrarRefreshSIA;
+    }
+
+    public Literal getResponsableUA() {
+        return responsableUA;
+    }
+
+    public void setResponsableUA(Literal responsableUA) {
+        this.responsableUA = responsableUA;
+    }
+
+    public Literal getLopdResponsable() {
+        return lopdResponsable;
+    }
+
+    public void setLopdResponsable(Literal lopdResponsable) {
+        this.lopdResponsable = lopdResponsable;
     }
 }
 

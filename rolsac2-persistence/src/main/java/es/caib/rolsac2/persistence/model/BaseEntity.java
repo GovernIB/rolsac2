@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * Permet definir camps comuns o mètodes comuns a tots els entitys, per temes com auditoria.
  *
- * @author areus
+ * @author Indra
  */
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {

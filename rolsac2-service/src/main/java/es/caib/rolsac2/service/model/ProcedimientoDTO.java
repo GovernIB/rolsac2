@@ -27,8 +27,9 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         proc.setWorkflow(TypeProcedimientoWorkflow.MODIFICACION);
         proc.setEstado(TypeProcedimientoEstado.MODIFICACION);
         proc.setNombreProcedimientoWorkFlow(Literal.createInstance(idiomas));
-        proc.setDatosPersonalesDestinatario(Literal.createInstance(idiomas));
-        proc.setDatosPersonalesFinalidad(Literal.createInstance(idiomas));
+        proc.setLopdFinalidad(Literal.createInstance(idiomas));
+        proc.setLopdInfoAdicional(Literal.createInstance(idiomas));
+        proc.setLopdDerechos(Literal.createInstance(idiomas));
         proc.setRequisitos(Literal.createInstance(idiomas));
         proc.setObjeto(Literal.createInstance(idiomas));
         proc.setDestinatarios(Literal.createInstance(idiomas));
@@ -146,11 +147,11 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getNombreProcedimientoWorkFlow() != null) {
             procClonado.setNombreProcedimientoWorkFlow((Literal) this.getNombreProcedimientoWorkFlow().clone());
         }
-        if (this.getDatosPersonalesFinalidad() != null) {
-            procClonado.setDatosPersonalesFinalidad((Literal) this.getDatosPersonalesFinalidad().clone());
+        if (this.getLopdFinalidad() != null) {
+            procClonado.setLopdFinalidad((Literal) this.getLopdFinalidad().clone());
         }
-        if (this.getDatosPersonalesDestinatario() != null) {
-            procClonado.setDatosPersonalesDestinatario((Literal) this.getDatosPersonalesDestinatario().clone());
+        if (this.getLopdInfoAdicional() != null) {
+            procClonado.setLopdInfoAdicional((Literal) this.getLopdInfoAdicional().clone());
         }
         if (this.getObjeto() != null) {
             procClonado.setObjeto((Literal) this.getObjeto().clone());
@@ -334,11 +335,11 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (UtilComparador.compareTo(this.getNombreProcedimientoWorkFlow(), dataOriginal.getNombreProcedimientoWorkFlow()) != 0) {
             return UtilComparador.compareTo(this.getNombreProcedimientoWorkFlow(), dataOriginal.getNombreProcedimientoWorkFlow());
         }
-        if (UtilComparador.compareTo(this.getDatosPersonalesFinalidad(), dataOriginal.getDatosPersonalesFinalidad()) != 0) {
-            return UtilComparador.compareTo(this.getDatosPersonalesFinalidad(), dataOriginal.getDatosPersonalesFinalidad());
+        if (UtilComparador.compareTo(this.getLopdFinalidad(), dataOriginal.getLopdFinalidad()) != 0) {
+            return UtilComparador.compareTo(this.getLopdFinalidad(), dataOriginal.getLopdFinalidad());
         }
-        if (UtilComparador.compareTo(this.getDatosPersonalesDestinatario(), dataOriginal.getDatosPersonalesDestinatario()) != 0) {
-            return UtilComparador.compareTo(this.getDatosPersonalesDestinatario(), dataOriginal.getDatosPersonalesDestinatario());
+        if (UtilComparador.compareTo(this.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional()) != 0) {
+            return UtilComparador.compareTo(this.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional());
         }
         if (UtilComparador.compareTo(this.getObjeto(), dataOriginal.getObjeto()) != 0) {
             return UtilComparador.compareTo(this.getObjeto(), dataOriginal.getObjeto());
@@ -399,7 +400,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         AuditoriaUtil.auditar(data.getObjeto(), dataOriginal.getObjeto(), cambios, "auditoria.procedimiento.objeto");
         AuditoriaUtil.auditar(data.getDestinatarios(), dataOriginal.getDestinatarios(), cambios, "auditoria.procedimiento.destinatarios");
         AuditoriaUtil.auditar(data.getRequisitos(), dataOriginal.getRequisitos(), cambios, "auditoria.procedimiento.requisitos");
-        AuditoriaUtil.auditar(data.getDatosPersonalesDestinatario(), dataOriginal.getDatosPersonalesDestinatario(), cambios, "auditoria.procedimiento.datosPersonalesDestinatario");
+        AuditoriaUtil.auditar(data.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional(), cambios, "auditoria.procedimiento.datosPersonalesDestinatario");
         AuditoriaUtil.auditar(data.getIniciacion(), dataOriginal.getIniciacion(), cambios, "auditoria.procedimiento.iniciacion");
         AuditoriaUtil.auditar(data.getSilencio(), dataOriginal.getSilencio(), cambios, "auditoria.procedimiento.silencio");
         AuditoriaUtil.auditar(data.getTipoProcedimiento(), dataOriginal.getTipoProcedimiento(), cambios, "auditoria.procedimiento.tipoProcedimiento");
@@ -420,7 +421,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         AuditoriaUtil.auditar(data.isInterno(), dataOriginal.isInterno(), cambios, "auditoria.procedimiento.interno");
         AuditoriaUtil.auditar(data.getLopdResponsable(), dataOriginal.getLopdResponsable(), cambios, "auditoria.procedimiento.lopdResponsable");
         AuditoriaUtil.auditar(data.getDatosPersonalesLegitimacion(), dataOriginal.getDatosPersonalesLegitimacion(), cambios, "auditoria.procedimiento.datosPersonalesLegitimacion");
-        AuditoriaUtil.auditar(data.getDatosPersonalesFinalidad(), dataOriginal.getDatosPersonalesFinalidad(), cambios, "auditoria.procedimiento.datosPersonalesFinalidad");
+        AuditoriaUtil.auditar(data.getLopdFinalidad(), dataOriginal.getLopdFinalidad(), cambios, "auditoria.procedimiento.datosPersonalesFinalidad");
 
         if (data instanceof ServicioDTO) {
             AuditoriaUtil.auditar(((ServicioDTO) data).getTasa(), ((ServicioDTO) dataOriginal).getTasa(), cambios, "auditoria.servicio.tasa");

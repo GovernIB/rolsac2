@@ -12,8 +12,7 @@ import java.util.ResourceBundle;
  * Bean amb dades de la versió. Serà el mateix per tothom per tant el definim dins l'scope
  * d'aplicació. Les agafa del fitxer Vesion.properties del mateix package.
  *
- * @author areus
- * @author anadal
+ * @author Indra
  */
 @Named
 @ApplicationScoped
@@ -40,10 +39,7 @@ public class Version {
         /* Agafa fitxer Version.properties amb el mateix package */
         ResourceBundle bundle = ResourceBundle.getBundle("rolsac2.version.Version");
         version = bundle.getString("project.version");
-        buildTime = ZonedDateTime
-                .parse(bundle.getString("project.buildtime"))
-                .withZoneSameInstant(ZoneId.systemDefault())
-                .format(BUILD_TIME_PATTERN);
+        buildTime = ZonedDateTime.parse(bundle.getString("project.buildtime")).withZoneSameInstant(ZoneId.systemDefault()).format(BUILD_TIME_PATTERN);
         scmRevision = bundle.getString("scm.revision");
         jdkVersion = bundle.getString("jdk.version");
         commit = !bundle.getString("commitGit").isEmpty() ? bundle.getString("commitGit") : bundle.getString("commitSvn");

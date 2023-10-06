@@ -5,10 +5,10 @@ import java.util.Locale;
 /**
  * Ja existeix una unitat orgànica amb el mateix codiDir3.
  *
- * @author areus
+ * @author Indra
  */
 public class UnitatDuplicadaException extends ServiceException {
-    
+
     private static final long serialVersionUID = 1L;
 
     private final String codiDir3;

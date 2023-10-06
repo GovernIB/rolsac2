@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JProceso;
 import es.caib.rolsac2.persistence.model.JProcesoLog;
+import es.caib.rolsac2.service.model.ListaPropiedades;
 import es.caib.rolsac2.service.model.ProcesoLogDTO;
 import es.caib.rolsac2.service.model.ProcesoLogGridDTO;
 import es.caib.rolsac2.service.model.ResultadoProcesoProgramado;
@@ -198,6 +199,25 @@ public class ProcesoLogRepositoryBean extends AbstractCrudRepository<JProcesoLog
     }
 
     @Override
+    public void auditarFinErrorProceso(String idProceso, Long instanciaProceso, ResultadoProcesoProgramado resultadoProceso) {
+
+        final JProcesoLog jProcesoLog = entityManager.find(JProcesoLog.class, instanciaProceso);
+        if (jProcesoLog != null) {
+            jProcesoLog.setEstadoProceso(TypeEstadoProceso.ERROR.toString());
+            jProcesoLog.setFechaFin(new Date());
+            jProcesoLog.setMensajeError(resultadoProceso.getMensajeErrorTraza());
+            if (jProcesoLog.getInformacionProceso() == null) {
+                jProcesoLog.setInformacionProceso(UtilJSON.toJSON(resultadoProceso.getDetalles()));
+            } else {
+                ListaPropiedades lista = (ListaPropiedades) UtilJSON.fromJSON(jProcesoLog.getInformacionProceso(), ListaPropiedades.class);
+                jProcesoLog.setInformacionProceso(UtilJSON.toJSON(resultadoProceso.getDetalles()));
+            }
+            this.update(jProcesoLog);
+        }
+
+    }
+
+    @Override
     public Date obtenerUltimaEjecucion(final Long idProceso) {
         final String sql = "SELECT max(PL.fechaInicio) from JProcesoLog PL WHERE PL.proceso.codigo = :idProceso";
         final Query query = entityManager.createQuery(sql);
@@ -230,6 +250,16 @@ public class ProcesoLogRepositoryBean extends AbstractCrudRepository<JProcesoLog
         ProcesoLogDTO procesoLogDTO = jProcesoLog.toModel();
         procesoLogDTO.setProceso(procesoRepository.convertProceso(jProcesoLog.getProceso()));
         return procesoLogDTO;
+    }
+
+    @Override
+    public void auditarMitadProceso(Long instanciaProceso, String detalles) {
+        final JProcesoLog jProcesoLog = entityManager.find(JProcesoLog.class, instanciaProceso);
+        if (jProcesoLog != null) {
+            jProcesoLog.setMensajeError(detalles);
+            jProcesoLog.setEstadoProceso(TypeEstadoProceso.ALERTA.toString());
+            this.update(jProcesoLog);
+        }
     }
 
 }

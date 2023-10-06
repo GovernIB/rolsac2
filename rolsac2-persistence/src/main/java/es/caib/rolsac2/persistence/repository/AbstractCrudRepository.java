@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
  *
  * @param <E>  Tipus de l'entitat.
  * @param <PK> Tipus de la clau primària de l'entitat.
- * @author areus
+ * @author Indra
  */
 public abstract class AbstractCrudRepository<E, PK> implements CrudRepository<E, PK> {
 

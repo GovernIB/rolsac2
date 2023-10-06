@@ -5,7 +5,7 @@ import java.util.Locale;
 /**
  * Ja existeix una procediment amb el mateix codiSia.
  *
- * @author areus
+ * @author Indra
  */
 public class DatoDuplicadoException extends ServiceException {
 

@@ -4,6 +4,7 @@ import es.caib.rolsac2.persistence.converter.NormativaConverter;
 import es.caib.rolsac2.persistence.model.JNormativa;
 import es.caib.rolsac2.persistence.model.JTipoBoletin;
 import es.caib.rolsac2.persistence.model.JTipoNormativa;
+import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.util.Utils;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
@@ -17,10 +18,9 @@ import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @Stateless
 @Local(NormativaRepository.class)
@@ -96,6 +96,13 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             }
         }
 
+        if (filtro.isRellenoSoloValidas()) {
+            if (filtro.getSoloValidas()) {
+                //Se pone 66 en el tipo que es el desconocido
+                sql.append(" and j.fechaAprobacion > :fechaMinima and j.tipoNormativa.codigo != 66 ");
+            }
+        }
+
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -148,10 +155,21 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             query.setParameter("codigo", filtro.getCodigo());
         }
 
+        if (filtro.isRellenoSoloValidas()) {
+            if (filtro.getSoloValidas()) {
+                //Se pone la fecha de 1960 ya que todas las fechas tendrían que ser superior
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.YEAR, 1960);
+                LocalDate date = LocalDateTime.ofInstant(calendar.getTime().toInstant(), ZoneId.systemDefault()).toLocalDate();
+                query.setParameter("fechaMinima", date);
+            }
+        }
+
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
         }
+
 
         return query;
     }
@@ -283,16 +301,15 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
-        List<JNormativa> jentidades = query.getResultList();
-        List<NormativaDTO> entidades = new ArrayList<>();
-        if (jentidades != null) {
-            for (JNormativa jentidad : jentidades) {
-                NormativaDTO entidad = converter.createDTO(jentidad);
-
-                entidades.add(entidad);
+        List<JNormativa> jnormativas = query.getResultList();
+        List<NormativaDTO> normativas = new ArrayList<>();
+        if (jnormativas != null) {
+            for (JNormativa jnormativa : jnormativas) {
+                NormativaDTO normativa = converter.createDTO(jnormativa);
+                normativas.add(normativa);
             }
         }
-        return entidades;
+        return normativas;
     }
 
     @Override
@@ -320,5 +337,43 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
             return null;
         }
     }
+
+    @Override
+    public List<NormativaDTO> getNormativaByUas(List<Long> uas, String idioma) {
+        Query query = entityManager.createQuery("SELECT distinct JNORM.codigo, t.titulo  FROM  JNormativaUnidadAdministrativa j INNER JOIN j.normativa JNORM LEFT OUTER JOIN JNORM.descripcion t ON t.idioma=:idioma WHERE  j.unidadAdministrativa.codigo IN (:uas)  ");
+        query.setParameter("uas", uas);
+        query.setParameter("idioma", idioma);
+        List<Object[]> jnormativas = query.getResultList();
+        List<NormativaDTO> normativas = new ArrayList<>();
+        if (jnormativas != null) {
+            for (Object[] jnormativa : jnormativas) {
+                NormativaDTO normativa = new NormativaDTO();
+                normativa.setCodigo((Long) jnormativa[0]);
+                Literal nombre = new Literal();
+                List<Traduccion> traducciones = new ArrayList<>();
+                traducciones.add(new Traduccion(idioma, (String) jnormativa[1]));
+                nombre.setTraducciones(traducciones);
+                normativa.setNombre(nombre);
+                normativas.add(normativa);
+            }
+        }
+        return normativas;
+    }
+
+    @Override
+    public void actualizarUA(List<Long> idUAs, Long codigoUAfusion) {
+
+        Query query = entityManager.createQuery("SELECT distinct j.normativa FROM  JNormativaUnidadAdministrativa j WHERE  j.unidadAdministrativa.codigo IN (:uas) ");
+        query.setParameter("uas", idUAs);
+        List<JNormativa> jnormativas = query.getResultList();
+        if (jnormativas != null) {
+            JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigoUAfusion);
+            jua.setNormativas(new HashSet<>(jnormativas));
+            entityManager.merge(jua);
+        }
+
+    }
+
+
 
 }

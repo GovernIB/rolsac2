@@ -128,7 +128,6 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
     @Override
-
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String obtenerPadreDir3(Long codigoUA, String idioma) {
         return unidadAdministrativaRepository.obtenerPadreDir3(codigoUA, idioma);
@@ -394,6 +393,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<UnidadOrganicaDTO> findUoByEntidad(Long idEntidad) {
         List<JUnidadOrganica> jUnidadOrganicas = unidadOrganicaRepository.findByEntidad(idEntidad);
         List<UnidadOrganicaDTO> unidadesOrganicas = new ArrayList<>();
@@ -547,13 +547,14 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
     @Override
-    public void evolucionBasica(UnidadAdministrativaDTO ua, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad) {
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void evolucionBasica(Long codigoUA, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad) {
 
-        Long codigoUAOriginal = ua.getCodigo();
-        unidadAdministrativaRepository.marcarBaja(ua.getCodigo(), fechaBaja);
-        JUnidadAdministrativa juaOriginal = unidadAdministrativaRepository.findById(codigoUAOriginal);
+        JUnidadAdministrativa juaOriginal = unidadAdministrativaRepository.findById(codigoUA);
+        UnidadAdministrativaDTO uaOriginal = unidadAdministrativaConverter.createDTO(juaOriginal);
 
-        UnidadAdministrativaDTO nueva = (UnidadAdministrativaDTO) ua.clone();
+        unidadAdministrativaRepository.marcarBaja(codigoUA, fechaBaja);
+        UnidadAdministrativaDTO nueva = (UnidadAdministrativaDTO) uaOriginal;
         nueva.setEntidad(entidad);
         nueva.setCodigo(null);
         nueva.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_VIGENTE);
@@ -565,10 +566,11 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         unidadAdministrativaRepository.create(jnueva);
 
         //Mover todos los datos de procedimientos/servicios a la nueva UA
-        procedimientoRepository.actualizarUA(codigoUAOriginal, jnueva.getCodigo());
+        procedimientoRepository.actualizarUA(codigoUA, jnueva.getCodigo());
 
         //Mover todos los datos de normativas y ususarios a la nueva UA
         jnueva = unidadAdministrativaRepository.findById(jnueva.getCodigo());
+        juaOriginal = unidadAdministrativaRepository.findById(codigoUA);
         if (juaOriginal.getNormativas() != null) {
             if (jnueva.getNormativas() == null) {
                 jnueva.setNormativas(new HashSet<>());
@@ -601,7 +603,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         unidadAdministrativaRepository.update(jnueva);
 
         //Cambiamos las uas que tengan de padre el original
-        List<JUnidadAdministrativa> jhijos = unidadAdministrativaRepository.getUnidadesAdministrativaByPadre(codigoUAOriginal);
+        List<JUnidadAdministrativa> jhijos = unidadAdministrativaRepository.getUnidadesAdministrativaByPadre(codigoUA);
         if (jhijos != null && !jhijos.isEmpty()) {
             for (JUnidadAdministrativa jhijo : jhijos) {
                 jhijo.setPadre(jnueva);
@@ -612,11 +614,13 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public NormativaDTO getNormativaBaja(Long codigoUA) {
         return normativaRepository.getNormativaBaja(codigoUA);
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void evolucionDependencia(Long codigoUA, Long codigoUAPadre, EntidadDTO entidad) {
         JUnidadAdministrativa juaOriginal = unidadAdministrativaRepository.findById(codigoUA);
         JUnidadAdministrativa juaPadre = unidadAdministrativaRepository.findById(codigoUAPadre);
@@ -625,6 +629,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public boolean checkCuelga(UnidadAdministrativaDTO padreAntiguo, UnidadAdministrativaDTO padreNuevo) {
         JUnidadAdministrativa jelemento = unidadAdministrativaRepository.findById(padreNuevo.getCodigo());
         Long codigoOriginal = padreAntiguo.getCodigo();
@@ -639,6 +644,77 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         }
 
         return false;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<UsuarioGridDTO> getUsuariosByUas(List<Long> uas) {
+        return usuarioRepository.getUsuariosByUas(uas);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<NormativaDTO> getNormativaByUas(List<Long> uas, String idioma) {
+        return normativaRepository.getNormativaByUas(uas, idioma);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<NormativaDTO> getNormativaByUa(Long ua, String idioma) {
+        List<Long> uas = new ArrayList<>();
+        uas.add(ua);
+        return normativaRepository.getNormativaByUas(uas, idioma);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String idioma) {
+        return procedimientoRepository.getProcedimientosByUas(uas, idioma);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<ProcedimientoBaseDTO> getProcedimientosByUa(Long ua, String idioma) {
+        List<Long> uas = new ArrayList<>();
+        uas.add(ua);
+        return procedimientoRepository.getProcedimientosByUas(uas, idioma);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TemaGridDTO> getTemasByUas(List<Long> uas) {
+        return temaRepository.getTemasByUas(uas);
+    }
+
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void evolucionFusion(List<UnidadAdministrativaGridDTO> selectedUnidades, NormativaDTO normativaBaja, Date fechaBaja, UnidadAdministrativaDTO uaFusion, TypePerfiles perfil) {
+        Long codigoUAfusion = this.create(uaFusion, perfil);
+
+        //Mover todos los datos de procedimientos/servicios a la nueva UA
+        List<Long> idUAs = new ArrayList<>();
+        for (UnidadAdministrativaGridDTO ua : selectedUnidades) {
+            idUAs.add(ua.getCodigo());
+        }
+        procedimientoRepository.actualizarUA(idUAs, codigoUAfusion);
+
+        //Mover todos los datos de normativas a la nueva UA
+        normativaRepository.actualizarUA(idUAs, codigoUAfusion);
+
+        //Actualizamos todas las UAs
+        for (Long ua : idUAs) {
+
+            //Damos de baja la UA y, si se ha asociado a alguna UA, lo hacemos
+            unidadAdministrativaRepository.marcarBaja(ua, fechaBaja);
+            JUnidadAdministrativa jua = unidadAdministrativaRepository.findById(ua);
+            Set<JNormativa> normativaCierre = new HashSet<>();
+            if (normativaBaja != null) {
+                normativaCierre.add(normativaRepository.getReference(normativaBaja.getCodigo()));
+            }
+            jua.setNormativas(normativaCierre);
+            unidadAdministrativaRepository.update(jua);
+        }
     }
 
     @Override

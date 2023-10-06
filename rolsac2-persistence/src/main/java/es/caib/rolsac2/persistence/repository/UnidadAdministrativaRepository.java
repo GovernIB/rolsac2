@@ -74,4 +74,5 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     void marcarBaja(Long codigo, Date fechaBaja);
 
     List<JUnidadAdministrativa> getUnidadesAdministrativaByPadre(Long codigoUAOriginal);
+
 }

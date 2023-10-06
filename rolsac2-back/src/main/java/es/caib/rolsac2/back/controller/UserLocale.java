@@ -15,7 +15,7 @@ import java.util.Locale;
 /**
  * Bean per mantenir el locale de l'usuari.
  *
- * @author areus
+ * @author Indra
  */
 @Named
 @SessionScoped
@@ -28,7 +28,9 @@ public class UserLocale implements Serializable {
     @Inject
     private FacesContext context;
 
-    /** Locale actual de l'usuari */
+    /**
+     * Locale actual de l'usuari
+     */
     private Locale current;
 
     public Locale getCurrent() {
@@ -48,11 +50,10 @@ public class UserLocale implements Serializable {
     private void init() {
         LOG.error("Inicialitzant locale de l'usuari");
         Application app = context.getApplication();
-        current = app.getViewHandler().calculateLocale(context);        
+        current = app.getViewHandler().calculateLocale(context);
     }
 
     public void reload() {
-        context.getPartialViewContext().getEvalScripts()
-                .add("location.replace(location)");
+        context.getPartialViewContext().getEvalScripts().add("location.replace(location)");
     }
 }

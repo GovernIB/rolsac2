@@ -19,7 +19,7 @@ import java.util.Optional;
 /**
  * Implementación del repositorio de tipo de materia SIA.
  *
- * @author areus
+ * @author Indra
  */
 @Stateless
 @Local(EdificioRepository.class)
@@ -67,18 +67,13 @@ public class EdificioRepositoryBean extends AbstractCrudRepository<JEdificio, Lo
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder(
-                    "SELECT count(j) FROM JEdificio j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JEdificio j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder(
-                    "SELECT j.codigo, j.direccion, j.poblacion, j.cp, j.telefono, j.fax, j.email, t.nombre FROM JEdificio j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, j.direccion, j.poblacion, j.cp, j.telefono, j.fax, j.email, t.nombre FROM JEdificio j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         }
 
         if (filtro.isRellenoTexto()) {
-            sql.append(" and ( cast(j.codigo as string) LIKE :filtro OR LOWER(j.direccion) LIKE :filtro "
-                    + " OR LOWER(j.poblacion) LIKE :filtro  " + "OR LOWER(j.cp) LIKE :filtro "
-                    + " OR LOWER(j.telefono) LIKE :filtro " + "OR LOWER(j.fax) LIKE :filtro "
-                    + " OR LOWER(j.email) LIKE :filtro OR LOWER(t.nombre) LIKE :filtro)");
+            sql.append(" and ( cast(j.codigo as string) LIKE :filtro OR LOWER(j.direccion) LIKE :filtro " + " OR LOWER(j.poblacion) LIKE :filtro  " + "OR LOWER(j.cp) LIKE :filtro " + " OR LOWER(j.telefono) LIKE :filtro " + "OR LOWER(j.fax) LIKE :filtro " + " OR LOWER(j.email) LIKE :filtro OR LOWER(t.nombre) LIKE :filtro)");
         }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy()));

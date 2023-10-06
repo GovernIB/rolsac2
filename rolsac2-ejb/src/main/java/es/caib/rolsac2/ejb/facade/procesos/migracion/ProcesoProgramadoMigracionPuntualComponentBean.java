@@ -1,6 +1,7 @@
 package es.caib.rolsac2.ejb.facade.procesos.migracion;
 
 import es.caib.rolsac2.ejb.facade.procesos.ProcesoProgramadoFacade;
+import es.caib.rolsac2.ejb.facade.procesos.ProcesosExecComponentFacade;
 import es.caib.rolsac2.service.facade.MigracionServiceFacade;
 import es.caib.rolsac2.service.facade.ProcesoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
@@ -32,7 +33,7 @@ import java.util.List;
  */
 @Stateless(name = "procesoProgramadoMigracionComponent")
 @Local(ProcesoProgramadoFacade.class)
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 // En funcion del proceso, sera o no tx por si se tiene que dividir en transacciones
 public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoProgramadoFacade {
 
@@ -50,6 +51,14 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
 
     @Inject
     private SystemServiceFacade systemService;
+
+    /**
+     * Componente ejecucion procesos.
+     */
+    @Inject
+    ProcesosExecComponentFacade procesosExecComponent;
+
+
     /**
      * log.
      */
@@ -65,7 +74,7 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public ResultadoProcesoProgramado ejecutar(final ListaPropiedades params, Long idEntidad) {
+    public ResultadoProcesoProgramado ejecutar(final Long instanciaProceso, final ListaPropiedades params, Long idEntidad) {
         log.info("Ejecución proceso migracion");
         final ListaPropiedades detalles = new ListaPropiedades();
         final ResultadoProcesoProgramado res = new ResultadoProcesoProgramado();
@@ -73,6 +82,9 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
         final StringBuilder mensajeTraza = new StringBuilder();
         String fechaInicio = "La dada de inici es " + sdf.format(new Date());
         detalles.addPropiedad("Informació del procés", fechaInicio);
+
+
+        procesosExecComponent.auditarMitadProceso(instanciaProceso, mensajeTraza.toString() + "\n Estado actual: Inicio de la ejecución.");
 
         try {
             String borrarDatos = params.getPropiedad("borrarDatos");
@@ -83,9 +95,10 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
             String cargarDatosProcedimientos = params.getPropiedad("cargarProcedimientos");
             String cargarDatosServicios = params.getPropiedad("cargarServicios");
             String cargarDocumentos = params.getPropiedad("cargarDocumentos");
+            String usuarios = params.getPropiedad("usuarios");
             Long entidad = Long.valueOf(params.getPropiedad("entidad"));
             Long uaRaiz = Long.valueOf(params.getPropiedad("uaRaiz"));
-            String usuarios = params.getPropiedad("usuarios");
+            String estadoMigracion = "";
             detalles.addPropiedades(params);
 
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
@@ -95,12 +108,14 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                 String result = migracionService.ejecutarMetodo("MIGRAR_BORRARDATOS", entidad.toString(), uaRaiz.toString()) + "\n";
                 mensajeTraza.append(result);
                 detalles.addPropiedad("Borrar datos", "Ejecutado correctamente");
+                estadoMigracion += "Borrado los datos 100%\n";
             }
 
             if (cargarUsuarios != null && "true".equals(cargarUsuarios)) {
                 String result = migracionService.migrarUsuarios();
                 mensajeTraza.append(result);
                 detalles.addPropiedad("Migrar usuarios", "Ejecutado correctamente");
+                estadoMigracion += "Migrado los usuarios 100%\n";
             }
 
 
@@ -120,11 +135,14 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                         List<BigDecimal> bloque = obtenerBloque(idUAs, i, TAMANYO_BLOQUE);
                         String result = migracionService.migrarUAs(bloque, entidad, uaRaiz, usuarios);
                         mensajeTraza.append(result);
+                        procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando UAs " + getPorcentaje(i, idUAs.size()) + " \n\n" + mensajeTraza.toString());
+
                     }
 
                 }
                 mensajeTraza.append("FI MIGRACIO UAs \n");
                 detalles.addPropiedad("Cargar datos UA", "Ejecutado correctamente");
+                estadoMigracion += "Migrado las uas 100%\n";
             }
 
             if (cargarDatosNormativas != null && "true".equals(cargarDatosNormativas)) {
@@ -138,6 +156,8 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                         List<BigDecimal> bloque = obtenerBloque(idNormativas, i, TAMANYO_BLOQUE);
                         String result = migracionService.migrarNormativas(bloque, entidad);
                         mensajeTraza.append(result);
+                        procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando Normativas " + getPorcentaje(i, idNormativas.size()) + " \n\n" + mensajeTraza.toString());
+
                     }
 
                 }
@@ -145,6 +165,7 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                 mensajeTraza.append(result);
                 mensajeTraza.append("FI MIGRACIO NORMATIVAs \n");
                 detalles.addPropiedad("Cargar datos Normativas", "Ejecutado correctamente");
+                estadoMigracion += "Migrado las normativas 100%\n";
             }
 
             if ((cargarDatosProcedimientos != null && "true".equals(cargarDatosProcedimientos)) || (cargarDatosServicios != null && "true".equals(cargarDatosServicios))) {
@@ -164,10 +185,12 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                         List<BigDecimal> bloque = obtenerBloque(idProcedimientos, i, TAMANYO_BLOQUE);
                         String result = migracionService.migrarProcedimientos(bloque, entidad, uaRaiz);
                         mensajeTraza.append(result);
+                        procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando Procedimientos " + getPorcentaje(i, idProcedimientos.size()) + " \n\n" + mensajeTraza.toString());
                     }
                 }
                 mensajeTraza.append("FI MIGRACIO PROCEDIMIENTOS \n");
                 detalles.addPropiedad("Cargar datos Procedimientos", "Ejecutado correctamente");
+                estadoMigracion += "Migrado los procedimientos 100%\n";
             }
 
             if (cargarDatosServicios != null && "true".equals(cargarDatosServicios)) {
@@ -182,10 +205,12 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                         List<BigDecimal> bloque = obtenerBloque(idServicios, i, TAMANYO_BLOQUE);
                         String result = migracionService.migrarServicios(bloque, entidad, uaRaiz);
                         mensajeTraza.append(result);
+                        procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando Servicios " + getPorcentaje(i, idServicios.size()) + " \n\n" + mensajeTraza.toString());
                     }
                 }
                 mensajeTraza.append("FI MIGRACIO SERVICIOS \n");
                 detalles.addPropiedad("Cargar datos Servicios", "Ejecutado correctamente");
+                estadoMigracion += "Migrado los servicios 100%\n";
             }
             if (cargarDocumentos != null && "true".equals(cargarDocumentos)) {
                 mensajeTraza.append("MIGRAMOS DOCUMENTOS DOCUMENTOS \n");
@@ -198,7 +223,9 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                     for (int i = 0; i < idDocs.size(); i++) {
                         String result = migracionService.migrarDocumentos(idDocs.get(i), entidad, uaRaiz, rutaRolsac1, ruta, TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS);
                         mensajeTraza.append(result);
+                        procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando Doc proced/serv " + getPorcentaje(i, idDocs.size()) + " \n\n" + mensajeTraza.toString());
                     }
+                    estadoMigracion += "Migrado los docs procedimientos/servicios 100%\n";
                 }
                 idDocs = migracionService.getDocumentosNormativas(idEntidad, uaRaiz);
 
@@ -207,7 +234,9 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                     for (int i = 0; i < idDocs.size(); i++) {
                         String result = migracionService.migrarDocumentos(idDocs.get(i), entidad, uaRaiz, rutaRolsac1, ruta, TypeFicheroExterno.NORMATIVA_DOCUMENTO);
                         mensajeTraza.append(result);
+                        procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando Doc normativas " + getPorcentaje(i, idDocs.size()) + " \n\n" + mensajeTraza.toString());
                     }
+                    estadoMigracion += "Migrado los docs normativas 100%\n";
                 }
                 mensajeTraza.append("FI MIGRACIO DOCUMENTOS \n");
                 detalles.addPropiedad("Cargar datos Documentos", "Ejecutado correctamente");
@@ -220,6 +249,7 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
             detalles.addPropiedad("Fin del procés", fechaFin);
             res.setDetalles(detalles);
             res.setMensajeErrorTraza(mensajeTraza.toString());
+
         } catch (Exception e) {
             log.error("Error en el proceso programado", e);
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
@@ -236,6 +266,10 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
             }
         }
         return res;
+    }
+
+    private String getPorcentaje(int i, int size) {
+        return ((i * 100) / size) + "%";
     }
 
     //Método para obtener un bloque de elementos

@@ -232,6 +232,7 @@ create or replace PROCEDURE "MIGRAR_SERV" (codigo NUMBER, codigoEntidad NUMBER, 
     EXISTE_ARCHIVOS_LOPD NUMBER(2,0);
     EXISTE_ARCHIVOS      NUMBER(2,0);
     orden  NUMBER(2,0);
+    RS2_CODPR_LOPD NUMBER(10,0);
 BEGIN
 
     dbms_lob.createtemporary(l_clob, TRUE);
@@ -277,13 +278,15 @@ BEGIN
                          SER_CTELEM,
                          SER_CPRESE,
                          SER_CTELEF,
-                         SER_PARAMS
+                         SER_PARAMS,
+                         SER_CODPLT
                    INTO TRAID,
                         TRAVER,
                         CTELEM,
                         CPRESE,
                         CTELEF,
-                        PARAMS
+                        PARAMS,
+                        CODPLN
                      FROM R1_SERVICIOS
                      WHERE SER_CODI = codigo;   
                 
@@ -344,6 +347,8 @@ BEGIN
                      FROM DUAL;
                      
                   INSERT INTO RS2_LSTDOC (LSDO_CODIGO) VALUES (LSLOPD);
+                  
+                  dbms_output.put_line('LSLOPD: ' || LSLOPD);
                 END IF;
                 
                 SELECT COUNT(*) 
@@ -382,7 +387,7 @@ BEGIN
                      PUBLICA = 1, INTERNA = 2, RESERVA = 3 BAJA = 4;
                      PUBLICA SERA DEFINITIVO Y PUBLICADO
                      INTERNA SERA ENMODIFICACION Y MODIFICACION
-                     RESERVA SERA DEFINITIVO Y RESERVADO
+                     RESERVA SERA DEFINITIVO Y RESERVA
                      BAJA SERA DEFINITIVO Y BORRADO
                      */
 
@@ -460,6 +465,18 @@ BEGIN
                      FROM R1_SERVICIOS
                      WHERE SER_CODI = codigo;
 
+                    /** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
+                    IF LSLOPD IS NOT NULL
+                    THEN
+                         SELECT RS2_DOCPR_SEQ.NEXTVAL
+                           INTO RS2_CODPR_LOPD
+                           FROM DUAL;
+                           
+                         INSERT INTO RS2_DOCPR
+                                    (DOPR_CODIGO, DOPR_ORDEN, DOCPR_CODLSD)
+                         VALUES (RS2_CODPR_LOPD,0,LSLOPD);
+                    END IF;          
+                             
                     /** INTRODUCIMOS LAS TRADUCCIONES **/ 
                     FOR ROLSAC1_TRADSERV IN cursorTradSERVICsROLSAC1(codigo)
                     LOOP
@@ -489,13 +506,10 @@ BEGIN
                             /** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
                             IF LSLOPD IS NOT NULL AND ROLSAC1_TRADSERV.TSR_LOPDIA IS NOT NULL
                             THEN
-                                INSERT INTO RS2_DOCPR
-                                        (DOPR_CODIGO, DOPR_ORDEN, DOCPR_CODLSD)
-                                VALUES (RS2_DOCPR_SEQ.NEXTVAL,0,LSLOPD);
-                                
+                               
                                 INSERT INTO RS2_TRADOPR
                                         (TRDP_CODIGO,TRDP_CODDOPR, TRDP_IDIOMA, TRDP_TITULO, TRDP_DESCRI,TRDP_FICROL1)
-                                        VALUES (RS2_TRADOPR_SEQ.NEXTVAL,RS2_DOCPR_SEQ.CURRVAL, ROLSAC1_TRADSERV.TSR_CODIDI, '','', ROLSAC1_TRADSERV.TSR_LOPDIA);
+                                        VALUES (RS2_TRADOPR_SEQ.NEXTVAL,RS2_CODPR_LOPD, ROLSAC1_TRADSERV.TSR_CODIDI, '','', ROLSAC1_TRADSERV.TSR_LOPDIA);
                             END IF;
 
                     END LOOP;

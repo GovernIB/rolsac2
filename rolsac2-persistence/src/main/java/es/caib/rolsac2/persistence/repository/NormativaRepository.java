@@ -40,4 +40,20 @@ public interface NormativaRepository extends CrudRepository<JNormativa, Long> {
      * @return
      */
     NormativaDTO getNormativaBaja(Long codigoUA);
+
+    /**
+     * Obtiene las normativas de las uas
+     *
+     * @param uas
+     * @return
+     */
+    List<NormativaDTO> getNormativaByUas(List<Long> uas, String idioma);
+
+    /**
+     * Actualizamos todas las normativas a las nuevas UAs
+     *
+     * @param idUAs
+     * @param codigoUAfusion
+     */
+    void actualizarUA(List<Long> idUAs, Long codigoUAfusion);
 }

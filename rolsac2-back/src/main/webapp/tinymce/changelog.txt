@@ -3,7 +3,7 @@ Version 5.0.3 (2019-03-19)
     Changed the entire phrase 'Powered by Tiny' in the status bar to be a link instead of just the word 'Tiny' #TINY-3366
     Changed `formatselect`, `styleselect` and `align` menus to use the `mceToggleFormat` command internally #TINY-3428
     Fixed toolbar keyboard navigation to work as expected when `toolbar_drawer` is configured #TINY-3432
-    Fixed text direction buttons to display the correct pressed state in selections that have no explicit `dir` property #TINY-3138
+    Fixed text direction buttons to display the correct pressed state in *.xhtmls that have no explicit `dir` property #TINY-3138
     Fixed the mobile editor to clean up properly when removed #TINY-3445
     Fixed quickbar toolbars to add an empty box to the screen when it is set to `false` #TINY-3439
     Fixed an issue where pressing the **Delete/Backspace** key at the edge of tables was creating incorrect selections #TINY-3371

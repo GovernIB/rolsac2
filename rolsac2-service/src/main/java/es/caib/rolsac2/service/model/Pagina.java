@@ -1,11 +1,10 @@
 package es.caib.rolsac2.service.model;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +13,7 @@ import java.util.Objects;
  * Resultat d'una consulta paginada que agrupa la llista de resultats amb el nombre total de resultats.
  * Immutable.
  *
- * @author areus
+ * @author Indra
  */
 @XmlRootElement
 @Schema(name = "Pagina")
@@ -40,9 +39,6 @@ public class Pagina<T> {
 
     @Override
     public String toString() {
-        return "Pagina{" +
-                "items=" + items +
-                ", total=" + total +
-                '}';
+        return "Pagina{" + "items=" + items + ", total=" + total + '}';
     }
 }

@@ -8,11 +8,7 @@ import java.util.List;
 
 @Entity
 @SequenceGenerator(name = "procedimiento-tram-trad-sequence", sequenceName = "RS2_TRAPRTA_SEQ", allocationSize = 1)
-@Table(name = "RS2_TRAPRTA",
-        indexes = {
-                @Index(name = "RS2_TRAPRTA_PK_I", columnList = "TRTA_CODIGO")
-        }
-)
+@Table(name = "RS2_TRAPRTA", indexes = {@Index(name = "RS2_TRAPRTA_PK_I", columnList = "TRTA_CODIGO")})
 public class JProcedimientoTramiteTraduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedimiento-tram-trad-sequence")
@@ -32,10 +28,10 @@ public class JProcedimientoTramiteTraduccion {
     @Column(name = "TRTA_NOMBRE", length = 255)
     private String nombre;
 
-    @Column(name = "TRTA_DOCUM", length = 4000)
+    @Column(name = "TRTA_DOCUM")
     private String documentacion;
 
-    @Column(name = "TRTA_OBSERV", length = 4000)
+    @Column(name = "TRTA_OBSERV")
     private String observacion;
 
     @Column(name = "TRTA_TERMIN", length = 512)

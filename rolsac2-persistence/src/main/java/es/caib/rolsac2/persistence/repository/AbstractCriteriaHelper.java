@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  *
  * @param <E> tipus de l'entity
  * @param <A> enumeració que representa els atributs per filtrar o ordenar.
- * @author areus
+ * @author Indra
  */
 public abstract class AbstractCriteriaHelper<E extends BaseEntity, A extends Enum<A> & Atribut> {
 
@@ -37,9 +37,7 @@ public abstract class AbstractCriteriaHelper<E extends BaseEntity, A extends Enu
      */
     public Predicate[] getPredicates(Map<A, Object> filters) {
         List<Predicate> predicates = new ArrayList<>();
-        filters.forEach(
-                (key, value) -> predicates.add(getPredicate(key, value))
-        );
+        filters.forEach((key, value) -> predicates.add(getPredicate(key, value)));
         return predicates.toArray(Predicate[]::new);
     }
 
@@ -58,8 +56,7 @@ public abstract class AbstractCriteriaHelper<E extends BaseEntity, A extends Enu
         Path<?> path = getPath(field);
         if (path.getJavaType() == String.class) {
             // Si el tipo java és string, llavors segur que és un Path<String>
-            @SuppressWarnings("unchecked")
-            Path<String> stringPath = (Path<String>) path;
+            @SuppressWarnings("unchecked") Path<String> stringPath = (Path<String>) path;
             return builder.like(stringPath, value + "%");
         } else {
             return builder.equal(path, value);
@@ -74,10 +71,7 @@ public abstract class AbstractCriteriaHelper<E extends BaseEntity, A extends Enu
      * @return llista d'ordenació.
      */
     public List<Order> getOrderList(List<Ordre<A>> ordenacio) {
-        return ordenacio.stream()
-                .map(o -> o.isAscendent() ? builder.asc(getPath(o.getAtribut()))
-                        : builder.desc(getPath(o.getAtribut())))
-                .collect(Collectors.toList());
+        return ordenacio.stream().map(o -> o.isAscendent() ? builder.asc(getPath(o.getAtribut())) : builder.desc(getPath(o.getAtribut()))).collect(Collectors.toList());
     }
 
     /**

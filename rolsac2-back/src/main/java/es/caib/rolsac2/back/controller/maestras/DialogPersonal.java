@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * Controlador para editar un personal.
  *
- * @author areus
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -83,13 +83,11 @@ public class DialogPersonal extends AbstractController implements Serializable {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.email.novalido"), true);
             return false;
         }
-        if (Objects.nonNull(this.data.getTelefonoExteriorFijo())
-                && !ValidacionTipoUtils.esTelefonoValido(this.data.getTelefonoExteriorFijo())) {
+        if (Objects.nonNull(this.data.getTelefonoExteriorFijo()) && !ValidacionTipoUtils.esTelefonoValido(this.data.getTelefonoExteriorFijo())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.telefono.novalido"), true);
             return false;
         }
-        if (Objects.nonNull(this.data.getTelefonoExteriorMovil())
-                && !ValidacionTipoUtils.esTelefonoValido(this.data.getTelefonoExteriorMovil())) {
+        if (Objects.nonNull(this.data.getTelefonoExteriorMovil()) && !ValidacionTipoUtils.esTelefonoValido(this.data.getTelefonoExteriorMovil())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.telefono.novalido"), true);
             return false;
         }

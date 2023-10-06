@@ -1,7 +1,5 @@
 package es.caib.rolsac2.back.security;
 
-import es.caib.rolsac2.commons.utils.Version;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
@@ -12,7 +10,8 @@ import java.util.ResourceBundle;
 
 /**
  * Bean CDI per obtenir instàncies de UserInfo
- * @author areus
+ *
+ * @author Indra
  */
 @ApplicationScoped
 public class UserInfoProducer {
@@ -27,7 +26,7 @@ public class UserInfoProducer {
         try {
             ResourceBundle bundle = ResourceBundle.getBundle("rolsac2.version.Version");
             String authMethod = bundle.getString("authMethod");
-            if(authMethod.equals("KEYCLOAK")) {
+            if (authMethod.equals("KEYCLOAK")) {
                 Class.forName("org.keycloak.KeycloakPrincipal");
                 factory = new KeycloakUserInfoFactory();
             } else {

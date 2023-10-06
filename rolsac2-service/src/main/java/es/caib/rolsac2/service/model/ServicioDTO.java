@@ -34,8 +34,9 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         serv.setWorkflow(TypeProcedimientoWorkflow.MODIFICACION);
         serv.setEstado(TypeProcedimientoEstado.MODIFICACION);
         serv.setNombreProcedimientoWorkFlow(Literal.createInstance(idiomas));
-        serv.setDatosPersonalesDestinatario(Literal.createInstance(idiomas));
-        serv.setDatosPersonalesFinalidad(Literal.createInstance(idiomas));
+        serv.setLopdFinalidad(Literal.createInstance(idiomas));
+        serv.setLopdInfoAdicional(Literal.createInstance(idiomas));
+        serv.setLopdDerechos(Literal.createInstance(idiomas));
         serv.setRequisitos(Literal.createInstance(idiomas));
         serv.setObjeto(Literal.createInstance(idiomas));
         serv.setDestinatarios(Literal.createInstance(idiomas));
@@ -179,11 +180,11 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         if (this.getNombreProcedimientoWorkFlow() != null) {
             srvClonado.setNombreProcedimientoWorkFlow((Literal) this.getNombreProcedimientoWorkFlow().clone());
         }
-        if (this.getDatosPersonalesFinalidad() != null) {
-            srvClonado.setDatosPersonalesFinalidad((Literal) this.getDatosPersonalesFinalidad().clone());
+        if (this.getLopdFinalidad() != null) {
+            srvClonado.setLopdFinalidad((Literal) this.getLopdFinalidad().clone());
         }
-        if (this.getDatosPersonalesDestinatario() != null) {
-            srvClonado.setDatosPersonalesDestinatario((Literal) this.getDatosPersonalesDestinatario().clone());
+        if (this.getLopdInfoAdicional() != null) {
+            srvClonado.setLopdInfoAdicional((Literal) this.getLopdInfoAdicional().clone());
         }
         if (this.getObjeto() != null) {
             srvClonado.setObjeto((Literal) this.getObjeto().clone());
@@ -358,11 +359,11 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         if (UtilComparador.compareTo(this.getNombreProcedimientoWorkFlow(), dataOriginal.getNombreProcedimientoWorkFlow()) != 0) {
             return UtilComparador.compareTo(this.getNombreProcedimientoWorkFlow(), dataOriginal.getNombreProcedimientoWorkFlow());
         }
-        if (UtilComparador.compareTo(this.getDatosPersonalesFinalidad(), dataOriginal.getDatosPersonalesFinalidad()) != 0) {
-            return UtilComparador.compareTo(this.getDatosPersonalesFinalidad(), dataOriginal.getDatosPersonalesFinalidad());
+        if (UtilComparador.compareTo(this.getLopdFinalidad(), dataOriginal.getLopdFinalidad()) != 0) {
+            return UtilComparador.compareTo(this.getLopdFinalidad(), dataOriginal.getLopdFinalidad());
         }
-        if (UtilComparador.compareTo(this.getDatosPersonalesDestinatario(), dataOriginal.getDatosPersonalesDestinatario()) != 0) {
-            return UtilComparador.compareTo(this.getDatosPersonalesDestinatario(), dataOriginal.getDatosPersonalesDestinatario());
+        if (UtilComparador.compareTo(this.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional()) != 0) {
+            return UtilComparador.compareTo(this.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional());
         }
         if (UtilComparador.compareTo(this.getObjeto(), dataOriginal.getObjeto()) != 0) {
             return UtilComparador.compareTo(this.getObjeto(), dataOriginal.getObjeto());

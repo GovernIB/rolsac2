@@ -4,7 +4,7 @@ package es.caib.rolsac2.commons.rest.error;
  * Tipus possibles d'error. Emprat dins {@link ErrorBean} per enviar la informació d'un
  * error del client.
  *
- * @author areus
+ * @author Indra
  */
 public enum ErrorType {
 

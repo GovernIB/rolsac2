@@ -219,6 +219,25 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
     }
 
     @Override
+    public List<UsuarioGridDTO> getUsuariosByUas(List<Long> uas) {
+        Query query = entityManager.createQuery("SELECT distinct j.usuario FROM  JUsuarioUnidadAdministrativa j WHERE j.unidadAdministrativa.codigo IN (:uas) ");
+        query.setParameter("uas", uas);
+        List<JUsuario> jusuarios = query.getResultList();
+        List<UsuarioGridDTO> usuarios = new ArrayList<>();
+        if (jusuarios != null) {
+            for (JUsuario jusuario : jusuarios) {
+                UsuarioGridDTO usuario = new UsuarioGridDTO();
+                usuario.setCodigo(jusuario.getCodigo());
+                usuario.setEmail(jusuario.getEmail());
+                usuario.setIdentificador(jusuario.getIdentificador());
+                usuario.setNombre(jusuario.getNombre());
+                usuarios.add(usuario);
+            }
+        }
+        return usuarios;
+    }
+
+    @Override
     public void mergeUsuarioEntidad(JUsuario usuario, List<Long> entidades) {
 
         List<Long> entidadesAsociadas = findEntidadesAsociadas(usuario.getCodigo());

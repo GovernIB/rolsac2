@@ -13,7 +13,7 @@ import javax.ws.rs.ext.Provider;
  * Envia un codi d'error 500 i evita que els detalls de l'excepció arribin al client,
  * ja que un error de sistema l'ha de mirar l'administrador.
  *
- * @author areus
+ * @author Indra
  */
 @Provider
 public class EJBExceptionMapper implements ExceptionMapper<EJBException> {

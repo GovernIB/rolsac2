@@ -14,6 +14,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
 import es.caib.rolsac2.service.model.types.TypeIndexacion;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,7 +219,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     for (Object proc : jprocsL) {
                         if (proc != null) {
                             seleccionado = (JProcedimientoWorkflow) proc;
-
                             if (seleccionado != null) {
                                 ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionado);
                                 procs.add(procDTO);
@@ -231,7 +231,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     for (Object proc : jprocsA) {
                         if (proc != null) {
                             JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
-
                             ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionadoA);
                             procs.add(procDTO);
 
@@ -2357,7 +2356,60 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         Query queryUATramites = entityManager.createQuery("update JProcedimientoTramite  set unidadAdministrativa = " + codigoUANueva + " WHERE unidadAdministrativa = " + codigoUAOriginal);
         queryUATramites.executeUpdate();
+    }
 
+    @Override
+    public void actualizarUA(List<Long> codigoUAOriginal, Long codigoUANueva) {
+        Query queryUAResponsable = entityManager.createQuery("update JProcedimientoWorkflow  set uaResponsable = " + codigoUANueva + " WHERE uaResponsable.codigo in (:uas)");
+        queryUAResponsable.setParameter("uas", codigoUAOriginal);
+        queryUAResponsable.executeUpdate();
+
+        Query queryUAInstructor = entityManager.createQuery("update JProcedimientoWorkflow  set uaInstructor = " + codigoUANueva + " WHERE uaInstructor.codigo  in (:uas)");
+        queryUAInstructor.setParameter("uas", codigoUAOriginal);
+        queryUAInstructor.executeUpdate();
+
+        Query queryUATramites = entityManager.createQuery("update JProcedimientoTramite  set unidadAdministrativa = " + codigoUANueva + " WHERE unidadAdministrativa.codigo in (:uas)");
+        queryUATramites.setParameter("uas", codigoUAOriginal);
+        queryUATramites.executeUpdate();
+    }
+
+    @Override
+    public List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String idioma) {
+        StringBuilder sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, j.tipo, wf.estado, wf2.estado, t.nombre, t2.nombre FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN j.procedimientoWF WF2 ON wf.workflow = true LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma");
+        sql.append(" WHERE wf.uaResponsable.codigo in (:uas) OR wf2.uaResponsable.codigo in (:uas) OR wf.uaInstructor.codigo in (:uas) OR wf2.uaInstructor.codigo in (:uas) ");
+
+
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("uas", uas);
+        query.setParameter("idioma", idioma);
+        List<Object[]> resultados = query.getResultList();
+        List<ProcedimientoBaseDTO> procedimientos = new ArrayList<>();
+        if (resultados != null) {
+            for (Object[] resultado : resultados) {
+                ProcedimientoBaseDTO proc = new ProcedimientoBaseDTO();
+                proc.setCodigo((Long) resultado[0]);
+                if (resultado[1] != null) {
+                    proc.setCodigoWF((Long) resultado[1]);
+                } else {
+                    proc.setCodigoWF((Long) resultado[2]);
+                }
+                proc.setTipo((String) resultado[3]);
+                if (resultado[4] != null) {
+                    proc.setEstado(TypeProcedimientoEstado.fromString((String) resultado[4]));
+                } else {
+                    proc.setEstado(TypeProcedimientoEstado.fromString((String) resultado[5]));
+                }
+                Literal literal = new Literal();
+                if (resultado[6] != null) {
+                    literal.add(new Traduccion(idioma, (String) resultado[6]));
+                } else {
+                    literal.add(new Traduccion(idioma, (String) resultado[7]));
+                }
+                proc.setNombreProcedimientoWorkFlow(literal);
+                procedimientos.add(proc);
+            }
+        }
+        return procedimientos;
     }
 
     private boolean contiene(List<ProcedimientoDocumentoDTO> docs, JProcedimientoDocumento jdoc) {

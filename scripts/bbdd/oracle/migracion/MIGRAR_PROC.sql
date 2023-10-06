@@ -245,6 +245,7 @@ create or replace PROCEDURE "MIGRAR_PROC" (codigo NUMBER, codigoEntidad NUMBER, 
     TOTAL_DOC_TRAM_MODELOS NUMBER(2,0);
     LSTDOCTRAM NUMBER(10,0);
     LDSOCODIGO NUMBER(10,0);
+    RS2_CODPR_LOPD NUMBER(10,0);
 BEGIN
 
     dbms_lob.createtemporary(l_clob, TRUE);
@@ -344,7 +345,7 @@ BEGIN
                  PUBLICA = 1, INTERNA = 2, RESERVA = 3 BAJA = 4;
                  PUBLICA SERA DEFINITIVO Y PUBLICADO
                  INTERNA SERA ENMODIFICACION Y MODIFICACION
-                 RESERVA SERA DEFINITIVO Y RESERVADO
+                 RESERVA SERA DEFINITIVO Y RESERVA
                  BAJA SERA DEFINITIVO Y BORRADO
                  */
 
@@ -680,6 +681,19 @@ BEGIN
                     END IF;
                 END LOOP;
 
+                /** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
+                IF LSLOPD IS NOT NULL
+                THEN
+                       SELECT RS2_DOCPR_SEQ.NEXTVAL
+                           INTO RS2_CODPR_LOPD
+                           FROM DUAL;
+                           
+                         INSERT INTO RS2_DOCPR
+                                    (DOPR_CODIGO, DOPR_ORDEN, DOCPR_CODLSD)
+                         VALUES (RS2_CODPR_LOPD,0,LSLOPD);
+                         
+                END IF;
+                
                 /** INTRODUCIMOS LAS TRADUCCIONES **/ 
                 FOR ROLSAC1_TRADPROC IN cursorTradPROCEDsROLSAC1(codigo)
                 LOOP
@@ -711,13 +725,10 @@ BEGIN
                         /** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
                         IF LSLOPD IS NOT NULL AND ROLSAC1_TRADPROC.TPR_LOPDIA IS NOT NULL
                         THEN
-                            INSERT INTO RS2_DOCPR
-                                    (DOPR_CODIGO, DOPR_ORDEN, DOCPR_CODLSD)
-                            VALUES (RS2_DOCPR_SEQ.NEXTVAL,0,LSLOPD);
                             
                             INSERT INTO RS2_TRADOPR
                                     (TRDP_CODIGO,TRDP_CODDOPR, TRDP_IDIOMA, TRDP_TITULO, TRDP_DESCRI,TRDP_FICROL1)
-                                    VALUES (RS2_TRADOPR_SEQ.NEXTVAL,RS2_DOCPR_SEQ.CURRVAL, ROLSAC1_TRADPROC.TPR_CODIDI, '','', ROLSAC1_TRADPROC.TPR_LOPDIA);
+                                    VALUES (RS2_TRADOPR_SEQ.NEXTVAL,RS2_CODPR_LOPD, ROLSAC1_TRADPROC.TPR_CODIDI, '','', ROLSAC1_TRADPROC.TPR_LOPDIA);
                         END IF;
                 END LOOP;
                 
@@ -736,7 +747,7 @@ BEGIN
                             SELECT RS2_TRADOPR_SEQ.NEXTVAL,RS2_DOCPR_SEQ.CURRVAL, TDO_CODIDI, TDO_TITULO,TDO_DESCRI, TDO_CODARC
                               FROM R1_PROCEDIMIENTOS_DOC_TRAD
                              WHERE TDO_CODDOC = documento.DOC_CODI
-                               AND TDO_CODARC IN (SELECT ARC_CODI FROM R1_ARCHIV WHERE ARC_DATOS IS NOT NULL)
+                               /*AND TDO_CODARC IN (SELECT ARC_CODI FROM R1_ARCHIV WHERE ARC_DATOS IS NOT NULL)*/
                             ;
                           orden := orden + 1;
                     END LOOP;

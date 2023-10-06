@@ -38,6 +38,8 @@ public class NormativaFiltro extends AbstractFiltro {
 
     private Boolean vigente;
 
+    private Boolean soloValidas;
+
 
     @Override
     protected String getDefaultOrder() {
@@ -122,6 +124,14 @@ public class NormativaFiltro extends AbstractFiltro {
 
     public Boolean isVigente() {
         return vigente != null;
+    }
+
+    public Boolean getSoloValidas() {
+        return soloValidas;
+    }
+
+    public void setSoloValidas(Boolean soloValidas) {
+        this.soloValidas = soloValidas;
     }
 
     /**
@@ -219,5 +229,9 @@ public class NormativaFiltro extends AbstractFiltro {
 
     public boolean isRellenoVigente() {
         return vigente != null;
+    }
+
+    public boolean isRellenoSoloValidas() {
+        return soloValidas != null;
     }
 }

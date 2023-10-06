@@ -12,7 +12,7 @@ import java.io.Serializable;
  * Monitoritza els attributs que s'afegeixen a la sessió, per garantir que tots són Serializables. Ficar atributs
  * no serializables a dins la sessió pot provocar problemes si l'aplicació es configura per alta disponibilitat.
  *
- * @author areus
+ * @author Indra
  */
 @WebListener
 public class SessionAttributeListener implements HttpSessionAttributeListener {
@@ -22,16 +22,14 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
     @Override
     public void attributeAdded(HttpSessionBindingEvent event) {
         if (event.getValue() != null && !(event.getValue() instanceof Serializable)) {
-            LOG.warn("L'atribut [" + event.getName() + "] afegit a la sessió [" + event.getSession().getId() + "] " +
-                    "no és serializable");
+            LOG.warn("L'atribut [" + event.getName() + "] afegit a la sessió [" + event.getSession().getId() + "] " + "no és serializable");
         }
     }
 
     @Override
     public void attributeReplaced(HttpSessionBindingEvent event) {
         if (event.getValue() != null && !(event.getValue() instanceof Serializable)) {
-            LOG.warn("L'atribut [" + event.getName() + "] reemplaçat a la sessió [" + event.getSession().getId() + "] " +
-                    "no és serializable");
+            LOG.warn("L'atribut [" + event.getName() + "] reemplaçat a la sessió [" + event.getSession().getId() + "] " + "no és serializable");
         }
     }
 }

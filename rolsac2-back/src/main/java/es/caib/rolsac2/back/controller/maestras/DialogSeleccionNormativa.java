@@ -74,8 +74,7 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
             @Override
             public NormativaGridDTO getRowData(String rowKey) {
                 for (NormativaGridDTO pers : (List<NormativaGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
@@ -86,14 +85,14 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
             }
 
             @Override
-            public List<NormativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-                                               Map<String, FilterMeta> filterBy) {
+            public List<NormativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
                     }
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                    filtro.setSoloValidas(true);
                     Pagina<NormativaGridDTO> pagina = normativaServiceFacade.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();

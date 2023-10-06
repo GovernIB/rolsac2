@@ -12,7 +12,7 @@ import javax.ws.rs.ext.Provider;
  * Permet mapejar a una respota a un error de permisos a la capa EJB.
  * Envia un codi d'error 403 al client.
  *
- * @author areus
+ * @author Indra
  */
 @Provider
 public class EJBAccessExceptionMapper implements ExceptionMapper<EJBAccessException> {

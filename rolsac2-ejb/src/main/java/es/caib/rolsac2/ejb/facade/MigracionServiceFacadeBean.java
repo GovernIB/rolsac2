@@ -244,19 +244,28 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
         StringBuilder resultado = new StringBuilder();
         try {
             FicheroRolsac1 ficheroRolsac1 = ficheroRepository.getFicheroRolsac(infoDoc.getCodigoFicheroRolsac1(), pathAlmacenamientoRolsac1);
+            if (ficheroRolsac1.getFilename() == null || ficheroRolsac1.getFilename().isEmpty()) {
+                return "\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " NO se migrado porque no tiene filename correcto.\n";
+            }
+            if (ficheroRolsac1.getContenido() == null) {
+                return "\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " NO se migrado porque no tiene contenido.\n";
+            }
             Long idPadre;
             if (tipoficheroExterno == TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS) {
                 idPadre = migracionRepository.getProcedimiento(infoDoc.getCodigoDocumentoTraduccion());
             } else {
                 idPadre = migracionRepository.getNormativa(infoDoc.getCodigoDocumentoTraduccion());
             }
+            if (idPadre == null) {
+                return "\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " NO se ha encontrado el contenido padre.\n";
+            }
             infoDoc.setCodigoPadre(idPadre);
             Long idFichero = ficheroRepository.createFicheroExternoMigracion(ficheroRolsac1.getContenido(), ficheroRolsac1.getFilename(), tipoficheroExterno, idPadre, pathAlmacenamiento, ficheroRolsac1.getCodigo());
             migracionRepository.migrarArchivo(idFichero, infoDoc.getCodigoDocumentoTraduccion(), tipoficheroExterno);
-            resultado.append("Fichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " migrado correctamente \n");
+            resultado.append("\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " migrado correctamente \n");
         } catch (Exception e) {
             log.error("Error migrando fichero " + infoDoc, e);
-            resultado.append("Fichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " ha dado un error. Error:" + e.getLocalizedMessage() + " \n");
+            resultado.append("\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " ha dado un error. Error:" + e.getLocalizedMessage() + " \n");
         }
         return resultado.toString();
     }

@@ -62,11 +62,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private String responsableEmail;
     private String responsableTelefono;
 
-    // LOPD
-    private String lopdResponsable;
+    // Nombre
     private Literal nombreProcedimientoWorkFlow;
-    private Literal datosPersonalesFinalidad;
-    private Literal datosPersonalesDestinatario;
+
+    // LOPD
+    String lopdResponsable;
+    Literal lopdInfoAdicional = new Literal();
+    Literal lopdFinalidad = new Literal();
+    Literal lopdDerechos = new Literal();
 
     /**
      * LITERALES
@@ -105,8 +108,9 @@ public class ProcedimientoBaseDTO extends ModelApi {
         proc.setWorkflow(TypeProcedimientoWorkflow.MODIFICACION);
         proc.setEstado(TypeProcedimientoEstado.MODIFICACION);
         proc.setNombreProcedimientoWorkFlow(Literal.createInstance(idiomas));
-        proc.setDatosPersonalesDestinatario(Literal.createInstance(idiomas));
-        proc.setDatosPersonalesFinalidad(Literal.createInstance(idiomas));
+        proc.setLopdDerechos(Literal.createInstance(idiomas));
+        proc.setLopdFinalidad(Literal.createInstance(idiomas));
+        proc.setLopdInfoAdicional(Literal.createInstance(idiomas));
         proc.setRequisitos(Literal.createInstance(idiomas));
         proc.setObjeto(Literal.createInstance(idiomas));
         proc.setDestinatarios(Literal.createInstance(idiomas));
@@ -159,14 +163,6 @@ public class ProcedimientoBaseDTO extends ModelApi {
         this.nombreProcedimientoWorkFlow = nombreProcedimientoWorkFlow;
     }
 
-    public Literal getDatosPersonalesFinalidad() {
-        return datosPersonalesFinalidad;
-    }
-
-    public void setDatosPersonalesFinalidad(Literal datosPersonalesFinalidad) {
-        this.datosPersonalesFinalidad = datosPersonalesFinalidad;
-    }
-
     public TipoLegitimacionDTO getDatosPersonalesLegitimacion() {
         return datosPersonalesLegitimacion;
     }
@@ -175,12 +171,36 @@ public class ProcedimientoBaseDTO extends ModelApi {
         this.datosPersonalesLegitimacion = datosPersonalesLegitimacion;
     }
 
-    public Literal getDatosPersonalesDestinatario() {
-        return datosPersonalesDestinatario;
+    public Literal getLopdInfoAdicional() {
+        return lopdInfoAdicional;
     }
 
-    public void setDatosPersonalesDestinatario(Literal datosPersonalesDestinatario) {
-        this.datosPersonalesDestinatario = datosPersonalesDestinatario;
+    public void setLopdInfoAdicional(Literal lopdInfoAdicional) {
+        this.lopdInfoAdicional = lopdInfoAdicional;
+    }
+
+    public Literal getLopdFinalidad() {
+        return lopdFinalidad;
+    }
+
+    public void setLopdFinalidad(Literal lopdFinalidad) {
+        this.lopdFinalidad = lopdFinalidad;
+    }
+
+    public String getLopdResponsable() {
+        return lopdResponsable;
+    }
+
+    public void setLopdResponsable(String lopdResponsable) {
+        this.lopdResponsable = lopdResponsable;
+    }
+
+    public Literal getLopdDerechos() {
+        return lopdDerechos;
+    }
+
+    public void setLopdDerechos(Literal lopdDerechos) {
+        this.lopdDerechos = lopdDerechos;
     }
 
     public boolean isPublicado() {
@@ -279,15 +299,6 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setSilencio(TipoSilencioAdministrativoDTO silencio) {
         this.silencio = silencio;
-    }
-
-
-    public String getLopdResponsable() {
-        return lopdResponsable;
-    }
-
-    public void setLopdResponsable(String lopdResponsable) {
-        this.lopdResponsable = lopdResponsable;
     }
 
     public Integer getCodigoSIA() {

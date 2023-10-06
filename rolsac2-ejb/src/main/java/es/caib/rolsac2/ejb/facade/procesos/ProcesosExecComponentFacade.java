@@ -45,11 +45,29 @@ public interface ProcesosExecComponentFacade {
     void auditarFinProceso(String idProceso, Long instanciaProceso, ResultadoProcesoProgramado resultadoProceso);
 
     /**
+     * Audita fin proceso con error (intenta dejar el resultado que ya había y concatena el error).
+     *
+     * @param idProceso
+     * @param instanciaProceso
+     * @param resultadoProcesoProgramado
+     */
+    void auditarErrorFinProceso(String idProceso, Long instanciaProceso, ResultadoProcesoProgramado resultadoProcesoProgramado);
+
+    /**
      * Verifica si la instancia está configurada como maestro para ejecutar los procesos.
      *
      * @param instanciaId Id instancia
      * @return true si es maestro
      */
     boolean verificarMaestro(String instanciaId);
+
+    /**
+     * Audita proceso a mitad
+     *
+     * @param instanciaProceso
+     * @param detalles
+     */
+    void auditarMitadProceso(Long instanciaProceso, String detalles);
+
 
 }

@@ -9,6 +9,10 @@ public enum TypePropiedadConfiguracion {
      */
     PATH_FICHEROS_EXTERNOS("ficherosExternos.path"),
     /**
+     * Propiedad para indicar si mostrar los procedimientos y normativas
+     */
+    MOSTRAR_EN_UA_PROCS_NORMATIVAS("ua.mostrar.procsNormativas"),
+    /**
      * Propiedad para obtener el path de los ficheros externos
      */
     PATH_FICHEROS_ROLSAC1("ficherosRolsac1.path"),

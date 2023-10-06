@@ -5,7 +5,7 @@ import java.util.Locale;
 /**
  * Excepció general de la capa de serveis.
  *
- * @author areus
+ * @author Indra
  */
 public class ServiceException extends AbstractServiceException {
 

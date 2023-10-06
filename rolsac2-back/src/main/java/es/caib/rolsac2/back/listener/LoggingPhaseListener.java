@@ -11,7 +11,7 @@ import javax.faces.event.PhaseListener;
  * Classe d'utilitat per debug, permet veure quan comença i acaba cada fase de JSF. Cal que es registri o bé
  * amb un tag &lt;f:phaseListener&gt; a les pàgines JSF o bé fins el fitxer faces-config.xml.
  *
- * @author areus
+ * @author Indra
  */
 public class LoggingPhaseListener implements PhaseListener {
 

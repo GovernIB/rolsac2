@@ -187,4 +187,14 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      * @param codigoUANueva
      */
     void actualizarUA(Long codigoUAOriginal, Long codigoUANueva);
+
+    void actualizarUA(List<Long> codigoUAOriginal, Long codigoUANueva);
+
+    /**
+     * Obtiene los procedimientos asociados a una ua.
+     *
+     * @param uas
+     * @return
+     */
+    List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String idioma);
 }

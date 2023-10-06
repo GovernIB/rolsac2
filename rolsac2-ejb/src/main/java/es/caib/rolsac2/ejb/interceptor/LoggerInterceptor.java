@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Cal tenir en compte que els interceptors s'han de declarar dins el fitxer META-INF/beans.xml del mòdul.
  *
- * @author areus
+ * @author Indra
  */
 @Logged
 @Interceptor

@@ -16,7 +16,7 @@ import java.io.Serializable;
  * amb excepcions adequades per la capa de serveis.
  * Per exemple, es podrien extreure els errors SQL per llançar excepcions apropiades a la capa de serveis.
  *
- * @author areus
+ * @author Indra
  */
 @ExceptionTranslate
 @Interceptor

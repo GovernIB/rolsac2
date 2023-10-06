@@ -5,7 +5,7 @@ package es.caib.rolsac2.persistence.converter;
  *
  * @param <E> classe del Entity
  * @param <D> classe del DTO
- * @author areus
+ * @author Indra
  */
 public interface Converter<E, D> {
 

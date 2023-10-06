@@ -4,19 +4,18 @@ import es.caib.rolsac2.commons.utils.Constants;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ejb.EJB;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Proveeix una forma centralitzada de comprovar els permisos de l'usuari dins l'aplicació web.
  *
- * @author areus
+ * @author Indra
  */
 @Named
 @ApplicationScoped
@@ -30,21 +29,21 @@ public class Security {
 
 
     public List<TypePerfiles> getPerfiles() {
-    	List<TypePerfiles> perfiles = new ArrayList<TypePerfiles>();
-    	for(TypePerfiles perfil : TypePerfiles.values()) {
-    		if(request.isUserInRole(perfil.toString())) {
-    			perfiles.add(perfil);
-    		}
-    	}
-    	return perfiles;
+        List<TypePerfiles> perfiles = new ArrayList<TypePerfiles>();
+        for (TypePerfiles perfil : TypePerfiles.values()) {
+            if (request.isUserInRole(perfil.toString())) {
+                perfiles.add(perfil);
+            }
+        }
+        return perfiles;
     }
 
     public List<String> getRoles(List<Long> idEntidades) {
         List<String> roles = new ArrayList<>();
         List<String> rolesEntidades = supServiceFacade.findRolesDefinidos(idEntidades);
-        if(!rolesEntidades.isEmpty()) {
-            for(String rol : rolesEntidades) {
-                if(request.isUserInRole(rol) && !roles.contains(rol)) {
+        if (!rolesEntidades.isEmpty()) {
+            for (String rol : rolesEntidades) {
+                if (request.isUserInRole(rol) && !roles.contains(rol)) {
                     roles.add(rol);
                 }
             }
@@ -55,6 +54,7 @@ public class Security {
     public String getIdentificadorUsuario() {
         return request.getRemoteUser();
     }
+
     public boolean isAdmin() {
         return request.isUserInRole(Constants.RSC_ADMIN);
     }

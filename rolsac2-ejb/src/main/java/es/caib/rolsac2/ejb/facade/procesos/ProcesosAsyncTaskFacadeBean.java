@@ -57,14 +57,19 @@ public class ProcesosAsyncTaskFacadeBean implements ProcesosAsyncTaskFacade {
         final ProcesoProgramadoFacade proceso = obtenerProceso(idProceso);
         final ListaPropiedades params = obtenerParamsProceso(idProceso, idEntidad);
         final Long instanciaProceso = procesosExecComponent.auditarInicioProceso(idProceso, idEntidad);
+        ResultadoProcesoProgramado resultadoProceso = null;
         try {
-            final ResultadoProcesoProgramado resultadoProceso = proceso.ejecutar(params, idEntidad);
+            resultadoProceso = proceso.ejecutar(instanciaProceso, params, idEntidad);
             procesosExecComponent.auditarFinProceso(idProceso, instanciaProceso, resultadoProceso);
         } catch (final Exception ex) {
             final ResultadoProcesoProgramado resultadoProcesoProgramado = new ResultadoProcesoProgramado();
             resultadoProcesoProgramado.setFinalizadoOk(false);
-            resultadoProcesoProgramado.setMensajeErrorTraza("Error no controlado: " + ex.getMessage());
-            procesosExecComponent.auditarFinProceso(idProceso, instanciaProceso, resultadoProcesoProgramado);
+            if (resultadoProceso != null && resultadoProceso.getMensajeErrorTraza() != null && !resultadoProceso.getMensajeErrorTraza().isEmpty()) {
+                resultadoProcesoProgramado.setMensajeErrorTraza(resultadoProcesoProgramado.getMensajeErrorTraza() + "\nError no controlado: " + ex.getMessage());
+            } else {
+                resultadoProcesoProgramado.setMensajeErrorTraza("Error no controlado: " + ex.getMessage());
+            }
+            procesosExecComponent.auditarErrorFinProceso(idProceso, instanciaProceso, resultadoProcesoProgramado);
         }
 
 
@@ -77,14 +82,19 @@ public class ProcesosAsyncTaskFacadeBean implements ProcesosAsyncTaskFacade {
     public void ejecutarProceso(final String idProceso, final ListaPropiedades params, Long idEntidad) {
         final ProcesoProgramadoFacade proceso = obtenerProceso(idProceso);
         final Long instanciaProceso = procesosExecComponent.auditarInicioProceso(idProceso, idEntidad);
+        ResultadoProcesoProgramado resultadoProceso = null;
         try {
-            final ResultadoProcesoProgramado resultadoProceso = proceso.ejecutar(params, idEntidad);
+            resultadoProceso = proceso.ejecutar(instanciaProceso, params, idEntidad);
             procesosExecComponent.auditarFinProceso(idProceso, instanciaProceso, resultadoProceso);
         } catch (final Exception ex) {
             final ResultadoProcesoProgramado resultadoProcesoProgramado = new ResultadoProcesoProgramado();
             resultadoProcesoProgramado.setFinalizadoOk(false);
-            resultadoProcesoProgramado.setMensajeErrorTraza("Error no controlado: " + ex.getMessage());
-            procesosExecComponent.auditarFinProceso(idProceso, instanciaProceso, resultadoProcesoProgramado);
+            if (resultadoProceso != null && resultadoProceso.getMensajeErrorTraza() != null && !resultadoProceso.getMensajeErrorTraza().isEmpty()) {
+                resultadoProcesoProgramado.setMensajeErrorTraza(resultadoProcesoProgramado.getMensajeErrorTraza() + "\nError no controlado: " + ex.getMessage());
+            } else {
+                resultadoProcesoProgramado.setMensajeErrorTraza("Error no controlado: " + ex.getMessage());
+            }
+            procesosExecComponent.auditarErrorFinProceso(idProceso, instanciaProceso, resultadoProcesoProgramado);
         }
 
     }

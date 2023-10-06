@@ -127,6 +127,7 @@
                         <webModule>
                             <groupId>es.caib.rolsac2</groupId>
                             <artifactId>rolsac2-rest-api-externa</artifactId>
+                            <!-- cuando se depura en local , cambiar /rolsac2api por /rolsac2-rest-api-externa -->
                             <contextRoot>/rolsac2api/externa</contextRoot>
                             <bundleFileName>rolsac2-rest-api-externa.war</bundleFileName>
                         </webModule>
@@ -135,6 +136,7 @@
                         <webModule>
                             <groupId>es.caib.rolsac2</groupId>
                             <artifactId>rolsac2-api-interna</artifactId>
+                            <!-- cuando se depura en local , cambiar /rolsac2api por rolsac2-api-externa -->
                             <contextRoot>/rolsac2api/interna</contextRoot>
                             <bundleFileName>rolsac2-api-interna.war</bundleFileName>
                         </webModule>

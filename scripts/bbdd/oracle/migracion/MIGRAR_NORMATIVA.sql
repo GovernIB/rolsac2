@@ -83,6 +83,10 @@ create or replace PROCEDURE "MIGRAR_NORMATIVA" (codigoNormativa NUMBER, codigoEn
         SELECT * 
         FROM  R1_NORMAT_AFECTA
         WHERE AFE_CODNOA = codNOR;    
+    CURSOR cursorDocsNORMATIVASsROLSAC1 (codNOR NUMBER) IS
+        SELECT * 
+        FROM  R1_NORMAT_DOC
+        WHERE DNO_CODNOR = codNOR;
     maximoId    NUMBER;
     VALOR       NUMBER;
     EXISTE      NUMBER;
@@ -225,6 +229,20 @@ BEGIN
                         INSERT INTO RS2_UADNOR (UANO_CODNORM, UANO_CODUNA)
                           VALUES (codigoNormativa,normUA.UNN_CODUNA); 
                     END IF;
+                END LOOP;
+                
+                FOR documento IN cursorDocsNORMATIVASsROLSAC1(codigoNormativa)
+                LOOP
+                    INSERT INTO RS2_DOCNORM
+                                (DONO_CODIGO, DONO_CODNORM)
+                      VALUES (RS2_DOCNORM_SEQ.NEXTVAL,codigoNormativa);
+                    
+                     INSERT INTO RS2_TRADONO
+                                (TRDN_CODIGO, TRDN_CODDONO , TRDN_IDIOMA, TRDN_TITULO, TRDN_URL, TRDN_DESCR, TRDN_FICROL1)
+                        SELECT RS2_TRADONO_SEQ.NEXTVAL,RS2_DOCNORM_SEQ.CURRVAL, TDN_CODIDI, coalesce(TDN_TITULO,' '),TDN_ENLACE, TDN_DESCRI, TDN_CODARC
+                          FROM R1_NORMAT_DOC_TRAD
+                         WHERE TDN_CODDNR = documento.DNO_CODI
+                        ;
                 END LOOP;
                 
                 /** La afectacion con Normativas DE ORIGEN **/

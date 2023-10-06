@@ -59,7 +59,7 @@ public class JProcedimientoWorkflow {
     @Column(name = "PRWF_RSEMA", length = 100)
     private String responsableEmail;
 
-    @Column(name = "PRWF_RSTFNO", length = 9)
+    @Column(name = "PRWF_RSTFNO", length = 25)
     private String responsableTelefono;
 
     @Column(name = "PROC_LOPDACT")

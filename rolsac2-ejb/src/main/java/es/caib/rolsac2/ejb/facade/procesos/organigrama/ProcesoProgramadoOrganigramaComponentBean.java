@@ -56,7 +56,7 @@ public class ProcesoProgramadoOrganigramaComponentBean implements ProcesoProgram
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public ResultadoProcesoProgramado ejecutar(final ListaPropiedades params, Long idEntidad) {
+    public ResultadoProcesoProgramado ejecutar(final Long instanciaProceso, final ListaPropiedades params, Long idEntidad) {
         log.info("Ejecución proceso organigrama DIR3");
         final ListaPropiedades detalles = new ListaPropiedades();
         final ResultadoProcesoProgramado res = new ResultadoProcesoProgramado();

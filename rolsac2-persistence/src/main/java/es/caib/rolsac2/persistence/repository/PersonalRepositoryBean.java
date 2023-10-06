@@ -17,13 +17,12 @@ import java.util.Optional;
 /**
  * Implementación del repositorio de Personal.
  *
- * @author areus
+ * @author Indra
  */
 @Stateless
 @Local(PersonalRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class PersonalRepositoryBean extends AbstractCrudRepository<JPersonal, Long>
-        implements PersonalRepository {
+public class PersonalRepositoryBean extends AbstractCrudRepository<JPersonal, Long> implements PersonalRepository {
 
     protected PersonalRepositoryBean() {
         super(JPersonal.class);

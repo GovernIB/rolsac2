@@ -41,5 +41,13 @@ public enum TypeParametroVentana {
     /**
      * OCULTAR FASE INCIACION
      */
-    OCULTAR_INICIACION;
+    OCULTAR_INICIACION,
+    /**
+     * MODO EVOLUCION PARA UA
+     */
+    MODO_EVOLUCION,
+    /**
+     * MODO EVOLUCION PARA UA
+     */
+    MODO_EVOLUCION_UAS;
 }

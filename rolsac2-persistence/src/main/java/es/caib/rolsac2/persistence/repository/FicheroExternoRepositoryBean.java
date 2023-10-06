@@ -17,7 +17,10 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -288,12 +291,12 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
 
     private byte[] obtenerContenidoRolsac1(long idArchivo, String rutaRolsac1) throws IOException {
         byte[] contenido = null;
-        try (InputStream in = new FileInputStream(obtenerRutaArchivoExportadoEnFilesystem(idArchivo, rutaRolsac1))) {
+        /*try (InputStream in = new FileInputStream(obtenerRutaArchivoExportadoEnFilesystem(idArchivo, rutaRolsac1))) {
             contenido = IOUtils.toByteArray(in);
         } catch (final IOException e) {
             LOG.error("Error obteniendo fichero ", e);
             throw e;
-        }
+        }*/
         return contenido;
     }
 

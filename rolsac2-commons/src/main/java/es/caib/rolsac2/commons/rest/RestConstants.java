@@ -3,7 +3,7 @@ package es.caib.rolsac2.commons.rest;
 /**
  * Constants emprades a l'API REST
  *
- * @author areus
+ * @author Indra
  */
 public interface RestConstants {
 
