@@ -49,7 +49,7 @@
                          process="@this"
                          rendered="#{!dialogServicio.isModoConsulta() and dialogServicio.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogTraducir}" process="@this"
-                    update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtrequisitos formDialog:txtObservaciones formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos"/>
+                    update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtrequisitos formDialog:txtObservaciones formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtRespTrat" />
         </p:commandButton>
     </ui:define>
     <ui:define name="contentDialog">
@@ -157,7 +157,8 @@
                             <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
                             <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1"/>
                             <p:ajax event="change"
-                                    update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun"
+                                    update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun txtRespTrat"
+                                    listener="#{dialogServicio.actualizarResponsable()}"
                                     process="@this"/>
                         </p:selectOneMenu>
 
@@ -257,7 +258,7 @@
                             <h:panelGroup id="panelComun">
 
                                                  <span style="white-space:nowrap">
-                                                        <p:inputText id="labelComun" value="#{dialogServicio.comunUA}"
+                                                        <p:inputText id="labelComun" value="#{dialogServicio.comunUA.getTraduccion(dialogServicio.idioma)}"
                                                                      rendered="#{dialogServicio.data.esComun()}"
                                                                      styleClass="w95"
                                                                      disabled="true"/>
@@ -314,7 +315,14 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.keywords']}:"
                                        for="txtKeywords" />
                         <p>
-                            <p:inputText id="txtKeywords" value="#{dialogServicio.data.keywords}" styleClass="w95" />
+                            <my:literalComponent id="txtKeywords" styleClass="w95"
+                                                 value="#{dialogServicio.data.keywords}"
+                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                 idioma="#{dialogServicio.idioma}"
+                                                 literal="#{dialogServicio.data.keywords}"
+                                                 nombreLiteral="#{labels['dialogProcedimiento.keywords']}" />
                         </p>
                     </div>
                 </div>
@@ -368,7 +376,7 @@
                                           for="textResponsableTelf"/>
                         </p>
                         <p:inputText id="textResponsableTelf" value="#{dialogServicio.data.responsableTelefono}"
-                                     disabled="#{dialogServicio.isModoConsulta()}" styleClass="w95" maxlength="9"/>
+                                     disabled="#{dialogServicio.isModoConsulta()}" styleClass="w95" maxlength="25" />
                     </div>
 
                 </div>
@@ -557,8 +565,14 @@
                             <h:outputText styleClass="mb-1" value="#{labels['dialogServicio.responsableTratamiento']}:"
                                           for="txtRespTrat"/>
                         </p>
-                        <p:inputText id="txtRespTrat" value="#{dialogServicio.data.lopdResponsable}"
-                                     styleClass="w95" disabled="true" maxlength="400"/>
+                        <my:literalComponent id="txtRespTrat"
+                                             literal="#{dialogServicio.lopdResponsable}"
+                                             soloLecture="#{true}"
+                                             styleClass="w95"
+                                             idioma="#{dialogServicio.idioma}"
+                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                               />
                     </div>
                     <div class="form-group col-md-3">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.legitimacion']}:"
@@ -569,7 +583,7 @@
                                          converter="#{tipoLegitimacionConverter}">
                             <f:selectItem itemLabel="#{labels['dialogServicio.selecciona']}" itemValue="#{null}"/>
                             <f:selectItems value="#{dialogServicio.listTipoLegitimacion}" var="tipoLegitimacion"
-                                           itemLabel="#{tipoLegitimacion.descripcion.getTraduccion(sessionBean.lang)}"
+                                           itemLabel="#{tipoLegitimacion.descripcion.getTraduccion(dialogServicio.idioma)}"
                                            itemValue="#{tipoLegitimacion}"/>
                         </p:selectOneMenu>
                     </div>
@@ -655,6 +669,10 @@
                             <h:outputText value="#{td.identificador}"/>
                         </p:column>
 
+                        <!--
+                        <f:attribute name="paramMsgError" value="#{labels['dialogServicio.error.algunPublicoObjetivo']}" />
+                        <f:event type="postValidate" listener="#{dialogServicio.validacionListaNoVacia}"/>
+                        -->
                     </p:dataTable>
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
@@ -693,8 +711,13 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogServicio.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.descripcion.getTraduccion(sessionBean.lang)}"/>
+                            <h:outputText value="#{td.descripcion.getTraduccion(dialogServicio.idioma)}"/>
                         </p:column>
+
+                       <!-- No para la validacion
+                        <f:attribute name="paramMsgError" value="#{labels['dialogServicio.error.algunaMateriaSIA']}" />
+                        <f:event type="postValidate" listener="#{dialogServicio.validacionListaNoVacia}"/>
+                        -->
                     </p:dataTable>
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
@@ -735,7 +758,7 @@
 
                         <p:column headerText="#{labels['dialogServicio.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(sessionBean.lang)}"/>
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogServicio.idioma)}"/>
                         </p:column>
                     </p:dataTable></div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">

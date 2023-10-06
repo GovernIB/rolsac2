@@ -119,13 +119,13 @@
 										<p:ajax event="dialogReturn"
 											listener="#{dialogEvolucionFusionUnidadAdministrativa.returnDialogo}"
 											process="@this"
-											update="formDialog finalizar messagesDialog txtOrigen" />
+											update="messagesDialog txtOrigen" />
 									</p:commandButton>
 									<p:commandButton title="#{labels['dict.eliminar']}"
 										icon="pi pi-minus" styleClass="text-danger"
 										action="#{dialogEvolucionFusionUnidadAdministrativa.borrarUA()}"
 										process="@this"
-										update="formDialog finalizar txtOrigen messagesDialog"
+										update="txtOrigen messagesDialog"
 										rendered="#{!dialogEvolucionFusionUnidadAdministrativa.isModoConsulta()}" />
 								</div>
 
@@ -149,21 +149,21 @@
 							<p>
 								<my:literalComponent id="txtCrear"
 									literal="#{dialogEvolucionFusionUnidadAdministrativa.uaDestino}"
-									disabled="#{dialogEvolucionFusionUnidadAdministrativa.isModoConsulta()}"
-									soloLecture="#{dialogEvolucionFusionUnidadAdministrativa.isModoConsulta()}"
+									disabled="#{true}"
+									soloLecture="#{true}"
 									required="true"
 									idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
 									idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
 									idioma="#{dialogEvolucionFusionUnidadAdministrativa.idioma}"
 									nombreLiteral="#{labels['dialogEvolucionUnidadAdministrativa.uaDestino']}">
-									<f:validator
-										validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" />
+									<f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" />
 								</my:literalComponent>
 							</p>
 							<p:commandButton id="btnEditar" value="#{labels['dict.nuevo']}"
 								icon="pi pi-file-o" iconPos="top" update="formDialog messagesDialog"
-								actionListener="#{dialogEvolucionFusionUnidadAdministrativa.editarUnidadAdministrativa()}"
+								actionListener="#{dialogEvolucionFusionUnidadAdministrativa.crearUA()}"
 								process="@this">
+								<p:ajax event="dialogReturn" listener="#{dialogEvolucionFusionUnidadAdministrativa.returnDialogoCrearUA}" update="messagesDialog txtCrear" />
 							</p:commandButton>
 
 						</div>

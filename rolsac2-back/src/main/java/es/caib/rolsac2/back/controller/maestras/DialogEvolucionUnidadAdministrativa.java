@@ -21,18 +21,21 @@ import java.util.Objects;
 public class DialogEvolucionUnidadAdministrativa extends EvolucionController implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(DialogEvolucionUnidadAdministrativa.class);
 
+    private String idUA;
+
     public void load() {
         LOG.debug("init1");
 
         this.setearIdioma();
-        data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
+        idUA = id;
+        //data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
     }
 
     public void irEvolucionBasica() {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.data != null && (this.isModoEdicion() || this.isModoConsulta())) {
-            params.put(TypeParametroVentana.ID.toString(), data.getCodigo().toString());
+        if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
+            params.put(TypeParametroVentana.ID.toString(), idUA);
         }
         UtilJSF.openDialog("dialogEvolucionBasicaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 540);
     }
@@ -40,10 +43,10 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
     public void irEvolucionFusion() {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.data != null && (this.isModoEdicion() || this.isModoConsulta())) {
-            params.put(TypeParametroVentana.ID.toString(), data.getCodigo().toString());
+        if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
+            params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionFusionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 540);
+        UtilJSF.openDialog("dialogEvolucionFusionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 875, 540);
     }
 
     /**
@@ -63,8 +66,8 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
     public void irEvolucionDivision() {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.data != null && (this.isModoEdicion() || this.isModoConsulta())) {
-            params.put(TypeParametroVentana.ID.toString(), data.getCodigo().toString());
+        if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
+            params.put(TypeParametroVentana.ID.toString(), idUA);
         }
         UtilJSF.openDialog("dialogEvolucionDivisionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 540);
     }
@@ -83,8 +86,8 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
     public void irEvolucionCompetencias() {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.data != null && (this.isModoEdicion() || this.isModoConsulta())) {
-            params.put(TypeParametroVentana.ID.toString(), data.getCodigo().toString());
+        if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
+            params.put(TypeParametroVentana.ID.toString(), idUA);
         }
         UtilJSF.openDialog("dialogEvolucionCompetenciasUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 540);
     }
@@ -92,8 +95,8 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
     public void irEvolucionDependencia() {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.data != null && (this.isModoEdicion() || this.isModoConsulta())) {
-            params.put(TypeParametroVentana.ID.toString(), data.getCodigo().toString());
+        if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
+            params.put(TypeParametroVentana.ID.toString(), idUA);
         }
         UtilJSF.openDialog("dialogEvolucionDependenciaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 540);
     }

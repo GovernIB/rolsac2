@@ -46,6 +46,12 @@ public interface UnidadAdministrativaServiceFacade {
      */
     UnidadAdministrativaDTO findUASimpleByID(Long id, String idioma, Long idEntidadRoot);
 
+    /**
+     * Encuentra la ua entidad root
+     *
+     * @param idEntidad
+     * @return
+     */
     UnidadAdministrativaDTO findRootEntidad(Long idEntidad);
 
 
@@ -223,12 +229,12 @@ public interface UnidadAdministrativaServiceFacade {
     /**
      * Evolucion básica de una UA.
      *
-     * @param ua
+     * @param codigoUA
      * @param fechaBaja
      * @param nombreNuevo
      * @param entidad
      */
-    void evolucionBasica(UnidadAdministrativaDTO ua, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad);
+    void evolucionBasica(Long codigoUA, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad);
 
     /**
      * Devuelve la normativa de baja de una UA
@@ -255,4 +261,68 @@ public interface UnidadAdministrativaServiceFacade {
      * @return
      */
     boolean checkCuelga(UnidadAdministrativaDTO padreAntiguo, UnidadAdministrativaDTO padreNuevo);
+
+    /**
+     * Obtiene los usuarios de las uas
+     *
+     * @param uas
+     * @return
+     */
+    List<UsuarioGridDTO> getUsuariosByUas(List<Long> uas);
+
+    /**
+     * Obtiene las normativas de las uas
+     *
+     * @param uas
+     * @return
+     */
+    List<NormativaDTO> getNormativaByUas(List<Long> uas, String idioma);
+
+    /**
+     * Obtiene las normativas de la ua
+     *
+     * @param ua
+     * @param idioma
+     * @return
+     */
+    List<NormativaDTO> getNormativaByUa(Long ua, String idioma);
+
+    /**
+     * Obtiene procedimientos de la ua
+     *
+     * @param uas
+     * @param idioma
+     * @return
+     */
+    List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String idioma);
+
+    /**
+     * Obtiene procedimientos de la ua
+     *
+     * @param ua
+     * @param idioma
+     * @return
+     */
+    List<ProcedimientoBaseDTO> getProcedimientosByUa(Long ua, String idioma);
+
+
+    /**
+     * Obtiene los temas segun las uas
+     *
+     * @param uas
+     * @return
+     */
+    List<TemaGridDTO> getTemasByUas(List<Long> uas);
+
+    /**
+     * Evolución fusion de una UA.
+     *
+     * @param selectedUnidades Las unidades a fusionar
+     * @param normativa        La normativa de baja seleccionada
+     * @param fechaBaja        La fecha de baja seleccionada
+     * @param uaFusion         La UA fusionada
+     */
+    void evolucionFusion(List<UnidadAdministrativaGridDTO> selectedUnidades, NormativaDTO normativa, Date fechaBaja, UnidadAdministrativaDTO uaFusion, TypePerfiles perfil);
+
+
 }

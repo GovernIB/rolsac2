@@ -1,184 +1,194 @@
 package es.caib.rolsac2.back.controller.maestras;
 
+import es.caib.rolsac2.back.model.DialogResult;
+import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
+import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.event.FlowEvent;
+import org.primefaces.event.SelectEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.primefaces.event.SelectEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import es.caib.rolsac2.back.model.DialogResult;
-import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.Traduccion;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
-import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-
 @Named
 @ViewScoped
 public class DialogEvolucionFusionUnidadAdministrativa extends EvolucionController implements Serializable {
-	private static final Logger LOG = LoggerFactory.getLogger(DialogEvolucionFusionUnidadAdministrativa.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DialogEvolucionFusionUnidadAdministrativa.class);
 
-	private List<UnidadAdministrativaGridDTO> selectedUnidades;
-	private UnidadAdministrativaGridDTO uaSeleccionada;
+    private List<UnidadAdministrativaGridDTO> selectedUnidades;
+    private UnidadAdministrativaGridDTO uaSeleccionada;
+    private UnidadAdministrativaDTO uaFusion;
+    private Long idUA;
 
-	public void load() {
-		LOG.debug("init1");
+    public void load() {
+        LOG.debug("init1");
 
-		this.setearIdioma();
-		if (id != null && id.split(",").length > 1) {
-			ids = id.split(",");
-		}
+        this.setearIdioma();
+        if (id != null && id.split(",").length > 1) {
+            ids = id.split(",");
+        }
 
-		if (ids != null && ids.length > 0) {
-			data = unidadAdministrativaServiceFacade.findById(Long.valueOf(ids[0]));
-		} else if (id != null) {
-			data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
-		}
+        if (ids != null && ids.length > 0) {
+            idUA = Long.valueOf(ids[0]);
+            data = unidadAdministrativaServiceFacade.findUASimpleByID(idUA, UtilJSF.getSessionBean().getLang(), null);
+        } else if (id != null) {
+            idUA = Long.valueOf(id);
+            data = unidadAdministrativaServiceFacade.findUASimpleByID(idUA, UtilJSF.getSessionBean().getLang(), null);
+        }
 
-		selectedUnidades = new ArrayList<UnidadAdministrativaGridDTO>();
-		selectedUnidades.add(data.convertDTOtoGridDTO());
+        selectedUnidades = new ArrayList<UnidadAdministrativaGridDTO>();
+        selectedUnidades.add(data.convertDTOtoGridDTO());
 
-		uaDestino = new Literal();
+        uaDestino = new Literal();
 
-		Traduccion traduccionModificada;
-		String textoTraduccion = "";
+    }
 
-		for (Traduccion traduccion : data.getNombre().getTraducciones()) {
-			textoTraduccion = traduccion.getLiteral() + " (FUSIONADO)";
+    public void evolucionar() {
+        unidadAdministrativaServiceFacade.evolucionFusion(selectedUnidades, normativa, fechaBaja, uaFusion, UtilJSF.getSessionBean().getPerfil());
 
-			traduccionModificada = new Traduccion(traduccion.getIdioma(), textoTraduccion);
+        final DialogResult result = new DialogResult();
+        result.setCanceled(false);
+        UtilJSF.closeDialog(result);
+    }
 
-			uaDestino.add(traduccionModificada);
-		}
-	}
+    /**
+     * Método para consultar el detalle de una UA
+     */
+    public void consultarUA() {
+        if (uaSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogUAs(TypeModoAcceso.CONSULTA);
+        }
+    }
 
-	public void evolucionar() {
-		FacesMessage msg = new FacesMessage("Successful", "Aceptar pendiente de implementación");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-	}
+    public void crearUA() {
+        // Muestra dialogo
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.MODO_EVOLUCION.toString(), "S");
+        params.put(TypeParametroVentana.MODO_EVOLUCION_UAS.toString(), getUas());
+        UtilJSF.anyadirMochila("ua", uaFusion);
+        UtilJSF.openDialog("dialogUnidadAdministrativa", TypeModoAcceso.ALTA, params, true, 975, 733);
+    }
 
-	/**
-	 * Método para consultar el detalle de una UA
-	 */
-	public void consultarUA() {
-		if (uaSeleccionada == null) {
-			UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-		} else {
-			abrirDialogUAs(TypeModoAcceso.CONSULTA);
-		}
-	}
+    private String getUas() {
 
-	/**
-	 * Abrir dialogo de Selección de Unidades Administrativas
-	 */
-	public void abrirDialogUAs(TypeModoAcceso modoAcceso) {
+        String retorno = "";
+        if (this.selectedUnidades != null) {
+            for (UnidadAdministrativaGridDTO ua : selectedUnidades) {
+                retorno += ua.getCodigo() + ",";
+            }
+        }
+        return retorno;
+    }
 
-		if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
-			final Map<String, String> params = new HashMap<>();
-			params.put("ID", uaSeleccionada.getCodigo().toString());
-			UtilJSF.openDialog("dialogUnidadAdministrativa", modoAcceso, params, true, 1530, 733);
-		} else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
-			UtilJSF.anyadirMochila("unidadesAdministrativas", selectedUnidades);
-			final Map<String, String> params = new HashMap<>();
-			params.put(TypeParametroVentana.MODO_ACCESO.toString(), TypeModoAcceso.ALTA.toString());
-			// params.put("esCabecera", "true");
-			String direccion = "/comun/dialogSeleccionarUA";
-			UtilJSF.openDialog(direccion, modoAcceso, params, true, 850, 575);
-		}
-	}
+    public void returnDialogoCrearUA(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
 
-	/**
-	 * Método para dar de alta UAs en un usuario
-	 */
-	public void anyadirUAs() {
-		abrirDialogUAs(TypeModoAcceso.ALTA);
-	}
+        // Verificamos si se ha rellenado los datos
+        if (!respuesta.isCanceled()) {
+            uaFusion = (UnidadAdministrativaDTO) respuesta.getResult();
+            uaDestino = uaFusion.getNombre();
+        }
+    }
 
-	public void returnDialogo(final SelectEvent event) {
-		final DialogResult respuesta = (DialogResult) event.getObject();
+    /**
+     * Abrir dialogo de Selección de Unidades Administrativas
+     */
+    public void abrirDialogUAs(TypeModoAcceso modoAcceso) {
 
-		// Verificamos si se ha modificado
-		if (respuesta != null && !respuesta.isCanceled()
-				&& !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
-			UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
-			uaSeleccionada = unidadAdministrativaServiceFacade.findById(uaSeleccionada.getCodigo());
-			if (uaSeleccionada != null) {
-				UnidadAdministrativaGridDTO uaSeleccionadaGrid = uaSeleccionada.convertDTOtoGridDTO();
-				if (uaSeleccionadaGrid.getIdEntidad() == null) {
-					uaSeleccionadaGrid.setIdEntidad(sessionBean.getEntidad().getCodigo());
-				}
-				// verificamos qeu la UA no esté seleccionada ya, en caso de estarlo mostramos
-				// mensaje
-				if (selectedUnidades == null) {
-					selectedUnidades = new ArrayList<>();
-				}
-				if (selectedUnidades.contains(uaSeleccionadaGrid)) {
-					UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.elementoRepetido"));
-				} else {
-					selectedUnidades.add(uaSeleccionadaGrid);
-//                    actualizarUasEntidad();
-				}
-			}
-		}
-	}
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", uaSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("dialogUnidadAdministrativa", modoAcceso, params, true, 1530, 733);
 
-	/**
-	 * Método para borrar un usuario en una UA
-	 */
-	public void borrarUA() {
-		if (uaSeleccionada == null) {
-			UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-		} else {
-			selectedUnidades.remove(uaSeleccionada);
-			uaSeleccionada = null;
-			addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
-		}
-	}
+        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+            UtilJSF.anyadirMochila("unidadesAdministrativas", selectedUnidades);
+            final Map<String, String> params = new HashMap<>();
+            params.put(TypeParametroVentana.MODO_ACCESO.toString(), TypeModoAcceso.ALTA.toString());
+            // params.put("esCabecera", "true");
+            String direccion = "/comun/dialogSeleccionarUA";
+            UtilJSF.openDialog(direccion, modoAcceso, params, true, 850, 575);
+        }
+    }
 
-	public void editarUnidadAdministrativa() {
-		FacesMessage msg = new FacesMessage("Successful", "Edición pendiente de implementación");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-	}
+    /**
+     * Método para dar de alta UAs en un usuario
+     */
+    public void anyadirUAs() {
+        abrirDialogUAs(TypeModoAcceso.ALTA);
+    }
 
-//	private List<UnidadAdministrativaDTO> completeUnidadesAdministrativas() {
-//		List<UnidadAdministrativaDTO> unidades = new ArrayList<>();
-//		UnidadAdministrativaFiltro filtro = new UnidadAdministrativaFiltro();
-//		filtro.setIdioma(getIdioma());
-//		Pagina<UnidadAdministrativaDTO> resultado = unidadAdministrativaServiceFacade.findByFiltroRest(filtro);
-//		if (resultado != null) {
-//			unidades = resultado.getItems();
-//		}
-//
-//		return unidades;
-//	}
+    public void returnDialogo(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
 
-	public UnidadAdministrativaGridDTO getUaSeleccionada() {
-		return uaSeleccionada;
-	}
+        // Verificamos si se ha modificado
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
+            if (selectedUnidades != null && !selectedUnidades.isEmpty()) {
+                for (UnidadAdministrativaGridDTO ua : selectedUnidades) {
+                    if (ua.getCodigo().compareTo(uaSeleccionada.getCodigo()) == 0) {
+                        UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.elementoRepetido"));
+                        return;
+                    }
+                }
+            }
 
-	public void setUaSeleccionada(UnidadAdministrativaGridDTO uaSeleccionada) {
-		this.uaSeleccionada = uaSeleccionada;
-	}
+            selectedUnidades.add(uaSeleccionada.convertDTOtoGridDTO());
+        }
+    }
 
-	public void setSelectedUnidades(List<UnidadAdministrativaGridDTO> selectedUnidades) {
-		this.selectedUnidades = selectedUnidades;
-	}
+    public String onFlowProcess(FlowEvent event) {
 
-	public List<UnidadAdministrativaGridDTO> getSelectedUnidades() {
-		return selectedUnidades;
-	}
+        if (event.getOldStep().contains("origen")) {
+
+            if (this.selectedUnidades == null || this.selectedUnidades.size() < 2) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogEvolucionFusionUnidadAdministrativa.error.minimoDosUnidades"), true);
+                return event.getOldStep();
+            }
+        }
+
+        return event.getNewStep();
+    }
+
+    /**
+     * Método para borrar un usuario en una UA
+     */
+    public void borrarUA() {
+        if (uaSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            selectedUnidades.remove(uaSeleccionada);
+            uaSeleccionada = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+
+    public UnidadAdministrativaGridDTO getUaSeleccionada() {
+        return uaSeleccionada;
+    }
+
+    public void setUaSeleccionada(UnidadAdministrativaGridDTO uaSeleccionada) {
+        this.uaSeleccionada = uaSeleccionada;
+    }
+
+    public void setSelectedUnidades(List<UnidadAdministrativaGridDTO> selectedUnidades) {
+        this.selectedUnidades = selectedUnidades;
+    }
+
+    public List<UnidadAdministrativaGridDTO> getSelectedUnidades() {
+        return selectedUnidades;
+    }
 }

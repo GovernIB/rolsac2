@@ -37,7 +37,7 @@
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones
-            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin" />
+            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico formDialog:dataTableMaterias dataNormativaProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat" />
         </p:selectOneButton>
         <p:commandButton action="#{dialogProcedimiento.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -161,7 +161,7 @@
                                              converter="javax.faces.Integer">
                                 <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
                                 <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1" />
-                                <p:ajax event="change"  update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun formDialog:panelComunInstr labelComunInstr" process="@this"  />
+                                <p:ajax event="change"  update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun formDialog:panelComunInstr labelComunInstr txtRespTrat" process="@this"  />
                             </p:selectOneMenu>
 
 
@@ -330,7 +330,7 @@
                                             <h:panelGroup id="panelComun">
 
                                                  <span style="white-space:nowrap" >
-                                                        <p:inputText id="labelComun" value="#{dialogProcedimiento.comunUA}"
+                                                        <p:inputText id="labelComun" value="#{dialogProcedimiento.comunUA.getTraduccion(dialogServicio.idioma)}"
                                                                          rendered="#{dialogProcedimiento.data.esComun()}"
                                                                          styleClass="w95"
                                                                          disabled="true" />
@@ -512,8 +512,14 @@
                         <p class="mb-1">
                             <h:outputText styleClass="mb-1" value="#{labels['dialogProcedimiento.responsableTratamiento']}:" for="txtRespTrat"/>
                         </p>
-                        <p:inputText id="txtRespTrat" value="#{dialogProcedimiento.data.lopdResponsable}"
-                                     styleClass="w95" disabled="true" maxlength="400" />
+                        <my:literalComponent id="txtRespTrat"
+                                             literal="#{dialogProcedimiento.lopdResponsable}"
+                                             soloLecture="#{true}"
+                                             styleClass="w95"
+                                             idioma="#{dialogProcedimiento.idioma}"
+                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                        />
                     </div>
                     <div class="form-group col-md-3">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.legitimacion']}:"
@@ -524,7 +530,7 @@
                                          converter="#{tipoLegitimacionConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
                             <f:selectItems value="#{dialogProcedimiento.listTipoLegitimacion}" var="tipoLegitimacion"
-                                           itemLabel="#{tipoLegitimacion.descripcion.getTraduccion(sessionBean.lang)}" itemValue="#{tipoLegitimacion}"/>
+                                           itemLabel="#{tipoLegitimacion.descripcion.getTraduccion(dialogProcedimiento.idioma)}" itemValue="#{tipoLegitimacion}"/>
                         </p:selectOneMenu>
                     </div>
                 </div>
@@ -605,7 +611,7 @@
                                  global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.descripcion.getTraduccion(sessionBean.lang)}"/>
+                            <h:outputText value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
                         </p:column>
 
                     </p:dataTable>
@@ -643,7 +649,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.descripcion.getTraduccion(sessionBean.lang)}"/>
+                            <h:outputText value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -681,8 +687,8 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
-                              styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(sessionBean.lang)}"/>
+                              styleClass="text-center w75"> 
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}"/>
                         </p:column>
                     </p:dataTable></div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
@@ -724,7 +730,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.nombre.getTraduccion(sessionBean.lang)}"/>
+                            <h:outputText value="#{td.nombre.getTraduccion(dialogProcedimiento.idioma)}"/>
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -870,7 +876,7 @@
                                                     styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
                                         </div>
                                     </div>
-                                    <h:outputText value="#{td.descripcion.getTraduccion(sessionBean.lang)}"/>
+                                    <h:outputText value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
                                 </p:column>
 
                             </p:treeTable>

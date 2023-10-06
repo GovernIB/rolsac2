@@ -384,11 +384,8 @@
                                 oncomplete="triggerDblClickAfect();"
                         />
 
-                        <p:column headerText="#{labels['dialogNormativa.tipoAfectacion']}" styleClass="w75">
+                        <p:column headerText="#{labels['dialogNormativa.tipoAfectacion']}" styleClass="w25">
                             <h:outputText value="#{td.tipo.descripcion.getTraduccion(dialogNormativa.idioma)}"/>
-                        </p:column>
-                        <p:column headerText="#{labels['dialogNormativa.normativaOrigen']}" styleClass="w75">
-                            <h:outputText value="#{td.normativaOrigen.titulo.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
                         <p:column headerText="#{labels['dialogNormativa.normativaAfectada']}" styleClass="w75">
                             <h:outputText value="#{td.normativaAfectada.titulo.getTraduccion(dialogNormativa.idioma)}"/>

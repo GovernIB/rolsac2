@@ -71,18 +71,22 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
 								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.padre']}:"
-								for="selectPadre" />
+								for="txtPadre" />
 
 						</div>
 						<div class="form-group col-md-12">
-							<p:inputText id="txtPadre" styleClass="w95" readonly="true"
+							<p:inputText id="txtPadre" styleClass="w85" readonly="true"
 										 value="#{dialogEvolucionDependenciaUnidadAdministrativa.padre.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}" />
-							<my:unidadAdministrativaComponent id="selectPadre"
-														  value="#{dialogEvolucionDependenciaUnidadAdministrativa.padre}"
-														  idioma="#{sessionBean.lang}"
-														  ocultarTexto="true" esCabecera="false"
-								>
-							</my:unidadAdministrativaComponent>
+
+							<p:commandButton
+									id="btnPadre"
+									action="#{dialogEvolucionDependenciaUnidadAdministrativa.seleccionarUA}"
+									value=" " update="messagesDialog " icon="pi pi-sitemap"
+									rendered="#{!dialogEvolucionDependenciaUnidadAdministrativa.isModoConsulta()}"
+									style="height:28px;margin-left:4px"
+									process="@all">
+								<p:ajax event="dialogReturn" listener="#{dialogEvolucionDependenciaUnidadAdministrativa.returnDialogo}" process="@this" update="formDialog:txtPadre txtPadre" />
+							</p:commandButton>
 						</div>
 					</div>
 				</p:panel>

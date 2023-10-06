@@ -10,6 +10,8 @@
         <f:metadata>
             <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogUnidadAdministrativa.modoAcceso}"/>
             <f:viewParam id="ID" name="ID" value="#{dialogUnidadAdministrativa.id}"/>
+            <f:viewParam id="MODO_EVOLUCION" name="MODO_EVOLUCION" value="#{dialogUnidadAdministrativa.modoEvolucion}" />
+            <f:viewParam id="MODO_EVOLUCION_UAS" name="MODO_EVOLUCION_UAS" value="#{dialogUnidadAdministrativa.modoEvolucionUAs}" />
             <f:viewAction action="#{dialogUnidadAdministrativa.load}"/>
         </f:metadata>
     </ui:define>
@@ -50,8 +52,8 @@
 
         <div class="row" style="margin-right: 0px;">
             <div class="ui-g-12 ui-md-9 pl-4 panel-container">
-                <p:panel header="#{labels['dialogUnidadAdministrativa.datosBaja']}" id="formDatosBaja" rendered="#{dialogUnidadAdministrativa.data.isBorrado()}">
-                    <div class="form-row">
+                <p:panel header="#{labels['dialogUnidadAdministrativa.datosBaja']}" id="formDatosBaja" rendered="#{dialogUnidadAdministrativa.data.isBorrado()}" >
+                    <div class="form-row" style="height: 110px">
                         <div class="form-group col-md-4">
                             <p class="mb-1">
                                 <p:outputLabel value=" " />
@@ -380,7 +382,7 @@
 
 
                             <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                <h:outputText value="#{td.identificador}"/>
+                                <h:outputText value="#{td.identificador} - #{td.nombre}"/>
                             </p:column>
 
                         </p:dataTable>
@@ -402,6 +404,8 @@
                                          process="@this" update="dataTableUsuarios messagesDialog"/>
                     </div>
                 </div>
+
+
                 <h:panelGroup id="panelTemas">
                     <c:forEach items="#{dialogUnidadAdministrativa.roots}" var="tema" varStatus="status">
                         <div class="row left-container mx-0 mt-2">
@@ -456,6 +460,71 @@
                     </c:forEach>
 
                 </h:panelGroup>
+
+                <c:if test="#{dialogUnidadAdministrativa.mostrarProcsNormativas}">
+                    <div class="row left-container mx-0 mt-3">
+                        <div class="col-12 left-container-header text-center">
+                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.procedimientos']}</p>
+                        </div>
+                        <div class="col-10 p-1">
+                            <p:dataTable id="dataTableProcedimientos" var="td"
+                                         value="#{dialogUnidadAdministrativa.procedimientos}"
+                                         emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
+                                         paginator="false" selectionMode="single"
+                                         selection="#{dialogUnidadAdministrativa.procedimientoSeleccionado}"
+                                         rowKey="#{td.codigo}" styleClass="noHeader">
+
+                                <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                                <p:ajax event="rowSelect" global="false"/>
+                                <p:ajax event="rowUnselect"/>
+
+
+                                <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
+                                    <!--<h:outputText value="#{td.codigo} - #{labels['TypeProcedimientoEstado.' += td.estado]}"/>-->
+                                    <h:outputText value="#{labels['TypeProcedimientoEstado.' += td.estado]} - #{td.nombreProcedimientoWorkFlow.getTraduccion(sessionBean.lang)} "/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+                        <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                            <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                             action="#{dialogUnidadAdministrativa.consultarProcedimiento(index)}"
+                                             process="@this" update="messagesDialog"/>
+                        </div>
+                    </div>
+                </c:if>
+
+                <c:if test="#{dialogUnidadAdministrativa.mostrarProcsNormativas}">
+                    <div class="row left-container mx-0 mt-3">
+                        <div class="col-12 left-container-header text-center">
+                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.normativas']}</p>
+                        </div>
+                        <div class="col-10 p-1">
+                            <p:dataTable id="dataTableNormativas" var="td"
+                                         value="#{dialogUnidadAdministrativa.normativas}"
+                                         emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
+                                         paginator="false" selectionMode="single"
+                                         selection="#{dialogUnidadAdministrativa.normativaSeleccionado}"
+                                         rowKey="#{td.codigo}" styleClass="noHeader">
+
+                                <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                                <p:ajax event="rowSelect" global="false"/>
+                                <p:ajax event="rowUnselect"/>
+
+
+                                <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
+                                    <h:outputText value="#{td.codigo} - #{td.nombre.getTraduccion(sessionBean.lang)}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+                        <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                            <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                             action="#{dialogUnidadAdministrativa.consultarNormativa(status.index)}"
+                                             process="@this" update="messagesDialog"/>
+                        </div>
+                    </div>
+                </c:if>
 
                 <h:outputScript>
                     function rcEditarPropiedad() {
