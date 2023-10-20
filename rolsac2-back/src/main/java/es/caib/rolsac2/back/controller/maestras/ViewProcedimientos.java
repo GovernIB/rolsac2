@@ -1,5 +1,7 @@
 package es.caib.rolsac2.back.controller.maestras;
 
+//import es.caib.rolsac2.api.externa.v1.model.Procedimientos;
+
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
@@ -350,6 +352,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                         filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));
                     }
                     Pagina<ProcedimientoGridDTO> pagina = procedimientoService.findProcedimientosByFiltro(filtro);
+                    //Pagina<ProcedimientoBaseDTO> paginaRest = procedimientoService.findProcedimientosByFiltroRest(filtro);
+                    //Procedimientos proc = new Procedimientos((ProcedimientoDTO) paginaRest.getItems().get(0), null, filtro.getIdioma(), true);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 } catch (Exception e) {

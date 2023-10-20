@@ -3,6 +3,7 @@ package es.caib.rolsac2.api.externa.v1.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
+import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -147,22 +148,18 @@ public class Procedimientos extends EntidadBase {
      **/
     @Schema(description = "linkLopdInfoAdicional", required = false)
     private Link linkLopdInfoAdicional;
-    @Schema(hidden = true)
-    @JsonIgnore
-    @XmlTransient
-    private Long lopdInfoAdicional;
-
     @Schema(description = "lopdResponsable", type = SchemaType.STRING, required = false)
     private String lopdResponsable;
-
     @Schema(description = "lopdFinalidad", type = SchemaType.STRING, required = false)
     private String lopdFinalidad;
-
     @Schema(description = "lopdDestinatario", type = SchemaType.STRING, required = false)
     private String lopdDestinatario;
-
     @Schema(description = "lopdDerechos", type = SchemaType.STRING, required = false)
     private String lopdDerechos;
+    @Schema(description = "lopdCabecera", type = SchemaType.STRING, required = false)
+    private String lopdCabecera;
+    @Schema(description = "lopdLegitimacion", required = false)
+    private Legitimacion lopdLegitimacion;
 
     @Schema(description = "objeto", type = SchemaType.STRING, required = false)
     private String objeto;
@@ -181,8 +178,6 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "publicado", type = SchemaType.BOOLEAN, required = false)
     private boolean publicado;
 
-    @Schema(description = "datosPersonalesLegitimacion", type = SchemaType.INTEGER, required = false)
-    private Long datosPersonalesLegitimacion;
     @Schema(description = "iniciacion", required = false)
     private Inicio iniciacion;
 
@@ -191,30 +186,37 @@ public class Procedimientos extends EntidadBase {
 
     @Schema(description = "tipoProcedimiento", required = false)
     private TipoProcedimiento tipoProcedimiento;
+
     @Schema(description = "tipoVia", type = SchemaType.INTEGER, required = false)
     private Long tipoVia;
+
     @Schema(description = "habilitadoApoderado", type = SchemaType.BOOLEAN, required = false)
     private boolean habilitadoApoderado;
+
     @Schema(description = "habilitadoFuncionario", type = SchemaType.STRING, required = false)
     private String habilitadoFuncionario;
+
     @Schema(description = "tieneTasa", type = SchemaType.BOOLEAN, required = false)
     private boolean tieneTasa = false;
+
     @Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
     private String responsableEmail;
+
     @Schema(description = "responsableTelefono", type = SchemaType.STRING, required = false)
     private String responsableTelefono;
+
     @Schema(description = "nombreProcedimientoWorkFlow", type = SchemaType.STRING, required = false)
     private String nombreProcedimientoWorkFlow;
-    @Schema(description = "datosPersonalesFinalidad", type = SchemaType.STRING, required = false)
-    private String datosPersonalesFinalidad;
-    @Schema(description = "datosPersonalesDestinatario", type = SchemaType.STRING, required = false)
-    private String datosPersonalesDestinatario;
+
     @Schema(description = "terminoResolucion", type = SchemaType.STRING, required = false)
     private String terminoResolucion;
+
     @Schema(description = "tramitElectronica", type = SchemaType.BOOLEAN, required = false)
     private boolean tramitElectronica;
+
     @Schema(description = "tramitPresencial", type = SchemaType.BOOLEAN, required = false)
     private boolean tramitPresencial;
+
     @Schema(description = "tramitTelefonica", type = SchemaType.BOOLEAN, required = false)
     private boolean tramitTelefonica;
     //	@Schema(description = "mensajes", type = SchemaType.STRING, required = false)
@@ -227,139 +229,28 @@ public class Procedimientos extends EntidadBase {
     //    private boolean pendienteMensajesGestor = false;
     //	@Schema(description = "pendienteMensajesSupervisor", type = SchemaType.BOOLEAN, required = false)
     //    private boolean pendienteMensajesSupervisor = false;
+
     @Schema(description = "activoLOPD", type = SchemaType.BOOLEAN, required = false)
     private boolean activoLOPD = false;
-
-    //	/**
-    //	 * Constructor
-    //	 *
-    //	 * @param elem
-    //	 * @param urlBase
-    //	 * @param idioma
-    //	 * @param hateoasEnabled
-    //	 */
-    //	public Procedimientos(final ProcedimientoDTO elem, final String urlBase, final String idioma,
-    //			final boolean hateoasEnabled) {
-    ////		super(elem, urlBase, idioma, hateoasEnabled);
-    //		if(elem != null) {
-    //			this.codigo = elem.getCodigo();
-    //			this.comun = elem.getComun();
-    //			this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA();
-    //			this.codigoWF = elem.getCodigoWF();
-    //			this.datosPersonalesDestinatario = elem.getDatosPersonalesDestinatario() == null ? null : elem.getDatosPersonalesDestinatario().getTraduccion(idioma);
-    //			this.datosPersonalesFinalidad = elem.getDatosPersonalesFinalidad() == null ? null : elem.getDatosPersonalesFinalidad().getTraduccion(idioma);
-    //			this.datosPersonalesLegitimacion = elem.getDatosPersonalesLegitimacion() == null ? null : elem.getDatosPersonalesLegitimacion().getCodigo();
-    //			this.destinatarios = elem.getDestinatarios() == null ? null : elem.getDestinatarios().getTraduccion(idioma);
-    //			this.estado = elem.getEstado() == null ? null : elem.getEstado();
-    //			this.estadoSIA = elem.getEstadoSIA() == null ? null : elem.getEstadoSIA();
-    //			this.fechaActualizacion = elem.getFechaActualizacion() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaActualizacion());
-    //			this.fechaCaducidad = elem.getFechaCaducidad() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaCaducidad());
-    //			this.fechaSIA = elem.getFechaSIA() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaSIA());
-    //			this.habilitadoApoderado = elem.isHabilitadoApoderado();
-    //			this.habilitadoFuncionario = elem.getHabilitadoFuncionario();
-    //			this.iniciacion = elem.getIniciacion() == null ? null : new Inicio(elem.getIniciacion(), urlBase, idioma, hateoasEnabled);
-    //			this.interno = elem.isInterno();
-    //			this.lopdDerechos = elem.getLopdDerechos() == null ? null : elem.getLopdDerechos().getTraduccion(idioma);
-    //			this.lopdDestinatario = elem.getLopdDestinatario() == null ? null : elem.getLopdDestinatario().getTraduccion(idioma);
-    //			this.lopdFinalidad = elem.getLopdFinalidad() == null ? null : elem.getLopdFinalidad().getTraduccion(idioma);
-    //			this.lopdInfoAdicional = elem.getLopdInfoAdicional() == null ? null : elem.getLopdInfoAdicional().getCodigo();
-    //			this.lopdResponsable = elem.getLopdResponsable();
-    ////			this.mensajes = elem.getMensajes();
-    //			this.nombreProcedimientoWorkFlow = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccion(idioma);
-    //			this.observaciones = elem.getObservaciones() == null ? null : elem.getObservaciones().getTraduccion(idioma);
-    ////			this.pendienteIndexar = elem.isPendienteIndexar();
-    ////			this.pendienteMensajesGestor = elem.isPendienteMensajesGestor();
-    ////			this.pendienteMensajesSupervisor = elem.isPendienteMensajesSupervisor();
-    //			this.publicado = elem.isPublicado();
-    //			this.requisitos = elem.getRequisitos() == null ? null : elem.getRequisitos().getTraduccion(idioma);
-    //			this.responsable = elem.getResponsable();
-    //			this.responsableEmail = elem.getResponsableEmail();
-    //			this.responsableTelefono = elem.getResponsableTelefono();
-    //			this.silencio = elem.getSilencio() == null ? null : new Silencio(elem.getSilencio(), urlBase, idioma, hateoasEnabled);
-    //			this.terminoResolucion = elem.getTerminoResolucion() == null ? null : elem.getTerminoResolucion().getTraduccion(idioma);
-    //			this.tieneTasa = elem.isTieneTasa();
-    //			this.tipo = elem.getTipo();
-    //			this.tipoProcedimiento = elem.getTipoProcedimiento() == null ? null : elem.getTipoProcedimiento().getCodigo();
-    //			this.tipoVia = elem.getTipoVia() == null ? null : elem.getTipoVia().getCodigo();
-    //			this.uaInstructor = elem.getUaInstructor() == null ? null : elem.getUaInstructor().getCodigo();
-    //			this.uaResponsable = elem.getUaResponsable() == null ? null : elem.getUaResponsable().getCodigo();
-    ////			this.usuarioAuditoria = elem.getUsuarioAuditoria();
-    //			this.workflow = elem.getWorkflow() == null ? null : elem.getWorkflow();
-    //		}
-
-
-    //		try {
-    //			// copiamos los datos que no tienen la misma estructura:
-    //			if (((org.ibit.rol.sac.model.ProcedimientoLocal) elem).getSilencio() != null) {
-    //				this.silencio = new Silencis(((org.ibit.rol.sac.model.ProcedimientoLocal) elem).getSilencio(), urlBase,
-    //						idioma, hateoasEnabled);
-    //			}
-    //
-    //			// copiamos los datos que no tienen la misma estructura:
-    //			if (((org.ibit.rol.sac.model.ProcedimientoLocal) elem).getIniciacion() != null) {
-    //				this.iniciacion = new Iniciacions(((org.ibit.rol.sac.model.ProcedimientoLocal) elem).getIniciacion(),
-    //						urlBase, idioma, hateoasEnabled);
-    //			}
-    //
-    //			// copiamos los datos que no tienen la misma estructura:
-    //			if (((org.ibit.rol.sac.model.ProcedimientoLocal) elem).getLopdLegitimacion() != null) {
-    //				this.lopdLegitimacion = new LopdLegitimacion();
-    //				this.lopdLegitimacion.setIdentificador(
-    //						((org.ibit.rol.sac.model.ProcedimientoLocal) elem).getLopdLegitimacion().getIdentificador());
-    //				this.lopdLegitimacion.setNombre(
-    //						((org.ibit.rol.sac.model.TraduccionLopdLegitimacion) ((org.ibit.rol.sac.model.ProcedimientoLocal) elem)
-    //								.getLopdLegitimacion().getTraduccion(idioma)).getNombre());
-    //			}
-    //
-    //			if (((org.ibit.rol.sac.model.ProcedimientoLocal) elem).isComun()) {
-    //				this.lopdResponsable = System.getProperty("es.caib.rolsac.lopd.responsable.comun." + idioma);
-    //			} else {
-    //				final String lopdResponsable = getUAByDir3(
-    //						((org.ibit.rol.sac.model.ProcedimientoLocal) elem).getServicioResponsable(), idioma);
-    //				if (lopdResponsable != null) {
-    //					this.lopdResponsable = lopdResponsable;
-    //				}
-    //			}
-    //
-    //		} catch (final Exception e) {
-    //
-    //		}
-    //	}
 
     public Procedimientos() {
         super();
     }
 
-	/*public Procedimientos(final ProcedimientoGridDTO elem, final String urlBase, final String idioma,
-			final boolean hateoasEnabled) {
-//		super(elem, urlBase, idioma, hateoasEnabled);
-		if(elem != null) {
-			this.codigo = elem.getCodigo();
-			this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA().toString();
-			this.estado = elem.getEstado();
-			this.estadoSIA = elem.getEstadoSIA() == null ? null : elem.getEstadoSIA().toString();
-			this.tipo = elem.getTipo();
-			this.nombre = elem.getNombre();
-			this.codigoWF = elem.getCodigoWFPub();
-		}
-	}*/
 
     public Procedimientos(ProcedimientoDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-		/*if(nodo != null) {
-			this.codigo = nodo.getCodigo();
-			this.codigoSIA = nodo.getCodigoSIA() == null ? null : nodo.getCodigoSIA().toString();
-			this.estado = nodo.getEstado().toString();
-			this.estadoSIA = nodo.getEstadoSIA() == null ? null : nodo.getEstadoSIA().toString();
-			this.tipo = nodo.getTipo();
-			this.nombre = nodo.getNombreProcedimientoWorkFlow().getTraduccion("ca");
-			this.codigoWF = nodo.getCodigoWF();
-		}*/
+
         super(nodo, urlBase, idioma, hateoasEnabled);
 
         try {
             // copiamos los datos que no tienen la misma estructura:
             if (nodo.getSilencio() != null) {
                 this.silencio = new Silencio(nodo.getSilencio(), urlBase, idioma, hateoasEnabled);
+            }
+
+            // copiamos los datos que no tienen la misma estructura:
+            if (nodo.getDatosPersonalesLegitimacion() != null) {
+                this.lopdLegitimacion = new Legitimacion(nodo.getDatosPersonalesLegitimacion(), urlBase, idioma, hateoasEnabled);
             }
 
             // copiamos los datos que no tienen la misma estructura:
@@ -372,39 +263,36 @@ public class Procedimientos extends EntidadBase {
             }
 
             if (nodo.getLopdDerechos() != null) {
-                this.lopdDerechos = nodo.getLopdDerechos().getTraduccion(idioma);
+                this.lopdDerechos = nodo.getLopdDerechos().getTraduccion(idioma == null ? "ca" : idioma);
             }
             if (nodo.getLopdFinalidad() != null) {
-                this.lopdFinalidad = nodo.getLopdFinalidad().getTraduccion(idioma);
+                this.lopdFinalidad = nodo.getLopdFinalidad().getTraduccion(idioma == null ? "ca" : idioma);
             }
             if (nodo.getLopdInfoAdicional() != null) {
-                this.lopdDestinatario = nodo.getLopdInfoAdicional().getTraduccion(idioma);
+                this.lopdDestinatario = nodo.getLopdInfoAdicional().getTraduccion(idioma == null ? "ca" : idioma);
             }
-
-            // copiamos los datos que no tienen la misma estructura:
-			/*if (((org.ibit.rol.sac.model.ProcedimientoLocal) elem).getLopdLegitimacion() != null) {
-				this.lopdLegitimacion = new LopdLegitimacion();
-				this.lopdLegitimacion.setIdentificador(
-						((org.ibit.rol.sac.model.ProcedimientoLocal) elem).getLopdLegitimacion().getIdentificador());
-				this.lopdLegitimacion.setNombre(
-						((org.ibit.rol.sac.model.TraduccionLopdLegitimacion) ((org.ibit.rol.sac.model.ProcedimientoLocal) elem)
-								.getLopdLegitimacion().getTraduccion(idioma)).getNombre());
-			}
-
-			if (nodo.getLopdResponsable().isComun()) {
-				this.lopdResponsable = System.getProperty("es.caib.rolsac.lopd.responsable.comun." + idioma);
-			} else {
-				final String lopdResponsable = getUAByDir3(
-						nodo.getLopdResponsable(), idioma);
-				if (lopdResponsable != null) {
-					this.lopdResponsable = lopdResponsable;
-				}
-			}*/
-
-
+            if (nodo.getLopdCabecera() != null) {
+                this.lopdCabecera = nodo.getLopdCabecera().getTraduccion(idioma == null ? "ca" : idioma);
+            }
+            if (nodo.getDocumentosLOPD() != null && !nodo.getDocumentosLOPD().isEmpty()) {
+                String descripcion = getDescripcion(nodo.getDocumentosLOPD().get(0), idioma == null ? "ca" : idioma);
+                Long codigoDoc = nodo.getDocumentosLOPD().get(0).getCodigo();
+                linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
+            }
         } catch (final Exception e) {
-
+            LOG.error("Error generando procedimiento " + this.codigo, e);
         }
+    }
+
+    private String getDescripcion(ProcedimientoDocumentoDTO documentoLOPD, String idioma) {
+        String descripcion = null;
+        if (documentoLOPD.getDescripcion() != null) {
+            descripcion = documentoLOPD.getDescripcion().getTraduccion(idioma);
+        }
+        if (documentoLOPD.getDescripcion() != null && descripcion == null) {
+            descripcion = documentoLOPD.getDescripcion().getTraduccion();
+        }
+        return descripcion;
     }
 
 
@@ -413,7 +301,7 @@ public class Procedimientos extends EntidadBase {
         linkUnidadAdministrativaResponsable = this.generaLink(this.uaResponsable, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
         linkUnidadAdministrativaInstructora = this.generaLink(this.uaInstructor, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
         linkUnidadAdministrativaCompetente = this.generaLink(this.uaCompetente, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
-        linkLopdInfoAdicional = this.generaLinkArchivo(this.lopdInfoAdicional, urlBase, null);
+
 
     }
 
@@ -564,6 +452,22 @@ public class Procedimientos extends EntidadBase {
         this.estadoSIA = estadoSIA;
     }
 
+    public String getLopdCabecera() {
+        return lopdCabecera;
+    }
+
+    public void setLopdCabecera(String lopdCabecera) {
+        this.lopdCabecera = lopdCabecera;
+    }
+
+    public Legitimacion getLopdLegitimacion() {
+        return lopdLegitimacion;
+    }
+
+    public void setLopdLegitimacion(Legitimacion lopdLegitimacion) {
+        this.lopdLegitimacion = lopdLegitimacion;
+    }
+
     /**
      * @return the fechaSIA
      */
@@ -578,64 +482,6 @@ public class Procedimientos extends EntidadBase {
         this.fechaSIA = fechaSIA;
     }
 
-    //	/**
-    //	 * @return the linkUnidadAdministrativaResponsable
-    //	 */
-    //	public Link getlinkUnidadAdministrativaResponsable() {
-    //		return linkUnidadAdministrativaResponsable;
-    //	}
-
-    //	/**
-    //	 * @param linkUnidadAdministrativaResponsable the linkUnidadAdministrativaResponsable to set
-    //	 */
-    //	public void setlinkUnidadAdministrativaResponsable(final Link linkUnidadAdministrativaResponsable) {
-    //		this.linkUnidadAdministrativaResponsable = linkUnidadAdministrativaResponsable;
-    //	}
-
-
-    //	/**
-    //	 * @return the linkUnidadAdministrativa
-    //	 */
-    //	public Link getLinkUnidadAdministrativa() {
-    //		return linkUnidadAdministrativa;
-    //	}
-    //
-    //	/**
-    //	 * @param linkUnidadAdministrativa the linkUnidadAdministrativa to set
-    //	 */
-    //	public void setLinkUnidadAdministrativa(final Link linkUnidadAdministrativa) {
-    //		this.linkUnidadAdministrativa = linkUnidadAdministrativa;
-    //	}
-
-    //	/**
-    //	 * @return the linkUnidadAdministrativaInstructora
-    //	 */
-    //	public Link getlinkUnidadAdministrativaInstructora() {
-    //		return linkUnidadAdministrativaInstructora;
-    //	}
-
-    //	/**
-    //	 * @param linkUnidadAdministrativaInstructora the linkUnidadAdministrativaInstructora to set
-    //	 */
-    //	public void setlinkUnidadAdministrativaInstructora(final Link linkUnidadAdministrativaInstructora) {
-    //		this.linkUnidadAdministrativaInstructora = linkUnidadAdministrativaInstructora;
-    //	}
-
-
-    //	/**
-    //	 * @return the linkFamilia
-    //	 */
-    //	public Link getLinkFamilia() {
-    //		return linkFamilia;
-    //	}
-
-    //	/**
-    //	 * @param linkFamilia the linkFamilia to set
-    //	 */
-    //	public void setLinkFamilia(final Link linkFamilia) {
-    //		this.linkFamilia = linkFamilia;
-    //	}
-
     /**
      * @return the comun
      */
@@ -648,34 +494,6 @@ public class Procedimientos extends EntidadBase {
      */
     public void setComun(final int comun) {
         this.comun = comun;
-    }
-
-    //	/**
-    //	 * @return the linkLopdInfoAdicional
-    //	 */
-    //	public Link getLinkLopdInfoAdicional() {
-    //		return linkLopdInfoAdicional;
-    //	}
-
-    //	/**
-    //	 * @param linkLopdInfoAdicional the linkLopdInfoAdicional to set
-    //	 */
-    //	public void setLinkLopdInfoAdicional(final Link linkLopdInfoAdicional) {
-    //		this.linkLopdInfoAdicional = linkLopdInfoAdicional;
-    //	}
-
-    /**
-     * @return the lopdInfoAdicional
-     */
-    public Long getLopdInfoAdicional() {
-        return lopdInfoAdicional;
-    }
-
-    /**
-     * @param lopdInfoAdicional the lopdInfoAdicional to set
-     */
-    public void setLopdInfoAdicional(final Long lopdInfoAdicional) {
-        this.lopdInfoAdicional = lopdInfoAdicional;
     }
 
     /**
@@ -782,13 +600,6 @@ public class Procedimientos extends EntidadBase {
         this.publicado = publicado;
     }
 
-    public Long getDatosPersonalesLegitimacion() {
-        return datosPersonalesLegitimacion;
-    }
-
-    public void setDatosPersonalesLegitimacion(Long datosPersonalesLegitimacion) {
-        this.datosPersonalesLegitimacion = datosPersonalesLegitimacion;
-    }
 
     @XmlTransient
     public Long getUaResponsable() {
@@ -880,21 +691,6 @@ public class Procedimientos extends EntidadBase {
         this.nombreProcedimientoWorkFlow = nombreProcedimientoWorkFlow;
     }
 
-    public String getDatosPersonalesFinalidad() {
-        return datosPersonalesFinalidad;
-    }
-
-    public void setDatosPersonalesFinalidad(String datosPersonalesFinalidad) {
-        this.datosPersonalesFinalidad = datosPersonalesFinalidad;
-    }
-
-    public String getDatosPersonalesDestinatario() {
-        return datosPersonalesDestinatario;
-    }
-
-    public void setDatosPersonalesDestinatario(String datosPersonalesDestinatario) {
-        this.datosPersonalesDestinatario = datosPersonalesDestinatario;
-    }
 
     public String getTerminoResolucion() {
         return terminoResolucion;

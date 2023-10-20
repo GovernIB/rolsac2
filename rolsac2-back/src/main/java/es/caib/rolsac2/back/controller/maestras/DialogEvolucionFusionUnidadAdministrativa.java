@@ -13,6 +13,7 @@ import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -55,7 +56,8 @@ public class DialogEvolucionFusionUnidadAdministrativa extends EvolucionControll
     }
 
     public void evolucionar() {
-        unidadAdministrativaServiceFacade.evolucionFusion(selectedUnidades, normativa, fechaBaja, uaFusion, UtilJSF.getSessionBean().getPerfil());
+        String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+        unidadAdministrativaServiceFacade.evolucionFusion(selectedUnidades, normativa, fechaBaja, uaFusion, UtilJSF.getSessionBean().getPerfil(), usuario);
 
         final DialogResult result = new DialogResult();
         result.setCanceled(false);

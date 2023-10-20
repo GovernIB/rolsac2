@@ -3,7 +3,6 @@ package es.caib.rolsac2.service.model;
 import es.caib.rolsac2.service.model.types.TypeEstadoDir3;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import javax.persistence.Column;
 import java.util.Objects;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Objects;
  * @author Indra
  */
 @Schema(name = "UnidadOrganica")
-public class UnidadOrganicaDTO extends ModelApi implements Comparable<UnidadOrganicaDTO>{
+public class UnidadOrganicaDTO extends ModelApi implements Comparable<UnidadOrganicaDTO> {
 
     /**
      * Codigo
@@ -20,7 +19,7 @@ public class UnidadOrganicaDTO extends ModelApi implements Comparable<UnidadOrga
     private Long codigo;
 
     /**
-     *  Código DIR3 de la unidad
+     * Código DIR3 de la unidad
      */
     private String codigoDir3;
 
@@ -149,19 +148,17 @@ public class UnidadOrganicaDTO extends ModelApi implements Comparable<UnidadOrga
 
     @Override
     public String toString() {
-        return "UnidadOrganicaDTO{" +
-                "codigo=" + codigo +
-                ", codigoDir3='" + codigoDir3 + '\'' +
-                ", idEntidad=" + idEntidad +
-                ", codigoDir3Padre='" + codigoDir3Padre + '\'' +
-                ", denominacion='" + denominacion + '\'' +
-                ", estado=" + estado +
-                ", version=" + version +
-                '}';
+        return "UnidadOrganicaDTO{" + "codigo=" + codigo + ", codigoDir3='" + codigoDir3 + '\'' + ", idEntidad=" + idEntidad + ", codigoDir3Padre='" + codigoDir3Padre + '\'' + ", denominacion='" + denominacion + '\'' + ", estado=" + estado + ", version=" + version + '}';
     }
 
     @Override
     public int compareTo(UnidadOrganicaDTO o) {
+        if (this.codigoDir3 == null) {
+            return -1;
+        }
+        if (o.codigoDir3 == null) {
+            return 1;
+        }
         return this.codigoDir3.compareTo(o.codigoDir3);
     }
 }

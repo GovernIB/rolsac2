@@ -1,5 +1,7 @@
 package es.caib.rolsac2.back.controller.maestras;
 
+//import es.caib.rolsac2.api.externa.v1.model.Servicios;
+
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
@@ -355,6 +357,9 @@ public class ViewServicios extends AbstractController implements Serializable {
                         filtro.setCanales(Arrays.asList(canalesSeleccionados));
                     }
                     Pagina<ServicioGridDTO> pagina = procedimientoService.findServiciosByFiltro(filtro);
+
+                    //Pagina<ProcedimientoBaseDTO> paginax = procedimientoService.findProcedimientosByFiltroRest(filtro);
+                    //new Servicios((ServicioDTO) paginax.getItems().get(0), null, filtro.getIdioma(), true);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 } catch (Exception e) {

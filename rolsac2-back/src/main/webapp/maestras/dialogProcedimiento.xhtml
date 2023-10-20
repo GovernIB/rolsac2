@@ -161,7 +161,7 @@
                                              converter="javax.faces.Integer">
                                 <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
                                 <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1" />
-                                <p:ajax event="change"  update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun formDialog:panelComunInstr labelComunInstr txtRespTrat" process="@this"  />
+                                <p:ajax event="change" listener="#{dialogProcedimiento.actualizarResponsable()}"  update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun formDialog:panelComunInstr labelComunInstr txtRespTrat" process="@this"  />
                             </p:selectOneMenu>
 
 
@@ -330,7 +330,7 @@
                                             <h:panelGroup id="panelComun">
 
                                                  <span style="white-space:nowrap" >
-                                                        <p:inputText id="labelComun" value="#{dialogProcedimiento.comunUA.getTraduccion(dialogServicio.idioma)}"
+                                                        <p:inputText id="labelComun" value="#{dialogProcedimiento.comunUA.getTraduccion(dialogProcedimiento.idioma)}"
                                                                          rendered="#{dialogProcedimiento.data.esComun()}"
                                                                          styleClass="w95"
                                                                          disabled="true" />
@@ -374,7 +374,7 @@
                                             <h:panelGroup id="panelComunInstr">
 
                                                                  <span style="white-space:nowrap" >
-                                                                        <p:inputText id="labelComunInstr" value="#{dialogProcedimiento.comunUA}"
+                                                                        <p:inputText id="labelComunInstr" value="#{dialogProcedimiento.comunUA.getTraduccion(dialogProcedimiento.idioma)}"
                                                                                      rendered="#{dialogProcedimiento.data.esComun()}"
                                                                                      styleClass="w95"
                                                                                      disabled="true" />

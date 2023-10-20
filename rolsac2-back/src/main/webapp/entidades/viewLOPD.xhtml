@@ -152,6 +152,44 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
 
 
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dict.lopdCabecera']}:" for="txtLopdCabecera"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <my:literalComponent id="txtLopdCabecera" styleClass="w95"
+                                                 value="#{viewLOPD.data.lopdCabecera}"
+                                                 soloLecture="#{viewLOPD.isModoConsulta()}"
+                                                 required="#{empty param['formDialog:closeButton']}"
+                                                 idiomasObligatorios="#{viewLOPD.data.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{viewLOPD.data.getIdiomasPermitidos()}"
+                                                 idioma="#{viewLOPD.idioma}"
+                                                 literal="#{viewLOPD.data.lopdCabecera}"
+                                                 nombreLiteral="#{labels['dict.lopdCabecera']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <p:outputLabel value="#{labels['dict.lopdPlantilla']}:" for="txtLopdPlantilla"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <my:literalComponent id="txtLopdPlantilla" styleClass="w95"
+                                                 value="#{viewLOPD.data.lopdPlantilla}"
+                                                 soloLecture="#{viewLOPD.isModoConsulta()}"
+                                                 required="#{empty param['formDialog:closeButton']}"
+                                                 idiomasObligatorios="#{viewLOPD.data.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{viewLOPD.data.getIdiomasPermitidos()}"
+                                                 idioma="#{viewLOPD.idioma}"
+                                                 literal="#{viewLOPD.data.lopdPlantilla}"
+                                                 nombreLiteral="#{labels['dict.lopdPlantilla']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                            </my:literalComponent>
+                        </div>
+                    </div>
+
 
 
                     <div class="row">

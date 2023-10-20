@@ -234,7 +234,7 @@ public interface UnidadAdministrativaServiceFacade {
      * @param nombreNuevo
      * @param entidad
      */
-    void evolucionBasica(Long codigoUA, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad);
+    void evolucionBasica(Long codigoUA, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad, TypePerfiles perfil, String usuario);
 
     /**
      * Devuelve la normativa de baja de una UA
@@ -251,7 +251,7 @@ public interface UnidadAdministrativaServiceFacade {
      * @param codigoUAPadre
      * @param entidad
      */
-    void evolucionDependencia(Long codigoUA, Long codigoUAPadre, EntidadDTO entidad);
+    void evolucionDependencia(Long codigoUA, Long codigoUAPadre, EntidadDTO entidad, TypePerfiles perfil, String usuario);
 
     /**
      * Comprueba si el padreNuevo cuelga del padreAntiguo
@@ -322,7 +322,7 @@ public interface UnidadAdministrativaServiceFacade {
      * @param fechaBaja        La fecha de baja seleccionada
      * @param uaFusion         La UA fusionada
      */
-    void evolucionFusion(List<UnidadAdministrativaGridDTO> selectedUnidades, NormativaDTO normativa, Date fechaBaja, UnidadAdministrativaDTO uaFusion, TypePerfiles perfil);
+    void evolucionFusion(List<UnidadAdministrativaGridDTO> selectedUnidades, NormativaDTO normativa, Date fechaBaja, UnidadAdministrativaDTO uaFusion, TypePerfiles perfil, String usuario);
 
 
 }

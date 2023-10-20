@@ -9,10 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "RS2_TRAENT",
-        indexes = {
-                @Index(name = "RS2_TRAENT_PK_I", columnList = "TREN_CODIGO")
-        })
+@Table(name = "RS2_TRAENT", indexes = {@Index(name = "RS2_TRAENT_PK_I", columnList = "TREN_CODIGO")})
 
 @SequenceGenerator(name = "entidad-traduccion-sequence", sequenceName = "RS2_TRAENT_SEQ", allocationSize = 1)
 public class JEntidadTraduccion extends BaseEntity {
@@ -51,6 +48,12 @@ public class JEntidadTraduccion extends BaseEntity {
      **/
     @Column(name = "TREN_LOPDDR")
     private String lopdDerechos;
+
+    @Column(name = "TREN_LOPDCB")
+    private String lopdCabecera;
+
+    @Column(name = "TREN_LOPDPL")
+    private String lopdPlantilla;
 
     /**
      * LOPD Derechos
@@ -124,6 +127,22 @@ public class JEntidadTraduccion extends BaseEntity {
         this.lopdDerechos = lopdDerechos;
     }
 
+    public String getLopdCabecera() {
+        return lopdCabecera;
+    }
+
+    public void setLopdCabecera(String lopdCabecera) {
+        this.lopdCabecera = lopdCabecera;
+    }
+
+    public String getLopdPlantilla() {
+        return lopdPlantilla;
+    }
+
+    public void setLopdPlantilla(String lopdPlantilla) {
+        this.lopdPlantilla = lopdPlantilla;
+    }
+
     public String getUaComun() {
         return uaComun;
     }
@@ -134,10 +153,8 @@ public class JEntidadTraduccion extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         JEntidadTraduccion that = (JEntidadTraduccion) o;
         return Objects.equals(codigo, that.codigo);
     }
@@ -149,10 +166,6 @@ public class JEntidadTraduccion extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JEntidadTraduccion{" +
-                "id=" + codigo +
-                ", entidad=" + entidad +
-                ", idioma='" + idioma + '\'' +
-                '}';
+        return "JEntidadTraduccion{" + "id=" + codigo + ", entidad=" + entidad + ", idioma='" + idioma + '\'' + '}';
     }
 }

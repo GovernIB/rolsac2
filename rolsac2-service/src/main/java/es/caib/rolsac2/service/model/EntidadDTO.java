@@ -45,6 +45,8 @@ public class EntidadDTO extends ModelApi {
     private Literal lopdDestinatario;
     private Literal lopdDerechos;
     private Literal lopdFinalidad;
+    private Literal lopdCabecera;
+    private Literal lopdPlantilla;
 
     private Literal uaComun;
 
@@ -74,9 +76,12 @@ public class EntidadDTO extends ModelApi {
             this.idiomaDefectoRest = otro.idiomaDefectoRest;
             this.idiomasPermitidos = otro.idiomasPermitidos;
             this.idiomasObligatorios = otro.idiomasObligatorios;
-            this.lopdDerechos = otro.lopdDerechos == null ? null : (Literal) otro.lopdDerechos.clone();;
-            this.lopdFinalidad = otro.lopdFinalidad == null ? null : (Literal) otro.lopdFinalidad.clone();;
-            this.lopdDestinatario = otro.lopdDestinatario == null ? null : (Literal) otro.lopdDestinatario.clone();;
+            this.lopdDerechos = otro.lopdDerechos == null ? null : (Literal) otro.lopdDerechos.clone();
+            ;
+            this.lopdFinalidad = otro.lopdFinalidad == null ? null : (Literal) otro.lopdFinalidad.clone();
+            ;
+            this.lopdDestinatario = otro.lopdDestinatario == null ? null : (Literal) otro.lopdDestinatario.clone();
+            ;
         }
     }
 
@@ -392,14 +397,28 @@ public class EntidadDTO extends ModelApi {
         this.uaComun = uaComun;
     }
 
+    public Literal getLopdCabecera() {
+        return lopdCabecera;
+    }
+
+    public void setLopdCabecera(Literal lopdCabecera) {
+        this.lopdCabecera = lopdCabecera;
+    }
+
+    public Literal getLopdPlantilla() {
+        return lopdPlantilla;
+    }
+
+    public void setLopdPlantilla(Literal lopdPlantilla) {
+        this.lopdPlantilla = lopdPlantilla;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntidadDTO that = (EntidadDTO) o;
-        return codigo.equals(that.codigo) && activa.equals(that.activa) &&
-                rolAdmin.equals(that.rolAdmin) && rolAdminContenido.equals(that.rolAdminContenido) &&
-                rolGestor.equals(that.rolGestor) && rolInformador.equals(that.rolInformador);
+        return codigo.equals(that.codigo) && activa.equals(that.activa) && rolAdmin.equals(that.rolAdmin) && rolAdminContenido.equals(that.rolAdminContenido) && rolGestor.equals(that.rolGestor) && rolInformador.equals(that.rolInformador);
     }
 
 
@@ -415,19 +434,6 @@ public class EntidadDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "EntidadDTO{" +
-                "codigo=" + codigo +
-                ", identificador='" + identificador + '\'' +
-                ", activa=" + activa +
-                ", rolAdmin='" + rolAdmin + '\'' +
-                ", rolAdminContenido='" + rolAdminContenido + '\'' +
-                ", rolGestor='" + rolGestor + '\'' +
-                ", rolInformador='" + rolInformador + '\'' +
-                ", logo=" + logo +
-                ", descripcion=" + descripcion +
-                ", idiomaDefectoRest='" + idiomaDefectoRest + '\'' +
-                ", idiomasPermitidos='" + idiomasPermitidos + '\'' +
-                ", idiomasObligatorios='" + idiomasObligatorios + '\'' +
-                '}';
+        return "EntidadDTO{" + "codigo=" + codigo + ", identificador='" + identificador + '\'' + ", activa=" + activa + ", rolAdmin='" + rolAdmin + '\'' + ", rolAdminContenido='" + rolAdminContenido + '\'' + ", rolGestor='" + rolGestor + '\'' + ", rolInformador='" + rolInformador + '\'' + ", logo=" + logo + ", descripcion=" + descripcion + ", idiomaDefectoRest='" + idiomaDefectoRest + '\'' + ", idiomasPermitidos='" + idiomasPermitidos + '\'' + ", idiomasObligatorios='" + idiomasObligatorios + '\'' + '}';
     }
 }

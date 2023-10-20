@@ -13,7 +13,6 @@ import es.caib.rolsac2.service.model.types.TypeEstadoDir3;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeTipoProceso;
 import org.primefaces.PrimeFaces;
-import org.primefaces.component.tree.Tree;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
@@ -69,31 +68,35 @@ public class ViewOrganigramaDir3 extends AbstractController implements Serializa
             fechaUltimaActualizacion = procesoLogServiceFacade.obtenerFechaUltimaEjecucionCorrecta(TypeTipoProceso.DIR3.toString(), sessionBean.getEntidad().getCodigo());
             PrimeFaces.current().executeScript("document.getElementById('form:btnCarga').click()");
         } catch (Exception e) {
-          UtilJSF.redirectJsfPage("/error/procesoDIR3Exception.xhtml");
+            UtilJSF.redirectJsfPage("/error/procesoDIR3Exception.xhtml");
         }
 
     }
 
     public void cargarArbol() {
-        UnidadOrganicaDTO unidadRaizDir3 = uaService.obtenerUnidadRaizDir3(sessionBean.getEntidad().getCodigo());
-        UnidadOrganicaDTO unidadRaizRolsac = uaService.obtenerUnidadRaizRolsac(sessionBean.getEntidad().getCodigo());
-        rootDir3 = new DefaultTreeNode(unidadRaizDir3, null);
-        construirArbolDesdeRaizDir3(rootDir3, unidadRaizDir3);
-        rootRolsac = new DefaultTreeNode(unidadRaizRolsac, null);
-        construirArbolDesdeRaizRolsac(rootRolsac, unidadRaizRolsac);
-        cargaArbol = Boolean.TRUE;
+        try {
+            UnidadOrganicaDTO unidadRaizDir3 = uaService.obtenerUnidadRaizDir3(sessionBean.getEntidad().getCodigo());
+            UnidadOrganicaDTO unidadRaizRolsac = uaService.obtenerUnidadRaizRolsac(sessionBean.getEntidad().getCodigo());
+            rootDir3 = new DefaultTreeNode(unidadRaizDir3, null);
+            construirArbolDesdeRaizDir3(rootDir3, unidadRaizDir3);
+            rootRolsac = new DefaultTreeNode(unidadRaizRolsac, null);
+            construirArbolDesdeRaizRolsac(rootRolsac, unidadRaizRolsac);
+            cargaArbol = Boolean.TRUE;
+        } catch (Exception e) {
+            LOG.error("Error al cargar el arbol de unidades administrativas", e);
+        }
     }
 
     public void construirArbolDesdeRaizDir3(TreeNode raiz, UnidadOrganicaDTO padre) {
         List<UnidadOrganicaDTO> unidadesHijas = uaService.obtenerUnidadesHijasDir3(padre.getCodigoDir3(), sessionBean.getEntidad().getCodigo());
         Collections.sort(unidadesHijas);
-        if(unidadesHijas == null || unidadesHijas.isEmpty()) {
+        if (unidadesHijas == null || unidadesHijas.isEmpty()) {
             return;
         } else {
-            if(padre.getEstado() == null && unidadesHijas.stream().anyMatch(u -> u.getEstado() != null)) {
+            if (padre.getEstado() == null && unidadesHijas.stream().anyMatch(u -> u.getEstado() != null)) {
                 padre.setEstado(TypeEstadoDir3.PADRE_CAMBIO);
             }
-            for(UnidadOrganicaDTO unidad : unidadesHijas) {
+            for (UnidadOrganicaDTO unidad : unidadesHijas) {
                 TreeNode node = new DefaultTreeNode(unidad, raiz);
                 construirArbolDesdeRaizDir3(node, unidad);
             }
@@ -103,10 +106,10 @@ public class ViewOrganigramaDir3 extends AbstractController implements Serializa
     public void construirArbolDesdeRaizRolsac(TreeNode raiz, UnidadOrganicaDTO padre) {
         List<UnidadOrganicaDTO> unidadesHijas = uaService.obtenerUnidadesHijasRolsac(padre.getCodigoDir3(), sessionBean.getEntidad().getCodigo());
         Collections.sort(unidadesHijas);
-        if(unidadesHijas == null || unidadesHijas.isEmpty()) {
+        if (unidadesHijas == null || unidadesHijas.isEmpty()) {
             return;
         } else {
-            for(UnidadOrganicaDTO unidad : unidadesHijas) {
+            for (UnidadOrganicaDTO unidad : unidadesHijas) {
                 TreeNode node = new DefaultTreeNode(unidad, raiz);
                 construirArbolDesdeRaizRolsac(node, unidad);
             }
@@ -124,7 +127,7 @@ public class ViewOrganigramaDir3 extends AbstractController implements Serializa
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewOrganigramaDir3.errorConsulta"));
             return;
         }
-        if(!unidadesHistorico.isEmpty()) {
+        if (!unidadesHistorico.isEmpty()) {
             unidadOrganicaDTO.setAplicacion("ROLSAC2");
             arbolHistoricos = new DefaultTreeNode(unidadOrganicaDTO, null);
             arbolHistoricos.setExpanded(true);
@@ -137,8 +140,8 @@ public class ViewOrganigramaDir3 extends AbstractController implements Serializa
     }
 
     private void construirArbolHistoricos(TreeNode raiz, List<UnidadOrganicaDTO> unidadesHistorico) {
-        if(unidadesHistorico != null) {
-            for(UnidadOrganicaDTO unidad : unidadesHistorico) {
+        if (unidadesHistorico != null) {
+            for (UnidadOrganicaDTO unidad : unidadesHistorico) {
                 unidad.setAplicacion("DIR3CAIB");
                 TreeNode node = new DefaultTreeNode(unidad, raiz);
                 ParametrosDir3 parametrosDir3 = new ParametrosDir3();
@@ -157,10 +160,10 @@ public class ViewOrganigramaDir3 extends AbstractController implements Serializa
 
     public void filtrarDir3() {
         String script = "document.getElementById('form:dataTable1:dir3Col:filter').value='";
-        if(datosSeleccionadosDir3.length > 0) {
-            for(TreeNode dato : datosSeleccionadosDir3) {
-                if(!((UnidadOrganicaDTO)dato.getData()).getAplicacion().equals("ROLSAC2")) {
-                    script += ((UnidadOrganicaDTO)dato.getData()).getCodigoDir3() + ";";
+        if (datosSeleccionadosDir3.length > 0) {
+            for (TreeNode dato : datosSeleccionadosDir3) {
+                if (!((UnidadOrganicaDTO) dato.getData()).getAplicacion().equals("ROLSAC2")) {
+                    script += ((UnidadOrganicaDTO) dato.getData()).getCodigoDir3() + ";";
                 }
             }
             script += "';";
@@ -170,11 +173,11 @@ public class ViewOrganigramaDir3 extends AbstractController implements Serializa
     }
 
     public boolean filtroDir3Tree(Object value, Object filter, Locale locale) {
-        if(filter instanceof String && value instanceof String) {
-            if(filtroDir3((String) filter)) {
+        if (filter instanceof String && value instanceof String) {
+            if (filtroDir3((String) filter)) {
                 List<String> unidadesFiltro = List.of(((String) filter).split(";"));
                 String dir3 = findParenthesis((String) value);
-                if(unidadesFiltro.contains(dir3)) {
+                if (unidadesFiltro.contains(dir3)) {
                     return true;
                 }
             } else {
@@ -190,12 +193,12 @@ public class ViewOrganigramaDir3 extends AbstractController implements Serializa
         return m.find();
     }
 
-    private String findParenthesis(String exp){
+    private String findParenthesis(String exp) {
         String dir3 = "";
         Pattern p = Pattern.compile("\\(.+?\\)");
         Matcher m = p.matcher(exp);
-        if(m.find()) {
-            dir3 = exp.substring(m.start()+1, m.start()+10);
+        if (m.find()) {
+            dir3 = exp.substring(m.start() + 1, m.start() + 10);
         }
         return dir3;
     }

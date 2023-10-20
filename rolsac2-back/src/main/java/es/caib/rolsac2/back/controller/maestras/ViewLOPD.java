@@ -31,6 +31,7 @@ public class ViewLOPD extends AbstractController implements Serializable {
     private String id;
 
     private EntidadDTO data;
+
     @EJB
     private AdministracionSupServiceFacade administracionSupServiceFacade;
 
@@ -75,13 +76,6 @@ public class ViewLOPD extends AbstractController implements Serializable {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
-
-        /*
-        if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equalsIgnoreCase(this.data.getIdentificador())
-                && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
-            return false;
-        }*/
 
         return true;
     }

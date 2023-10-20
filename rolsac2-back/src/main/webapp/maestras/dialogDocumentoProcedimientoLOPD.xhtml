@@ -60,14 +60,20 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:outputLabel value="#{labels['dict.plantilla']}:"  />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <c:forEach items="#{sessionBean.getIdiomasPermitidosList()}" var="idioma">
+                    <!--<c:forEach items="#{sessionBean.getIdiomasPermitidosList()}" var="idioma">
                         <p:column rendered="#{!empty dialogDocumentoProcedimientoLOPD.getPlantilla(idioma)}">
                             <h:outputLink value="#{dialogDocumentoProcedimientoLOPD.getPlantilla(idioma)}" style="margin-right:15px;font-weight: bold; color: #177ff0;" target="_blank">
                                     <h:outputText value="#{labels['dict.' += idioma]}" />
                             </h:outputLink>
                         </p:column>
+                    </c:forEach>-->
+                    <c:forEach items="#{sessionBean.getIdiomasPermitidosList()}" var="idioma">
+                        <p:column rendered="#{!empty sessionBean.entidad.lopdPlantilla.getTraduccion(idioma)}">
+                            <h:outputLink value="#{sessionBean.entidad.lopdPlantilla.getTraduccion(idioma)}" style="margin-right:15px;font-weight: bold; color: #177ff0;" target="_blank">
+                                <h:outputText value="#{labels['dict.' += idioma]}" />
+                            </h:outputLink>
+                        </p:column>
                     </c:forEach>
-
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-2">

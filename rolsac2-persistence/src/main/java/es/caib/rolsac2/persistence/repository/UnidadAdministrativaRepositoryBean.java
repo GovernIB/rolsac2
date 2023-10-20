@@ -4,11 +4,17 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
+import es.caib.rolsac2.persistence.model.JUnidadAdministrativaAuditoria;
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
 import es.caib.rolsac2.persistence.util.ConstantesNegocio;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaValorCampo;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
+import es.caib.rolsac2.service.model.types.TypeAccionAuditoria;
 import es.caib.rolsac2.service.model.types.TypeIndexacion;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
+import es.caib.rolsac2.service.utils.UtilJSON;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -18,10 +24,7 @@ import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -448,6 +451,31 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
+    public String getNombreUA(List<Long> uas) {
+        Query query = entityManager.createQuery("select ua from JUnidadAdministrativa  ua where ua.codigo in (:uas)", JUnidadAdministrativa.class);
+        query.setParameter("uas", uas);
+        List<JUnidadAdministrativa> juas = query.getResultList();
+        String nombre = "";
+        if (juas != null) {
+            for (JUnidadAdministrativa jua : juas) {
+                if (jua.getTraducciones() != null) {
+                    for (JUnidadAdministrativaTraduccion trad : jua.getTraducciones()) {
+                        if (trad.getIdioma().equals("ca")) {
+                            nombre += trad.getNombre() + ",";
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (nombre.endsWith(",")) {
+            nombre = nombre.substring(0, nombre.length() - 1);
+        }
+        return nombre;
+    }
+
+    @Override
     public JUnidadAdministrativa findJUAById(UnidadAdministrativaDTO ua) {
         if (ua == null || ua.getCodigo() == null) {
             return null;
@@ -702,10 +730,32 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public void marcarBaja(Long codigo, Date fechaBaja) {
+    public void marcarBaja(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2) {
         JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigo);
         jua.setFechaBaja(fechaBaja);
         jua.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_BORRADA);
         entityManager.merge(jua);
+
+        JUnidadAdministrativaAuditoria jAuditoria = new JUnidadAdministrativaAuditoria();
+        jAuditoria.setUnidadAdministrativa(jua);
+        jAuditoria.setFechaModificacion(new Date());
+        jAuditoria.setUsuarioModificacion(usuario);
+        jAuditoria.setUsuarioPerfil(perfil.toString());
+        jAuditoria.setLiteralFlujo("auditoria.uas.baja");
+        List<AuditoriaValorCampo> cambios = new ArrayList<>();
+        if (param1 != null && !param1.isEmpty()) {
+            final AuditoriaCambio auditoria = new AuditoriaCambio();
+            final AuditoriaValorCampo valorCampo = new AuditoriaValorCampo();
+            valorCampo.setValorAnterior(param1);
+            valorCampo.setValorNuevo(param2);
+            auditoria.setIdCampo(literal);
+            auditoria.setValoresModificados(Arrays.asList(valorCampo));
+            jAuditoria.setListaModificaciones(UtilJSON.toJSON(Arrays.asList(auditoria)));
+
+        } else {
+            jAuditoria.setListaModificaciones(UtilJSON.toJSON(cambios));
+        }
+        jAuditoria.setAccion(TypeAccionAuditoria.BAJA.toString());
+        entityManager.persist(jAuditoria);
     }
 }

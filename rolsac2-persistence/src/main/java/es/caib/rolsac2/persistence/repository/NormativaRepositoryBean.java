@@ -38,11 +38,11 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
         StringBuilder sql;
         if (isTotal) {
-            sql = new StringBuilder("select count(j) from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u where 1 = 1 ");
+            sql = new StringBuilder("select count(j) from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  where 1 = 1 ");
         } else if (isRest) {
-            sql = new StringBuilder("SELECT j from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u where 1 = 1 ");
+            sql = new StringBuilder("SELECT j from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion, j.vigente FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma LEFT OUTER JOIN j.unidadesAdministrativas u WHERE 1 = 1 ");
+            sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion, j.vigente FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma WHERE 1 = 1 ");
             //sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion, j.vigente FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  WHERE 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
@@ -58,11 +58,13 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         }
 
         if ((filtro.isRellenoHijasActivas() && !filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {
-            sql.append(" AND (u.codigo IN (:idUAs) ) ");
+            sql.append(" AND j.codigo IN (select ua.normativa.codigo from JNormativaUnidadAdministrativa ua where ua.unidadAdministrativa.codigo IN (:idUAs) ) "); // (u.codigo IN (:idUAs) ) ");
         } else if ((filtro.isRellenoHijasActivas() && filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {
-            sql.append(" AND (u.codigo IN (:idUAs) OR u.codigo IN (:idUAsAux))");
+            sql.append(" AND j.codigo IN (select ua.normativa.codigo from JNormativaUnidadAdministrativa ua where (ua.unidadAdministrativa.codigo IN (:idUAs) OR ua.unidadAdministrativa.codigo IN (:idUAsAux)) ) ");
+            //sql.append(" AND (u.codigo IN (:idUAs) OR u.codigo IN (:idUAsAux))");
         } else if (filtro.isRellenoIdUA()) {
-            sql.append(" and ( u.codigo = :idUA) ");
+            sql.append(" AND j.codigo IN (select ua.normativa.codigo from JNormativaUnidadAdministrativa ua where ua.unidadAdministrativa.codigo IN (:idUA) ) ");
+            //sql.append(" and ( u.codigo = :idUA) ");
         }
 
         if (filtro.isRellenoTipoNormativa()) {

@@ -7,8 +7,10 @@ import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoMateriaSIAPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoNormativaPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoPublicoObjectivoPK;
+import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoDocumentoTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
+import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
@@ -216,11 +218,15 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 case "D":
                 case "M":
                     List<JProcedimientoWorkflow> jprocsL = query.getResultList();
+                    List<Long> idProcs = getIdsProcedimientos(jprocsL);
+                    List<JProcedimientoDocumento> documentos = getDocumentosLopd(idProcs);
                     for (Object proc : jprocsL) {
                         if (proc != null) {
                             seleccionado = (JProcedimientoWorkflow) proc;
                             if (seleccionado != null) {
                                 ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionado);
+                                procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionado.getProcedimiento()), filtro.getIdioma()));
+                                procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentos, filtro.getIdioma()));
                                 procs.add(procDTO);
                             }
                         }
@@ -228,10 +234,14 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     break;
                 case "A":
                     List<JProcedimientoWorkflow> jprocsA = query.getResultList();
+                    List<Long> idProcsA = getIdsProcedimientos(jprocsA);
+                    List<JProcedimientoDocumento> documentosA = getDocumentosLopd(idProcsA);
                     for (Object proc : jprocsA) {
                         if (proc != null) {
                             JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
                             ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionadoA);
+                            procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoA.getProcedimiento()), filtro.getIdioma()));
+                            procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentosA, filtro.getIdioma()));
                             procs.add(procDTO);
 
 
@@ -252,8 +262,14 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                                 seleccionado = modificado;
                             }
 
+                            List<Long> idProcsT = new ArrayList<>();
+                            idProcsT.add(seleccionado.getCodigo());
+                            List<JProcedimientoDocumento> documentosT = getDocumentosLopd(idProcsT);
+
                             if (seleccionado != null) {
                                 ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionado);
+                                procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionado.getProcedimiento()), filtro.getIdioma()));
+                                procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentosT, filtro.getIdioma()));
                                 procs.add(procDTO);
                             }
 
@@ -266,11 +282,15 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         } else {
             List<JProcedimientoWorkflow> jprocsA = query.getResultList();
+            List<Long> idProcs = getIdsProcedimientos(jprocsA);
+            List<JProcedimientoDocumento> documentos = getDocumentosLopd(idProcs);
             for (Object proc : jprocsA) {
                 if (proc != null) {
                     JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
 
                     ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionadoA);
+                    procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoA.getProcedimiento()), filtro.getIdioma()));
+                    procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentos, filtro.getIdioma()));
                     procs.add(procDTO);
 
 
@@ -279,6 +299,69 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         return procs;
+    }
+
+    private List<ProcedimientoDocumentoDTO> getDocumentosLOPD(JProcedimientoWorkflow procWF, List<JProcedimientoDocumento> documentos, String idioma) {
+        if (procWF.getListaDocumentosLOPD() == null || procWF.getListaDocumentosLOPD().getCodigo() == null) {
+            return null;
+        }
+
+        List<ProcedimientoDocumentoDTO> docs = new ArrayList<>();
+        for (JProcedimientoDocumento doc : documentos) {
+            if (doc.getListaDocumentos().compareTo(procWF.getListaDocumentosLOPD().getCodigo()) == 0) {
+                docs.add(doc.toModel());
+            }
+        }
+        return docs;
+    }
+
+    private List<Long> getIdsProcedimientos(List<JProcedimientoWorkflow> jprocsL) {
+        List<Long> ids = new ArrayList<>();
+        for (JProcedimientoWorkflow jproc : jprocsL) {
+            ids.add(jproc.getCodigo());
+        }
+        return ids;
+    }
+
+    private String getLopdReponsable(JProcedimientoWorkflow wfPublicado, String idioma) {
+
+        if (wfPublicado.getComun() == 1) {
+            return (getEntidadTraduccion(wfPublicado.getUaResponsable().getEntidad(), idioma)).getUaComun();
+        } else {
+            return getUATraduccion(wfPublicado.getUaResponsable(), idioma).getNombre();
+        }
+    }
+
+    private JUnidadAdministrativaTraduccion getUATraduccion(JUnidadAdministrativa ua, String idioma) {
+        for (JUnidadAdministrativaTraduccion entTrad : ua.getTraducciones()) {
+            if (entTrad.getIdioma().equals(idioma)) {
+                return entTrad;
+            }
+        }
+        return ua.getTraducciones().get(0);
+    }
+
+    private JEntidadTraduccion getEntidadTraduccion(JEntidad entidad, String idioma) {
+        for (JEntidadTraduccion entTrad : entidad.getDescripcion()) {
+            if (entTrad.getIdioma().equals(idioma)) {
+                return entTrad;
+            }
+        }
+        return entidad.getDescripcion().get(0);
+    }
+
+    private JProcedimientoWorkflow getWFPublicado(JProcedimiento procedimiento) {
+        if (procedimiento.getProcedimientoWF().size() == 1) {
+            return procedimiento.getProcedimientoWF().get(0);
+        }
+
+        for (JProcedimientoWorkflow jprocwf : procedimiento.getProcedimientoWF()) {
+            if (jprocwf.getWorkflow() == TypeProcedimientoWorkflow.DEFINITIVO.getValor()) {
+                return jprocwf;
+            }
+        }
+
+        return procedimiento.getProcedimientoWF().get(0);
     }
 
     @Override
@@ -1170,6 +1253,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return query.getResultList();
     }
 
+    private List<JProcedimientoDocumento> getDocumentosLopd(List<Long> idProcedimientos) {
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoDocumento j where j.listaDocumentos IN (select wf.listaDocumentosLOPD from JProcedimientoWorkflow wf where wf.codigo IN (:idProcedimientos) ) ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("idProcedimientos", idProcedimientos);
+        return query.getResultList();
+    }
+
     @Override
     public void deleteWF(Long codigo, boolean wf) {
         Long codigoWF = this.getCodigoByWF(codigo, wf);
@@ -1578,15 +1668,11 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
     }
 
+
     /**
      * Obtiene el enlace telematico de un servicio..
      *
-     * @param Id      servicio
-     * @param Idioma, por defecto, ca.
-     * @return Devuelve la url.
-     * @throws
-     * @ejb.interface-method
-     * @ejb.permission role-name="${role.system},${role.admin},${role.super},${role.oper}"
+     * @param filtro
      */
     @Override
     public String getEnlaceTelematico(ProcedimientoFiltro filtro) {

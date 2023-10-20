@@ -904,16 +904,19 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                 Literal lopdInfoAdicional = new Literal();
                 Literal lopdDerechos = new Literal();
                 Literal lopdFinalidad = new Literal();
+                Literal lopdCabecera = new Literal();
 
                 for (JEntidadTraduccion jtrad : jprocWF.getUaInstructor().getEntidad().getDescripcion()) {
-                    lopdInfoAdicional.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDerechos()));
+                    lopdInfoAdicional.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDestinatario()));
                     lopdDerechos.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDerechos()));
                     lopdFinalidad.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdFinalidad()));
+                    lopdCabecera.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdCabecera()));
                 }
 
                 proc.setLopdInfoAdicional(lopdInfoAdicional);
                 proc.setLopdDerechos(lopdDerechos);
                 proc.setLopdFinalidad(lopdFinalidad);
+                proc.setLopdCabecera(lopdCabecera);
             }
         }
         if (jprocWF.getUaCompetente() != null) {

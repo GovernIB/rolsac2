@@ -3,6 +3,7 @@ package es.caib.rolsac2.api.externa.v1.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.api.externa.v1.utils.Utiles;
+import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.ServicioDTO;
 import es.caib.rolsac2.service.model.ServicioGridDTO;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -77,20 +78,23 @@ public class Servicios extends EntidadBase {
     @Schema(description = "comun", type = SchemaType.INTEGER, required = false)
     private Integer comun;
 
+    /**
+     * LOPD
+     **/
+    @Schema(description = "linkLopdInfoAdicional", required = false)
+    private Link linkLopdInfoAdicional;
     @Schema(description = "lopdResponsable", type = SchemaType.STRING, required = false)
     private String lopdResponsable;
-
     @Schema(description = "lopdFinalidad", type = SchemaType.STRING, required = false)
     private String lopdFinalidad;
-
     @Schema(description = "lopdDestinatario", type = SchemaType.STRING, required = false)
     private String lopdDestinatario;
-
     @Schema(description = "lopdDerechos", type = SchemaType.STRING, required = false)
     private String lopdDerechos;
-
-    //	@Schema(description = "lopdCabecera", type = SchemaType.STRING, required = false)
-    //	private String lopdCabecera;
+    @Schema(description = "lopdCabecera", type = SchemaType.STRING, required = false)
+    private String lopdCabecera;
+    @Schema(description = "lopdLegitimacion", required = false)
+    private Legitimacion lopdLegitimacion;
 
     @Schema(description = "codigoWF", type = SchemaType.STRING, required = false)
     private Long codigoWF;
@@ -107,8 +111,7 @@ public class Servicios extends EntidadBase {
     private boolean publicado;
     @Schema(description = "fechaCaducidad", required = false)
     private Calendar fechaCaducidad;
-    @Schema(description = "datosPersonalesLegitimacion", type = SchemaType.INTEGER, required = false)
-    private Long datosPersonalesLegitimacion;
+
     @Schema(description = "uaResponsable", type = SchemaType.INTEGER, required = false)
     private Long uaResponsable;
     @Schema(description = "uaInstructor", type = SchemaType.INTEGER, required = false)
@@ -161,6 +164,7 @@ public class Servicios extends EntidadBase {
      * @param hateoasEnabled
      */
     public Servicios(final ServicioDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled) {
+        super(elem, urlBase, idioma, hateoasEnabled);
         if (elem != null) {
             this.codigo = elem.getCodigo();
             this.comun = elem.getComun();
@@ -168,7 +172,6 @@ public class Servicios extends EntidadBase {
             this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA().toString();
             this.codigoWF = elem.getCodigoWF();
             this.nombre = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccion(idioma);
-            this.datosPersonalesLegitimacion = elem.getDatosPersonalesLegitimacion() == null ? null : elem.getDatosPersonalesLegitimacion().getCodigo();
             this.destinatarios = elem.getDestinatarios() == null ? null : elem.getDestinatarios().getTraduccion(idioma);
             this.estado = elem.getEstado() == null ? null : elem.getEstado().name();
             this.estadoSIA = elem.getEstadoSIA() == null ? null : elem.getEstadoSIA().toString();
@@ -200,11 +203,45 @@ public class Servicios extends EntidadBase {
                 this.tipoTramitacion = elem.getTipoTramitacion() == null ? null : elem.getTipoTramitacion().getCodigo();
                 this.plantillaSel = elem.getPlantillaSel() == null ? null : elem.getPlantillaSel().getCodigo();
             }
+            // copiamos los datos que no tienen la misma estructura:
+            if (elem.getDatosPersonalesLegitimacion() != null) {
+                this.lopdLegitimacion = new Legitimacion(elem.getDatosPersonalesLegitimacion(), urlBase, idioma, hateoasEnabled);
+            }
+            if (elem.getLopdDerechos() != null) {
+                this.lopdDerechos = elem.getLopdDerechos().getTraduccion(idioma == null ? "ca" : idioma);
+            }
+            if (elem.getLopdFinalidad() != null) {
+                this.lopdFinalidad = elem.getLopdFinalidad().getTraduccion(idioma == null ? "ca" : idioma);
+            }
+            if (elem.getLopdInfoAdicional() != null) {
+                this.lopdDestinatario = elem.getLopdInfoAdicional().getTraduccion(idioma == null ? "ca" : idioma);
+            }
+            if (elem.getLopdCabecera() != null) {
+                this.lopdCabecera = elem.getLopdCabecera().getTraduccion(idioma == null ? "ca" : idioma);
+            }
+            if (elem.getDocumentosLOPD() != null && !elem.getDocumentosLOPD().isEmpty()) {
+                String descripcion = getDescripcion(elem.getDocumentosLOPD().get(0), idioma == null ? "ca" : idioma);
+                Long codigoDoc = elem.getDocumentosLOPD().get(0).getCodigo();
+                linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
+            }
             this.hateoasEnabled = hateoasEnabled;
 
             generaLinks(urlBase);
         }
     }
+
+
+    private String getDescripcion(ProcedimientoDocumentoDTO documentoLOPD, String idioma) {
+        String descripcion = null;
+        if (documentoLOPD.getDescripcion() != null) {
+            descripcion = documentoLOPD.getDescripcion().getTraduccion(idioma);
+        }
+        if (documentoLOPD.getDescripcion() != null && descripcion == null) {
+            descripcion = documentoLOPD.getDescripcion().getTraduccion();
+        }
+        return descripcion;
+    }
+
 
     public Servicios() {
         super();
@@ -705,6 +742,13 @@ public class Servicios extends EntidadBase {
         this.lopdDerechos = lopdDerechos;
     }
 
+    public String getLopdCabecera() {
+        return lopdCabecera;
+    }
+
+    public void setLopdCabecera(String lopdCabecera) {
+        this.lopdCabecera = lopdCabecera;
+    }
     //	/**
     //	 * @return the lopdCabecera
     //	 */
@@ -775,12 +819,28 @@ public class Servicios extends EntidadBase {
         this.fechaCaducidad = fechaCaducidad;
     }
 
-    public Long getDatosPersonalesLegitimacion() {
-        return datosPersonalesLegitimacion;
+    public Legitimacion getLopdLegitimacion() {
+        return lopdLegitimacion;
     }
 
-    public void setDatosPersonalesLegitimacion(Long datosPersonalesLegitimacion) {
-        this.datosPersonalesLegitimacion = datosPersonalesLegitimacion;
+    public void setLopdLegitimacion(Legitimacion lopdLegitimacion) {
+        this.lopdLegitimacion = lopdLegitimacion;
+    }
+
+    public Link getLinkLopdInfoAdicional() {
+        return linkLopdInfoAdicional;
+    }
+
+    public void setLinkLopdInfoAdicional(Link linkLopdInfoAdicional) {
+        this.linkLopdInfoAdicional = linkLopdInfoAdicional;
+    }
+
+    public Calendar getSiaFecha() {
+        return siaFecha;
+    }
+
+    public void setSiaFecha(Calendar siaFecha) {
+        this.siaFecha = siaFecha;
     }
 
     public Long getUaResponsable() {

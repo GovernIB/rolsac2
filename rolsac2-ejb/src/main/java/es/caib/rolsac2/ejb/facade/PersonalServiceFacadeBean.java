@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.*;
 import javax.inject.Inject;
@@ -58,8 +57,7 @@ public class PersonalServiceFacadeBean implements PersonalServiceFacade {
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(PersonalDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
 
         // Principal p = context.getCallerPrincipal();
@@ -72,8 +70,7 @@ public class PersonalServiceFacadeBean implements PersonalServiceFacade {
         JPersonal jPersonal = converter.createEntity(dto);
 
         if (dto.getUnidadAdministrativa() != null) {
-            JUnidadAdministrativa jUnidadAdministrativa =
-                    unidadAdministrativaRepository.findById(dto.getUnidadAdministrativa().getCodigo());
+            JUnidadAdministrativa jUnidadAdministrativa = unidadAdministrativaRepository.findById(dto.getUnidadAdministrativa().getCodigo());
             jPersonal.setUnidadAdministrativa(jUnidadAdministrativa);
         }
 
@@ -83,63 +80,35 @@ public class PersonalServiceFacadeBean implements PersonalServiceFacade {
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(PersonalDTO dto) throws RecursoNoEncontradoException {
         JPersonal jPersonal = personalRepository.findById(dto.getCodigo());
         converter.mergeEntity(jPersonal, dto);
 
         if (dto.getUnidadAdministrativa() != null) {
-            JUnidadAdministrativa jUnidadAdministrativa =
-                    unidadAdministrativaRepository.findById(dto.getUnidadAdministrativa().getCodigo());
+            JUnidadAdministrativa jUnidadAdministrativa = unidadAdministrativaRepository.findById(dto.getUnidadAdministrativa().getCodigo());
             jPersonal.setUnidadAdministrativa(jUnidadAdministrativa);
         }
 
         personalRepository.update(jPersonal);
     }
 
-    /*
-     * private void crearAuditoria(final PersonalDTO personaAntigua, final PersonalDTO personalNuevo) {
-     *
-     * final PersonalAuditoria personaAuditoria = new PersonalAuditoria(); List<AuditoriaCambio> cambios = new
-     * ArrayList<>(); AuditoriaCambio cambio = null; final AuditoriaDTO valores = new AuditoriaDTO();
-     *
-     * // PERWF_TIPPER cambio = AuditoriaUtil.auditarCampoCadena(personaAntigua == null ? null :
-     * personaAntigua.getIdentificador(), personalNuevo.getIdentificador(), Constantes.PERSONA_IDENTIFICADOR,
-     * AuditoriaIdioma.NO_IDIOMA); if (cambio != null) { cambios.add(cambio); }
-     *
-     * valores.setCambios(cambios); // Crea el objeto de auditoria personaAuditoria.setFechaAuditoria(new Date());
-     * //personaAuditoria.setUsuarioAuditoria(personalNuevo.getUsuarioAuditoria());
-     * personaAuditoria.setPersonalDTO(personalNuevo);
-     *
-     * String auditoriaJson; try { auditoriaJson = JSONUtil.toJSON(valores);
-     * personaAuditoria.setValoresAnteriores(auditoriaJson); //auditoriaRepository.guardarAuditoria(personaAuditoria,
-     * JPersonaAuditoria.class); } catch (final JSONUtilException e) { throw new AuditoriaException(e); } }
-     */
-
     @Override
-    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void delete(Long id) throws RecursoNoEncontradoException {
         JPersonal personal = personalRepository.getReference(id);
         personalRepository.delete(personal);
     }
 
     @Override
-    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public PersonalDTO findById(Long id) {
         JPersonal jpersonal = personalRepository.getReference(id);
         return converter.createDTO(jpersonal);
     }
 
     @Override
-    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-//    @PermitAll
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public Pagina<PersonalGridDTO> findByFiltro(PersonalFiltro filtro) {
         List<PersonalGridDTO> items = personalRepository.findPagedByFiltro(filtro);
         long total = personalRepository.countByFiltro(filtro);

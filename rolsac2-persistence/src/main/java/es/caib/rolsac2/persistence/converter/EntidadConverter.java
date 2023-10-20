@@ -2,7 +2,6 @@ package es.caib.rolsac2.persistence.converter;
 
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JFicheroExterno;
-import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
@@ -32,6 +31,8 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
     @Mapping(target = "lopdFinalidad", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdFinalidad\" ))")
     @Mapping(target = "lopdDestinatario", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdDestinatario\" ))")
     @Mapping(target = "lopdDerechos", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdDerechos\" ))")
+    @Mapping(target = "lopdCabecera", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdCabecera\" ))")
+    @Mapping(target = "lopdPlantilla", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdPlantilla\" ))")
     @Mapping(target = "uaComun", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"uaComun\" ))")
     @Mapping(target = "logo", expression = "java(jFicheroExternoToFicheroDTO(entity.getLogo()))")
     @Mapping(target = "cssPersonalizado", expression = "java(jFicheroExternoToFicheroDTO(entity.getCssPersonalizado()))")
@@ -97,6 +98,12 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
             if (dto.getLopdDestinatario() != null) {
                 traduccion.setLopdDestinatario(dto.getLopdDestinatario().getTraduccion(traduccion.getIdioma()));
             }
+            if (dto.getLopdCabecera() != null) {
+                traduccion.setLopdCabecera(dto.getLopdCabecera().getTraduccion(traduccion.getIdioma()));
+            }
+            if (dto.getLopdPlantilla() != null) {
+                traduccion.setLopdPlantilla(dto.getLopdPlantilla().getTraduccion(traduccion.getIdioma()));
+            }
             if (dto.getUaComun() != null) {
                 traduccion.setUaComun(dto.getUaComun().getTraduccion(traduccion.getIdioma()));
             }
@@ -121,6 +128,10 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
                     trad.setLiteral(traduccion.getLopdDestinatario());
                 } else if (nombreLiteral == "lopdDerechos") {
                     trad.setLiteral(traduccion.getLopdDerechos());
+                } else if (nombreLiteral == "lopdCabecera") {
+                    trad.setLiteral(traduccion.getLopdCabecera());
+                } else if (nombreLiteral == "lopdPlantilla") {
+                    trad.setLiteral(traduccion.getLopdPlantilla());
                 } else if (nombreLiteral == "uaComun") {
                     trad.setLiteral(traduccion.getUaComun());
                 }

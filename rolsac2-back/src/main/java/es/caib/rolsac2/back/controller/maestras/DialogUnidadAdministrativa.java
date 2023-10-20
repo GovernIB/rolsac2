@@ -528,26 +528,12 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
      * Funciones relativas a las auditorias
      *********************************************************************************************************************************/
     public void verAuditorias() {
-        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+
         final Map<String, String> params = new HashMap<>();
         params.put("ID", data.getCodigo().toString());
         params.put("TIPO", "UA");
         UtilJSF.openDialog("/comun/dialogAuditoria", TypeModoAcceso.CONSULTA, params, true, 800, 500);
     }
-
-
-/*    private void anyadirTemasHijosRelacionados() {
-        for (TemaGridDTO temaPadre : temasPadre) {
-            List<TemaGridDTO> temasHijos = new ArrayList<>();
-            for (TemaGridDTO tema : data.getTemas()) {
-                if (tema.getMathPath().contains(temaPadre.getCodigo().toString())) {
-                    temasHijos.add(tema);
-                }
-            }
-            temasHijosRelacionados.put(temaPadre.getCodigo().toString(), temasHijos);
-        }
-    }*/
-
 
     public String getId() {
         return id;

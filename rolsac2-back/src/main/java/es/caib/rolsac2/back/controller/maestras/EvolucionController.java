@@ -3,10 +3,7 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.NormativaDTO;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.FlowEvent;
@@ -32,8 +29,8 @@ public abstract class EvolucionController extends AbstractController {
     @Inject
     protected NormativaServiceFacade normativaServiceFacade;
 
-    public List<NormativaDTO> completeNormativa(final String query) {
-        List<NormativaDTO> suggestions = new ArrayList<NormativaDTO>();
+    public List<NormativaGridDTO> completeNormativa(final String query) {
+        List<NormativaGridDTO> suggestions = new ArrayList<NormativaGridDTO>();
         NormativaFiltro filtro = new NormativaFiltro();
         filtro.setIdioma(getIdioma());
 
@@ -44,7 +41,7 @@ public abstract class EvolucionController extends AbstractController {
 
         filtro.setNombre(StringUtils.stripAccents(query.toLowerCase()));
 
-        Pagina<NormativaDTO> resultado = normativaServiceFacade.findByFiltroRest(filtro);
+        Pagina<NormativaGridDTO> resultado = normativaServiceFacade.findByFiltro(filtro);
 
         if (resultado != null) {
             suggestions = resultado.getItems();

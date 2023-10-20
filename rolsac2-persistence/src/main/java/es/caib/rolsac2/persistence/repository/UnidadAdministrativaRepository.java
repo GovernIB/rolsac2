@@ -5,6 +5,7 @@ import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
 
 import java.util.Date;
 import java.util.List;
@@ -71,8 +72,9 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     void deleteByEntidad(Long id);
 
-    void marcarBaja(Long codigo, Date fechaBaja);
+    void marcarBaja(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2);
 
     List<JUnidadAdministrativa> getUnidadesAdministrativaByPadre(Long codigoUAOriginal);
 
+    String getNombreUA(List<Long> uas);
 }
