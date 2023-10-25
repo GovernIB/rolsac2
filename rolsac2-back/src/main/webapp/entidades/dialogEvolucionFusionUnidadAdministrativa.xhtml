@@ -201,7 +201,7 @@
 							<p:autoComplete id="selectNormativa2" var="normativa"
 								forceSelection="true" styleClass="w95" disabled="true"
 								value="#{dialogEvolucionFusionUnidadAdministrativa.normativa}"
-								itemLabel="#{normativa.codigo} #{normativa.titulo.getTraduccion(dialogEvolucionFusionUnidadAdministrativa.idioma)}"
+								itemLabel="#{normativa.codigo} #{normativa.nombre.getTraduccion(dialogEvolucionFusionUnidadAdministrativa.idioma)}"
 								itemValue="#{normativa}" converter="#{normativaDTOConverter}"
 								autoHighlight="false"
 								completeMethod="#{dialogEvolucionFusionUnidadAdministrativa.completeNormativa}"

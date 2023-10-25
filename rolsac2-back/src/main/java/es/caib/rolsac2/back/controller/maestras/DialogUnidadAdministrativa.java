@@ -208,6 +208,20 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
     /**
      * Consultar normativa
      */
+    public void consultarNormativaBaja() {
+        if (this.normativaBaja == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", normativaBaja.getCodigo().toString());
+            String ruta = "/maestras/dialogNormativa";
+            UtilJSF.openDialog(ruta, TypeModoAcceso.CONSULTA, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+        }
+    }
+
+    /**
+     * Consultar normativa
+     */
     public void consultarProcedimiento(Integer index) {
         if (data.getNormativas() == null || data.getNormativas().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));

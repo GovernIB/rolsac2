@@ -82,7 +82,7 @@
                             <p:inputText id="txtNormativaBaja" value="#{dialogUnidadAdministrativa.normativaBaja.nombre.getTraduccion(dialogUnidadAdministrativa.idioma)}"
                                          styleClass="w85" disabled="true" rendered="#{!empty dialogUnidadAdministrativa.normativaBaja}"/>
                             <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
-                                             action="#{dialogUnidadAdministrativa.consultarNormativa}" styleClass="ml-1"
+                                             action="#{dialogUnidadAdministrativa.consultarNormativaBaja()}" styleClass="ml-1"
                                              process="@this"  update="messagesDialog" />
                         </div>
                     </div>
