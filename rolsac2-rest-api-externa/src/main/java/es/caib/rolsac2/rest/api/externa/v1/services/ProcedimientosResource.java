@@ -10,7 +10,6 @@ import es.caib.rolsac2.service.facade.EntidadServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -64,19 +63,20 @@ public class ProcedimientosResource {
 
         final ProcedimientoFiltro fg = filtro.toProcedimientoFiltro();
 
+
+        String idiomaPorDefecto;
+        if (fg.getIdEntidad() == null) {
+            idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+        } else {
+            idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+            if (idiomaPorDefecto == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            }
+        }
         if (lang != null) {
             fg.setIdioma(lang);
-        } else if (filtro.getIdEntidad() != null) {
-            EntidadFiltro filtroEntidad = new EntidadFiltro();
-            filtroEntidad.setCodigo(filtro.getIdEntidad());
-            Pagina<EntidadDTO> resultadoBusqueda = entidadService.findByFiltroRest(filtroEntidad);
-            if (resultadoBusqueda.getTotal() > 0 && resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest() != null && !resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest().isEmpty()) {
-                fg.setIdioma(resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest());
-            } else {
-                fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
-            }
         } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            fg.setIdioma(idiomaPorDefecto);
         }
 
         // si no vienen los filtros se completan con los datos por defecto
@@ -86,7 +86,7 @@ public class ProcedimientosResource {
         }
 
 
-        return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -108,6 +108,7 @@ public class ProcedimientosResource {
         List<TipoPublicoObjetivoEntidad> lista = new ArrayList<>();
         TipoPublicoObjetivoEntidad elemento = null;
 
+        String idiomaPorDefecto;
         if (codigo != null) {
             result = procedimientoService.getTipoPubObjEntByCodProcWF(new Long(codigo));
 
@@ -170,11 +171,14 @@ public class ProcedimientosResource {
         List<Normativa> lista = new ArrayList<>();
         Normativa elemento = null;
 
+
+        String idiomaPorDefecto = procedimientoService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+
         if (codigo != null) {
             result = procedimientoService.getNormativasByCodProcWF(new Long(codigo));
 
             for (NormativaDTO nodo : result) {
-                elemento = new Normativa(nodo, null, lang, true);
+                elemento = new Normativa(nodo, null, lang, true, idiomaPorDefecto);
                 lista.add(elemento);
             }
         }
@@ -294,25 +298,27 @@ public class ProcedimientosResource {
 
         final ProcedimientoFiltro fg = new ProcedimientoFiltro();
 
+        String idiomaPorDefecto = procedimientoService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+
         if (lang != null) {
             fg.setIdioma(lang);
         } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            fg.setIdioma(idiomaPorDefecto);
         }
         fg.setCodigoProc(Long.parseLong(codigo));
         fg.setTipo("P");
 
-        return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaProcedimientos getRespuesta(final ProcedimientoFiltro filtro) throws DelegateException {
+    private RespuestaProcedimientos getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto) throws DelegateException {
         Pagina<ProcedimientoBaseDTO> resultadoBusqueda = procedimientoService.findProcedimientosByFiltroRest(filtro);
 
         List<Procedimientos> lista = new ArrayList<>();
         Procedimientos elemento = null;
 
         for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
-            elemento = new Procedimientos((ProcedimientoDTO) nodo, null, filtro.getIdioma(), true);
+            elemento = new Procedimientos((ProcedimientoDTO) nodo, null, filtro.getIdioma(), true, idiomaPorDefecto);
             lista.add(elemento);
         }
 

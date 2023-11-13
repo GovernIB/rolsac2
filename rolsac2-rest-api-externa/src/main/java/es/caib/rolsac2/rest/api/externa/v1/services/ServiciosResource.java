@@ -85,20 +85,20 @@ public class ServiciosResource {
         }
 
         final ProcedimientoFiltro fg = filtro.toProcedimientoFiltro();
+        String idiomaPorDefecto;
+        if (fg.getIdEntidad() == null) {
+            idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+        } else {
+            idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+            if (idiomaPorDefecto == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            }
+        }
 
         if (lang != null) {
             fg.setIdioma(lang);
-        } else if (filtro.getIdEntidad() != null) {
-            EntidadFiltro filtroEntidad = new EntidadFiltro();
-            filtroEntidad.setCodigo(filtro.getIdEntidad());
-            Pagina<EntidadDTO> resultadoBusqueda = entidadService.findByFiltroRest(filtroEntidad);
-            if (resultadoBusqueda.getTotal() > 0 && resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest() != null && !resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest().isEmpty()) {
-                fg.setIdioma(resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest());
-            } else {
-                fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
-            }
         } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            fg.setIdioma(idiomaPorDefecto);
         }
 
         // si no vienen los filtros se completan con los datos por defecto
@@ -107,7 +107,7 @@ public class ServiciosResource {
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
         }
 
-        return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -206,27 +206,28 @@ public class ServiciosResource {
     public Response getPorId(@Parameter(description = "Código servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
 
         final ProcedimientoFiltro fg = new ProcedimientoFiltro();
+        String idiomaPorDefecto = servicioService.obtenerIdiomaEntidad(Long.valueOf(codigo));
 
         if (lang != null) {
             fg.setIdioma(lang);
         } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            fg.setIdioma(idiomaPorDefecto);
         }
         fg.setCodigoProc(Long.parseLong(codigo));
         fg.setTipo("S");
 
-        return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
     }
 
 
-    private RespuestaServicios getRespuesta(final ProcedimientoFiltro filtro) throws DelegateException {
+    private RespuestaServicios getRespuesta(final ProcedimientoFiltro filtro, String idiomaPorDefecto) throws DelegateException {
         Pagina<ProcedimientoBaseDTO> resultadoBusqueda = servicioService.findProcedimientosByFiltroRest(filtro);
 
         List<Servicios> lista = new ArrayList<>();
         Servicios elemento = null;
 
         for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
-            elemento = new Servicios((ServicioDTO) nodo, null, filtro.getIdioma(), true);
+            elemento = new Servicios((ServicioDTO) nodo, null, filtro.getIdioma(), true, idiomaPorDefecto);
             lista.add(elemento);
         }
 
@@ -318,7 +319,7 @@ public class ServiciosResource {
             result = servicioService.getNormativasByCodProcWF(new Long(codigo));
 
             for (NormativaDTO nodo : result) {
-                elemento = new Normativa(nodo, null, lang, true);
+                elemento = new Normativa(nodo, null, lang, true, null);
                 lista.add(elemento);
             }
         }

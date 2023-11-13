@@ -67,7 +67,7 @@ public class TestGetResource {
 
 
         for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
-            Procedimientos x = new Procedimientos((ProcedimientoDTO) nodo, null, filtro.getIdioma(), true);
+            Procedimientos x = new Procedimientos((ProcedimientoDTO) nodo, null, filtro.getIdioma(), true, "ca");
             //            lista.add(elemento);
         }
 

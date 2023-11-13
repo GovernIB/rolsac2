@@ -94,6 +94,13 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     private Long codigo;
 
     /**
+     * codigo.
+     **/
+    @Schema(description = "codigos", type = SchemaType.ARRAY, required = false)
+    private String codigos;
+
+
+    /**
      * codigoTram.
      **/
     @Schema(description = "codigoTram", type = SchemaType.INTEGER, required = false)
@@ -264,6 +271,14 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
+    }
+
+    public String getCodigos() {
+        return codigos;
+    }
+
+    public void setCodigos(String codigos) {
+        this.codigos = codigos;
     }
 
     public Long getCodigoTram() {
@@ -498,6 +513,10 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 
         if (this.codigo != null) {
             resultado.setCodigoProc(codigo);
+        }
+
+        if (this.codigos != null && !this.codigos.isEmpty()) {
+            resultado.setCodigosProc(codigos);
         }
 
         if (this.codigoTram != null) {

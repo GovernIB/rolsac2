@@ -1,33 +1,28 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import java.util.Date;
-
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.ProcedimientoDTO;
+import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import es.caib.rolsac2.service.model.ProcedimientoDTO;
-import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.Date;
 
 /**
  * ProcedimientoTramite.
  *
  * @author Indra
- *
  */
 @XmlRootElement
 @Schema(name = "Tramite", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_TRAMITE)
 public class Tramite extends EntidadBase<Tramite> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Tramite.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Tramite.class);
 
     @Schema(description = "fase", name = "fase", type = SchemaType.INTEGER, required = false)
     private Integer fase;
@@ -51,7 +46,7 @@ public class Tramite extends EntidadBase<Tramite> {
     private String terminoMaximo;
 
     @Schema(description = "fechaPublicacion", name = "fechaPublicacion", type = SchemaType.STRING, required = false)
-	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date fechaPublicacion;
 
     @Schema(description = "fechaInicio", name = "fechaInicio", type = SchemaType.STRING, required = false)
@@ -74,320 +69,283 @@ public class Tramite extends EntidadBase<Tramite> {
     @Schema(description = "tramitTelefonica", name = "tramitTelefonica", type = SchemaType.BOOLEAN, required = false)
     private boolean tramitTelefonica;
 
-	/** codigo **/
-	@Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
-	private Long codigo;
+    /**
+     * codigo
+     **/
+    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    private Long codigo;
 
-	// -- LINKS--//
-	// -- se duplican las entidades para poder generar la clase link en funcion de
-	// la propiedad principal (sin "link_")
-	@Schema(description = "link_unidadAdministrativa", required = false)
-	private Link link_unidadAdministrativa;
-	@JsonIgnore
-	@Schema(hidden = true)
-	@XmlTransient
-	private Long unidadAdministrativa;
+    // -- LINKS--//
+    // -- se duplican las entidades para poder generar la clase link en funcion de
+    // la propiedad principal (sin "link_")
+    @Schema(description = "link_unidadAdministrativa", required = false)
+    private Link link_unidadAdministrativa;
+    @JsonIgnore
+    @Schema(hidden = true)
+    @XmlTransient
+    private Long unidadAdministrativa;
 
-	@Schema(description = "link_procedimiento", required = false)
-	private Link link_procedimiento;
-	@JsonIgnore
-	@Schema(hidden = true)
-	@XmlTransient
-	private Long procedimiento;
+    @Schema(description = "link_procedimiento", required = false)
+    private Link link_procedimiento;
+    @JsonIgnore
+    @Schema(hidden = true)
+    @XmlTransient
+    private Long procedimiento;
 
-	@Schema(description = "link_tipoTramitacion", required = false)
-	private Link link_tipoTramitacion;
-	@JsonIgnore
-	@Schema(hidden = true)
-	@XmlTransient
-	private Long tipoTramitacion;
+    @Schema(description = "link_tipoTramitacion", required = false)
+    private Link link_tipoTramitacion;
+    @JsonIgnore
+    @Schema(hidden = true)
+    @XmlTransient
+    private Long tipoTramitacion;
 
-	@Schema(description = "link_plantillaSel", required = false)
-	private Link link_plantillaSel;
-	@JsonIgnore
-	@Schema(hidden = true)
-	@XmlTransient
-	private Long plantillaSel;
+    @Schema(description = "link_plantillaSel", required = false)
+    private Link link_plantillaSel;
+    @JsonIgnore
+    @Schema(hidden = true)
+    @XmlTransient
+    private Long plantillaSel;
+ 
+    public Tramite(ProcedimientoTramiteDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
+        super(elem, urlBase, idioma, hateoasEnabled);
 
-//	@Schema(description = "link_listaDocumentos", required = false)
-//	private List<Link> link_listaDocumentos;
-//	@JsonIgnore
-//	@Schema(hidden = true)
-//	@XmlTransient
-//    private List<Long> listaDocumentos;
-//
-//	@Schema(description = "link_listaModelos", required = false)
-//	private List<Link> link_listaModelos;
-//	@JsonIgnore
-//	@Schema(hidden = true)
-//	@XmlTransient
-//    private List<Long> listaModelos;
+        ProcedimientoDTO procedimientoDTO = null;
+        if (elem.getProcedimiento() != null) {
+            procedimientoDTO = elem.getProcedimiento().getProcedimiento();
+            procedimiento = procedimientoDTO == null ? null : procedimientoDTO.getCodigo();
+        }
+        generaLinks(urlBase);
+    }
 
-	public Tramite(ProcedimientoTramiteDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
-		super( elem, urlBase, idioma, hateoasEnabled);
+    public Tramite() {
+        super();
+    }
 
-		ProcedimientoDTO procedimientoDTO = null;
-		if(elem.getProcedimiento() != null) {
-			procedimientoDTO = elem.getProcedimiento().getProcedimiento();
-			procedimiento = procedimientoDTO == null ? null : procedimientoDTO.getCodigo();
-		}
+    @Override
+    public void generaLinks(String urlBase) {
+        link_procedimiento = this.generaLink(this.procedimiento, Constantes.ENTIDAD_PROCEDIMIENTO, Constantes.URL_PROCEDIMIENTO, urlBase, null);
+        link_unidadAdministrativa = this.generaLink(this.unidadAdministrativa, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
+        link_tipoTramitacion = this.generaLink(this.tipoTramitacion, Constantes.ENTIDAD_TIPO_TRAMITACION, Constantes.URL_TIPO_TRAMITACION, urlBase, null);
+        link_plantillaSel = this.generaLink(this.plantillaSel, Constantes.ENTIDAD_TIPO_TRAMITACION, Constantes.URL_TIPO_TRAMITACION, urlBase, null);
+    }
 
-//		if(elem.getListaDocumentos() != null && !elem.getListaDocumentos().isEmpty()) {
-//			listaDocumentos = new ArrayList<Long>();
-//
-//			for(ProcedimientoDocumentoDTO documento : elem.getListaDocumentos()) {
-//				listaDocumentos.add(documento.getCodigo());
-//			}
-//		}
-//
-//		if(elem.getListaModelos() != null && !elem.getListaModelos().isEmpty()) {
-//			listaModelos = new ArrayList<Long>();
-//
-//			for(ProcedimientoDocumentoDTO documento : elem.getListaModelos()) {
-//				listaModelos.add(documento.getCodigo());
-//			}
-//		}
+    @Override
+    protected void addSetersInvalidos() {
+        // TODO Auto-generated method stub
+    }
 
-		generaLinks(urlBase);
-	}
+    @Override
+    public void setId(Long codigo) {
+        this.codigo = codigo;
+    }
 
-	public Tramite() {
-		super();
-	}
+    public Long getCodigo() {
+        return codigo;
+    }
 
-	@Override
-	public void generaLinks(String urlBase) {
-		link_procedimiento = this.generaLink(this.procedimiento, Constantes.ENTIDAD_PROCEDIMIENTO, Constantes.URL_PROCEDIMIENTO,
-				urlBase, null);
-		link_unidadAdministrativa = this.generaLink(this.unidadAdministrativa, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase,
-				null);
-		link_tipoTramitacion = this.generaLink(this.tipoTramitacion, Constantes.ENTIDAD_TIPO_TRAMITACION, Constantes.URL_TIPO_TRAMITACION, urlBase,
-				null);
-		link_plantillaSel = this.generaLink(this.plantillaSel, Constantes.ENTIDAD_TIPO_TRAMITACION, Constantes.URL_TIPO_TRAMITACION, urlBase,
-				null);
-//		link_listaModelos = this.generaLink(this.listaModelos, Constantes.ENTIDAD_TIPO_TRAMITACION, Constantes.URL_TIPO_TRAMITACION, urlBase,
-//				null);
-//		link_listaDocumentos = this.generaLink(this.listaDocumentos, Constantes.ENTIDAD_TIPO_TRAMITACION, Constantes.URL_TIPO_TRAMITACION, urlBase,
-//				null);
-	}
+    public Integer getFase() {
+        return fase;
+    }
 
-	@Override
-	protected void addSetersInvalidos() {
-		// TODO Auto-generated method stub
-	}
+    public void setFase(Integer fase) {
+        this.fase = fase;
+    }
 
-	@Override
-	public void setId(Long codigo) {
-		this.codigo = codigo;
-	}
+    public Boolean getTasaAsociada() {
+        return tasaAsociada;
+    }
 
-	public Long getCodigo() {
-		return codigo;
-	}
+    public void setTasaAsociada(Boolean tasaAsociada) {
+        this.tasaAsociada = tasaAsociada;
+    }
 
-	public Integer getFase() {
-		return fase;
-	}
+    public String getRequisitos() {
+        return requisitos;
+    }
 
-	public void setFase(Integer fase) {
-		this.fase = fase;
-	}
+    public void setRequisitos(String requisitos) {
+        this.requisitos = requisitos;
+    }
 
-	public Boolean getTasaAsociada() {
-		return tasaAsociada;
-	}
+    public String getNombre() {
+        return nombre;
+    }
 
-	public void setTasaAsociada(Boolean tasaAsociada) {
-		this.tasaAsociada = tasaAsociada;
-	}
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-	public String getRequisitos() {
-		return requisitos;
-	}
+    public String getDocumentacion() {
+        return documentacion;
+    }
 
-	public void setRequisitos(String requisitos) {
-		this.requisitos = requisitos;
-	}
+    public void setDocumentacion(String documentacion) {
+        this.documentacion = documentacion;
+    }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public String getObservacion() {
+        return observacion;
+    }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
 
-	public String getDocumentacion() {
-		return documentacion;
-	}
+    public String getTerminoMaximo() {
+        return terminoMaximo;
+    }
 
-	public void setDocumentacion(String documentacion) {
-		this.documentacion = documentacion;
-	}
+    public void setTerminoMaximo(String terminoMaximo) {
+        this.terminoMaximo = terminoMaximo;
+    }
 
-	public String getObservacion() {
-		return observacion;
-	}
+    public Date getFechaPublicacion() {
+        return fechaPublicacion;
+    }
 
-	public void setObservacion(String observacion) {
-		this.observacion = observacion;
-	}
+    public void setFechaPublicacion(Date fechaPublicacion) {
+        this.fechaPublicacion = fechaPublicacion;
+    }
 
-	public String getTerminoMaximo() {
-		return terminoMaximo;
-	}
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
 
-	public void setTerminoMaximo(String terminoMaximo) {
-		this.terminoMaximo = terminoMaximo;
-	}
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
 
-	public Date getFechaPublicacion() {
-		return fechaPublicacion;
-	}
+    public Date getFechaCierre() {
+        return fechaCierre;
+    }
 
-	public void setFechaPublicacion(Date fechaPublicacion) {
-		this.fechaPublicacion = fechaPublicacion;
-	}
+    public void setFechaCierre(Date fechaCierre) {
+        this.fechaCierre = fechaCierre;
+    }
 
-	public Date getFechaInicio() {
-		return fechaInicio;
-	}
+    public boolean isTramitPresencial() {
+        return tramitPresencial;
+    }
 
-	public void setFechaInicio(Date fechaInicio) {
-		this.fechaInicio = fechaInicio;
-	}
+    public void setTramitPresencial(boolean tramitPresencial) {
+        this.tramitPresencial = tramitPresencial;
+    }
 
-	public Date getFechaCierre() {
-		return fechaCierre;
-	}
+    public boolean isTramitElectronica() {
+        return tramitElectronica;
+    }
 
-	public void setFechaCierre(Date fechaCierre) {
-		this.fechaCierre = fechaCierre;
-	}
+    public void setTramitElectronica(boolean tramitElectronica) {
+        this.tramitElectronica = tramitElectronica;
+    }
 
-	public boolean isTramitPresencial() {
-		return tramitPresencial;
-	}
+    public boolean isTramitTelefonica() {
+        return tramitTelefonica;
+    }
 
-	public void setTramitPresencial(boolean tramitPresencial) {
-		this.tramitPresencial = tramitPresencial;
-	}
+    public void setTramitTelefonica(boolean tramitTelefonica) {
+        this.tramitTelefonica = tramitTelefonica;
+    }
 
-	public boolean isTramitElectronica() {
-		return tramitElectronica;
-	}
+    public Link getLink_unidadAdministrativa() {
+        return link_unidadAdministrativa;
+    }
 
-	public void setTramitElectronica(boolean tramitElectronica) {
-		this.tramitElectronica = tramitElectronica;
-	}
+    public void setLink_unidadAdministrativa(Link link_unidadAdministrativa) {
+        this.link_unidadAdministrativa = link_unidadAdministrativa;
+    }
 
-	public boolean isTramitTelefonica() {
-		return tramitTelefonica;
-	}
+    public Long getUnidadAdministrativa() {
+        return unidadAdministrativa;
+    }
 
-	public void setTramitTelefonica(boolean tramitTelefonica) {
-		this.tramitTelefonica = tramitTelefonica;
-	}
+    public void setUnidadAdministrativa(Long unidadAdministrativa) {
+        this.unidadAdministrativa = unidadAdministrativa;
+    }
 
-	public Link getLink_unidadAdministrativa() {
-		return link_unidadAdministrativa;
-	}
+    public Link getLink_procedimiento() {
+        return link_procedimiento;
+    }
 
-	public void setLink_unidadAdministrativa(Link link_unidadAdministrativa) {
-		this.link_unidadAdministrativa = link_unidadAdministrativa;
-	}
+    public void setLink_procedimiento(Link link_procedimiento) {
+        this.link_procedimiento = link_procedimiento;
+    }
 
-	public Long getUnidadAdministrativa() {
-		return unidadAdministrativa;
-	}
+    public Long getProcedimiento() {
+        return procedimiento;
+    }
 
-	public void setUnidadAdministrativa(Long unidadAdministrativa) {
-		this.unidadAdministrativa = unidadAdministrativa;
-	}
+    public void setProcedimiento(Long procedimiento) {
+        this.procedimiento = procedimiento;
+    }
 
-	public Link getLink_procedimiento() {
-		return link_procedimiento;
-	}
+    public Link getLink_tipoTramitacion() {
+        return link_tipoTramitacion;
+    }
 
-	public void setLink_procedimiento(Link link_procedimiento) {
-		this.link_procedimiento = link_procedimiento;
-	}
+    public void setLink_tipoTramitacion(Link link_tipoTramitacion) {
+        this.link_tipoTramitacion = link_tipoTramitacion;
+    }
 
-	public Long getProcedimiento() {
-		return procedimiento;
-	}
+    public Long getTipoTramitacion() {
+        return tipoTramitacion;
+    }
 
-	public void setProcedimiento(Long procedimiento) {
-		this.procedimiento = procedimiento;
-	}
+    public void setTipoTramitacion(Long tipoTramitacion) {
+        this.tipoTramitacion = tipoTramitacion;
+    }
 
-	public Link getLink_tipoTramitacion() {
-		return link_tipoTramitacion;
-	}
+    public Link getLink_plantillaSel() {
+        return link_plantillaSel;
+    }
 
-	public void setLink_tipoTramitacion(Link link_tipoTramitacion) {
-		this.link_tipoTramitacion = link_tipoTramitacion;
-	}
+    public void setLink_plantillaSel(Link link_plantillaSel) {
+        this.link_plantillaSel = link_plantillaSel;
+    }
 
-	public Long getTipoTramitacion() {
-		return tipoTramitacion;
-	}
+    public Long getPlantillaSel() {
+        return plantillaSel;
+    }
 
-	public void setTipoTramitacion(Long tipoTramitacion) {
-		this.tipoTramitacion = tipoTramitacion;
-	}
+    public void setPlantillaSel(Long plantillaSel) {
+        this.plantillaSel = plantillaSel;
+    }
 
-	public Link getLink_plantillaSel() {
-		return link_plantillaSel;
-	}
+    //	public List<Link> getLink_listaDocumentos() {
+    //		return link_listaDocumentos;
+    //	}
+    //
+    //	public void setLink_listaDocumentos(List<Link> link_listaDocumentos) {
+    //		this.link_listaDocumentos = link_listaDocumentos;
+    //	}
+    //
+    //	public List<Long> getListaDocumentos() {
+    //		return listaDocumentos;
+    //	}
+    //
+    //	public void setListaDocumentos(List<Long> listaDocumentos) {
+    //		this.listaDocumentos = listaDocumentos;
+    //	}
+    //
+    //	public List<Link> getLink_listaModelos() {
+    //		return link_listaModelos;
+    //	}
+    //
+    //	public void setLink_listaModelos(List<Link> link_listaModelos) {
+    //		this.link_listaModelos = link_listaModelos;
+    //	}
+    //
+    //	public List<Long> getListaModelos() {
+    //		return listaModelos;
+    //	}
+    //
+    //	public void setListaModelos(List<Long> listaModelos) {
+    //		this.listaModelos = listaModelos;
+    //	}
 
-	public void setLink_plantillaSel(Link link_plantillaSel) {
-		this.link_plantillaSel = link_plantillaSel;
-	}
-
-	public Long getPlantillaSel() {
-		return plantillaSel;
-	}
-
-	public void setPlantillaSel(Long plantillaSel) {
-		this.plantillaSel = plantillaSel;
-	}
-
-//	public List<Link> getLink_listaDocumentos() {
-//		return link_listaDocumentos;
-//	}
-//
-//	public void setLink_listaDocumentos(List<Link> link_listaDocumentos) {
-//		this.link_listaDocumentos = link_listaDocumentos;
-//	}
-//
-//	public List<Long> getListaDocumentos() {
-//		return listaDocumentos;
-//	}
-//
-//	public void setListaDocumentos(List<Long> listaDocumentos) {
-//		this.listaDocumentos = listaDocumentos;
-//	}
-//
-//	public List<Link> getLink_listaModelos() {
-//		return link_listaModelos;
-//	}
-//
-//	public void setLink_listaModelos(List<Link> link_listaModelos) {
-//		this.link_listaModelos = link_listaModelos;
-//	}
-//
-//	public List<Long> getListaModelos() {
-//		return listaModelos;
-//	}
-//
-//	public void setListaModelos(List<Long> listaModelos) {
-//		this.listaModelos = listaModelos;
-//	}
-
-	public void setCodigo(Long codigo) {
-		this.codigo = codigo;
-	}
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
 
 }

@@ -103,7 +103,7 @@ public class Normativa extends EntidadBase<Normativa> {
     @XmlTransient
     private Long entidad;
 
-    public Normativa(NormativaDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
+    public Normativa(NormativaDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
         super(elem, urlBase, idioma, hateoasEnabled);
     }
 
@@ -238,9 +238,9 @@ public class Normativa extends EntidadBase<Normativa> {
         this.codigo = codigo;
     }
 
-	public Long getCodigo() {
-		return codigo;
-	}
+    public Long getCodigo() {
+        return codigo;
+    }
 
     public Boolean getVigente() {
         return vigente;

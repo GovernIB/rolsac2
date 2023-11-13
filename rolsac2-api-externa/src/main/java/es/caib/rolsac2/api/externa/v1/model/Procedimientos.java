@@ -238,7 +238,7 @@ public class Procedimientos extends EntidadBase {
     }
 
 
-    public Procedimientos(ProcedimientoDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
+    public Procedimientos(ProcedimientoDTO nodo, String urlBase, String idioma, boolean hateoasEnabled, final String idiomaPorDefecto) {
 
         super(nodo, urlBase, idioma, hateoasEnabled);
 
@@ -263,19 +263,19 @@ public class Procedimientos extends EntidadBase {
             }
 
             if (nodo.getLopdDerechos() != null) {
-                this.lopdDerechos = nodo.getLopdDerechos().getTraduccion(idioma == null ? "ca" : idioma);
+                this.lopdDerechos = nodo.getLopdDerechos().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (nodo.getLopdFinalidad() != null) {
-                this.lopdFinalidad = nodo.getLopdFinalidad().getTraduccion(idioma == null ? "ca" : idioma);
+                this.lopdFinalidad = nodo.getLopdFinalidad().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (nodo.getLopdInfoAdicional() != null) {
-                this.lopdDestinatario = nodo.getLopdInfoAdicional().getTraduccion(idioma == null ? "ca" : idioma);
+                this.lopdDestinatario = nodo.getLopdInfoAdicional().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (nodo.getLopdCabecera() != null) {
-                this.lopdCabecera = nodo.getLopdCabecera().getTraduccion(idioma == null ? "ca" : idioma);
+                this.lopdCabecera = nodo.getLopdCabecera().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (nodo.getDocumentosLOPD() != null && !nodo.getDocumentosLOPD().isEmpty()) {
-                String descripcion = getDescripcion(nodo.getDocumentosLOPD().get(0), idioma == null ? "ca" : idioma);
+                String descripcion = getDescripcion(nodo.getDocumentosLOPD().get(0), idioma, idiomaPorDefecto);
                 Long codigoDoc = nodo.getDocumentosLOPD().get(0).getCodigo();
                 linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
             }
@@ -284,10 +284,10 @@ public class Procedimientos extends EntidadBase {
         }
     }
 
-    private String getDescripcion(ProcedimientoDocumentoDTO documentoLOPD, String idioma) {
+    private String getDescripcion(ProcedimientoDocumentoDTO documentoLOPD, String idioma, String idiomaPorDefecto) {
         String descripcion = null;
         if (documentoLOPD.getDescripcion() != null) {
-            descripcion = documentoLOPD.getDescripcion().getTraduccion(idioma);
+            descripcion = documentoLOPD.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
         }
         if (documentoLOPD.getDescripcion() != null && descripcion == null) {
             descripcion = documentoLOPD.getDescripcion().getTraduccion();

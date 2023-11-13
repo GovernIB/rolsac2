@@ -88,6 +88,13 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
     private Long codigo;
 
     /**
+     * codigo.
+     **/
+    @Schema(description = "codigos", type = SchemaType.ARRAY, required = false)
+    private List<Long> codigos;
+
+
+    /**
      * codigoUADir3.
      **/
     @Schema(description = "codigoUADir3", type = SchemaType.STRING, required = false)
@@ -228,6 +235,14 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
+    }
+
+    public List<Long> getCodigos() {
+        return codigos;
+    }
+
+    public void setCodigos(List<Long> codigos) {
+        this.codigos = codigos;
     }
 
     public String getVolcadoSia() {
@@ -422,6 +437,10 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 
         if (this.codigo != null) {
             resultado.setCodigoProc(codigo);
+        }
+
+        if (this.codigos != null && !this.codigos.isEmpty()) {
+            resultado.setCodigosProc(codigos);
         }
 
         if (this.estado != null) {

@@ -138,8 +138,6 @@ public class Servicios extends EntidadBase {
     private boolean tramitTelefonica;
     @Schema(description = "activoLOPD", type = SchemaType.BOOLEAN, required = false)
     private boolean activoLOPD;
-    @Schema(description = "siaFecha", required = false)
-    public Calendar siaFecha;
 
     @Schema(description = "link_tipoTramitacion", required = false)
     private Link link_tipoTramitacion;
@@ -163,7 +161,7 @@ public class Servicios extends EntidadBase {
      * @param idioma
      * @param hateoasEnabled
      */
-    public Servicios(final ServicioDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled) {
+    public Servicios(final ServicioDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled, String idiomaPorDefecto) {
         super(elem, urlBase, idioma, hateoasEnabled);
         if (elem != null) {
             this.codigo = elem.getCodigo();
@@ -171,8 +169,8 @@ public class Servicios extends EntidadBase {
             this.activoLOPD = elem.isActivoLOPD();
             this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA().toString();
             this.codigoWF = elem.getCodigoWF();
-            this.nombre = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccion(idioma);
-            this.destinatarios = elem.getDestinatarios() == null ? null : elem.getDestinatarios().getTraduccion(idioma);
+            this.nombre = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccionConValor(idioma, idiomaPorDefecto);
+            this.destinatarios = elem.getDestinatarios() == null ? null : elem.getDestinatarios().getTraduccionConValor(idioma, idiomaPorDefecto);
             this.estado = elem.getEstado() == null ? null : elem.getEstado().name();
             this.estadoSIA = elem.getEstadoSIA() == null ? null : elem.getEstadoSIA().toString();
             this.fechaPublicacion = elem.getFechaPublicacion() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaPublicacion());
@@ -183,14 +181,14 @@ public class Servicios extends EntidadBase {
             this.habilitadoFuncionario = elem.getHabilitadoFuncionario();
             this.interno = elem.isInterno();
             this.lopdResponsable = elem.getLopdResponsable();
-            this.nombreProcedimientoWorkFlow = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccion(idioma);
-            this.objeto = elem.getObjeto() == null ? null : elem.getObjeto().getTraduccion(idioma);
-            this.observaciones = elem.getObservaciones() == null ? null : elem.getObservaciones().getTraduccion(idioma);
+            this.nombreProcedimientoWorkFlow = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccionConValor(idioma, idiomaPorDefecto);
+            this.objeto = elem.getObjeto() == null ? null : elem.getObjeto().getTraduccionConValor(idioma, idiomaPorDefecto);
+            this.observaciones = elem.getObservaciones() == null ? null : elem.getObservaciones().getTraduccionConValor(idioma, idiomaPorDefecto);
             this.publicado = elem.isPublicado();
-            this.requisitos = elem.getRequisitos() == null ? null : elem.getRequisitos().getTraduccion(idioma);
+            this.requisitos = elem.getRequisitos() == null ? null : elem.getRequisitos().getTraduccionConValor(idioma, idiomaPorDefecto);
             this.responsableEmail = elem.getResponsableEmail();
             this.responsableTelefono = elem.getResponsableTelefono();
-            this.terminoResolucion = elem.getTerminoResolucion() == null ? null : elem.getTerminoResolucion().getTraduccion(idioma);
+            this.terminoResolucion = elem.getTerminoResolucion() == null ? null : elem.getTerminoResolucion().getTraduccionConValor(idioma, idiomaPorDefecto);
             this.tieneTasa = elem.isTieneTasa();
             this.tipo = elem.getTipo();
             this.tramitElectronica = elem.isTramitElectronica();
@@ -208,19 +206,19 @@ public class Servicios extends EntidadBase {
                 this.lopdLegitimacion = new Legitimacion(elem.getDatosPersonalesLegitimacion(), urlBase, idioma, hateoasEnabled);
             }
             if (elem.getLopdDerechos() != null) {
-                this.lopdDerechos = elem.getLopdDerechos().getTraduccion(idioma == null ? "ca" : idioma);
+                this.lopdDerechos = elem.getLopdDerechos().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (elem.getLopdFinalidad() != null) {
-                this.lopdFinalidad = elem.getLopdFinalidad().getTraduccion(idioma == null ? "ca" : idioma);
+                this.lopdFinalidad = elem.getLopdFinalidad().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (elem.getLopdInfoAdicional() != null) {
-                this.lopdDestinatario = elem.getLopdInfoAdicional().getTraduccion(idioma == null ? "ca" : idioma);
+                this.lopdDestinatario = elem.getLopdInfoAdicional().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (elem.getLopdCabecera() != null) {
-                this.lopdCabecera = elem.getLopdCabecera().getTraduccion(idioma == null ? "ca" : idioma);
+                this.lopdCabecera = elem.getLopdCabecera().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (elem.getDocumentosLOPD() != null && !elem.getDocumentosLOPD().isEmpty()) {
-                String descripcion = getDescripcion(elem.getDocumentosLOPD().get(0), idioma == null ? "ca" : idioma);
+                String descripcion = getDescripcion(elem.getDocumentosLOPD().get(0), idioma, idiomaPorDefecto);
                 Long codigoDoc = elem.getDocumentosLOPD().get(0).getCodigo();
                 linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
             }
@@ -231,10 +229,10 @@ public class Servicios extends EntidadBase {
     }
 
 
-    private String getDescripcion(ProcedimientoDocumentoDTO documentoLOPD, String idioma) {
+    private String getDescripcion(ProcedimientoDocumentoDTO documentoLOPD, String idioma, String idiomaPorDefecto) {
         String descripcion = null;
         if (documentoLOPD.getDescripcion() != null) {
-            descripcion = documentoLOPD.getDescripcion().getTraduccion(idioma);
+            descripcion = documentoLOPD.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
         }
         if (documentoLOPD.getDescripcion() != null && descripcion == null) {
             descripcion = documentoLOPD.getDescripcion().getTraduccion();
@@ -255,11 +253,6 @@ public class Servicios extends EntidadBase {
             this.estadoSIA = elem.getEstadoSIA() == null ? null : elem.getEstadoSIA().toString();
             this.tipo = elem.getTipo();
             this.nombre = elem.getNombre();
-            if (elem.getSiaFecha() != null) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(elem.getSiaFecha());
-                this.siaFecha = calendar;
-            }
             this.codigoWF = elem.getCodigoWFPub();
         }
     }
@@ -356,20 +349,6 @@ public class Servicios extends EntidadBase {
     public void setFechaActualizacion(final java.util.Calendar fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
-
-    //	/**
-    //	 * @return the fechaDespublicacion
-    //	 */
-    //	public java.util.Calendar getFechaDespublicacion() {
-    //		return fechaDespublicacion;
-    //	}
-
-    //	/**
-    //	 * @param fechaDespublicacion the fechaDespublicacion to set
-    //	 */
-    //	public void setFechaDespublicacion(final java.util.Calendar fechaDespublicacion) {
-    //		this.fechaDespublicacion = fechaDespublicacion;
-    //	}
 
     /**
      * @return the fechaPublicacion
@@ -469,132 +448,6 @@ public class Servicios extends EntidadBase {
         this.requisitos = requisitos;
     }
 
-    //	/**
-    //	 * @return the telefono
-    //	 */
-    //	public java.lang.String getTelefono() {
-    //		return telefono;
-    //	}
-    //
-    //	/**
-    //	 * @param telefono the telefono to set
-    //	 */
-    //	public void setTelefono(final java.lang.String telefono) {
-    //		this.telefono = telefono;
-    //	}
-
-    //	/**
-    //	 * @return the tramiteId
-    //	 */
-    //	public java.lang.String getTramiteId() {
-    //		return tramiteId;
-    //	}
-
-    //	/**
-    //	 * @param tramiteId the tramiteId to set
-    //	 */
-    //	public void setTramiteId(final java.lang.String tramiteId) {
-    //		this.tramiteId = tramiteId;
-    //	}
-
-    //	/**
-    //	 * @return the tasaUrl
-    //	 */
-    //	public java.lang.String getTasaUrl() {
-    //		return tasaUrl;
-    //	}
-    //
-    //	/**
-    //	 * @param tasaUrl the tasaUrl to set
-    //	 */
-    //	public void setTasaUrl(final java.lang.String tasaUrl) {
-    //		this.tasaUrl = tasaUrl;
-    //	}
-    //
-    //	/**
-    //	 * @return the tramiteVersion
-    //	 */
-    //	public java.lang.String getTramiteVersion() {
-    //		return tramiteVersion;
-    //	}
-
-    //	/**
-    //	 * @param tramiteVersion the tramiteVersion to set
-    //	 */
-    //	public void setTramiteVersion(final java.lang.String tramiteVersion) {
-    //		this.tramiteVersion = tramiteVersion;
-    //	}
-
-    //	/**
-    //	 * @return the validacion
-    //	 */
-    //	public java.lang.Integer getValidacion() {
-    //		return validacion;
-    //	}
-    //
-    //	/**
-    //	 * @param validacion the validacion to set
-    //	 */
-    //	public void setValidacion(final java.lang.Integer validacion) {
-    //		this.validacion = validacion;
-    //	}
-    //
-    //	/**
-    //	 * @return the linkServicioResponsable
-    //	 */
-    //	public Link getLinkServicioResponsable() {
-    //		return linkServicioResponsable;
-    //	}
-    //
-    //	/**
-    //	 * @param linkServicioResponsable the linkServicioResponsable to set
-    //	 */
-    //	public void setLinkServicioResponsable(final Link linkServicioResponsable) {
-    //		this.linkServicioResponsable = linkServicioResponsable;
-    //	}
-    //
-    //	/**
-    //	 * @return the servicioResponsable
-    //	 */
-    //	public Long getServicioResponsable() {
-    //		return servicioResponsable;
-    //	}
-    //
-    //	/**
-    //	 * @param servicioResponsable the servicioResponsable to set
-    //	 */
-    //	public void setServicioResponsable(final Long servicioResponsable) {
-    //		this.servicioResponsable = servicioResponsable;
-    //	}
-
-    //	/**
-    //	 * @return the linkOrganoInstructor
-    //	 */
-    //	public Link getLinkOrganoInstructor() {
-    //		return linkOrganoInstructor;
-    //	}
-
-    //	/**
-    //	 * @param linkOrganoInstructor the linkOrganoInstructor to set
-    //	 */
-    //	public void setLinkOrganoInstructor(final Link linkOrganoInstructor) {
-    //		this.linkOrganoInstructor = linkOrganoInstructor;
-    //	}
-
-    //	/**
-    //	 * @return the organoInstructor
-    //	 */
-    //	public Long getOrganoInstructor() {
-    //		return organoInstructor;
-    //	}
-    //
-    //	/**
-    //	 * @param organoInstructor the organoInstructor to set
-    //	 */
-    //	public void setOrganoInstructor(final Long organoInstructor) {
-    //		this.organoInstructor = organoInstructor;
-    //	}
-
     /**
      * @return the comun
      */
@@ -608,83 +461,6 @@ public class Servicios extends EntidadBase {
     public void setComun(final Integer comun) {
         this.comun = comun;
     }
-
-    //	/**
-    //	 * @return the id
-    //	 */
-    //	public java.lang.Long getId() {
-    //		return id;
-    //	}
-
-    //	/**
-    //	 * @return the telematico
-    //	 */
-    //	public boolean getTelematico() {
-    //		return telematico;
-    //	}
-
-    //	/**
-    //	 * @param telematico the telematico to set
-    //	 */
-    //	public void setTelematico(final boolean telematico) {
-    //		this.telematico = telematico;
-    //	}
-
-    //	/**
-    //	 * @return the parametros
-    //	 */
-    //	public java.lang.String getParametros() {
-    //		return parametros;
-    //	}
-
-    //	/**
-    //	 * @param parametros the parametros to set
-    //	 */
-    //	public void setParametros(final java.lang.String parametros) {
-    //		this.parametros = parametros;
-    //	}
-
-    //	/**
-    //	 * @return the urlTramiteExterno
-    //	 */
-    //	public java.lang.String getUrlTramiteExterno() {
-    //		return urlTramiteExterno;
-    //	}
-
-    //	/**
-    //	 * @param urlTramiteExterno the urlTramiteExterno to set
-    //	 */
-    //	public void setUrlTramiteExterno(final java.lang.String urlTramiteExterno) {
-    //		this.urlTramiteExterno = urlTramiteExterno;
-    //	}
-
-    //	/**
-    //	 * @return the linkLopdInfoAdicional
-    //	 */
-    //	public Link getLinkLopdInfoAdicional() {
-    //		return linkLopdInfoAdicional;
-    //	}
-
-    //	/**
-    //	 * @param linkLopdInfoAdicional the linkLopdInfoAdicional to set
-    //	 */
-    //	public void setLinkLopdInfoAdicional(final Link linkLopdInfoAdicional) {
-    //		this.linkLopdInfoAdicional = linkLopdInfoAdicional;
-    //	}
-
-    //	/**
-    //	 * @return the lopdInfoAdicional
-    //	 */
-    //	public String getLopdInfoAdicional() {
-    //		return lopdInfoAdicional;
-    //	}
-    //
-    //	/**
-    //	 * @param lopdInfoAdicional the lopdInfoAdicional to set
-    //	 */
-    //	public void setLopdInfoAdicional(final String lopdInfoAdicional) {
-    //		this.lopdInfoAdicional = lopdInfoAdicional;
-    //	}
 
     /**
      * @return the lopdResponsable
@@ -742,105 +518,141 @@ public class Servicios extends EntidadBase {
         this.lopdDerechos = lopdDerechos;
     }
 
+    /**
+     * @return the lopdCabecera
+     */
     public String getLopdCabecera() {
         return lopdCabecera;
     }
 
+    /**
+     * @param lopdCabecera the lopdCabecera to set
+     */
     public void setLopdCabecera(String lopdCabecera) {
         this.lopdCabecera = lopdCabecera;
     }
-    //	/**
-    //	 * @return the lopdCabecera
-    //	 */
-    //	public String getLopdCabecera() {
-    //		return lopdCabecera;
-    //	}
-    //
-    //	/**
-    //	 * @param lopdCabecera the lopdCabecera to set
-    //	 */
-    //	public void setLopdCabecera(final String lopdCabecera) {
-    //		this.lopdCabecera = lopdCabecera;
-    //	}
 
+    /**
+     * @return the codigoWF
+     */
     public Long getCodigoWF() {
         return codigoWF;
     }
 
+    /**
+     * @param codigoWF the codigoWF to set
+     */
     public void setCodigoWF(Long codigoWF) {
         this.codigoWF = codigoWF;
     }
 
+    /**
+     * @return the tipo
+     */
     public String getTipo() {
         return tipo;
     }
 
+    /**
+     * @param tipo the tipo to set
+     */
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 
+    /**
+     * @return get the workflow
+     */
     public String getWorkflow() {
         return workflow;
     }
 
+    /**
+     * @param workflow the workflow to set
+     */
     public void setWorkflow(String workflow) {
         this.workflow = workflow;
     }
 
+    /**
+     * @return get the estado
+     */
     public String getEstado() {
         return estado;
     }
 
+    /**
+     * @param estado the estado to set
+     */
     public void setEstado(String estado) {
         this.estado = estado;
     }
 
+    /**
+     * @return get the interno
+     */
     public boolean isInterno() {
         return interno;
     }
 
+    /**
+     * @param interno the interno to set
+     */
     public void setInterno(boolean interno) {
         this.interno = interno;
     }
 
+    /**
+     * @return get the publicado
+     */
     public boolean isPublicado() {
         return publicado;
     }
 
+    /**
+     * @param publicado the publicado to set
+     */
     public void setPublicado(boolean publicado) {
         this.publicado = publicado;
     }
 
+    /**
+     * @return get the fechaCaducidad
+     */
     public Calendar getFechaCaducidad() {
         return fechaCaducidad;
     }
 
+    /**
+     * @param fechaCaducidad the fechaCaducidad to set
+     */
     public void setFechaCaducidad(Calendar fechaCaducidad) {
         this.fechaCaducidad = fechaCaducidad;
     }
 
+    /**
+     * @return the lopdLegitimacion
+     */
     public Legitimacion getLopdLegitimacion() {
         return lopdLegitimacion;
     }
 
+    /**
+     * @param lopdLegitimacion the lopdLegitimacion to set
+     */
     public void setLopdLegitimacion(Legitimacion lopdLegitimacion) {
         this.lopdLegitimacion = lopdLegitimacion;
     }
 
+    /**
+     * @return the linkLopdInfoAdicional
+     */
     public Link getLinkLopdInfoAdicional() {
         return linkLopdInfoAdicional;
     }
 
     public void setLinkLopdInfoAdicional(Link linkLopdInfoAdicional) {
         this.linkLopdInfoAdicional = linkLopdInfoAdicional;
-    }
-
-    public Calendar getSiaFecha() {
-        return siaFecha;
-    }
-
-    public void setSiaFecha(Calendar siaFecha) {
-        this.siaFecha = siaFecha;
     }
 
     public Long getUaResponsable() {
