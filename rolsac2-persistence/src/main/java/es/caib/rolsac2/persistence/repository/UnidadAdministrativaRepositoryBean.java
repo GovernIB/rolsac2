@@ -2,6 +2,7 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
+import es.caib.rolsac2.persistence.model.JNormativa;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativaAuditoria;
@@ -656,19 +657,76 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         return true;
     }
 
+    /**
+     * Devuelve una ruta a partir de un código.<br />
+     * Por ejemplo, si se pasa el código 2397316 devuelve : <br />
+     * <p>
+     * UNA_CODIGO  UNA_UNADPADRE LEVEL <br />
+     * 2397316	   4607025	     1     <br />
+     * 4607025	   1	         2     <br />
+     * 1		                 3     <br />
+     *
+     * @param codigo
+     * @return
+     */
+    @Override
+    public List<String[]> getRutaArbol(Long codigo) {
+
+        Query query = entityManager.createNativeQuery("select UNAD_CODIGO, UNAD_UNADPADRE, level from RS2_UNIADM START WITH UNAD_CODIGO =  " + codigo + "connect by prior UNAD_UNADPADRE = UNAD_CODIGO ");
+        List<String[]> resultado = query.getResultList();
+        return resultado;
+    }
+
+    @Override
+    public Map<Long, String> obtenerCodigosDIR3(List<Long> codigos) {
+        if (codigos == null || codigos.isEmpty()) {
+            return null;
+        }
+
+        Map<Long, String> resultado = new HashMap<>();
+        for (Long codigo : codigos) {
+            StringBuilder sql = new StringBuilder("");
+            sql.append("        select UNAD_CODIGO, UNAD_UNADPADRE, UNAD_DIR3, level ");
+            sql.append("        from RS2_UNIADM ");
+            sql.append("        where UNAD_DIR3 is not null ");
+            sql.append("        START WITH UNAD_CODIGO = :codigo ");
+            sql.append("        connect by prior UNAD_UNADPADRE = UNAD_CODIGO ");
+            sql.append("        order by level asc ");
+            Query query = entityManager.createNativeQuery(sql.toString());
+            query.setParameter("codigo", codigo);
+
+            List<Object[]> resultados = (List<Object[]>) query.getResultList();
+
+            if (resultados != null && !resultados.isEmpty()) {
+                resultado.put(codigo, (String) resultados.get(0)[2]);
+            }
+        }
+        return resultado;
+    }
+
     @Override
     public String obtenerCodigoDIR3(Long codigoUA) {
         if (codigoUA == null) {
             return null;
         }
+
         return getCodigoDIR3r(codigoUA, 0);
     }
 
+    /**
+     * Metodo antiguo recursivo para obtener el codigo DIR3
+     *
+     * @param codigo
+     * @param intentos
+     * @return
+     */
     private String getCodigoDIR3r(Long codigo, int intentos) {
         if (intentos >= 10) {
             return null;
         }
-        JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigo);
+
+        //JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigo);
+        JUnidadAdministrativa jua = getJUnidadAdministrativaSimpleDir3(codigo);
         if (jua.getCodigoDIR3() != null && !jua.getCodigoDIR3().isEmpty()) {
             return jua.getCodigoDIR3();
         } else if (jua.getPadre() != null) {
@@ -676,6 +734,20 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         } else {
             return null;
         }
+    }
+
+    private JUnidadAdministrativa getJUnidadAdministrativaSimpleDir3(Long codigo) {
+        Query query = entityManager.createQuery("SELECT j.codigoDIR3, j.padre FROM JUnidadAdministrativa j WHERE j.codigo = :codigo");
+        query.setParameter("codigo", codigo);
+        Object[] respuesta = (Object[]) query.getSingleResult();
+        JUnidadAdministrativa jua = new JUnidadAdministrativa();
+        jua.setCodigoDIR3((String) respuesta[0]);
+        if (respuesta[1] == null) {
+            JUnidadAdministrativa padre = (JUnidadAdministrativa) respuesta[1];
+            jua.setPadre(padre);
+        }
+        jua.setCodigo(codigo);
+        return jua;
     }
 
     @Override
@@ -734,6 +806,48 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigo);
         jua.setFechaBaja(fechaBaja);
         jua.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_BORRADA);
+        entityManager.merge(jua);
+
+        JUnidadAdministrativaAuditoria jAuditoria = new JUnidadAdministrativaAuditoria();
+        jAuditoria.setUnidadAdministrativa(jua);
+        jAuditoria.setFechaModificacion(new Date());
+        jAuditoria.setUsuarioModificacion(usuario);
+        jAuditoria.setUsuarioPerfil(perfil.toString());
+        jAuditoria.setLiteralFlujo("auditoria.uas.baja");
+        List<AuditoriaValorCampo> cambios = new ArrayList<>();
+        if (param1 != null && !param1.isEmpty()) {
+            final AuditoriaCambio auditoria = new AuditoriaCambio();
+            final AuditoriaValorCampo valorCampo = new AuditoriaValorCampo();
+            valorCampo.setValorAnterior(param1);
+            valorCampo.setValorNuevo(param2);
+            auditoria.setIdCampo(literal);
+            auditoria.setValoresModificados(Arrays.asList(valorCampo));
+            jAuditoria.setListaModificaciones(UtilJSON.toJSON(Arrays.asList(auditoria)));
+
+        } else {
+            jAuditoria.setListaModificaciones(UtilJSON.toJSON(cambios));
+        }
+        jAuditoria.setAccion(TypeAccionAuditoria.BAJA.toString());
+        entityManager.persist(jAuditoria);
+    }
+
+    @Override
+    public void marcarBajaConNormativas(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2, NormativaDTO normativaBaja, List<NormativaGridDTO> normativasBaja) {
+        JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigo);
+        jua.setFechaBaja(fechaBaja);
+        jua.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_BORRADA);
+        Set<JNormativa> normativas = new HashSet<>();
+        if (normativaBaja != null) {
+            JNormativa jNormativa = entityManager.find(JNormativa.class, normativaBaja.getCodigo());
+            normativas.add(jNormativa);
+        }
+        if (normativasBaja != null && !normativasBaja.isEmpty()) {
+            for (NormativaGridDTO normativa : normativasBaja) {
+                JNormativa jNormativa = entityManager.find(JNormativa.class, normativa.getCodigo());
+                normativas.add(jNormativa);
+            }
+        }
+        jua.setNormativas(normativas);
         entityManager.merge(jua);
 
         JUnidadAdministrativaAuditoria jAuditoria = new JUnidadAdministrativaAuditoria();

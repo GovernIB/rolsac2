@@ -818,4 +818,6 @@ Insert into RS2_TRATPAN (TRTA_CODIGO,TRTA_CODTPAN,TRTA_IDIOMA,TRTA_DESCRI) value
 
 /** CONFIGURACION GLOBAL **/
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'ua.mostrar.procsNormativas', 'S','Para mostrar en la ventana de UAs los procedimientos y normativas (hace más lenta la ventana)',1);
+INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'idiomaDefecto', 'ca','En el caso de los tipos que no cuelgan de entidad, en caso de no pasarse el idioma en el restapi, para saber que idioma coger.',0);
+
 

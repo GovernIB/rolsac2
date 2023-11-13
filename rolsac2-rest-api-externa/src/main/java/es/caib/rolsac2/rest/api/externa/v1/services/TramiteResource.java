@@ -13,11 +13,9 @@ import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.EntidadServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
-import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
-import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -70,20 +68,20 @@ public class TramiteResource {
         }
 
         ProcedimientoTramiteFiltro fg = filtro.toProcedimientoTramiteFiltro();
+        String idiomaPorDefecto;
+        if (fg.getIdEntidad() == null) {
+            idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+        } else {
+            idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+            if (idiomaPorDefecto == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            }
+        }
 
         if (lang != null) {
             fg.setIdioma(lang);
-        } else if (filtro.getIdEntidad() != null) {
-            EntidadFiltro filtroEntidad = new EntidadFiltro();
-            filtroEntidad.setCodigo(filtro.getIdEntidad());
-            Pagina<EntidadDTO> resultadoBusqueda = entidadService.findByFiltroRest(filtroEntidad);
-            if (resultadoBusqueda.getTotal() > 0 && resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest() != null && !resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest().isEmpty()) {
-                fg.setIdioma(resultadoBusqueda.getItems().get(0).getIdiomaDefectoRest());
-            } else {
-                fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
-            }
         } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            fg.setIdioma(idiomaPorDefecto);
         }
 
         // si no vienen los filtros se completan con los datos por defecto
@@ -92,7 +90,7 @@ public class TramiteResource {
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
         }
 
-        return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -114,25 +112,25 @@ public class TramiteResource {
     public Response getPorId(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
 
         ProcedimientoTramiteFiltro fg = new ProcedimientoTramiteFiltro();
-
+        String idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
         if (lang != null) {
             fg.setIdioma(lang);
         } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            fg.setIdioma(idiomaPorDefecto);
         }
         fg.setCodigo(new Long(codigo));
 
-        return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaTramite getRespuesta(ProcedimientoTramiteFiltro filtro) throws DelegateException {
+    private RespuestaTramite getRespuesta(ProcedimientoTramiteFiltro filtro, String idiomaPorDefecto) throws DelegateException {
         Pagina<ProcedimientoTramiteDTO> resultadoBusqueda = procedimientoService.findProcedimientoTramiteByFiltroRest(filtro);
 
         List<Tramite> lista = new ArrayList<>();
         Tramite elemento = null;
 
         for (ProcedimientoTramiteDTO nodo : resultadoBusqueda.getItems()) {
-            elemento = new Tramite(nodo, null, filtro.getIdioma(), true);
+            elemento = new Tramite(nodo, null, filtro.getIdioma(), true, idiomaPorDefecto);
             lista.add(elemento);
         }
 
@@ -142,10 +140,11 @@ public class TramiteResource {
     /**
      * Para obtener el enlace.
      *
-     * @param idioma
-     * @param id
+     * @param codigo
+     * @param lang
      * @return
      * @throws Exception
+     * @throws ValidationException
      */
     @POST
     @Path("/enlaceTelematico/{codigo}")

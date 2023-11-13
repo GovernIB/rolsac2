@@ -292,4 +292,9 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
             return new Pagina<>(items, total);
         }
     }
+
+    @Override
+    public String getIdiomaPorDefecto(Long idEntidad) {
+        return entidadRepository.getIdiomaPorDefecto(idEntidad);
+    }
 }
