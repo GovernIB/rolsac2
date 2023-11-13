@@ -206,7 +206,7 @@ CREATE TABLE "RS2_FICEXT"
     "FIE_TEMP" NUMBER(1),   -- 'Indica si fichero es temporal (hasta que se enlace)';
     "FIE_FICTIP" VARCHAR2(50), -- 'Tipo fichero (indica tabla donde se usa)';
     "FIE_FICELE" NUMBER(10), --'Elemento fichero (indica elemento asociado al fichero)' ;
-    "FIE_FILENAME" VARCHAR2(100), --Nombre original del fichero (en disco se guardará con el nombre de referencia documento)
+    "FIE_FILENAME" VARCHAR2(150), --Nombre original del fichero (en disco se guardará con el nombre de referencia documento)
     "FIE_BORRAR" NUMBER(1) DEFAULT 0  NOT NULL    -- Indica si esta marcado para borrar (proceso de purgado)
 )TABLESPACE ROLSAC2_DADES;
 

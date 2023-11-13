@@ -230,8 +230,8 @@ CREATE TABLE "RS2_FICEXT"
     "FIE_FECHA"    TIMESTAMP(6) NOT NULL,        -- Fecha referencia (sólo será válida la última, el resto se borrarán)
     "FIE_TEMP"     NUMBER(1),                    -- 'Indica si fichero es temporal (hasta que se enlace)';
     "FIE_FICTIP"   VARCHAR2(50),                 -- 'Tipo fichero (indica tabla donde se usa)';
-    "FIE_FICELE"   NUMBER(10),                   --'Elemento fichero (indica elemento asociado al fichero)' ;
-    "FIE_FILENAME" VARCHAR2(120),                --Nombre original del fichero (en disco se guardará con el nombre de referencia documento)
+    "FIE_FICELE"   NUMBER(10),                   -- 'Elemento fichero (indica elemento asociado al fichero)' ;
+    "FIE_FILENAME" VARCHAR2(150),                -- Nombre original del fichero (en disco se guardará con el nombre de referencia documento)
     "FIE_BORRAR"   NUMBER(1) DEFAULT 0 NOT NULL  -- Indica si esta marcado para borrar (proceso de purgado)
 )TABLESPACE ROLSAC2_DADES;
 
@@ -755,7 +755,7 @@ CREATE TABLE "RS2_TRAPRWF"
     "TRPW_CODIGO"  NUMBER(10) NOT NULL,       -- CODIGO
     "TRPW_CODPRWF" NUMBER(10) NOT NULL,       -- CODIGO PROC
     "TRPW_IDIOMA"  VARCHAR2(2 CHAR) NOT NULL, -- IDIOMA
-    "TRPW_NOMBRE"  VARCHAR2(255 CHAR) NULL,   -- NOMBRE
+    "TRPW_NOMBRE"  VARCHAR2(256 CHAR) NULL,   -- NOMBRE
     "TRPW_OBJETO"  CLOB NULL,                 -- OBJETO
     "TRPW_DESTIN"  CLOB NULL,                 -- DESTINATARIOS
     "TRPW_OBSER"   CLOB NULL,                 -- OBSERVACIONES
