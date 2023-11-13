@@ -2,6 +2,7 @@ package es.caib.rolsac2.persistence.repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Implementació bàsica d'un {@link CrudRepository}.
@@ -28,9 +29,18 @@ public abstract class AbstractCrudRepository<E, PK> implements CrudRepository<E,
     }
 
     @Override
-    public void create(E entity) {
+    public Long create(E entity) {
         entityManager.persist(entity);
         entityManager.flush();
+        try {
+            return (Long) entity.getClass().getDeclaredMethod("getCodigo").invoke(entity);
+        } catch (IllegalAccessException e) {
+            return null;
+        } catch (InvocationTargetException e) {
+            return null;
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
     }
 
     @Override

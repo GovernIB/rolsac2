@@ -9,6 +9,7 @@ import es.caib.rolsac2.service.model.types.TypePerfiles;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAdministrativa, Long> {
@@ -64,6 +65,10 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     boolean isVisibleUA(UnidadAdministrativaDTO uaInstructor);
 
+    List<String[]> getRutaArbol(Long codigo);
+
+    Map<Long, String> obtenerCodigosDIR3(List<Long> codigos);
+
     String obtenerCodigoDIR3(Long codigoUA);
 
     List<UnidadAdministrativaDTO> findPagedByFiltroRest(UnidadAdministrativaFiltro fg);
@@ -74,7 +79,11 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     void marcarBaja(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2);
 
+    void marcarBajaConNormativas(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2, NormativaDTO normativaBaja, List<NormativaGridDTO> normativasBaja);
+
     List<JUnidadAdministrativa> getUnidadesAdministrativaByPadre(Long codigoUAOriginal);
 
     String getNombreUA(List<Long> uas);
+
+
 }

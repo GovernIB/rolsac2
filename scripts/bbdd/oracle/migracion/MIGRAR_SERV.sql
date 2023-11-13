@@ -196,7 +196,8 @@ create or replace PROCEDURE "MIGRAR_SERV" (codigo NUMBER, codigoEntidad NUMBER, 
     CURSOR cursorMateriasRolsac1 (codSER NUMBER) IS 
         SELECT *  
           FROM R1_SERVICIOS_MATE
-         WHERE SRM_CODSER = codSER;
+         WHERE SRM_CODSER = codSER 
+           AND SRM_CODMAT IN (SELECT CODIGO_TEMA FROM RS2_TEMA);
     CURSOR cursorDocumentos(codSer NUMBER) IS
       SELECT *
         FROM R1_SERVICIOS_DOC
@@ -607,12 +608,14 @@ BEGIN
             END IF; 
 
 
+    dbms_output.put_line(l_clob);
     dbms_lob.close(l_clob);
     resultado := l_clob;
 
 EXCEPTION 
     WHEN OTHERS THEN
             ROLLBACK;
+            
             dbms_output.put_line('SQLCODE:' || SQLCODE);
             dbms_output.put_line('SQLERRM:' || SQLERRM);
             dbms_lob.writeappend(l_clob, length('SE HA PRODUCIDO UN ERROR\n'), 'SE HA PRODUCIDO UN ERROR\n');

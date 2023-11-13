@@ -79,10 +79,11 @@
                             </p>
                             <p:inputText id="txtNormativaBajaNoasociada" value="#{labels['dialogUnidadAdministrativa.bajaSinNormativa']}"
                                          styleClass="w95" disabled="true" rendered="#{empty dialogUnidadAdministrativa.normativaBaja}"/>
-                            <p:inputText id="txtNormativaBaja" value="#{dialogUnidadAdministrativa.normativaBaja.nombre.getTraduccion(dialogUnidadAdministrativa.idioma)}"
+                            <p:inputText id="txtNormativaBaja" value="#{dialogUnidadAdministrativa.normativaBaja.titulo.getTraduccion(dialogUnidadAdministrativa.idioma)}"
                                          styleClass="w85" disabled="true" rendered="#{!empty dialogUnidadAdministrativa.normativaBaja}"/>
                             <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                              action="#{dialogUnidadAdministrativa.consultarNormativaBaja()}" styleClass="ml-1"
+                                             rendered="#{!empty dialogUnidadAdministrativa.normativaBaja}"
                                              process="@this"  update="messagesDialog" />
                         </div>
                     </div>
@@ -513,7 +514,7 @@
 
 
                                 <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                    <h:outputText value="#{td.codigo} - #{td.nombre.getTraduccion(sessionBean.lang)}"/>
+                                    <h:outputText value="#{td.codigo} - #{td.titulo.getTraduccion(sessionBean.lang)}"/>
                                 </p:column>
 
                             </p:dataTable>

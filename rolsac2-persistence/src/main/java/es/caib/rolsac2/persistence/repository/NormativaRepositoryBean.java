@@ -355,13 +355,19 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
                 List<Traduccion> traducciones = new ArrayList<>();
                 traducciones.add(new Traduccion(idioma, (String) jnormativa[1]));
                 nombre.setTraducciones(traducciones);
-                normativa.setNombre(nombre);
+                normativa.setTitulo(nombre);
                 normativas.add(normativa);
             }
         }
         return normativas;
     }
 
+    /**
+     * Actualiza la unidad administrativa de una normativa
+     *
+     * @param idUAs
+     * @param codigoUAfusion
+     */
     @Override
     public void actualizarUA(List<Long> idUAs, Long codigoUAfusion) {
 
@@ -376,6 +382,38 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
 
     }
 
+    /**
+     * Actualiza la unidad administrativa de una normativa
+     *
+     * @param codigoNormativa
+     * @param codigoUAOrigen
+     * @param codigoUADestino
+     */
+    @Override
+    public void evolucionarNorm(Long codigoNormativa, Long codigoUAOrigen, Long codigoUADestino) {
 
+        JNormativa jNormativa = entityManager.find(JNormativa.class, codigoNormativa);
+        JUnidadAdministrativa juaDestino = entityManager.find(JUnidadAdministrativa.class, codigoUADestino);
+        if (jNormativa.getUnidadesAdministrativas() == null) {
+            jNormativa.setUnidadesAdministrativas(new HashSet<>());
+            jNormativa.getUnidadesAdministrativas().add(juaDestino);
+        } else {
+            JUnidadAdministrativa jUnidadAdministrativa = entityManager.find(JUnidadAdministrativa.class, codigoUAOrigen);
+            if (jNormativa.getUnidadesAdministrativas().contains(jUnidadAdministrativa)) {
+                jNormativa.getUnidadesAdministrativas().remove(jUnidadAdministrativa);
+            }
+            jNormativa.getUnidadesAdministrativas().add(juaDestino);
+        }
+        entityManager.merge(jNormativa);
+
+    }
+
+
+    @Override
+    public String obtenerIdiomaEntidad(Long codigoNorm) {
+        Query query = entityManager.createQuery("select j.entidad.idiomaDefectoRest from JNormativa j where j.codigo = :codigoNorm ");
+        query.setParameter("codigoNorm", codigoNorm);
+        return (String) query.getSingleResult();
+    }
 
 }

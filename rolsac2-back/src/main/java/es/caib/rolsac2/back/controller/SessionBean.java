@@ -840,8 +840,8 @@ public class SessionBean implements Serializable {
                 context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/maestras/viewProcedimientos.xhtml')");
                 break;
             case ADMINISTRADOR_ENTIDAD:
-                opcion = "viewConfiguracionEntidad.titulo";
-                context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/entidades/viewConfiguracionEntidad.xhtml')");
+                opcion = "viewCuadroControl.titulo";
+                context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/monitorizacion/viewCuadroControl.xhtml')");
                 break;
             case GESTOR:
                 opcion = "viewUnidadAdministrativa.titulo";

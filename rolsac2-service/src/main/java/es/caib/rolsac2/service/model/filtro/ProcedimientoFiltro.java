@@ -17,6 +17,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String tipo;
     private Integer codigoSIA;
     private Long codigoProc;
+    private List<Long> codigosProc;
 
     private Long codigoWF;
     private Long codigoTram;
@@ -78,6 +79,21 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.codigoProc = codigoProc;
     }
 
+    public List<Long> getCodigosProc() {
+        return codigosProc;
+    }
+
+    public void setCodigosProc(List<Long> codigosProc) {
+        this.codigosProc = codigosProc;
+    }
+
+    public void setCodigosProc(String cods) {
+        String[] codigos = cods.split(",");
+        this.codigosProc = new ArrayList<>();
+        for (String codigo : codigos) {
+            codigosProc.add(Long.parseLong(codigo));
+        }
+    }
 
     public Long getCodigoWF() {
         return codigoWF;
@@ -461,6 +477,11 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public boolean isRellenoCodigoProc() {
         return codigoProc != null;
     }
+
+    public boolean isRellenoCodigosProc() {
+        return codigosProc != null && !codigosProc.isEmpty();
+    }
+
 
     public boolean isRellenoCodigoTram() {
         return codigoTram != null;

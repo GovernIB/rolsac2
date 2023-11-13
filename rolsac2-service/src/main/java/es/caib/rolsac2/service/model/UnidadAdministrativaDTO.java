@@ -135,11 +135,22 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
     private List<NormativaDTO> normativas;
 
     /**
+     * Numero para las evoluciones (no se guarda)
+     */
+    private Integer numero = 0;
+
+    /**
      * Instancia una nueva Unidad administrativa dto.
      */
     public UnidadAdministrativaDTO() {
+        //Vacio
     }
 
+    /**
+     * Instancia una nueva Unidad administrativa dto.
+     *
+     * @param otro
+     */
     public UnidadAdministrativaDTO(UnidadAdministrativaDTO otro) {
         this.codigo = otro.codigo;
         this.codigoDIR3 = otro.codigoDIR3;
@@ -614,10 +625,20 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
         this.usuariosUnidadAdministrativa = usuariosUnidadAdministrativa;
     }
 
+    /**
+     * Obtiene hijos.
+     *
+     * @return
+     */
     public List<UnidadAdministrativaDTO> getHijos() {
         return hijos;
     }
 
+    /**
+     * Establece hijos.
+     *
+     * @param hijos
+     */
     public void setHijos(List<UnidadAdministrativaDTO> hijos) {
         this.hijos = hijos;
     }
@@ -640,44 +661,112 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
         this.temas = temas;
     }
 
+    /**
+     * Obtiene usuario auditoria.
+     *
+     * @return
+     */
     public String getUsuarioAuditoria() {
         return usuarioAuditoria;
     }
 
+    /**
+     * Establece usuario auditoria.
+     *
+     * @param usuarioAuditoria
+     */
     public void setUsuarioAuditoria(String usuarioAuditoria) {
         this.usuarioAuditoria = usuarioAuditoria;
     }
 
+    /**
+     * Obtiene version.
+     *
+     * @return
+     */
     public Integer getVersion() {
         return version;
     }
 
+    /**
+     * Establece version.
+     *
+     * @param version
+     */
     public void setVersion(Integer version) {
         this.version = version;
     }
 
+    /**
+     * Obtiene estado.
+     *
+     * @return
+     */
     public String getEstado() {
         return estado;
     }
 
+    /**
+     * Establece estado.
+     *
+     * @param estado
+     */
     public void setEstado(String estado) {
         this.estado = estado;
     }
 
+    /**
+     * Obtiene fecha baja.
+     *
+     * @return
+     */
     public Date getFechaBaja() {
         return fechaBaja;
     }
 
+    /**
+     * Establece fecha baja.
+     *
+     * @param fechaBaja
+     */
     public void setFechaBaja(Date fechaBaja) {
         this.fechaBaja = fechaBaja;
     }
 
+    /**
+     * Obtiene normativas.
+     *
+     * @return
+     */
     public List<NormativaDTO> getNormativas() {
         return normativas;
     }
 
+    /**
+     * Establece normativas.
+     *
+     * @param normativas
+     */
     public void setNormativas(List<NormativaDTO> normativas) {
         this.normativas = normativas;
+    }
+
+    /**
+     * Obtiene numero.
+     *
+     * @return
+     */
+    public Integer getNumero() {
+        return numero;
+    }
+
+    /**
+     * Establece numero.
+     *
+     * @param numero
+     */
+    public void setNumero(Integer numero) {
+        this.numero = numero;
     }
 
     /**

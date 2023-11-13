@@ -3,33 +3,24 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
-import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.facade.NormativaServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.facade.integracion.BoletinServiceFacade;
-import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.EdictoGridDTO;
+import es.caib.rolsac2.service.model.NormativaDTO;
+import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.EdictoFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-import org.primefaces.PrimeFaces;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Named
 @ViewScoped
@@ -65,13 +56,12 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
     }
 
     public void buscar() {
-        if(Objects.nonNull(this.filtro)) {
-            if(getFiltroNumBoletin().equals("") && getFiltroFechaBoletin() == null && getFiltroNumRegistro().equals("")) {
+        if (Objects.nonNull(this.filtro)) {
+            if (getFiltroNumBoletin().equals("") && getFiltroFechaBoletin() == null && getFiltroNumRegistro().equals("")) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraspasoBOIB.rellenarUnElemento"), true);
             } else {
-                try{
-                    data = boletinServiceFacade.listar(getFiltroNumBoletin(), getFiltroFechaBoletin() == null ? "" : getFiltroFechaBoletin().toString(),
-                            getFiltroNumRegistro(), sessionBean.getEntidad().getCodigo());
+                try {
+                    data = boletinServiceFacade.listar(getFiltroNumBoletin(), getFiltroFechaBoletin() == null ? "" : getFiltroFechaBoletin().toString(), getFiltroNumRegistro(), sessionBean.getEntidad().getCodigo());
                     this.mostrarResultados = true;
                 } catch (RuntimeException e) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraspasoBOIB.erroresBusqueda"), true);
@@ -97,7 +87,7 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
     }
 
     public void crearNormativa() {
-        if(datoSeleccionado == null) {
+        if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
             final Map<String, String> params = new HashMap<>();
@@ -117,12 +107,12 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
 
     private NormativaDTO createNormativaDTO(EdictoGridDTO dto) {
         NormativaDTO normativaDTO = new NormativaDTO();
-        if(boletinServiceFacade.obtenerBoletinPlugin(this.sessionBean.getEntidad().getCodigo()) != null) {
+        if (boletinServiceFacade.obtenerBoletinPlugin(this.sessionBean.getEntidad().getCodigo()) != null) {
             Long tipoBoletinId = boletinServiceFacade.obtenerBoletinPlugin(this.sessionBean.getEntidad().getCodigo());
             normativaDTO.setBoletinOficial(maestrasSupServiceFacade.findTipoBoletinById(tipoBoletinId));
         }
         normativaDTO.setEntidad(sessionBean.getEntidad());
-        normativaDTO.setNombre(dto.getTitulo());
+        normativaDTO.setTitulo(dto.getTitulo());
         normativaDTO.setUrlBoletin(dto.getUrl());
         normativaDTO.setFechaBoletin(dto.getFechaBoletin());
         normativaDTO.setNumeroBoletin(dto.getNumeroBoletin());

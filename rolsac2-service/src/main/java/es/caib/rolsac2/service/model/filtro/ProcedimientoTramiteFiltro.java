@@ -19,11 +19,12 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 	private String tipo;
 	private Integer codigoSIA;
 	private Long codigoProc;
+	private List<Long> codigosProc;
 	private Long codigoTram;
 	private String estadoSIA;
 	private String siaFecha;
 	private String codigoDir3SIA;
-    private String estadoWF;
+	private String estadoWF;
 
 	private String volcadoSIA;
 
@@ -55,6 +56,7 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 	private String mensajesPendiente;
 
 	private Long codigo;
+	private List<Long> codigos;
 
 	private Integer orden;
 	private Integer fase;
@@ -86,6 +88,22 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 
 	public void setCodigoProc(Long codigoProc) {
 		this.codigoProc = codigoProc;
+	}
+
+	public List<Long> getCodigosProc() {
+		return codigosProc;
+	}
+
+	public void setCodigosProc(List<Long> codigosProc) {
+		this.codigosProc = codigosProc;
+	}
+
+	public List<Long> getCodigos() {
+		return codigos;
+	}
+
+	public void setCodigos(List<Long> codigos) {
+		this.codigos = codigos;
 	}
 
 	public Long getCodigoTram() {
@@ -405,6 +423,10 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 		return codigoProc != null;
 	}
 
+	public boolean isRellenoCodigosProc() {
+		return codigosProc != null && !codigosProc.isEmpty();
+	}
+
 	public boolean isRellenoCodigoTram() {
 		return codigoTram != null;
 	}
@@ -610,6 +632,10 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 		return codigo != null;
 	}
 
+	public boolean isRellenoCodigos() {
+		return codigos != null && !codigos.isEmpty();
+	}
+
 	public boolean isRellenoOrden() {
 		return orden != null;
 	}
@@ -651,7 +677,7 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 	}
 
 
-	public boolean isRellenoIdTramite(){
+	public boolean isRellenoIdTramite() {
 		return idTramite != null;
 	}
 

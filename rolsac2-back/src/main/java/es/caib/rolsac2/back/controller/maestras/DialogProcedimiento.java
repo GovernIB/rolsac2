@@ -132,7 +132,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             } else {
                 data = (ProcedimientoDTO) UtilJSF.getValorMochilaByKey("PROC");
             }
-
+             
             UtilJSF.vaciarMochila();
         }
         temasTabla = new ArrayList<>();

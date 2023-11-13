@@ -135,6 +135,43 @@ public class Literal implements Cloneable {
     }
 
     /**
+     * Obtiene el valor de traduccion (si está relleno, sino devuelve el del idioma por defecto).
+     *
+     * @param idioma           idioma
+     * @param idiomaPorDefecto idioma por defecto (normalmenete ca)
+     * @return el valor de traduccion
+     */
+    public String getTraduccionConValor(final String idioma, final String idiomaPorDefecto) {
+
+        if (idioma != null) {
+            for (final Traduccion traduccion : trads) {
+                if (idioma.equals(traduccion.getIdioma())) {
+                    String valor = traduccion.getLiteral();
+                    //Solo devuelve si el valor está relleno.
+                    if (valor != null && !valor.isEmpty()) {
+                        return valor;
+                    }
+                    break;
+                }
+            }
+        }
+
+        if (idiomaPorDefecto != null) {
+            for (final Traduccion traduccion : trads) {
+                if (idiomaPorDefecto.equals(traduccion.getIdioma())) {
+                    return traduccion.getLiteral();
+                }
+            }
+        }
+
+        if (trads.size() > 0) {
+            return trads.get(0).getLiteral();
+        }
+
+        return null;
+    }
+
+    /**
      * Obtiene el valor de traduccion (con algún valor por defecto).
      *
      * @param idioma idioma

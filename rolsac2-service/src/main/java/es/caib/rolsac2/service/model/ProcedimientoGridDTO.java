@@ -421,6 +421,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     public void setMensajesPendienteSupervisor(boolean mensajesPendienteSupervisor) {
         this.mensajesPendienteSupervisor = mensajesPendienteSupervisor;
     }
+ 
 
     /**
      * Icono de visibilidad
@@ -475,11 +476,11 @@ public class ProcedimientoGridDTO extends ModelApi {
         return "ProcedimientoDTO{" + "codigo=" + codigo + ", nombre='" + nombre + '\'' + ", codigoSIA='" + codigoSIA + '\'' + '}';
     }
 
-	public Integer getNumero() {
-		return numero;
-	}
+    public Integer getNumero() {
+        return numero;
+    }
 
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-	}
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
 }

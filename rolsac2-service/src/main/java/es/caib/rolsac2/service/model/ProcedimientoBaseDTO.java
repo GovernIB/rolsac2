@@ -65,6 +65,11 @@ public class ProcedimientoBaseDTO extends ModelApi {
     // Nombre
     private Literal nombreProcedimientoWorkFlow;
 
+    /**
+     * Nombre
+     */
+    private String nombre;
+
     // LOPD
     String lopdResponsable;
     Literal lopdInfoAdicional = new Literal();
@@ -103,7 +108,18 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private boolean pendienteMensajesGestor = false;
     private boolean pendienteMensajesSupervisor = false;
 
+    /**
+     * ESTA VARIABLE NO SE UTILIZA, SOLO PARA LA EVOLUCION
+     **/
+    //Opciones de Unidad Administrativa destino en la evolucion de division
+    private Long opcionUAdestino;
 
+    /**
+     * Create instance
+     *
+     * @param idiomas
+     * @return
+     */
     public static ProcedimientoBaseDTO createInstance(List<String> idiomas) {
         ProcedimientoBaseDTO proc = new ProcedimientoBaseDTO();
         proc.setWorkflow(TypeProcedimientoWorkflow.MODIFICACION);
@@ -124,38 +140,101 @@ public class ProcedimientoBaseDTO extends ModelApi {
         return proc;
     }
 
+    /**
+     * Obtiene codigo.
+     *
+     * @return codigo
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Establece codigo.
+     *
+     * @param codigo codigo
+     */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Obtiene codigo sia.
+     *
+     * @return codigo sia
+     */
     public void setCodigoSIA(Integer codigoSIA) {
         this.codigoSIA = codigoSIA;
     }
 
+    /**
+     * Obtiene estado sia.
+     *
+     * @return estado sia
+     */
     public void setEstadoSIA(String estadoSIA) {
         this.estadoSIA = estadoSIA;
     }
 
+    /**
+     * Obtiene nombre procedimiento wf.
+     *
+     * @return nombre procedimiento wf
+     */
     public Literal getNombreProcedimientoWorkFlow() {
         return nombreProcedimientoWorkFlow;
     }
 
+    /**
+     * Obtiene nombre.
+     *
+     * @return nombre
+     */
+    public String getNombre() {
+        return nombre;
+    }
+
+    /**
+     * Establece nombre.
+     *
+     * @param nombre nombre
+     */
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    /**
+     * Obtiene requisitos.
+     *
+     * @return requisitos
+     */
     public Literal getRequisitos() {
         return requisitos;
     }
 
+    /**
+     * Establece requisitos.
+     *
+     * @param requisitos requisitos
+     */
     public void setRequisitos(Literal requisitos) {
         this.requisitos = requisitos;
     }
 
+    /**
+     * Obtiene tipo.
+     *
+     * @return tipo
+     */
     public String getTipo() {
         return tipo;
     }
 
+    /**
+     * Establece tipo.
+     *
+     * @param tipo tipo
+     */
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
@@ -587,6 +666,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setKeywords(Literal keywords) {
         this.keywords = keywords;
+    }
+
+    public Long getOpcionUAdestino() {
+        return opcionUAdestino;
+    }
+
+    public void setOpcionUAdestino(Long opcionUAdestino) {
+        this.opcionUAdestino = opcionUAdestino;
     }
 
     @Override

@@ -201,7 +201,8 @@ create or replace PROCEDURE "MIGRAR_PROC" (codigo NUMBER, codigoEntidad NUMBER, 
     CURSOR cursorMateriasRolsac1 (codPRO NUMBER) IS 
         SELECT *  
           FROM R1_PROCEDIMIENTOS_MATE
-         WHERE PRM_CODPRO = codPRO;
+         WHERE PRM_CODPRO = codPRO
+           AND PRM_CODMAT IN (SELECT TEMA_CODIGO FROM RS2_TEMA);
     CURSOR cursorTramitesRolsac1 ( codPRO NUMBER) IS 
         SELECT *  
           FROM R1_TRAMITES

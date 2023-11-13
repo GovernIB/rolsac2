@@ -128,32 +128,40 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             data.setEstado("V"); //Vigente
             dataOriginal = (UnidadAdministrativaDTO) data.clone();
 
-            if (this.modoEvolucion != null && "S".equals(this.modoEvolucion) && this.modoEvolucionUAs != null && !this.modoEvolucionUAs.isEmpty()) {
+            if (this.modoEvolucion != null && "S".equals(this.modoEvolucion)) {
                 activoModoEvolucion = true;
                 if (UtilJSF.getValorMochilaByKey("ua") == null) {
-                    List<Long> uas = getUasEvolucion(this.modoEvolucionUAs);
-                    List<UsuarioGridDTO> usuariosUAs = unidadAdministrativaServiceFacade.getUsuariosByUas(uas);
-                    List<TemaGridDTO> temas = unidadAdministrativaServiceFacade.getTemasByUas(uas);
-                    if (mostrarProcsNormativas) {
-                        procedimientos = unidadAdministrativaServiceFacade.getProcedimientosByUas(uas, UtilJSF.getSessionBean().getLang());
-                        normativas = unidadAdministrativaServiceFacade.getNormativaByUas(uas, UtilJSF.getSessionBean().getLang());
+                    if (this.modoEvolucionUAs != null && !this.modoEvolucionUAs.isEmpty()) {
+                        List<Long> uas = getUasEvolucion(this.modoEvolucionUAs);
+                        List<UsuarioGridDTO> usuariosUAs = unidadAdministrativaServiceFacade.getUsuariosByUas(uas);
+                        List<TemaGridDTO> temas = unidadAdministrativaServiceFacade.getTemasByUas(uas);
+                        if (mostrarProcsNormativas) {
+                            procedimientos = unidadAdministrativaServiceFacade.getProcedimientosByUas(uas, null, UtilJSF.getSessionBean().getLang(), null);
+                            normativas = unidadAdministrativaServiceFacade.getNormativaByUas(uas, UtilJSF.getSessionBean().getLang());
+                        }
+                        data.setUsuariosUnidadAdministrativa(usuariosUAs);
+                        data.setTemas(temas);
                     }
-                    data.setUsuariosUnidadAdministrativa(usuariosUAs);
-                    data.setTemas(temas);
                 } else {
                     data = (UnidadAdministrativaDTO) UtilJSF.getValorMochilaByKey("ua");
                     if (mostrarProcsNormativas) {
-                        procedimientos = unidadAdministrativaServiceFacade.getProcedimientosByUa(data.getCodigo(), UtilJSF.getSessionBean().getLang());
+                        procedimientos = unidadAdministrativaServiceFacade.getProcedimientosByUa(data.getCodigo(), null, UtilJSF.getSessionBean().getLang(), null);
                         normativas = unidadAdministrativaServiceFacade.getNormativaByUa(data.getCodigo(), UtilJSF.getSessionBean().getLang());
                     }
                     UtilJSF.vaciarMochila();
                 }
             }
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
-            if (mostrarProcsNormativas) {
-                normativas = unidadAdministrativaServiceFacade.getNormativaByUa(Long.valueOf(id), UtilJSF.getSessionBean().getLang());
-                procedimientos = unidadAdministrativaServiceFacade.getProcedimientosByUa(Long.valueOf(id), UtilJSF.getSessionBean().getLang());
+            if (this.modoEvolucion != null && "S".equals(this.modoEvolucion)) {
+                activoModoEvolucion = true;
+                data = (UnidadAdministrativaDTO) UtilJSF.getValorMochilaByKey("ua");
+                UtilJSF.vaciarMochila();
+            } else {
+                data = unidadAdministrativaServiceFacade.findById(Long.valueOf(id));
+                if (mostrarProcsNormativas) {
+                    normativas = unidadAdministrativaServiceFacade.getNormativaByUa(Long.valueOf(id), UtilJSF.getSessionBean().getLang());
+                    procedimientos = unidadAdministrativaServiceFacade.getProcedimientosByUa(Long.valueOf(id), null, UtilJSF.getSessionBean().getLang(), null);
+                }
             }
             dataAntigua = (UnidadAdministrativaDTO) data.clone();
             dataOriginal = (UnidadAdministrativaDTO) data.clone();
@@ -195,7 +203,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
      * Consultar normativa
      */
     public void consultarNormativa(Integer index) {
-        if (data.getNormativas() == null || data.getNormativas().isEmpty()) {
+        if (normativaSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
             final Map<String, String> params = new HashMap<>();
@@ -223,7 +231,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
      * Consultar normativa
      */
     public void consultarProcedimiento(Integer index) {
-        if (data.getNormativas() == null || data.getNormativas().isEmpty()) {
+        if (procedimientoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
             final Map<String, String> params = new HashMap<>();
@@ -259,7 +267,8 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         }
 
         //Si no es modo evolución, se guarda (En modo evolución, sólo se guarda al final de realizar todos los pasos)
-        if (!activoModoEvolucion) {
+        //     y si el codigo es nulo o mayor de 0 (si es negativo, es porque se tiene que crear en la evolucion)
+        if (!activoModoEvolucion && (this.data.getCodigo() == null || this.data.getCodigo() >= 0)) {
             if (this.data.getCodigo() == null) {
                 unidadAdministrativaServiceFacade.create(this.data, sessionBean.getPerfil());
             } else {

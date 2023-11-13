@@ -15,19 +15,73 @@ import java.util.Optional;
  */
 public interface EntidadRepository extends CrudRepository<JEntidad, Long> {
 
+    /**
+     * Retorna una entidades que cumplen con la id.
+     *
+     * @param id
+     * @return
+     */
     Optional<JEntidad> findById(String id);
 
+    /**
+     * Retorna una lista con las entidades que cumplen el filtro
+     *
+     * @param filtro
+     * @return
+     */
     List<EntidadGridDTO> findPagedByFiltro(EntidadFiltro filtro);
 
+    /**
+     * Retorna una lista con las entidades que tienen el identificador indicado
+     *
+     * @return
+     */
     List<JEntidad> findActivas();
 
+    /**
+     * Retorna una lista con los identificadores de las entidades que tienen
+     *
+     * @param idEntidades
+     * @return
+     */
     List<String> findRolesDefinidos(List<Long> idEntidades);
 
+    /**
+     * Retorna el número de entidades que cumplen el filtro
+     *
+     * @param filtro
+     * @return
+     */
     long countByFiltro(EntidadFiltro filtro);
 
+    /**
+     * Retorna si la entidad indicada existe por el identificador
+     *
+     * @param identificador
+     * @return
+     */
     boolean existeIdentificadorEntidad(String identificador);
 
-	List<JEntidad> findAll();
+    /**
+     * Retorna una lista con todas las entidades
+     *
+     * @return
+     */
+    List<JEntidad> findAll();
 
-	List<EntidadDTO> findPagedByFiltroRest(EntidadFiltro filtro);
+    /**
+     * Retorna una lista con todas las entidades
+     *
+     * @param filtro
+     * @return
+     */
+    List<EntidadDTO> findPagedByFiltroRest(EntidadFiltro filtro);
+
+    /**
+     * Retorna el idioma por defecto de la entidad
+     *
+     * @param idEntidad
+     * @return
+     */
+    String getIdiomaPorDefecto(Long idEntidad);
 }

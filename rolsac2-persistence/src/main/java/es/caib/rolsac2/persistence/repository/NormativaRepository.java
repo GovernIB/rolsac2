@@ -56,4 +56,14 @@ public interface NormativaRepository extends CrudRepository<JNormativa, Long> {
      * @param codigoUAfusion
      */
     void actualizarUA(List<Long> idUAs, Long codigoUAfusion);
+
+    void evolucionarNorm(Long codigoNormativa, Long codigoUAOrigen, Long codigoUADestino);
+
+    /**
+     * Obtiene el idioma de la entidad
+     *
+     * @param codigoNorm
+     * @return
+     */
+    String obtenerIdiomaEntidad(Long codigoNorm);
 }

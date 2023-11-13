@@ -23,7 +23,7 @@ public class JProcedimientoWorkflowTraduccion {
     @Column(name = "TRPW_IDIOMA", nullable = false, length = 2)
     private String idioma;
 
-    @Column(name = "TRPW_NOMBRE", length = 255)
+    @Column(name = "TRPW_NOMBRE", length = 256)
     private String nombre;
 
     @Column(name = "TRPW_OBJETO")

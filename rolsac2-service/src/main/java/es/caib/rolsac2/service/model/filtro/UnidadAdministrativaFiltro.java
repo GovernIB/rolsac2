@@ -1,5 +1,7 @@
 package es.caib.rolsac2.service.model.filtro;
 
+import java.util.List;
+
 /**
  * Filtro de ua.
  */
@@ -14,6 +16,7 @@ public class UnidadAdministrativaFiltro extends AbstractFiltro {
     private Long codEnti;
     private Long codigoNormativa;
     private Long codigo;
+    private List<Long> codigos;
     private String codigoDIR3;
     private String estado;
 
@@ -23,6 +26,14 @@ public class UnidadAdministrativaFiltro extends AbstractFiltro {
 
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
+    }
+
+    public List<Long> getCodigos() {
+        return codigos;
+    }
+
+    public void setCodigos(List<Long> codigos) {
+        this.codigos = codigos;
     }
 
     public Long getCodEnti() {

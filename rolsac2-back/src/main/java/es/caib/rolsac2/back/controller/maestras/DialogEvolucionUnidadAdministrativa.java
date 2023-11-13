@@ -69,7 +69,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionDivisionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 540);
+        UtilJSF.openDialog("dialogEvolucionDivisionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 740);
     }
 
     public void cerrar() {

@@ -365,11 +365,11 @@ public class CastUtil {
             urlCAT = norm.getUrlBoletin().getTraduccion("ca");
         }
         // Recorremos las traducciones
-        for (final String keyIdioma : norm.getNombre().getIdiomas()) {
+        for (final String keyIdioma : norm.getTitulo().getIdiomas()) {
             final EnumIdiomas enumIdioma = EnumIdiomas.fromString(keyIdioma);
             if (enumIdioma != null) {
                 //Para saltarse los idiomas sin titulo
-                if (norm.getNombre().getTraduccion(keyIdioma) == null || norm.getNombre().getTraduccion(keyIdioma).isEmpty()) {
+                if (norm.getTitulo().getTraduccion(keyIdioma) == null || norm.getTitulo().getTraduccion(keyIdioma).isEmpty()) {
                     continue;
                 }
 
@@ -378,15 +378,15 @@ public class CastUtil {
 
                 // Seteamos los primeros campos multiidiomas: Titulo, Descripción y el search
                 // text.
-                titulo.addIdioma(enumIdioma, norm.getNombre().getTraduccion(keyIdioma));
-                descripcion.addIdioma(enumIdioma, norm.getNombre().getTraduccion(keyIdioma));
+                titulo.addIdioma(enumIdioma, norm.getTitulo().getTraduccion(keyIdioma));
+                descripcion.addIdioma(enumIdioma, norm.getTitulo().getTraduccion(keyIdioma));
 
 
                 String tipoNormativaNombre = "";
                 if (norm.getTipoNormativa() != null && norm.getTipoNormativa().getDescripcion() != null && norm.getTipoNormativa().getDescripcion().getTraduccion(keyIdioma) != null) {
                     tipoNormativaNombre = norm.getTipoNormativa().getDescripcion().getTraduccion(keyIdioma);
                 }
-                searchText.addIdioma(enumIdioma, norm.getNombre().getTraduccion(keyIdioma) + " " + norm.getNumero() + " " + tipoNormativaNombre);
+                searchText.addIdioma(enumIdioma, norm.getTitulo().getTraduccion(keyIdioma) + " " + norm.getNumero() + " " + tipoNormativaNombre);
 
 
                 final StringBuffer textoOptional = new StringBuffer();
@@ -668,7 +668,7 @@ public class CastUtil {
             // text.
             titulo.addIdioma(enumIdioma, doc.getTitulo().getTraduccion(idioma));
             descripcion.addIdioma(enumIdioma, ficheroDTO.getFilename());
-            descripcionPadre.addIdioma(enumIdioma, norm.getNombre().getTraduccion(idioma));
+            descripcionPadre.addIdioma(enumIdioma, norm.getTitulo().getTraduccion(idioma));
             extension.addIdioma(enumIdioma, IndexacionUtil.calcularExtensionArchivo(ficheroDTO.getFilename()));
             indexData.setFileContent(ficheroDTO.getContenido());
 

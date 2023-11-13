@@ -22,7 +22,6 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 
 @Named
@@ -90,7 +89,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
             if (this.isModoAlta()) {
                 data = new NormativaDTO();
                 data.setEntidad(sessionBean.getEntidad());
-                data.setNombre(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+                data.setTitulo(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
                 data.setUrlBoletin(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
                 List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
                 UnidadAdministrativaGridDTO uaActiva = unidadAdministrativaServiceFacade.findById(sessionBean.getUnidadActiva().getCodigo()).convertDTOtoGridDTO();
@@ -156,7 +155,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
             return false;
         }
 
-        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getNombre(), sessionBean.getIdiomasObligatoriosList());
+        List<String> idiomasPendientesDescripcion = ValidacionTipoUtils.esLiteralCorrecto(this.data.getTitulo(), sessionBean.getIdiomasObligatoriosList());
         if (!idiomasPendientesDescripcion.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogNormativa.titulo", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
@@ -174,27 +173,13 @@ public class DialogNormativa extends AbstractController implements Serializable 
     }
 
     private boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0
-                || UtilComparador.compareTo(data.getNumero(), dataOriginal.getNumero()) != 0
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getTitulo(), dataOriginal.getTitulo()) != 0 || UtilComparador.compareTo(data.getNumero(), dataOriginal.getNumero()) != 0
 
-                || (data.getFechaAprobacion() != null && dataOriginal.getFechaAprobacion() != null && !data.getFechaAprobacion().equals(dataOriginal.getFechaAprobacion()))
-                || ((data.getFechaAprobacion() == null || dataOriginal.getFechaAprobacion() == null) && (data.getFechaAprobacion() != null || dataOriginal.getFechaAprobacion() != null))
+                || (data.getFechaAprobacion() != null && dataOriginal.getFechaAprobacion() != null && !data.getFechaAprobacion().equals(dataOriginal.getFechaAprobacion())) || ((data.getFechaAprobacion() == null || dataOriginal.getFechaAprobacion() == null) && (data.getFechaAprobacion() != null || dataOriginal.getFechaAprobacion() != null))
 
-                || (data.getFechaBoletin() != null && dataOriginal.getFechaBoletin() != null && !data.getFechaBoletin().equals(dataOriginal.getFechaBoletin()))
-                || ((data.getFechaBoletin() == null || dataOriginal.getFechaBoletin() == null) && (data.getFechaBoletin() != null || dataOriginal.getFechaBoletin() != null))
+                || (data.getFechaBoletin() != null && dataOriginal.getFechaBoletin() != null && !data.getFechaBoletin().equals(dataOriginal.getFechaBoletin())) || ((data.getFechaBoletin() == null || dataOriginal.getFechaBoletin() == null) && (data.getFechaBoletin() != null || dataOriginal.getFechaBoletin() != null))
 
-                || UtilComparador.compareTo(data.getNumeroBoletin(), dataOriginal.getNumeroBoletin()) != 0
-                || UtilComparador.compareTo(data.getUrlBoletin(), dataOriginal.getUrlBoletin()) != 0
-                || UtilComparador.compareTo(data.getNombreResponsable(), dataOriginal.getNombreResponsable()) != 0
-                || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0
-                || (data.getBoletinOficial() != null && dataOriginal.getBoletinOficial() != null && UtilComparador.compareTo(data.getBoletinOficial().getCodigo(), dataOriginal.getBoletinOficial().getCodigo()) != 0)
-                || ((data.getBoletinOficial() == null || dataOriginal.getBoletinOficial() == null) && (data.getBoletinOficial() != null || dataOriginal.getBoletinOficial() != null))
-                || (data.getTipoNormativa() != null && dataOriginal.getTipoNormativa() != null && UtilComparador.compareTo(data.getTipoNormativa().getCodigo(), dataOriginal.getTipoNormativa().getCodigo()) != 0)
-                || ((data.getTipoNormativa() == null || dataOriginal.getTipoNormativa() == null) && (data.getTipoNormativa() != null || dataOriginal.getTipoNormativa() != null))
-                || !data.getDocumentosNormativa().equals(dataOriginal.getDocumentosNormativa())
-                || !data.getUnidadesAdministrativas().equals(dataOriginal.getUnidadesAdministrativas())
-                || !data.getAfectaciones().equals(dataOriginal.getAfectaciones());
+                || UtilComparador.compareTo(data.getNumeroBoletin(), dataOriginal.getNumeroBoletin()) != 0 || UtilComparador.compareTo(data.getUrlBoletin(), dataOriginal.getUrlBoletin()) != 0 || UtilComparador.compareTo(data.getNombreResponsable(), dataOriginal.getNombreResponsable()) != 0 || UtilComparador.compareTo(data.getTitulo(), dataOriginal.getTitulo()) != 0 || (data.getBoletinOficial() != null && dataOriginal.getBoletinOficial() != null && UtilComparador.compareTo(data.getBoletinOficial().getCodigo(), dataOriginal.getBoletinOficial().getCodigo()) != 0) || ((data.getBoletinOficial() == null || dataOriginal.getBoletinOficial() == null) && (data.getBoletinOficial() != null || dataOriginal.getBoletinOficial() != null)) || (data.getTipoNormativa() != null && dataOriginal.getTipoNormativa() != null && UtilComparador.compareTo(data.getTipoNormativa().getCodigo(), dataOriginal.getTipoNormativa().getCodigo()) != 0) || ((data.getTipoNormativa() == null || dataOriginal.getTipoNormativa() == null) && (data.getTipoNormativa() != null || dataOriginal.getTipoNormativa() != null)) || !data.getDocumentosNormativa().equals(dataOriginal.getDocumentosNormativa()) || !data.getUnidadesAdministrativas().equals(dataOriginal.getUnidadesAdministrativas()) || !data.getAfectaciones().equals(dataOriginal.getAfectaciones());
     }
 
     public void cerrarDefinitivo() {
@@ -221,7 +206,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
         NormativaDTO datoDTO = (NormativaDTO) respuesta.getResult();
 
         if (datoDTO != null) {
-            data.setNombre(datoDTO.getNombre());
+            data.setTitulo(datoDTO.getTitulo());
             data.setUrlBoletin(datoDTO.getUrlBoletin());
         }
     }

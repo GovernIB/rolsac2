@@ -42,7 +42,7 @@ public class DialogEvolucionBasicaUnidadAdministrativa extends EvolucionControll
             data = unidadAdministrativaServiceFacade.findUASimpleByID(idUA, UtilJSF.getSessionBean().getLang(), null);
         } else if (id != null) {
             idUA = Long.valueOf(id);
-            data = unidadAdministrativaServiceFacade.findUASimpleByID(idUA, UtilJSF.getSessionBean().getLang(), null); //findById(Long.valueOf(id));
+            data = unidadAdministrativaServiceFacade.findUASimpleByID(idUA, UtilJSF.getSessionBean().getLang(), null);
         }
 
         uaDestino = new Literal();
@@ -64,7 +64,7 @@ public class DialogEvolucionBasicaUnidadAdministrativa extends EvolucionControll
     public void evolucionar() {
 
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-        unidadAdministrativaServiceFacade.evolucionBasica(idUA, fechaBaja, uaDestino, normativa, UtilJSF.getSessionBean().getEntidad(), UtilJSF.getSessionBean().getPerfil(), usuario);
+        unidadAdministrativaServiceFacade.evolucionBasica(idUA, fechaBaja, uaDestino, getNormativa(), UtilJSF.getSessionBean().getEntidad(), UtilJSF.getSessionBean().getPerfil(), usuario);
 
         final DialogResult result = new DialogResult();
         result.setCanceled(false);

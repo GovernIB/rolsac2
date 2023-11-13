@@ -60,6 +60,10 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
      */
     private Boolean vigente;
 
+    /**
+     * En evolucion división, la ua destino
+     **/
+    private Long opcionUAdestino;
 
     /**
      * Instancia una nueva Normativa grid dto.
@@ -231,6 +235,14 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
         this.vigente = vigente;
     }
 
+    public Long getOpcionUAdestino() {
+        return opcionUAdestino;
+    }
+
+    public void setOpcionUAdestino(Long opcionUAdestino) {
+        this.opcionUAdestino = opcionUAdestino;
+    }
+
     /**
      * Se hace a este nivel manualmente el clonar.
      *
@@ -253,9 +265,7 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
 
     @Override
     public String toString() {
-        return "NormativaGridDTO{" +
-                "codigo=" + codigo +
-                '}';
+        return "NormativaGridDTO{" + "codigo=" + codigo + '}';
     }
 
     /*
@@ -354,11 +364,11 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
     }
 
     public Integer getNumeroTabla() {
-		return numeroTabla;
-	}
+        return numeroTabla;
+    }
 
-	public void setNumeroTabla(Integer numeroTabla) {
-		this.numeroTabla = numeroTabla;
-	}
+    public void setNumeroTabla(Integer numeroTabla) {
+        this.numeroTabla = numeroTabla;
+    }
 
 }

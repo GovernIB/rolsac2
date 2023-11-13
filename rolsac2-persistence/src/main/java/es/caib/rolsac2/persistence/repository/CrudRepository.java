@@ -8,7 +8,7 @@ package es.caib.rolsac2.persistence.repository;
  */
 public interface CrudRepository<E, PK> {
 
-    void create(E entity);
+    Long create(E entity);
 
     void update(E entity);
 

@@ -9,6 +9,7 @@ import es.caib.rolsac2.service.model.types.TypePerfiles;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Servicio para los casos de uso de mantenimiento de UA.
@@ -290,20 +291,34 @@ public interface UnidadAdministrativaServiceFacade {
     /**
      * Obtiene procedimientos de la ua
      *
-     * @param uas
-     * @param idioma
+     * @param uas     Indica las uas
+     * @param tipo    Indica el tipo de procedimiento
+     * @param idioma  Indica el idioma
+     * @param visible si es null no se filtra por visible
      * @return
      */
-    List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String idioma);
+    List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String tipo, String idioma, Boolean visible);
 
     /**
      * Obtiene procedimientos de la ua
      *
      * @param ua
+     * @param tipo
      * @param idioma
      * @return
      */
-    List<ProcedimientoBaseDTO> getProcedimientosByUa(Long ua, String idioma);
+    List<ProcedimientoBaseDTO> getProcedimientosByUa(Long ua, String tipo, String idioma, Boolean visible);
+
+    /**
+     * Obtiene el total de procedimientos de la ua
+     *
+     * @param ua
+     * @param tipo
+     * @param idioma
+     * @param visible
+     * @return
+     */
+    Long getProcedimientosTotalByUas(Long ua, String tipo, String idioma, Boolean visible);
 
 
     /**
@@ -325,4 +340,26 @@ public interface UnidadAdministrativaServiceFacade {
     void evolucionFusion(List<UnidadAdministrativaGridDTO> selectedUnidades, NormativaDTO normativa, Date fechaBaja, UnidadAdministrativaDTO uaFusion, TypePerfiles perfil, String usuario);
 
 
+    /***
+     * Devuelve una lista de codigos dir3 asociado a cada código.
+     * @param codigos
+     * @return
+     */
+    Map<Long, String> obtenerCodigosDIR3(List<Long> codigos);
+
+    /**
+     * Evolución de una UA (uaOrigen) dividido en varias ua (uasDestino)
+     *
+     * @param uaOrigen
+     * @param uasDestino
+     * @param fechaBaja
+     * @param normativa
+     * @param procedimientos
+     * @param servicios
+     * @param normativas
+     * @param entidad
+     * @param perfil
+     * @param usuario
+     */
+    void evolucionDivision(Long uaOrigen, List<UnidadAdministrativaDTO> uasDestino, Date fechaBaja, NormativaDTO normativa, List<ProcedimientoBaseDTO> procedimientos, List<ProcedimientoBaseDTO> servicios, List<NormativaGridDTO> normativas, EntidadDTO entidad, TypePerfiles perfil, String usuario);
 }

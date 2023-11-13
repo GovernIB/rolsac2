@@ -26,7 +26,7 @@ public class NormativaDTO extends ModelApi {
     private String numeroBoletin;
     private Literal urlBoletin;
     private Literal nombreResponsable;
-    private Literal nombre;
+    private Literal titulo;
     private EntidadDTO entidad;
 
     private List<DocumentoNormativaDTO> documentosNormativa;
@@ -52,7 +52,7 @@ public class NormativaDTO extends ModelApi {
             this.numeroBoletin = otro.numeroBoletin;
             this.urlBoletin = otro.urlBoletin == null ? null : (Literal) otro.urlBoletin.clone();
             this.nombreResponsable = otro.nombreResponsable;
-            this.nombre = otro.nombre == null ? null : (Literal) otro.nombre.clone();
+            this.titulo = otro.titulo == null ? null : (Literal) otro.titulo.clone();
             this.entidad = otro.entidad == null ? null : otro.entidad.clone();
             this.documentosNormativa = otro.documentosNormativa;
             this.unidadesAdministrativas = otro.unidadesAdministrativas;
@@ -133,12 +133,12 @@ public class NormativaDTO extends ModelApi {
         this.boletinOficial = boletin;
     }
 
-    public Literal getNombre() {
-        return nombre;
+    public Literal getTitulo() {
+        return titulo;
     }
 
-    public void setNombre(Literal nombre) {
-        this.nombre = nombre;
+    public void setTitulo(Literal titulo) {
+        this.titulo = titulo;
     }
 
     public EntidadDTO getEntidad() {
@@ -206,7 +206,7 @@ public class NormativaDTO extends ModelApi {
         normativaGridDTO.setNumero(this.numero);
         normativaGridDTO.setBoletinOficial(this.boletinOficial == null ? null : this.boletinOficial.getIdentificador());
         normativaGridDTO.setFechaAprobacion(this.fechaAprobacion == null ? null : this.fechaAprobacion.toString());
-        normativaGridDTO.setTitulo(this.nombre);
+        normativaGridDTO.setTitulo(this.titulo);
         normativaGridDTO.setVigente(this.vigente);
         return normativaGridDTO;
 

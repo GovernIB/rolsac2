@@ -116,6 +116,10 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
             sql.append(" and j.codigo = :codigo ");
         }
 
+        if (filtro.isRellenoCodigos()) {
+            sql.append(" and j.codigo IN (:codigos) ");
+        }
+
         if (filtro.isRellenoOrden()) {
             sql.append(" and j.orden = :orden ");
         }
@@ -180,6 +184,10 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
 
         if (filtro.isRellenoCodigo()) {
             query.setParameter("codigo", filtro.getCodigo());
+        }
+
+        if (filtro.isRellenoCodigos()) {
+            query.setParameter("codigos", filtro.getCodigos());
         }
 
         if (filtro.isRellenoOrden()) {

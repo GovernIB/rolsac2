@@ -53,7 +53,6 @@ public class ServicioGridDTO extends ModelApi {
     private Date fechaPublicacion;
     private Date fechaDespublicacion;
 
-
     public Long getCodigo() {
         return codigo;
     }
@@ -256,11 +255,11 @@ public class ServicioGridDTO extends ModelApi {
         return "ProcedimientoDTO{" + "codigo=" + codigo + ", nombre='" + nombre + '\'' + ", codigoSIA='" + codigoSIA + '\'' + '}';
     }
 
-	public Integer getNumero() {
-		return numero;
-	}
+    public Integer getNumero() {
+        return numero;
+    }
 
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-	}
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
 }

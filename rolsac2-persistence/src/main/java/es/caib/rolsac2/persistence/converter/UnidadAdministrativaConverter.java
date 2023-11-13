@@ -244,7 +244,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
                         resultado.add(traduccion);
                     }
                 }
-                normativaDTO.setNombre(resultado);
+                normativaDTO.setTitulo(resultado);
                 normativasDTO.add(normativaDTO);
             }
         }

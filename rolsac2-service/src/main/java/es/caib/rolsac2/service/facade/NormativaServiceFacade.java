@@ -200,11 +200,12 @@ public interface NormativaServiceFacade {
      */
     Pagina<IndexacionDTO> getNormativasParaIndexacion(Long idEntidad);
 
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     void actualizarSolr(IndexacionDTO proc, ResultadoAccion resultadoAccion);
 
-	Pagina<NormativaDTO> findByFiltroRest(NormativaFiltro filtro);
+    Pagina<NormativaDTO> findByFiltroRest(NormativaFiltro filtro);
 
-	Pagina<DocumentoNormativaDTO> findDocumentoNormativaByFiltroRest(DocumentoNormativaFiltro filtro);
+    Pagina<DocumentoNormativaDTO> findDocumentoNormativaByFiltroRest(DocumentoNormativaFiltro filtro);
+
+    String obtenerIdiomaEntidad(Long codigo);
 }

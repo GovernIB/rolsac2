@@ -549,8 +549,131 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         return entidadRaizRepository.getEntidadRaizByUA(codigoUA);
     }
 
+
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR})
+    public void evolucionDivision(Long uaOrigen, List<UnidadAdministrativaDTO> uasDestino, Date fechaBaja, NormativaDTO normativaBaja, List<ProcedimientoBaseDTO> procedimientos, List<ProcedimientoBaseDTO> servicios, List<NormativaGridDTO> normativas, EntidadDTO entidad, TypePerfiles perfil, String usuario) {
+
+        JUnidadAdministrativa juaOrigen = unidadAdministrativaRepository.findById(uaOrigen);
+        String nombreAntiguo = getNombreUA(juaOrigen.getTraducciones());
+        String nombreDestinos = "";
+        List<Long> idUasDestino = new ArrayList<>();
+        for (UnidadAdministrativaDTO unidad : uasDestino) {
+            idUasDestino.add(unidad.getCodigo());
+            nombreDestinos += unidad.getNombre().getTraduccion() + ", ";
+        }
+        if (nombreDestinos.endsWith(",")) {
+            nombreDestinos = nombreDestinos.substring(0, nombreDestinos.length() - 1);
+        }
+
+        //Revisamos todas las UAs destino para ver si hay que crearlas y luego añadir una auditoria
+        for (int indice = 0; indice < uasDestino.size(); indice++) {
+            UnidadAdministrativaDTO ua = uasDestino.get(indice);
+            boolean creado;
+            String nombreUAfusion;
+            if (ua.getCodigo() == null || ua.getCodigo() <= 0) {
+                Long codigoAntiguo = ua.getCodigo();
+                ua.setCodigo(null);
+                Long codigoNuevo = unidadAdministrativaRepository.create(unidadAdministrativaConverter.createEntity(ua));
+                JUnidadAdministrativa junid = unidadAdministrativaRepository.findById(codigoNuevo);
+                JUnidadAdministrativa junidPadre = unidadAdministrativaRepository.findById(ua.getPadre().getCodigo());
+                junid.setPadre(junidPadre);
+                unidadAdministrativaRepository.update(junid);
+                uasDestino.get(indice).setCodigo(codigoNuevo);
+                creado = true;
+                nombreUAfusion = ua.getNombre().getTraduccion();
+
+                //Cambiamos el negativo por el nuevo código.
+                if (codigoAntiguo != null && codigoAntiguo < 0) {
+                    if (procedimientos != null) {
+                        for (ProcedimientoBaseDTO proc : procedimientos) {
+                            if (proc.getOpcionUAdestino().compareTo(codigoAntiguo) == 0) {
+                                proc.setOpcionUAdestino(ua.getCodigo());
+                            }
+                        }
+                    }
+                    if (normativas != null) {
+                        for (NormativaGridDTO norm : normativas) {
+                            if (norm.getOpcionUAdestino().compareTo(codigoAntiguo) == 0) {
+                                norm.setOpcionUAdestino(ua.getCodigo());
+                            }
+                        }
+                    }
+                    if (servicios != null) {
+                        for (ProcedimientoBaseDTO serv : servicios) {
+                            if (serv.getOpcionUAdestino().compareTo(codigoAntiguo) == 0) {
+                                serv.setOpcionUAdestino(ua.getCodigo());
+                            }
+                        }
+                    }
+                }
+            } else {
+                creado = false;
+                nombreUAfusion = unidadAdministrativaRepository.getNombreUA(Arrays.asList(ua.getCodigo()));
+            }
+
+            JUnidadAdministrativa juaFusion = unidadAdministrativaRepository.getReference(ua.getCodigo());
+            final AuditoriaCambio auditoria = new AuditoriaCambio();
+            final AuditoriaValorCampo valorCampo = new AuditoriaValorCampo();
+            JUnidadAdministrativaAuditoria jAuditoria = new JUnidadAdministrativaAuditoria();
+            jAuditoria.setUnidadAdministrativa(juaFusion);
+            jAuditoria.setFechaModificacion(new Date());
+            jAuditoria.setUsuarioModificacion(usuario);
+            jAuditoria.setUsuarioPerfil(perfil.toString());
+            if (creado) {
+                jAuditoria.setLiteralFlujo("auditoria.uas.evolucionDivision.creadoSin");
+            } else {
+                jAuditoria.setLiteralFlujo("auditoria.uas.evolucionDivision.actualizadoSin");
+            }
+            jAuditoria.setAccion(TypeAccionAuditoria.MODIFICACION.toString());
+            valorCampo.setValorAnterior(nombreAntiguo);
+            //valorCampo.setValorNuevo(nombreUAfusion);
+            if (creado) {
+                auditoria.setIdCampo("auditoria.uas.evolucionDivision.creado");
+            } else {
+                auditoria.setIdCampo("auditoria.uas.evolucionDivision.actualizado");
+            }
+            auditoria.setValoresModificados(Arrays.asList(valorCampo));
+            jAuditoria.setListaModificaciones(UtilJSON.toJSON(Arrays.asList(auditoria)));
+            auditoriaRepository.guardar(jAuditoria);
+        }
+
+        Map<Long, String> nombreUasDestino = new HashMap<>();
+        for (UnidadAdministrativaDTO ua : uasDestino) {
+            nombreUasDestino.put(ua.getCodigo(), ua.getNombre().getTraduccion());
+        }
+
+        //Mover todos los datos de procedimientos a la nueva UA de la opción seleccionada
+        for (ProcedimientoBaseDTO proc : procedimientos) {
+            if (proc.getOpcionUAdestino().compareTo(uaOrigen) != 0) {
+                procedimientoRepository.evolucionarProc(proc.getCodigo(), uaOrigen, proc.getOpcionUAdestino(), "auditoria.uas.evolucionDivision", nombreAntiguo, nombreUasDestino.get(proc.getOpcionUAdestino()), perfil, usuario);
+            }
+        }
+
+        //Mover todos los datos de servicios a la nueva UA de la opción seleccionada
+        for (ProcedimientoBaseDTO serv : servicios) {
+            if (serv.getOpcionUAdestino().compareTo(uaOrigen) != 0) {
+                procedimientoRepository.evolucionarProc(serv.getCodigo(), uaOrigen, serv.getOpcionUAdestino(), "auditoria.uas.evolucionDivision", nombreAntiguo, nombreUasDestino.get(serv.getOpcionUAdestino()), perfil, usuario);
+            }
+        }
+
+        //Mover todos los datos de normativas a la nueva UA de la opción seleccionada.
+        List<NormativaGridDTO> normativasBajaUaOrigen = new ArrayList<>();
+        for (NormativaGridDTO normativa : normativas) {
+            if (normativa.getOpcionUAdestino().compareTo(uaOrigen) != 0) {
+                normativaRepository.evolucionarNorm(normativa.getCodigo(), uaOrigen, normativa.getOpcionUAdestino());
+            } else {
+                normativasBajaUaOrigen.add(normativa);
+            }
+        }
+
+        //Hay que dar de baja todas las normativas y dejar sólo las que toque.
+        unidadAdministrativaRepository.marcarBajaConNormativas(uaOrigen, fechaBaja, perfil, usuario, "auditoria.uas.evolucionDivisionBaja", nombreAntiguo, nombreDestinos, normativaBaja, normativasBajaUaOrigen);
+
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR})
     public void evolucionBasica(Long codigoUA, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad, TypePerfiles perfil, String usuario) {
 
         JUnidadAdministrativa juaOriginal = unidadAdministrativaRepository.findById(codigoUA);
@@ -570,7 +693,9 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         unidadAdministrativaRepository.create(jnueva);
 
         //Mover todos los datos de procedimientos/servicios a la nueva UA
-        procedimientoRepository.actualizarUA(codigoUA, jnueva.getCodigo());
+        List<Long> codigosProcedimientos = new ArrayList<>();
+        codigosProcedimientos.add(codigoUA);
+        procedimientoRepository.actualizarUA(codigosProcedimientos, jnueva.getCodigo(), "auditoria.uas.evolucionBasica", nombreAntiguo, getNombreLiteral(nombreNuevo), perfil, usuario);
 
         //Mover todos los datos de normativas y ususarios a la nueva UA
         jnueva = unidadAdministrativaRepository.findById(jnueva.getCodigo());
@@ -617,7 +742,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
         //Generamos la auditoria
         JUnidadAdministrativaAuditoria jAuditoria = new JUnidadAdministrativaAuditoria();
-        jAuditoria.setUnidadAdministrativa(juaOriginal);
+        jAuditoria.setUnidadAdministrativa(jnueva);//juaOriginal);
         jAuditoria.setFechaModificacion(new Date());
         jAuditoria.setUsuarioModificacion(usuario);
         jAuditoria.setUsuarioPerfil(perfil.toString());
@@ -642,7 +767,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR})
     public void evolucionDependencia(Long codigoUA, Long codigoUAPadre, EntidadDTO entidad, TypePerfiles perfil, String usuario) {
         JUnidadAdministrativa juaOriginal = unidadAdministrativaRepository.findById(codigoUA);
         JUnidadAdministrativa juaPadre = unidadAdministrativaRepository.findById(codigoUAPadre);
@@ -750,16 +875,25 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String idioma) {
-        return procedimientoRepository.getProcedimientosByUas(uas, idioma);
+    public List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String tipo, String idioma, Boolean visible) {
+
+        return procedimientoRepository.getProcedimientosByUas(uas, tipo, idioma, visible);
     }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<ProcedimientoBaseDTO> getProcedimientosByUa(Long ua, String idioma) {
+    public List<ProcedimientoBaseDTO> getProcedimientosByUa(Long ua, String tipo, String idioma, Boolean visible) {
         List<Long> uas = new ArrayList<>();
         uas.add(ua);
-        return procedimientoRepository.getProcedimientosByUas(uas, idioma);
+        return procedimientoRepository.getProcedimientosByUas(uas, tipo, idioma, visible);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long getProcedimientosTotalByUas(Long ua, String tipo, String idioma, Boolean visible) {
+        List<Long> uas = new ArrayList<>();
+        uas.add(ua);
+        return procedimientoRepository.getProcedimientosTotalByUas(uas, tipo, idioma, visible);
     }
 
     @Override
@@ -770,7 +904,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR})
     public void evolucionFusion(List<UnidadAdministrativaGridDTO> selectedUnidades, NormativaDTO normativaBaja, Date fechaBaja, UnidadAdministrativaDTO uaFusion, TypePerfiles perfil, String usuario) {
 
         //Creamos la nueva ua
@@ -790,9 +924,10 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         jAuditoria.setFechaModificacion(new Date());
         jAuditoria.setUsuarioModificacion(usuario);
         jAuditoria.setUsuarioPerfil(perfil.toString());
-        jAuditoria.setLiteralFlujo("auditoria.uas.evolucionFusionAlta");
+        jAuditoria.setLiteralFlujo("auditoria.uas.evolucionFusionSin");
         jAuditoria.setAccion(TypeAccionAuditoria.ALTA.toString());
-        valorCampo.setValorAnterior(unidadAdministrativaRepository.getNombreUA(uas));
+        String nombreAntiguo = unidadAdministrativaRepository.getNombreUA(uas);
+        valorCampo.setValorAnterior(nombreAntiguo);
         String nombreUAfusion = unidadAdministrativaRepository.getNombreUA(Arrays.asList(codigoUAfusion));
         valorCampo.setValorNuevo(nombreUAfusion);
         auditoria.setIdCampo("auditoria.uas.evolucionFusion");
@@ -805,7 +940,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         for (UnidadAdministrativaGridDTO ua : selectedUnidades) {
             idUAs.add(ua.getCodigo());
         }
-        procedimientoRepository.actualizarUA(idUAs, codigoUAfusion);
+        procedimientoRepository.actualizarUA(idUAs, codigoUAfusion, "auditoria.uas.evolucionFusionBaja", nombreAntiguo, nombreUAfusion, perfil, usuario);
 
         //Mover todos los datos de normativas a la nueva UA
         normativaRepository.actualizarUA(idUAs, codigoUAfusion);
@@ -815,7 +950,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
             //Damos de baja la UA y, si se ha asociado a alguna UA, lo hacemos
             JUnidadAdministrativa jua = unidadAdministrativaRepository.findById(ua);
-            unidadAdministrativaRepository.marcarBaja(ua, fechaBaja, perfil, usuario, "auditoria.uas.evolucionFusionBajaauditoria.uas.evolucionFusionBaja", getNombreUA(jua.getTraducciones()), nombreUAfusion);
+            unidadAdministrativaRepository.marcarBaja(ua, fechaBaja, perfil, usuario, "auditoria.uas.evolucionFusionBaja", getNombreUA(jua.getTraducciones()), nombreUAfusion);
             Set<JNormativa> normativaCierre = new HashSet<>();
             if (normativaBaja != null) {
                 normativaCierre.add(normativaRepository.getReference(normativaBaja.getCodigo()));
@@ -824,6 +959,13 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
             unidadAdministrativaRepository.update(jua);
         }
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public Map<Long, String> obtenerCodigosDIR3(List<Long> codigos) {
+        return unidadAdministrativaRepository.obtenerCodigosDIR3(codigos);
+    }
+
 
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})

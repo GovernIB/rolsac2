@@ -519,6 +519,12 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         }
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    public String obtenerIdiomaEntidad(Long codigo) {
+        return normativaRepository.obtenerIdiomaEntidad(codigo);
+    }
+
 
     /*******************************************************************************************************************
      * Funciones privadas del servicio

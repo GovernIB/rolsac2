@@ -12,9 +12,7 @@ import es.caib.rolsac2.ejb.util.JSONUtil;
 import es.caib.rolsac2.ejb.util.JSONUtilException;
 import es.caib.rolsac2.persistence.converter.*;
 import es.caib.rolsac2.persistence.model.*;
-import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
-import es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.AuditoriaException;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
@@ -854,192 +852,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public ProcedimientoBaseDTO convertirDTO(Object obj) {
         JProcedimientoWorkflow jprocWF = (JProcedimientoWorkflow) obj;
-        return convertDTO(jprocWF);
+        return procedimientoRepository.convertDTO(jprocWF);
     }
 
     private ProcedimientoBaseDTO getProcedimientoDTOByCodigoWF(Long codigoWF) {
         JProcedimientoWorkflow jprocWF = procedimientoRepository.getWFByCodigoWF(codigoWF);
-        return convertDTO(jprocWF);
-
-    }
-
-    private ProcedimientoBaseDTO convertDTO(JProcedimientoWorkflow jprocWF) {
-        JProcedimiento jproc = jprocWF.getProcedimiento();
-        ProcedimientoBaseDTO proc = createDTO(jproc);
-
-        // JProcedimientoWorkflow jprocWF = procedimientoRepository.getWF(id,
-        // Constantes.PROCEDIMIENTO_ENMODIFICACION);
-        proc.setCodigoWF(jprocWF.getCodigo());
-        proc.setFechaPublicacion(jprocWF.getFechaPublicacion());
-        proc.setFechaCaducidad(jprocWF.getFechaCaducidad());
-        proc.setFechaActualizacion(jproc.getFechaActualizacion());
-        proc.setResponsableEmail(jprocWF.getResponsableEmail());
-        proc.setResponsableTelefono(jprocWF.getResponsableTelefono());
-        proc.setWorkflow(TypeProcedimientoWorkflow.fromBoolean(jprocWF.getWorkflow()));
-        proc.setEstado(TypeProcedimientoEstado.fromString(jprocWF.getEstado()));
-        proc.setMensajes(jproc.getMensajes());
-        proc.setTieneTasa(jprocWF.getTieneTasa());
-        proc.setResponsable(jprocWF.getResponsableNombre());
-        proc.setLopdResponsable(jprocWF.getLopdResponsable());
-        proc.setComun(jprocWF.getComun());
-        // proc.setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
-        // proc.setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
-        if (jprocWF.getUaResponsable() != null) {
-            proc.setUaResponsable(jprocWF.getUaResponsable().toDTO());
-        }
-        if (jprocWF.getTramitElectronica() != null) {
-            proc.setTramitElectronica(jprocWF.getTramitElectronica());
-        }
-        if (jprocWF.getTramitPresencial() != null) {
-            proc.setTramitPresencial(jprocWF.getTramitPresencial());
-        }
-        if (jprocWF.getTramitTelefonica() != null) {
-            proc.setTramitTelefonica(jprocWF.getTramitTelefonica());
-        }
-        if (jprocWF.getUaInstructor() != null) {
-            proc.setUaInstructor(jprocWF.getUaInstructor().toDTO());
-
-            //Obtenemos la info de lopd de la entidad asociada a la ua instructora
-            if (jprocWF.getUaInstructor().getEntidad() != null && jprocWF.getUaInstructor().getEntidad().getDescripcion() != null) {
-                Literal lopdInfoAdicional = new Literal();
-                Literal lopdDerechos = new Literal();
-                Literal lopdFinalidad = new Literal();
-                Literal lopdCabecera = new Literal();
-
-                for (JEntidadTraduccion jtrad : jprocWF.getUaInstructor().getEntidad().getDescripcion()) {
-                    lopdInfoAdicional.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDestinatario()));
-                    lopdDerechos.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDerechos()));
-                    lopdFinalidad.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdFinalidad()));
-                    lopdCabecera.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdCabecera()));
-                }
-
-                proc.setLopdInfoAdicional(lopdInfoAdicional);
-                proc.setLopdDerechos(lopdDerechos);
-                proc.setLopdFinalidad(lopdFinalidad);
-                proc.setLopdCabecera(lopdCabecera);
-            }
-        }
-        if (jprocWF.getUaCompetente() != null) {
-            proc.setUaCompetente(jprocWF.getUaCompetente().toDTO());
-        }
-        if (jprocWF.getFormaInicio() != null) {
-            proc.setIniciacion(tipoFormaInicioConverter.createDTO(jprocWF.getFormaInicio()));
-        }
-        if (jprocWF.getSilencioAdministrativo() != null) {
-            proc.setSilencio(tipoSilencioAdministrativoConverter.createDTO(jprocWF.getSilencioAdministrativo()));
-        }
-        if (jprocWF.getTipoProcedimiento() != null) {
-            proc.setTipoProcedimiento(tipoProcedimientoConverter.createDTO(jprocWF.getTipoProcedimiento()));
-        }
-        if (jprocWF.getTipoVia() != null) {
-            proc.setTipoVia(tipoViaConverter.createDTO(jprocWF.getTipoVia()));
-        }
-        if (jprocWF.getDatosPersonalesLegitimacion() != null) {
-            proc.setDatosPersonalesLegitimacion(tipoLegitimacionConverter.createDTO(jprocWF.getDatosPersonalesLegitimacion()));
-        }
-
-        Literal nombreProcedimientoWorkFlow = new Literal();
-        Literal requisitos = new Literal();
-        Literal objeto = new Literal();
-        Literal destinatarios = new Literal();
-        Literal terminoResolucion = new Literal();
-        Literal observaciones = new Literal();
-        Literal keywords = new Literal();
-
-        if (jprocWF.getTraducciones() != null) {
-            for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
-                nombreProcedimientoWorkFlow.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
-                requisitos.add(new Traduccion(trad.getIdioma(), trad.getRequisitos()));
-                objeto.add(new Traduccion(trad.getIdioma(), trad.getObjeto()));
-                destinatarios.add(new Traduccion(trad.getIdioma(), trad.getDestinatarios()));
-                terminoResolucion.add(new Traduccion(trad.getIdioma(), trad.getTerminoResolucion()));
-                observaciones.add(new Traduccion(trad.getIdioma(), trad.getObservaciones()));
-                keywords.add(new Traduccion(trad.getIdioma(), trad.getKeywords()));
-            }
-        }
-        proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
-        proc.setRequisitos(requisitos);
-        proc.setObjeto(objeto);
-        proc.setDestinatarios(destinatarios);
-        proc.setTerminoResolucion(terminoResolucion);
-        proc.setObservaciones(observaciones);
-        proc.setKeywords(keywords);
-        // proc.setLopdInfoAdicional(lopdInfoAdicional);
-        proc.setMateriasSIA(procedimientoRepository.getMateriaGridSIAByWF(proc.getCodigoWF()));
-        proc.setPublicosObjetivo(procedimientoRepository.getTipoPubObjEntByWF(proc.getCodigoWF()));
-        proc.setNormativas(procedimientoRepository.getNormativasByWF(proc.getCodigoWF()));
-        proc.setDocumentos(procedimientoRepository.getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
-        proc.setDocumentosLOPD(procedimientoRepository.getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
-
-        // Reordenamos por posicion
-        Collections.sort(proc.getNormativas());
-        Collections.sort(proc.getDocumentos());
-        // Collections.sort(proc.getDocumentosLOPD());
-
-        if (jprocWF.getTemas() != null) {
-            List<TemaGridDTO> temasDTO = new ArrayList<>();
-            for (JTema tema : jprocWF.getTemas()) {
-                TemaGridDTO temaGridDTO = new TemaGridDTO();
-                temaGridDTO.setCodigo(tema.getCodigo());
-                temaGridDTO.setIdentificador(tema.getIdentificador());
-                temaGridDTO.setEntidad(tema.getEntidad().getCodigo());
-                temaGridDTO.setMathPath(tema.getMathPath());
-
-                if (tema.getTemaPadre() != null) {
-                    temaGridDTO.setTemaPadre(tema.getTemaPadre().getIdentificador());
-                }
-                List<Traduccion> traducciones = new ArrayList<>();
-                for (JTemaTraduccion temaTraduccion : tema.getDescripcion()) {
-                    traducciones.add(new Traduccion(temaTraduccion.getIdioma(), temaTraduccion.getDescripcion()));
-                }
-                Literal descripcion = new Literal();
-                descripcion.setTraducciones(traducciones);
-                temaGridDTO.setDescripcion(descripcion);
-                temasDTO.add(temaGridDTO);
-            }
-            proc.setTemas(temasDTO);
-        }
-
-        if (proc instanceof ProcedimientoDTO) {
-            ((ProcedimientoDTO) proc).setTramites(procedimientoRepository.getTramitesByWF(proc.getCodigoWF()));
-            Collections.sort(((ProcedimientoDTO) proc).getTramites());
-            if (((ProcedimientoDTO) proc).getTramites() != null && !((ProcedimientoDTO) proc).getTramites().isEmpty()) {
-                for (ProcedimientoTramiteDTO tram : ((ProcedimientoDTO) proc).getTramites()) {
-                    if (tram.getListaModelos() != null && !tram.getListaModelos().isEmpty()) {
-                        Collections.sort(tram.getListaModelos());
-                    }
-                    if (tram.getListaDocumentos() != null && !tram.getListaDocumentos().isEmpty()) {
-                        Collections.sort(tram.getListaDocumentos());
-                    }
-                }
-
-            }
-            ((ProcedimientoDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
-            ((ProcedimientoDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
-        }
-
-        if (proc instanceof ProcedimientoBaseDTO) {
-
-            ((ProcedimientoBaseDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
-            ((ProcedimientoBaseDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
-        }
-
-        if (proc instanceof ServicioDTO) {
-            ((ServicioDTO) proc).setTramitElectronica(jprocWF.isTramitElectronica());
-            ((ServicioDTO) proc).setTramitPresencial(jprocWF.isTramitPresencial());
-            ((ServicioDTO) proc).setTramitTelefonica(jprocWF.isTramitTelefonica());
-            ((ServicioDTO) proc).setActivoLOPD(jprocWF.getActivoLOPD());
-
-            if (jprocWF.getTramiteElectronico() != null) {
-                TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronico());
-                ((ServicioDTO) proc).setTipoTramitacion(tipo);
-
-            } else if (jprocWF.getTramiteElectronicoPlantilla() != null) {
-                TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronicoPlantilla());
-                ((ServicioDTO) proc).setPlantillaSel(tipo);
-            }
-        }
-        return proc;
+        return procedimientoRepository.convertDTO(jprocWF);
     }
 
     /**
@@ -1358,6 +1176,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA) {
         String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
         FicheroDTO ficheroDTO = ficheroExternoRepository.getContentById(fichero.getFicheroDTO().getCodigo(), ruta);
@@ -1468,4 +1287,11 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     public List<TipoMateriaSIADTO> getTipoMateriaByCodProcWF(Long codigoWF) {
         return procedimientoRepository.getMateriaSIAByWFRest(codigoWF);
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public String obtenerIdiomaEntidad(Long codigoProc) {
+        return procedimientoRepository.obtenerIdiomaEntidad(codigoProc);
+    }
+
 }

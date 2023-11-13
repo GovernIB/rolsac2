@@ -8,6 +8,7 @@ import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
 
 import java.util.List;
 import java.util.Optional;
@@ -185,16 +186,53 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      *
      * @param codigoUAOriginal
      * @param codigoUANueva
+     * @param literal
+     * @param nombreAntiguo
+     * @param nombreNuevo
+     * @param perfil
+     * @param usuario
      */
-    void actualizarUA(Long codigoUAOriginal, Long codigoUANueva);
+    void actualizarUA(List<Long> codigoUAOriginal, Long codigoUANueva, String literal, String nombreAntiguo, String nombreNuevo, TypePerfiles perfil, String usuario);
 
-    void actualizarUA(List<Long> codigoUAOriginal, Long codigoUANueva);
+    void evolucionarProc(Long codigoProcedimiento, Long codigoUAVieja, Long codigoUANueva, String literal, String nombreAntiguo, String nombreNuevo, TypePerfiles perfil, String usuario);
 
     /**
      * Obtiene los procedimientos asociados a una ua.
      *
-     * @param uas
+     * @param uas     Lista de ua
+     * @param tipo    Indica el tipo de procedimiento (PROCEDIMIENTO o SERVICIO)
+     * @param idioma  Indica el idioma
+     * @param visible Variable opcional, si es null no se tiene en cuenta
      * @return
      */
-    List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String idioma);
+    List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String tipo, String idioma, Boolean visible);
+
+    /**
+     * Obtiene el total de procedimientos asociados a una ua.
+     *
+     * @param uas     Lista de ua
+     * @param tipo    Indica el tipo de procedimiento (PROCEDIMIENTO o SERVICIO)
+     * @param idioma  Indica el idioma
+     * @param visible Variable opcional, si es null no se tiene en cuenta
+     * @return
+     */
+    Long getProcedimientosTotalByUas(List<Long> uas, String tipo, String idioma, Boolean visible);
+
+
+    /**
+     * Convert to DTO
+     *
+     * @param jprocWF
+     * @return
+     */
+    ProcedimientoBaseDTO convertDTO(JProcedimientoWorkflow jprocWF);
+
+    /**
+     * Obtiene el idioma segun el codigo
+     *
+     * @param codigoProc
+     * @return
+     */
+    String obtenerIdiomaEntidad(Long codigoProc);
+
 }

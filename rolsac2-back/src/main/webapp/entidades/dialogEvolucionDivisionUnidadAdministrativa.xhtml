@@ -31,7 +31,7 @@
 			style="margin-right:4px;margin-top:5px;" />
 		<p:selectOneButton id="opcionIdioma"
 			value="#{dialogEvolucionDivisionUnidadAdministrativa.idioma}"
-			styleClass="botoneraRed" unselectable="false" maxlength="50">
+			styleClass="botoneraRed" unselectable="false" maxlength="20">
 			<f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}"
 				var="idioma" itemValue="#{idioma}"
 				itemLabel="#{labels['idiomas.' += idioma]}" />
@@ -49,7 +49,7 @@
 			flowListener="#{dialogEvolucionDivisionUnidadAdministrativa.onFlowProcess}">
 			<p:tab id="origen"
 				title="#{labels['dialogEvolucionUnidadAdministrativa.uasOrigen']}">
-				<p:panel style="height:330px;">
+				<p:panel>
 					<p:messages />
 					<div class="form-row">
 						<div class="form-group col-md-12">
@@ -99,7 +99,7 @@
 			</p:tab>
 			<p:tab id="destino"
 				title="#{labels['dialogEvolucionUnidadAdministrativa.uasDestino']}">
-				<p:panel style="height:330px;">
+				<p:panel>
 					<p:messages />
 
 					<div class="row">
@@ -129,24 +129,41 @@
 
 									</p:dataTable>
 								</div>
-								<div
-									class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-									<p:commandButton title="#{labels['dict.nuevo']}"
+								<div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+									<p:commandButton title="#{labels['dict.anyadir']}"
 										icon="pi pi-plus" styleClass="text-success" process="@this"
 										actionListener="#{dialogEvolucionDivisionUnidadAdministrativa.anyadirUAs()}"
 										rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}">
 										<p:ajax event="dialogReturn"
 											listener="#{dialogEvolucionDivisionUnidadAdministrativa.returnDialogo}"
 											process="@this"
-											update="formDialog finalizar formDialog:informacionUnidadAdmin reasignar messagesDialog txtCrear" />
+											update="messagesDialog txtCrear" />
 									</p:commandButton>
+									<p:commandButton title="#{labels['dict.editar']}"
+													 icon="pi pi-pencil" styleClass="text-success"
+													 action="#{dialogEvolucionDivisionUnidadAdministrativa.editarUA()}"
+													 process="@this"
+													 disabled="{dialogEvolucionDivisionUnidadAdministrativa.uaSeleccionada.codigo > 0}"
+													 update="messagesDialog txtCrear"
+													 rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}" />
 									<p:commandButton title="#{labels['dict.eliminar']}"
 										icon="pi pi-minus" styleClass="text-danger"
 										action="#{dialogEvolucionDivisionUnidadAdministrativa.borrarUA()}"
 										process="@this"
-										update="formDialog finalizar formDialog:informacionUnidadAdmin reasignar txtCrear messagesDialog"
+										update="messagesDialog txtCrear"
 										rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}" />
 								</div>
+								<p:commandButton title="#{labels['dict.crearUA']}" value="#{labels['dict.crearUA']}"
+												 icon="pi pi-plus" styleClass="text-success ml-2"
+												 action="#{dialogEvolucionDivisionUnidadAdministrativa.crearUA()}"
+												 process="@this"
+												 update="messagesDialog txtCrear"
+												 rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}" >
+										<p:ajax event="dialogReturn"
+											listener="#{dialogEvolucionDivisionUnidadAdministrativa.returnDialogoCrearUA}"
+											process="@this"
+											update="messagesDialog txtCrear" />
+								</p:commandButton>
 
 							</div>
 						</div>
@@ -156,7 +173,7 @@
 
 			<p:tab id="reasignar"
 				title="#{labels['dialogEvolucionUnidadAdministrativa.reasignar']}">
-				<p:panel style="height:330px;">
+				<p:panel>
 					<p:messages />
 
 					<!-- Unidad Administrativa a crear -->
@@ -172,16 +189,17 @@
 										value="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}"
 										emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
 										scrollHeight="120" paginator="false" selectionMode="single"
-										selection="#{dialogEvolucionDivisionUnidadAdministrativa.uaSeleccionadaReasignar}"
 										rowKey="#{td.codigo}">
 
 										<!-- Necesario para actualizar en controlador la fila seleccionada -->
+										<!--
 										<p:ajax event="rowSelect" global="false"
 											update="formDialog:informacionUnidadAdmin"
 											listener="#{dialogEvolucionDivisionUnidadAdministrativa.seleccionarUA()}" />
 										<p:ajax event="rowUnselect"
 											update="formDialog:informacionUnidadAdmin"
 											listener="#{dialogEvolucionDivisionUnidadAdministrativa.deseleccionarUA()}" />
+										-->
 
 										<!-- Número -->
 										<p:column style="width: 30px;"
@@ -194,7 +212,7 @@
 										<p:column style="width: 66px;"
 											headerText="#{labels['dict.codigo']}">
 											<f:facet name="header" />
-											<h:outputText value="#{td.codigo}" />
+											<h:outputText value="#{td.codigo}" rendered="#{td.codigo > 0}" />
 										</p:column>
 
 										<!-- Nombre -->
@@ -207,330 +225,97 @@
 									</p:dataTable>
 								</div>
 							</div>
+							<p:tabView>
+								<p:tab title="#{labels['dict.procedimientos']}">
+									<p:dataTable id="datatableProcs" var="td"
+												 value="#{dialogEvolucionDivisionUnidadAdministrativa.procedimientos}"
+												 emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+												 paginator="false" selectionMode="single"
+												 rowKey="#{td.codigo}">
+
+										<!-- Necesario para actualizar en controlador la fila seleccionada -->
+										<p:ajax event="rowSelect" global="false" />
+										<p:ajax event="rowUnselect" />
+
+										<p:column headerText="#{labels['msg.seleccioneOpcion']}" styleClass="text-center w25">
+											<p:selectOneMenu  value="#{td.opcionUAdestino}"  autoWidth="false" styleClass="w130px">
+												<f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
+
+												<c:forEach items="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
+													<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}"/>
+												</c:forEach>
+												<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionDivisionUnidadAdministrativa.data.codigo}"/>
+											</p:selectOneMenu>
+										</p:column>
+										<p:column headerText="#{labels['dict.procedimiento']}" styleClass="text-center w75">
+											<h:outputText value="#{td.codigo} #{td.nombreProcedimientoWorkFlow.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
+										</p:column>
+									</p:dataTable>
+								</p:tab>
+								<p:tab title="#{labels['dict.normativas']}">
+									<p:dataTable id="datatableNormativas" var="td"
+												 value="#{dialogEvolucionDivisionUnidadAdministrativa.normativas}"
+												 emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+												 paginator="false" selectionMode="single"
+												 rowKey="#{td.codigo}">
+
+										<!-- Necesario para actualizar en controlador la fila seleccionada -->
+										<p:ajax event="rowSelect" global="false" />
+										<p:ajax event="rowUnselect" />
+
+										<p:column headerText="#{labels['msg.seleccioneOpcion']}" styleClass="text-center w25">
+											<p:selectOneMenu  value="#{td.opcionUAdestino}" autoWidth="false" styleClass="w130px">
+												<f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
+
+												<c:forEach items="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
+													<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}"/>
+												</c:forEach>
+												<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionDivisionUnidadAdministrativa.data.codigo}"/>
+											</p:selectOneMenu>
+										</p:column>
+										<p:column headerText="#{labels['dict.normativa']}" styleClass="text-center w75">
+											<h:outputText value="#{td.codigo} #{td.titulo.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
+										</p:column>
+									</p:dataTable>
+								</p:tab>
+								<p:tab title="#{labels['dict.servicios']}">
+									<p:dataTable id="datatableServs" var="td"
+												 value="#{dialogEvolucionDivisionUnidadAdministrativa.servicios}"
+												 emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+												 paginator="false" selectionMode="single"
+												 rowKey="#{td.codigo}">
+
+										<!-- Necesario para actualizar en controlador la fila seleccionada -->
+										<p:ajax event="rowSelect" global="false" />
+										<p:ajax event="rowUnselect" />
+
+										<p:column headerText="#{labels['msg.seleccioneOpcion']}" styleClass="text-center w25">
+											<p:selectOneMenu  value="#{td.opcionUAdestino}" autoWidth="false" styleClass="w130px">
+												<f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
+
+												<c:forEach items="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
+													<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}"/>
+												</c:forEach>
+												<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionDivisionUnidadAdministrativa.data.codigo}"/>
+											</p:selectOneMenu>
+										</p:column>
+										<p:column headerText="#{labels['dict.servicio']}" styleClass="text-center w75">
+											<h:outputText value="#{td.codigo} #{td.nombre}" />
+										</p:column>
+									</p:dataTable>
+								</p:tab>
+							</p:tabView>
 						</div>
 					</div>
 
-					<p:outputPanel id="informacionUnidadAdmin">
-						<p:tabView
-							rendered="#{dialogEvolucionDivisionUnidadAdministrativa.uaSeleccionadaReasignar != null}">
-							<p:tab title="#{labels['dict.usuarios']}">
-								<!-- 								<p:panel style="height:330px;"> -->
-								<div class="row">
-									<div class="ui-g-12 ui-md-4 pr-1"
-										style="width: 720px; margin-left: 8px;">
-										<div class="row left-container mx-0">
-											<div class="col-12 left-container-header text-center">
-												<p class="left-container-tit mt-2 mb-1">#{labels['dict.usuarios']}</p>
-											</div>
-											<div class="col-10 p-1">
-												<p:dataTable id="usuarios" var="usuario"
-													style="width: 600px;"
-													value="#{dialogEvolucionDivisionUnidadAdministrativa.usuarios}"
-													emptyMessage="#{labels['dict.tablaVacia']}"
-													scrollable="true" scrollHeight="120" paginator="false"
-													selectionMode="single" rowKey="#{usuario.codigo}">
 
-													<!-- Número -->
-													<p:column style="width: 70px;"
-														headerText="#{labels['dict.numero']}">
-														<f:facet name="header" />
-
-														<p:selectOneMenu value="#{usuario.numero}"
-															styleClass="w95" autoWidth="false"
-															disabled="#{dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}">
-															<f:selectItems
-																value="#{dialogEvolucionDivisionUnidadAdministrativa.selectores}"
-																var="selector" itemLabel="#{selector}"
-																itemValue="#{selector}" />
-															<p:ajax event="change" update="@this"></p:ajax>
-														</p:selectOneMenu>
-													</p:column>
-
-													<!-- Codigo -->
-													<p:column style="width: 66px;"
-														headerText="#{labels['dict.codigo']}">
-														<f:facet name="header" />
-														<h:outputText value="#{usuario.codigo}" />
-													</p:column>
-
-													<!-- Nombre -->
-													<p:column headerText="#{labels['dict.nombre']}">
-														<f:facet name="header" />
-														<h:outputText value="#{usuario.nombre}" />
-													</p:column>
-												</p:dataTable>
-											</div>
-										</div>
-									</div>
-								</div>
-							</p:tab>
-
-							<p:tab title="#{labels['dict.uasHijas']}">
-								<div class="row">
-									<div class="ui-g-12 ui-md-4 pr-1"
-										style="width: 720px; margin-left: 8px;">
-										<div class="row left-container mx-0">
-											<div class="col-12 left-container-header text-center">
-												<p class="left-container-tit mt-2 mb-1">#{labels['dict.uasHijas']}</p>
-											</div>
-											<div class="col-10 p-1">
-												<p:dataTable id="uas" var="ua" style="width: 600px;"
-													value="#{dialogEvolucionDivisionUnidadAdministrativa.uasHijas}"
-													emptyMessage="#{labels['dict.tablaVacia']}"
-													scrollable="true" scrollHeight="120" paginator="false"
-													selectionMode="single" rowKey="#{ua.codigo}">
-
-													<!-- Número -->
-													<p:column style="width: 70px;"
-														headerText="#{labels['dict.numero']}">
-														<f:facet name="header" />
-
-														<p:selectOneMenu value="#{ua.numero}" styleClass="w95"
-															autoWidth="false"
-															disabled="#{dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}">
-															<f:selectItems
-																value="#{dialogEvolucionDivisionUnidadAdministrativa.selectores}"
-																var="selector" itemLabel="#{selector}"
-																itemValue="#{selector}" />
-															<p:ajax event="change" update="@this"></p:ajax>
-														</p:selectOneMenu>
-													</p:column>
-
-													<!-- Codigo -->
-													<p:column style="width: 66px;"
-														headerText="#{labels['dict.codigo']}">
-														<f:facet name="header" />
-														<h:outputText value="#{ua.codigo}" />
-													</p:column>
-
-													<!-- Nombre -->
-													<p:column headerText="#{labels['dict.nombre']}">
-														<f:facet name="header" />
-														<h:outputText
-															value="#{ua.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
-													</p:column>
-												</p:dataTable>
-											</div>
-										</div>
-									</div>
-								</div>
-							</p:tab>
-
-							<p:tab title="#{labels['dict.normativas']}">
-								<div class="row">
-									<div class="ui-g-12 ui-md-4 pr-1"
-										style="width: 720px; margin-left: 8px;">
-										<div class="row left-container mx-0">
-											<div class="col-12 left-container-header text-center">
-												<p class="left-container-tit mt-2 mb-1">#{labels['dict.normativas']}</p>
-											</div>
-											<div class="col-10 p-1">
-												<p:dataTable id="normativas" var="normativa"
-													style="width: 600px;"
-													value="#{dialogEvolucionDivisionUnidadAdministrativa.normativas}"
-													emptyMessage="#{labels['dict.tablaVacia']}"
-													scrollable="true" scrollHeight="120" paginator="false"
-													selectionMode="single" rowKey="#{normativa.codigo}">
-
-													<p:column style="width: 70px;"
-														headerText="#{labels['dict.numero']}">
-														<f:facet name="header" />
-
-														<p:selectOneMenu value="#{normativa.numero}"
-															styleClass="w95" autoWidth="false"
-															disabled="#{dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}">
-															<f:selectItems
-																value="#{dialogEvolucionDivisionUnidadAdministrativa.selectores}"
-																var="selector" itemLabel="#{selector}"
-																itemValue="#{selector}" />
-															<p:ajax event="change" update="@this"></p:ajax>
-														</p:selectOneMenu>
-													</p:column>
-
-													<!-- Codigo -->
-													<p:column style="width: 66px;"
-														headerText="#{labels['dict.codigo']}">
-														<f:facet name="header" />
-														<h:outputText value="#{normativa.codigo}" />
-													</p:column>
-
-													<!-- Nombre -->
-													<p:column headerText="#{labels['dict.nombre']}">
-														<f:facet name="header" />
-														<h:outputText
-															value="#{normativa.titulo.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
-													</p:column>
-												</p:dataTable>
-											</div>
-										</div>
-									</div>
-								</div>
-							</p:tab>
-
-							<p:tab title="#{labels['dict.temas']}">
-								<div class="row">
-									<div class="ui-g-12 ui-md-4 pr-1"
-										style="width: 720px; margin-left: 8px;">
-										<div class="row left-container mx-0">
-											<div class="col-12 left-container-header text-center">
-												<p class="left-container-tit mt-2 mb-1">#{labels['dict.temas']}</p>
-											</div>
-											<div class="col-10 p-1">
-												<p:dataTable id="temas" var="tema" style="width: 600px;"
-													value="#{dialogEvolucionDivisionUnidadAdministrativa.temas}"
-													emptyMessage="#{labels['dict.tablaVacia']}"
-													scrollable="true" scrollHeight="120" paginator="false"
-													selectionMode="single" rowKey="#{tema.codigo}">
-
-													<!-- Número -->
-													<p:column style="width: 70px;"
-														headerText="#{labels['dict.numero']}">
-														<f:facet name="header" />
-
-														<p:selectOneMenu value="#{tema.numero}" styleClass="w95"
-															autoWidth="false"
-															disabled="#{dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}">
-															<f:selectItems
-																value="#{dialogEvolucionDivisionUnidadAdministrativa.selectores}"
-																var="selector" itemLabel="#{selector}"
-																itemValue="#{selector}" />
-															<p:ajax event="change" update="@this"></p:ajax>
-														</p:selectOneMenu>
-													</p:column>
-
-													<!-- Codigo -->
-													<p:column style="width: 66px;"
-														headerText="#{labels['dict.codigo']}">
-														<f:facet name="header" />
-														<h:outputText value="#{tema.codigo}" />
-													</p:column>
-
-													<!-- Nombre -->
-													<p:column headerText="#{labels['dict.nombre']}">
-														<f:facet name="header" />
-														<h:outputText
-															value="#{tema.descripcion.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
-													</p:column>
-												</p:dataTable>
-											</div>
-										</div>
-									</div>
-								</div>
-							</p:tab>
-
-							<p:tab title="#{labels['dict.procedimientos']}">
-								<div class="row">
-									<div class="ui-g-12 ui-md-4 pr-1"
-										style="width: 720px; margin-left: 8px;">
-										<div class="row left-container mx-0">
-											<div class="col-12 left-container-header text-center">
-												<p class="left-container-tit mt-2 mb-1">#{labels['dict.procedimientos']}</p>
-											</div>
-											<div class="col-10 p-1">
-												<p:dataTable id="procedimientos" var="procedimiento"
-													style="width: 600px;"
-													value="#{dialogEvolucionDivisionUnidadAdministrativa.procedimientos}"
-													emptyMessage="#{labels['dict.tablaVacia']}"
-													scrollable="true" scrollHeight="120" paginator="false"
-													selectionMode="single" rowKey="#{procedimiento.codigo}">
-
-													<!-- Número -->
-													<p:column style="width: 70px;"
-														headerText="#{labels['dict.numero']}">
-														<f:facet name="header" />
-
-														<p:selectOneMenu value="#{procedimiento.numero}"
-															styleClass="w95" autoWidth="false"
-															disabled="#{dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}">
-															<f:selectItems
-																value="#{dialogEvolucionDivisionUnidadAdministrativa.selectores}"
-																var="selector" itemLabel="#{selector}"
-																itemValue="#{selector}" />
-															<p:ajax event="change" update="@this"></p:ajax>
-														</p:selectOneMenu>
-													</p:column>
-
-													<!-- Codigo -->
-													<p:column style="width: 66px;"
-														headerText="#{labels['dict.codigo']}">
-														<f:facet name="header" />
-														<h:outputText value="#{procedimiento.codigo}" />
-													</p:column>
-
-													<!-- Nombre -->
-													<p:column headerText="#{labels['dict.nombre']}">
-														<f:facet name="header" />
-														<h:outputText value="#{procedimiento.nombre}" />
-													</p:column>
-												</p:dataTable>
-											</div>
-										</div>
-									</div>
-								</div>
-							</p:tab>
-
-							<p:tab title="#{labels['dict.servicios']}">
-								<div class="row">
-									<div class="ui-g-12 ui-md-4 pr-1"
-										style="width: 720px; margin-left: 8px;">
-										<div class="row left-container mx-0">
-											<div class="col-12 left-container-header text-center">
-												<p class="left-container-tit mt-2 mb-1">#{labels['dict.servicios']}</p>
-											</div>
-											<div class="col-10 p-1">
-												<p:dataTable id="servicios" var="servicio"
-													style="width: 600px;"
-													value="#{dialogEvolucionDivisionUnidadAdministrativa.servicios}"
-													emptyMessage="#{labels['dict.tablaVacia']}"
-													scrollable="true" scrollHeight="120" paginator="false"
-													selectionMode="single" rowKey="#{servicio.codigo}">
-
-													<!-- Número -->
-													<p:column style="width: 70px;"
-														headerText="#{labels['dict.numero']}">
-														<f:facet name="header" />
-
-														<p:selectOneMenu value="#{servicios.numero}"
-															styleClass="w95" autoWidth="false"
-															disabled="#{dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}">
-															<f:selectItems
-																value="#{dialogEvolucionDivisionUnidadAdministrativa.selectores}"
-																var="selector" itemLabel="#{selector}"
-																itemValue="#{selector}" />
-															<p:ajax event="change" update="@this"></p:ajax>
-														</p:selectOneMenu>
-													</p:column>
-
-													<!-- Codigo -->
-													<p:column style="width: 66px;"
-														headerText="#{labels['dict.codigo']}">
-														<f:facet name="header" />
-														<h:outputText value="#{servicio.codigo}" />
-													</p:column>
-
-													<!-- Nombre -->
-													<p:column headerText="#{labels['dict.nombre']}">
-														<f:facet name="header" />
-														<h:outputText value="#{servicio.nombre}" />
-													</p:column>
-												</p:dataTable>
-											</div>
-										</div>
-									</div>
-								</div>
-							</p:tab>
-
-						</p:tabView>
-
-					</p:outputPanel>
 
 				</p:panel>
 			</p:tab>
 			<p:tab id="finalizar"
 				title="#{labels['dialogEvolucionUnidadAdministrativa.finalizar']}">
 				<p:panel
-					header="#{labels['dialogEvolucionUnidadAdministrativa.resumen']}"
-					style="height:330px;">
+					header="#{labels['dialogEvolucionUnidadAdministrativa.resumen']}">
 					<p:messages />
 
 					<div class="form-row">

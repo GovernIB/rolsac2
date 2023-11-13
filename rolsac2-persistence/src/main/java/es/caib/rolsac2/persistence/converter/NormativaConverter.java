@@ -20,7 +20,7 @@ import java.util.Objects;
 public interface NormativaConverter extends Converter<JNormativa, NormativaDTO> {
 
     @Override
-    @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
+    @Mapping(target = "titulo", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"titulo\"))")
     @Mapping(target = "urlBoletin", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"urlBoletin\"))")
     @Mapping(target = "nombreResponsable", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombreResponsable\"))")
     @Mapping(target = "documentosNormativa", ignore = true)
@@ -28,7 +28,7 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO> 
     @Mapping(target = "afectaciones", ignore = true)
     NormativaDTO createDTO(JNormativa entity);
 
-    @Mapping(target = "titulo", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"nombre\"))")
+    @Mapping(target = "titulo", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"titulo\"))")
     @Mapping(target = "tipoNormativa", source = "tipoNormativa.identificador")
     @Mapping(target = "boletinOficial", source = "boletinOficial.nombre")
     NormativaGridDTO createGridDTO(JNormativa entity);
@@ -60,12 +60,12 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO> 
 
                 String literal = null;
 
-                if ("nombre".equals(nombreLiteral)) {
+                if ("titulo".equals(nombreLiteral)) {
                     literal = traduccion.getTitulo();
                 } else if ("urlBoletin".equals(nombreLiteral)) {
                     literal = traduccion.getUrlBoletin();
-//                } else if ("nombreResponsable".equals(nombreLiteral)) {
-//                    literal = traduccion.getNombreResponsable();
+                    //                } else if ("nombreResponsable".equals(nombreLiteral)) {
+                    //                    literal = traduccion.getNombreResponsable();
                 } else {
                     literal = null;
                 }
@@ -107,18 +107,18 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO> 
         }
 
         for (JNormativaTraduccion traduccion : jNormativa.getDescripcion()) {
-            if (normativaDTO.getNombre() != null) {
+            if (normativaDTO.getTitulo() != null) {
 
-                traduccion.setTitulo(normativaDTO.getNombre().getTraduccion(traduccion.getIdioma()));
+                traduccion.setTitulo(normativaDTO.getTitulo().getTraduccion(traduccion.getIdioma()));
             }
 
             if (normativaDTO.getUrlBoletin() != null) {
                 traduccion.setUrlBoletin(normativaDTO.getUrlBoletin().getTraduccion(traduccion.getIdioma()));
             }
 
-//            if (normativaDTO.getNombreResponsable() != null) {
-//                traduccion.setNombreResponsable(normativaDTO.getNombreResponsable().getTraduccion(traduccion.getIdioma()));
-//            }
+            //            if (normativaDTO.getNombreResponsable() != null) {
+            //                traduccion.setNombreResponsable(normativaDTO.getNombreResponsable().getTraduccion(traduccion.getIdioma()));
+            //            }
         }
         return jNormativa.getDescripcion();
     }

@@ -7,17 +7,14 @@ import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoMateriaSIAPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoNormativaPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoPublicoObjectivoPK;
-import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
-import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoDocumentoTraduccion;
-import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
-import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
-import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
+import es.caib.rolsac2.persistence.model.traduccion.*;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaValorCampo;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
-import es.caib.rolsac2.service.model.types.TypeIndexacion;
-import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
-import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
+import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.utils.UtilJSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +29,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Implementación del repositorio de Personal.
@@ -65,7 +59,34 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     private NormativaConverter normativaConverter;
 
     @Inject
-    private ProcedimientoServiceFacade procedimientoService;
+    private PlatTramitElectronicaConverter platTramitElectronicaConverter;
+
+    @Inject
+    private TipoFormaInicioConverter tipoFormaInicioConverter;
+
+    @Inject
+    private ProcedimientoAuditoriaConverter procedimientoAuditoriaConverter;
+
+    @Inject
+    private TipoSilencioAdministrativoConverter tipoSilencioAdministrativoConverter;
+
+    @Inject
+    private TipoProcedimientoConverter tipoProcedimientoConverter;
+
+    @Inject
+    private TipoViaConverter tipoViaConverter;
+
+    @Inject
+    private TemaConverter temaConverter;
+
+    @Inject
+    private TipoTramitacionConverter tipoTramitacionConverter;
+
+    @Inject
+    private TipoLegitimacionConverter tipoLegitimacionConverter;
+
+    @Inject
+    private ProcedimientoTramiteConverter procedimientoTramiteConverter;
 
     protected ProcedimientoRepositoryBean() {
         super(JProcedimiento.class);
@@ -224,7 +245,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                         if (proc != null) {
                             seleccionado = (JProcedimientoWorkflow) proc;
                             if (seleccionado != null) {
-                                ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionado);
+                                ProcedimientoBaseDTO procDTO = convertDTO(seleccionado);
                                 procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionado.getProcedimiento()), filtro.getIdioma()));
                                 procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentos, filtro.getIdioma()));
                                 procs.add(procDTO);
@@ -239,7 +260,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     for (Object proc : jprocsA) {
                         if (proc != null) {
                             JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
-                            ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionadoA);
+                            ProcedimientoBaseDTO procDTO = convertDTO(seleccionadoA);
                             procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoA.getProcedimiento()), filtro.getIdioma()));
                             procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentosA, filtro.getIdioma()));
                             procs.add(procDTO);
@@ -267,7 +288,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             List<JProcedimientoDocumento> documentosT = getDocumentosLopd(idProcsT);
 
                             if (seleccionado != null) {
-                                ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionado);
+                                ProcedimientoBaseDTO procDTO = convertDTO(seleccionado);
                                 procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionado.getProcedimiento()), filtro.getIdioma()));
                                 procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentosT, filtro.getIdioma()));
                                 procs.add(procDTO);
@@ -288,7 +309,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 if (proc != null) {
                     JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
 
-                    ProcedimientoBaseDTO procDTO = procedimientoService.convertirDTO(seleccionadoA);
+                    ProcedimientoBaseDTO procDTO = convertDTO(seleccionadoA);
                     procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoA.getProcedimiento()), filtro.getIdioma()));
                     procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentos, filtro.getIdioma()));
                     procs.add(procDTO);
@@ -419,13 +440,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public Long countProcEstadoByUa(Long uaId, String estado) {
         switch (estado) {
             case "1": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='P' and b.estado='P' ";
+                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='P' and b.estado = 'P' ";
                 TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
                 query.setParameter("uaId", uaId);
                 return query.getSingleResult();
             }
             case "2": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='P' and b.estado!='P' ";
+                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='P' and b.estado not like 'P' ";
                 TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
                 query.setParameter("uaId", uaId);
                 return query.getSingleResult();
@@ -436,7 +457,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 return query.getSingleResult();
             }
             default: {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b WHERE a.tipo='P' and b.estado!='P' ";
+                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b WHERE a.tipo='P' and b.estado not like 'P' ";
                 TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
                 return query.getSingleResult();
             }
@@ -997,9 +1018,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return docs;
     }
 
-    @Inject
-    private ProcedimientoTramiteConverter procedimientoTramiteConverter;
-
     @Override
     public List<ProcedimientoTramiteDTO> getTramitesByWF(Long codigoWF) {
         List<ProcedimientoTramiteDTO> tramites = new ArrayList<>();
@@ -1402,12 +1420,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
     }
-
-    @Inject
-    TipoTramitacionConverter tipoTramitacionConverter;
-
-    @Inject
-    PlatTramitElectronicaConverter platTramitElectronicaConverter;
 
     @Override
     public void mergeTramitesProcWF(Long codigoWF, List<ProcedimientoTramiteDTO> listaNuevos, String ruta) {
@@ -1847,7 +1859,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         } else if (filtro.isRellenoIdUA()) {
             if (ambosWf) {
-                sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA) ");
+                sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA OR WF.uaResponsable.codigo = :idUA OR WF2.uaResponsable.codigo = :idUA OR WF.uaCompetente.codigo = :idUA OR WF2.uaCompetente.codigo = :idUA) ");
             } else {
                 sql.append(" AND (WF.uaInstructor.codigo = :idUA) ");
             }
@@ -1908,6 +1920,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoCodigoProc()) {
             sql.append(" AND j.codigo LIKE :codigoProc ");
+        }
+        if (filtro.isRellenoCodigosProc()) {
+            sql.append(" AND j.codigo IN (:codigosProc) ");
         }
         if (filtro.isRellenoCodigoWF() && ambosWf) {
             sql.append(" AND WF.codigo = :codigoWF OR WF2.codigo = :codigoWF");
@@ -2206,6 +2221,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoCodigoProc()) {
             query.setParameter("codigoProc", filtro.getCodigoProc());
         }
+        if (filtro.isRellenoCodigosProc()) {
+            query.setParameter("codigosProc", filtro.getCodigosProc());
+        }
         if (filtro.isRellenoCodigoWF()) {
             query.setParameter("codigoWF", filtro.getCodigoWF());
         }
@@ -2432,20 +2450,48 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return docs;
     }
 
+    /**
+     * Actualiza la ua de todos los procedimientos asignados a una UA (codigoUAOriginal) y cambiados a otra UA (codigoUANueva)
+     *
+     * @param codigoUAOriginal UA original
+     * @param codigoUANueva    UA nueva
+     * @param literal          literal de la evolucion
+     * @param nombreAntiguo    nombre antiguo de la UA
+     * @param nombreNuevo      nombre nuevo de la UA
+     * @param perfil           perfil del usuario
+     * @param usuario          usuario
+     */
     @Override
-    public void actualizarUA(Long codigoUAOriginal, Long codigoUANueva) {
-        Query queryUAResponsable = entityManager.createQuery("update JProcedimientoWorkflow  set uaResponsable = " + codigoUANueva + " WHERE uaResponsable = " + codigoUAOriginal);
-        queryUAResponsable.executeUpdate();
+    public void actualizarUA(List<Long> codigoUAOriginal, Long codigoUANueva, String literal, String nombreAntiguo, String nombreNuevo, TypePerfiles perfil, String usuario) {
 
-        Query queryUAInstructor = entityManager.createQuery("update JProcedimientoWorkflow  set uaInstructor = " + codigoUANueva + " WHERE uaInstructor = " + codigoUAOriginal);
-        queryUAInstructor.executeUpdate();
 
-        Query queryUATramites = entityManager.createQuery("update JProcedimientoTramite  set unidadAdministrativa = " + codigoUANueva + " WHERE unidadAdministrativa = " + codigoUAOriginal);
-        queryUATramites.executeUpdate();
-    }
+        Query queryProcsAfectados = entityManager.createQuery("select distinct j.procedimiento.codigo from JProcedimientoWorkflow j where j.uaResponsable.codigo in (:uas) OR j.uaInstructor.codigo in (:uas)");
+        queryProcsAfectados.setParameter("uas", codigoUAOriginal);
+        List<Long> procsAfectados = queryProcsAfectados.getResultList();
+        if (procsAfectados != null && !procsAfectados.isEmpty()) {
+            for (Long proc : procsAfectados) {
+                //Generamos la auditoria a cada una
+                JProcedimientoAuditoria jProcedimientoAuditoria = new JProcedimientoAuditoria();
+                JProcedimiento jproc = entityManager.find(JProcedimiento.class, proc);
+                jProcedimientoAuditoria.setProcedimiento(jproc);
+                jProcedimientoAuditoria.setFechaModificacion(new Date());
+                jProcedimientoAuditoria.setUsuarioModificacion(usuario);
+                jProcedimientoAuditoria.setUsuarioPerfil(perfil.toString());
+                jProcedimientoAuditoria.setLiteralFlujo(literal + ".procedimientoSin");
+                jProcedimientoAuditoria.setAccion(TypeAccionAuditoria.MODIFICACION.toString());
 
-    @Override
-    public void actualizarUA(List<Long> codigoUAOriginal, Long codigoUANueva) {
+                final AuditoriaCambio auditoria = new AuditoriaCambio();
+                final AuditoriaValorCampo valorCampo = new AuditoriaValorCampo();
+                valorCampo.setValorAnterior(nombreAntiguo);
+                valorCampo.setValorNuevo(nombreNuevo);
+                auditoria.setIdCampo(literal + ".procedimiento");
+                auditoria.setValoresModificados(Arrays.asList(valorCampo));
+                jProcedimientoAuditoria.setListaModificaciones(UtilJSON.toJSON(Arrays.asList(auditoria)));
+                entityManager.persist(jProcedimientoAuditoria);
+
+            }
+        }
+
         Query queryUAResponsable = entityManager.createQuery("update JProcedimientoWorkflow  set uaResponsable = " + codigoUANueva + " WHERE uaResponsable.codigo in (:uas)");
         queryUAResponsable.setParameter("uas", codigoUAOriginal);
         queryUAResponsable.executeUpdate();
@@ -2459,15 +2505,78 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         queryUATramites.executeUpdate();
     }
 
+    /**
+     * Evoluciona un procedimiento haciendole cambiar de UA.
+     *
+     * @param codigoProcedimiento procedimiento a evolucionar
+     * @param codigoUAVieja       UA vieja
+     * @param codigoUANueva       UA nueva
+     * @param literal             literal de la evolucion
+     * @param nombreAntiguo       nombre antiguo de la UA
+     * @param nombreNuevo         nombre nuevo de la UA
+     * @param perfil              perfil del usuario
+     * @param usuario             usuario
+     */
     @Override
-    public List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String idioma) {
-        StringBuilder sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, j.tipo, wf.estado, wf2.estado, t.nombre, t2.nombre FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN j.procedimientoWF WF2 ON wf.workflow = true LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma");
-        sql.append(" WHERE wf.uaResponsable.codigo in (:uas) OR wf2.uaResponsable.codigo in (:uas) OR wf.uaInstructor.codigo in (:uas) OR wf2.uaInstructor.codigo in (:uas) ");
+    public void evolucionarProc(Long codigoProcedimiento, Long codigoUAVieja, Long codigoUANueva, String literal, String nombreAntiguo, String nombreNuevo, TypePerfiles perfil, String usuario) {
 
+        JProcedimiento jproc = entityManager.find(JProcedimiento.class, codigoProcedimiento);
+        JUnidadAdministrativa uaNueva = entityManager.find(JUnidadAdministrativa.class, codigoUANueva);
+        if (jproc.getProcedimientoWF() != null) {
+            for (JProcedimientoWorkflow jProcedimientoWorkflow : jproc.getProcedimientoWF()) {
 
-        Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("uas", uas);
-        query.setParameter("idioma", idioma);
+                //Actualizamos las unidades administrativas
+                if (jProcedimientoWorkflow.getUaResponsable() != null && jProcedimientoWorkflow.getUaResponsable().getCodigo().compareTo(codigoUAVieja) == 0) {
+                    jProcedimientoWorkflow.setUaResponsable(uaNueva);
+                }
+                if (jProcedimientoWorkflow.getUaInstructor() != null && jProcedimientoWorkflow.getUaInstructor().getCodigo().compareTo(codigoUAVieja) == 0) {
+                    jProcedimientoWorkflow.setUaInstructor(uaNueva);
+                }
+                if (jProcedimientoWorkflow.getUaCompetente() != null && jProcedimientoWorkflow.getUaCompetente().getCodigo().compareTo(codigoUAVieja) == 0) {
+                    jProcedimientoWorkflow.setUaCompetente(uaNueva);
+                }
+                entityManager.merge(jProcedimientoWorkflow);
+
+                //Actualizamos los tramites
+                Query query = entityManager.createQuery("Select tram from JProcedimientoTramite tram where tram.procedimiento.codigo = :codigoProc");
+                query.setParameter("codigoProc", codigoProcedimiento);
+                List<JProcedimientoTramite> tramites = query.getResultList();
+                if (tramites != null) {
+                    for (JProcedimientoTramite tram : tramites) {
+                        if (tram.getUnidadAdministrativa() != null && tram.getUnidadAdministrativa().getCodigo().compareTo(codigoUAVieja) == 0) {
+                            tram.setUnidadAdministrativa(uaNueva);
+                            entityManager.merge(tram);
+                        }
+                    }
+                }
+            }
+        }
+
+        //Generamos la auditoria a cada una
+        JProcedimientoAuditoria jProcedimientoAuditoria = new JProcedimientoAuditoria();
+
+        jProcedimientoAuditoria.setProcedimiento(jproc);
+        jProcedimientoAuditoria.setFechaModificacion(new Date());
+        jProcedimientoAuditoria.setUsuarioModificacion(usuario);
+        jProcedimientoAuditoria.setUsuarioPerfil(perfil.toString());
+        jProcedimientoAuditoria.setLiteralFlujo(literal + ".procedimientoSin");
+        jProcedimientoAuditoria.setAccion(TypeAccionAuditoria.MODIFICACION.toString());
+
+        final AuditoriaCambio auditoria = new AuditoriaCambio();
+        final AuditoriaValorCampo valorCampo = new AuditoriaValorCampo();
+        valorCampo.setValorAnterior(nombreAntiguo);
+        valorCampo.setValorNuevo(nombreNuevo);
+        auditoria.setIdCampo(literal + ".procedimiento");
+        auditoria.setValoresModificados(Arrays.asList(valorCampo));
+        jProcedimientoAuditoria.setListaModificaciones(UtilJSON.toJSON(Arrays.asList(auditoria)));
+        entityManager.persist(jProcedimientoAuditoria);
+
+    }
+
+    @Override
+    public List<ProcedimientoBaseDTO> getProcedimientosByUas(List<Long> uas, String tipo, String idioma, Boolean visible) {
+
+        Query query = getProcedimientosByUas(false, uas, tipo, idioma, visible);
         List<Object[]> resultados = query.getResultList();
         List<ProcedimientoBaseDTO> procedimientos = new ArrayList<>();
         if (resultados != null) {
@@ -2488,14 +2597,52 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 Literal literal = new Literal();
                 if (resultado[6] != null) {
                     literal.add(new Traduccion(idioma, (String) resultado[6]));
+                    proc.setNombre((String) resultado[6]);
                 } else {
                     literal.add(new Traduccion(idioma, (String) resultado[7]));
+                    proc.setNombre((String) resultado[7]);
                 }
                 proc.setNombreProcedimientoWorkFlow(literal);
                 procedimientos.add(proc);
             }
         }
         return procedimientos;
+    }
+
+    @Override
+    public Long getProcedimientosTotalByUas(List<Long> uas, String tipo, String idioma, Boolean visible) {
+        Query query = getProcedimientosByUas(true, uas, tipo, idioma, visible);
+        return (Long) query.getSingleResult();
+    }
+
+    private Query getProcedimientosByUas(boolean total, List<Long> uas, String tipo, String idioma, Boolean visible) {
+        StringBuilder sql;
+        if (total) {
+            sql = new StringBuilder("SELECT count(j.codigo) ");
+        } else {
+            sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, j.tipo, wf.estado, wf2.estado, t.nombre, t2.nombre ");
+        }
+        sql.append(" FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN j.procedimientoWF WF2 ON wf.workflow = true LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma");
+        sql.append(" WHERE ( wf.uaResponsable.codigo in (:uas) OR wf2.uaResponsable.codigo in (:uas) OR wf.uaInstructor.codigo in (:uas) OR wf2.uaInstructor.codigo in (:uas) OR wf.uaCompetente.codigo in (:uas) OR wf2.uaCompetente.codigo in (:uas))");
+
+        if (tipo != null) {
+            sql.append(" AND j.tipo = :tipo");
+        }
+        if (visible != null) {
+            if (visible) {
+                sql.append(" AND wf.workflow = " + JProcedimientoWorkflow.WORKFLOW_DEFINITIVO + " AND wf.estado like '" + TypeProcedimientoEstado.PUBLICADO.toString() + "'");
+            } else {
+                sql.append(" AND ( wf.workflow != " + JProcedimientoWorkflow.WORKFLOW_DEFINITIVO + " OR wf.estado NOT like '" + TypeProcedimientoEstado.PUBLICADO.toString() + "')");
+            }
+        }
+
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("uas", uas);
+        query.setParameter("idioma", idioma);
+        if (tipo != null) {
+            query.setParameter("tipo", tipo);
+        }
+        return query;
     }
 
     private boolean contiene(List<ProcedimientoDocumentoDTO> docs, JProcedimientoDocumento jdoc) {
@@ -2507,4 +2654,232 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return false;
     }
 
+
+    private ProcedimientoBaseDTO createDTO(JProcedimiento jproc) {
+        ProcedimientoBaseDTO dato = null;
+        if (jproc.getTipo().equals(Constantes.PROCEDIMIENTO)) {
+            dato = new ProcedimientoDTO();
+        }
+        if (jproc.getTipo().equals(Constantes.SERVICIO)) {
+            dato = new ServicioDTO();
+        }
+        dato.setCodigo(jproc.getCodigo());
+        // ;jproc.getCodigoDir3SIA();
+        dato.setCodigoSIA(jproc.getCodigoSIA());
+        dato.setEstadoSIA(jproc.getEstadoSIA());
+        dato.setMensajes(jproc.getMensajes());
+        if (jproc.getSiaFecha() != null) {
+            dato.setFechaSIA(jproc.getSiaFecha());
+        }
+        dato.setErrorSIA(jproc.getMensajeIndexacionSIA());
+        dato.setTipo(jproc.getTipo());
+        return dato;
+    }
+
+    @Override
+    public ProcedimientoBaseDTO convertDTO(JProcedimientoWorkflow jprocWF) {
+        JProcedimiento jproc = jprocWF.getProcedimiento();
+        ProcedimientoBaseDTO proc = createDTO(jproc);
+
+        // JProcedimientoWorkflow jprocWF = procedimientoRepository.getWF(id,
+        // Constantes.PROCEDIMIENTO_ENMODIFICACION);
+        proc.setCodigoWF(jprocWF.getCodigo());
+        proc.setFechaPublicacion(jprocWF.getFechaPublicacion());
+        proc.setFechaCaducidad(jprocWF.getFechaCaducidad());
+        proc.setFechaActualizacion(jproc.getFechaActualizacion());
+        proc.setResponsableEmail(jprocWF.getResponsableEmail());
+        proc.setResponsableTelefono(jprocWF.getResponsableTelefono());
+        proc.setWorkflow(TypeProcedimientoWorkflow.fromBoolean(jprocWF.getWorkflow()));
+        proc.setEstado(TypeProcedimientoEstado.fromString(jprocWF.getEstado()));
+        proc.setMensajes(jproc.getMensajes());
+        proc.setTieneTasa(jprocWF.getTieneTasa());
+        proc.setResponsable(jprocWF.getResponsableNombre());
+        proc.setLopdResponsable(jprocWF.getLopdResponsable());
+        proc.setComun(jprocWF.getComun());
+        // proc.setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
+        // proc.setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
+        if (jprocWF.getUaResponsable() != null) {
+            proc.setUaResponsable(jprocWF.getUaResponsable().toDTO());
+        }
+        if (jprocWF.getTramitElectronica() != null) {
+            proc.setTramitElectronica(jprocWF.getTramitElectronica());
+        }
+        if (jprocWF.getTramitPresencial() != null) {
+            proc.setTramitPresencial(jprocWF.getTramitPresencial());
+        }
+        if (jprocWF.getTramitTelefonica() != null) {
+            proc.setTramitTelefonica(jprocWF.getTramitTelefonica());
+        }
+        if (jprocWF.getUaInstructor() != null) {
+            proc.setUaInstructor(jprocWF.getUaInstructor().toDTO());
+
+            //Obtenemos la info de lopd de la entidad asociada a la ua instructora
+            if (jprocWF.getUaInstructor().getEntidad() != null && jprocWF.getUaInstructor().getEntidad().getDescripcion() != null) {
+                Literal lopdInfoAdicional = new Literal();
+                Literal lopdDerechos = new Literal();
+                Literal lopdFinalidad = new Literal();
+                Literal lopdCabecera = new Literal();
+
+                for (JEntidadTraduccion jtrad : jprocWF.getUaInstructor().getEntidad().getDescripcion()) {
+                    lopdInfoAdicional.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDestinatario()));
+                    lopdDerechos.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDerechos()));
+                    lopdFinalidad.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdFinalidad()));
+                    lopdCabecera.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdCabecera()));
+                }
+
+                proc.setLopdInfoAdicional(lopdInfoAdicional);
+                proc.setLopdDerechos(lopdDerechos);
+                proc.setLopdFinalidad(lopdFinalidad);
+                proc.setLopdCabecera(lopdCabecera);
+            }
+        }
+        if (jprocWF.getUaCompetente() != null) {
+            proc.setUaCompetente(jprocWF.getUaCompetente().toDTO());
+        }
+        if (jprocWF.getFormaInicio() != null) {
+            proc.setIniciacion(tipoFormaInicioConverter.createDTO(jprocWF.getFormaInicio()));
+        }
+        if (jprocWF.getSilencioAdministrativo() != null) {
+            proc.setSilencio(tipoSilencioAdministrativoConverter.createDTO(jprocWF.getSilencioAdministrativo()));
+        }
+        if (jprocWF.getTipoProcedimiento() != null) {
+            proc.setTipoProcedimiento(tipoProcedimientoConverter.createDTO(jprocWF.getTipoProcedimiento()));
+        }
+        if (jprocWF.getTipoVia() != null) {
+            proc.setTipoVia(tipoViaConverter.createDTO(jprocWF.getTipoVia()));
+        }
+        if (jprocWF.getDatosPersonalesLegitimacion() != null) {
+            proc.setDatosPersonalesLegitimacion(tipoLegitimacionConverter.createDTO(jprocWF.getDatosPersonalesLegitimacion()));
+        }
+
+        Literal nombreProcedimientoWorkFlow = new Literal();
+        Literal requisitos = new Literal();
+        Literal objeto = new Literal();
+        Literal destinatarios = new Literal();
+        Literal terminoResolucion = new Literal();
+        Literal observaciones = new Literal();
+        Literal keywords = new Literal();
+
+        if (jprocWF.getTraducciones() != null) {
+            for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
+                nombreProcedimientoWorkFlow.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+                requisitos.add(new Traduccion(trad.getIdioma(), trad.getRequisitos()));
+                objeto.add(new Traduccion(trad.getIdioma(), trad.getObjeto()));
+                destinatarios.add(new Traduccion(trad.getIdioma(), trad.getDestinatarios()));
+                terminoResolucion.add(new Traduccion(trad.getIdioma(), trad.getTerminoResolucion()));
+                observaciones.add(new Traduccion(trad.getIdioma(), trad.getObservaciones()));
+                keywords.add(new Traduccion(trad.getIdioma(), trad.getKeywords()));
+            }
+        }
+        proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
+        proc.setRequisitos(requisitos);
+        proc.setObjeto(objeto);
+        proc.setDestinatarios(destinatarios);
+        proc.setTerminoResolucion(terminoResolucion);
+        proc.setObservaciones(observaciones);
+        proc.setKeywords(keywords);
+        // proc.setLopdInfoAdicional(lopdInfoAdicional);
+        proc.setMateriasSIA(getMateriaGridSIAByWF(proc.getCodigoWF()));
+        proc.setPublicosObjetivo(getTipoPubObjEntByWF(proc.getCodigoWF()));
+        proc.setNormativas(getNormativasByWF(proc.getCodigoWF()));
+        proc.setDocumentos(getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
+        proc.setDocumentosLOPD(getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
+
+        // Reordenamos por posicion
+        Collections.sort(proc.getNormativas());
+        Collections.sort(proc.getDocumentos());
+        // Collections.sort(proc.getDocumentosLOPD());
+
+        if (jprocWF.getTemas() != null) {
+            List<TemaGridDTO> temasDTO = new ArrayList<>();
+            for (JTema tema : jprocWF.getTemas()) {
+                TemaGridDTO temaGridDTO = new TemaGridDTO();
+                temaGridDTO.setCodigo(tema.getCodigo());
+                temaGridDTO.setIdentificador(tema.getIdentificador());
+                temaGridDTO.setEntidad(tema.getEntidad().getCodigo());
+                temaGridDTO.setMathPath(tema.getMathPath());
+
+                if (tema.getTemaPadre() != null) {
+                    temaGridDTO.setTemaPadre(tema.getTemaPadre().getIdentificador());
+                }
+                List<Traduccion> traducciones = new ArrayList<>();
+                for (JTemaTraduccion temaTraduccion : tema.getDescripcion()) {
+                    traducciones.add(new Traduccion(temaTraduccion.getIdioma(), temaTraduccion.getDescripcion()));
+                }
+                Literal descripcion = new Literal();
+                descripcion.setTraducciones(traducciones);
+                temaGridDTO.setDescripcion(descripcion);
+                temasDTO.add(temaGridDTO);
+            }
+            proc.setTemas(temasDTO);
+        }
+
+        if (proc instanceof ProcedimientoDTO) {
+            ((ProcedimientoDTO) proc).setTramites(this.getTramitesByWF(proc.getCodigoWF()));
+            Collections.sort(((ProcedimientoDTO) proc).getTramites());
+            if (((ProcedimientoDTO) proc).getTramites() != null && !((ProcedimientoDTO) proc).getTramites().isEmpty()) {
+                for (ProcedimientoTramiteDTO tram : ((ProcedimientoDTO) proc).getTramites()) {
+                    if (tram.getListaModelos() != null && !tram.getListaModelos().isEmpty()) {
+                        Collections.sort(tram.getListaModelos());
+                    }
+                    if (tram.getListaDocumentos() != null && !tram.getListaDocumentos().isEmpty()) {
+                        Collections.sort(tram.getListaDocumentos());
+                    }
+                }
+
+            }
+            ((ProcedimientoDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
+            ((ProcedimientoDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
+        }
+
+        if (proc instanceof ProcedimientoBaseDTO) {
+
+            ((ProcedimientoBaseDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
+            ((ProcedimientoBaseDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
+        }
+
+        if (proc instanceof ServicioDTO) {
+            ((ServicioDTO) proc).setTramitElectronica(jprocWF.isTramitElectronica());
+            ((ServicioDTO) proc).setTramitPresencial(jprocWF.isTramitPresencial());
+            ((ServicioDTO) proc).setTramitTelefonica(jprocWF.isTramitTelefonica());
+            ((ServicioDTO) proc).setActivoLOPD(jprocWF.getActivoLOPD());
+
+            if (jprocWF.getTramiteElectronico() != null) {
+                TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronico());
+                ((ServicioDTO) proc).setTipoTramitacion(tipo);
+
+            } else if (jprocWF.getTramiteElectronicoPlantilla() != null) {
+                TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronicoPlantilla());
+                ((ServicioDTO) proc).setPlantillaSel(tipo);
+            }
+        }
+        return proc;
+    }
+
+    @Override
+    public String obtenerIdiomaEntidad(Long codigoProc) {
+        Query query = entityManager.createQuery("select j.uaCompetente.entidad.idiomaDefectoRest from JProcedimientoWorkflow j where j.codigo = :codigoProc ");
+        query.setParameter("codigoProc", codigoProc);
+        List<String> idiomas = query.getResultList();
+        if (idiomas != null && !idiomas.isEmpty()) {
+            return idiomas.get(0);
+        }
+
+        query = entityManager.createQuery("select j.uaInstructor.entidad.idiomaDefectoRest from JProcedimientoWorkflow j where j.codigo = :codigoProc ");
+        query.setParameter("codigoProc", codigoProc);
+        idiomas = query.getResultList();
+        if (idiomas != null && !idiomas.isEmpty()) {
+            return idiomas.get(0);
+        }
+
+        query = entityManager.createQuery("select j.uaResponsable.entidad.idiomaDefectoRest from JProcedimientoWorkflow j where j.codigo = :codigoProc ");
+        query.setParameter("codigoProc", codigoProc);
+        idiomas = query.getResultList();
+        if (idiomas != null && !idiomas.isEmpty()) {
+            return idiomas.get(0);
+        }
+
+        return null;
+
+    }
 }

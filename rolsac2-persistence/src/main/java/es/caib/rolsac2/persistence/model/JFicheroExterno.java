@@ -46,7 +46,7 @@ public class JFicheroExterno {
     /**
      * Nombre del fichero
      **/
-    @Column(name = "FIE_FILENAME", unique = true, nullable = false, length = 1000)
+    @Column(name = "FIE_FILENAME", unique = true, nullable = false, length = 150)
     private String filename;
 
     /**
@@ -204,5 +204,5 @@ public class JFicheroExterno {
     public void setIdElemento(Long idElemento) {
         this.idElemento = idElemento;
     }
- 
+
 }
