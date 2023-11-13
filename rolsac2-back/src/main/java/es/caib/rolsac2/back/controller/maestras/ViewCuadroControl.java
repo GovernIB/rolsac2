@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.CuadroMandoServiceFacade;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.CuadroControlDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCMGridDTO;
@@ -124,15 +125,17 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         listaDtos = new ArrayList<>();
         if (!buscarTodo) {
             procedimientoDto.setTitulos("viewCuadroControl.procedimientos");
-            procedimientoDto.setNumeroVisible(cuadroMandoServiceFacade.countProcEstadoByUa(uaSeleccionada.getCodigo(), "1").toString());
-            procedimientoDto.setNumeroNoVisible(cuadroMandoServiceFacade.countProcEstadoByUa(uaSeleccionada.getCodigo(), "2").toString());
-            procedimientoDto.setNumeroTotal(cuadroMandoServiceFacade.countProcedimientosByUa(uaSeleccionada.getCodigo()).toString());
+            Long[] totalProcedimientos = cuadroMandoServiceFacade.getProcedimientosByUa(uaSeleccionada.getCodigo(), Constantes.PROCEDIMIENTO, UtilJSF.getSessionBean().getLang());
+            procedimientoDto.setNumeroVisible(totalProcedimientos[0].toString()); //(cuadroMandoServiceFacade.countProcEstadoByUa(uaSeleccionada.getCodigo(), "1").toString());
+            procedimientoDto.setNumeroNoVisible(totalProcedimientos[1].toString()); //cuadroMandoServiceFacade.countProcEstadoByUa(uaSeleccionada.getCodigo(), "2").toString());
+            procedimientoDto.setNumeroTotal(totalProcedimientos[2].toString()); //cuadroMandoServiceFacade.countProcedimientosByUa(uaSeleccionada.getCodigo()).toString());
             listaDtos.add(procedimientoDto);
 
             serviciosDto.setTitulos("viewCuadroControl.servicios");
-            serviciosDto.setNumeroVisible(cuadroMandoServiceFacade.countServEstadoByUa(uaSeleccionada.getCodigo(), "1").toString());
-            serviciosDto.setNumeroNoVisible(cuadroMandoServiceFacade.countServEstadoByUa(uaSeleccionada.getCodigo(), "2").toString());
-            serviciosDto.setNumeroTotal(cuadroMandoServiceFacade.countServicioByUa(uaSeleccionada.getCodigo()).toString());
+            Long[] totalServicios = cuadroMandoServiceFacade.getProcedimientosByUa(uaSeleccionada.getCodigo(), Constantes.SERVICIO, UtilJSF.getSessionBean().getLang());
+            serviciosDto.setNumeroVisible(totalServicios[0].toString()); //cuadroMandoServiceFacade.countServEstadoByUa(uaSeleccionada.getCodigo(), "1").toString());
+            serviciosDto.setNumeroNoVisible(totalServicios[1].toString()); //cuadroMandoServiceFacade.countServEstadoByUa(uaSeleccionada.getCodigo(), "2").toString());
+            serviciosDto.setNumeroTotal(totalServicios[2].toString()); //cuadroMandoServiceFacade.countServicioByUa(uaSeleccionada.getCodigo()).toString());
             listaDtos.add(serviciosDto);
 
             normativaDto.setTitulos("viewCuadroControl.normativas");
@@ -142,14 +145,14 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
             listaDtos.add(normativaDto);
         } else {
             procedimientoDto.setTitulos("viewCuadroControl.procedimientos");
-            procedimientoDto.setNumeroVisible(cuadroMandoServiceFacade.countProcEstadoByUa(uaSeleccionada.getCodigo(), "3").toString());
-            procedimientoDto.setNumeroNoVisible(cuadroMandoServiceFacade.countProcEstadoByUa(uaSeleccionada.getCodigo(), "4").toString());
+            //procedimientoDto.setNumeroVisible(cuadroMandoServiceFacade.countProcEstadoByUa(uaSeleccionada.getCodigo(), "3").toString());
+            //procedimientoDto.setNumeroNoVisible(cuadroMandoServiceFacade.countProcEstadoByUa(uaSeleccionada.getCodigo(), "4").toString());
             procedimientoDto.setNumeroTotal(cuadroMandoServiceFacade.countAllProcedimientos().toString());
             listaDtos.add(procedimientoDto);
 
             serviciosDto.setTitulos("viewCuadroControl.servicios");
-            serviciosDto.setNumeroVisible(cuadroMandoServiceFacade.countServEstadoByUa(uaSeleccionada.getCodigo(), "3").toString());
-            serviciosDto.setNumeroNoVisible(cuadroMandoServiceFacade.countServEstadoByUa(uaSeleccionada.getCodigo(), "4").toString());
+            //serviciosDto.setNumeroVisible(cuadroMandoServiceFacade.countServEstadoByUa(uaSeleccionada.getCodigo(), "3").toString());
+            //serviciosDto.setNumeroNoVisible(cuadroMandoServiceFacade.countServEstadoByUa(uaSeleccionada.getCodigo(), "4").toString());
             serviciosDto.setNumeroTotal(cuadroMandoServiceFacade.countAllServicio().toString());
             listaDtos.add(serviciosDto);
 
@@ -415,8 +418,8 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         aplicaciones.addAll(cuadroMandoServiceFacade.obtenerAplicacionesEstadistica());
 
         graficosEstadisticas = new ArrayList<>();
-        for(String app : aplicaciones) {
-            if(!app.equals("General")) {
+        for (String app : aplicaciones) {
+            if (!app.equals("General")) {
                 filtroProcedimientos.setIdApp(app);
                 filtroUas.setIdApp(app);
                 filtroServicios.setIdApp(app);

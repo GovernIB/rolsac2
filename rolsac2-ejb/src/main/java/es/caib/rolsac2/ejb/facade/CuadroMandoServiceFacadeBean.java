@@ -12,8 +12,12 @@ import es.caib.rolsac2.service.model.filtro.CuadroMandoFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.*;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 @Logged
@@ -21,7 +25,7 @@ import java.util.List;
 @Stateless
 @Local(CuadroMandoServiceFacade.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-public class CuadroMandoServiceFacadeBean implements CuadroMandoServiceFacade{
+public class CuadroMandoServiceFacadeBean implements CuadroMandoServiceFacade {
 
     @Inject
     private ProcedimientoAuditoriaRepository auditoriaRepository;
@@ -69,16 +73,28 @@ public class CuadroMandoServiceFacadeBean implements CuadroMandoServiceFacade{
         return procedimientoRepository.countAllServicio();
     }
 
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long countProcEstadoByUa(Long uaId, String estado) {
-        return procedimientoRepository.countProcEstadoByUa(uaId, estado);
-    }
+    //@Override
+    //@RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    //public Long countProcEstadoByUa(Long uaId, String estado) {
+    //    return procedimientoRepository.countProcEstadoByUa(uaId, estado);
+    //}
+
+    //@Override
+    //@RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    //public Long countServEstadoByUa(Long uaId, String estado) {
+    //    return procedimientoRepository.countServEstadoByUa(uaId, estado);
+    //}
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long countServEstadoByUa(Long uaId, String estado) {
-        return procedimientoRepository.countServEstadoByUa(uaId, estado);
+    public Long[] getProcedimientosByUa(Long codigo, String tipo, String lang) {
+        List<Long> uas = new ArrayList<>();
+        uas.add(codigo);
+        Long[] total = new Long[3];
+        total[0] = procedimientoRepository.getProcedimientosTotalByUas(uas, tipo, lang, true);
+        total[1] = procedimientoRepository.getProcedimientosTotalByUas(uas, tipo, lang, false);
+        total[2] = total[0] + total[1];
+        return total;
     }
 
     @Override
