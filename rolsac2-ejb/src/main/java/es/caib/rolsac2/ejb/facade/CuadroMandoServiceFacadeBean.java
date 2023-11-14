@@ -92,8 +92,8 @@ public class CuadroMandoServiceFacadeBean implements CuadroMandoServiceFacade {
         uas.add(codigo);
         Long[] total = new Long[3];
         total[0] = procedimientoRepository.getProcedimientosTotalByUas(uas, tipo, lang, true);
-        total[1] = procedimientoRepository.getProcedimientosTotalByUas(uas, tipo, lang, false);
-        total[2] = total[0] + total[1];
+        total[2] = procedimientoRepository.getProcedimientosTotalByUas(uas, tipo, lang, null);
+        total[1] = total[2] - total[0];
         return total;
     }
 

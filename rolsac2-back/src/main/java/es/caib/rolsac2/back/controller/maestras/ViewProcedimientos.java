@@ -76,7 +76,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void filtroHijasActivasChange() {
         if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
+            filtro.setIdUAsResponsable(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
         } else if (filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
             List<Long> ids = new ArrayList<>();
 
@@ -84,14 +84,14 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
                 ids.addAll(idsUa);
             }
-            filtro.setIdUAsHijas(ids);
+            filtro.setIdUAsResponsable(ids);
         } else if (!filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
             List<Long> idsUa = new ArrayList<>();
             for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
                 idsUa.add(ua.getCodigo());
             }
             idsUa.add(sessionBean.getUnidadActiva().getCodigo());
-            filtro.setIdUAsHijas(idsUa);
+            filtro.setIdUAsResponsable(idsUa);
         }
     }
 
@@ -104,25 +104,25 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                     List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
                     ids.addAll(idsUa);
                 }
-                filtro.setIdUAsHijas(ids);
+                filtro.setIdUAsResponsable(ids);
             } else {
                 List<Long> idsUa = new ArrayList<>();
                 for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
                     idsUa.add(ua.getCodigo());
                 }
                 idsUa.add(sessionBean.getUnidadActiva().getCodigo());
-                filtro.setIdUAsHijas(idsUa);
+                filtro.setIdUAsResponsable(idsUa);
             }
         } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
+            filtro.setIdUAsResponsable(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
         }
     }
 
     public void limpiarFiltro() {
         filtro = new ProcedimientoFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        filtro.setIdUAResponsable(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
-        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        //filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setEsProcedimiento(Boolean.TRUE);
         filtro.setOrder("DESCENDING");
         filtro.setTipo("P");
@@ -320,7 +320,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     }
 
     public void buscar() {
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        filtro.setIdUAResponsable(sessionBean.getUnidadActiva().getCodigo());
         lazyModel = new LazyDataModel<>() {
             private static final long serialVersionUID = 1L;
 
@@ -348,7 +348,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                     }
                     if (filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
                         List<Long> unidadesHijasAux = new ArrayList<>(filtro.getIdUAsHijas());
-                        filtro.setIdUAsHijas(unidadesHijasAux.subList(0, 999));
+                        filtro.setIdUAsResponsable(unidadesHijasAux.subList(0, 999));
                         filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));
                     }
                     Pagina<ProcedimientoGridDTO> pagina = procedimientoService.findProcedimientosByFiltro(filtro);

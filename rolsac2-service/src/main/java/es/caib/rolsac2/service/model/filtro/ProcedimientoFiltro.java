@@ -46,6 +46,17 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private boolean hijasActivas = false;
     private List<Long> idUAsHijas;
 
+    /**
+     * El UAs Responsable es para procedimientos
+     **/
+    private Long idUAResponsable;
+    private List<Long> idUAsResponsable;
+    /**
+     * El UAs Instructor es para servicios
+     **/
+    private Long idUAInstructor;
+    private List<Long> idUAsInstructor;
+
     private List<Long> idsUAsHijasAux;
     private boolean todasUnidadesOrganicas = false;
 
@@ -448,6 +459,43 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.version = version;
     }
 
+    public Long getIdUAResponsable() {
+        return idUAResponsable;
+    }
+
+    public void setIdUAResponsable(Long idUAResponsable) {
+        this.idUAResponsable = idUAResponsable;
+    }
+
+    public List<Long> getIdUAsResponsable() {
+        return idUAsResponsable;
+    }
+
+    public void setIdUAsResponsable(List<Long> idUAsResponsable) {
+        this.idUAsResponsable = idUAsResponsable;
+    }
+
+    public Long getIdUAInstructor() {
+        return idUAInstructor;
+    }
+
+    public void setIdUAInstructor(Long idUAInstructor) {
+        this.idUAInstructor = idUAInstructor;
+    }
+
+    public List<Long> getIdUAsInstructor() {
+        return idUAsInstructor;
+    }
+
+    public void setIdUAsInstructor(List<Long> idUAsInstructor) {
+        this.idUAsInstructor = idUAsInstructor;
+    }
+
+    /**
+     * Esta relleno el codigo WF
+     *
+     * @return
+     */
     public boolean isRellenoCodigoWF() {
         return this.codigoWF != null;
     }
@@ -565,6 +613,22 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public boolean isRellenoUasAux() {
         return idsUAsHijasAux != null;
+    }
+
+    public boolean isRellenoUasResponsable() {
+        return idUAsResponsable != null && !idUAsResponsable.isEmpty();
+    }
+
+    public boolean isRellenoUaResponsable() {
+        return idUAResponsable != null;
+    }
+
+    public boolean isRellenoUasInstructor() {
+        return idUAsInstructor != null && !idUAsInstructor.isEmpty();
+    }
+
+    public boolean isRellenoUaInstructor() {
+        return idUAInstructor != null;
     }
 
     public boolean isRellenoTodasUnidadesOrganicas() {

@@ -74,7 +74,7 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void filtroHijasActivasChange() {
         if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
+            filtro.setIdUAsInstructor(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
         } else if (filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
             List<Long> ids = new ArrayList<>();
 
@@ -82,14 +82,14 @@ public class ViewServicios extends AbstractController implements Serializable {
                 List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
                 ids.addAll(idsUa);
             }
-            filtro.setIdUAsHijas(ids);
+            filtro.setIdUAsInstructor(ids);
         } else if (!filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
             List<Long> idsUa = new ArrayList<>();
             for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
                 idsUa.add(ua.getCodigo());
             }
             idsUa.add(sessionBean.getUnidadActiva().getCodigo());
-            filtro.setIdUAsHijas(idsUa);
+            filtro.setIdUAsInstructor(idsUa);
         }
     }
 
@@ -102,25 +102,25 @@ public class ViewServicios extends AbstractController implements Serializable {
                     List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
                     ids.addAll(idsUa);
                 }
-                filtro.setIdUAsHijas(ids);
+                filtro.setIdUAsInstructor(ids);
             } else {
                 List<Long> idsUa = new ArrayList<>();
                 for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
                     idsUa.add(ua.getCodigo());
                 }
                 idsUa.add(sessionBean.getUnidadActiva().getCodigo());
-                filtro.setIdUAsHijas(idsUa);
+                filtro.setIdUAsInstructor(idsUa);
             }
         } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsHijas(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
+            filtro.setIdUAsInstructor(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
         }
     }
 
     public void limpiarFiltro() {
         filtro = new ProcedimientoFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
-        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        //filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setTipo("S");
         filtro.setEsProcedimiento(Boolean.FALSE);
         filtro.setOrder("DESCENDING");
@@ -322,7 +322,7 @@ public class ViewServicios extends AbstractController implements Serializable {
     }
 
     public void buscar() {
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
         lazyModel = new LazyDataModel<>() {
             private static final long serialVersionUID = 1L;
 
@@ -350,7 +350,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                     }
                     if (filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
                         List<Long> unidadesHijasAux = new ArrayList<>(filtro.getIdUAsHijas());
-                        filtro.setIdUAsHijas(unidadesHijasAux.subList(0, 999));
+                        filtro.setIdUAsInstructor(unidadesHijasAux.subList(0, 999));
                         filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));
                     }
                     if (canalesSeleccionados != null && canalesSeleccionados.length > 0) {

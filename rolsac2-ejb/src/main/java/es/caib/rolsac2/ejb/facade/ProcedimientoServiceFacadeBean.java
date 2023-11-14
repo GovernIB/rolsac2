@@ -293,8 +293,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                 }
             } else {
                 jProcWF.setTramiteElectronicoPlantilla(null);
-                if (jProcWF.getTramiteElectronico() != null) {
-                    tipoTramitacionRepository.delete(jProcWF.getTramiteElectronico());
+                if (jProcWF.getTramiteElectronico() != null && jProcWF.getTramiteElectronico().getCodigo() != null) {
+                    //JTipoTramitacion jTipoProcedimiento = jProcWF.getTramiteElectronico();
+                    tipoTramitacionRepository.borrarByServicio(jProcWF.getCodigo(), jProcWF.getTramiteElectronico().getCodigo());
+                    //tipoTramitacionRepository.delete(jProcWF.getTramiteElectronico());
                 }
                 jProcWF.setTramiteElectronico(null);
             }

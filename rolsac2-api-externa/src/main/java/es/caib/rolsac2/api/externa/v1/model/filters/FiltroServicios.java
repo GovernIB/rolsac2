@@ -29,9 +29,9 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
     public static final String CAMPO_ORD_PROCEDIMIENTO_FECHA_ACTUALIZACION = "fechaActualizacion";
     public static final String CAMPO_ORD_PROCEDIMIENTO_CODIGO = "codigo";
 
-    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"codigoUA\":0," + Constantes.SALTO_LINEA + "\"codigoUADir3\":\"0\"," + Constantes.SALTO_LINEA + "\"textos\":\"string\", (Compara con codigo, nombre, estado, tipo, codigoSia, estadoSia y codigoDir3Sia)" + Constantes.SALTO_LINEA + "\"titulo\":\"string\"," + Constantes.SALTO_LINEA + "\"codigo\":0," + Constantes.SALTO_LINEA + "\"volcadoSia\":\"S/N\", (S=Si, N=No)" + Constantes.SALTO_LINEA + "\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA + "\"comun\":0/1, (1= procedimientos comunes)" + Constantes.SALTO_LINEA + "\"codigoSia\":0," + Constantes.SALTO_LINEA + "\"codigoPlantilla\":0," + Constantes.SALTO_LINEA + "\"codigoPlataforma\":0," + Constantes.SALTO_LINEA + "\"idTramite\":0," + Constantes.SALTO_LINEA + "\"idPlataforma\":0," + Constantes.SALTO_LINEA + "\"version\":0," + Constantes.SALTO_LINEA + "\"estado\":\"S/M/P/T/R/U/B\", (S=Pendiente Publicar, M=En modificación, P=Publicado, T=Pendiente reservar, R=Reserva, U=Pendiente borrar, B=Borrado)" + Constantes.SALTO_LINEA + "\"estados\":\"S/M/P/T/R/U/B\", (S=Pendiente Publicar, M=En modificación, P=Publicado, T=Pendiente reservar, R=Reserva, U=Pendiente borrar, B=Borrado)" + Constantes.SALTO_LINEA + "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"listaCodigosNormativas\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosPublicosObjetivos\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosMaterias\":[0]," + Constantes.SALTO_LINEA + "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"vigente\": (S/N)," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA + "\"orden\":{\"campo\":\"" + CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}" + "}";
+    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"codigoUA\":0," + Constantes.SALTO_LINEA + "\"codigoUADir3\":\"0\"," + Constantes.SALTO_LINEA + "\"codigos\":\"ids separados por comas\"" + Constantes.SALTO_LINEA + "\"textos\":\"string\", (Compara con codigo, nombre, estado, tipo, codigoSia, estadoSia y codigoDir3Sia)" + Constantes.SALTO_LINEA + "\"titulo\":\"string\"," + Constantes.SALTO_LINEA + "\"codigo\":0," + Constantes.SALTO_LINEA + "\"volcadoSia\":\"S/N\", (S=Si, N=No)" + Constantes.SALTO_LINEA + "\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA + "\"comun\":0/1, (1= procedimientos comunes)" + Constantes.SALTO_LINEA + "\"codigoSia\":0," + Constantes.SALTO_LINEA + "\"codigoPlantilla\":0," + Constantes.SALTO_LINEA + "\"codigoPlataforma\":0," + Constantes.SALTO_LINEA + "\"idTramite\":0," + Constantes.SALTO_LINEA + "\"idPlataforma\":0," + Constantes.SALTO_LINEA + "\"version\":0," + Constantes.SALTO_LINEA + "\"estado\":\"S/M/P/T/R/U/B\", (S=Pendiente Publicar, M=En modificación, P=Publicado, T=Pendiente reservar, R=Reserva, U=Pendiente borrar, B=Borrado)" + Constantes.SALTO_LINEA + "\"estados\":\"S/M/P/T/R/U/B\", (S=Pendiente Publicar, M=En modificación, P=Publicado, T=Pendiente reservar, R=Reserva, U=Pendiente borrar, B=Borrado)" + Constantes.SALTO_LINEA + "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"listaCodigosNormativas\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosPublicosObjetivos\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosMaterias\":[0]," + Constantes.SALTO_LINEA + "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"vigente\": (S/N)," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA + "\"orden\":{\"campo\":\"" + CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}" + "}";
 
-    public static final String SAMPLE_JSON = "{" + "\n	\"codigoUA\":null," + "\n	\"codigoUADir3\":null," + "\n	\"textos\":null," + "\n	\"titulo\":null," + "\n	\"codigo\":null," + "\n	\"volcadoSia\":null," + "\n	\"estadoWF\":null," + "\n	\"comun\":null," + "\n	\"codigoSia\":null," + "\n	\"codigoPlantilla\":null," + "\n	\"codigoPlataforma\":null," + "\n	\"idTramite\":null," + "\n	\"idPlataforma\":null," + "\n	\"version\":null," + "\n	\"estado\":null," + "\n	\"estados\":null," + "\n	\"fechaActualizacionSia\":null," + "\n	\"listaCodigosNormativas\":null," + "\n	\"listaCodigosPublicosObjetivos\":null," + "\n	\"listaCodigosMaterias\":null," + "\n	\"fechaPublicacionDesde\":null," + "\n	\"fechaPublicacionHasta\":null," + "\n	\"idEntidad\":null," + "\n	\"vigente\":null," + "\n	\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + "\n	\"orden\":null" + "}";
+    public static final String SAMPLE_JSON = "{" + "\n	\"codigoUA\":null," + "\n	\"codigoUADir3\":null," + "\"codigos\":null," + "\n	\"textos\":null," + "\n	\"titulo\":null," + "\n	\"codigo\":null," + "\n	\"volcadoSia\":null," + "\n	\"estadoWF\":null," + "\n	\"comun\":null," + "\n	\"codigoSia\":null," + "\n	\"codigoPlantilla\":null," + "\n	\"codigoPlataforma\":null," + "\n	\"idTramite\":null," + "\n	\"idPlataforma\":null," + "\n	\"version\":null," + "\n	\"estado\":null," + "\n	\"estados\":null," + "\n	\"fechaActualizacionSia\":null," + "\n	\"listaCodigosNormativas\":null," + "\n	\"listaCodigosPublicosObjetivos\":null," + "\n	\"listaCodigosMaterias\":null," + "\n	\"fechaPublicacionDesde\":null," + "\n	\"fechaPublicacionHasta\":null," + "\n	\"idEntidad\":null," + "\n	\"vigente\":null," + "\n	\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + "\n	\"orden\":null" + "}";
 
     /**
      * FiltroPaginacion.
@@ -90,8 +90,8 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
     /**
      * codigo.
      **/
-    @Schema(description = "codigos", type = SchemaType.ARRAY, required = false)
-    private List<Long> codigos;
+    @Schema(description = "codigos", required = false)
+    private String codigos;
 
 
     /**
@@ -237,11 +237,11 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
         this.codigo = codigo;
     }
 
-    public List<Long> getCodigos() {
+    public String getCodigos() {
         return codigos;
     }
 
-    public void setCodigos(List<Long> codigos) {
+    public void setCodigos(String codigos) {
         this.codigos = codigos;
     }
 

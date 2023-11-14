@@ -691,7 +691,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         JUnidadAdministrativa jnueva = unidadAdministrativaConverter.createEntity(nueva);
         jnueva.setPadre(juaOriginal.getPadre());
         unidadAdministrativaRepository.create(jnueva);
-
+        
         //Mover todos los datos de procedimientos/servicios a la nueva UA
         List<Long> codigosProcedimientos = new ArrayList<>();
         codigosProcedimientos.add(codigoUA);
