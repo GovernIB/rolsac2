@@ -197,7 +197,7 @@ create or replace PROCEDURE "MIGRAR_SERV" (codigo NUMBER, codigoEntidad NUMBER, 
         SELECT *  
           FROM R1_SERVICIOS_MATE
          WHERE SRM_CODSER = codSER 
-           AND SRM_CODMAT IN (SELECT CODIGO_TEMA FROM RS2_TEMA);
+           AND SRM_CODMAT IN (SELECT TEMA_CODIGO FROM RS2_TEMA);
     CURSOR cursorDocumentos(codSer NUMBER) IS
       SELECT *
         FROM R1_SERVICIOS_DOC
