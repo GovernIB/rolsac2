@@ -67,19 +67,21 @@
 					</div>
 					<div class="form-row">
 						<div class="form-group col-md-12">
-							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
-								value="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:"
-								for="selectNormativa" />
+							<p class="mb-0">
+								<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+											   value="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:"
+											   for="selectNormativa" />
+							</p>
 							<p:autoComplete id="selectNormativa" var="normativa"
-								forceSelection="true" styleClass="w95"
-								value="#{dialogEvolucionFusionUnidadAdministrativa.normativa}"
-								itemLabel="#{normativa.codigo} #{normativa.titulo.getTraduccion(dialogEvolucionFusionUnidadAdministrativa.idioma)}"
-								itemValue="#{normativa}" converter="#{normativaDTOConverter}"
-								autoHighlight="false"
-								completeMethod="#{dialogEvolucionFusionUnidadAdministrativa.completeNormativa}"
-								dropdown="true" placeholder="#{dict.text_placeholder_lista}"
-								size="95" minQueryLength="3" cache="true" cacheTimeout="60000"
-								scrollHeight="200">
+											forceSelection="true" styleClass="w95"
+											value="#{dialogEvolucionFusionUnidadAdministrativa.normativa}"
+											itemLabel="#{normativa.codigo} #{normativa.titulo.getTraduccion(dialogEvolucionBasicaUnidadAdministrativa.idioma)}"
+											itemValue="#{normativa}" converter="#{normativaDTOConverter}"
+											autoHighlight="false" dropdown="true"
+											completeMethod="#{dialogEvolucionFusionUnidadAdministrativa.completeNormativa}"
+											placeholder="#{dict.text_placeholder_lista}" size="80"
+											minQueryLength="3" cache="true" cacheTimeout="60000"
+											scrollHeight="200">
 							</p:autoComplete>
 						</div>
 					</div>
