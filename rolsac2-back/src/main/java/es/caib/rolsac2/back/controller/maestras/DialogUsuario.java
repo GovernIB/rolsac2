@@ -79,9 +79,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
             dataOriginal = data.clone();
             if (sessionBean.getPerfil() != TypePerfiles.SUPER_ADMINISTRADOR) {
                 dataOriginal.setUnidadesAdministrativas(new ArrayList<>(data.getUnidadesAdministrativas()));
-                unidadesAdministrativasEntidad = this.data.getUnidadesAdministrativas().stream()
-                        .filter(ua -> ua.getIdEntidad().compareTo(sessionBean.getEntidad().getCodigo()) == 0)
-                        .collect(Collectors.toList());
+                unidadesAdministrativasEntidad = this.data.getUnidadesAdministrativas().stream().filter(ua -> ua.getIdEntidad().compareTo(sessionBean.getEntidad().getCodigo()) == 0).collect(Collectors.toList());
             }
         }
     }
@@ -104,9 +102,9 @@ public class DialogUsuario extends AbstractController implements Serializable {
     }
 
     public void checkUsuario() {
-        if(this.data.getCodigo() == null) {
-            if(administracionEntService.checkIdentificadorUsuario(this.data.getIdentificador())) {
-                if(!isModoAlta()) {
+        if (this.data.getCodigo() == null) {
+            if (administracionEntService.checkIdentificadorUsuario(this.data.getIdentificador())) {
+                if (!isModoAlta()) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
                 } else {
                     PrimeFaces.current().executeScript("PF('usuarioAlta').show()");
@@ -154,14 +152,12 @@ public class DialogUsuario extends AbstractController implements Serializable {
     }
 
     private boolean verificarGuardar() {
-        if (Objects.isNull(this.data.getCodigo())
-                && administracionEntService.checkIdentificadorUsuario(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo()) && administracionEntService.checkIdentificadorUsuario(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
 
-        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
-                && administracionEntService.checkIdentificadorUsuario(this.data.getIdentificador())) {
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador()) && administracionEntService.checkIdentificadorUsuario(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
@@ -170,9 +166,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
     }
 
     public void actualizarUasEntidad() {
-        unidadesAdministrativasEntidad =  this.data.getUnidadesAdministrativas().stream()
-                .filter(ua -> ua.getIdEntidad().compareTo(sessionBean.getEntidad().getCodigo()) == 0)
-                .collect(Collectors.toList());
+        unidadesAdministrativasEntidad = this.data.getUnidadesAdministrativas().stream().filter(ua -> ua.getIdEntidad().compareTo(sessionBean.getEntidad().getCodigo()) == 0).collect(Collectors.toList());
     }
 
     public void cerrar() {
@@ -184,12 +178,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
     }
 
     public boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
-                || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0
-                || UtilComparador.compareTo(data.getEmail(), dataOriginal.getEmail()) != 0
-                || UtilComparador.compareTo(data.getObservaciones(), dataOriginal.getObservaciones()) != 0
-                || !data.getUnidadesAdministrativas().equals(dataOriginal.getUnidadesAdministrativas());
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0 || UtilComparador.compareTo(data.getNombre(), dataOriginal.getNombre()) != 0 || UtilComparador.compareTo(data.getEmail(), dataOriginal.getEmail()) != 0 || UtilComparador.compareTo(data.getObservaciones(), dataOriginal.getObservaciones()) != 0 || !data.getUnidadesAdministrativas().equals(dataOriginal.getUnidadesAdministrativas());
     }
 
     public void cerrarDefinitivo() {
@@ -232,7 +221,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
             uaSeleccionada = unidadAdministrativaServiceFacade.findById(uaSeleccionada.getCodigo());
             if (uaSeleccionada != null) {
                 UnidadAdministrativaGridDTO uaSeleccionadaGrid = uaSeleccionada.convertDTOtoGridDTO();
-                if(uaSeleccionadaGrid.getIdEntidad() == null) {
+                if (uaSeleccionadaGrid.getIdEntidad() == null) {
                     uaSeleccionadaGrid.setIdEntidad(sessionBean.getEntidad().getCodigo());
                 }
                 //verificamos qeu la UA no esté seleccionada ya, en caso de estarlo mostramos mensaje
@@ -250,15 +239,15 @@ public class DialogUsuario extends AbstractController implements Serializable {
     }
 
     /*
-    * SELECCION ENTIDAD
-    *
-    * */
+     * SELECCION ENTIDAD
+     *
+     * */
 
     public void abrirDialogSelecEnti(TypeModoAcceso modoAcceso) {
         if (TypeModoAcceso.CONSULTA.equals(modoAcceso) && entidadSeleccionada != null) {
             final Map<String, String> params = new HashMap<>();
             params.put(TypeParametroVentana.ID.toString(), entidadSeleccionada.getCodigo().toString());
-            UtilJSF.openDialog("/superadministrador/dialogEntidad", modoAcceso, params, true, 700, 300);
+            UtilJSF.openDialog("/superadministrador/dialogEntidad", modoAcceso, params, true, 700, 580);
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("entidadesSeleccionada", data.getEntidades());
             final Map<String, String> params = new HashMap<>();

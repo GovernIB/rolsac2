@@ -71,7 +71,7 @@
             </p:panel>
             <p:panel id="panelDatos" header="#{labels['dialogProcedimientoTramite.datos']}">
                 <div class="form-row">
-                    <div class="form-group col-md-1">
+                    <div class="form-group col-md-2">
                         <p class="mb-1">
                             <h:outputText styleClass="mb-1" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                         </p>
@@ -117,7 +117,7 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-1">
+                    <div class="form-group col-md-2">
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaInicio']}:" for="txtFechaInicio"
@@ -268,7 +268,7 @@
             </p:panel>
             <p:panel id="panelCanales" header="#{labels['dialogProcedimientoTramite.canales']}">
                 <div class="form-row align-items-center">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-5">
                         <!--Aquí es mapear luego con los bools que tiene TipoTramitacionDTO para ello-->
                         <p:selectManyCheckbox id="canalesTramitacion"
                                               value="#{dialogProcedimientoTramite.canalesSeleccionados}">
@@ -282,7 +282,7 @@
                                     event="change" listener="#{dialogProcedimientoTramite.cambiaTipo}"/>
                         </p:selectManyCheckbox>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-5">
                         <p:selectOneMenu id="txtOpcionTelematica"
                                          value="#{dialogProcedimientoTramite.opcionTelematica}"
                                          requiredMessage="#{labels['dict.obligatorio.opcionTelematica']}"
@@ -325,7 +325,7 @@
 
                                 <p:selectOneMenu id="txtTraPlantilla"
                                                  value="#{dialogProcedimientoTramite.data.plantillaSel}"
-                                                 styleClass="w95"
+                                                 styleClass="w100px" style="width: 300px !important;"
                                                  requiredMessage="La plantilla es obligatoria"
                                                  required="#{dialogProcedimientoTramite.isOpcionTelematicaPlantilla()}"
                                                  disabled="#{dialogProcedimientoTramite.isModoConsulta() ||

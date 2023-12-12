@@ -647,14 +647,19 @@
 
         <div class="ui-g-12 ui-md-3 pr-1 ">
             <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.publicoObjetivo']}*</p>
+                <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-10 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.publicoObjetivo']}*</p>
+                    </div>
+                    <div class="col-2">
+                        <p:commandButton id="btnPubObjCol" onclick="colapsarModulo('#divPublico','btnPubObj');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px" />
+                        <p:commandButton id="btnPubObjExp" onclick="expandirModulo('#divPublico','btnPubObj');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px" />
+                    </div>
                 </div>
-                <div class="col-10 p-1">
+                <div id="divPublico" class="col-10 p-1">
                     <p:dataTable id="dataTablePublico" var="td"
                                  value="#{dialogServicio.data.publicosObjetivo}"
                                  emptyMessage="#{labels['dialogServicio.tablaVacia']}" scrollable="true"
-                                 scrollHeight="120"
                                  paginator="false" selectionMode="single"
                                  selection="#{dialogServicio.tipoPubObjEntGridSeleccionado}"
                                  rowKey="#{td.codigo}" styleClass="noHeader">
@@ -675,7 +680,7 @@
                         -->
                     </p:dataTable>
                 </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <div id="divPublicoBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta()}" process="@this"
                                      actionListener="#{dialogServicio.nuevoPubObjEnt()}">
@@ -686,19 +691,23 @@
                                      disabled="#{dialogServicio.isModoConsulta()}"
                                      action="#{dialogServicio.borrarPubObjEnt}"
                                      process="@this" update="dataTablePublico messagesDialog"/>
-                    <p:commandButton id="btnConsultarPublico" title="#{labels['dict.consultar']}" icon="pi pi-eye"
-                                     action="#{dialogServicio.consultarPubObjEnt}"
-                                     process="@this" update="dataTablePublico messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.materiasRelacionadas']}*</p>
+                    <div class="left-container-header ml-0 col-12 row">
+                        <div class="col-10 text-center">
+                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.materiasRelacionadas']}*</p>
+                        </div>
+                        <div class="col-2">
+                            <p:commandButton id="btnMateriasCol" onclick="colapsarModulo('#divMaterias','btnMaterias');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" />
+                            <p:commandButton id="btnMateriasExp" onclick="expandirModulo('#divMaterias','btnMaterias');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" />
+                        </div>
+                    </div>
                 </div>
-                <div class="col-10 p-1">
+                <div id="divMaterias"  class="col-10 p-1">
                     <p:dataTable id="dataTableMaterias" var="td" value="#{dialogServicio.data.materiasSIA}"
                                  emptyMessage="#{labels['dialogServicio.tablaVacia']}" scrollable="true"
-                                 scrollHeight="120"
                                  paginator="false" selectionMode="single"
                                  selection="#{dialogServicio.materiaSIAGridSeleccionada}"
                                  rowKey="#{td.codigo}" styleClass="noHeader">
@@ -720,7 +729,7 @@
                         -->
                     </p:dataTable>
                 </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <div id="divMateriasBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta()}" process="@this"
                                      actionListener="#{dialogServicio.nuevaMateriaSIA()}">
@@ -731,20 +740,24 @@
                                      disabled="#{dialogServicio.isModoConsulta()}"
                                      action="#{dialogServicio.borrarMateriaSIA}"
                                      process="@this" update="dataTableMaterias messagesDialog"/>
-                    <p:commandButton id="btnConsultarMateria" title="#{labels['dict.consultar']}" icon="pi pi-eye"
-                                     action="#{dialogServicio.consultarMateriaSIA}"
-                                     process="@this" update="dataTableMaterias messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.normativaProc']}</p>
+                    <div class="left-container-header ml-0 col-12 row">
+                        <div class="col-10 text-center">
+                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.normativaProc']}</p>
+                        </div>
+                        <div class="col-2">
+                            <p:commandButton id="btnNormativasCol" onclick="colapsarModulo('#divNormativas','btnNormativas');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" />
+                            <p:commandButton id="btnNormativasExp" onclick="expandirModulo('#divNormativas','btnNormativas');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar"  />
+                        </div>
+                    </div>
                 </div>
-                <div class="col-10 p-1">
+                <div id="divNormativas" class="col-10 p-1">
                     <p:dataTable id="dataNormativaProcedimiento" var="td"
                                  value="#{dialogServicio.data.normativas}"
                                  emptyMessage="#{labels['dialogServicio.tablaVacia']}" scrollable="true"
-                                 scrollHeight="120"
                                  paginator="false" selectionMode="single"
                                  selection="#{dialogServicio.normativaGridSeleccionada}"
                                  rowKey="#{td.codigo}" styleClass="noHeader">
@@ -761,7 +774,7 @@
                             <h:outputText value="#{td.titulo.getTraduccion(dialogServicio.idioma)}"/>
                         </p:column>
                     </p:dataTable></div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <div id="divNormativasBtns"  class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta()}" process="@this"
                                      actionListener="#{dialogServicio.nuevaNormativa()}">
@@ -786,12 +799,19 @@
             </div>
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.docRelacionados']}</p>
+                    <div class="left-container-header ml-0 col-12 row">
+                        <div class="col-10 text-center">
+                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.docRelacionados']}</p>
+                        </div>
+                        <div class="col-2">
+                            <p:commandButton id="btnDocsRelCol" onclick="colapsarModulo('#divDocsRel','btnDocsRel');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" />
+                            <p:commandButton id="btnDocsRelExp" onclick="expandirModulo('#divDocsRel','btnDocsRel');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar"  />
+                        </div>
+                    </div>
                 </div>
-                <div class="col-10 p-1">
+                <div id="divDocsRel" class="col-10 p-1">
                     <p:dataTable id="dataDocumentosRelacionados" var="td" value="#{dialogServicio.data.documentos}"
                                  emptyMessage="#{labels['dialogServicio.noDocumentos']}" scrollable="true"
-                                 scrollHeight="120"
                                  paginator="false" selectionMode="single"
                                  selection="#{dialogServicio.documentoSeleccionado}"
                                  rowKey="#{td.codigoString}" styleClass="noHeader">
@@ -809,7 +829,7 @@
                         </p:column>
                     </p:dataTable>
                 </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <div id="divDocsRelBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta()}" process="@this"
                                      actionListener="#{dialogServicio.nuevoDocumento()}">
@@ -838,13 +858,20 @@
             <!--<div class="row left-container mx-0 mb-2">-->
             <h:panelGroup id="panelDocumentoLOPD" class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.docInformacion']}</p>
+                    <div class="left-container-header ml-0 col-12 row">
+                        <div class="col-10 text-center">
+                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.docInformacion']}</p>
+                        </div>
+                        <div class="col-2">
+                            <p:commandButton id="btnDocsLopdCol" onclick="colapsarModulo('#divDocsLopd','btnDocsLopd');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" />
+                            <p:commandButton id="btnDocsLopdExp" onclick="expandirModulo('#divDocsLopd','btnDocsLopd');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar"  />
+                        </div>
+                    </div>
                 </div>
-                <div class="col-10 p-1">
+                <div id="divDocsLopd" class="col-10 p-1">
                     <h:panelGroup id="paneldataDocumentosLopd">
                         <p:dataTable id="dataDocumentosLopd" var="td" value="#{dialogServicio.data.documentosLOPD}"
                                      emptyMessage="#{labels['dialogServicio.noDocumentos']}" scrollable="true"
-                                     scrollHeight="120"
                                      paginator="false" selectionMode="single"
                                      selection="#{dialogServicio.documentoLOPDSeleccionado}"
                                      rowKey="#{td.codigoString}" styleClass="noHeader"
@@ -864,7 +891,7 @@
                         </p:dataTable>
                     </h:panelGroup>
                 </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <div id="divDocsLopdBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                     <p:commandButton id="btnNuevoDocLOPD" title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                      styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta() or !empty dialogServicio.data.documentosLOPD}"
@@ -895,11 +922,17 @@
             <h:panelGroup id="panelTemas">
                 <c:forEach items="#{dialogServicio.roots}" var="tema" varStatus="status">
                     <div class="row left-container mx-0 mt-2">
-                        <div class="col-12 left-container-header text-center">
-                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                #{tema.data.descripcion.getTraduccion(dialogServicio.idioma)}</p>
+                        <div class="left-container-header ml-0 col-12 row">
+                            <div class="col-10 text-center">
+                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
+                                    #{tema.data.descripcion.getTraduccion(dialogServicio.idioma)}</p>
+                            </div>
+                            <div class="col-2">
+                                <p:commandButton id="btnTema#{tema.data.codigo}Col" onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px"  />
+                                <p:commandButton id="btnTema#{tema.data.codigo}Exp" onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px"  />
+                            </div>
                         </div>
-                        <div class="col-10 p-1">
+                        <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
                             <p:treeTable
                                     value="#{tema}"
                                     var="td"
@@ -927,7 +960,7 @@
 
                             </p:treeTable>
                         </div>
-                        <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                        <div id="divTema#{tema.data.codigo}Btns"  class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                             <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                              styleClass="text-success"
                                              process="@this"
@@ -937,9 +970,6 @@
                                         listener="#{dialogServicio.returnDialogTemas}" process="@this"
                                         update="messagesDialog panelTemas"/>
                             </p:commandButton>
-                            <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
-                                             action="#{dialogServicio.consultarTema(status.index)}"
-                                             process="@this" update="panelTemas messagesDialog"/>
                         </div>
                     </div>
                 </c:forEach>
@@ -1000,6 +1030,20 @@
                 }
             }
 
+            function colapsarModulo(lateral, botones) {
+                $(lateral).addClass('importantOcultar');
+                $(lateral+"Btns").addClass('importantOcultar');
+                $("#formDialog\\:"+botones+"Exp").removeClass('importantOcultar');
+                $("#formDialog\\:"+botones+"Col").addClass('importantOcultar');
+            }
+
+            function expandirModulo(lateral, botones) {
+                $(lateral).removeClass('importantOcultar');
+                $(lateral+"Btns").removeClass('importantOcultar');
+                $("#formDialog\\:"+botones+"Exp").addClass('importantOcultar');
+                $("#formDialog\\:"+botones+"Col").removeClass('importantOcultar');
+            }
+
             $(document).ready(function () {
                 checkUAraiz();
                 checkActivoLOPD();
@@ -1018,6 +1062,7 @@
                              icon="pi pi-arrow-right"
                              action="#{dialogServicio.guardarFlujo}"
                              styleClass="btn-footer"
+                             style="white-space: nowrap;text-align: center;"
                              process="@all"
                              disabled="#{empty dialogServicio.data.codigo}"
                              update="messagesDialog">
