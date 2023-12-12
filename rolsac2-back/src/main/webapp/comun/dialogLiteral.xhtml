@@ -51,10 +51,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{null}"/>
                     <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="lang"
                                    itemLabel="#{labels['idiomas.' += lang]}" itemValue="#{lang}"/>
-                    <p:ajax event="change" listener="#{dialogLiteral.cambiarIdiomaOrigenAux}" />
+                    <p:ajax event="change" listener="#{dialogLiteral.cambiarIdiomaOrigenAux}" update="selectId1 selectId2" />
                 </p:selectOneMenu>
                 <p:commandButton action="#{dialogLiteral.cambioValores}"
-                                 icon="pi pi-refresh"
+                                 icon="pi pi-refresh" update="selectId1 selectId2"
                                  process="@this" styleClass="mx-1"/>
                 <p:selectOneMenu id="selectId2" value="#{dialogLiteral.idiomaDestino}"
                                  required="false" styleClass="p-0">
@@ -62,7 +62,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                   itemValue="#{null}"/>
                     <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="lang"
                                    itemLabel="#{labels['idiomas.' += lang]}" itemValue="#{lang}"/>
-                    <p:ajax process="@this" listener="#{dialogLiteral.cambiarIdiomaDestinoAux}" />
+                    <p:ajax process="@this" listener="#{dialogLiteral.cambiarIdiomaDestinoAux}" update="selectId1 selectId2"  />
                 </p:selectOneMenu>
                 <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2"/>
 

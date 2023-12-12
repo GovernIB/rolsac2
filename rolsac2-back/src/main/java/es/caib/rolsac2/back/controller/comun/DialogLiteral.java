@@ -21,10 +21,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controlador para seleccionar un literal.
@@ -127,6 +124,35 @@ public class DialogLiteral extends AbstractController implements Serializable {
             }
 
         }
+    }
+
+    public void cambioValores() {
+        String aux = idiomaOrigen;
+        idiomaOrigen = idiomaDestino;
+        idiomaDestino = aux;
+        idiomaAuxOrigen = idiomaOrigen;
+        idiomaAuxDestino = idiomaDestino;
+        //cambiarIdiomaOrigenAux();
+        //cambiarIdiomaDestinoAux();
+    }
+
+    public void cambiarIdiomaOrigenAux() {
+        if (!Objects.equals(idiomaOrigen, idiomaDestino)) {
+            idiomaAuxOrigen = idiomaOrigen;
+        } else {
+            idiomaOrigen = idiomaAuxOrigen;
+            cambioValores();
+        }
+    }
+
+    public void cambiarIdiomaDestinoAux() {
+        if (!Objects.equals(idiomaDestino, idiomaOrigen)) {
+            idiomaAuxDestino = idiomaDestino;
+        } else {
+            idiomaDestino = idiomaAuxDestino;
+            cambioValores();
+        }
+
     }
 
     private String getIdTexto(String idiomaDestino) {

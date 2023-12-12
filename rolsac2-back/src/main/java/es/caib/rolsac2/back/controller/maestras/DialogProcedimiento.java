@@ -7,7 +7,6 @@ import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
@@ -109,25 +108,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         // Inicializamos combos/desplegables/inputs
         // De momento, no tenemos desplegables.
         this.setearIdioma();
-
-        /** Para probar issue  **/
-        if ((id != null && !id.isEmpty()) || UtilJSF.getValorMochilaByKey("PROC") != null) {
-            //Como se comporta con un dato que existe
-            ProcedimientoTramiteFiltro filtro = new ProcedimientoTramiteFiltro();
-            if (id != null && !id.isEmpty()) {
-                filtro.setCodigo(new Long(id));
-            } else {
-                ProcedimientoDTO proc = (ProcedimientoDTO) UtilJSF.getValorMochilaByKey("PROC");
-                filtro.setCodigo(2962200l);//proc.getCodigo());
-            }
-            filtro.setIdioma(sessionBean.getLang());
-            String x = procedimientoServiceFacade.getEnlaceTelematicoByTramite(filtro);
-        }
-        //Como se comporta con un dato inventado
-        ProcedimientoTramiteFiltro filtro = new ProcedimientoTramiteFiltro();
-        filtro.setCodigo(new Long(2123213242343l));
-        filtro.setIdioma(sessionBean.getLang());
-        String x = procedimientoServiceFacade.getEnlaceTelematicoByTramite(filtro);
 
         temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
         temasPadreAnyadidos = new ArrayList<>();
