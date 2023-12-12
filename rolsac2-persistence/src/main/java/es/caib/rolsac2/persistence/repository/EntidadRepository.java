@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * Interface de las operaciones básicas sobre Tipo Silencio Administrativo
  *
- * @author jsegovia
+ * @author Indra
  */
 public interface EntidadRepository extends CrudRepository<JEntidad, Long> {
 
@@ -84,4 +84,13 @@ public interface EntidadRepository extends CrudRepository<JEntidad, Long> {
      * @return
      */
     String getIdiomaPorDefecto(Long idEntidad);
+
+    /**
+     * Retorna una lista con las entidades asociados al usuario
+     *
+     * @param codigo identificador del usuario
+     * @param lang   idioma
+     * @return
+     */
+    List<EntidadGridDTO> getEntidadGridDTOByUsuario(Long codigo, String lang);
 }

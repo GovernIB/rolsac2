@@ -163,7 +163,7 @@ public class SessionBean implements Serializable {
             }
         }
         if (administracionEntServiceFacade.checkIdentificadorUsuario(idUsuario)) {
-            UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioByIdentificador(idUsuario);
+            UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(idUsuario, lang);
             entidades = new ArrayList<>();
             List<Long> idEntidades = new ArrayList<>();
             for (EntidadGridDTO entidad : usuario.getEntidades()) {
@@ -177,11 +177,11 @@ public class SessionBean implements Serializable {
                 SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
                 if (!TypePerfiles.SUPER_ADMINISTRADOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
-                    unidadActiva = uaService.findById(sesion.getIdUa());
+                    unidadActiva = uaService.findUASimpleByID(sesion.getIdUa(), this.lang, null); //findById(sesion.getIdUa());
                 } else if (TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
                     try {
-                        UnidadAdministrativaDTO unidad = uaService.findById(sesion.getIdUa());
+                        UnidadAdministrativaDTO unidad = uaService.findUASimpleByID(sesion.getIdUa(), this.lang, null); //uaService.findById(sesion.getIdUa());
                         checkUaGestor(unidad);
                         unidadActiva = unidad;
                     } catch (GestorSinUAExcepcion e) {
@@ -241,10 +241,18 @@ public class SessionBean implements Serializable {
      */
     public void cambioPerfil(TypePerfiles perfil) {
         String idUsuario = seguridad.getIdentificadorUsuario();
-        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioByIdentificador(idUsuario);
+        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(idUsuario, lang);
         SesionDTO sesionDTO = systemServiceBean.findSesionById(usuario.getCodigo());
         sesionDTO.setFechaUltimaSesion(new Date());
         TypePerfiles perfilAntiguo = this.perfil;
+
+        //Actualizamos la seleccion de idioma está seteado a nivel de adm contenido seleccion idioma y es Adm. contenido
+        if (perfil == TypePerfiles.GESTOR && entidad != null && entidad.getAdmContenidoSeleccionIdioma() != null) {
+            lang = entidad.getAdmContenidoSeleccionIdioma();  //getGestorForzarIdioma()
+            sesionDTO.setIdioma(lang); //Forzamos el idioma de sesion
+            current = Locale.forLanguageTag(lang); //Forzamos el idioma/locale de la aplicación
+        }
+
         if (!perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
             Boolean permiso = checkPermisosPerfil(perfil);
             if (permiso) {
@@ -272,6 +280,7 @@ public class SessionBean implements Serializable {
         sesionDTO.setIdEntidad(this.entidad == null ? null : this.entidad.getCodigo());
         sesionDTO.setIdUa(this.unidadActiva == null ? null : this.unidadActiva.getCodigo());
         sesionDTO.setIdioma(lang);
+
         systemServiceBean.updateSesion(sesionDTO);
     }
 
@@ -498,7 +507,8 @@ public class SessionBean implements Serializable {
             if (usuario.getUnidadesAdministrativas() != null && !usuario.getUnidadesAdministrativas().isEmpty()) {
                 UnidadAdministrativaGridDTO unidadSesion = usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getCodigo().compareTo(sesionDTO.getIdUa()) == 0).findFirst().orElse(null);
 
-                this.unidadActiva = unidadSesion == null ? uaService.findById(usuario.getUnidadesAdministrativas().get(0).getCodigo()) : uaService.findById(unidadSesion.getCodigo());
+                // this.unidadActiva = unidadSesion == null ? uaService.findById(usuario.getUnidadesAdministrativas().get(0).getCodigo()) : uaService.findById(unidadSesion.getCodigo());
+                this.unidadActiva = unidadSesion == null ? uaService.findUASimpleByID(usuario.getUnidadesAdministrativas().get(0).getCodigo(), this.lang, null) : uaService.findUASimpleByID(unidadSesion.getCodigo(), this.lang, null);
             } else {
                 unidadActiva = uaService.getUnidadesAdministrativaByEntidadId(this.entidad.getCodigo(), lang).get(0);
             }
@@ -506,7 +516,7 @@ public class SessionBean implements Serializable {
             if (sesionDTO.getIdUa() == null) {
                 this.unidadActiva = uaService.findRootEntidad(entidad.getCodigo());
             } else {
-                this.unidadActiva = uaService.findById(sesionDTO.getIdUa());
+                this.unidadActiva = uaService.findUASimpleByID(sesionDTO.getIdUa(), this.lang, null); // uaService.findById(sesionDTO.getIdUa());
             }
         }
 
@@ -589,7 +599,7 @@ public class SessionBean implements Serializable {
      * @return
      */
     public UsuarioDTO obtenerUsuarioAutenticado() {
-        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioByIdentificador(seguridad.getIdentificadorUsuario());
+        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(seguridad.getIdentificadorUsuario(), lang);
         return usuario;
     }
 
@@ -606,7 +616,7 @@ public class SessionBean implements Serializable {
      */
     public void cambiarUaActiva(Long idUa) {
         if (idUa != null) {
-            UnidadAdministrativaDTO ua = uaService.findById(idUa);
+            UnidadAdministrativaDTO ua = uaService.findUASimpleByID(idUa, this.lang, null);//findById(idUa);
             cambiarUnidadAdministrativa(ua);
             SesionDTO sesionDTO = systemServiceBean.findSesionById(obtenerUsuarioAutenticado().getCodigo());
             sesionDTO.setFechaUltimaSesion(new Date());
@@ -634,7 +644,7 @@ public class SessionBean implements Serializable {
     }
 
     public void checkUaGestor(UnidadAdministrativaDTO ua) {
-        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioByIdentificador(seguridad.getIdentificadorUsuario());
+        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(seguridad.getIdentificadorUsuario(), lang);
 
         List<UnidadAdministrativaGridDTO> unidadesUsuario = usuario.getUnidadesAdministrativas().stream().filter(u -> u.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).collect(Collectors.toList());
         if (!unidadesUsuario.isEmpty()) {
@@ -1018,10 +1028,19 @@ public class SessionBean implements Serializable {
             for (TypeIdiomaOpcional idioma : TypeIdiomaOpcional.values()) {
                 idiomas.add(idioma.toString());
             }
-            return idiomas;
+            //return idiomas;
         } else {
-            return List.of(this.entidad.getIdiomasPermitidos().split(";"));
+            idiomas = new LinkedList<String>(Arrays.asList(this.entidad.getIdiomasPermitidos().split(";")));
         }
+
+        if (entidad != null && entidad.getAdmContenidoIdiomaPrioritario() != null) {
+            //Cambiar la posición del idioma prioritario
+            String idiomaPrioritario = entidad.getAdmContenidoIdiomaPrioritario();
+            idiomas.remove(idiomaPrioritario);
+            idiomas.add(0, idiomaPrioritario);
+        }
+
+        return idiomas;
     }
 
     /**

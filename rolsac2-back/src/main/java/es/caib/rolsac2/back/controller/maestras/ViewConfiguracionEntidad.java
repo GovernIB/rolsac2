@@ -1,25 +1,5 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
@@ -31,11 +11,29 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Controlador para editar un DialogEntidad.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -80,10 +78,7 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
 
         UtilJSF.getSessionBean().setEntidad(this.data);
 
-        addGlobalMessage(getLiteral("msg.creaciocorrecta"));
-
-        UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("viewConfiguracionEntidad.actualizado"));
-
+        addGlobalMessage(getLiteral("viewConfiguracionEntidad.actualizado"));
     }
 
     private boolean checkObligatorio() {
@@ -97,8 +92,7 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
             return false;
         }
 
-        if (Objects.isNull(this.data.getCodigo())
-                && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo()) && administracionSupServiceFacade.existeIdentificadorEntidad(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
@@ -212,7 +206,7 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
             logo.setCodigo(this.data.getCodigo());
             logo.setCodigo(idFichero);
             this.data.setLogo(logo);
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewConfiguracionEntidad.logoAnyadido") , false);
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewConfiguracionEntidad.logoAnyadido"), false);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -233,11 +227,7 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
         //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());
         String mimeType = URLConnection.guessContentTypeFromName(this.data.getLogo().getFilename());
         InputStream fis = new ByteArrayInputStream(this.data.getLogo().getContenido());
-        StreamedContent file = DefaultStreamedContent.builder()
-                .name(this.data.getLogo().getFilename())
-                .contentType(mimeType)
-                .stream(() -> fis)
-                .build();
+        StreamedContent file = DefaultStreamedContent.builder().name(this.data.getLogo().getFilename()).contentType(mimeType).stream(() -> fis).build();
         return file;
     }
 
@@ -260,7 +250,7 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
             css.setCodigo(this.data.getCodigo());
             css.setCodigo(idFichero);
             this.data.setCssPersonalizado(css);
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewConfiguracionEntidad.cssAnyadido") , false);
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewConfiguracionEntidad.cssAnyadido"), false);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -281,11 +271,7 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
         //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());
         String mimeType = URLConnection.guessContentTypeFromName(this.data.getCssPersonalizado().getFilename());
         InputStream fis = new ByteArrayInputStream(this.data.getCssPersonalizado().getContenido());
-        StreamedContent file = DefaultStreamedContent.builder()
-                .name(this.data.getCssPersonalizado().getFilename())
-                .contentType(mimeType)
-                .stream(() -> fis)
-                .build();
+        StreamedContent file = DefaultStreamedContent.builder().name(this.data.getCssPersonalizado().getFilename()).contentType(mimeType).stream(() -> fis).build();
         return file;
     }
 

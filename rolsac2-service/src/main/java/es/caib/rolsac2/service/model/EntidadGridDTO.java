@@ -5,7 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 /**
  * Dades d'una Entidad.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Schema(name = "EntidadGrid")
 public class EntidadGridDTO extends ModelApi {
@@ -50,6 +50,15 @@ public class EntidadGridDTO extends ModelApi {
      */
     private String rolInformador;
 
+    /**
+     * Indica si el administrador de contenido tiene un idioma por defecto
+     **/
+    private String admContenidoIdiomaPorDefecto;
+
+    /**
+     * Indica si el administrador de contenido tiene opción de seleccionar cualquier idioma o uno forzado
+     */
+    private String admContenidoSeleccionIdioma;
 
     /**
      * Instantiates a new Entidad grid dto.
@@ -105,7 +114,7 @@ public class EntidadGridDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -115,7 +124,7 @@ public class EntidadGridDTO extends ModelApi {
     /**
      * Obtiene activa.
      *
-     * @return  activa
+     * @return activa
      */
     public Boolean getActiva() {
         return activa;
@@ -238,16 +247,44 @@ public class EntidadGridDTO extends ModelApi {
         this.identificador = identificador;
     }
 
+    /**
+     * Obtiene adm contenido idioma por defecto.
+     *
+     * @return
+     */
+    public String getAdmContenidoIdiomaPorDefecto() {
+        return admContenidoIdiomaPorDefecto;
+    }
+
+    /**
+     * Establece adm contenido idioma por defecto.
+     *
+     * @param admContenidoIdiomaPorDefecto
+     */
+    public void setAdmContenidoIdiomaPorDefecto(String admContenidoIdiomaPorDefecto) {
+        this.admContenidoIdiomaPorDefecto = admContenidoIdiomaPorDefecto;
+    }
+
+    /**
+     * Obtiene adm contenido seleccion idioma.
+     *
+     * @return
+     */
+    public String getAdmContenidoSeleccionIdioma() {
+        return admContenidoSeleccionIdioma;
+    }
+
+    /**
+     * Establece adm contenido seleccion idioma.
+     *
+     * @param admContenidoSeleccionIdioma
+     */
+    public void setAdmContenidoSeleccionIdioma(String admContenidoSeleccionIdioma) {
+        this.admContenidoSeleccionIdioma = admContenidoSeleccionIdioma;
+    }
+
     @Override
     public String toString() {
-        return "EntidadGridDTO{" +
-                "id=" + codigo +
-                ", identificador='" + identificador + '\'' +
-                ", activa=" + activa +
-                ", rolAdmin='" + rolAdmin + '\'' +
-                ", rolAdminContenido='" + rolAdminContenido + '\'' +
-                ", rolGestor='" + rolGestor + '\'' +
-                ", rolInformador='" + rolInformador + '\'' +
-                '}';
+        return "EntidadGridDTO{" + "id=" + codigo + ", identificador='" + identificador + '\'' + ", activa=" + activa + ", rolAdmin='" + rolAdmin + '\'' + ", rolAdminContenido='" + rolAdminContenido + '\'' + ", rolGestor='" + rolGestor + '\'' + ", rolInformador='" + rolInformador + '\'' + '}';
     }
 }

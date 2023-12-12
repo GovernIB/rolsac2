@@ -59,17 +59,19 @@
                                 title="#{labels['dict.configuracion']}">
                             <span class="mb-0 float-right">#{labels['dict.configuracion']}</span>
                         </p:link>
-                        <p:repeat value="#{applicationLocales.available}" var="locale">
-                            <h:commandLink styleClass="dropdown-item mobil" hreflang="#{locale.toLanguageTag()}"
-                                           action="#{sessionBean.reload()}"
-                                           title="#{labels['dict.' += locale.toLanguageTag()]}"
-                                           rendered="#{sessionBean.lang != locale.toLanguageTag()}"
-                                           update="@form" execute="@form" render="@form"
-                                           >
-                                <span class="mb-0 float-right">#{labels['dict.' += locale.toLanguageTag()]}</span>
-                                <f:ajax listener="#{sessionBean.setCurrent(locale)}" update="@form" execute="@form" render="@form"  />
-                            </h:commandLink>
-                        </p:repeat>
+                        <c:if test="${sessionBean.perfil ne TypePerfiles.GESTOR || sessionBean.entidad.admContenidoSeleccionIdioma == null}">
+                            <p:repeat value="#{applicationLocales.available}" var="locale">
+                                <h:commandLink styleClass="dropdown-item mobil" hreflang="#{locale.toLanguageTag()}"
+                                               action="#{sessionBean.reload()}"
+                                               title="#{labels['dict.' += locale.toLanguageTag()]}"
+                                               rendered="#{sessionBean.lang != locale.toLanguageTag()}"
+                                               update="@form" execute="@form" render="@form"
+                                               >
+                                    <span class="mb-0 float-right">#{labels['dict.' += locale.toLanguageTag()]}</span>
+                                    <f:ajax listener="#{sessionBean.setCurrent(locale)}" update="@form" execute="@form" render="@form"  />
+                                </h:commandLink>
+                            </p:repeat>
+                        </c:if>
                         <p:commandLink action="#{logout.logout}"
                                        ajax="false" immediate="true" styleClass="dropdown-item mobil"
                                        title="#{labels['dict.salir']}">

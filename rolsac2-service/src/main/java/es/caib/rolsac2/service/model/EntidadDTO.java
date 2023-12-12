@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Dades d'un Entidad.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Schema(name = "Entidad")
 public class EntidadDTO extends ModelApi {
@@ -51,6 +51,16 @@ public class EntidadDTO extends ModelApi {
     private Literal uaComun;
 
     /**
+     * Indica si el administrador de contenido tiene un idioma por defecto
+     **/
+    private String admContenidoIdiomaPrioritario;
+
+    /**
+     * Indica si el administrador de contenido tiene opción de seleccionar cualquier idioma o uno forzado
+     */
+    private String admContenidoSeleccionIdioma;
+
+    /**
      * Instancia una nueva Entidad dto.
      */
     public EntidadDTO() {
@@ -82,6 +92,8 @@ public class EntidadDTO extends ModelApi {
             ;
             this.lopdDestinatario = otro.lopdDestinatario == null ? null : (Literal) otro.lopdDestinatario.clone();
             ;
+            this.admContenidoSeleccionIdioma = otro.admContenidoSeleccionIdioma;
+            this.admContenidoIdiomaPrioritario = otro.admContenidoIdiomaPrioritario;
         }
     }
 
@@ -95,6 +107,8 @@ public class EntidadDTO extends ModelApi {
         entidadGridDTO.setRolAdminContenido(this.getRolAdminContenido());
         entidadGridDTO.setRolGestor(this.getRolGestor());
         entidadGridDTO.setRolInformador(this.getRolInformador());
+        entidadGridDTO.setAdmContenidoSeleccionIdioma(this.getAdmContenidoSeleccionIdioma());
+        entidadGridDTO.setAdmContenidoIdiomaPorDefecto(this.getAdmContenidoIdiomaPrioritario());
         return entidadGridDTO;
     }
 
@@ -411,6 +425,22 @@ public class EntidadDTO extends ModelApi {
 
     public void setLopdPlantilla(Literal lopdPlantilla) {
         this.lopdPlantilla = lopdPlantilla;
+    }
+
+    public String getAdmContenidoIdiomaPrioritario() {
+        return admContenidoIdiomaPrioritario;
+    }
+
+    public void setAdmContenidoIdiomaPrioritario(String admContenidoIdiomaPrioritario) {
+        this.admContenidoIdiomaPrioritario = admContenidoIdiomaPrioritario;
+    }
+
+    public String getAdmContenidoSeleccionIdioma() {
+        return admContenidoSeleccionIdioma;
+    }
+
+    public void setAdmContenidoSeleccionIdioma(String admContenidoSeleccionIdioma) {
+        this.admContenidoSeleccionIdioma = admContenidoSeleccionIdioma;
     }
 
     @Override

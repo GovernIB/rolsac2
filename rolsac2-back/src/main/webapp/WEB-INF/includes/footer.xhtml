@@ -12,23 +12,23 @@ Peu de pàgina
             <!-- Esquerra -->
             <div class="col-3 pt-2 elementPeuResponsive">
                 <strong class="text-uppercase font-weight-bold">
-                    #{version.projectName} &#169; GOVERN DE LES ILLES BALEARS
+                    <p:outputLabel value="#{version.projectName} &#169; GOVERN DE LES ILLES BALEARS" styleClass="estiloGrande" />
                 </strong>
             </div>
             <div class="col-3 pt-2 elementPeuResponsive">
-                    Versió: <h:outputText value="#{version.version}"/><a href="#{version.url}"> (#{version.commit})</a>
+                <p:outputLabel value="#{labels['dict.version']}:" styleClass="estiloGrande" /> <h:outputText value="#{version.version}" styleClass="estiloGrande"/><a href="#{version.url}" class="estiloGrande"> (#{version.commit})</a>
             </div>
             <div class="col-2 pt-2 elementPeuResponsive">
-                Build :
-                <h:outputText value="#{version.buildTime}"/>
+                <p:outputLabel value="Build:" styleClass="estiloGrande" />
+                <h:outputText value="#{version.buildTime}" styleClass="estiloGrande" />
             </div>
             <div class="col-2 pt-2 elementPeuResponsive">
-                JDK:
-                <h:outputText value="#{version.jdkVersion}"/>
+                <p:outputLabel value="JDK:" styleClass="estiloGrande" />
+                <h:outputText value="#{version.jdkVersion}" styleClass="estiloGrande" />
             </div>
             <div class="col-2 pt-2 elementPeuResponsive">
-                Revisió:
-                <h:outputText value="#{version.scmRevision}"/>
+                <p:outputLabel value="#{labels['dict.revision']}:" styleClass="estiloGrande" />
+                <h:outputText value="#{version.scmRevision}" styleClass="estiloGrande" />
             </div>
         </div>
     </footer>

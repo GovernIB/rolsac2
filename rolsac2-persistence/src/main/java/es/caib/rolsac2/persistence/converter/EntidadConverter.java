@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Conversor entre JEntidad y EntidadDTO. La implementacion se generará automaticamente por MapStruct
  *
- * @author jsegovia
+ * @author Indra
  */
 @Mapper
 public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {

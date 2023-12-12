@@ -185,4 +185,35 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
         query.setParameter("idEntidad", idEntidad);
         return (String) query.getSingleResult();
     }
+
+    @Override
+    public List<EntidadGridDTO> getEntidadGridDTOByUsuario(Long codigo, String lang) {
+        List<EntidadGridDTO> entidades = new ArrayList<>();
+        Query query = entityManager.createQuery("SELECT j.codigo, j.identificador, j.activa, j.rolAdmin, j.rolAdminContenido, " + " j.rolGestor, j.rolInformador, t.descripcion, j.admContenidoIdiomaPrioritario, j.admContenidoSeleccionIdioma FROM JEntidad j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  WHERE j.codigo IN (SELECT entidades.codigo FROM JUsuario jusu LEFT OUTER JOIN jusu.entidades entidades WHERE jusu.codigo = :codigo)");
+        query.setParameter("idioma", lang);
+        query.setParameter("codigo", codigo);
+        List<Object[]> jEntidades = query.getResultList();
+        if (jEntidades != null) {
+            for (Object[] jEntidad : jEntidades) {
+                EntidadGridDTO entidadGridDTO = new EntidadGridDTO();
+                entidadGridDTO.setCodigo((Long) jEntidad[0]);
+                entidadGridDTO.setIdentificador((String) jEntidad[1]);
+                entidadGridDTO.setActiva((Boolean) jEntidad[2]);
+                entidadGridDTO.setRolAdmin((String) jEntidad[3]);
+                entidadGridDTO.setRolAdminContenido((String) jEntidad[4]);
+                entidadGridDTO.setRolGestor((String) jEntidad[5]);
+                entidadGridDTO.setRolInformador((String) jEntidad[6]);
+                //El 7 es la descripcion
+                Literal descripcion = new Literal();
+                Traduccion trad = new Traduccion(lang, (String) jEntidad[7]);
+                descripcion.add(trad);
+                entidadGridDTO.setDescripcion(descripcion);
+                entidades.add(entidadGridDTO);
+                entidadGridDTO.setAdmContenidoIdiomaPorDefecto((String) jEntidad[8]);
+                entidadGridDTO.setAdmContenidoSeleccionIdioma((String) jEntidad[9]);
+
+            }
+        }
+        return entidades;
+    }
 }

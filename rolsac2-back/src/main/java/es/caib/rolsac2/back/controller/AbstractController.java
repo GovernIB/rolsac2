@@ -175,8 +175,27 @@ public abstract class AbstractController {
         UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "La sección de ayuda no está implementada");// UtilJSF.getLiteral("info.borrado.ok"));
     }
 
+    /**
+     * Setea el idioma a la ventana.
+     */
     protected void setearIdioma() {
-        idioma = sessionBean.getLang();
+        //idioma = sessionBean.getLang();
+
+
+        /** Si es perfil SUPER_ADMINISTRADOR, se le asigna el idioma de la sesión
+         *  Si es otro perfil: <br />
+         *    - Si la entidad tiene un idioma prioritario, se pone. <br/ >
+         *    - Si no lo tiene, el de sesion. <br /> **/
+        if (sessionBean.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR) {
+            idioma = sessionBean.getLang();
+        } else {
+            if (sessionBean.getEntidad().getAdmContenidoIdiomaPrioritario() == null) {
+                idioma = sessionBean.getLang();
+            } else {
+                idioma = sessionBean.getEntidad().getAdmContenidoIdiomaPrioritario();
+            }
+
+        }
     }
 
     public String getIdioma() {
