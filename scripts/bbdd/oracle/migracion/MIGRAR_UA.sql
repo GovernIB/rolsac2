@@ -95,8 +95,8 @@ AS
           FROM  R1_UNIADM_USU
          WHERE UNU_CODUNA = codUA;
     CURSOR cursorMateriasRolsac1 (codUA NUMBER) IS 
-        SELECT *  
-          FROM  R1_UNIADM_MATE
+        SELECT DISTINCT UNM_CODMAT  
+          FROM R1_UNIADM_MATE
          WHERE UNM_CODUNA = codUA
            AND UNM_CODMAT IN (SELECT TEMA_CODIGO FROM RS2_TEMA);
     maximoIdUAS NUMBER;

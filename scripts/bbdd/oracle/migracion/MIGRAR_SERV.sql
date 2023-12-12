@@ -192,7 +192,8 @@ create or replace PROCEDURE "MIGRAR_SERV" (codigo NUMBER, codigoEntidad NUMBER, 
    CURSOR cursorPublicoRolsac1 ( codSER NUMBER) IS 
         SELECT *  
           FROM R1_SERVICIOS_POBJ
-         WHERE PSR_CODSER = codSER;
+         WHERE PSR_CODSER = codSER
+           AND PSR_CODPOB IN (SELECT TPSP_CODIGO FROM RS2_TIPOSPU); 
     CURSOR cursorMateriasRolsac1 (codSER NUMBER) IS 
         SELECT *  
           FROM R1_SERVICIOS_MATE
