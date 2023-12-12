@@ -83,9 +83,6 @@ public class DialogEntidad extends AbstractController implements Serializable {
             final Literal lopdDestinatario = new Literal();
             final Literal lopdFinalidad = new Literal();
             final Literal uaComun = new Literal();
-            //List<String> idiomas = new ArrayList<>();
-            //idiomas.add(Constantes.IDIOMA_CATALAN);
-            //idiomas.add(Constantes.IDIOMA_ESPANYOL);
             for (String idioma : sessionBean.getIdiomasPermitidosList()) {
                 lopdDerechos.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_DERECHOS, idioma)));
                 lopdDestinatario.add(new Traduccion(idioma, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_DESTINATARIO, idioma)));

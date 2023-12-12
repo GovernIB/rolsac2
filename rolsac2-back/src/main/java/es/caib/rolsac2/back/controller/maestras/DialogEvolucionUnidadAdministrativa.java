@@ -37,7 +37,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionBasicaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 540);
+        UtilJSF.openDialog("dialogEvolucionBasicaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 570);
     }
 
     public void irEvolucionFusion() {
@@ -46,7 +46,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionFusionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 875, 540);
+        UtilJSF.openDialog("dialogEvolucionFusionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 875, 570);
     }
 
     /**
@@ -89,7 +89,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionCompetenciasUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 540);
+        UtilJSF.openDialog("dialogEvolucionCompetenciasUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 570);
     }
 
     public void irEvolucionDependencia() {
@@ -98,7 +98,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionDependenciaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 540);
+        UtilJSF.openDialog("dialogEvolucionDependenciaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 570);
     }
 
 }

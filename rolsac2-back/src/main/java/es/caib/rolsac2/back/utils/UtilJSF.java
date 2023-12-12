@@ -70,8 +70,7 @@ public class UtilJSF {
      * @param width      anchura
      * @param heigth     altura
      */
-    public static void openDialog(final String dialog, final TypeModoAcceso modoAcceso,
-                                  final Map<String, String> params, final boolean modal, final int width, final int heigth) {
+    public static void openDialog(final String dialog, final TypeModoAcceso modoAcceso, final Map<String, String> params, final boolean modal, final int width, final int heigth) {
         // Opciones dialogo
         final Map<String, Object> options = new HashMap<>();
         options.put("modal", modal);
@@ -123,8 +122,7 @@ public class UtilJSF {
      */
     public static void redirectJsfPage(final String jsfPage) {
         try {
-            final ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance()
-                    .getExternalContext().getContext();
+            final ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
             final String contextPath = servletContext.getContextPath();
             FacesContext.getCurrentInstance().getExternalContext().redirect(contextPath + jsfPage);
         } catch (final IOException e) {
@@ -211,8 +209,7 @@ public class UtilJSF {
      * @param detail       Detalle
      * @param idComponente Si el id componente es nulo, se enviará al growl.
      */
-    public static void addMessageContext(final TypeNivelGravedad nivel, final String message, final String detail,
-                                         final String idComponente) {
+    public static void addMessageContext(final TypeNivelGravedad nivel, final String message, final String detail, final String idComponente) {
         final Severity severity = getSeverity(nivel);
         final FacesContext context = FacesContext.getCurrentInstance();
         context.addMessage(idComponente, new FacesMessage(severity, message, detail));
@@ -250,8 +247,7 @@ public class UtilJSF {
      * @param message          Mensaje
      * @param validationFailed añade la marca de error de validacion
      */
-    public static void addMessageContext(final TypeNivelGravedad nivel, final String message,
-                                         final boolean validationFailed) {
+    public static void addMessageContext(final TypeNivelGravedad nivel, final String message, final boolean validationFailed) {
         addMessageContext(nivel, message, message, validationFailed, null);
     }
 
@@ -264,8 +260,7 @@ public class UtilJSF {
      * @param detail           Detalle del mensaje
      * @param validationFailed añade la marca de error de validacion
      */
-    public static void addMessageContext(final TypeNivelGravedad nivel, final String message,
-                                         final String detail, final boolean validationFailed) {
+    public static void addMessageContext(final TypeNivelGravedad nivel, final String message, final String detail, final boolean validationFailed) {
         addMessageContext(nivel, message, detail, validationFailed, null);
     }
 
@@ -277,8 +272,7 @@ public class UtilJSF {
      * @param message          Mensaje
      * @param validationFailed añade la marca de error de validacion
      */
-    public static void addMessageContext(final TypeNivelGravedad nivel, final String message,
-                                         final boolean validationFailed, final String idComponente) {
+    public static void addMessageContext(final TypeNivelGravedad nivel, final String message, final boolean validationFailed, final String idComponente) {
         addMessageContext(nivel, message, message, validationFailed, idComponente);
     }
 
@@ -291,8 +285,7 @@ public class UtilJSF {
      * @param detail           Detalle
      * @param validationFailed añade la marca de error de validacion
      */
-    public static void addMessageContext(final TypeNivelGravedad nivel, final String message, final String detail,
-                                         final boolean validationFailed, final String idComponente) {
+    public static void addMessageContext(final TypeNivelGravedad nivel, final String message, final String detail, final boolean validationFailed, final String idComponente) {
         addMessageContext(nivel, message, detail, idComponente);
 
         if (validationFailed) {
@@ -342,8 +335,7 @@ public class UtilJSF {
         root.visitTree(VisitContext.createVisitContext(FacesContext.getCurrentInstance()), new VisitCallback() {
             @Override
             public VisitResult visit(VisitContext context, UIComponent component) {
-                if (component != null
-                        && id.equals(component.getId())) {
+                if (component != null && id.equals(component.getId())) {
                     found[0] = component;
                     return VisitResult.COMPLETE;
                 }
@@ -355,4 +347,12 @@ public class UtilJSF {
 
     }
 
+    /**
+     * Sirve para actualizar un componente de la vista (xhtml) desde el bean (java).
+     *
+     * @param idComponent
+     */
+    public static void updateComponent(String idComponent) {
+        PrimeFaces.current().ajax().update(idComponent);
+    }
 }

@@ -356,7 +356,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
                 UtilJSF.anyadirMochila("maxlength", maxlength);
             }
             Integer valores = ((String) getAttributes().get("idiomasPermitidos")).split(";").length;
-            Integer height = (valores >= 4) ? 750 : valores * 200;
+            Integer height = (valores >= 4) ? 750 : (valores * 200) + 60;
             UtilJSF.openDialog(direccion, modoAcceso, params, true, 1050, height);
         } else if (tipo.equals("html")) {
             final Map<String, String> params = new HashMap<>();

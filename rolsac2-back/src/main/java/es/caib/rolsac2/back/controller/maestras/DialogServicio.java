@@ -862,7 +862,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
         params.put(TypeParametroVentana.TIPO.toString(), "SERV_DOC");
 
-        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true, 800, 350);
+        UtilJSF.openDialog("dialogDocumentoProcedimiento", modoAcceso, params, true, 800, 380);
     }
 
     public void nuevoDocumento() {
@@ -951,7 +951,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado.clone());
         }
         params.put(TypeParametroVentana.TIPO.toString(), "SERV_DOC");
-        UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", modoAcceso, params, true, 800, 320);
+        UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", modoAcceso, params, true, 800, 350);
     }
 
     public void nuevoDocumentoLOPD() {

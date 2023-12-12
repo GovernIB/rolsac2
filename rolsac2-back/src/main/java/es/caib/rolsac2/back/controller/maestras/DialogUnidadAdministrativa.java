@@ -100,6 +100,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         LOG.debug("init1");
 
         this.setearIdioma();
+
         data = new UnidadAdministrativaDTO();
 
         tiposSexo = unidadAdministrativaServiceFacade.findTipoSexo();
@@ -144,11 +145,11 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
                     }
                 } else {
                     data = (UnidadAdministrativaDTO) UtilJSF.getValorMochilaByKey("ua");
+                    UtilJSF.vaciarMochila();
                     if (mostrarProcsNormativas) {
                         procedimientos = unidadAdministrativaServiceFacade.getProcedimientosByUa(data.getCodigo(), null, UtilJSF.getSessionBean().getLang(), null);
                         normativas = unidadAdministrativaServiceFacade.getNormativaByUa(data.getCodigo(), UtilJSF.getSessionBean().getLang());
                     }
-                    UtilJSF.vaciarMochila();
                 }
             }
         } else if (this.isModoEdicion() || this.isModoConsulta()) {

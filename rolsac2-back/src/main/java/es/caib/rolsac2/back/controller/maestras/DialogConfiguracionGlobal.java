@@ -9,7 +9,6 @@ import es.caib.rolsac2.service.model.ConfiguracionGlobalDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.utils.UtilComparador;
-
 import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,7 @@ import java.util.Objects;
 /**
  * Controlador para editar un DialogConfiguracionGlobal.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -37,7 +36,7 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
 
     private ConfiguracionGlobalDTO dataOriginal;
 
-	@Inject
+    @Inject
     private SessionBean sessionBean;
 
     @EJB
@@ -85,17 +84,15 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
     }
 
     public void cerrar() {
-    	if (data != null && dataOriginal != null && comprobarModificacion()) {
-        	PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
+        if (data != null && dataOriginal != null && comprobarModificacion()) {
+            PrimeFaces.current().executeScript("PF('confirmCerrar').show();");
         } else {
             cerrarDefinitivo();
         }
     }
 
     private boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(),dataOriginal.getCodigo())!=0
-                || UtilComparador.compareTo(data.getValor(),dataOriginal.getValor())!=0
-                || UtilComparador.compareTo(data.getDescripcion(),dataOriginal.getDescripcion())!=0;
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getValor(), dataOriginal.getValor()) != 0 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0;
     }
 
     public void traducir() {
@@ -120,11 +117,11 @@ public class DialogConfiguracionGlobal extends AbstractController implements Ser
     }
 
     public ConfiguracionGlobalDTO getDataOriginal() {
-		return dataOriginal;
-	}
+        return dataOriginal;
+    }
 
-	public void setDataOriginal(ConfiguracionGlobalDTO dataOriginal) {
-		this.dataOriginal = dataOriginal;
-	}
+    public void setDataOriginal(ConfiguracionGlobalDTO dataOriginal) {
+        this.dataOriginal = dataOriginal;
+    }
 
 }

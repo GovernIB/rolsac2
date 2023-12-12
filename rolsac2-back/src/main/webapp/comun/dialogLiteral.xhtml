@@ -44,9 +44,37 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                         />
 
-            <div class="row p-3">
+            <div class="d-flex justify-content-center align-content-center h25px">
+                <p:outputLabel value="#{labels['dialogTraduccion.idiomaOrigen']}" styleClass="mr-2 "/>
+                <p:selectOneMenu id="selectId1" value="#{dialogLiteral.idiomaOrigen}"
+                                 required="false" styleClass="p-0">
+                    <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{null}"/>
+                    <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="lang"
+                                   itemLabel="#{labels['idiomas.' += lang]}" itemValue="#{lang}"/>
+                    <p:ajax event="change" listener="#{dialogLiteral.cambiarIdiomaOrigenAux}" />
+                </p:selectOneMenu>
+                <p:commandButton action="#{dialogLiteral.cambioValores}"
+                                 icon="pi pi-refresh"
+                                 process="@this" styleClass="mx-1"/>
+                <p:selectOneMenu id="selectId2" value="#{dialogLiteral.idiomaDestino}"
+                                 required="false" styleClass="p-0">
+                    <f:selectItem itemLabel="#{labels['dict.seleccionar']}"
+                                  itemValue="#{null}"/>
+                    <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="lang"
+                                   itemLabel="#{labels['idiomas.' += lang]}" itemValue="#{lang}"/>
+                    <p:ajax process="@this" listener="#{dialogLiteral.cambiarIdiomaDestinoAux}" />
+                </p:selectOneMenu>
+                <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2"/>
 
-                <c:forEach var="idioma" items="#{dialogLiteral.idiomasAMostrar}">
+            </div>
+            <div class="d-flex justify-content-center align-content-center h25px mt-2">
+
+                <p:selectBooleanCheckbox value="#{dialogLiteral.sustitucion}" styleClass="ml-2"
+                                         itemLabel="#{labels['dialogTraduccion.sustituirValor']}"/>
+            </div>
+
+            <div class="row p-3">
+                 <c:forEach var="idioma" items="#{dialogLiteral.idiomasAMostrar}">
                     <div class="ui-g-12 ui-md-2 ui-lg-2">
                         <p:outputLabel value="#{labels['dict.texto.' += idioma]}:"
                                       for="#{labels['dialog.literal.txt.' += idioma]}"/>
@@ -61,22 +89,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                 </c:forEach>
             </div>
-
-
-            <!--<div class="ui-g-12 ui-md-2 ui-lg-2">
-                <h:outputText value="#{labels['dict.textoCa']}:" for="txtCA"/>
-            </div>
-            <div class="ui-g-12 ui-md-10 ui-lg-10">
-                <p:inputTextarea id="txtCA" value="#{dialogLiteral.textoCA}" rows="5" cols="30" styleClass="w95"
-                                 autoResize="false"/>
-            </div>
-            <div class="ui-g-12 ui-md-2 ui-lg-2">
-                <h:outputText value="#{labels['dict.textoEs']}:" for="txtES"/>
-            </div>
-            <div class="ui-g-12 ui-md-10 ui-lg-10">
-                <p:inputTextarea id="txtES" value="#{dialogLiteral.textoES}" rows="5" cols="30" styleClass="w95"
-                                 autoResize="false"/>
-            </div>-->
         </p:panel>
     </ui:define>
 
@@ -88,13 +100,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          process="@this"/>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogLiteral.traducirLiterales}"
+                         value="#{labels['dict.traducir']}" update="messagesDialog "
+                         rendered="#{!dialogLiteral.isModoConsulta()}"
+                         process="@all" />
         <p:commandButton action="#{dialogLiteral.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog"
                          rendered="#{!dialogLiteral.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" />
         <p:commandButton action="#{dialogLiteral.cerrar}"
                          value="#{labels['dict.cancelar']}"
-                         process="@this"/>
+                         process="@this" />
 
     </ui:define>
 
