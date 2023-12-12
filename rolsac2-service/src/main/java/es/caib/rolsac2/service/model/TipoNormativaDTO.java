@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Dades d'un TipoNormativa.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Schema(name = "TipoNormativa")
 public class TipoNormativaDTO extends ModelApi {

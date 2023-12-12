@@ -85,5 +85,5 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     String getNombreUA(List<Long> uas);
 
-
+    List<UnidadAdministrativaGridDTO> getUnidadesAdministrativaGridDTOByUsuario(Long codigo, String lang);
 }

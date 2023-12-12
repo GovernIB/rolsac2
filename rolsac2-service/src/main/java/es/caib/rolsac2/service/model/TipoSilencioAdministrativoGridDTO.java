@@ -5,7 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 /**
  * Dades d'un Tipo Silencio Administrativo.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Schema(name = "TipoSilencioAdministrativoGrid")
 public class TipoSilencioAdministrativoGridDTO extends ModelApi {
@@ -35,7 +35,7 @@ public class TipoSilencioAdministrativoGridDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return  codigo
+     * @return codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -48,7 +48,7 @@ public class TipoSilencioAdministrativoGridDTO extends ModelApi {
     /**
      * Establece id string.
      *
-     * @param idString  codigo to set
+     * @param idString codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -61,7 +61,7 @@ public class TipoSilencioAdministrativoGridDTO extends ModelApi {
     /**
      * Instantiates a new Tipo silencio administrativo grid dto.
      *
-     * @param id  id
+     * @param id id
      */
     public TipoSilencioAdministrativoGridDTO(Long id) {
         this.codigo = id;
@@ -70,7 +70,7 @@ public class TipoSilencioAdministrativoGridDTO extends ModelApi {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -79,7 +79,7 @@ public class TipoSilencioAdministrativoGridDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -88,7 +88,7 @@ public class TipoSilencioAdministrativoGridDTO extends ModelApi {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -97,7 +97,7 @@ public class TipoSilencioAdministrativoGridDTO extends ModelApi {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -106,7 +106,7 @@ public class TipoSilencioAdministrativoGridDTO extends ModelApi {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public Literal getDescripcion() {
         return descripcion;
@@ -115,7 +115,7 @@ public class TipoSilencioAdministrativoGridDTO extends ModelApi {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
@@ -123,10 +123,6 @@ public class TipoSilencioAdministrativoGridDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "TipoSilencioAdministrativoGrid{" +
-                "id=" + codigo +
-                ", identificador=" + identificador +
-                ", descripcion=" + descripcion.toString() +
-                '}';
+        return "TipoSilencioAdministrativoGrid{" + "id=" + codigo + ", identificador=" + identificador + ", descripcion=" + descripcion.toString() + '}';
     }
 }

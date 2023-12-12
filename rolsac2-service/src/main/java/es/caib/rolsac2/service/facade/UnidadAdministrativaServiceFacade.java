@@ -4,6 +4,7 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
+import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 
@@ -362,4 +363,13 @@ public interface UnidadAdministrativaServiceFacade {
      * @param usuario
      */
     void evolucionDivision(Long uaOrigen, List<UnidadAdministrativaDTO> uasDestino, Date fechaBaja, NormativaDTO normativa, List<ProcedimientoBaseDTO> procedimientos, List<ProcedimientoBaseDTO> servicios, List<NormativaGridDTO> normativas, EntidadDTO entidad, TypePerfiles perfil, String usuario);
+
+    /**
+     * Devuelve la lista de UAs segun el filtro y los datos de exportar.
+     *
+     * @param filtro
+     * @param exportarDatos
+     * @return
+     */
+    List<UnidadAdministrativaDTO> findExportByFiltro(UnidadAdministrativaFiltro filtro, ExportarDatos exportarDatos);
 }

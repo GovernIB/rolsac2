@@ -5,7 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 /**
  * Dades d'un Tipo Publico Objetivo.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Schema(name = "TipoPublicoObjetivoGrid")
 public class TipoPublicoObjetivoGridDTO extends ModelApi {
@@ -136,11 +136,6 @@ public class TipoPublicoObjetivoGridDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "TipoPublicoObjetivoGridDTO{" +
-                "id=" + codigo +
-                ", identificador=" + identificador +
-                ", descripcion=" + descripcion.toString() +
-                ", empleadoPublico=" + empleadoPublico +
-                '}';
+        return "TipoPublicoObjetivoGridDTO{" + "id=" + codigo + ", identificador=" + identificador + ", descripcion=" + descripcion.toString() + ", empleadoPublico=" + empleadoPublico + '}';
     }
 }

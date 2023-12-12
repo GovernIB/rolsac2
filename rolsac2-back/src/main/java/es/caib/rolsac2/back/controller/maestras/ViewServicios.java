@@ -5,20 +5,25 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
+import es.caib.rolsac2.back.utils.UtilExport;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.exportar.ExportarCampos;
+import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +68,11 @@ public class ViewServicios extends AbstractController implements Serializable {
     public LazyDataModel<ServicioGridDTO> getLazyModel() {
         return lazyModel;
     }
+
+    /**
+     * Cuando se exporta los datos
+     **/
+    private ExportarDatos exportarDatos;
 
     public void load() {
         LOG.debug("load View Servicios");
@@ -298,8 +308,52 @@ public class ViewServicios extends AbstractController implements Serializable {
         //if (ancho == null) {
         //    ancho = 1433;
         //}
-        Integer ancho = 975;
-        UtilJSF.openDialog("dialogServicio", modoAcceso, params, true, ancho, 733);
+        Integer ancho = 1010;
+        UtilJSF.openDialog("dialogServicio", modoAcceso, params, true, ancho, 743);
+    }
+
+    /**
+     * Imprime el listado de normativas.
+     */
+    public void exportar() {
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.TIPO.toString(), "SERV");
+        UtilJSF.anyadirMochila("exportar", exportarDatos);
+        UtilJSF.openDialog("dialogExportar", TypeModoAcceso.ALTA, params, true, 800, 700);
+    }
+
+
+    /**
+     * Devuelve el resultado del dialogo de traspaso.
+     *
+     * @param event
+     */
+    public void returnDialogoExportar(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            exportarDatos = (ExportarDatos) respuesta.getResult();
+        }
+    }
+
+    /**
+     * Devuelve el fichero
+     */
+    public StreamedContent getFile() {
+        ExportarDatos exportarDatos = this.exportarDatos.clone();
+
+        List<ExportarCampos> campos = new ArrayList<>();
+        // Eliminamos los campos no seleccionados
+        for (ExportarCampos campo : exportarDatos.getCampos()) {
+            if (campo.isSeleccionado()) {
+                campos.add(campo);
+            }
+        }
+        exportarDatos.setCampos(campos);
+
+        List<ProcedimientoBaseDTO> procedimientos = procedimientoService.findExportByFiltro(filtro, this.exportarDatos);
+        String[][] datos = UtilExport.getValoresServs(procedimientos, exportarDatos, this.getIdioma());
+        String[] cabecera = UtilExport.getCabecera(exportarDatos);
+        return UtilExport.generarStreamedContent("SERVICIO", cabecera, datos, exportarDatos);
     }
 
     public void cambiarUAbuscarEvt(UnidadAdministrativaDTO ua) {

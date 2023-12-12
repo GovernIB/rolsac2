@@ -224,6 +224,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         return procs;
     }
+ 
 
     @Override
     public List<ProcedimientoBaseDTO> findProcedimientosPagedByFiltroRest(ProcedimientoFiltro filtro) {
@@ -2529,6 +2530,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         queryUAInstructor.setParameter("uas", codigoUAOriginal);
         queryUAInstructor.executeUpdate();
 
+        Query queryUACompente = entityManager.createQuery("update JProcedimientoWorkflow  set uaCompetente = " + codigoUANueva + " WHERE uaCompetente.codigo  in (:uas)");
+        queryUACompente.setParameter("uas", codigoUAOriginal);
+        queryUACompente.executeUpdate();
+
         Query queryUATramites = entityManager.createQuery("update JProcedimientoTramite  set unidadAdministrativa = " + codigoUANueva + " WHERE unidadAdministrativa.codigo in (:uas)");
         queryUATramites.setParameter("uas", codigoUAOriginal);
         queryUATramites.executeUpdate();
@@ -2920,4 +2925,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return null;
 
     }
+
+
 }

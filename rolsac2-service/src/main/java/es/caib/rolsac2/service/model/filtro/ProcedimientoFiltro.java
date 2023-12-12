@@ -82,6 +82,77 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     private Integer version;
 
+    /**
+     * Constructor vacio
+     */
+    public ProcedimientoFiltro() {
+        //Vacio
+    }
+
+    /**
+     * Constructor
+     *
+     * @param otro
+     */
+    public ProcedimientoFiltro(ProcedimientoFiltro otro) {
+        this.texto = otro.texto;
+        this.tipo = otro.tipo;
+        this.codigoSIA = otro.codigoSIA;
+        this.codigoProc = otro.codigoProc;
+        this.codigosProc = otro.codigosProc;
+        this.codigoWF = otro.codigoWF;
+        this.codigoTram = otro.codigoTram;
+        this.estadoSIA = otro.estadoSIA;
+        this.siaFecha = otro.siaFecha;
+        this.fechaPublicacionDesde = otro.fechaPublicacionDesde;
+        this.fechaPublicacionHasta = otro.fechaPublicacionHasta;
+        this.codigoDir3SIA = otro.codigoDir3SIA;
+        this.codigoUaDir3 = otro.codigoUaDir3;
+        this.volcadoSIA = otro.volcadoSIA;
+        this.silencioAdministrativo = otro.silencioAdministrativo;
+        this.tipoProcedimiento = otro.tipoProcedimiento;
+        this.formaInicio = otro.formaInicio;
+        this.publicoObjetivo = otro.publicoObjetivo;
+        this.publicoObjetivos = otro.publicoObjetivos;
+        this.materias = otro.materias;
+        this.normativas = otro.normativas;
+        this.estado = otro.estado;
+        this.estados = otro.estados;
+        this.hijasActivas = otro.hijasActivas;
+        this.idUAsHijas = otro.idUAsHijas;
+        this.idUAResponsable = otro.idUAResponsable;
+        this.idUAsResponsable = otro.idUAsResponsable;
+        this.idUAInstructor = otro.idUAInstructor;
+        this.idUAsInstructor = otro.idUAsInstructor;
+        this.idsUAsHijasAux = otro.idsUAsHijasAux;
+        this.todasUnidadesOrganicas = otro.todasUnidadesOrganicas;
+        this.finVia = otro.finVia;
+        this.tramiteVigente = otro.tramiteVigente;
+        this.tramiteTelematico = otro.tramiteTelematico;
+        this.plantilla = otro.plantilla;
+        this.plataforma = otro.plataforma;
+        this.comun = otro.comun;
+        this.estadoWF = otro.estadoWF;
+        this.mensajesPendiente = otro.mensajesPendiente;
+        this.temas = otro.temas;
+        this.esProcedimiento = otro.esProcedimiento;
+        this.canales = otro.canales;
+        this.idTramite = otro.idTramite;
+        this.identificadorPlataforma = otro.identificadorPlataforma;
+        this.version = otro.version;
+        this.setIdioma(otro.getIdioma());
+        this.setIdUA(otro.getIdUA());
+        this.setIdEntidad(otro.getIdEntidad());
+        this.setPaginaTamanyo(otro.getPaginaTamanyo());
+        this.setPaginaFirst(otro.getPaginaFirst());
+        this.setOrderBy(otro.getOrderBy());
+        this.setOrder(otro.getOrder());
+        this.setAscendente(otro.isAscendente());
+        this.setOperadoresString(otro.isOperadoresString());
+        this.setPaginacionActiva(otro.isPaginacionActiva());
+        this.setTotal(otro.getTotal());
+    }
+
     public Long getCodigoProc() {
         return codigoProc;
     }
@@ -724,5 +795,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return version != null;
     }
 
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    @Override
+    public ProcedimientoFiltro clone() {
+        return new ProcedimientoFiltro(this);
+    }
 
 }

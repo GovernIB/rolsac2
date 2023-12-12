@@ -152,7 +152,7 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoMateriaSIA", modoAcceso, params, true, 780, 315);
+        UtilJSF.openDialog("dialogTipoMateriaSIA", modoAcceso, params, true, 780, 360);
     }
 
 

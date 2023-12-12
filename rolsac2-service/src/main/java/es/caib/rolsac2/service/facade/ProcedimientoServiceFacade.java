@@ -9,6 +9,7 @@ import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
+import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
@@ -226,4 +227,6 @@ public interface ProcedimientoServiceFacade {
     List<TipoMateriaSIADTO> getTipoMateriaByCodProcWF(Long codigo);
 
     String obtenerIdiomaEntidad(Long codigo);
+
+    List<ProcedimientoBaseDTO> findExportByFiltro(ProcedimientoFiltro filtro, ExportarDatos exportarDatos);
 }

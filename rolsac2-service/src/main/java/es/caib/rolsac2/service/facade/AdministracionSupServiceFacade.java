@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Servicio para los casos de uso de mantenimiento de la entidad y la configuración global.
  *
- * @author jsegovia
+ * @author Indra
  */
 public interface AdministracionSupServiceFacade {
 

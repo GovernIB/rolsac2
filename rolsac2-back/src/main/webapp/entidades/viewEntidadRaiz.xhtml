@@ -16,7 +16,7 @@
     </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
                         oncomplete="$('#form:actualizarBusqueda').click();">
             </p:menuitem>
@@ -26,36 +26,41 @@
         <h:form id="form">
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewEntidadRaiz.buscar}" update="dataTable"/>
-            <p:toolbar>
-                <p:toolbarGroup>
-                    <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2"/>
-                    <p:inputText value="#{viewEntidadRaiz.filtro.texto}" styleClass="mr-2"/>
-                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
-                                     update="messages dataTable" actionListener="#{viewEntidadRaiz.buscar}"
-                                     process="@form" styleClass="mr-2"/>
-                </p:toolbarGroup>
-                <p:toolbarGroup align="right">
-                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" styleClass="mr-2"
-                                     iconPos="top" actionListener="#{viewEntidadRaiz.nuevaEntidadRaiz()}"
-                                     process="@this">
-                        <p:ajax event="dialogReturn" listener="#{viewEntidadRaiz.returnDialogo}"
-                                update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
-                                     iconPos="top" actionListener="#{viewEntidadRaiz.editarEntidadRaiz}"
-                                     process="@form" update="messages">
-                        <p:ajax event="dialogReturn" listener="#{viewEntidadRaiz.returnDialogo}"
-                                update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" styleClass="mr-2"
-                                     iconPos="top" action="#{viewEntidadRaiz.borrarEntidadRaiz}" process="@form"
-                                     update="messages dataTable">
-                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                     action="#{viewEntidadRaiz.ayuda}" process="@this" update="messages"/>
-                </p:toolbarGroup>
-            </p:toolbar>
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                     widgetVar="panel" collapsed="true">
+                <f:facet name="header">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputFormat value="#{labels['dict.filtro']}:"    styleClass="estiloGrande ml-3 mr-2" />
+                            <p:inputText value="#{viewEntidadRaiz.filtro.texto}"   styleClass="estiloGrande ml-2 mr-2" />
+                            <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
+                                             update="messages dataTable" actionListener="#{viewEntidadRaiz.buscar()}"
+                                             process="@form" styleClass="mr-2"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" styleClass="mr-2"
+                                             iconPos="top" actionListener="#{viewEntidadRaiz.nuevaEntidadRaiz()}"
+                                             process="@this">
+                                <p:ajax event="dialogReturn" listener="#{viewEntidadRaiz.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" styleClass="mr-2"
+                                             iconPos="top" actionListener="#{viewEntidadRaiz.editarEntidadRaiz}"
+                                             process="@form" update="messages">
+                                <p:ajax event="dialogReturn" listener="#{viewEntidadRaiz.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" styleClass="mr-2"
+                                             iconPos="top" action="#{viewEntidadRaiz.borrarEntidadRaiz}" process="@form"
+                                             update="messages dataTable">
+                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                             action="#{viewEntidadRaiz.ayuda}" process="@this" update="messages"/>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:panel>
             <p:dataTable id="dataTable" value="#{viewEntidadRaiz.lazyModel}" var="entidadRaiz"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="entidadRaizTable"
                          rows="#{viewEntidadRaiz.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"

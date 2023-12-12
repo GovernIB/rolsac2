@@ -22,7 +22,7 @@ Pàgina amb el llistat de processos automàtics
 
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
                         oncomplete="$('#form:actualizarBusqueda').click();">
             </p:menuitem>
@@ -35,35 +35,43 @@ Pàgina amb el llistat de processos automàtics
             <p:commandButton value="#{labels['viewProcesos.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewProcesos.buscar}"
                              update="dataTable"/>
-            <p:toolbar id="toolbar">
-                <f:facet name="right">
-                    <p:commandButton value="#{labels['dialogProceso.procesadoManual']}"
-                                     id="btnLanzar"
-                                     icon="pi pi-arrow-right"
-                                     action="#{viewProcesos.procesadoManual()}"
-                                     process="@all"
-                                     update="messages" disabled="#{viewProcesos.datoSeleccionado == null}"/>
-                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
-                                     actionListener="#{viewProcesos.nuevoProceso()}"
-                                     process="@this">
-                        <p:ajax event="dialogReturn" listener="#{viewProcesos.returnDialogo}"
-                                update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
-                                     actionListener="#{viewProcesos.editarProceso()}"
-                                     process="@form" update="messages">
-                        <p:ajax event="dialogReturn" listener="#{viewProcesos.returnDialogo}"
-                                update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
-                                     action="#{viewProcesos.borrarProceso()}"
-                                     process="@form" update="messages dataTable">
-                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                     action="#{viewProcesos.ayuda}" process="@this" update="messages"/>
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                     widgetVar="panel" collapsed="true">
+                <f:facet name="header">
+                    <div class="row">
+                    <div class="ui-g-12 ui-md-1 ui-lg-1">
+
+                    </div>
+                    <div class="ui-g-12 ui-md-11 ui-lg-11 text-right">
+                            <p:commandButton value="#{labels['dialogProceso.procesadoManual']}"  styleClass="mr-2"
+                                             id="btnLanzar"
+                                             icon="pi pi-arrow-right"
+                                             action="#{viewProcesos.procesadoManual()}"
+                                             process="@all"
+                                             update="messages" disabled="#{viewProcesos.datoSeleccionado == null}"/>
+                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"  styleClass="mr-2"
+                                             actionListener="#{viewProcesos.nuevoProceso()}"
+                                             process="@this">
+                                <p:ajax event="dialogReturn" listener="#{viewProcesos.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"  styleClass="mr-2"
+                                             actionListener="#{viewProcesos.editarProceso()}"
+                                             process="@form" update="messages">
+                                <p:ajax event="dialogReturn" listener="#{viewProcesos.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"  styleClass="mr-2"
+                                             action="#{viewProcesos.borrarProceso()}"
+                                             process="@form" update="messages dataTable">
+                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                             action="#{viewProcesos.ayuda}" process="@this" update="messages"/>
+                    </div>
+                    </div>
                 </f:facet>
-            </p:toolbar>
+            </p:panel>
             <p:dataTable id="dataTable" value="#{viewProcesos.lazyModel}" var="proceso"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTable"
                          rows="#{viewProcesos.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"

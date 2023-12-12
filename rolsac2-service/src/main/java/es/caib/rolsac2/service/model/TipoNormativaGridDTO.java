@@ -5,7 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 /**
  * Dades d'un TipoNormativa.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Schema(name = "TipoNormativaGrid")
 public class TipoNormativaGridDTO extends ModelApi {
@@ -72,10 +72,6 @@ public class TipoNormativaGridDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "TipoNormativaGridDTO{" +
-                "id=" + codigo +
-                ", identificador=" + identificador +
-                ", descripcion=" + descripcion.toString() +
-                '}';
+        return "TipoNormativaGridDTO{" + "id=" + codigo + ", identificador=" + identificador + ", descripcion=" + descripcion.toString() + '}';
     }
 }

@@ -29,9 +29,15 @@ public class JNormativaTraduccion {
     @Column(name = "TRNO_URL", length = 500)
     private String urlBoletin;
 
-//    @Column(name = "TRNO_RESPNOM")
-//    private String nombreResponsable;
+    @Column(name = "TRNO_RESPNOM")
+    private String nombreResponsable;
 
+    /**
+     * Crear una instancia de traducción de normativa
+     *
+     * @param idiomas
+     * @return
+     */
     public static List<JNormativaTraduccion> createInstance(List<String> idiomas) {
         List<JNormativaTraduccion> traducciones = new ArrayList<>();
         for (String idioma : idiomas) {
@@ -42,53 +48,113 @@ public class JNormativaTraduccion {
         return traducciones;
     }
 
+    /**
+     * Obtener el código
+     *
+     * @return
+     */
     public Long getCodigo() {
         return codigo;
     }
 
+    /**
+     * Setear el código
+     *
+     * @param id
+     */
     public void setCodigo(Long id) {
         this.codigo = id;
     }
 
+    /**
+     * Obtener la normativa
+     *
+     * @return
+     */
     public JNormativa getNormativa() {
         return normativa;
     }
 
+    /**
+     * Setear la normativa
+     *
+     * @param trnoCodtpno
+     */
     public void setNormativa(JNormativa trnoCodtpno) {
         this.normativa = trnoCodtpno;
     }
 
+    /**
+     * Obtener el idioma de la normativa
+     *
+     * @return
+     */
     public String getIdioma() {
         return idioma;
     }
 
+    /**
+     * Setear el idioma de la normativa
+     *
+     * @param trnoIdioma
+     */
     public void setIdioma(String trnoIdioma) {
         this.idioma = trnoIdioma;
     }
 
+    /**
+     * Obtener el título de la normativa
+     *
+     * @return
+     */
     public String getTitulo() {
         return titulo;
     }
 
+    /**
+     * Setear el título de la normativa
+     *
+     * @param trnoTitul
+     */
     public void setTitulo(String trnoTitul) {
         this.titulo = trnoTitul;
     }
 
+    /**
+     * Obtener la url del boletín
+     *
+     * @return
+     */
     public String getUrlBoletin() {
         return urlBoletin;
     }
 
+    /**
+     * Setear la url del boletín
+     *
+     * @param urlBoletin
+     */
     public void setUrlBoletin(String urlBoletin) {
         this.urlBoletin = urlBoletin;
     }
 
-//    public String getNombreResponsable() {
-//        return nombreResponsable;
-//    }
-//
-//    public void setNombreResponsable(String nombreResponsable) {
-//        this.nombreResponsable = nombreResponsable;
-//    }
+    /**
+     * Obtener el nombre del responsable de la normativa
+     *
+     * @return nombre del responsable de la normativa
+     */
+    public String getNombreResponsable() {
+        return nombreResponsable;
+    }
+
+    /**
+     * Setear el nombre del responsable de la normativa
+     *
+     * @param nombreResponsable
+     */
+    public void setNombreResponsable(String nombreResponsable) {
+        this.nombreResponsable = nombreResponsable;
+    }
 
     @Override
     public boolean equals(Object o) {

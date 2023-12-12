@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.pk.JUsuarioEntidadPK;
 import es.caib.rolsac2.persistence.model.pk.JUsuarioUnidadAdministrativaPK;
+import es.caib.rolsac2.service.model.UsuarioDTO;
 import es.caib.rolsac2.service.model.UsuarioGridDTO;
 import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
 
@@ -33,10 +34,37 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
         return Optional.ofNullable(result.isEmpty() ? null : result.get(0));
     }
 
+    /**
+     * Busca un usuario por identificador
+     *
+     * @param identificador
+     * @return
+     */
+    @Override
     public JUsuario findByIdentificador(String identificador) {
         TypedQuery<JUsuario> query = entityManager.createNamedQuery(JUsuario.FIND_BY_IDENTIFICADOR, JUsuario.class);
         query.setParameter("identificador", identificador);
         return query.getSingleResult();
+    }
+
+    /**
+     * Busca un usuario por identificador
+     *
+     * @param identificador
+     * @return
+     */
+    @Override
+    public UsuarioDTO findSimpleByIdentificador(String identificador, String lang) {
+        Query query = entityManager.createQuery("select p.codigo, p.nombre from JUsuario p where p.identificador = :identificador");
+        query.setParameter("identificador", identificador);
+        List<Object[]> jUsuarios = query.getResultList();
+        UsuarioDTO usuarioDTO = null;
+        if (jUsuarios != null && !jUsuarios.isEmpty()) {
+            usuarioDTO = new UsuarioDTO();
+            usuarioDTO.setCodigo((Long) jUsuarios.get(0)[0]);
+            usuarioDTO.setNombre((String) jUsuarios.get(0)[1]);
+        }
+        return usuarioDTO;
     }
 
     @Override

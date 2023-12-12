@@ -40,6 +40,48 @@ public class NormativaFiltro extends AbstractFiltro {
 
     private Boolean soloValidas;
 
+    /**
+     * Constructor
+     */
+    public NormativaFiltro() {
+        //Vacio
+    }
+
+    /**
+     * Constructor para clonar
+     *
+     * @param normativaFiltro
+     */
+    public NormativaFiltro(NormativaFiltro normativaFiltro) {
+        this.texto = normativaFiltro.texto;
+        this.nombre = normativaFiltro.nombre;
+        this.tipoNormativa = normativaFiltro.tipoNormativa;
+        this.tipoBoletin = normativaFiltro.tipoBoletin;
+        this.fechaAprobacion = normativaFiltro.fechaAprobacion;
+        this.fechaBoletin = normativaFiltro.fechaBoletin;
+        this.numero = normativaFiltro.numero;
+        this.hijasActivas = normativaFiltro.hijasActivas;
+        this.idUAsHijas = normativaFiltro.idUAsHijas;
+        this.idsUAsHijasAux = normativaFiltro.idsUAsHijasAux;
+        this.todasUnidadesOrganicas = normativaFiltro.todasUnidadesOrganicas;
+        this.codigoProcedimiento = normativaFiltro.codigoProcedimiento;
+        this.codigoServicio = normativaFiltro.codigoServicio;
+        this.codigo = normativaFiltro.codigo;
+        this.vigente = normativaFiltro.vigente;
+        this.soloValidas = normativaFiltro.soloValidas;
+        this.setIdioma(normativaFiltro.getIdioma());
+        this.setIdUA(normativaFiltro.getIdUA());
+        this.setIdEntidad(normativaFiltro.getIdEntidad());
+        this.setPaginaTamanyo(normativaFiltro.getPaginaTamanyo());
+        this.setPaginaFirst(normativaFiltro.getPaginaFirst());
+        this.setOrderBy(normativaFiltro.getOrderBy());
+        this.setOrder(normativaFiltro.getOrder());
+        this.setAscendente(normativaFiltro.isAscendente());
+        this.setOperadoresString(normativaFiltro.isOperadoresString());
+        this.setPaginacionActiva(normativaFiltro.isPaginacionActiva());
+        this.setTotal(normativaFiltro.getTotal());
+    }
+
 
     @Override
     protected String getDefaultOrder() {
@@ -133,6 +175,7 @@ public class NormativaFiltro extends AbstractFiltro {
     public void setSoloValidas(Boolean soloValidas) {
         this.soloValidas = soloValidas;
     }
+
 
     /**
      * Esta relleno el texto
@@ -233,5 +276,15 @@ public class NormativaFiltro extends AbstractFiltro {
 
     public boolean isRellenoSoloValidas() {
         return soloValidas != null;
+    }
+
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    @Override
+    public NormativaFiltro clone() {
+        return new NormativaFiltro(this);
     }
 }

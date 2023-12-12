@@ -20,6 +20,41 @@ public class UnidadAdministrativaFiltro extends AbstractFiltro {
     private String codigoDIR3;
     private String estado;
 
+    /**
+     * Constructor
+     **/
+    public UnidadAdministrativaFiltro() {
+        //Vacio
+    }
+
+    /**
+     * Constructor para clonar
+     *
+     * @param otro
+     */
+    public UnidadAdministrativaFiltro(UnidadAdministrativaFiltro otro) {
+        this.texto = otro.texto;
+        this.nombre = otro.nombre;
+        this.identificador = otro.identificador;
+        this.codEnti = otro.codEnti;
+        this.codigoNormativa = otro.codigoNormativa;
+        this.codigo = otro.codigo;
+        this.codigos = otro.codigos;
+        this.codigoDIR3 = otro.codigoDIR3;
+        this.estado = otro.estado;
+        this.setIdioma(otro.getIdioma());
+        this.setIdUA(otro.getIdUA());
+        this.setIdEntidad(otro.getIdEntidad());
+        this.setPaginaTamanyo(otro.getPaginaTamanyo());
+        this.setPaginaFirst(otro.getPaginaFirst());
+        this.setOrderBy(otro.getOrderBy());
+        this.setOrder(otro.getOrder());
+        this.setAscendente(otro.isAscendente());
+        this.setOperadoresString(otro.isOperadoresString());
+        this.setPaginacionActiva(otro.isPaginacionActiva());
+        this.setTotal(otro.getTotal());
+    }
+
     public Long getCodigo() {
         return codigo;
     }
@@ -150,4 +185,13 @@ public class UnidadAdministrativaFiltro extends AbstractFiltro {
         return "id";
     }
 
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    @Override
+    public UnidadAdministrativaFiltro clone() {
+        return new UnidadAdministrativaFiltro(this);
+    }
 }

@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * Controlador para editar un DialogEntidad.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped

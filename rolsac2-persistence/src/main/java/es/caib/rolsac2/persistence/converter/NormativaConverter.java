@@ -64,8 +64,8 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO> 
                     literal = traduccion.getTitulo();
                 } else if ("urlBoletin".equals(nombreLiteral)) {
                     literal = traduccion.getUrlBoletin();
-                    //                } else if ("nombreResponsable".equals(nombreLiteral)) {
-                    //                    literal = traduccion.getNombreResponsable();
+                } else if ("nombreResponsable".equals(nombreLiteral)) {
+                    literal = traduccion.getNombreResponsable();
                 } else {
                     literal = null;
                 }
@@ -116,9 +116,9 @@ public interface NormativaConverter extends Converter<JNormativa, NormativaDTO> 
                 traduccion.setUrlBoletin(normativaDTO.getUrlBoletin().getTraduccion(traduccion.getIdioma()));
             }
 
-            //            if (normativaDTO.getNombreResponsable() != null) {
-            //                traduccion.setNombreResponsable(normativaDTO.getNombreResponsable().getTraduccion(traduccion.getIdioma()));
-            //            }
+            if (normativaDTO.getNombreResponsable() != null) {
+                traduccion.setNombreResponsable(normativaDTO.getNombreResponsable().getTraduccion(traduccion.getIdioma()));
+            }
         }
         return jNormativa.getDescripcion();
     }

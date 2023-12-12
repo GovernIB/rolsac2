@@ -27,7 +27,7 @@ import java.util.Objects;
 /**
  * Controlador para editar un  DialogTipoSilencioAdministrativo.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -115,9 +115,7 @@ public class DialogTipoSilencioAdministrativo extends AbstractController impleme
     }
 
     private boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
-                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0;
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0;
     }
 
     public void cerrarDefinitivo() {
@@ -132,14 +130,12 @@ public class DialogTipoSilencioAdministrativo extends AbstractController impleme
     }
 
     public boolean verificarGuardar() {
-        if (Objects.isNull(this.data.getCodigo())
-                && maestrasSupService.checkIdentificadorTipoSilencioAdministrativo(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo()) && maestrasSupService.checkIdentificadorTipoSilencioAdministrativo(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
 
-        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
-                && maestrasSupService.checkIdentificadorTipoSilencioAdministrativo(this.data.getIdentificador())) {
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador()) && maestrasSupService.checkIdentificadorTipoSilencioAdministrativo(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }

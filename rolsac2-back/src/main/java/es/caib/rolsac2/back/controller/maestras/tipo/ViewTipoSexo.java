@@ -1,22 +1,5 @@
 package es.caib.rolsac2.back.controller.maestras.tipo;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
@@ -28,6 +11,21 @@ import es.caib.rolsac2.service.model.filtro.TipoSexoFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Named
 @ViewScoped
@@ -106,10 +104,7 @@ public class ViewTipoSexo extends AbstractController implements Serializable {
             }
 
             @Override
-            public List<TipoSexoGridDTO> load(
-                    int first, int pageSize, String sortField, SortOrder sortOrder,
-                    Map<String, FilterMeta> filterBy
-            ) {
+            public List<TipoSexoGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<TipoSexoGridDTO> pagina = pagina = tipoSexoService.findByFiltro(filtro);
@@ -131,8 +126,7 @@ public class ViewTipoSexo extends AbstractController implements Serializable {
 
     public void editarTipoSexo() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
             abrirVentana(TypeModoAcceso.EDICION);
         }
@@ -161,7 +155,7 @@ public class ViewTipoSexo extends AbstractController implements Serializable {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoSexo", modoAcceso, params, true, 800, 290);
+        UtilJSF.openDialog("dialogTipoSexo", modoAcceso, params, true, 800, 320);
 
 
     }
@@ -170,7 +164,7 @@ public class ViewTipoSexo extends AbstractController implements Serializable {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
         } else {
-            if(unidadAdministrativaServiceFacade.existeTipoSexo(datoSeleccionado.getCodigo())) {
+            if (unidadAdministrativaServiceFacade.existeTipoSexo(datoSeleccionado.getCodigo())) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoSexo.existeRelacion"));
             } else {
                 tipoSexoService.deleteTipoSexo(datoSeleccionado.getCodigo());

@@ -476,6 +476,36 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         return nombre;
     }
 
+    /**
+     * Obtiene las unidades administrativas de un usuario
+     *
+     * @param codigo
+     * @param lang
+     * @return
+     */
+    @Override
+    public List<UnidadAdministrativaGridDTO> getUnidadesAdministrativaGridDTOByUsuario(Long codigo, String lang) {
+        Query query = entityManager.createQuery("select ua.codigo, ua.codigoDIR3, ua.identificador, t.nombre, ua.entidad.codigo from JUnidadAdministrativa ua LEFT OUTER JOIN ua.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN ua.usuarios usuarios where usuarios.codigo = :codigoUsuario");
+        query.setParameter("codigoUsuario", codigo);
+        query.setParameter("idioma", lang);
+        List<Object[]> juas = query.getResultList();
+        List<UnidadAdministrativaGridDTO> uas = new ArrayList<>();
+        if (juas != null && !juas.isEmpty()) {
+            for (Object[] jua : juas) {
+                UnidadAdministrativaGridDTO ua = new UnidadAdministrativaGridDTO();
+                ua.setCodigo((Long) jua[0]);
+                ua.setCodigoDIR3((String) jua[1]);
+                ua.setIdentificador((String) jua[2]);
+                Literal nombre = new Literal();
+                nombre.add(new Traduccion(lang, (String) jua[3]));
+                ua.setNombre(nombre);
+                ua.setIdEntidad((Long) jua[4]);
+                uas.add(ua);
+            }
+        }
+        return uas;
+    }
+
     @Override
     public JUnidadAdministrativa findJUAById(UnidadAdministrativaDTO ua) {
         if (ua == null || ua.getCodigo() == null) {

@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.JUsuario;
 import es.caib.rolsac2.persistence.model.JUsuarioEntidad;
+import es.caib.rolsac2.service.model.UsuarioDTO;
 import es.caib.rolsac2.service.model.UsuarioGridDTO;
 import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
 
@@ -14,6 +15,8 @@ public interface UsuarioRepository extends CrudRepository<JUsuario, Long> {
     Optional<JUsuario> findById(String id);
 
     JUsuario findByIdentificador(String identificador);
+
+    UsuarioDTO findSimpleByIdentificador(String identificador, String lang);
 
     List<UsuarioGridDTO> findPagedByFiltro(UsuarioFiltro filtro);
 

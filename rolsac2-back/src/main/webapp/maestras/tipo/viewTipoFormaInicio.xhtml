@@ -22,7 +22,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
                         oncomplete="$('#form:actualizarBusqueda').click();">
             </p:menuitem>
@@ -34,35 +34,39 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewTipoFormaInicio.buscar}" update="dataTable"/>
 
-            <p:toolbar id="toolbar">
-                <f:facet name=""/>
-                <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>:
-                    <p:inputText value="#{viewTipoFormaInicio.filtro.texto}" styleClass="mr-2"/>
-                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
-                                     actionListener="#{viewTipoFormaInicio.buscar}" process="@form"/>
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                     widgetVar="panel" collapsed="true">
+                <f:facet name="header">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputFormat value="#{labels['dict.filtro']}:"  styleClass="estiloGrande ml-3 mr-2" />
+                            <p:inputText value="#{viewTipoFormaInicio.filtro.texto}" styleClass="estiloGrande ml-2 mr-2" />
+                            <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                             actionListener="#{viewTipoFormaInicio.buscar}" process="@form"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top" styleClass="mr-2"
+                                             actionListener="#{viewTipoFormaInicio.nuevoTipoFormaInicio()}" process="@this">
+                                <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top" styleClass="mr-2"
+                                             actionListener="#{viewTipoFormaInicio.editarTipoFormaInicio}" process="@form"
+                                             update="messages">
+                                <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top" styleClass="mr-2"
+                                             action="#{viewTipoFormaInicio.borrarTipoFormaInicio}" process="@form"
+                                             update="messages dataTable">
+                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                             action="#{viewTipoFormaInicio.ayuda}" process="@this" update="messages"/>
+                        </div>
+                    </div>
                 </f:facet>
-                <f:facet name="right">
-                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
-                                     actionListener="#{viewTipoFormaInicio.nuevoTipoFormaInicio()}" process="@this">
-                        <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}"
-                                update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
-                                     actionListener="#{viewTipoFormaInicio.editarTipoFormaInicio}" process="@form"
-                                     update="messages">
-                        <p:ajax event="dialogReturn" listener="#{viewTipoFormaInicio.returnDialogo}"
-                                update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
-                                     action="#{viewTipoFormaInicio.borrarTipoFormaInicio}" process="@form"
-                                     update="messages dataTable">
-                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                     action="#{viewTipoFormaInicio.ayuda}" process="@this" update="messages"/>
-                </f:facet>
-            </p:toolbar>
+            </p:panel>
             <p:dataTable id="dataTable" value="#{viewTipoFormaInicio.lazyModel}" var="tipoFormaInicio"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="tipoFormaInicioTable"
                          rows="#{viewTipoFormaInicio.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"

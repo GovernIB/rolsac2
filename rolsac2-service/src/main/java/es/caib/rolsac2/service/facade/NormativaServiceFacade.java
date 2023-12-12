@@ -5,6 +5,7 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.DocumentoNormativaFiltro;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -61,6 +62,15 @@ public interface NormativaServiceFacade {
      * @return una pagina con el numero total de Normativas y la lista de Normativas por el rango indicado.
      */
     Pagina<NormativaGridDTO> findByFiltro(NormativaFiltro filtro);
+
+    /**
+     * Devuelve todas las Normativa relacionado con los parámetros del filtro
+     *
+     * @param filtro        filtro de la búsqueda
+     * @param exportarDatos
+     * @return una pagina con el numero total de Normativas y la lista de Normativas por el rango indicado.
+     */
+    List<NormativaDTO> findExportByFiltro(NormativaFiltro filtro, ExportarDatos exportarDatos);
 
     /**
      * Devuelve el total de Normativas relacionado con los parámetros del filtro.

@@ -70,6 +70,7 @@ public interface AdministracionEntServiceFacade {
 
     /**
      * Método que se utiliza al crear una nueva entidad
+     *
      * @param usuarioDTO
      * @param idEntidad
      */
@@ -94,6 +95,7 @@ public interface AdministracionEntServiceFacade {
 
     /**
      * Método para borrar un usuario de una entidad
+     *
      * @param id
      */
     void deleteUsuarioEntidad(Long idUsuario, Long idEntidad);
@@ -113,6 +115,15 @@ public interface AdministracionEntServiceFacade {
      * @return un opcional con los datos del usuario
      */
     UsuarioDTO findUsuarioByIdentificador(String identificador);
+
+    /**
+     * Retorna el usuario relacionado al identificador
+     *
+     * @param identificador
+     * @param lang
+     * @return
+     */
+    UsuarioDTO findUsuarioSimpleByIdentificador(String identificador, String lang);
 
     /**
      * Devuelve una página con el tipo de afectación relacionado con los parámetros del filtro

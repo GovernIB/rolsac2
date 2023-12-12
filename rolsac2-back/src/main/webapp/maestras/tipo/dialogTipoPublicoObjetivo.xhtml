@@ -57,21 +57,21 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      life="5000"
                      escape="false"/>
             <div class="row">
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtCodigo" value="#{dialogTipoPublicoObjetivo.data.codigo}"
-                                 styleClass="w95" disabled="true" maxlength="50"/>
+                                 styleClass="w96" disabled="true" maxlength="50"/>
                 </div>
 
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dict.id']}:"
                                    for="txtNombre"
                     />
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:inputText id="txtNombre" value="#{dialogTipoPublicoObjetivo.data.identificador}" styleClass="w95"
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:inputText id="txtNombre" value="#{dialogTipoPublicoObjetivo.data.identificador}" styleClass="w96"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  required="#{empty param['formDialog:closeButton']}" disabled="#{dialogTipoPublicoObjetivo.isModoConsulta()}"
                                  onblur="this.value = this.value.toUpperCase();">
@@ -80,12 +80,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </p:inputText>
                 </div>
 
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dict.descripcion']}:"
                                    for="inputDescripcion"
                     />
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <my:literalComponent id="inputDescripcion"
                                          literal="#{dialogTipoPublicoObjetivo.data.descripcion}"
                                          idioma="#{dialogTipoPublicoObjetivo.idioma}"
@@ -97,10 +97,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <h:outputText value="#{labels['dict.esEmpleadoPublico']}:" for="txtEmpleadoPublico"/>
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:selectBooleanCheckbox id="txtEmpleadoPublico"
                                              value="#{dialogTipoPublicoObjetivo.data.empleadoPublico}"
                                              disabled="#{dialogTipoPublicoObjetivo.isModoConsulta()}"

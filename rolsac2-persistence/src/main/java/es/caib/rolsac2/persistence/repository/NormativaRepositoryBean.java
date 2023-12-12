@@ -185,6 +185,25 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
     }
 
     @Override
+    public List<NormativaDTO> findByFiltro(NormativaFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
+
+        List<JNormativa> jNormativas = query.getResultList();
+        List<NormativaDTO> normativa = new ArrayList<>();
+
+        if (jNormativas != null) {
+            for (JNormativa jNormativa : jNormativas) {
+                NormativaDTO normativaDTO = converter.createDTO(jNormativa);
+                normativa.add(normativaDTO);
+            }
+        }
+
+        return normativa;
+    }
+
+    @Override
     public List<NormativaGridDTO> findPagedByFiltro(NormativaFiltro filtro) {
         Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());

@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Representacion de una Entidad. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Entity
 @SequenceGenerator(name = "tipo-entidad-sequence", sequenceName = "RS2_ENTIDA_SEQ", allocationSize = 1)
@@ -104,6 +104,17 @@ public class JEntidad extends BaseEntity {
     @Column(name = "ENTI_IDIOBL", nullable = false, length = 20)
     private String idiomasObligatorios;
 
+    /**
+     * Indica si el administrador de contenido tiene un idioma por defecto
+     **/
+    @Column(name = "ENTI_ADCPRI", nullable = true)
+    private String admContenidoIdiomaPrioritario;
+
+    /**
+     * Indica si el administrador de contenido tiene opción de seleccionar cualquier idioma o uno forzado
+     */
+    @Column(name = "ENTI_ADMSEL", nullable = true)
+    private String admContenidoSeleccionIdioma;
 
     /**
      * Descripción
@@ -336,6 +347,44 @@ public class JEntidad extends BaseEntity {
     public void setIdiomasObligatorios(String idiomasObligatorios) {
         this.idiomasObligatorios = idiomasObligatorios;
     }
+
+    /**
+     * Obtiene adm contenido idioma por defecto.
+     *
+     * @return
+     */
+    public String getAdmContenidoIdiomaPrioritario() {
+        return admContenidoIdiomaPrioritario;
+
+    }
+
+    /**
+     * Establece adm contenido idioma por defecto.
+     *
+     * @param admContenidoIdiomaPorDefecto
+     */
+    public void setAdmContenidoIdiomaPrioritario(String admContenidoIdiomaPorDefecto) {
+        this.admContenidoIdiomaPrioritario = admContenidoIdiomaPorDefecto;
+    }
+
+    /**
+     * Obtiene adm contenido seleccion idioma.
+     *
+     * @return
+     */
+    public String getAdmContenidoSeleccionIdioma() {
+        return admContenidoSeleccionIdioma;
+    }
+
+    /**
+     * Establece adm contenido seleccion idioma.
+     *
+     * @param admContenidoSeleccionIdioma
+     */
+    public void setAdmContenidoSeleccionIdioma(String admContenidoSeleccionIdioma) {
+        this.admContenidoSeleccionIdioma = admContenidoSeleccionIdioma;
+    }
+
 
     /**
      * Obtiene descripcion.

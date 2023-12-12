@@ -33,7 +33,7 @@
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogEntidadRaiz.data.codigo}"
-                                 styleClass="w95" disabled="true" maxlength="50"/>
+                                 styleClass="w96" disabled="true" maxlength="50"/>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <h:outputText value="#{labels['dict.unidadAdministrativa']}:" for="txtUa" />
@@ -51,7 +51,7 @@
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtUser" value="#{dialogEntidadRaiz.data.user}"
-                                 styleClass="w95" disabled="#{dialogEntidadRaiz.isModoConsulta()}"
+                                 styleClass="w96" disabled="#{dialogEntidadRaiz.isModoConsulta()}"
                                  required="#{empty param['formDialog:closeButton']}" maxlength="100">
                         <f:validateBean disabled="true" />
                     </p:inputText>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:password id="txtPwd" value="#{dialogEntidadRaiz.data.pwd}"
-                                styleClass="w95" disabled="#{dialogEntidadRaiz.isModoConsulta()}" toggleMask="true" redisplay="true"
+                                styleClass="w96" disabled="#{dialogEntidadRaiz.isModoConsulta()}" toggleMask="true" redisplay="true"
                                 maxlength="100" required="#{empty param['formDialog:closeButton']}"/>
                 </div>
             </div>

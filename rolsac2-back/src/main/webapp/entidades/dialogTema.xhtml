@@ -54,7 +54,7 @@
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtCodigo" value="#{dialogTema.data.codigo}"
-                                 styleClass="w95" disabled="true"/>
+                                 styleClass="w96" disabled="true"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
@@ -63,7 +63,7 @@
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtIdentificador" value="#{dialogTema.data.identificador}"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 styleClass="w95" onblur="this.value = this.value.toUpperCase();"
+                                 styleClass="w96" onblur="this.value = this.value.toUpperCase();"
                                  disabled="#{dialogTema.isModoConsulta()}" maxlength="50"
                                  required="#{empty param['formDialog:closeButton']}">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>

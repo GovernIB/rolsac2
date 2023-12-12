@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * Interface de las operaciones básicas sobre Tipo Publico Objetivo
  *
- * @author jsegovia
+ * @author Indra
  */
 public interface TipoUnidadAdministrativaRepository extends CrudRepository<JTipoUnidadAdministrativa, Long> {
 
@@ -27,7 +27,7 @@ public interface TipoUnidadAdministrativaRepository extends CrudRepository<JTipo
 
     List<JTipoUnidadAdministrativa> findByEntidad(Long idEntidad);
 
-	List<TipoUnidadAdministrativaDTO> findPagedByFiltroRest(TipoUnidadAdministrativaFiltro filtro);
+    List<TipoUnidadAdministrativaDTO> findPagedByFiltroRest(TipoUnidadAdministrativaFiltro filtro);
 
     void deleteByEntidad(Long id);
 }

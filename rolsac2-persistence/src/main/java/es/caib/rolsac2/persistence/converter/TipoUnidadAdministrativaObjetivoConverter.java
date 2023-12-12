@@ -17,48 +17,38 @@ import java.util.Objects;
 /**
  * Conversor entre JPersonal y PersonalDTO. La implementacion se generará automaticamente por MapStruct
  *
- * @author jsegovia
+ * @author Indra
  */
 @Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {EntidadConverter.class})
-public interface TipoUnidadAdministrativaObjetivoConverter
-        extends Converter<JTipoUnidadAdministrativa, TipoUnidadAdministrativaDTO> {
+public interface TipoUnidadAdministrativaObjetivoConverter extends Converter<JTipoUnidadAdministrativa, TipoUnidadAdministrativaDTO> {
 
     // Els camps que no tenen exactament el mateix nom s'han de mapejar. En aquest cas, només quan
     // passam de Entity a DTO ens interessa agafar la clau forana de l'unitatOrganica.
     // @Mapping(target = "idUnitat", source = "unitatOrganica.id")
     @Override
-    @Mapping(target = "descripcion",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"descripcion\"))")
-    @Mapping(target = "cargoMasculino",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"cargoMasculino\"))")
-    @Mapping(target = "cargoFemenino",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"cargoFemenino\"))")
-    @Mapping(target = "tratamientoMasculino",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"tratamientoMasculino\"))")
-    @Mapping(target = "tratamientoFemenino",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"tratamientoFemenino\"))")
+    @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"descripcion\"))")
+    @Mapping(target = "cargoMasculino", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"cargoMasculino\"))")
+    @Mapping(target = "cargoFemenino", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"cargoFemenino\"))")
+    @Mapping(target = "tratamientoMasculino", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"tratamientoMasculino\"))")
+    @Mapping(target = "tratamientoFemenino", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"tratamientoFemenino\"))")
     TipoUnidadAdministrativaDTO createDTO(JTipoUnidadAdministrativa entity);
 
     // @Mapping(target = "unidadOrganica", ignore = true)
     @Override
-    @Mapping(target = "traducciones",
-            expression = "java(convierteLiteralToTraduccion(jTipoUnidadAdministrativa, dto))")
+    @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(jTipoUnidadAdministrativa, dto))")
     JTipoUnidadAdministrativa createEntity(TipoUnidadAdministrativaDTO dto);
 
     // @Mapping(target = "unidadOrganica", ignore = true)
     @Override
-    @Mapping(target = "traducciones",
-            expression = "java(convierteLiteralToTraduccion(entity,dto))")
+    @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(entity,dto))")
     void mergeEntity(@MappingTarget JTipoUnidadAdministrativa entity, TipoUnidadAdministrativaDTO dto);
 
 
-    default List<JTipoUnidadAdministrativaTraduccion> convierteLiteralToTraduccion(
-            JTipoUnidadAdministrativa jTipoUnidadAdministrativa, TipoUnidadAdministrativaDTO dto) {
+    default List<JTipoUnidadAdministrativaTraduccion> convierteLiteralToTraduccion(JTipoUnidadAdministrativa jTipoUnidadAdministrativa, TipoUnidadAdministrativaDTO dto) {
 
         List<String> idiomasPermitidos = List.of(dto.getEntidad().getIdiomasPermitidos().split(";"));
 
-        if (jTipoUnidadAdministrativa.getTraducciones() == null
-                || jTipoUnidadAdministrativa.getTraducciones().isEmpty()) {
+        if (jTipoUnidadAdministrativa.getTraducciones() == null || jTipoUnidadAdministrativa.getTraducciones().isEmpty()) {
             jTipoUnidadAdministrativa.setTraducciones(JTipoUnidadAdministrativaTraduccion.createInstance(idiomasPermitidos));
             for (JTipoUnidadAdministrativaTraduccion jtrad : jTipoUnidadAdministrativa.getTraducciones()) {
                 jtrad.setTipoUnidadAdministrativa(jTipoUnidadAdministrativa);
@@ -103,14 +93,12 @@ public interface TipoUnidadAdministrativaObjetivoConverter
         return jTipoUnidadAdministrativa.getTraducciones();
     }
 
-    default Literal convierteTraduccionToLiteral(List<JTipoUnidadAdministrativaTraduccion> traducciones,
-                                                 String nombreLiteral) {
+    default Literal convierteTraduccionToLiteral(List<JTipoUnidadAdministrativaTraduccion> traducciones, String nombreLiteral) {
         Literal resultado = null;
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
-            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoUnidadAdministrativa().getCodigo()).findFirst()
-                    .orElse(null));
+            resultado.setCodigo(traducciones.stream().map(t -> t.getTipoUnidadAdministrativa().getCodigo()).findFirst().orElse(null));
             for (JTipoUnidadAdministrativaTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
                 trad.setCodigo(traduccion.getCodigo());

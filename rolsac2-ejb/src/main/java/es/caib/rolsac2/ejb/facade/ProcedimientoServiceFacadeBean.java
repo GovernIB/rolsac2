@@ -23,6 +23,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.auditoria.ProcedimientoAuditoria;
+import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
@@ -1294,6 +1295,21 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public String obtenerIdiomaEntidad(Long codigoProc) {
         return procedimientoRepository.obtenerIdiomaEntidad(codigoProc);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public List<ProcedimientoBaseDTO> findExportByFiltro(ProcedimientoFiltro filtro, ExportarDatos exportarDatos) {
+        ProcedimientoFiltro filtroClonado = filtro.clone();
+        if (filtroClonado.getEstadoWF() == null) {
+            filtroClonado.setEstadoWF("T");
+        }
+        if (exportarDatos.getTodosLosDatos()) {
+            filtroClonado.setPaginaFirst(0);
+            filtroClonado.setPaginaTamanyo(10000);
+        }
+
+        return procedimientoRepository.findProcedimientosPagedByFiltroRest(filtroClonado);
     }
 
 }

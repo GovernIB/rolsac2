@@ -54,6 +54,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                  showDetail="false"
                  life="5000"
                  escape="false"/>
+        <h:outputStylesheet library="css">
+            .ui-inputnumber .ui-inputfield   {
+                width:100px !important;
+            }
+        </h:outputStylesheet>
         <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
@@ -61,7 +66,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtCodigo" value="#{dialogTipoTramitacion.data.codigo}"
-                                 styleClass="w95" disabled="true" maxlength="50"/>
+                                 styleClass="w96" disabled="true" maxlength="50"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
@@ -85,7 +90,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:outputLabel value="#{labels['dict.identificador']}:" for="txtTramiteId"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:inputText id="txtTramiteId" value="#{dialogTipoTramitacion.data.tramiteId}" styleClass="w95"
+                    <p:inputText id="txtTramiteId" value="#{dialogTipoTramitacion.data.tramiteId}" styleClass="w96"
                                  onblur="this.value = this.value.toUpperCase();"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  required="#{empty param['formDialog:closeButton']}"
@@ -99,13 +104,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-4">
                     <p:inputNumber id="txtTramiteVersion" value="#{dialogTipoTramitacion.data.tramiteVersion}"
-                                   styleClass="w95"
                                    requiredMessage="#{labels['dict.obligatorio.version']}"
                                    required="#{empty param['formDialog:closeButton']}"
                                     disabled="#{dialogTipoTramitacion.isModoConsulta()}" minValue="0"
                                    maxValue="999" decimalPlaces="0"/>
                 </div>
-                 <div class="ui-g-12 ui-md-3 ui-lg-2">
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.platTramitacion']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-4">
@@ -113,7 +117,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                      requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
                                      value="#{dialogTipoTramitacion.data.codPlatTramitacion}"
                                      converter="#{platTramitElectronicaConverter}"
-                                     styleClass="w85" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
+                                     styleClass="w90" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
                         <f:selectItem itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}"
                                       itemValue="#{null}" id="seleccione"/>
                         <f:selectItems value="#{dialogTipoTramitacion.plataformasTramiteList}" var="plataforma"
@@ -146,7 +150,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtTramiteParametros" value="#{dialogTipoTramitacion.data.tramiteParametros}"
                                  requiredMessage="#{labels['dict.obligatorio.parametros']}"
-                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
+                                 styleClass="w96" required="#{empty param['formDialog:closeButton']}"
                                   disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="500"/>
                 </div>
 

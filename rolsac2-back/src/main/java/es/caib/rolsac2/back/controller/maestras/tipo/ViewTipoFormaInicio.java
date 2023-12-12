@@ -1,22 +1,5 @@
 package es.caib.rolsac2.back.controller.maestras.tipo;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
@@ -27,6 +10,21 @@ import es.caib.rolsac2.service.model.filtro.TipoFormaInicioFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Named
@@ -89,8 +87,7 @@ public class ViewTipoFormaInicio extends AbstractController implements Serializa
             @Override
             public TipoFormaInicioGridDTO getRowData(String rowKey) {
                 for (TipoFormaInicioGridDTO TipoFormaInicio : getWrappedData()) {
-                    if (TipoFormaInicio.getCodigo().toString().equals(rowKey))
-                        return TipoFormaInicio;
+                    if (TipoFormaInicio.getCodigo().toString().equals(rowKey)) return TipoFormaInicio;
                 }
                 return null;
             }
@@ -101,8 +98,7 @@ public class ViewTipoFormaInicio extends AbstractController implements Serializa
             }
 
             @Override
-            public List<TipoFormaInicioGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-                                                     Map<String, FilterMeta> filterBy) {
+            public List<TipoFormaInicioGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
@@ -152,11 +148,10 @@ public class ViewTipoFormaInicio extends AbstractController implements Serializa
     private void abrirVentana(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.datoSeleccionado != null
-                && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
+        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoFormaInicio", modoAcceso, params, true, 780, 290);
+        UtilJSF.openDialog("dialogTipoFormaInicio", modoAcceso, params, true, 780, 320);
     }
 
 
@@ -164,7 +159,7 @@ public class ViewTipoFormaInicio extends AbstractController implements Serializa
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
         } else {
-            if(maestrasSupService.existeProcedimientoConFormaInicio(datoSeleccionado.getCodigo())) {
+            if (maestrasSupService.existeProcedimientoConFormaInicio(datoSeleccionado.getCodigo())) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoFormaInicio.existeRelacion"));
             } else {
                 maestrasSupService.deleteTipoFormaInicio(datoSeleccionado.getCodigo());

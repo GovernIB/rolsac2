@@ -195,10 +195,16 @@
         </div>
         <div class="ui-g-12 ui-md-4 pr-1">
             <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.documentos']}</p>
+                <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-10 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.documentos']}</p>
+                    </div>
+                    <div class="col-2">
+                        <p:commandButton id="btnDocsCol" onclick="colapsarModulo('#divDocs','btnDocs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
+                        <p:commandButton id="btnDocsExp" onclick="expandirModulo('#divDocs','btnDocs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                    </div>
                 </div>
-                <div class="col-10 p-1">
+                <div id="divDocs" class="col-10 p-1">
                     <p:dataTable id="dataDocumentosRelacionados"
                                  var="doc"
                                  value="#{dialogNormativa.data.documentosNormativa}"
@@ -226,7 +232,7 @@
 
                     </p:dataTable>
                 </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <div id="divDocsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" process="@this"
                                      actionListener="#{dialogNormativa.abrirDocumentoRelacionado()}" icon="pi pi-plus"
                                      styleClass="text-success" rendered="#{!dialogNormativa.isModoConsulta()}">
@@ -255,10 +261,16 @@
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.uaRelacionadas']}</p>
+                <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-10 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.uaRelacionadas']}</p>
+                    </div>
+                    <div class="col-2">
+                        <p:commandButton id="btnUAsCol" onclick="colapsarModulo('#divUAs','btnUAs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
+                        <p:commandButton id="btnUAsExp" onclick="expandirModulo('#divUAs','btnUAs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                    </div>
                 </div>
-                <div class="col-10 p-1">
+                <div id="divUAs" class="col-10 p-1">
                     <p:dataTable id="dataTableUAs" var="td" value="#{dialogNormativa.data.unidadesAdministrativas}"
                                  emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
                                  paginator="false" selectionMode="single"
@@ -281,7 +293,7 @@
 
                     </p:dataTable>
                 </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <div id="divUAsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      process="@this" actionListener="#{dialogNormativa.anyadirUAs()}"
                                      rendered="#{!dialogNormativa.isModoConsulta()}">
@@ -298,10 +310,16 @@
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.procedimientos']}</p>
+                <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-10 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.procedimientos']}</p>
+                    </div>
+                    <div class="col-2">
+                        <p:commandButton id="btnProcsCol" onclick="colapsarModulo('#divProcs','btnProcs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
+                        <p:commandButton id="btnProcsExp" onclick="expandirModulo('#divProcs','btnProcs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                    </div>
                 </div>
-                <div class="col-10 p-1">
+                <div id="divProcs" class="col-10 p-1">
                     <p:dataTable id="dataProcedimientosRelacionados" var="td"
                                  value="#{dialogNormativa.procedimientosRelacionados}"
                                  emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
@@ -325,17 +343,23 @@
 
                     </p:dataTable>
                 </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <div id="divProcsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton id="btnConsultarProc" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogNormativa.consultarProcs()}"
                                      process="@this" update="dataProcedimientosRelacionados messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.servicios']}</p>
+                <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-10 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.servicios']}</p>
+                    </div>
+                    <div class="col-2">
+                        <p:commandButton id="btnServsCol" onclick="colapsarModulo('#divServs','btnServs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
+                        <p:commandButton id="btnServsExp" onclick="expandirModulo('#divServs','btnServs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                    </div>
                 </div>
-                <div class="col-10 p-1">
+                <div id="divServs" class="col-10 p-1">
                     <p:dataTable id="dataServiciosRelacionados" var="td"
                                  value="#{dialogNormativa.serviciosRelacionados}"
                                  emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
@@ -359,17 +383,23 @@
 
                     </p:dataTable>
                 </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <div id="divServsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton id="btnConsultarServ" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogNormativa.consultarServicio()}"
                                      process="@this" update="dataServiciosRelacionados messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.afectaciones']}</p>
+                <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-10 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.afectaciones']}</p>
+                    </div>
+                    <div class="col-2">
+                        <p:commandButton id="btnAfectsCol" onclick="colapsarModulo('#divAfects','btnAfects');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
+                        <p:commandButton id="btnAfectsExp" onclick="expandirModulo('#divAfects','btnAfects');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                    </div>
                 </div>
-                <div class="col-10 p-1">
+                <div id="divAfects" class="col-10 p-1">
                     <p:dataTable id="dataAfectacionesRelacionadas" var="td" value="#{dialogNormativa.data.afectaciones}"
                                  emptyMessage="No hay afectaciones relacionadas" scrollable="true" scrollHeight="120"
                                  paginator="false" styleClass="text-center" selectionMode="single"
@@ -393,7 +423,7 @@
 
                     </p:dataTable>
                 </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <div id="divAfectsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton id="btnAbrirAfect" title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                      styleClass="text-success"
                                      process="@this" actionListener="#{dialogNormativa.abrirAfectacion}"
@@ -432,6 +462,20 @@
 
             function triggerDblClickServ() {
                 document.getElementById("formDialog:btnConsultarServ").click();
+            }
+
+            function colapsarModulo(lateral, botones) {
+                $(lateral).addClass('importantOcultar');
+                $(lateral+"Btns").addClass('importantOcultar');
+                $("#formDialog\\:"+botones+"Exp").removeClass('importantOcultar');
+                $("#formDialog\\:"+botones+"Col").addClass('importantOcultar');
+            }
+
+            function expandirModulo(lateral, botones) {
+                $(lateral).removeClass('importantOcultar');
+                $(lateral+"Btns").removeClass('importantOcultar');
+                $("#formDialog\\:"+botones+"Exp").addClass('importantOcultar');
+                $("#formDialog\\:"+botones+"Col").removeClass('importantOcultar');
             }
         </h:outputScript>
         <p:remoteCommand name="myDoubleClickCommand"

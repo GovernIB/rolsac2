@@ -24,23 +24,28 @@
                              widgetVar="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewUnidadAdministrativa.buscar}"
                              update="dataTable"/>
-            <p:toolbar id="toolbar">
-                <f:facet name="left">
-                    <h:outputFormat value="#{labels['viewOrganigrama.fechaAct']}"/>:
-                    <p:inputText id="filtroBusqueda"
-                                 value="#{viewOrganigramaDir3.fechaUltimaActualizacion.toString()}"
-                                 disabled="true"/>
-                    <p:commandButton value="#{labels['viewOrganigrama.refrescar']}" styleClass="ml-2"
-                                     icon="pi pi-refresh"
-                                     update="messages dataTable"
-                                     actionListener="#{viewOrganigramaDir3.actualizarOrganigramaDir3()}"
-                                     process="@form">
-                        <p:confirm header="#{labels['viewOrganigrama.refrescar']}"
-                                   message="#{labels['viewOrganigrama.refrescoConfirm']}"
-                                   icon="pi pi-exclamation-triangle"/>
-                    </p:commandButton>
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                     widgetVar="panel" collapsed="true">
+                <f:facet name="header">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12">
+                            <h:outputFormat value="#{labels['viewOrganigrama.fechaAct']}:"   styleClass="estiloGrande ml-3 mr-2" />
+                            <p:inputText id="filtroBusqueda"
+                                         value="#{viewOrganigramaDir3.fechaUltimaActualizacion.toString()}"
+                                         disabled="true"   styleClass="estiloGrande ml-2 mr-2" />
+                            <p:commandButton value="#{labels['viewOrganigrama.refrescar']}" styleClass="ml-2"
+                                             icon="pi pi-refresh"
+                                             update="messages dataTable"
+                                             actionListener="#{viewOrganigramaDir3.actualizarOrganigramaDir3()}"
+                                             process="@form">
+                                <p:confirm header="#{labels['viewOrganigrama.refrescar']}"
+                                           message="#{labels['viewOrganigrama.refrescoConfirm']}"
+                                           icon="pi pi-exclamation-triangle"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
                 </f:facet>
-            </p:toolbar>
+            </p:panel>
             <h:panelGroup id="historico" styleClass="mb-2">
                 <p:panel header="#{labels['viewOrganigrama.historico']}" rendered="#{viewOrganigramaDir3.showHistorico}" toggleable="true" toggleSpeed="200" styleClass="mx-0">
                     <div class="row mb-4 align-content-center justify-content-center align-items-center">

@@ -24,7 +24,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
             </p:menuitem>
         </c:forEach>
     </ui:define>
@@ -39,39 +39,39 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
          /*Botoneras multiboton*/
          .botoneraRed.ui-selectonebutton {
-         border-color: white;
+            border-color: white;
          }
 
          .botoneraRed.ui-selectonebutton .ui-button {
          background-color: #cc073c !important;
-         color: black;
+            color: black;
          }
 
          .botoneraRed.ui-selectonebutton .ui-button.ui-state-hover,
          .botoneraRed.ui-selectonebutton .ui-state-hover {
-         background-color: #cc073c !important;
+            background-color: #cc073c !important;
          }
 
          .botoneraRed.ui-selectonebutton .ui-state-active {
-         background-color: #cc073c !important;
-         color: white !important;
-         text-shadow: none;
+            background-color: #cc073c !important;
+            color: white !important;
+            text-shadow: none;
          }
          /*Para p:selectManyButton multibotón y selección*/
          .botoneraRed > .ui-button {
-         transition: 0.5s;
+            transition: 0.5s;
          }
 
          .botoneraRed > .ui-button.ui-state-active {
-         background-color: #cc073c !important;
-         color: white !important;
+            background-color: #cc073c !important;
+            color: white !important;
          }
 
          .botoneraRed >.ui-button:hover {
-         background-color: #cc073c !important;
-         color: white !important;
-         background-position-x: 0;
-         background-position-y: 100px;
+            background-color: #cc073c !important;
+            color: white !important;
+            background-position-x: 0;
+            background-position-y: 100px;
          }
 
          .ui-growl {
@@ -183,6 +183,36 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <p:selectOneMenu id="txtIdiomaDefecto" value="#{viewConfiguracionEntidad.data.idiomaDefectoRest}"
                                              styleClass="w95"
                                              disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50">
+                                <f:selectItems value="#{viewConfiguracionEntidad.idiomasObligatorios}" var="idioma"
+                                               itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogEntidad.idioma.admContenidoIdiomaPrioritario']}:" for="txtIdiomaPrioritario"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <p:selectOneMenu id="txtIdiomaPrioritario" value="#{viewConfiguracionEntidad.data.admContenidoIdiomaPrioritario}"
+                                             styleClass="w95"
+                                             disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50">
+                                <f:selectItem itemValue="" itemLabel="#{labels['dict.sesion']}"/>
+                                <f:selectItems value="#{viewConfiguracionEntidad.idiomasObligatorios}" var="idioma"
+                                               itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                            <h:outputText value="#{labels['dialogEntidad.idioma.admContenidoSeleccionIdioma']}:" for="txtAdmSeleccionIdioma"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                            <p:selectOneMenu id="txtAdmSeleccionIdioma" value="#{viewConfiguracionEntidad.data.admContenidoSeleccionIdioma}"
+                                             styleClass="w95"
+                                             disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50">
+                                <f:selectItem itemValue="" itemLabel="#{labels['dict.ninguno']}"/>
                                 <f:selectItems value="#{viewConfiguracionEntidad.idiomasObligatorios}" var="idioma"
                                                itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
 

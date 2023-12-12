@@ -16,7 +16,7 @@ import java.util.Objects;
 /**
  * Conversor entre JTipoSilencioAdministrativo y  TipoSilencioAdministrativoDTO. La implementacion se generará automaticamente por MapStruct
  *
- * @author jsegovia
+ * @author Indra
  */
 @Mapper
 public interface TipoSilencioAdministrativoConverter extends Converter<JTipoSilencioAdministrativo, TipoSilencioAdministrativoDTO> {
@@ -43,8 +43,8 @@ public interface TipoSilencioAdministrativoConverter extends Converter<JTipoSile
 
         //Iteramos sobre el literal para ver que idiomas se han rellenado
         List<String> idiomasRellenos = new ArrayList<>();
-        for(String idioma : descripcion.getIdiomas()) {
-            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+        for (String idioma : descripcion.getIdiomas()) {
+            if (descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
                 idiomasRellenos.add(idioma);
             }
         }
@@ -53,7 +53,7 @@ public interface TipoSilencioAdministrativoConverter extends Converter<JTipoSile
             for (JTipoSilencioAdministrativoTraduccion jtrad : jTipoSilencioAdministrativo.getDescripcion()) {
                 jtrad.setTipoSilencioAdministrativo(jTipoSilencioAdministrativo);
             }
-        } else if(idiomasRellenos.size() >  jTipoSilencioAdministrativo.getDescripcion().size()) {
+        } else if (idiomasRellenos.size() > jTipoSilencioAdministrativo.getDescripcion().size()) {
             //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
             List<JTipoSilencioAdministrativoTraduccion> tradsAux = jTipoSilencioAdministrativo.getDescripcion();
             List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);

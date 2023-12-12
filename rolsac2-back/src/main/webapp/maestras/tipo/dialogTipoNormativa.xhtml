@@ -61,7 +61,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogTipoNormativa.data.codigo}"
-                                 styleClass="w95" disabled="true" maxlength="50"/>
+                                 styleClass="w96" disabled="true" maxlength="50"/>
                 </div>
 
 
@@ -72,7 +72,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogTipoNormativa.data.identificador}"
-                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}" onblur="this.value = this.value.toUpperCase();"
+                                 styleClass="w96" required="#{empty param['formDialog:closeButton']}" onblur="this.value = this.value.toUpperCase();"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  disabled="#{dialogTipoNormativa.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
@@ -102,7 +102,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             </div>
             <div class="ui-g-12 ui-md-10 ui-lg-5">
                 <p:inputNumber id="txtCodigoSIA" value="#{dialogTipoNormativa.data.codigoSIA}"
-                               styleClass="w95"
+                               styleClass="w96"
                                disabled="#{dialogTipoNormativa.isModoConsulta()}" minValue="0"
                                maxValue="999999999" decimalPlaces="0"/>
 
@@ -113,7 +113,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             </div>
             <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputNumber id="txtCodigoBOIB" value="#{dialogTipoNormativa.data.codigoBOIB}"
-                                   styleClass="w95"
+                                   styleClass="w96"
                                    disabled="#{dialogTipoNormativa.isModoConsulta()}" minValue="0"
                                    maxValue="999999999" decimalPlaces="0"/>
             </div>

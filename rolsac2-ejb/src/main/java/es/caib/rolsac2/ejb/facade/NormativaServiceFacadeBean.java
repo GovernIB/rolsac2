@@ -17,6 +17,7 @@ import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.DocumentoNormativaFiltro;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 import es.caib.rolsac2.service.model.types.TypeIndexacion;
@@ -267,6 +268,22 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
             List<NormativaGridDTO> items = new ArrayList<>();
             long total = items.size();
             return new Pagina<>(items, total);
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<NormativaDTO> findExportByFiltro(NormativaFiltro filtro, ExportarDatos exportarDatos) {
+        try {
+            NormativaFiltro filtroClonado = filtro.clone();
+            if (exportarDatos.getTodosLosDatos()) {
+                filtroClonado.setPaginaFirst(0);
+                filtroClonado.setPaginaTamanyo(10000);
+            }
+            return normativaRepository.findByFiltro(filtroClonado);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            return new ArrayList<>();
         }
     }
 

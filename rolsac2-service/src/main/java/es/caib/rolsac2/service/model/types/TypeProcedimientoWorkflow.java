@@ -42,6 +42,24 @@ public enum TypeProcedimientoWorkflow {
         return perfil == TypeProcedimientoWorkflow.MODIFICACION.getValor();
     }
 
+    /**
+     * Devuelve el literal
+     *
+     * @return literal
+     **/
+    public String getLiteral() {
+        String literal = null;
+        switch (this) {
+            case DEFINITIVO:
+                literal = "dict.wf.1";
+                break;
+            case MODIFICACION:
+                literal = "dict.wf.0";
+                break;
+        }
+        return literal;
+    }
+
     public boolean getValor() {
         return perfil;
     }

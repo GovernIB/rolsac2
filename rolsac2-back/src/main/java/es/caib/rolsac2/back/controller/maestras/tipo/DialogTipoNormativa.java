@@ -27,7 +27,7 @@ import java.util.Objects;
 /**
  * Controlador para editar un  DialogTipoNormativa.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -107,14 +107,12 @@ public class DialogTipoNormativa extends AbstractController implements Serializa
     }
 
     private boolean verificarGuardar() {
-        if (Objects.isNull(this.data.getCodigo())
-                && maestrasSupService.checkIdentificadorTipoNormativa(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo()) && maestrasSupService.checkIdentificadorTipoNormativa(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
 
-        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
-                && maestrasSupService.checkIdentificadorTipoNormativa(this.data.getIdentificador())) {
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador()) && maestrasSupService.checkIdentificadorTipoNormativa(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
@@ -137,9 +135,7 @@ public class DialogTipoNormativa extends AbstractController implements Serializa
     }
 
     private boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
-                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0;
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0;
     }
 
     public void cerrarDefinitivo() {

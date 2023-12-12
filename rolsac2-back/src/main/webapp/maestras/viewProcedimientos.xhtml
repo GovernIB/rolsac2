@@ -38,7 +38,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
 
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}"
                         update="migaPan"
                         oncomplete="$('#form\\:btnBuscarEvt').click();"
@@ -159,6 +159,22 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
     <ui:define name="content">
         <h:form id="form">
 
+            <script>
+                //<![CDATA[
+                function start() {
+                    PF('statusDialog').show();
+                }
+
+                function stop() {
+                    PF('statusDialog').hide();
+                }
+                //]]>
+            </script>
+            <p:dialog modal="true" widgetVar="statusDialog" header="#{labels['dict.cargando']}" draggable="false" closable="false"
+                      resizable="false">
+                <i class="pi pi-spinner pi-spin" style="font-size:3rem;margin-left:30px;"></i>
+            </p:dialog>
+
             <p:remoteCommand name="rc" update="dataTable @form" process="@this"/>
             <p:commandButton value="#{labels['viewUnidadAdministrativa.actualizar']}" id="actualizarBusqueda"
                              widgetVar="actualizarBusqueda"
@@ -197,9 +213,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <f:facet name="header">
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2"/>
-                            <p:inputText id="filtro" value="#{viewProcedimientos.filtro.texto}"
-                                         styleClass="mr-2"></p:inputText>
+                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
+                            <p:inputText id="filtroBusqueda"  value="#{viewProcedimientos.filtro.texto}" styleClass="estiloGrande ml-2 mr-2"  />
                             <p:commandButton id="btnBuscarEvt" value="#{labels['dict.busqueda']}"
                                              styleClass="mr-2" icon="pi pi-search"
                                              actionListener="#{viewProcedimientos.buscarEvt()}"
@@ -212,6 +227,14 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              process="@form"/>
                             <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus"
                                              onclick="PF('panel').toggle();cambiarBoton()"/>
+                            <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
+                                             actionListener="#{viewProcedimientos.exportar()}" process="@form">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />
+                            </p:commandButton>
+
+                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none">
+                                <p:fileDownload value="#{viewProcedimientos.file}" />
+                            </p:commandButton>
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                             <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2" icon="pi pi-file-o"
@@ -562,7 +585,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <f:facet name="header"/>
                     <i class="#{procedimiento.getIcon()} font30px"></i>
                 </p:column>
-                <p:column sortBy="#{procedimiento.codigo}" headerText="#{labels['dict.codigo']}" styleClass="w60px">
+                <p:column sortBy="#{procedimiento.codigo}" headerText="#{labels['dict.codigo']}" styleClass="w100px">
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.codigo}"/>
                 </p:column>
@@ -580,18 +603,18 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <h:outputText value="#{procedimiento.tipoProcedimiento}"/>
                 </p:column>
                 <p:column sortBy="#{procedimiento.fechaActualizacion}"
-                          headerText="#{labels['viewProcedimientos.fechaActualizacion']}" styleClass="w170px">
+                          headerText="#{labels['viewProcedimientos.fechaActualizacion']}" styleClass="w200px">
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.fechaActualizacion}">
                         <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
                     </h:outputText>
                 </p:column>
                 <p:column sortBy="#{procedimiento.comun}" headerText="#{labels['viewProcedimientos.comun']}"
-                          styleClass="w70px">
+                          styleClass="w90px">
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.getLiteralComun()}"/>
                 </p:column>
-                <p:column headerText=" " styleClass="w70px">
+                <p:column headerText=" " styleClass="w100px">
                     <f:facet name="header"/>
                     <p:commandLink action="#{viewProcedimientos.abrirMensajes(procedimiento.getCodigo())}"
                                    rendered="#{procedimiento.tieneMensajesPendientes()}">

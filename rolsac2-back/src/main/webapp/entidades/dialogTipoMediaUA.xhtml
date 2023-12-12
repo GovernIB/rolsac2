@@ -63,7 +63,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogTipoMediaUA.data.codigo}"
-                                 styleClass="w95" disabled="true" maxlength="50"/>
+                                 styleClass="w96" disabled="true" maxlength="50"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
@@ -72,7 +72,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogTipoMediaUA.data.identificador}"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                                 styleClass="w95" onblur="this.value = this.value.toUpperCase();"
+                                 styleClass="w96" onblur="this.value = this.value.toUpperCase();"
                                  required="#{empty param['formDialog:closeButton']}" disabled="#{dialogTipoMediaUA.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>

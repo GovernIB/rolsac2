@@ -18,31 +18,23 @@ import java.util.Objects;
  * Conversor entre JProcedimientoWorkflow y ProcedimientoWorkflowDTO. La implementacion se generará automaticamente por
  * MapStruct
  *
- * @author jsegovia
+ * @author Indra
  */
-@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {ProcedimientoConverter.class,
-        UnidadAdministrativaConverter.class, TipoLegitimacionConverter.class, TipoFormaInicioConverter.class,
-        TipoSilencioAdministrativoConverter.class, TipoViaConverter.class, TipoTramitacionConverter.class})
+@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {ProcedimientoConverter.class, UnidadAdministrativaConverter.class, TipoLegitimacionConverter.class, TipoFormaInicioConverter.class, TipoSilencioAdministrativoConverter.class, TipoViaConverter.class, TipoTramitacionConverter.class})
 public interface ProcedimientoWorkflowConverter extends Converter<JProcedimientoWorkflow, ProcedimientoWorkflowDTO> {
 
     @Override
     @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
     @Mapping(target = "objeto", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"objeto\"))")
-    @Mapping(target = "destinatarios",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"destinatarios\"))")
-    @Mapping(target = "observaciones",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observaciones\"))")
-    @Mapping(target = "datosPersonalesFinalidad",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"datosPersonalesFinalidad\"))")
-    @Mapping(target = "datosPersonalesDestinatario",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"datosPersonalesDestinatario\"))")
-    @Mapping(target = "terminoResolucion",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"terminoResolucion\"))")
+    @Mapping(target = "destinatarios", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"destinatarios\"))")
+    @Mapping(target = "observaciones", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observaciones\"))")
+    @Mapping(target = "datosPersonalesFinalidad", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"datosPersonalesFinalidad\"))")
+    @Mapping(target = "datosPersonalesDestinatario", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"datosPersonalesDestinatario\"))")
+    @Mapping(target = "terminoResolucion", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"terminoResolucion\"))")
     // TODO Hay que devolver el documento según el idioma
     //@Mapping(target = "documentoLOPD",
     //                expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"documentoLOPD\"))")
-    @Mapping(target = "requisitos",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"requisitos\"))")
+    @Mapping(target = "requisitos", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"requisitos\"))")
     ProcedimientoWorkflowDTO createDTO(JProcedimientoWorkflow entity);
 
     @Override
@@ -55,11 +47,9 @@ public interface ProcedimientoWorkflowConverter extends Converter<JProcedimiento
     void mergeEntity(@MappingTarget JProcedimientoWorkflow entity, ProcedimientoWorkflowDTO dto);
 
 
-    default List<JProcedimientoWorkflowTraduccion> convierteLiteralToTraduccion(
-            JProcedimientoWorkflow jProcedimientoWorkflow, ProcedimientoWorkflowDTO dto) {
+    default List<JProcedimientoWorkflowTraduccion> convierteLiteralToTraduccion(JProcedimientoWorkflow jProcedimientoWorkflow, ProcedimientoWorkflowDTO dto) {
 
-        List<String> idiomasPermitidos = List.of(dto.getProcedimiento().getUaInstructor().getEntidad()
-                .getIdiomasPermitidos().split(";"));
+        List<String> idiomasPermitidos = List.of(dto.getProcedimiento().getUaInstructor().getEntidad().getIdiomasPermitidos().split(";"));
 
         if (jProcedimientoWorkflow.getTraducciones() == null || jProcedimientoWorkflow.getTraducciones().isEmpty()) {
             jProcedimientoWorkflow.setTraducciones(JProcedimientoWorkflowTraduccion.createInstance(idiomasPermitidos));
@@ -105,13 +95,11 @@ public interface ProcedimientoWorkflowConverter extends Converter<JProcedimiento
             }
 
             if (dto.getDatosPersonalesFinalidad() != null) {
-                traduccion.setDatosPersonalesFinalidad(
-                        dto.getDatosPersonalesFinalidad().getTraduccion(traduccion.getIdioma()));
+                traduccion.setDatosPersonalesFinalidad(dto.getDatosPersonalesFinalidad().getTraduccion(traduccion.getIdioma()));
             }
 
             if (dto.getDatosPersonalesDestinatario() != null) {
-                traduccion.setDatosPersonalesDestinatario(
-                        dto.getDatosPersonalesDestinatario().getTraduccion(traduccion.getIdioma()));
+                traduccion.setDatosPersonalesDestinatario(dto.getDatosPersonalesDestinatario().getTraduccion(traduccion.getIdioma()));
             }
 
             if (dto.getRequisitos() != null) {
@@ -126,14 +114,12 @@ public interface ProcedimientoWorkflowConverter extends Converter<JProcedimiento
         return jProcedimientoWorkflow.getTraducciones();
     }
 
-    default Literal convierteTraduccionToLiteral(List<JProcedimientoWorkflowTraduccion> traducciones,
-                                                 String nombreLiteral) {
+    default Literal convierteTraduccionToLiteral(List<JProcedimientoWorkflowTraduccion> traducciones, String nombreLiteral) {
         Literal resultado = null;
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
-            resultado.setCodigo(traducciones.stream().map(t -> t.getProcedimientoWorkflow().getCodigo()).findFirst()
-                    .orElse(null));
+            resultado.setCodigo(traducciones.stream().map(t -> t.getProcedimientoWorkflow().getCodigo()).findFirst().orElse(null));
             for (JProcedimientoWorkflowTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
                 trad.setCodigo(traduccion.getCodigo());

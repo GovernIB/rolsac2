@@ -21,152 +21,144 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
-        <div class="ui-g-12 ui-md-12 px-2 panel-container">
-            <p:panel id="seleccionNormativas" header="#{labels['dialogSeleccionNormativaAfectacion.seleccion']}">
-                <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
-                                 style="display:none" ajax="false" action="#{dialogSeleccionNormativaAfectacion.buscar}"
-                                 update="dataTable messagesDialog"/>
-                <p:toolbar id="toolbar">
-                    <f:facet name="left">
-                        <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
-                                                                                         value="#{dialogSeleccionNormativaAfectacion.filtroTexto}"/>
-                        <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
-                                         update="dataTable messagesDialog"
-                                         actionListener="#{dialogSeleccionNormativaAfectacion.buscar()}"
-                                         process="@form"/>
-                    </f:facet>
-                    <f:facet name="right">
-                        <p:outputLabel value="#{labels['dialogNormativa.tipoAfectacion']}: " styleClass="mr-1"></p:outputLabel>
-                        <p:selectOneMenu value="#{dialogSeleccionNormativaAfectacion.tipoAfectacionSeleccionado}"
-                                         styleClass="mr-1"
-                                         requiredMessage="#{labels['dict.obligatorio.boletinOficial']}"
-                                         disabled="#{dialogSeleccionNormativaAfectacion.isModoConsulta()}"
-                                         converter="#{tipoAfectacionConverter}" >
-                            <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.tipoAfectacion']}"
-                                          itemValue="#{null}" noSelectionOption="true"/>
-                            <f:selectItems value="#{dialogSeleccionNormativaAfectacion.tiposAfectacion}" var="tipoAfectacion"
-                                           itemLabel="#{tipoAfectacion.descripcion.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}"
-                                           itemValue="#{tipoAfectacion}"/>
-                            <p:ajax update="@this @form:btnAnyadir"></p:ajax>
-                        </p:selectOneMenu>
-                        <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
+        <div class="container">
+            <div class="row">
+                <div class="ui-g-12 ui-md-12 px-2 panel-container">
+                    <p:panel id="seleccionNormativas" header="#{labels['dialogSeleccionNormativaAfectacion.seleccion']}">
+                        <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
+                                         style="display:none" ajax="false" action="#{dialogSeleccionNormativaAfectacion.buscar}"
+                                         update="dataTable messagesDialog"/>
+                        <p:toolbar id="toolbar">
+                            <f:facet name="left">
+                                <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                                                                                                 value="#{dialogSeleccionNormativaAfectacion.filtroTexto}"/>
+                                <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
+                                                 update="dataTable messagesDialog"
+                                                 actionListener="#{dialogSeleccionNormativaAfectacion.buscar()}"
+                                                 process="@form"/>
+                            </f:facet>
+                            <f:facet name="right">
+                                <p:outputLabel value="#{labels['dialogNormativa.tipoAfectacion']}: " styleClass="mr-1"></p:outputLabel>
+                                <p:selectOneMenu value="#{dialogSeleccionNormativaAfectacion.tipoAfectacionSeleccionado}"
+                                                 styleClass="mr-1"
+                                                 requiredMessage="#{labels['dict.obligatorio.boletinOficial']}"
+                                                 disabled="#{dialogSeleccionNormativaAfectacion.isModoConsulta()}"
+                                                 converter="#{tipoAfectacionConverter}" >
+                                    <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.tipoAfectacion']}"
+                                                  itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{dialogSeleccionNormativaAfectacion.tiposAfectacion}" var="tipoAfectacion"
+                                                   itemLabel="#{tipoAfectacion.descripcion.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}"
+                                                   itemValue="#{tipoAfectacion}"/>
+                                    <p:ajax update="@this @form:btnAnyadir"></p:ajax>
+                                </p:selectOneMenu>
+                                <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
+                                                 actionListener="#{dialogSeleccionNormativaAfectacion.crearAfectacion()}"
+                                                 update="messagesDialog dataTableAfectaciones"
+                                                 disabled="#{dialogSeleccionNormativaAfectacion.esPosibleAnyadir()}"
+                                                 icon="pi pi-plus"></p:commandButton>
+                            </f:facet>
+                        </p:toolbar>
+                        <p:dataTable id="dataTable" value="#{dialogSeleccionNormativaAfectacion.lazyModel}" var="normativa"
+                                     paginator="true" lazy="true" filterDelay="300" widgetVar="normativaTable"
+                                     rows="#{dialogSeleccionNormativaAfectacion.filtro.paginaTamanyo}"
+                                     rowsPerPageTemplate="5,10,15"
+                                     first="#{dialogSeleccionNormativaAfectacion.filtro.paginaFirst}"
+                                     paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                                     paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                                 {NextPageLink} {LastPageLink}"
+                                     currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                                     emptyMessage="#{labels['dict.noHayDatos']}"
+                                     selectionMode="single" selection="#{dialogSeleccionNormativaAfectacion.datoSeleccionado}"
+                                     rowKey="#{normativa.codigo}"
+                                     reflow="true"
+                                     sortBy="#{dialogSeleccionNormativaAfectacion.filtro.orderBy}"
+                                     sortOrder="#{dialogSeleccionNormativaAfectacion.filtro.order}"
+                                     style="min-height: 300px;"
+                        >
+                            <p:ajax event="rowUnselect" global="false" update="@form:btnAnyadir" process="@this @form"/>
+                            <p:ajax event="rowSelect" global="false" update="@form:btnAnyadir" process="@this @form"/>
+                            <p:ajax
+                                    event="rowDblselect"
+                                    oncomplete="triggerDblClickGrid();"
+                                    global="false"/>
+                            <f:facet name="{RowsPerPageLabel}">
+                                #{labels.dataTable_rowsPerPage}
+                            </f:facet>
+                            <p:column sortBy="#{normativa.titulo}" headerText="#{labels['dict.titulo']}" styleClass="w40">
+                                <f:facet name="header"/>
+                                <h:outputText value="#{normativa.titulo.getTraduccion(sessionBean.lang)}"/>
+                            </p:column>
+                            <p:column sortBy="#{normativa.tipoNormativa}"
+                                      headerText="#{labels['viewNormativas.tipoNormativa']}">
+                                <f:facet name="header"/>
+                                <h:outputText
+                                        value="#{normativa.tipoNormativa}"/>
+                            </p:column>
+                            <p:column sortBy="#{normativa.numero}" headerText="#{labels['viewNormativas.numero']}">
+                                <f:facet name="header"/>
+                                <h:outputText value="#{normativa.numero}"/>
+                            </p:column>
+                            <p:column sortBy="#{normativa.boletinOficial}" headerText="#{labels['viewNormativas.boletin']}">
+                                <f:facet name="header"/>
+                                <h:outputText value="#{normativa.boletinOficial}"/>
+                            </p:column>
+                            <p:column sortBy="#{normativa.fechaAprobacion}"
+                                      headerText="#{labels['viewNormativas.fechaAprobacion']}">
+                                <f:facet name="header"/>
+                                <h:outputText value="#{normativa.fechaAprobacion}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                        <h:outputScript>
+                            function triggerDblClickGrid() {
+                                $('#formDialog\\:btnAnyadir').click();
+                            }
+                        </h:outputScript>
+
+                        <p:commandButton id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
                                          actionListener="#{dialogSeleccionNormativaAfectacion.crearAfectacion()}"
+                                         process="@this"
                                          update="messagesDialog dataTableAfectaciones"
-                                         disabled="#{dialogSeleccionNormativaAfectacion.esPosibleAnyadir()}"
-                                         icon="pi pi-plus"></p:commandButton>
-                    </f:facet>
-                </p:toolbar>
-                <p:dataTable id="dataTable" value="#{dialogSeleccionNormativaAfectacion.lazyModel}" var="normativa"
-                             paginator="true" lazy="true" filterDelay="300" widgetVar="normativaTable"
-                             rows="#{dialogSeleccionNormativaAfectacion.filtro.paginaTamanyo}"
-                             rowsPerPageTemplate="5,10,15"
-                             first="#{dialogSeleccionNormativaAfectacion.filtro.paginaFirst}"
-                             paginatorPosition="bottom" paginatorAlwaysVisible="true"
-                             paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
-                         {NextPageLink} {LastPageLink}"
-                             currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
-                             emptyMessage="#{labels['dict.noHayDatos']}"
-                             selectionMode="single" selection="#{dialogSeleccionNormativaAfectacion.datoSeleccionado}"
-                             rowKey="#{normativa.codigo}"
-                             reflow="true"
-                             sortBy="#{dialogSeleccionNormativaAfectacion.filtro.orderBy}"
-                             sortOrder="#{dialogSeleccionNormativaAfectacion.filtro.order}"
-                             style="min-height: 300px;"
-                >
-                    <p:ajax event="rowUnselect" global="false" update="@form:btnAnyadir" process="@this @form"/>
-                    <p:ajax event="rowSelect" global="false" update="@form:btnAnyadir" process="@this @form"/>
-                    <p:ajax
-                            event="rowDblselect"
-                            oncomplete="triggerDblClickGrid();"
-                            global="false"/>
-                    <f:facet name="{RowsPerPageLabel}">
-                        #{labels.dataTable_rowsPerPage}
-                    </f:facet>
-                    <p:column sortBy="#{normativa.titulo}" headerText="#{labels['dict.titulo']}" styleClass="w40">
-                        <f:facet name="header"/>
-                        <h:outputText value="#{normativa.titulo.getTraduccion(sessionBean.lang)}"/>
-                    </p:column>
-                    <p:column sortBy="#{normativa.tipoNormativa}"
-                              headerText="#{labels['viewNormativas.tipoNormativa']}">
-                        <f:facet name="header"/>
-                        <h:outputText
-                                value="#{normativa.tipoNormativa}"/>
-                    </p:column>
-                    <p:column sortBy="#{normativa.numero}" headerText="#{labels['viewNormativas.numero']}">
-                        <f:facet name="header"/>
-                        <h:outputText value="#{normativa.numero}"/>
-                    </p:column>
-                    <p:column sortBy="#{normativa.boletinOficial}" headerText="#{labels['viewNormativas.boletin']}">
-                        <f:facet name="header"/>
-                        <h:outputText value="#{normativa.boletinOficial}"/>
-                    </p:column>
-                    <p:column sortBy="#{normativa.fechaAprobacion}"
-                              headerText="#{labels['viewNormativas.fechaAprobacion']}">
-                        <f:facet name="header"/>
-                        <h:outputText value="#{normativa.fechaAprobacion}"/>
-                    </p:column>
-                </p:dataTable>
-
-                <h:outputScript>
-                    function triggerDblClickGrid() {
-                        $('#formDialog\\:btnAnyadir').click();
-                    }
-                </h:outputScript>
-
-                <p:commandButton id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
-                                 actionListener="#{dialogSeleccionNormativaAfectacion.crearAfectacion()}"
-                                 process="@this"
-                                 update="messagesDialog dataTableAfectaciones"
-                                 style="display: none">
-                    <!--<p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}" update="messages dataTable"/>-->
-                </p:commandButton>
-            </p:panel>
+                                         style="display: none">
+                            <!--<p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}" update="messages dataTable"/>-->
+                        </p:commandButton>
+                    </p:panel>
 
 
-        </div>
-        <!--<div class="ui-g-10 ui-md-3 left-container row p-0 mt-2 mx-3 ml-5 mb-2">
-            <p:selectOneMenu value="#{dialogSeleccionNormativaAfectacion.tipoAfectacionSeleccionado}"
-                             styleClass="w95" required="true"
-                             requiredMessage="#{labels['dict.obligatorio.boletinOficial']}"
-                             disabled="#{dialogSeleccionNormativaAfectacion.isModoConsulta()}"
-                             converter="#{tipoAfectacionConverter}">
-            <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.boletinOficial']}"
-                          itemValue="#{null}"/>
-            <f:selectItems value="#{dialogSeleccionNormativaAfectacion.tiposAfectacion}" var="tipoAfectacion"
-                           itemLabel="#{tipoAfectacion.descripcion.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}" itemValue="#{tipoAfectacion}"/>
-            </p:selectOneMenu>
-        </div>-->
+                </div>
 
-        <div class="ui-g-10 left-container row p-0 mx-2">
-            <div class="col-12 left-container-header text-center">
-                <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.afectaciones']}</p>
-            </div>
-            <div class="col-10 p-1">
-                <p:dataTable id="dataTableAfectaciones" var="td"
-                             value="#{dialogSeleccionNormativaAfectacion.afectacionesRelacionadas}"
-                             emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
-                             scrollHeight="120"
-                             paginator="false" selectionMode="single"
-                             selection="#{dialogSeleccionNormativaAfectacion.afectacionSeleccionada}"
-                             rowKey="#{td.codigoTabla}">
+                <div class="ui-g-4 ui-md-4 left-container row p-0 mx-2">
+                    <div class="col-12 left-container-header text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.afectaciones']}</p>
+                    </div>
+                    <div class="col-10 p-1">
+                        <p:dataTable id="dataTableAfectaciones" var="td"
+                                     value="#{dialogSeleccionNormativaAfectacion.afectacionesRelacionadas}"
+                                     emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
+                                     scrollHeight="120"
+                                     paginator="false" selectionMode="single"
+                                     selection="#{dialogSeleccionNormativaAfectacion.afectacionSeleccionada}"
+                                     rowKey="#{td.codigoTabla}">
 
-                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                    <p:ajax event="rowSelect" global="false"/>
-                    <p:ajax event="rowUnselect"/>
-                    <p:column headerText="#{labels['dialogNormativa.tipoAfectacion']}" styleClass="text-center">
-                        <h:outputText
-                                value="#{td.tipo.descripcion.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}"/>
-                    </p:column>
-                    <p:column headerText="#{labels['dialogNormativa.normativaOrigen']}" styleClass="text-center w75" >
-                        <h:outputText
-                                value="#{td.normativaOrigen.titulo.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}"/>
-                    </p:column>
-                </p:dataTable>
-            </div>
-            <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
-                                 action="#{dialogSeleccionNormativaAfectacion.borrarAfectacion()}"
-                                 process="@this" update="dataTableAfectaciones messagesDialog"/>
+                            <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                            <p:ajax event="rowSelect" global="false"/>
+                            <p:ajax event="rowUnselect"/>
+                            <p:column headerText="#{labels['dialogNormativa.tipoAfectacion']}" styleClass="text-center">
+                                <h:outputText
+                                        value="#{td.tipo.descripcion.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}"/>
+                            </p:column>
+                            <p:column headerText="#{labels['dialogNormativa.normativaOrigen']}" styleClass="text-center w75" >
+                                <h:outputText
+                                        value="#{td.normativaOrigen.titulo.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                    <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                        <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
+                                         action="#{dialogSeleccionNormativaAfectacion.borrarAfectacion()}"
+                                         process="@this" update="dataTableAfectaciones messagesDialog"/>
+                    </div>
+                </div>
             </div>
         </div>
     </ui:define>

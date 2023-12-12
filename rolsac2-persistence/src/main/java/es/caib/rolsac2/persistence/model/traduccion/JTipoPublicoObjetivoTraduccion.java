@@ -2,7 +2,6 @@ package es.caib.rolsac2.persistence.model.traduccion;
 
 import es.caib.rolsac2.persistence.model.BaseEntity;
 import es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo;
-import es.caib.rolsac2.service.model.Constantes;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,19 +10,12 @@ import java.util.List;
 /**
  * Representacion de un personal. A nivel de clase, definimos la secuencia que utilizaremos y sus claves unicas.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Entity
 @SequenceGenerator(name = "tipo-publicoobjtra-sequence", sequenceName = "RS2_TRATPPO_SEQ", allocationSize = 1)
-@Table(name = "RS2_TRATPPO",
-        indexes = {
-                @Index(name = "RS2_TRATPPO_PK", columnList = "TRTP_CODIGO")
-        }
-)
-@NamedQueries({
-        @NamedQuery(name = JTipoPublicoObjetivoTraduccion.FIND_BY_ID,
-                query = "select p from JTipoPublicoObjetivoTraduccion p where p.codigo = :id")
-})
+@Table(name = "RS2_TRATPPO", indexes = {@Index(name = "RS2_TRATPPO_PK", columnList = "TRTP_CODIGO")})
+@NamedQueries({@NamedQuery(name = JTipoPublicoObjetivoTraduccion.FIND_BY_ID, query = "select p from JTipoPublicoObjetivoTraduccion p where p.codigo = :id")})
 public class JTipoPublicoObjetivoTraduccion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -89,12 +81,7 @@ public class JTipoPublicoObjetivoTraduccion extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JTipoPublicoObjetivo{" +
-                "id=" + codigo +
-                "tipoPublicoObjetivo=" + tipoPublicoObjetivo +
-                "idioma=" + idioma +
-                "descripcion=" + descripcion +
-                '}';
+        return "JTipoPublicoObjetivo{" + "id=" + codigo + "tipoPublicoObjetivo=" + tipoPublicoObjetivo + "idioma=" + idioma + "descripcion=" + descripcion + '}';
     }
 
 }

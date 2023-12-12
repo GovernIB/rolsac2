@@ -1,16 +1,16 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
+import es.caib.rolsac2.back.controller.AbstractController;
+import es.caib.rolsac2.back.model.DialogResult;
+import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.service.exception.ServiceException;
+import es.caib.rolsac2.service.facade.TemaServiceFacade;
 import es.caib.rolsac2.service.model.TemaDTO;
+import es.caib.rolsac2.service.model.TemaGridDTO;
+import es.caib.rolsac2.service.model.filtro.TemaFiltro;
+import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.LazyDataModel;
@@ -18,16 +18,14 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import es.caib.rolsac2.back.controller.AbstractController;
-import es.caib.rolsac2.back.model.DialogResult;
-import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.exception.ServiceException;
-import es.caib.rolsac2.service.facade.TemaServiceFacade;
-import es.caib.rolsac2.service.model.TemaGridDTO;
-import es.caib.rolsac2.service.model.filtro.TemaFiltro;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Named
 @ViewScoped
@@ -75,7 +73,7 @@ public class ViewTema extends AbstractController implements Serializable {
     private void construirArbol() {
         root = new DefaultTreeNode(new TemaGridDTO(), null);
         List<TemaGridDTO> temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
-        for(TemaGridDTO tema : temasPadre) {
+        for (TemaGridDTO tema : temasPadre) {
             TreeNode nodo = new DefaultTreeNode(tema, root);
             nodo.setExpanded(true);
             this.construirArbolDesdeHoja(tema, nodo);
@@ -112,14 +110,13 @@ public class ViewTema extends AbstractController implements Serializable {
     private void abrirVentana(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.datoSeleccionado != null
-                && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
+        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             TemaGridDTO temaSeleccionado = (TemaGridDTO) this.datoSeleccionado.getData();
             params.put(TypeParametroVentana.ID.toString(), temaSeleccionado.getCodigo().toString());
-        } else if(this.datoSeleccionado != null && modoAcceso.equals(TypeModoAcceso.ALTA)) {
+        } else if (this.datoSeleccionado != null && modoAcceso.equals(TypeModoAcceso.ALTA)) {
             params.put("padreSeleccionado", ((TemaGridDTO) this.datoSeleccionado.getData()).getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTema", modoAcceso, params, true, 850, 320);
+        UtilJSF.openDialog("dialogTema", modoAcceso, params, true, 850, 360);
     }
 
     public void borrarTema() {
@@ -138,7 +135,7 @@ public class ViewTema extends AbstractController implements Serializable {
     }
 
     public void consultaTemaSeleccionado() {
-        if(datoSeleccionado != null) {
+        if (datoSeleccionado != null) {
             temaConsulta = temaServiceFacade.findById(((TemaGridDTO) datoSeleccionado.getData()).getCodigo());
         }
     }

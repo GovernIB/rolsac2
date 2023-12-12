@@ -48,6 +48,13 @@
     </ui:define>
 
     <ui:define name="contentDialog">
+
+        <h:outputStylesheet library="css">
+           #formDialog:txtObservaciones:texto {
+               width: 85 !important;
+            }
+
+        </h:outputStylesheet>
         <p:panel id="form">
             <p:growl id="messagesDialog"
                      globalOnly="false"
@@ -56,53 +63,55 @@
                      escape="false"/>
             <div class="row">
                 <div class="ui-g-12 ui-md-8 pl-4 panel-container">
-                    <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <div class="ui-g-12 ui-md-3 ui-lg-2">
                         <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                     </div>
-                    <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <p:inputText id="txtCodigo" value="#{dialogUsuario.data.codigo}"
-                                     styleClass="w95" disabled="true" maxlength="50"/>
+                                     styleClass="w99" disabled="true" maxlength="50"/>
                     </div>
 
-                    <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <div class="ui-g-12 ui-md-3 ui-lg-2">
                         <p:outputLabel styleClass="d-inline" value="#{labels['dict.identificador']}:"
                                        for="txtIdentificador"/>
                     </div>
-                    <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <p:inputText id="txtIdentificador" value="#{dialogUsuario.data.identificador}"
-                                     styleClass="w95" required="#{empty param['formDialog:closeButton']}"
+                                     styleClass="w99" required="#{empty param['formDialog:closeButton']}"
                                      requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                      disabled="#{dialogUsuario.isModoConsulta()}" maxlength="50"/>
                     </div>
-                    <div class="ui-g-12 ui-md-2 ui-lg-1">
+
+                    <div class="ui-g-12 ui-md-3 ui-lg-2">
                         <p:outputLabel styleClass="d-inline" value="#{labels['viewUsuario.nombre']}:" for="txtNombre"/>
                     </div>
-                    <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <p:inputText id="txtNombre" value="#{dialogUsuario.data.nombre}"
-                                     styleClass="w95" required="#{empty param['formDialog:closeButton']}"
+                                     styleClass="w99" required="#{empty param['formDialog:closeButton']}"
                                      requiredMessage="#{labels['dict.obligatorio.nombre']}"
                                      disabled="#{dialogUsuario.isModoConsulta()}" maxlength="50"/>
                     </div>
 
-                    <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <div class="ui-g-12 ui-md-3 ui-lg-2">
                         <p:outputLabel styleClass="d-inline" value="#{labels['dict.email']}:" for="txtEmail"/>
                     </div>
-                    <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <p:inputText id="txtEmail" value="#{dialogUsuario.data.email}"
-                                     styleClass="w95"
+                                     styleClass="w99"
                                      disabled="#{dialogUsuario.isModoConsulta()}" maxlength="50">
                             <f:validateRegex
                                     pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
                             <f:validateBean disabled="true"/>
                         </p:inputText>
                     </div>
-                    <div class="ui-g-12 ui-md-2 ui-lg-2">
+
+                    <div class="ui-g-12 ui-md-3 ui-lg-2">
                         <p:outputLabel styleClass="d-inline" value="#{labels['dialogUsuario.observaciones']}:"
                                        for="txtObservaciones"/>
                     </div>
-
-                    <div class="ui-g-12 ui-md-10 ui-lg-4">
+                    <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <my:literalComponent id="txtObservaciones"
+
                                              literal="#{dialogUsuario.data.observaciones}"
                                              soloLecture="#{dialogUsuario.isModoConsulta()}"
                                              idioma="#{dialogUsuario.idioma}"

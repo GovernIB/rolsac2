@@ -1,22 +1,5 @@
 package es.caib.rolsac2.back.controller.maestras.tipo;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
@@ -28,6 +11,21 @@ import es.caib.rolsac2.service.model.filtro.TipoBoletinFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Named
 @ViewScoped
@@ -46,8 +44,8 @@ public class ViewTipoBoletin extends AbstractController implements Serializable 
      */
     private LazyDataModel<TipoBoletinGridDTO> lazyModel;
 
-//  @EJB
-//  TestServiceFacade testService;
+    //  @EJB
+    //  TestServiceFacade testService;
     /**
      * Dato seleccionado
      */
@@ -109,10 +107,7 @@ public class ViewTipoBoletin extends AbstractController implements Serializable 
             }
 
             @Override
-            public List<TipoBoletinGridDTO> load(
-                    int first, int pageSize, String sortField, SortOrder sortOrder,
-                    Map<String, FilterMeta> filterBy
-            ) {
+            public List<TipoBoletinGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<TipoBoletinGridDTO> pagina = pagina = TipoBoletinService.findByFiltro(filtro);
@@ -155,8 +150,7 @@ public class ViewTipoBoletin extends AbstractController implements Serializable 
             if (respuesta.isAlta()) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.creaciocorrecta"));
             } else if (respuesta.isEdicion()) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-                        getLiteral("msg.actualitzaciocorrecta"));
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.actualitzaciocorrecta"));
             }
         }
     }
@@ -167,17 +161,15 @@ public class ViewTipoBoletin extends AbstractController implements Serializable 
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoBoletin", modoAcceso, params, true, 800, 305);
+        UtilJSF.openDialog("dialogTipoBoletin", modoAcceso, params, true, 800, 340);
     }
 
     public void borrarTipoBoletin() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO,
-                    getLiteral("msg.noBorrado.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
-            if(normativaServiceFacade.existeBoletin(datoSeleccionado.getCodigo())) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO,
-                        getLiteral("viewTipoBoletin.existeRelacion"));
+            if (normativaServiceFacade.existeBoletin(datoSeleccionado.getCodigo())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoBoletin.existeRelacion"));
             } else {
                 TipoBoletinService.deleteTipoBoletin(datoSeleccionado.getCodigo());
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));

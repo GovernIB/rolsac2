@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Servicio para los casos de uso de mantenimiento del tipo de normativa.
  *
- * @author jsegovia
+ * @author Indra
  */
 public interface TipoUnidadAdministrativaServiceFacade {
 

@@ -158,7 +158,8 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
         } else {
             jEntidad.setCssPersonalizado(null);
         }
-
+        jEntidad.setAdmContenidoIdiomaPrioritario(dto.getAdmContenidoIdiomaPrioritario());
+        jEntidad.setAdmContenidoSeleccionIdioma(dto.getAdmContenidoSeleccionIdioma());
         entidadRepository.update(jEntidad);
     }
 

@@ -4,7 +4,6 @@ import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.*;
 import es.caib.rolsac2.persistence.model.*;
-import es.caib.rolsac2.persistence.model.pk.JUsuarioEntidadPK;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
@@ -76,8 +75,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     private EntidadRaizRepository entidadRaizRepository;
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(EdificioDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
 
         if (dto.getCodigo() != null) {
@@ -90,8 +88,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(EdificioDTO dto) throws RecursoNoEncontradoException {
         JEdificio jEdificio = edificioRepository.findById(dto.getCodigo());
         edificioConverter.mergeEntity(jEdificio, dto);
@@ -99,24 +96,21 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void delete(Long id) throws RecursoNoEncontradoException {
         JEdificio jEdificio = edificioRepository.getReference(id);
         edificioRepository.delete(jEdificio);
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public EdificioDTO findById(Long id) {
         JEdificio jEdificio = edificioRepository.getReference(id);
         return edificioConverter.createDTO(jEdificio);
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<EdificioGridDTO> findByFiltro(EdificioFiltro filtro) {
         try {
             List<EdificioGridDTO> items = edificioRepository.findPagedByFiltro(filtro);
@@ -230,7 +224,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         }
 
         List<Long> entidadesAsociadas = usuarioRepository.findEntidadesAsociadas(id);
-        for(Long entidad : entidadesAsociadas) {
+        for (Long entidad : entidadesAsociadas) {
             usuarioRepository.eliminarUsuarioEntidad(jUsuario, entidad);
         }
 
@@ -260,7 +254,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
         List<EntidadGridDTO> entidades = new ArrayList<>();
         List<Long> idsEntidades = usuarioRepository.findEntidadesAsociadas(jUsuario.getCodigo());
-        for(Long idEntidad : idsEntidades) {
+        for (Long idEntidad : idsEntidades) {
             entidades.add(entidadConverter.createGridDTO(entidadRepository.findById(idEntidad)));
         }
         usuarioDTO.setEntidades(entidades);
@@ -283,12 +277,30 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
         List<EntidadGridDTO> entidades = new ArrayList<>();
         List<Long> idsEntidades = usuarioRepository.findEntidadesAsociadas(jUsuario.getCodigo());
-        for(Long idEntidad : idsEntidades) {
+        for (Long idEntidad : idsEntidades) {
             entidades.add(entidadConverter.createGridDTO(entidadRepository.findById(idEntidad)));
         }
         usuarioDTO.setEntidades(entidades);
         return usuarioDTO;
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public UsuarioDTO findUsuarioSimpleByIdentificador(String identificador, String lang) {
+        UsuarioDTO usuarioDTO = usuarioRepository.findSimpleByIdentificador(identificador, lang);
+        if (usuarioDTO == null) {
+            return null;
+        }
+
+        List<UnidadAdministrativaGridDTO> unidadesAdministrativas = unidadAdministrativaRepository.getUnidadesAdministrativaGridDTOByUsuario(usuarioDTO.getCodigo(), lang);
+        usuarioDTO.setUnidadesAdministrativas(unidadesAdministrativas);
+
+        List<EntidadGridDTO> entidades = entidadRepository.getEntidadGridDTOByUsuario(usuarioDTO.getCodigo(), lang);
+        usuarioDTO.setEntidades(entidades);
+
+        return usuarioDTO;
+    }
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -323,8 +335,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Boolean checkIdentificadorUsuario(String identificador) {
         return usuarioRepository.checkIdentificador(identificador);
 

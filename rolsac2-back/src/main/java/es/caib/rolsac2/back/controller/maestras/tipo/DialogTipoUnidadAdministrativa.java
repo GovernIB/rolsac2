@@ -28,7 +28,7 @@ import java.util.Objects;
 /**
  * Controlador para editar un tipo de unidad administrativa.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -138,14 +138,7 @@ public class DialogTipoUnidadAdministrativa extends AbstractController implement
     }
 
     public boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getEntidad().getCodigo(), dataOriginal.getEntidad().getCodigo()) != 0
-                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
-                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
-                || UtilComparador.compareTo(data.getCargoFemenino(), dataOriginal.getCargoFemenino()) != 0
-                || UtilComparador.compareTo(data.getTratamientoFemenino(), dataOriginal.getTratamientoFemenino()) != 0
-                || UtilComparador.compareTo(data.getTratamientoMasculino(), dataOriginal.getTratamientoMasculino()) != 0
-                || UtilComparador.compareTo(data.getCargoMasculino(), dataOriginal.getCargoMasculino()) != 0;
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getEntidad().getCodigo(), dataOriginal.getEntidad().getCodigo()) != 0 || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0 || UtilComparador.compareTo(data.getCargoFemenino(), dataOriginal.getCargoFemenino()) != 0 || UtilComparador.compareTo(data.getTratamientoFemenino(), dataOriginal.getTratamientoFemenino()) != 0 || UtilComparador.compareTo(data.getTratamientoMasculino(), dataOriginal.getTratamientoMasculino()) != 0 || UtilComparador.compareTo(data.getCargoMasculino(), dataOriginal.getCargoMasculino()) != 0;
     }
 
     public void cerrarDefinitivo() {

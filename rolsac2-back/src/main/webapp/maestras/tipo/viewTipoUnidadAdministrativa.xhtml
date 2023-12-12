@@ -22,7 +22,7 @@ Pàgina amb el llistat de Tipo de Normativa.
 
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
                         oncomplete="$('#form:actualizarBusqueda').click();">
             </p:menuitem>
@@ -35,39 +35,40 @@ Pàgina amb el llistat de Tipo de Normativa.
                              style="display:none" ajax="false" action="#{viewTipoUnidadAdministrativa.buscar}"
                              update="dataTable"/>
 
-            <p:toolbar id="toolbar">
-                <f:facet name=""></f:facet>
-                <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
-                                                                                     value="#{viewTipoUnidadAdministrativa.filtroTexto}"/>
-                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
-                                     actionListener="#{viewTipoUnidadAdministrativa.buscar()}" process="@form"/>
-                    <!--<p:commandButton value="#{labels['dict.busqAvanzada']}" icon="pi pi-search-plus" iconPos="top"
-                                     update="messages dataTable" actionListener="#{viewTipoUnidadAdministrativa.ayuda}"
-                                     process="@form"/>-->
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                     widgetVar="panel" collapsed="true">
+                <f:facet name="header">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
+                            <p:inputText id="filtroBusqueda" value="#{viewTipoUnidadAdministrativa.filtroTexto}" styleClass="estiloGrande ml-2 mr-2"  />
+                            <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                             actionListener="#{viewTipoUnidadAdministrativa.buscar()}" process="@form"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top" styleClass="mr-2"
+                                             actionListener="#{viewTipoUnidadAdministrativa.nuevoTipoUnidadAdministrativa}"
+                                             process="@this">
+                                <p:ajax event="dialogReturn" listener="#{viewTipoUnidadAdministrativa.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top" styleClass="mr-2"
+                                             actionListener="#{viewTipoUnidadAdministrativa.editarTipoUnidadAdministrativa}"
+                                             process="@form" update="messages">
+                                <p:ajax event="dialogReturn" listener="#{viewTipoUnidadAdministrativa.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top" styleClass="mr-2"
+                                             action="#{viewTipoUnidadAdministrativa.borrarTipoUnidadAdministrativa}"
+                                             process="@form" update="messages dataTable">
+                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                             action="#{viewTipoUnidadAdministrativa.ayuda}" process="@this" update="messages"/>
+                        </div>
+                    </div>
                 </f:facet>
-                <f:facet name="right">
-                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
-                                     actionListener="#{viewTipoUnidadAdministrativa.nuevoTipoUnidadAdministrativa}"
-                                     process="@this">
-                        <p:ajax event="dialogReturn" listener="#{viewTipoUnidadAdministrativa.returnDialogo}"
-                                update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
-                                     actionListener="#{viewTipoUnidadAdministrativa.editarTipoUnidadAdministrativa}"
-                                     process="@form" update="messages">
-                        <p:ajax event="dialogReturn" listener="#{viewTipoUnidadAdministrativa.returnDialogo}"
-                                update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
-                                     action="#{viewTipoUnidadAdministrativa.borrarTipoUnidadAdministrativa}"
-                                     process="@form" update="messages dataTable">
-                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                     action="#{viewTipoUnidadAdministrativa.ayuda}" process="@this" update="messages"/>
-                </f:facet>
-            </p:toolbar>
+            </p:panel>
             <p:dataTable id="dataTable" value="#{viewTipoUnidadAdministrativa.lazyModel}" var="tipoUnidadAdministrativa"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="tipoUnidadAdministrativaTable"
                          rows="#{viewTipoUnidadAdministrativa.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"

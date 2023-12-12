@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Dades d'un TipoSilencioAdministrativo.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Schema(name = "TipoSilencioAdministrativo")
 public class TipoSilencioAdministrativoDTO extends ModelApi implements Cloneable {
@@ -146,11 +146,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi implements Cloneable
 
     @Override
     public String toString() {
-        return "TipoSilencioAdministrativo{" +
-                "id=" + codigo +
-                ", identificador=" + identificador +
-                ", descripcion=" + descripcion.toString() +
-                '}';
+        return "TipoSilencioAdministrativo{" + "id=" + codigo + ", identificador=" + identificador + ", descripcion=" + descripcion.toString() + '}';
     }
 
     /**

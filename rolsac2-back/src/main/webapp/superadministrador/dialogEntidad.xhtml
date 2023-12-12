@@ -71,7 +71,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtCodigo" value="#{dialogEntidad.data.codigo}"
-                                 styleClass="w95" disabled="true"/>
+                                 styleClass="w96" disabled="true"/>
                 </div>
             </div>
 
@@ -83,7 +83,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtIdentificador" value="#{dialogEntidad.data.identificador}"
-                                 styleClass="w95" onblur="this.value = this.value.toUpperCase();"
+                                 styleClass="w96" onblur="this.value = this.value.toUpperCase();"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  required="#{empty param['formDialog:closeButton']}" disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
@@ -100,7 +100,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <my:literalComponent id="inputDescripcion" styleClass="w95"
+                    <my:literalComponent id="inputDescripcion" styleClass="w96"
                                          value="#{dialogEntidad.data.descripcion}"
                                          soloLecture="#{dialogEntidad.isModoConsulta()}"
                                          required="#{empty param['formDialog:closeButton']}"
@@ -122,7 +122,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtRolAdmin" value="#{dialogEntidad.data.rolAdmin}"
                                  requiredMessage="#{labels['dict.obligatorio.rolAdminEntidad']}"
-                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
+                                 styleClass="w96" required="#{empty param['formDialog:closeButton']}"
                                  disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>
                 </div>
             </div>
@@ -135,7 +135,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtRolAdminContenido" value="#{dialogEntidad.data.rolAdminContenido}"
                                  requiredMessage="#{labels['dict.obligatorio.rolAdminContenido']}"
-                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
+                                 styleClass="w96" required="#{empty param['formDialog:closeButton']}"
                                  disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>
                 </div>
             </div>
@@ -148,7 +148,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtRolGestor" value="#{dialogEntidad.data.rolGestor}"
                                  requiredMessage="#{labels['dict.obligatorio.rolGestor']}"
-                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
+                                 styleClass="w96" required="#{empty param['formDialog:closeButton']}"
                                  disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>
                 </div>
             </div>
@@ -161,7 +161,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtRolInformador" value="#{dialogEntidad.data.rolInformador}"
                                  requiredMessage="#{labels['dict.obligatorio.rolInformador']}"
-                                 styleClass="w95"
+                                 styleClass="w96"
                                  required="#{empty param['formDialog:closeButton']}"
                                  disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50">
                     </p:inputText>
@@ -176,7 +176,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:selectBooleanCheckbox id="txtActiva" value="#{dialogEntidad.data.activa}"
-                                             styleClass="w95"
+                                             styleClass="w96"
                                              disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50"/>
                 </div>
             </div>
@@ -187,7 +187,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <h:outputText value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto"/>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:selectOneMenu id="txtIdiomaDefecto" value="#{dialogEntidad.data.idiomaDefectoRest}"
-                                     styleClass="w95"
+                                     styleClass="w96"
                                      disabled="#{dialogEntidad.isModoConsulta()}" maxlength="50">
                         <f:selectItems value="#{dialogEntidad.idiomasObligatorios}" var="idioma"
                                        itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -205,7 +205,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         <h:outputText value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
                     </c:if>
                     <c:if test="#{!dialogEntidad.isModoAlta()}">
-                        <p:panel id="logo" styleClass="logo-form w95">
+                        <p:panel id="logo" styleClass="logo-form w96">
                             <c:choose>
                                 <c:when test="#{dialogEntidad.data.logo == null}">
                                     <p:fileUpload listener="#{dialogEntidad.handleLogoUpload}"

@@ -16,40 +16,52 @@
     </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
                         oncomplete="$('#form:actualizarBusqueda').click();">
             </p:menuitem>
         </c:forEach>
     </ui:define>
     <ui:define name="content">
+        <h:outputStylesheet library="css">
+            .ui-treetable {
+                font-size:1.2em;
+            }
+        </h:outputStylesheet>
         <h:form id="form">
             <p:commandButton value="#{labels['viewTema.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewTema.buscar}"
                              update="dataTable"/>
-            <p:toolbar id="toolbar">
-                <f:facet name="right">
-                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
-                                     actionListener="#{viewTema.nuevoTema}"
-                                     process="@form">
-                        <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
-                                update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
-                                     actionListener="#{viewTema.editarTema}"
-                                     process="@form" update="messages">
-                        <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
-                                update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
-                                     action="#{viewTema.borrarTema}"
-                                     process="@form" update="messages dataTable">
-                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                     action="#{viewTema.ayuda}" process="@this" update="messages"/>
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                     widgetVar="panel" collapsed="true">
+                <f:facet name="header">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-1 ui-lg-1">
+                        </div>
+                        <div class="ui-g-12 ui-md-11 ui-lg-11 text-right">
+                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"  styleClass="mr-2"
+                                             actionListener="#{viewTema.nuevoTema}"
+                                             process="@form">
+                                <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"  styleClass="mr-2"
+                                             actionListener="#{viewTema.editarTema}"
+                                             process="@form" update="messages">
+                                <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"  styleClass="mr-2"
+                                             action="#{viewTema.borrarTema}"
+                                             process="@form" update="messages dataTable">
+                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                             action="#{viewTema.ayuda}" process="@this" update="messages"/>
+                        </div>
+                    </div>
                 </f:facet>
-            </p:toolbar>
+            </p:panel>
             <div class="row">
                 <div class="col-12 col-lg-6 mx-auto">
                     <p:treeTable id="dataTable" value="#{viewTema.root}" var="tema"

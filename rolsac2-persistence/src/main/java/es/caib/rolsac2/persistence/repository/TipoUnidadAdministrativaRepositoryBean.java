@@ -24,7 +24,7 @@ import java.util.Optional;
 /**
  * Implementación del repositorio de Personal.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Stateless
 @Local(TipoUnidadAdministrativaRepository.class)

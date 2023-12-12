@@ -16,7 +16,7 @@
 
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
                         oncomplete="$('#form:actualizarBusqueda').click();">
             </p:menuitem>
@@ -28,34 +28,41 @@
     </ui:define>
     <ui:define name="content">
         <h:form id="formDialog">
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                     widgetVar="panel" collapsed="true">
+            <f:facet name="header">
             <p:commandButton value="#{labels['viewPlugins.actualizar']}" id="actualizarBusqueda" style="display:none"
                              ajax="false" action="#{viewPlugins.buscar}" update="dataTable"/>
-            <p:toolbar>
-                <p:toolbarGroup>
-                    <h:outputFormat value="#{labels['dict.filtro']}:"/>
-                    <p:inputText id="filtroBusqueda" value="#{viewPlugins.filtroTexto}"/>
-                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
-                                     actionListener="#{viewPlugins.buscar()}" process="@form"/>
-                </p:toolbarGroup>
-                <p:toolbarGroup align="right">
-                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
+                <div class="row">
+                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                        <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
+                        <p:inputText id="filtroBusqueda"  value="#{viewPlugins.filtroTexto}" styleClass="estiloGrande ml-2 mr-2"  />
+                        <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                         actionListener="#{viewPlugins.buscar()}" process="@form"/>
+
+                    </div>
+                    <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top" styleClass="mr-2"
                                      actionListener="#{viewPlugins.nuevoPlugin}" process="@this">
                         <p:ajax event="dialogReturn" listener="#{viewPlugins.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
-                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top" styleClass="mr-2"
                                      actionListener="#{viewPlugins.editarPlugin}" process="@form" update="messages">
                         <p:ajax event="dialogReturn" listener="#{viewPlugins.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
-                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top" styleClass="mr-2"
                                      action="#{viewPlugins.borrarPlugin}" process="@form" update="messages dataTable">
                         <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                     </p:commandButton>
                     <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
                                      action="#{viewPlugins.ayuda}" process="@this" update="messages"/>
-                </p:toolbarGroup>
-            </p:toolbar>
+                    </div>
+                </div>
+
+            </f:facet>
+            </p:panel>
             <p:dataTable id="dataTable" value="#{viewPlugins.lazyModel}" var="plugin"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="PluginTable"
                          rows="#{viewPlugins.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"

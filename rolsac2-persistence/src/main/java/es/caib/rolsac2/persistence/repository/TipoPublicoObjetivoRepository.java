@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * Interface de las operaciones básicas sobre Tipo Publico Objetivo
  *
- * @author jsegovia
+ * @author Indra
  */
 public interface TipoPublicoObjetivoRepository extends CrudRepository<JTipoPublicoObjetivo, Long> {
 
@@ -25,5 +25,5 @@ public interface TipoPublicoObjetivoRepository extends CrudRepository<JTipoPubli
 
     List<TipoPublicoObjetivoDTO> findAll();
 
-	List<TipoPublicoObjetivoDTO> findPagedByFiltroRest(TipoPublicoObjetivoFiltro filtro);
+    List<TipoPublicoObjetivoDTO> findPagedByFiltroRest(TipoPublicoObjetivoFiltro filtro);
 }

@@ -17,7 +17,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande" action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan" oncomplete="$('#form:actualizarBusqueda').click();" >
             </p:menuitem>
         </c:forEach>
     </ui:define>
@@ -27,30 +27,35 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     <ui:define name="content">
         <h:form id="form">
             <p:commandButton value="#{labels['viewUsuario.actualizar']}" id="actualizarBusqueda"  style="display:none" ajax="false" action="#{viewUsuario.buscar}" update="dataTable" />
-            <p:toolbar>
-                <p:toolbarGroup>
-                    <h:outputFormat value="#{labels['dict.filtro']}:" />
-                    <p:inputText id="filtroBusqueda" value="#{viewUsuario.filtroTexto}"/>
-                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
-                                     actionListener="#{viewUsuario.buscar()}" process="@form" />
-                </p:toolbarGroup>
-                <p:toolbarGroup align="right">
-                    <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
-                                     actionListener="#{viewUsuario.nuevoUsuario}" process="@this">
-                        <p:ajax event="dialogReturn" listener="#{viewUsuario.returnDialogo}" update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
-                                     actionListener="#{viewUsuario.editarUsuario}" process="@form" update="messages">
-                        <p:ajax event="dialogReturn" listener="#{viewUsuario.returnDialogo}" update="messages dataTable"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
-                                     action="#{viewUsuario.borrarUsuario}" process="@form" update="messages dataTable">
-                        <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
-                    </p:commandButton>
-                    <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"
-                                     action="#{viewUsuario.ayuda}" process="@this" update="messages" />
-                </p:toolbarGroup>
-            </p:toolbar>
+            <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                     widgetVar="panel" collapsed="true">
+                <f:facet name="header">
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
+                            <p:inputText id="filtroBusqueda"  value="#{viewUsuario.filtroTexto}" styleClass="estiloGrande ml-2 mr-2"  />
+                            <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                             actionListener="#{viewUsuario.buscar()}" process="@form"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                            <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"  styleClass="mr-2"
+                                             actionListener="#{viewUsuario.nuevoUsuario}" process="@this">
+                                <p:ajax event="dialogReturn" listener="#{viewUsuario.returnDialogo}" update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top" styleClass="mr-2"
+                                             actionListener="#{viewUsuario.editarUsuario}" process="@form" update="messages">
+                                <p:ajax event="dialogReturn" listener="#{viewUsuario.returnDialogo}" update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top" styleClass="mr-2"
+                                             action="#{viewUsuario.borrarUsuario}" process="@form" update="messages dataTable">
+                                <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
+                            </p:commandButton>
+                            <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"
+                                             action="#{viewUsuario.ayuda}" process="@this" update="messages" />
+                        </div>
+                    </div>
+                </f:facet>
+            </p:panel>
 
             <p:dataTable id="dataTable" value="#{viewUsuario.lazyModel}" var="usuario"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="usuarioTable"

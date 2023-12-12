@@ -234,5 +234,5 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      * @return
      */
     String obtenerIdiomaEntidad(Long codigoProc);
-
+ 
 }

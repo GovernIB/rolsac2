@@ -18,7 +18,6 @@ import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -35,7 +34,7 @@ import java.util.List;
  * Les excepcions específiques es llancen mitjançant l'{@link ExceptionTranslate} que transforma
  * els errors JPA amb les excepcions de servei com la {@link RecursoNoEncontradoException}
  *
- * @author jsegovia
+ * @author Indra
  */
 @Logged
 @ExceptionTranslate

@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * Interface de las operaciones básicas sobre Tipo Silencio Administrativo
  *
- * @author jsegovia
+ * @author Indra
  */
 public interface TipoSilencioAdministrativoRepository extends CrudRepository<JTipoSilencioAdministrativo, Long> {
 
@@ -25,5 +25,5 @@ public interface TipoSilencioAdministrativoRepository extends CrudRepository<JTi
 
     List<TipoSilencioAdministrativoDTO> findAllTipoSilencio();
 
-	List<TipoSilencioAdministrativoDTO> findPagedByFiltroRest(TipoSilencioAdministrativoFiltro filtro);
+    List<TipoSilencioAdministrativoDTO> findPagedByFiltroRest(TipoSilencioAdministrativoFiltro filtro);
 }

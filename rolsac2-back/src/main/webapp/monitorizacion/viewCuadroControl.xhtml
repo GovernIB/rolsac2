@@ -24,7 +24,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}" update="migaPan"
                         oncomplete="$('#form:actualizarBusqueda').click();">
             </p:menuitem>
@@ -36,7 +36,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="container">
                 <p:panel header="#{labels['viewCuadroControl.ua']}" styleClass="text-center mt-2 panel-cm">
                     <div class="row mt-2">
-                        <div class="col-12 col-md-3">
+                        <div class="col-12 col-md-4">
                             <div class="row g-10 mb-3">
                                 <div class="col-12 text-center">
                                     <p:commandButton id="uaGeneral"
@@ -61,7 +61,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-9 my-auto">
+                        <div class="col-12 col-md-8 my-auto">
                             <h:panelGroup id="panelSeleccionada">
                                 <h:outputLabel value="#{labels['viewCuadroControl.uaSeleccionada']}: "
                                                for="uaSeleccionada"/>

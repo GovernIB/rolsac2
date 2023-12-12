@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Dades d'un TipoPublicoObjetivo.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Schema(name = "TipoPublicoObjetivo")
 public class TipoPublicoObjetivoDTO extends ModelApi {
@@ -152,12 +152,7 @@ public class TipoPublicoObjetivoDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "TipoPublicoObjetivoDTO{" +
-                "id=" + codigo +
-                ", identificador=" + identificador +
-                ", descripcion=" + descripcion +
-                ", empleadoPublico=" + empleadoPublico +
-                '}';
+        return "TipoPublicoObjetivoDTO{" + "id=" + codigo + ", identificador=" + identificador + ", descripcion=" + descripcion + ", empleadoPublico=" + empleadoPublico + '}';
     }
 
     @Override

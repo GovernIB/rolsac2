@@ -27,7 +27,7 @@ import java.util.Objects;
 /**
  * Controlador para editar un DialogTipoPublicoObjetivo.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Named
 @ViewScoped
@@ -115,10 +115,7 @@ public class DialogTipoPublicoObjetivo extends AbstractController implements Ser
     }
 
     private boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
-                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
-                || UtilComparador.compareTo(data.isEmpleadoPublico(), dataOriginal.isEmpleadoPublico()) != 0;
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0 || UtilComparador.compareTo(data.isEmpleadoPublico(), dataOriginal.isEmpleadoPublico()) != 0;
     }
 
     public void cerrarDefinitivo() {
@@ -133,14 +130,12 @@ public class DialogTipoPublicoObjetivo extends AbstractController implements Ser
     }
 
     public boolean verificarGuardar() {
-        if (Objects.isNull(this.data.getCodigo())
-                && maestrasSupService.checkIdentificadorTipoPublicoObjetivo(this.data.getIdentificador())) {
+        if (Objects.isNull(this.data.getCodigo()) && maestrasSupService.checkIdentificadorTipoPublicoObjetivo(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
 
-        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador())
-                && maestrasSupService.checkIdentificadorTipoPublicoObjetivo(this.data.getIdentificador())) {
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorOld.equals(this.data.getIdentificador()) && maestrasSupService.checkIdentificadorTipoPublicoObjetivo(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }

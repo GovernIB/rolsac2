@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Dades d'un TipoUnidadAdministrativa.
  *
- * @author jsegovia
+ * @author Indra
  */
 @Schema(name = "TipoUnidadAdministrativa")
 public class TipoUnidadAdministrativaDTO extends ModelApi {
@@ -74,7 +74,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return  codigo
+     * @return codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -87,7 +87,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Establece id string.
      *
-     * @param idString  codigo to set
+     * @param idString codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -100,7 +100,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Instantiates a new Tipo unidad administrativa dto.
      *
-     * @param id  id
+     * @param id id
      */
     public TipoUnidadAdministrativaDTO(Long id) {
         this.codigo = id;
@@ -109,7 +109,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -118,7 +118,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -127,7 +127,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -136,7 +136,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -145,7 +145,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public Literal getDescripcion() {
         return descripcion;
@@ -154,7 +154,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
@@ -163,7 +163,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Obtiene cargo masculino.
      *
-     * @return  cargo masculino
+     * @return cargo masculino
      */
     public Literal getCargoMasculino() {
         return cargoMasculino;
@@ -172,7 +172,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Establece cargo masculino.
      *
-     * @param cargoMasculino  cargo masculino
+     * @param cargoMasculino cargo masculino
      */
     public void setCargoMasculino(Literal cargoMasculino) {
         this.cargoMasculino = cargoMasculino;
@@ -181,7 +181,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Obtiene cargo femenino.
      *
-     * @return  cargo femenino
+     * @return cargo femenino
      */
     public Literal getCargoFemenino() {
         return cargoFemenino;
@@ -190,7 +190,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Establece cargo femenino.
      *
-     * @param cargoFemenino  cargo femenino
+     * @param cargoFemenino cargo femenino
      */
     public void setCargoFemenino(Literal cargoFemenino) {
         this.cargoFemenino = cargoFemenino;
@@ -199,7 +199,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Obtiene tratamiento masculino.
      *
-     * @return  tratamiento masculino
+     * @return tratamiento masculino
      */
     public Literal getTratamientoMasculino() {
         return tratamientoMasculino;
@@ -208,7 +208,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Establece tratamiento masculino.
      *
-     * @param tratamientoMasculino  tratamiento masculino
+     * @param tratamientoMasculino tratamiento masculino
      */
     public void setTratamientoMasculino(Literal tratamientoMasculino) {
         this.tratamientoMasculino = tratamientoMasculino;
@@ -217,7 +217,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Obtiene tratamiento femenino.
      *
-     * @return  tratamiento femenino
+     * @return tratamiento femenino
      */
     public Literal getTratamientoFemenino() {
         return tratamientoFemenino;
@@ -226,7 +226,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Establece tratamiento femenino.
      *
-     * @param tratamientoFemenino  tratamiento femenino
+     * @param tratamientoFemenino tratamiento femenino
      */
     public void setTratamientoFemenino(Literal tratamientoFemenino) {
         this.tratamientoFemenino = tratamientoFemenino;
@@ -235,7 +235,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Obtiene entidad.
      *
-     * @return  entidad
+     * @return entidad
      */
     public EntidadDTO getEntidad() {
         return entidad;
@@ -244,7 +244,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
     /**
      * Establece entidad.
      *
-     * @param entidad  entidad
+     * @param entidad entidad
      */
     public void setEntidad(EntidadDTO entidad) {
         this.entidad = entidad;
@@ -265,16 +265,7 @@ public class TipoUnidadAdministrativaDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "TipoUnidadAdministrativaDTO{" +
-                "id=" + codigo +
-                ", entidad=" + entidad +
-                ", identificador='" + identificador + '\'' +
-                ", descripcion=" + descripcion +
-                ", cargoMasculino=" + cargoMasculino +
-                ", cargoFemenino=" + cargoFemenino +
-                ", tratamientoMasculino=" + tratamientoMasculino +
-                ", tratamientoFemenino=" + tratamientoFemenino +
-                '}';
+        return "TipoUnidadAdministrativaDTO{" + "id=" + codigo + ", entidad=" + entidad + ", identificador='" + identificador + '\'' + ", descripcion=" + descripcion + ", cargoMasculino=" + cargoMasculino + ", cargoFemenino=" + cargoFemenino + ", tratamientoMasculino=" + tratamientoMasculino + ", tratamientoFemenino=" + tratamientoFemenino + '}';
     }
 
     public int compareTo(TipoUnidadAdministrativaDTO data2) {

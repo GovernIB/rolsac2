@@ -366,13 +366,19 @@
             </div>
             <div class="ui-g-12 ui-md-3 pr-1">
                 <div class="row left-container mx-0">
-                    <div class="col-12 left-container-header text-center">
-                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.usuarios']}</p>
+                    <div class="left-container-header ml-0 col-12 row">
+                        <div class="col-10 text-center">
+                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.usuarios']}</p>
+                        </div>
+                        <div class="col-2">
+                            <p:commandButton id="btnUsuariosCol" onclick="colapsarModulo('#divUsuarios','btnUsuarios');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px;margin-bottom: 10px;" />
+                            <p:commandButton id="btnUsuariosExp" onclick="expandirModulo('#divUsuarios','btnUsuarios');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px;margin-bottom: 10px;" />
+                        </div>
                     </div>
-                    <div class="col-10 p-1">
+                    <div id="divUsuarios" class="col-10 p-1">
                         <p:dataTable id="dataTableUsuarios" var="td"
                                      value="#{dialogUnidadAdministrativa.data.usuariosUnidadAdministrativa}"
-                                     emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
+                                     emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
                                      paginator="false" selectionMode="single"
                                      selection="#{dialogUnidadAdministrativa.usuarioSeleccionado}"
                                      rowKey="#{td.codigo}" styleClass="noHeader">
@@ -388,7 +394,7 @@
 
                         </p:dataTable>
                     </div>
-                    <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <div id="divUsuariosBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                         <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                          process="@this"
                                          actionListener="#{dialogUnidadAdministrativa.anyadirUsuarios()}"
@@ -410,11 +416,17 @@
                 <h:panelGroup id="panelTemas">
                     <c:forEach items="#{dialogUnidadAdministrativa.roots}" var="tema" varStatus="status">
                         <div class="row left-container mx-0 mt-2">
-                            <div class="col-12 left-container-header text-center">
-                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                    #{tema.data.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}</p>
+                            <div class="left-container-header ml-0 col-12 row">
+                                <div class="col-10 text-center">
+                                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
+                                        #{tema.data.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}</p>
+                                </div>
+                                <div class="col-2">
+                                    <p:commandButton id="btnTema#{tema.data.codigo}Col" onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px"  />
+                                    <p:commandButton id="btnTema#{tema.data.codigo}Exp" onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px"  />
+                                </div>
                             </div>
-                            <div class="col-10 p-1">
+                            <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
                                 <p:treeTable
                                         value="#{tema}"
                                         var="td"
@@ -443,7 +455,7 @@
 
                                 </p:treeTable>
                             </div>
-                            <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                            <div id="divTema#{tema.data.codigo}Btns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                                 <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                                  styleClass="text-success"
                                                  process="@this"
@@ -464,13 +476,19 @@
 
                 <c:if test="#{dialogUnidadAdministrativa.mostrarProcsNormativas}">
                     <div class="row left-container mx-0 mt-3">
-                        <div class="col-12 left-container-header text-center">
-                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.procedimientos']}</p>
+                        <div class="left-container-header ml-0 col-12 row">
+                            <div class="col-10 text-center">
+                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.procedimientos']}</p>
+                            </div>
+                            <div class="col-2">
+                                <p:commandButton id="btnProcsCol" onclick="colapsarModulo('#divProcs','btnProcs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px;margin-bottom: 10px;" />
+                                <p:commandButton id="btnProcsExp" onclick="expandirModulo('#divProcs','btnProcs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px;margin-bottom: 10px;" />
+                            </div>
                         </div>
-                        <div class="col-10 p-1">
+                        <div id="divProcs" class="col-10 p-1">
                             <p:dataTable id="dataTableProcedimientos" var="td"
                                          value="#{dialogUnidadAdministrativa.procedimientos}"
-                                         emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
+                                         emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
                                          paginator="false" selectionMode="single"
                                          selection="#{dialogUnidadAdministrativa.procedimientoSeleccionado}"
                                          rowKey="#{td.codigo}" styleClass="noHeader">
@@ -487,7 +505,7 @@
 
                             </p:dataTable>
                         </div>
-                        <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                        <div id="divProcsBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                             <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                              action="#{dialogUnidadAdministrativa.consultarProcedimiento(index)}"
                                              process="@this" update="messagesDialog"/>
@@ -497,13 +515,19 @@
 
                 <c:if test="#{dialogUnidadAdministrativa.mostrarProcsNormativas}">
                     <div class="row left-container mx-0 mt-3">
-                        <div class="col-12 left-container-header text-center">
-                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.normativas']}</p>
+                        <div class="left-container-header ml-0 col-12 row">
+                            <div class="col-10 text-center">
+                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.normativas']}</p>
+                            </div>
+                            <div class="col-2">
+                                <p:commandButton id="btnNormsCol" onclick="colapsarModulo('#divNorms','btnNorms');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px;margin-bottom: 10px;" />
+                                <p:commandButton id="btnNormsExp" onclick="expandirModulo('#divNorms','btnNorms');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px;margin-bottom: 10px;" />
+                            </div>
                         </div>
-                        <div class="col-10 p-1">
+                        <div id="divNorms" class="col-10 p-1">
                             <p:dataTable id="dataTableNormativas" var="td"
                                          value="#{dialogUnidadAdministrativa.normativas}"
-                                         emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" scrollHeight="120"
+                                         emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
                                          paginator="false" selectionMode="single"
                                          selection="#{dialogUnidadAdministrativa.normativaSeleccionado}"
                                          rowKey="#{td.codigo}" styleClass="noHeader">
@@ -519,7 +543,7 @@
 
                             </p:dataTable>
                         </div>
-                        <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                        <div id="divNormsBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                             <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                              action="#{dialogUnidadAdministrativa.consultarNormativa(status.index)}"
                                              process="@this" update="messagesDialog"/>
@@ -534,6 +558,20 @@
 
                     function rcBorrarPropiedad() {
                         document.getElementById("dialogPlugin:btnEliminarPropiedad").click();
+                    }
+
+                    function colapsarModulo(lateral, botones) {
+                        $(lateral).addClass('importantOcultar');
+                        $(lateral+"Btns").addClass('importantOcultar');
+                        $("#formDialog\\:"+botones+"Exp").removeClass('importantOcultar');
+                        $("#formDialog\\:"+botones+"Col").addClass('importantOcultar');
+                    }
+
+                    function expandirModulo(lateral, botones) {
+                        $(lateral).removeClass('importantOcultar');
+                        $(lateral+"Btns").removeClass('importantOcultar');
+                        $("#formDialog\\:"+botones+"Exp").addClass('importantOcultar');
+                        $("#formDialog\\:"+botones+"Col").removeClass('importantOcultar');
                     }
                 </h:outputScript>
             </div>

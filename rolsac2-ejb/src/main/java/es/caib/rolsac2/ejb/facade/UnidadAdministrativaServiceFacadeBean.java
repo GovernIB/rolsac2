@@ -22,6 +22,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaValorCampo;
+import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 import es.caib.rolsac2.service.model.types.TypeAccionAuditoria;
 import es.caib.rolsac2.service.model.types.TypeEstadoDir3;
@@ -672,6 +673,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     }
 
+
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR})
     public void evolucionBasica(Long codigoUA, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad, TypePerfiles perfil, String usuario) {
@@ -691,7 +693,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         JUnidadAdministrativa jnueva = unidadAdministrativaConverter.createEntity(nueva);
         jnueva.setPadre(juaOriginal.getPadre());
         unidadAdministrativaRepository.create(jnueva);
-        
+
         //Mover todos los datos de procedimientos/servicios a la nueva UA
         List<Long> codigosProcedimientos = new ArrayList<>();
         codigosProcedimientos.add(codigoUA);
@@ -979,6 +981,24 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
             List<UnidadAdministrativaDTO> items = new ArrayList<>();
             long total = items.size();
             return new Pagina<>(items, total);
+        }
+    }
+
+
+    @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<UnidadAdministrativaDTO> findExportByFiltro(UnidadAdministrativaFiltro filtro, ExportarDatos exportarDatos) {
+        try {
+            UnidadAdministrativaFiltro filtroClonado = filtro.clone();
+            if (exportarDatos.getTodosLosDatos()) {
+                filtroClonado.setPaginaFirst(0);
+                filtroClonado.setPaginaTamanyo(10000);
+            }
+            return unidadAdministrativaRepository.findPagedByFiltroRest(filtroClonado);
+
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            return new ArrayList<>();
         }
     }
 }

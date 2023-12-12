@@ -17,7 +17,7 @@ import java.util.Objects;
 /**
  * Conversor entre JTipoPublicoObjetivo y  TipoPublicoObjetivoDTO. La implementacion se generará automaticamente por MapStruct
  *
- * @author jsegovia
+ * @author Indra
  */
 @Mapper
 public interface TipoPublicoObjetivoConverter extends Converter<JTipoPublicoObjetivo, TipoPublicoObjetivoDTO> {
@@ -43,8 +43,8 @@ public interface TipoPublicoObjetivoConverter extends Converter<JTipoPublicoObje
 
         //Iteramos sobre el literal para ver que idiomas se han rellenado
         List<String> idiomasRellenos = new ArrayList<>();
-        for(String idioma : descripcion.getIdiomas()) {
-            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+        for (String idioma : descripcion.getIdiomas()) {
+            if (descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
                 idiomasRellenos.add(idioma);
             }
         }
@@ -54,7 +54,7 @@ public interface TipoPublicoObjetivoConverter extends Converter<JTipoPublicoObje
             for (JTipoPublicoObjetivoTraduccion jtrad : jTipoPublicoObjetivo.getDescripcion()) {
                 jtrad.setTipoPublicoObjetivo(jTipoPublicoObjetivo);
             }
-        } else if(idiomasRellenos.size() >  jTipoPublicoObjetivo.getDescripcion().size()) {
+        } else if (idiomasRellenos.size() > jTipoPublicoObjetivo.getDescripcion().size()) {
             //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
             List<JTipoPublicoObjetivoTraduccion> tradsAux = jTipoPublicoObjetivo.getDescripcion();
             List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);

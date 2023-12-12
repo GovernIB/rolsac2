@@ -79,7 +79,7 @@ public class ViewEntidadRaiz extends AbstractController implements Serializable 
 
     public void buscar() {
         lazyModel = new LazyDataModel<EntidadRaizGridDTO>() {
-            private static final long serialVersionUID  = 1L;
+            private static final long serialVersionUID = 1L;
 
             @Override
             public EntidadRaizGridDTO getRowData(String rowKey) {
@@ -97,10 +97,7 @@ public class ViewEntidadRaiz extends AbstractController implements Serializable 
             }
 
             @Override
-            public List<EntidadRaizGridDTO> load (
-                    int first, int pageSize, String sortField, SortOrder sortOrder,
-                    Map<String, FilterMeta> filterBy
-            ) {
+            public List<EntidadRaizGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
@@ -126,8 +123,7 @@ public class ViewEntidadRaiz extends AbstractController implements Serializable 
 
     public void editarEntidadRaiz() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
             abrirVentana(TypeModoAcceso.EDICION);
         }
@@ -165,7 +161,7 @@ public class ViewEntidadRaiz extends AbstractController implements Serializable 
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogEntidadRaiz", modoAcceso, params, true, 800, 285);
+        UtilJSF.openDialog("dialogEntidadRaiz", modoAcceso, params, true, 800, 320);
     }
 
     public EntidadRaizGridDTO getDatoSeleccionado() {
