@@ -3,6 +3,45 @@
     font-family: 'Bariol Regular';
     src: url("#{resource['fonts/Bariol_Regular.ttf']}");
 }
+/**** PARA AJUSTAR EL TAMAÑO A UNO MÁS GRANDE **/
+body {
+    font-size: 1em !important;
+}
+#sesionDialog .ui-dialog-content {
+    font-size:1.2em !important;
+}
+#listaOpciones , .navbar-nav  {
+    font-size: 1.2em !important;
+}
+.dropdown-menu  {
+    font-size: 1em !important;
+}
+.ui-selectonemenu-label, .ui-selectonemenu-item {
+    font-size: 1.1em;
+}
+/** Aumentamos el h5 más grande porque sino no parece una cabecera **/
+.h5{
+    font-size: 1.9em !important;
+}
+.pi {
+    display: inline-table !important;
+}
+.estiloGrande{
+    font-size: 1.2em !important;
+}
+/** Para forzar el estilo más grande **
+
+/** Para ciertos iconos que es mejor dejarlos como está, ya que las imágenes en botones se descuadran **
+.ui-icon-seek-first, .ui-icon-seek-prev, .ui-icon-seek-next, .ui-icon-seek-end, .pi-sitemap {
+    font-size: 1.2em !important;
+}
+.dropdown-menu-right{
+    font-size: 1.1em;
+}
+.pi {
+    display: inline-table !important;
+}
+/******** FIN PARA AJUSTAR EL TAMAÑO A UNO MÁS GRANDE **/
 
 /*Sección título de los views*/
 .view-title {
@@ -19,7 +58,7 @@
 
 .ui-icon {
     /** Para aumentar el tamaño. **/
-    font-size: 1.4em;
+    font-size: 1.1em;
 }
 
 .iconoUAselector {
@@ -89,9 +128,10 @@ body {
     }
 }
 
+/*
 .contenido {
     font-size: 0.8rem;
-}
+}*/
 
 .contenido .card-title {
     background-color: #cc073c;
@@ -102,7 +142,7 @@ body {
 
 .opcionMenu {
     color: #CC073C !important;
-    font-size: 1.5em;
+    /*font-size: 1.5em;*/
     font-weight: bolder;
     padding-top: 0.2em;
     padding-bottom: 0;
@@ -131,12 +171,12 @@ body {
 }
 
 .panelSinBotonToggle .ui-panel-titlebar {
-    height: 40px;
+    height: 50px;
     padding: 0px 15px 0px 15px;
 }
 
 #footer {
-    font-size: 12px;
+    /*font-size: 12px;*/
     min-height: 70px;
 }
 
@@ -277,7 +317,7 @@ a:hover {
 }
 
 .ui-button-icon-only .ui-icon.Fs23 {
-    font-size: 23px !important;
+    /*font-size: 23px !important;*/
     margin-left: -10px;
 }
 
@@ -324,95 +364,62 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
     margin-right: 5px !important;
 }
 
-.w100 {
-    width: 100% !important;
-}
+.w100 {    width: 100% !important;}
+.w99 {    width: 99%;}
+.w98 {    width: 98%;}
+.w97 {    width: 97%;}
+.w96 {    width: 96%;}
+.w95 {    width: 95%;}
+.w90 {    width: 90%;}
+.w85 {    width: 85%;}
+.w80 {    width: 80%;}
+.w75 {    width: 75%;}
+.w70 {    width: 70%;}
+.w65 {    width: 65%;}
+.w60 {    width: 60%;}
+.w55 {    width: 55%;}
+.w50 {    width: 50%;}
+.w45 {    width: 45%;}
+.w40 {    width: 40%;}
+.w35 {    width: 35%;}
+.w30 {    width: 30%;}
+.w25 {    width: 25%;}
+.w20 {    width: 20%;}
+.w19 {    width: 19%;}
+.w18 {    width: 18%;}
+.w17 {    width: 17%;}
+.w16 {    width: 16%;}
+.w15 {    width: 15%;}
+.w10 {    width: 10%;}
+.w5  {    width: 5%;}
 
-.w95 {
-    width: 95%;
-}
-
-.w90 {
-    width: 90%;
-}
-
-.w85 {
-    width: 85%;
-}
-
-.w80 {
-    width: 80%;
-}
-
-.w75 {
-    width: 75%;
-}
-
-.w70 {
-    width: 70%;
-}
-
-.w65 {
-    width: 65%;
-}
-
-.w60 {
-    width: 60%;
-}
-
-.w55 {
-    width: 55%;
-}
-
-.w50 {
-    width: 50%;
-}
-
-.w45 {
-    width: 45%;
-}
-
-.w40 {
-    width: 40%;
-}
-
-.w35 {
-    width: 35%;
-}
-
-.w30 {
-    width: 30%;
-}
-
-.w25 {
-    width: 25%;
-}
-
-.w20 {
-    width: 20%;
-}
-.w19 {
-    width: 19%;
-}
-.w18 {
-    width: 18%;
-}
-.w17 {
-    width: 17%;
-}
-.w16 {
-    width: 16%;
-}
-.w15 {
-    width: 15%;
-}
-.w10 {
-    width: 10%;
-}
-
-.w5 {
-    width: 5%;
-}
+.w99i {    width: 99% !important;}
+.w98i {    width: 98% !important;}
+.w97i {    width: 97% !important;}
+.w96i {    width: 96% !important;}
+.w95i {    width: 95% !important;}
+.w90i {    width: 90% !important;}
+.w85i {    width: 85% !important;}
+.w80i {    width: 80% !important;}
+.w75i {    width: 75% !important;}
+.w70i {    width: 70% !important;}
+.w65i {    width: 65% !important;}
+.w60i {    width: 60% !important;}
+.w55i {    width: 55% !important;}
+.w50i {    width: 50% !important;}
+.w45i {    width: 45% !important;}
+.w40i {    width: 40% !important;}
+.w35i {    width: 35% !important;}
+.w30i {    width: 30% !important;}
+.w25i {    width: 25% !important;}
+.w20i {    width: 20% !important;}
+.w19i {    width: 19% !important;}
+.w18i {    width: 18% !important;}
+.w17i {    width: 17% !important;}
+.w16i {    width: 16% !important;}
+.w15i {    width: 15% !important;}
+.w10i {    width: 10% !important;}
+.w5i  {    width: 5%  !important;}
 
 .w300px {    width: 300px;}
 .w295px {    width: 295px;}
@@ -737,7 +744,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
     }
 
     .subtitolMay {
-        font-size: 0.8rem !important;
+        /*font-size: 0.8rem !important;*/
     }
 
     .marg0 {
@@ -768,7 +775,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 
     .navbar-toggler {
         padding: 0.25rem !important;
-        font-size: 1rem !important;
+        /*font-size: 1rem !important;*/
     }
 
     .desactivarMobil {
@@ -808,7 +815,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
     }
 
     .navbar-brand {
-        font-size: 1rem !important;
+        /*font-size: 1rem !important;*/
     }
 
     .dadesSuport {
@@ -830,7 +837,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 
     .navbar-toggler {
         padding: 0.25rem !important;
-        font-size: 1rem !important;
+        /*font-size: 1rem !important;*/
     }
 
     .desactivarMobil {
@@ -853,7 +860,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 
 /* Capçalera */
 .flechaSubmenu {
-    font-size: 8px;
+    /*font-size: 8px;*/
     padding-top: 5px !important;
 }
 
@@ -883,21 +890,21 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 
 .titol {
     text-transform: uppercase;
-    font-size: 1.2em !important;
+    /*font-size: 1.2em !important;*/
     margin-bottom: 0px;
 }
 
 .subtitol {
-    font-size: 0.85em !important;
+    /*font-size: 0.85em !important;*/
 }
 
 .subtitolMay {
-    font-size: 0.85em !important;
+    /*font-size: 0.85em !important;*/
     text-transform: uppercase;
 }
 
 .menuGovern span, strong {
-    font-size: 1em;
+    /*font-size: 1em;*/
 }
 
 .logoGovern {
@@ -911,7 +918,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 }
 
 .iconoCapsalera {
-    font-size: 0;
+    /*font-size: 0;*/
     list-style: none;
     margin: 0;
     padding: 0;
@@ -1152,7 +1159,7 @@ a.iconoXarxes {
 }
 
 .imatgeMenu {
-    font-size: 200%;
+    /*font-size: 200%;*/
     padding-bottom: 10px;
     color: #265d3c;
 }
@@ -1166,7 +1173,7 @@ a.iconoXarxes {
 .titolMenu {
     font: normal 100% 'Bariol Regular', Arial, Helvetica, sans-serif;
     color: #d25b5b;
-    font-size: 1.5em;
+    /*font-size: 1.5em;*/
     display: flow-root;
 }
 
@@ -1279,7 +1286,7 @@ a.iconoXarxes {
 }
 
 .ui-confirm-dialog-message {
-    font-size: 16px;
+    /*font-size: 16px;*/
 }
 
 /** Desplegable breadcrumb **/
@@ -1336,7 +1343,7 @@ a.iconoXarxes {
 
 .btn-selector .ui-button-icon-left {
     width: fit-content;
-    font-size: 1rem !important;
+    /*font-size: 1rem !important;*/
     padding: 0;
 }
 
@@ -1451,6 +1458,28 @@ a.iconoXarxes {
 .font35pxi { font-size: 35px !important; }
 .font40pxi { font-size: 40px !important; }
 
+.font10em { font-size: 1.0em; }
+.font11em { font-size: 1.1em; }
+.font12em { font-size: 1.2em; }
+.font13em { font-size: 1.3em; }
+.font14em { font-size: 1.4em; }
+.font15em { font-size: 1.5em; }
+.font16em { font-size: 1.6em; }
+.font17em { font-size: 1.7em; }
+.font18em { font-size: 1.8em; }
+.font19em { font-size: 1.9em; }
+
+.font10emi { font-size: 1.0em !important; }
+.font11emi { font-size: 1.1em !important; }
+.font12emi { font-size: 1.2em !important; }
+.font13emi { font-size: 1.3em !important; }
+.font14emi { font-size: 1.4em !important; }
+.font15emi { font-size: 1.5em !important; }
+.font16emi { font-size: 1.6em !important; }
+.font17emi { font-size: 1.7em !important; }
+.font18emi { font-size: 1.8em !important; }
+.font19emi { font-size: 1.9em !important; }
+
 .iconoRojo { color: red; }
 .iconoVerde { color: green; }
 .iconoAzul { color: blue; }
@@ -1494,7 +1523,7 @@ a.iconoXarxes {
 }
 
 .org-panel-btn {
-    font-size: 1rem;
+    /*font-size: 1rem;*/
     position: absolute;
     top: 50%;
     left: calc(50% - 4.5em);
@@ -1522,7 +1551,7 @@ a.iconoXarxes {
 }
 
 .panel-cm .ui-panel-titlebar.ui-widget-header {
-    font-size: 20px;
+    /*font-size: 20px;*/
 }
 
 .cm-graf-semana .chartjs-render-monitor {
@@ -1615,6 +1644,7 @@ a.iconoXarxes {
 .pl19 { padding-left:19px; }
 .pl20 { padding-left:20px; }
 
+.mt0  { margin-top:0px; }
 .mt1  { margin-top:1px; }
 .mt2  { margin-top:2px; }
 .mt3  { margin-top:3px; }
@@ -1636,6 +1666,7 @@ a.iconoXarxes {
 .mt19 { margin-top:19px; }
 .mt20 { margin-top:20px; }
 
+.mb0  { margin-bottom:0px; }
 .mb1  { margin-bottom:1px; }
 .mb2  { margin-bottom:2px; }
 .mb3  { margin-bottom:3px; }
@@ -1657,6 +1688,7 @@ a.iconoXarxes {
 .mb19 { margin-bottom:19px; }
 .mb20 { margin-bottom:20px; }
 
+.mr0  { margin-right:0px; }
 .mr1  { margin-right:1px; }
 .mr2  { margin-right:2px; }
 .mr3  { margin-right:3px; }
@@ -1678,6 +1710,7 @@ a.iconoXarxes {
 .mr19 { margin-right:19px; }
 .mr20 { margin-right:20px; }
 
+.ml0  { margin-left:0px; }
 .ml1  { margin-left:1px; }
 .ml2  { margin-left:2px; }
 .ml3  { margin-left:3px; }

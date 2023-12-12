@@ -9,13 +9,21 @@ body {
 	color: #333;
 	background-color: #eaeaea;
 }
-
+#footer {
+	font-size: 1.1em;
+}
+.ui-selectonemenu-label, .ui-selectonemenu-item {
+	font-size: 1.1em;
+}
 .max-width{
 	max-width: 100vw !important;
 }
 
 .ui-widget button {
 	font: normal 100% 'Bariol Regular', Arial, Helvetica, sans-serif !important;
+}
+.form-row {
+	margin-bottom: 10px;
 }
 /*Botoneras multiboton*/
 .botoneraRed.ui-selectonebutton {
@@ -61,7 +69,7 @@ body {
 
 .ui-icon{
 	/** Para aumentar el tamaño. **/
-	font-size:1.2em;
+	font-size:1em;
 }
 label.ui-outputlabel.ui-state-error {
 	font-weight: bold;
@@ -141,9 +149,10 @@ a:hover{
 	outline: none !important;
 	box-shadow: none !important;
 }
+/*
 .contenido {
 	font-size: 0.8rem ;
-}
+}*/
 .lh15{
 	line-height:1.5
 }
@@ -227,6 +236,10 @@ div.ui-dialog-content span.ui-confirm-dialog-severity{
 }
 
 .w100 { width: 100% !important;}
+.w99 { width: 99% !important;}
+.w98 { width: 98% !important;}
+.w97 { width: 97% !important;}
+.w96 { width: 96% !important;}
 .w95 { width: 95% !important;}
 .w90 { width: 90% !important;}
 .w85 { width: 85% !important;}
@@ -247,6 +260,46 @@ div.ui-dialog-content span.ui-confirm-dialog-severity{
 .w10 { width: 10% !important;}
 .w5 { width: 5% !important;}
 
+.w300px {    width: 300px;}
+.w295px {    width: 295px;}
+.w290px {    width: 290px;}
+.w285px {    width: 285px;}
+.w280px {    width: 280px;}
+.w275px {    width: 275px;}
+.w270px {    width: 270px;}
+.w265px {    width: 265px;}
+.w260px {    width: 260px;}
+.w255px {    width: 255px;}
+.w250px {    width: 250px;}
+.w245px {    width: 245px;}
+.w240px {    width: 240px;}
+.w235px {    width: 235px;}
+.w230px {    width: 230px;}
+.w225px {    width: 225px;}
+.w220px {    width: 220px;}
+.w215px {    width: 215px;}
+.w210px {    width: 210px;}
+.w205px {    width: 205px;}
+.w200px {    width: 200px;}
+.w195px {    width: 195px;}
+.w190px {    width: 190px;}
+.w185px {    width: 185px;}
+.w180px {    width: 180px;}
+.w175px {    width: 175px;}
+.w170px {    width: 170px;}
+.w165px {    width: 165px;}
+.w160px {    width: 160px;}
+.w155px {    width: 155px;}
+.w150px {    width: 150px;}
+.w145px {    width: 145px;}
+.w140px {    width: 140px;}
+.w135px {    width: 135px;}
+.w130px {    width: 130px;}
+.w125px {    width: 125px;}
+.w120px {    width: 120px;}
+.w115px {    width: 115px;}
+.w110px {    width: 110px;}
+.w105px {    width: 105px;}
 .w100px { width: 100px;}
 .w95px { width: 95px;}
 .w90px { width: 90px;}
@@ -375,9 +428,10 @@ div.ui-dialog-content span.ui-confirm-dialog-severity{
 	.p-3aplicacio{
 		padding-bottom: 1rem !important;
 	}
+	/*
 	.subtitolMay {
 		font-size: 0.8rem !important;
-	}
+	}*/
 	.marg0 {
 		border: 0px !important;
 	}
@@ -403,7 +457,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity{
 	}
 	.navbar-toggler {
 		padding: 0.25rem !important;
-		font-size: 1rem !important;
+		/*font-size: 1rem !important;*/
 	}
 	.desactivarMobil{
 		display: none !important;
@@ -434,9 +488,10 @@ div.ui-dialog-content span.ui-confirm-dialog-severity{
 	.imatgeGovern{
 		width: 40px !important;
 	}
+	/*
 	.navbar-brand {
 		font-size: 1rem !important;
-	}
+	}*/
 	.dadesSuport{
 		padding-left: 30px !important;
 		line-height: 1.5 !important;
@@ -449,7 +504,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity{
 	}
 	.navbar-toggler {
 		padding: 0.25rem !important;
-		font-size: 1rem !important;
+		/*font-size: 1rem !important;*/
 	}
 	.desactivarMobil{
 		display: none !important;
@@ -472,7 +527,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity{
 
 /* Capçalera */
 .flechaSubmenu{
-	font-size: 8px;
+	/*font-size: 8px;*/
 	padding-top: 5px !important;
 }
 .oi-caret-bottom:before {
@@ -501,18 +556,18 @@ div.ui-dialog-content span.ui-confirm-dialog-severity{
 
 .titol{
 	text-transform: uppercase;
-	font-size: 1.2em !important;
+	/*font-size: 1.2em !important;*/
 	margin-bottom: 0px;
 }
 .subtitol{
-	font-size: 0.85em !important;
+	/*font-size: 0.85em !important;*/
 }
 .subtitolMay{
-	font-size: 0.85em !important;
+	/*font-size: 0.85em !important;*/
 	text-transform: uppercase;
 }
 .menuGovern span, strong{
-	font-size: 1em;
+	/*font-size: 1em;*/
 }
 .logoGovern{
 	float: left;
@@ -696,7 +751,7 @@ a.iconoXarxes{
 	margin:20px 0px;
 }
 .imatgeMenu{
-	font-size: 200%;
+	/*font-size: 200%;*/
 	padding-bottom: 10px;
 	color: #265d3c;
 }
@@ -708,7 +763,7 @@ a.iconoXarxes{
 .titolMenu{
 	font: normal 100% 'Bariol Regular', Arial, Helvetica, sans-serif;
 	color: #4dba79;
-	font-size: 1.5em;
+	/*font-size: 1.5em;*/
 	display: flow-root;
 }
 /* FI Capsa Box */
@@ -826,7 +881,7 @@ a.iconoXarxes{
 }
 
 legend {
-	font-size: .85rem;
+	/*font-size: .85rem;*/
 }
 
 .btn-busqueda{
@@ -867,5 +922,9 @@ legend {
 	float: right;
 }
 .ui-confirm-dialog-message {
-	font-size: 16px;
+	/*font-size: 16px;*/
+}
+
+.importantOcultar {
+	display: none !important;
 }
