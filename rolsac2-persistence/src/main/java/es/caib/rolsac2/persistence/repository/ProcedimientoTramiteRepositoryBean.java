@@ -7,6 +7,8 @@ import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -28,6 +30,11 @@ import java.util.Optional;
 @Local(ProcedimientoRepository.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<JProcedimientoTramite, Long> implements ProcedimientoTramiteRepository {
+
+    /**
+     * Log
+     **/
+    private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoTramiteRepository.class);
 
     @Inject
     private ProcedimientoTramiteConverter converter;
@@ -60,10 +67,10 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
 
-        List<JProcedimientoTramite> jentidades = query.getResultList();
-        List<ProcedimientoTramiteDTO> entidades = new ArrayList<>();
-        if (jentidades != null) {
-            for (JProcedimientoTramite jtramite : jentidades) {
+        List<JProcedimientoTramite> jprocedimientosTramites = query.getResultList();
+        List<ProcedimientoTramiteDTO> procedimientoTramites = new ArrayList<>();
+        if (jprocedimientosTramites != null) {
+            for (JProcedimientoTramite jtramite : jprocedimientosTramites) {
                 ProcedimientoTramiteDTO tramite = converter.createDTO(jtramite);
                 tramite.setTramitElectronica(jtramite.isTramitElectronica());
                 tramite.setTramitPresencial(jtramite.isTramitPresencial());
@@ -74,10 +81,10 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
                     tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
                     tramite.setTipoTramitacion(null);
                 }
-                entidades.add(tramite);
+                procedimientoTramites.add(tramite);
             }
         }
-        return entidades;
+        return procedimientoTramites;
     }
 
     @Override
@@ -249,14 +256,10 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
     }
 
     /**
-     * Obtiene el enlace telematico de un servicio..
+     * Devuelve la url de acceso a la tramitación telemática del procedimiento a partir del filtro.
      *
-     * @param Id      servicio
-     * @param Idioma, por defecto, ca.
-     * @return Devuelve la url.
-     * @throws
-     * @ejb.interface-method
-     * @ejb.permission role-name="${role.system},${role.admin},${role.super},${role.oper}"
+     * @param filtro filtro
+     * @return El enlace telemático
      */
     @Override
     public String getEnlaceTelematico(ProcedimientoTramiteFiltro filtro) {
@@ -265,53 +268,76 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
         if (lista != null && !lista.isEmpty()) {
             res = montarUrl(lista.get(0), filtro.getIdioma());
         }
-
         return res;
     }
 
-    private String montarUrl(ProcedimientoTramiteDTO serv, String lang) {
+    /**
+     * Devuelve la url de acceso a la tramitación telemática del procedimiento a partir del procedimiento.
+     *
+     * @param procedimientoTramiteDTO El procedimiento
+     * @param lang                    El idioma
+     * @return
+     */
+    private String montarUrl(ProcedimientoTramiteDTO procedimientoTramiteDTO, String lang) {
 
-        if (serv.isTramitElectronica()) {
-            TipoTramitacionDTO tramitacionPlat = serv.getTipoTramitacion();
-            TipoTramitacionDTO tramPlantilla = serv.getPlantillaSel();
-            if (tramPlantilla != null) {
-                final String idTramite = tramPlantilla.getTramiteId();
-                final String numVersion = tramPlantilla.getTramiteVersion() == null ? "" : tramPlantilla.getTramiteVersion().toString();
-                final String parametros = tramPlantilla.getTramiteParametros() == null ? "" : tramitacionPlat.getTramiteParametros();
-                final String idTramiteRolsac = serv.getCodigo() == null ? "" : serv.getCodigo().toString();
+        String paso = "";
+        try {
+            if (procedimientoTramiteDTO.isTramitElectronica()) {
+                paso = "Paso1";
+                TipoTramitacionDTO tramitacionPlat = procedimientoTramiteDTO.getTipoTramitacion();
+                TipoTramitacionDTO tramPlantilla = procedimientoTramiteDTO.getPlantillaSel();
+                if (tramPlantilla != null) {
+                    paso = "Paso2";
+                    final String idTramite = tramPlantilla.getTramiteId();
+                    final String numVersion = tramPlantilla.getTramiteVersion() == null ? "" : tramPlantilla.getTramiteVersion().toString();
+                    final String parametros = tramPlantilla.getTramiteParametros() == null ? "" : tramitacionPlat.getTramiteParametros();
+                    final String idTramiteRolsac = procedimientoTramiteDTO.getCodigo() == null ? "" : procedimientoTramiteDTO.getCodigo().toString();
 
-                final PlatTramitElectronicaDTO plataforma = tramPlantilla.getCodPlatTramitacion();
-                String url = plataforma.getUrlAcceso().getTraduccion(lang);
-                url = url.replace("${idTramitePlataforma}", idTramite);
-                url = url.replace("${versionTramitePlatorma}", numVersion);
-                url = url.replace("${parametros}", parametros);
-                url = url.replace("${servicio}", String.valueOf(true));
-                url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
-
-                return url;
-
-            } else if (tramitacionPlat != null) {
-                final String idTramite = tramitacionPlat.getTramiteId();
-                final String numVersion = tramitacionPlat.getTramiteVersion() == null ? "" : tramitacionPlat.getTramiteVersion().toString();
-                final String parametros = tramitacionPlat.getTramiteParametros() == null ? "" : tramitacionPlat.getTramiteParametros();
-                final String idTramiteRolsac = serv.getCodigo() == null ? "" : serv.getCodigo().toString();
-
-                if (tramitacionPlat.getCodPlatTramitacion() != null) {
-                    final PlatTramitElectronicaDTO plataforma = tramitacionPlat.getCodPlatTramitacion();
+                    paso = "Paso3";
+                    final PlatTramitElectronicaDTO plataforma = tramPlantilla.getCodPlatTramitacion();
                     String url = plataforma.getUrlAcceso().getTraduccion(lang);
-
                     url = url.replace("${idTramitePlataforma}", idTramite);
                     url = url.replace("${versionTramitePlatorma}", numVersion);
                     url = url.replace("${parametros}", parametros);
-                    url = url.replace("${servicio}", String.valueOf(false));
+                    url = url.replace("${servicio}", String.valueOf(true));
                     url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
-
+                    paso = "Paso4";
                     return url;
-                } else {
-                    return tramitacionPlat.getUrl().getTraduccion(lang);
+
+                } else if (tramitacionPlat != null) {
+                    paso = "Paso5";
+                    final String idTramite = tramitacionPlat.getTramiteId();
+                    final String numVersion = tramitacionPlat.getTramiteVersion() == null ? "" : tramitacionPlat.getTramiteVersion().toString();
+                    final String parametros = tramitacionPlat.getTramiteParametros() == null ? "" : tramitacionPlat.getTramiteParametros();
+                    final String idTramiteRolsac = procedimientoTramiteDTO.getCodigo() == null ? "" : procedimientoTramiteDTO.getCodigo().toString();
+
+                    paso = "Paso6";
+                    if (tramitacionPlat.getCodPlatTramitacion() != null) {
+                        paso = "Paso7";
+                        final PlatTramitElectronicaDTO plataforma = tramitacionPlat.getCodPlatTramitacion();
+                        String url = plataforma.getUrlAcceso().getTraduccion(lang);
+
+                        paso = "Paso8";
+                        url = url.replace("${idTramitePlataforma}", idTramite);
+                        url = url.replace("${versionTramitePlatorma}", numVersion);
+                        url = url.replace("${parametros}", parametros);
+                        url = url.replace("${servicio}", String.valueOf(false));
+                        url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
+
+                        return url;
+                    } else {
+                        paso = "Paso9";
+
+                        return tramitacionPlat.getUrl().getTraduccion(lang);
+                    }
                 }
             }
+        } catch (Exception e) {
+            LOG.error("Error obteniendo la url del tramite. Paso:" + paso, e);
         }
         return "";
     }
+
+
+
 }
