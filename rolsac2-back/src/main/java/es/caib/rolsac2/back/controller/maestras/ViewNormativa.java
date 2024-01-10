@@ -165,11 +165,9 @@ public class ViewNormativa extends AbstractController implements Serializable {
      */
     public void limpiarFiltro() {
         filtro = new NormativaFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setOrder("DESCENDING");
-        this.buscar();
     }
 
     /**
@@ -380,7 +378,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
         List<NormativaDTO> normativas = normativaServiceFacade.findExportByFiltro(filtro, exportarDatos);
         String[][] datos = UtilExport.getValoresNormativas(normativas, exportarDatos, this.getIdioma());
         String[] cabecera = UtilExport.getCabecera(exportarDatos);
-        return UtilExport.generarStreamedContent("NORMATIVA", cabecera, datos, exportarDatos);
+        return UtilExport.generarStreamedContent("Normativa", cabecera, datos, exportarDatos);
         /*
         if (this.exportarDatos.getFormato().equals(TypeExportarFormato.CSV) || this.exportarDatos.getFormato().equals(TypeExportarFormato.TXT) || this.exportarDatos.getFormato().equals(TypeExportarFormato.XLS)) {
             return getFileCSVTXT();

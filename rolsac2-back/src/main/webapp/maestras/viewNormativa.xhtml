@@ -60,14 +60,15 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <p:inputText id="filtroBusqueda"  value="#{viewNormativa.filtroTexto}" styleClass="estiloGrande ml-2 mr-2"  />
                             <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
                                              actionListener="#{viewNormativa.buscar()}" process="@form"/>
-                            <!--<p:selectBooleanCheckbox value="#{viewNormativa.mostrarOcultas}" styleClass="ml-2"
-                                                     itemLabel="#{labels['viewUnidadAdministrativa.mostrarOcultas']}"/> -->
+                            <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" onclick="PF('panel').toggle();cambiarBoton()" styleClass="ml-2" />
                             <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
                                              actionListener="#{viewNormativa.exportar()}" process="@form">
                                 <p:ajax event="dialogReturn" listener="#{viewNormativa.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />
                             </p:commandButton>
 
-                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none">
+
+
+                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none" >
                                 <p:fileDownload value="#{viewNormativa.file}" />
                             </p:commandButton>
 
@@ -110,16 +111,42 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                     </div>
                 </f:facet>
-                <h:panelGroup id="filtroAvanzado">
-                    <div class="row m-0">
+
+                <p class="p-m-0">
+                    <div class="row">
+
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['dict.titulo']}:" for="txtTitulo"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:inputText id="txtTitulo" value="#{viewNormativa.filtro.nombre}"
+                                         styleClass="w95" />
+                        </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
                             <h:outputText value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:calendar id="txtFechaAprobacion" showOn="button" widgetVar="fechaAprobacionWidget"
+                                        styleClass="w95"
                                         value="#{viewNormativa.filtro.fechaAprobacion}" pattern="dd/MM/yyyy"/>
                         </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:calendar id="txtFechaBoletin" showOn="button" widgetVar="fechaAprobacionWidget"
+                                        styleClass="w95"
+                                        value="#{viewNormativa.filtro.fechaBoletin}" pattern="dd/MM/yyyy"/>
+                        </div>
 
+
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:inputText id="txtNumero" value="#{viewNormativa.filtro.numero}"
+                                         styleClass="w95" />
+                        </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
                             <h:outputText value="#{labels['viewNormativas.tipoNormativa']}:" for="txtTipoNormativa"/>
                         </div>
@@ -130,21 +157,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                 <f:selectItems value="#{viewNormativa.listTipoNormativa}" var="tipoNormativa"
                                                itemLabel="#{tipoNormativa.descripcion.getTraduccion(viewNormativa.idioma)}" itemValue="#{tipoNormativa}"/>
                             </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-2">
-                            <h:outputText value="#{labels['viewNormativas.uaHijas']}:" for="txtUAHijas" />
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:selectBooleanCheckbox id="txtUAHijas" value="#{viewNormativa.filtro.hijasActivas}">
-                                <p:ajax process="@this" event="change" partialSubmit="true" listener="#{viewNormativa.filtroHijasActivasChange}" />
-                            </p:selectBooleanCheckbox>
-                        </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:calendar id="txtFechaBoletin" value="#{viewNormativa.filtro.fechaBoletin}"
-                                        pattern="dd/MM/yyyy" showOn="button" widgetVar="fechaBoletinWidget"/>
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
                             <h:outputText value="#{labels['viewNormativas.boletin']}:" for="txtBoletin"/>
@@ -157,45 +169,44 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                                itemLabel="#{tipoBoletin.nombre}" itemValue="#{tipoBoletin}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-2">
-                            <h:outputText value="#{labels['viewNormativas.unidadesOrganicas']}:" for="txtUnidadesOrganicas" />
+
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigoNorm"/>
                         </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:selectBooleanCheckbox id="txtUnidadesOrganicas" value="#{viewNormativa.filtro.todasUnidadesOrganicas}">
-                                <p:ajax process="@this" event="change" partialSubmit="true" listener="#{viewNormativa.filtroUnidadOrganicasChange}" />
-                            </p:selectBooleanCheckbox>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:inputText id="txtCodigoNorm" value="#{viewNormativa.filtro.codigo}"
+                                         styleClass="w95"
+                                         onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-2">
-                            <h:outputText value="#{labels['viewNormativas.estado']}:" for="txtEstado" />
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:selectBooleanCheckbox id="txtEstado" value="#{viewNormativa.filtro.vigente}">
-                            </p:selectBooleanCheckbox>
-                        </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-2">
+                        <!--
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
                             <h:outputText value="#{labels['viewNormativas.vigente']}:" for="txtVigente" />
                         </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-2">
-                             <p:selectOneMenu id="txtVigente" value="#{viewNormativa.filtro.vigente}"
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:selectOneMenu id="txtVigente" value="#{viewNormativa.filtro.vigente}"
                                              styleClass="w95"  >
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
                                 <f:selectItem itemLabel="#{labels['dict.vigente']}" itemValue="true"/>
                                 <f:selectItem itemLabel="#{labels['dict.derogada']}" itemValue="false"/>
-                                 <f:converter converterId="javax.faces.Boolean" />
+                                <f:converter converterId="javax.faces.Boolean" />
                             </p:selectOneMenu>
                         </div>
+                        -->
+
                         <div class="ui-g-12 text-center">
-                            <p:commandButton value="#{labels['dict.limpiarFiltro']}"
-                                             actionListener="#{viewNormativa.limpiarFiltro()}" iconPos="top"
-                                             icon="pi pi-trash" update="messages dataTable filtroAvanzado"
-                                             process="@form"/>
+                            <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"
+                                             iconPos="top" action="#{viewNormativa.limpiarFiltro()}"
+                                             process="@form" update="panel"/>
                             <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                              actionListener="#{viewNormativa.buscar()}" update="messages dataTable"
-                                             process="@form"/>
+                                             process="@form" /> <!-- oncomplete="PF('panel').toggle()" -->
+                        </div>
+                        <div class="ui-g-12 text-center">
+                            <p:outputLabel value="#{labels['viewNormativas.msg.noSeEncuentra']}" styleClass="ml-2 mr-2"/>
+
                         </div>
                     </div>
-                </h:panelGroup>
-
+                </p>
             </p:panel>
             <p:dataTable id="dataTable" value="#{viewNormativa.lazyModel}" var="normativa"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="normativaTable"
