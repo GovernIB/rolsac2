@@ -37,6 +37,30 @@ public class TipoMateriaSIARepositoryBean extends AbstractCrudRepository<JTipoMa
     }
 
     @Override
+    public List<TipoMateriaSIADTO> getListTipoMateriaSIADTO(TipoMateriaSIAFiltro filtro) {
+        Query query = getQuery(false, filtro, false);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
+
+        List<Object[]> jTiposMateriaSIA = query.getResultList();
+        List<TipoMateriaSIADTO> tiposMateriaSIA = new ArrayList<>();
+        if (jTiposMateriaSIA != null) {
+            for (Object[] jTipoMateriaSIA : jTiposMateriaSIA) {
+                TipoMateriaSIADTO materiaSIAGrid = new TipoMateriaSIADTO();
+                materiaSIAGrid.setCodigo((Long) jTipoMateriaSIA[0]);
+                materiaSIAGrid.setIdentificador((String) jTipoMateriaSIA[1]);
+                Literal literal = new Literal();
+                literal.add(new Traduccion(filtro.getIdioma(), (String) jTipoMateriaSIA[2]));
+                materiaSIAGrid.setDescripcion(literal);
+                materiaSIAGrid.setCodigoSIA((Long) jTipoMateriaSIA[3]);
+                tiposMateriaSIA.add(materiaSIAGrid);
+            }
+        }
+        return tiposMateriaSIA;
+    }
+
+
+    @Override
     public List<TipoMateriaSIAGridDTO> findPagedByFiltro(TipoMateriaSIAFiltro filtro) {
         Query query = getQuery(false, filtro, false);
         query.setFirstResult(filtro.getPaginaFirst());

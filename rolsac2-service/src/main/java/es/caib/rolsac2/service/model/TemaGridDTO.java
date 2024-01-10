@@ -50,6 +50,11 @@ public class TemaGridDTO extends ModelApi implements Comparable<TemaGridDTO> {
     private boolean relacionado;
 
     /**
+     * Materia SIA
+     */
+    private TipoMateriaSIADTO codigoSIA;
+
+    /**
      * Instancia un nuevo Tema grid dto.
      */
     public TemaGridDTO() {
@@ -237,14 +242,17 @@ public class TemaGridDTO extends ModelApi implements Comparable<TemaGridDTO> {
         this.relacionado = relacionado;
     }
 
+    public TipoMateriaSIADTO getCodigoSIA() {
+        return codigoSIA;
+    }
+
+    public void setCodigoSIA(TipoMateriaSIADTO codigoSIA) {
+        this.codigoSIA = codigoSIA;
+    }
+
     @Override
     public String toString() {
-        return "TemaGridDTO{" +
-                "codigo=" + codigo +
-                ", entidad=" + entidad +
-                ", identificador='" + identificador + '\'' +
-                ", temaPadre='" + temaPadre + '\'' +
-                '}';
+        return "TemaGridDTO{" + "codigo=" + codigo + ", entidad=" + entidad + ", identificador='" + identificador + '\'' + ", temaPadre='" + temaPadre + '\'' + '}';
     }
 
     @Override
@@ -276,14 +284,15 @@ public class TemaGridDTO extends ModelApi implements Comparable<TemaGridDTO> {
         tipo.setEntidad(this.getEntidad());
         tipo.setIdString(this.getIdString());
         tipo.setRelacionado(this.isRelacionado());
+        tipo.setCodigoSIA(this.codigoSIA);
         return tipo;
     }
 
     public Integer getNumero() {
-		return numero;
-	}
+        return numero;
+    }
 
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-	}
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
 }

@@ -7,13 +7,16 @@ import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JTema;
 import es.caib.rolsac2.persistence.repository.EntidadRepository;
 import es.caib.rolsac2.persistence.repository.TemaRepository;
+import es.caib.rolsac2.persistence.repository.TipoMateriaSIARepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.TemaGridDTO;
+import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
 import es.caib.rolsac2.service.model.filtro.TemaFiltro;
+import es.caib.rolsac2.service.model.filtro.TipoMateriaSIAFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +43,9 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
 
     @Inject
     private TemaRepository temaRepository;
+
+    @Inject
+    private TipoMateriaSIARepository tipoMateriaSIARepository;
 
     @Inject
     private TemaConverter converter;
@@ -220,5 +226,13 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
             long total = items.size();
             return new Pagina<>(items, total);
         }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<TipoMateriaSIADTO> getTipoMateriasSIA(String idioma) {
+        TipoMateriaSIAFiltro filtro = new TipoMateriaSIAFiltro();
+        filtro.setIdioma(idioma);
+        return tipoMateriaSIARepository.getListTipoMateriaSIADTO(filtro);
     }
 }

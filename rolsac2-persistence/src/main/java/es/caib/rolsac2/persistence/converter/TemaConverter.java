@@ -12,17 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-        uses = {EntidadConverter.class})
-public interface TemaConverter extends Converter<JTema, TemaDTO>{
+@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {EntidadConverter.class, TipoMateriaSIAConverter.class})
+public interface TemaConverter extends Converter<JTema, TemaDTO> {
 
     @Override
-    @Mapping(target = "descripcion",
-        expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
+    @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
     TemaDTO createDTO(JTema entity);
 
-    @Mapping(target = "descripcion",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
+    @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
     @Mapping(target = "entidad", ignore = true)
     @Mapping(target = "temaPadre", expression = "java(createTreeDTOSinPadre(entity.getTemaPadre()))")
     @Named("createTreeDTO")
@@ -31,29 +28,26 @@ public interface TemaConverter extends Converter<JTema, TemaDTO>{
     @Mapping(target = "entidad", source = "entidad.codigo")
     @Mapping(target = "temaPadre", source = "temaPadre.identificador")
     @Mapping(target = "mathPath", source = "mathPath")
-    @Mapping(target = "descripcion",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
+    @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
     TemaGridDTO createGridDTO(JTema entity);
 
-    @Mapping(target = "descripcion",
-            expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
+    @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
     @Mapping(target = "entidad", ignore = true)
     @Mapping(target = "temaPadre", ignore = true)
     @Named("createTreeDTOSinPadre")
     TemaDTO createTreeDTOSinPadre(JTema entity);
 
     @Override
-    @Mapping(target = "descripcion",
-            expression = "java(convierteLiteralToTraduccion(jTema,dto.getDescripcion()))")
-    @Mapping(target="mathPath", ignore = true)
+    @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(jTema,dto.getDescripcion()))")
+    @Mapping(target = "mathPath", ignore = true)
     JTema createEntity(TemaDTO dto);
 
     @Override
-    @Mapping(target = "descripcion",
-            expression = "java(convierteLiteralToTraduccion(entity,dto.getDescripcion()))")
-    @Mapping(target="mathPath", ignore = true)
+    @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(entity,dto.getDescripcion()))")
+    @Mapping(target = "mathPath", ignore = true)
     @Mapping(target = "entidad", ignore = true)
     @Mapping(target = "temaPadre", ignore = true)
+        /*@Mapping(target = "tipoMateriaSIA", ignore = true)*/
     void mergeEntity(@MappingTarget JTema entity, TemaDTO dto);
 
     default List<TemaDTO> createTreeDTOs(List<JTema> entities) {
@@ -83,18 +77,18 @@ public interface TemaConverter extends Converter<JTema, TemaDTO>{
     default List<JTemaTraduccion> convierteLiteralToTraduccion(JTema jTema, Literal descripcion) {
         //Iteramos sobre el literal para ver que idiomas se han rellenado
         List<String> idiomasRellenos = new ArrayList<>();
-        for(String idioma : descripcion.getIdiomas()) {
-            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+        for (String idioma : descripcion.getIdiomas()) {
+            if (descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
                 idiomasRellenos.add(idioma);
             }
         }
 
-        if (jTema.getDescripcion() == null || jTema.getDescripcion().isEmpty()){
+        if (jTema.getDescripcion() == null || jTema.getDescripcion().isEmpty()) {
             jTema.setDescripcion(JTemaTraduccion.createInstance(idiomasRellenos));
             for (JTemaTraduccion jTrad : jTema.getDescripcion()) {
                 jTrad.setTema(jTema);
             }
-        } else if(idiomasRellenos.size() >  jTema.getDescripcion().size()) {
+        } else if (idiomasRellenos.size() > jTema.getDescripcion().size()) {
             //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
             List<JTemaTraduccion> tradsAux = jTema.getDescripcion();
             List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);

@@ -4,6 +4,7 @@ import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.TemaGridDTO;
+import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
 import es.caib.rolsac2.service.model.filtro.TemaFiltro;
 
 import java.util.List;
@@ -38,5 +39,12 @@ public interface TemaServiceFacade {
 
     Pagina<TemaDTO> findByFiltroRest(TemaFiltro filtro);
 
+    /**
+     * Obtiene todos los tipos de materias SIA
+     *
+     * @param idioma Idioma
+     * @return La lista de tipos de materia SIA
+     */
 
+    List<TipoMateriaSIADTO> getTipoMateriasSIA(String idioma);
 }

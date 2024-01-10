@@ -41,14 +41,20 @@ public class TemaDTO extends ModelApi {
     private String mathPath;
 
     /**
+     * Materia SIA
+     */
+    private TipoMateriaSIADTO tipoMateriaSIA;
+
+    /**
      * Instancia un nuevo Tema dto.
      */
-    public TemaDTO(){}
+    public TemaDTO() {
+    }
 
     /**
      * Instancia un nuevo Tema dto.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public TemaDTO(Long codigo) {
         this.codigo = codigo;
@@ -62,13 +68,14 @@ public class TemaDTO extends ModelApi {
             this.temaPadre = otro.temaPadre == null ? null : (TemaDTO) otro.temaPadre.clone();
             this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
             this.mathPath = otro.mathPath;
+            this.tipoMateriaSIA = otro.tipoMateriaSIA;
         }
     }
 
     /**
      * Create instance tema dto.
      *
-     * @return  tema dto
+     * @return tema dto
      */
     public static TemaDTO createInstance() {
         TemaDTO tema = new TemaDTO();
@@ -79,7 +86,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return  codigo
+     * @return codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -92,7 +99,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Establece id string.
      *
-     * @param idString  codigo to set
+     * @param idString codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -105,7 +112,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -114,7 +121,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -123,7 +130,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -132,7 +139,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -141,7 +148,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Obtiene entidad.
      *
-     * @return  entidad
+     * @return entidad
      */
     public EntidadDTO getEntidad() {
         return entidad;
@@ -150,7 +157,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Establece entidad.
      *
-     * @param entidad  entidad
+     * @param entidad entidad
      */
     public void setEntidad(EntidadDTO entidad) {
         this.entidad = entidad;
@@ -159,7 +166,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Obtiene tema padre.
      *
-     * @return  tema padre
+     * @return tema padre
      */
     public TemaDTO getTemaPadre() {
         return temaPadre;
@@ -168,7 +175,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Establece tema padre.
      *
-     * @param temaPadre  tema padre
+     * @param temaPadre tema padre
      */
     public void setTemaPadre(TemaDTO temaPadre) {
         this.temaPadre = temaPadre;
@@ -177,7 +184,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public Literal getDescripcion() {
         return descripcion;
@@ -186,7 +193,7 @@ public class TemaDTO extends ModelApi {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(Literal descripcion) {
         this.descripcion = descripcion;
@@ -198,6 +205,14 @@ public class TemaDTO extends ModelApi {
 
     public void setMathPath(String mathPath) {
         this.mathPath = mathPath;
+    }
+
+    public TipoMateriaSIADTO getTipoMateriaSIA() {
+        return tipoMateriaSIA;
+    }
+
+    public void setTipoMateriaSIA(TipoMateriaSIADTO tipoMateriaSIA) {
+        this.tipoMateriaSIA = tipoMateriaSIA;
     }
 
     @Override
@@ -215,23 +230,17 @@ public class TemaDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "TemaDTO{" +
-                "codigo=" + codigo +
-                ", entidad=" + entidad +
-                ", identificador='" + identificador + '\'' +
-                ", temaPadre=" + temaPadre +
-                '}';
+        return "TemaDTO{" + "codigo=" + codigo + ", entidad=" + entidad + ", identificador='" + identificador + '\'' + ", temaPadre=" + temaPadre + '}';
     }
 
     /**
      * Compare to int.
      *
-     * @param tema  tema
-     * @return  int
+     * @param tema tema
+     * @return int
      */
     public int compareTo(final TemaDTO tema) {
-        if (tema == null)
-            throw new NullPointerException("tema");
+        if (tema == null) throw new NullPointerException("tema");
 
         return Long.compare(this.getCodigo(), tema.getCodigo());
     }
@@ -242,6 +251,7 @@ public class TemaDTO extends ModelApi {
         temaGridDTO.setEntidad(this.entidad.getCodigo());
         temaGridDTO.setCodigo(this.codigo);
         temaGridDTO.setIdentificador(this.identificador);
+        temaGridDTO.setCodigoSIA(this.tipoMateriaSIA);
 
         return temaGridDTO;
     }

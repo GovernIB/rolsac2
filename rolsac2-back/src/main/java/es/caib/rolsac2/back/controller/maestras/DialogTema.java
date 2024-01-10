@@ -10,6 +10,7 @@ import es.caib.rolsac2.service.facade.TemaServiceFacade;
 import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TemaDTO;
+import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.utils.UtilComparador;
@@ -43,6 +44,8 @@ public class DialogTema extends AbstractController implements Serializable {
 
     private List<TemaDTO> padreSeleccionado;
 
+    private List<TipoMateriaSIADTO> materias;
+
     private String identificadorOld;
 
     @Inject
@@ -53,6 +56,7 @@ public class DialogTema extends AbstractController implements Serializable {
 
     @EJB
     private AdministracionSupServiceFacade administracionSupServiceFacade;
+
 
     public void load() {
         LOG.debug("init");
@@ -77,6 +81,8 @@ public class DialogTema extends AbstractController implements Serializable {
             this.identificadorOld = data.getIdentificador();
             dataOriginal = data.clone();
         }
+
+        materias = temaServiceFacade.getTipoMateriasSIA(getIdioma());
     }
 
     public void guardar() {
@@ -203,4 +209,13 @@ public class DialogTema extends AbstractController implements Serializable {
     public void setPadreSeleccionado(List<TemaDTO> padreSeleccionado) {
         this.padreSeleccionado = padreSeleccionado;
     }
+
+    public List<TipoMateriaSIADTO> getMaterias() {
+        return materias;
+    }
+
+    public void setMaterias(List<TipoMateriaSIADTO> materias) {
+        this.materias = materias;
+    }
+
 }

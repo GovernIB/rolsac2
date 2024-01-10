@@ -65,6 +65,13 @@ public class JTema extends BaseEntity {
     private List<JTemaTraduccion> descripcion;
 
     /**
+     * Tipo materia sia que contiene el codigo que se envia a SIA en el proceso.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TEMA_MATSIA", nullable = true)
+    private JTipoMateriaSIA tipoMateriaSIA;
+
+    /**
      * Obtiene codigo.
      *
      * @return codigo
@@ -151,6 +158,14 @@ public class JTema extends BaseEntity {
 
     public void setMathPath(String mathPath) {
         this.mathPath = mathPath;
+    }
+
+    public JTipoMateriaSIA getTipoMateriaSIA() {
+        return tipoMateriaSIA;
+    }
+
+    public void setTipoMateriaSIA(JTipoMateriaSIA codigoSIA) {
+        this.tipoMateriaSIA = codigoSIA;
     }
 
     /**

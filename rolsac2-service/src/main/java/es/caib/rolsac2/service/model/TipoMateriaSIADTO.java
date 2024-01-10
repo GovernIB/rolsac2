@@ -1,9 +1,9 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import java.util.Objects;
 
 /**
  * El tipo Tipo materia siadto.
@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
  * @author Indra
  */
 @Schema(name = "TipoMateriaSIA")
-public class TipoMateriaSIADTO extends ModelApi {
+public class TipoMateriaSIADTO extends ModelApi implements Cloneable {
 
     /**
      * Codigo
@@ -21,8 +21,6 @@ public class TipoMateriaSIADTO extends ModelApi {
     /**
      * Identificador
      */
-    @NotEmpty
-    @Size(max = 50)
     private String identificador;
 
     /**
@@ -39,6 +37,7 @@ public class TipoMateriaSIADTO extends ModelApi {
      * Instancia un nuevo Tipo materia siadto.
      */
     public TipoMateriaSIADTO() {
+        //Constructor vacio
     }
 
     /**
@@ -62,6 +61,7 @@ public class TipoMateriaSIADTO extends ModelApi {
             this.codigo = otro.codigo;
             this.identificador = otro.identificador;
             this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
+            this.codigoSIA = otro.codigoSIA;
         }
     }
 
@@ -146,5 +146,42 @@ public class TipoMateriaSIADTO extends ModelApi {
     @Override
     public TipoMateriaSIADTO clone() {
         return new TipoMateriaSIADTO(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TipoMateriaSIADTO that = (TipoMateriaSIADTO) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
+    public int compareTo(TipoMateriaSIADTO data2) {
+
+        if (data2 == null) {
+            return 1;
+        }
+
+        if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
+        }
+
+        if (UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion()) != 0) {
+            return UtilComparador.compareTo(this.getDescripcion(), data2.getDescripcion());
+        }
+
+        if (UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador()) != 0) {
+            return UtilComparador.compareTo(this.getIdentificador(), data2.getIdentificador());
+        }
+
+        if (UtilComparador.compareTo(this.getCodigoSIA(), data2.getCodigoSIA()) != 0) {
+            return UtilComparador.compareTo(this.getCodigoSIA(), data2.getCodigoSIA());
+        }
+        return 0;
     }
 }

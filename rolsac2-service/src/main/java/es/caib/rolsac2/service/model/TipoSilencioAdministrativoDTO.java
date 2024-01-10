@@ -43,6 +43,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi implements Cloneable
      * Instancia un nuevo Tipo silencio administrativo dto.
      */
     public TipoSilencioAdministrativoDTO() {
+        //Constructor vacio
     }
 
     public TipoSilencioAdministrativoDTO(TipoSilencioAdministrativoDTO otro) {
