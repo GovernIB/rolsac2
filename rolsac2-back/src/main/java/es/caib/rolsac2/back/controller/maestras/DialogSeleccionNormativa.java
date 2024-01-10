@@ -3,9 +3,12 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
 import es.caib.rolsac2.service.model.NormativaGridDTO;
 import es.caib.rolsac2.service.model.Pagina;
+import es.caib.rolsac2.service.model.TipoBoletinDTO;
+import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -22,7 +25,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Named
 @ViewScoped
@@ -35,6 +37,9 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
     @EJB
     private NormativaServiceFacade normativaServiceFacade;
 
+    @EJB
+    private MaestrasSupServiceFacade maestrasSupServiceFacade;
+
     private NormativaGridDTO datoSeleccionado;
 
     private NormativaFiltro filtro;
@@ -42,6 +47,8 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
     private List<NormativaGridDTO> normativasSeleccionadas;
 
     private NormativaGridDTO normativaGridSeleccionada;
+    private List<TipoNormativaDTO> listTipoNormativa;
+    private List<TipoBoletinDTO> listTipoBoletin;
 
     public LazyDataModel<NormativaGridDTO> getLazyModel() {
         return lazyModel;
@@ -63,8 +70,26 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
         normativasSeleccionadas = (List<NormativaGridDTO>) UtilJSF.getValorMochilaByKey("normativasSeleccionadas");
     }
 
+    /**
+     * Limpia el filtro.
+     */
+    public void limpiarFiltro() {
+        filtro = new NormativaFiltro();
+        filtro.setIdioma(sessionBean.getLang());
+        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        filtro.setOrder("DESCENDING");
+    }
+
     public void update() {
         buscar();
+    }
+
+    /**
+     * Carga los filtros de la ventana.
+     */
+    private void cargarFiltros() {
+        listTipoBoletin = maestrasSupServiceFacade.findBoletines();
+        listTipoNormativa = maestrasSupServiceFacade.findTipoNormativa();
     }
 
     public void buscar() {
@@ -146,20 +171,6 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
         this.filtro = filtro;
     }
 
-    public void setFiltroTexto(String texto) {
-        if (Objects.nonNull(this.filtro)) {
-            this.filtro.setTexto(texto);
-        }
-    }
-
-    public String getFiltroTexto() {
-        if (Objects.nonNull(this.filtro)) {
-            return this.filtro.getTexto();
-        }
-        return "";
-    }
-
-
     public List<NormativaGridDTO> getNormativasSeleccionadas() {
         return normativasSeleccionadas;
     }
@@ -216,4 +227,19 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
         return contiene;
     }
 
+    public List<TipoNormativaDTO> getListTipoNormativa() {
+        return listTipoNormativa;
+    }
+
+    public void setListTipoNormativa(List<TipoNormativaDTO> listTipoNormativa) {
+        this.listTipoNormativa = listTipoNormativa;
+    }
+
+    public List<TipoBoletinDTO> getListTipoBoletin() {
+        return listTipoBoletin;
+    }
+
+    public void setListTipoBoletin(List<TipoBoletinDTO> listTipoBoletin) {
+        this.listTipoBoletin = listTipoBoletin;
+    }
 }

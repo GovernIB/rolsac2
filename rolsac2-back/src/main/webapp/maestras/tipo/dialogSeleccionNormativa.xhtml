@@ -19,26 +19,130 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
+        <h:outputStylesheet>
+            .panelSinBotonToggle .ui-panel-titlebar-icon {
+                display: none;
+            }
+        </h:outputStylesheet>
         <div class="ui-g-12 ui-md-8 pl-4 panel-container">
-            <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
+                        <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{dialogSeleccionNormativa.buscar}"
                              update="dataTable messagesDialog"/>
-            <p:toolbar id="toolbar">
-                <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
-                                                                                     value="#{dialogSeleccionNormativa.filtroTexto}"/>
-                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
-                                     update="dataTable messagesDialog"
-                                     actionListener="#{dialogSeleccionNormativa.buscar()}" process="@form"/>
-                </f:facet>
-                <f:facet name="right">
-                    <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
-                                     actionListener="#{dialogSeleccionNormativa.anadirNormativaLista()}"
-                                     update="messagesDialog dataTableNormativa"
-                                     disabled="#{empty dialogSeleccionNormativa.datoSeleccionado}"
-                                     icon="pi pi-plus"></p:commandButton>
-                </f:facet>
-            </p:toolbar>
+                     <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                                 widgetVar="panel" collapsed="true">
+                        <f:facet name="header">
+                            <div class="row">
+                                <div class="ui-g-12 ui-md-9 ui-lg-9">
+                                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                                                                                                     value="#{dialogSeleccionNormativa.filtro.texto}"/>
+                                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" styleClass="ml-2"
+                                                     update="dataTable messagesDialog"
+                                                     actionListener="#{dialogSeleccionNormativa.buscar()}" process="@form"/>
+                                    <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" onclick="PF('panel').toggle();cambiarBoton()" styleClass="ml-2" />
+                                    <h:outputScript>
+                                        function cambiarBoton() {
+                                            if ($('#form\\:btnBusquedaAvanzada span').hasClass('pi-plus')) {
+                                                $('#form\\:btnBusquedaAvanzada span').removeClass('pi-plus');
+                                                $('#form\\:btnBusquedaAvanzada span').addClass('pi-minus');
+                                            } else {
+                                                $('#form\\:btnBusquedaAvanzada span').removeClass('pi-minus');
+                                                $('#form\\:btnBusquedaAvanzada span').addClass('pi-plus');
+                                            }
+                                        }
+                                    </h:outputScript>
+                                </div>
+                                <div class="ui-g-12 ui-md-3 ui-lg-3 text-right">
+                                    <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
+                                                     actionListener="#{dialogSeleccionNormativa.anadirNormativaLista()}"
+                                                     update="messagesDialog dataTableNormativa"
+                                                     disabled="#{empty dialogSeleccionNormativa.datoSeleccionado}"
+                                                     icon="pi pi-plus"></p:commandButton>
+                                </div>
+                            </div>
+                        </f:facet>
+
+                         <p class="p-m-0">
+                             <div class="row">
+
+                                 <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                     <h:outputText value="#{labels['dict.titulo']}:" for="txtTitulo"/>
+                                 </div>
+                                 <div class="ui-g-12 ui-md-4 ui-lg-4">
+                                     <p:inputText id="txtTitulo" value="#{dialogSeleccionNormativa.filtro.nombre}"
+                                                  styleClass="w95" />
+                                 </div>
+                                 <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                     <h:outputText value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion"/>
+                                 </div>
+                                 <div class="ui-g-12 ui-md-4 ui-lg-4">
+                                     <p:calendar id="txtFechaAprobacion" showOn="button" widgetVar="fechaAprobacionWidget"
+                                                 styleClass="w95"  size="18"
+                                                 value="#{dialogSeleccionNormativa.filtro.fechaAprobacion}" pattern="dd/MM/yyyy"/>
+                                 </div>
+                                 <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                     <h:outputText value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin"/>
+                                 </div>
+                                 <div class="ui-g-12 ui-md-4 ui-lg-4">
+                                     <p:calendar id="txtFechaBoletin" showOn="button" widgetVar="fechaAprobacionWidget" size="18"
+                                                 styleClass="w95"
+                                                 value="#{dialogSeleccionNormativa.filtro.fechaBoletin}" pattern="dd/MM/yyyy"/>
+                                 </div>
+
+
+                                 <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                     <h:outputText value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
+                                 </div>
+                                 <div class="ui-g-12 ui-md-4 ui-lg-4">
+                                     <p:inputText id="txtNumero" value="#{dialogSeleccionNormativa.filtro.numero}"
+                                                  styleClass="w95" />
+                                 </div>
+                                 <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                     <h:outputText value="#{labels['viewNormativas.tipoNormativa']}:" for="txtTipoNormativa"/>
+                                 </div>
+                                 <div class="ui-g-12 ui-md-4 ui-lg-4">
+                                     <p:selectOneMenu id="txtTipoNormativa" value="#{dialogSeleccionNormativa.filtro.tipoNormativa}"
+                                                      styleClass="w95" converter="#{tipoNormativaConverter}" widgetVar="tipoNormativaWidget">
+                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                         <f:selectItems value="#{dialogSeleccionNormativa.listTipoNormativa}" var="tipoNormativa"
+                                                        itemLabel="#{tipoNormativa.descripcion.getTraduccion(dialogSeleccionNormativa.idioma)}" itemValue="#{tipoNormativa}"/>
+                                     </p:selectOneMenu>
+                                 </div>
+                                 <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                     <h:outputText value="#{labels['viewNormativas.boletin']}:" for="txtBoletin"/>
+                                 </div>
+                                 <div class="ui-g-12 ui-md-4 ui-lg-4">
+                                     <p:selectOneMenu id="txtBoletin" value="#{dialogSeleccionNormativa.filtro.tipoBoletin}"
+                                                      styleClass="w95" converter="#{boletinOficialConverter}" widgetVar="tipoBoletinWidget">
+                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                         <f:selectItems value="#{dialogSeleccionNormativa.listTipoBoletin}" var="tipoBoletin"
+                                                        itemLabel="#{tipoBoletin.nombre}" itemValue="#{tipoBoletin}"/>
+                                     </p:selectOneMenu>
+                                 </div>
+
+                                 <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                     <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigoNorm"/>
+                                 </div>
+                                 <div class="ui-g-12 ui-md-4 ui-lg-4">
+                                     <p:inputText id="txtCodigoNorm" value="#{dialogSeleccionNormativa.filtro.codigo}"
+                                                  styleClass="w95"
+                                                  onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
+                                 </div>
+
+                                 <div class="ui-g-12 text-center">
+                                     <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"
+                                                      iconPos="top" action="#{dialogSeleccionNormativa.limpiarFiltro()}"
+                                                      process="@form" update="panel"/>
+                                     <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
+                                                      actionListener="#{dialogSeleccionNormativa.buscar()}" update="dataTable"
+                                                      process="@form" /> <!-- oncomplete="PF('panel').toggle()" -->
+                                 </div>
+                                 <div class="ui-g-12 text-center">
+                                     <p:outputLabel value="#{labels['viewNormativas.msg.noSeEncuentra']}" styleClass="ml-2 mr-2"/>
+
+                                 </div>
+                             </div>
+                         </p>
+                     </p:panel>
             <p:dataTable id="dataTable" value="#{dialogSeleccionNormativa.lazyModel}" var="normativa"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="normativaTable"
                          rows="#{dialogSeleccionNormativa.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
