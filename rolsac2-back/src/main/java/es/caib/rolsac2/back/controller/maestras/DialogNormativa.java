@@ -4,10 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
-import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
-import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.facade.NormativaServiceFacade;
-import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -47,6 +44,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
     private List<String> documentosRelacionados;
 
     private List<UnidadAdministrativaDTO> uaRelacionadas;
+    private boolean mostrarUAs;
 
     @EJB
     private NormativaServiceFacade normativaServiceFacade;
@@ -59,6 +57,9 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     @EJB
     private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
+
+    @EJB
+    private SystemServiceFacade systemServiceFacade;
 
     private DocumentoNormativaDTO documentoRelacionadoSeleccionado;
 
@@ -75,6 +76,11 @@ public class DialogNormativa extends AbstractController implements Serializable 
         LOG.debug("init");
         this.setearIdioma();
 
+        mostrarUAs = false;
+        String propiedad = systemServiceFacade.obtenerPropiedadConfiguracion("normativa.mostrar.uasRelacionadas");
+        if (propiedad != null && (propiedad.toLowerCase().equals("true") || propiedad.toLowerCase().equals("false"))) {
+            mostrarUAs = Boolean.valueOf(propiedad.toLowerCase());
+        }
         tipoNormativa = maestrasSupServiceFacade.findTipoNormativa();
         tipoBoletin = maestrasSupServiceFacade.findBoletines();
         boolean isTraspaso = false;
@@ -92,8 +98,10 @@ public class DialogNormativa extends AbstractController implements Serializable 
                 data.setTitulo(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
                 data.setUrlBoletin(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
                 List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
-                UnidadAdministrativaGridDTO uaActiva = unidadAdministrativaServiceFacade.findById(sessionBean.getUnidadActiva().getCodigo()).convertDTOtoGridDTO();
-                unidadesAdministrativas.add(uaActiva);
+                //UnidadAdministrativaGridDTO uaActiva = unidadAdministrativaServiceFacade.findById(sessionBean.getUnidadActiva().getCodigo()).convertDTOtoGridDTO();
+                //unidadesAdministrativas.add(uaActiva);
+                UnidadAdministrativaGridDTO uaRaiz = unidadAdministrativaServiceFacade.getUaRaizEntidad(sessionBean.getUnidadActiva().getCodigo());
+                unidadesAdministrativas.add(uaRaiz);
                 data.setUnidadesAdministrativas(new ArrayList<>(unidadesAdministrativas));
                 data.setDocumentosNormativa(new ArrayList<>());
                 data.setAfectaciones(new ArrayList<>());
@@ -150,8 +158,17 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     public boolean verificarGuardar() {
 
-        if (Objects.nonNull(this.data.getNumero()) && !ValidacionTipoUtils.esEntero(this.data.getNumero())) {
+        String regNumero = "[0-9]{1,5}/[0-9]{4}";
+        if (Objects.nonNull(this.data.getNumero()) && !this.data.getNumero().matches(regNumero)) {
+            /** El patron que debería de tener  NNNNN/YYYY **/
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.numero.novalido"), true);
+            return false;
+        }
+
+        String regNumeroBoletin = "[0-9]{1,3}/[0-9]{4}";
+        if (Objects.nonNull(this.data.getNumeroBoletin()) && !this.data.getNumeroBoletin().matches(regNumeroBoletin)) {
+            /** El patron que debería de tener  NNNNN/YYYY **/
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.numeroBoletin.novalido"), true);
             return false;
         }
 
@@ -604,5 +621,13 @@ public class DialogNormativa extends AbstractController implements Serializable 
 
     public void setServicioSeleccionado(ProcedimientoNormativaDTO servicioSeleccionado) {
         this.servicioSeleccionado = servicioSeleccionado;
+    }
+
+    public boolean isMostrarUAs() {
+        return mostrarUAs;
+    }
+
+    public void setMostrarUAs(boolean mostrarUAs) {
+        this.mostrarUAs = mostrarUAs;
     }
 }

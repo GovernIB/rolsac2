@@ -3,7 +3,8 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:my="http://java.sun.com/jsf/composite/components">
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
         <f:metadata>
@@ -29,7 +30,7 @@
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="formDialog:txtNombre formDialog:dataDocumentosRelacionados formDialog:txtUrlBoletin
-            formDialog:dataTableUAs formDialog:dataProcedimientosRelacionados formDialog:dataAfectacionesRelacionadas"
+             formDialog:dataProcedimientosRelacionados formDialog:dataAfectacionesRelacionadas"
                     process="@this"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogNormativa.traducir}"
@@ -107,6 +108,7 @@
                             <h:outputText value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
                         </p>
                         <p:inputText id="txtNumero" value="#{dialogNormativa.data.numero}"
+                                     placeholder="NNNNN/YYYY"
                                      styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"
                         />
                     </div>
@@ -145,7 +147,7 @@
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogNormativa.numeroBoletin']}:" for="txtNumeroBoletin" styleClass="mr-2 mb-1 pt-0"/>
                         <p:inputText id="txtNumeroBoletin" value="#{dialogNormativa.data.numeroBoletin}"
-                                     styleClass="w95"
+                                     styleClass="w95" placeholder="XXX/YYYY"
                                      disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
                     </div>
                     <div class="form-group col-md-4">
@@ -260,55 +262,57 @@
 
                 </div>
             </div>
-            <div class="row left-container mx-0 mb-2">
-                <div class="left-container-header ml-0 col-12 row">
-                    <div class="col-10 text-center">
-                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.uaRelacionadas']}</p>
+            <c:if test="#{dialogNormativa.mostrarUAs}">
+                <div class="row left-container mx-0 mb-2">
+                    <div class="left-container-header ml-0 col-12 row">
+                        <div class="col-10 text-center">
+                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.uaRelacionadas']}</p>
+                        </div>
+                        <div class="col-2">
+                            <p:commandButton id="btnUAsCol" onclick="colapsarModulo('#divUAs','btnUAs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
+                            <p:commandButton id="btnUAsExp" onclick="expandirModulo('#divUAs','btnUAs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                        </div>
                     </div>
-                    <div class="col-2">
-                        <p:commandButton id="btnUAsCol" onclick="colapsarModulo('#divUAs','btnUAs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
-                        <p:commandButton id="btnUAsExp" onclick="expandirModulo('#divUAs','btnUAs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                    <div id="divUAs" class="col-10 p-1">
+                        <p:dataTable id="dataTableUAs" var="td" value="#{dialogNormativa.data.unidadesAdministrativas}"
+                                     emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+                                     paginator="false" selectionMode="single"
+                                     selection="#{dialogNormativa.uaSeleccionada}"
+                                     rowKey="#{td.codigo}" styleClass="noHeader"
+                        >
+
+
+                            <p:ajax event="rowSelect" global="false"/>
+                            <p:ajax event="rowUnselect"/>
+                            <p:ajax
+                                    event="rowDblselect"
+                                    oncomplete="triggerDblClickUA();"
+                                    global="false"/>
+
+
+                            <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
+                                <h:outputText value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </div>
+                    <div id="divUAsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                        <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                         process="@this" actionListener="#{dialogNormativa.anyadirUAs()}"
+                                         rendered="#{!dialogNormativa.isModoConsulta()}">
+                            <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoUAs}" process="@this"
+                                    update="messagesDialog dataTableUAs"/>
+                        </p:commandButton>
+                        <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                         action="#{dialogNormativa.borrarUA()}"
+                                         process="@this" update="dataTableUAs messagesDialog"
+                                         rendered="#{!dialogNormativa.isModoConsulta()}"/>
+                        <p:commandButton id="btnConsultarUA" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                         action="#{dialogNormativa.consultarUA()}"
+                                         process="@this" update="dataTableUAs messagesDialog"/>
                     </div>
                 </div>
-                <div id="divUAs" class="col-10 p-1">
-                    <p:dataTable id="dataTableUAs" var="td" value="#{dialogNormativa.data.unidadesAdministrativas}"
-                                 emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
-                                 paginator="false" selectionMode="single"
-                                 selection="#{dialogNormativa.uaSeleccionada}"
-                                 rowKey="#{td.codigo}" styleClass="noHeader"
-                    >
-
-                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                        <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowUnselect"/>
-                        <p:ajax
-                                event="rowDblselect"
-                                oncomplete="triggerDblClickUA();"
-                                global="false"/>
-
-
-                        <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                            <h:outputText value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
-                        </p:column>
-
-                    </p:dataTable>
-                </div>
-                <div id="divUAsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     process="@this" actionListener="#{dialogNormativa.anyadirUAs()}"
-                                     rendered="#{!dialogNormativa.isModoConsulta()}">
-                        <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoUAs}" process="@this"
-                                update="messagesDialog dataTableUAs"/>
-                    </p:commandButton>
-                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                                     action="#{dialogNormativa.borrarUA()}"
-                                     process="@this" update="dataTableUAs messagesDialog"
-                                     rendered="#{!dialogNormativa.isModoConsulta()}"/>
-                    <p:commandButton id="btnConsultarUA" title="#{labels['dict.consultar']}" icon="pi pi-eye"
-                                     action="#{dialogNormativa.consultarUA()}"
-                                     process="@this" update="dataTableUAs messagesDialog"/>
-                </div>
-            </div>
+            </c:if>
             <div class="row left-container mx-0 mb-2">
                 <div class="left-container-header ml-0 col-12 row">
                     <div class="col-10 text-center">
@@ -401,7 +405,7 @@
                 </div>
                 <div id="divAfects" class="col-10 p-1">
                     <p:dataTable id="dataAfectacionesRelacionadas" var="td" value="#{dialogNormativa.data.afectaciones}"
-                                 emptyMessage="No hay afectaciones relacionadas" scrollable="true" 
+                                 emptyMessage="No hay afectaciones relacionadas" scrollable="true"
                                  paginator="false" styleClass="text-center" selectionMode="single"
                                  selection="#{dialogNormativa.afectacionSeleccionada}"
                                  rowKey="#{td.codigoTabla}">
