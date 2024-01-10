@@ -45,6 +45,8 @@ public class DialogExportar extends AbstractController implements Serializable {
      **/
     private ExportarDatos datos;
 
+    boolean tipoProcServ = false;
+
     public void load() {
 
         LOG.debug("init");
@@ -94,7 +96,7 @@ public class DialogExportar extends AbstractController implements Serializable {
 
 
                 } else if (tipo.equals("PROC")) {
-
+                    tipoProcServ = true;
                     campos.add(new ExportarCampos("dict.codigo", "codigo", "CODI_PROCEDIMENT", true, 1));
                     campos.add(new ExportarCampos("dict.codigoWF", "codigoWF", "CODI_PROCEDIMENT_WF", true, 1));
                     campos.add(new ExportarCampos("dict.fechaPublicacion", "fechaPub", "DATA_PUBLICACIO", true, 1));
@@ -123,7 +125,7 @@ public class DialogExportar extends AbstractController implements Serializable {
                     campos.add(new ExportarCampos("dict.comun", "comun", "COMU", true, 1));
 
                 } else if (tipo.equals("SERV")) {
-
+                    tipoProcServ = true;
                     campos.add(new ExportarCampos("dict.codigo", "codigo", "CODI_SERVEI", true, 1));
                     campos.add(new ExportarCampos("dict.codigoWF", "codigoWF", "CODI_SERVEI_WF", true, 1));
                     campos.add(new ExportarCampos("dict.fechaPublicacion", "fechaPub", "DATA_PUBLICACIO", true, 1));
@@ -158,7 +160,19 @@ public class DialogExportar extends AbstractController implements Serializable {
         } else {
             datos = (ExportarDatos) UtilJSF.getValorMochilaByKey("exportar");
             UtilJSF.vaciarMochila();
+            if (tipo.equals("SERV") || tipo.equals("PROC")) {
+                tipoProcServ = true;
+            }
         }
+    }
+
+    /**
+     * Devuelve si es tipo procedimiento/servicio.
+     *
+     * @return
+     */
+    public boolean isProcServ() {
+        return tipoProcServ;
     }
 
 

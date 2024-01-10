@@ -15,15 +15,13 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
+import es.caib.rolsac2.service.model.types.TypeExportarFormato;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.primefaces.model.StreamedContent;
+import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +29,10 @@ import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URLConnection;
 import java.util.*;
 
 @Named
@@ -350,11 +351,175 @@ public class ViewServicios extends AbstractController implements Serializable {
         }
         exportarDatos.setCampos(campos);
 
-        List<ProcedimientoBaseDTO> procedimientos = procedimientoService.findExportByFiltro(filtro, this.exportarDatos);
-        String[][] datos = UtilExport.getValoresServs(procedimientos, exportarDatos, this.getIdioma());
+        List<ProcedimientoCompletoDTO> procedimientos = procedimientoService.findExportByFiltro(filtro, exportarDatos);
+
+        Map<String, String> literalesWF = new HashMap<>();
+        literalesWF.put("1", getLiteral("dict.wf.1"));
+        literalesWF.put("0", getLiteral("dict.wf.0"));
+
+        Map<String, String> literalesEstado = new HashMap<>();
+        literalesEstado.put("M", getLiteral("TypeProcedimientoEstado.M"));
+        literalesEstado.put("S", getLiteral("TypeProcedimientoEstado.S"));
+        literalesEstado.put("T", getLiteral("TypeProcedimientoEstado.T"));
+        literalesEstado.put("U", getLiteral("TypeProcedimientoEstado.U"));
+        literalesEstado.put("B", getLiteral("TypeProcedimientoEstado.B"));
+        literalesEstado.put("P", getLiteral("TypeProcedimientoEstado.P"));
+        literalesEstado.put("R", getLiteral("TypeProcedimientoEstado.R"));
+
+        Map<String, String> literalesEstadoSIA = new HashMap<>();
+        literalesEstadoSIA.put("A", getLiteral("dialogProcedimiento.estadoSIA.A"));
+        literalesEstadoSIA.put("B", getLiteral("dialogProcedimiento.estadoSIA.B"));
+        String[][] datos = UtilExport.getValoresCompletos(procedimientos, exportarDatos, this.getIdioma(), literalesWF, literalesEstado, literalesEstadoSIA);
         String[] cabecera = UtilExport.getCabecera(exportarDatos);
-        return UtilExport.generarStreamedContent("SERVICIO", cabecera, datos, exportarDatos);
+        return UtilExport.generarStreamedContent("Servei", cabecera, datos, exportarDatos);
     }
+
+    /**
+     * Devuelve el fichero
+     */
+    public StreamedContent getFileOld() {
+
+        List<ProcedimientoBaseDTO> servicios = new ArrayList<>(); // procedimientoService.findExportByFiltro(filtro, this.exportarDatos);
+
+        StringBuilder sb = new StringBuilder();
+
+        if (this.exportarDatos.getFormato().equals(TypeExportarFormato.CSV)) {
+            //Si exportamos en formato CSV, añadimos la cabecera
+            for (ExportarCampos exp : this.exportarDatos.getCampos()) {
+                sb.append(exp.getNombreCampo() + ";");
+            }
+
+            //Salto de linea
+            sb.append(System.lineSeparator());
+        }
+
+        String filename = "datos.txt";
+        if (this.exportarDatos.getFormato().equals(TypeExportarFormato.CSV)) {
+            filename = "servicios.csv";
+        } else if (this.exportarDatos.getFormato().equals(TypeExportarFormato.TXT)) {
+            filename = "servicios.txt";
+        }
+        for (ProcedimientoBaseDTO dato : servicios) {
+            ServicioDTO servicioDTO = (ServicioDTO) dato;
+            if (this.exportarDatos.getFormato().equals(TypeExportarFormato.TXT)) {
+                sb.append("SERVICIO: " + servicioDTO.getCodigo() + System.lineSeparator());
+            }
+
+            for (ExportarCampos exp : this.exportarDatos.getCampos()) {
+                if (!exp.isSeleccionado()) {
+                    continue;
+                }
+
+                if (this.exportarDatos.getFormato().equals(TypeExportarFormato.TXT)) {
+                    sb.append("\t" + getLiteral(exp.getLiteral()) + ": ");
+                }
+
+                switch (exp.getCampo()) {
+                    case "codigo":
+                        sb.append(UtilExport.getValor(servicioDTO.getCodigo(), this.getIdioma()));
+                        break;
+                    case "codigoSIA":
+                        sb.append(UtilExport.getValor(servicioDTO.getCodigoSIA(), this.getIdioma()));
+                        break;
+                    case "estadoSIA":
+                        sb.append(UtilExport.getValor(servicioDTO.getEstadoSIA(), this.getIdioma()));
+                        break;
+                    case "fechaSIA":
+                        sb.append(UtilExport.getValor(servicioDTO.getFechaSIA(), this.getIdioma()));
+                        break;
+                    case "estado":
+                        sb.append(UtilExport.getValor(servicioDTO.getEstado(), this.getIdioma()));
+                        break;
+                    case "visibilidad":
+                        sb.append(UtilExport.getValor(servicioDTO.esVisible(), this.getIdioma()));
+                        break;
+                    /*case "pendienteValidar":
+                        sb.append(UtilExport.getValor(servicioDTO.isPendienteIndexar(), this.getIdioma()));
+                        break;*/
+                    case "nombreCat":
+                        sb.append(UtilExport.getValor(servicioDTO.getNombreProcedimientoWorkFlow(), Constantes.IDIOMA_CATALAN));
+                        break;
+                    case "nombreEsp":
+                        sb.append(UtilExport.getValor(servicioDTO.getNombreProcedimientoWorkFlow(), Constantes.IDIOMA_ESPANYOL));
+                        break;
+                    case "objetoCat":
+                        sb.append(UtilExport.getValor(servicioDTO.getObjeto(), Constantes.IDIOMA_CATALAN));
+                        break;
+                    case "objetoEsp":
+                        sb.append(UtilExport.getValor(servicioDTO.getObjeto(), Constantes.IDIOMA_ESPANYOL));
+                        break;
+                    case "publicoObjetivo":
+                        if (servicioDTO.getPublicosObjetivo() == null || servicioDTO.getPublicosObjetivo().isEmpty()) {
+                            sb.append("");
+                        } else {
+                            String publicoObjetivo = "";
+                            for (TipoPublicoObjetivoEntidadGridDTO tipoPublicoObjetivoDTO : servicioDTO.getPublicosObjetivo()) {
+                                if (tipoPublicoObjetivoDTO.getDescripcion().getTraduccion(this.getIdioma()) == null) {
+                                    publicoObjetivo += tipoPublicoObjetivoDTO.getDescripcion().getTraduccion() + ", ";
+                                } else {
+                                    publicoObjetivo += tipoPublicoObjetivoDTO.getDescripcion().getTraduccion(this.getIdioma()) + ", ";
+                                }
+                            }
+                            sb.append(UtilExport.getValor(publicoObjetivo, this.getIdioma()));
+                        }
+                        break;
+                    case "unidadAdministrativaInstructora":
+                        sb.append(UtilExport.getValor(servicioDTO.getUaInstructor(), this.getIdioma()));
+                        break;
+                    case "unidadAdministrativaResponsable":
+                        sb.append(UtilExport.getValor(servicioDTO.getUaResponsable(), this.getIdioma()));
+                        break;
+                    case "unidadAdministrativaCompetente":
+                        sb.append(UtilExport.getValor(servicioDTO.getUaCompetente(), this.getIdioma()));
+                        break;
+                    case "responsable":
+                        sb.append(UtilExport.getValor(servicioDTO.getResponsable(), this.getIdioma()));
+                        break;
+                    case "unidadAdministrativaResolutoria":
+                        sb.append(UtilExport.getValor(servicioDTO.getUaCompetente(), this.getIdioma()));
+                        break;
+                    case "numeroNormas":
+                        sb.append(UtilExport.getValor(servicioDTO.getNormativas() == null ? 0 : servicioDTO.getNormativas().size(), this.getIdioma()));
+                        break;
+                    case "fechaActualizacion":
+                        sb.append(UtilExport.getValor(servicioDTO.getFechaActualizacion(), this.getIdioma()));
+                        break;
+                    case "usuarioUltimaActualizacion":
+                        sb.append(UtilExport.getValor(servicioDTO.getUsuarioAuditoria(), this.getIdioma()));
+                        break;
+                    case "comun":
+                        sb.append(UtilExport.getValor(servicioDTO.esComun(), this.getIdioma()));
+                        break;
+                    case "presencial":
+                        sb.append(UtilExport.getValor(servicioDTO.isTramitPresencial(), this.getIdioma()));
+                        break;
+                    case "telematico":
+                        sb.append(UtilExport.getValor(servicioDTO.isTramitElectronica(), this.getIdioma()));
+                        break;
+                    case "telefonico":
+                        sb.append(UtilExport.getValor(servicioDTO.isTramitTelefonica(), this.getIdioma()));
+                        break;
+                    default:
+                        break;
+                }
+
+                if (this.exportarDatos.getFormato().equals(TypeExportarFormato.CSV)) {
+                    sb.append(";");
+                }
+                if (this.exportarDatos.getFormato().equals(TypeExportarFormato.TXT)) {
+                    sb.append(System.lineSeparator());
+                }
+            }
+            sb.append(System.lineSeparator());
+        }
+
+
+        String mimeType = URLConnection.guessContentTypeFromName(filename);
+        InputStream fis = new ByteArrayInputStream(sb.toString().getBytes());
+        StreamedContent file = DefaultStreamedContent.builder().name(filename).contentType(mimeType).stream(() -> fis).build();
+        return file;
+    }
+
 
     public void cambiarUAbuscarEvt(UnidadAdministrativaDTO ua) {
         sessionBean.cambiarUnidadAdministrativa(ua);

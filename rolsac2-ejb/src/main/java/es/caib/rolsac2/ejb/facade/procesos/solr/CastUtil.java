@@ -91,9 +91,9 @@ public class CastUtil {
 
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
-        for (final TipoMateriaSIAGridDTO materia : procedimiento.getMateriasSIA()) {
-            materiasId.add(materia.getCodigo().toString());
-        }
+        //for (final TipoMateriaSIAGridDTO materia : procedimiento.getMateriasSIA()) {
+        //    materiasId.add(materia.getCodigo().toString());
+        //}
         indexData.setMateriaId(materiasId);
 
         // Datos IDs publico Objetivos.
@@ -183,15 +183,15 @@ public class CastUtil {
                 final StringBuffer textoOptional = new StringBuffer();
 
                 // materia
-                for (final TipoMateriaSIAGridDTO materia : servicio.getMateriasSIA()) {
-                    textoOptional.append(" ");
-                    textoOptional.append(materia.getCodigo());
-                    textoOptional.append(" ");
-                    textoOptional.append(materia.getIdentificador());
-                    textoOptional.append(" ");
-                    textoOptional.append(materia.getDescripcion().getTraduccion(keyIdioma));
+                //for (final TipoMateriaSIAGridDTO materia : servicio.getMateriasSIA()) {
+                //    textoOptional.append(" ");
+                //    textoOptional.append(materia.getCodigo());
+                //    textoOptional.append(" ");
+                //    textoOptional.append(materia.getIdentificador());
+                //    textoOptional.append(" ");
+                //    textoOptional.append(materia.getDescripcion().getTraduccion(keyIdioma));
 
-                }
+                //}
 
                 // Servicio Responsable
                 if (servicio.getUaResponsable() != null) {
@@ -248,9 +248,9 @@ public class CastUtil {
 
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
-        for (final TipoMateriaSIAGridDTO materia : servicio.getMateriasSIA()) {
-            materiasId.add(materia.getCodigo().toString());
-        }
+        //for (final TipoMateriaSIAGridDTO materia : servicio.getMateriasSIA()) {
+        //    materiasId.add(materia.getCodigo().toString());
+        // }
         indexData.setMateriaId(materiasId);
 
         // Datos IDs publico Objetivos.
@@ -457,15 +457,14 @@ public class CastUtil {
 
 
             // materia
-            for (final TipoMateriaSIAGridDTO materia : proc.getMateriasSIA()) {
-                textoOptional.append(" ");
-                textoOptional.append(materia.getCodigo());
-                textoOptional.append(" ");
-                textoOptional.append(materia.getIdentificador());
-                textoOptional.append(" ");
-                textoOptional.append(materia.getDescripcion().getTraduccion(idioma));
-
-            }
+            //for (final TipoMateriaSIAGridDTO materia : proc.getMateriasSIA()) {
+            //    textoOptional.append(" ");
+            //    textoOptional.append(materia.getCodigo());
+            //    textoOptional.append(" ");
+            //    textoOptional.append(materia.getIdentificador());
+            //    textoOptional.append(" ");
+            //   textoOptional.append(materia.getDescripcion().getTraduccion(idioma));
+            //}
 
             // Servicio Responsable
             if (proc.getUaResponsable() != null && proc.getUaResponsable().getNombre() != null && proc.getUaResponsable().getNombre().getTraduccion(idioma) != null) {
@@ -562,15 +561,14 @@ public class CastUtil {
 
 
             // materia
-            for (final TipoMateriaSIAGridDTO materia : proc.getMateriasSIA()) {
-                textoOptional.append(" ");
-                textoOptional.append(materia.getCodigo());
-                textoOptional.append(" ");
-                textoOptional.append(materia.getIdentificador());
-                textoOptional.append(" ");
-                textoOptional.append(materia.getDescripcion().getTraduccion(idioma));
-
-            }
+            //for (final TipoMateriaSIAGridDTO materia : proc.getMateriasSIA()) {
+            //    textoOptional.append(" ");
+            //    textoOptional.append(materia.getCodigo());
+            //    textoOptional.append(" ");
+            //    textoOptional.append(materia.getIdentificador());
+            //    textoOptional.append(" ");
+            //    textoOptional.append(materia.getDescripcion().getTraduccion(idioma));
+            //}
 
             // Servicio Responsable
             if (proc.getUaResponsable() != null && proc.getUaResponsable().getNombre() != null && proc.getUaResponsable().getNombre().getTraduccion(idioma) != null) {
@@ -749,15 +747,14 @@ public class CastUtil {
                 final StringBuffer textoOptional = new StringBuffer();
 
                 // materia
-                for (final TipoMateriaSIAGridDTO materia : proc.getMateriasSIA()) {
-                    textoOptional.append(" ");
-                    textoOptional.append(materia.getCodigo());
-                    textoOptional.append(" ");
-                    textoOptional.append(materia.getIdentificador());
-                    textoOptional.append(" ");
-                    textoOptional.append(materia.getDescripcion().getTraduccion(keyIdioma));
-
-                }
+                //for (final TipoMateriaSIAGridDTO materia : proc.getMateriasSIA()) {
+                //    textoOptional.append(" ");
+                //    textoOptional.append(materia.getCodigo());
+                //    textoOptional.append(" ");
+                //    textoOptional.append(materia.getIdentificador());
+                //    textoOptional.append(" ");
+                //    textoOptional.append(materia.getDescripcion().getTraduccion(keyIdioma));
+                //}
 
                 // Servicio Responsable
                 if (proc.getUaResponsable() != null && proc.getUaResponsable().getNombre() != null && proc.getUaResponsable().getNombre().getTraduccion(keyIdioma) != null) {
@@ -817,9 +814,9 @@ public class CastUtil {
 
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
-        for (final TipoMateriaSIAGridDTO materia : proc.getMateriasSIA()) {
-            materiasId.add(materia.getCodigo().toString());
-        }
+        //for (final TipoMateriaSIAGridDTO materia : proc.getMateriasSIA()) {
+        //    materiasId.add(materia.getCodigo().toString());
+        //}
         indexData.setMateriaId(materiasId);
 
         // Datos IDs publico Objetivos.

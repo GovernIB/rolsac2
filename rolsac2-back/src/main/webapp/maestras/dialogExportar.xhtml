@@ -34,6 +34,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:importConstants type="es.caib.rolsac2.service.model.types.TypeExportarFormato"
                            var="tipos"></p:importConstants>
 
+        <h:outputStylesheet library="css">
+            body {
+                overflow: hidden;
+            }
+        </h:outputStylesheet>
         <p:growl id="messagesDialog"
                  globalOnly="false"
                  showDetail="false"
@@ -58,6 +63,21 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </p:selectOneButton>
                 </div>
             </div>
+            <c:if test="#{dialogExportar.isProcServ()}">
+                <div class="row">
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <p:outputLabel value="#{labels['dict.estados']}:" />
+                    </div>
+                    <div class="ui-g-12 ui-md-9 ui-lg-9">
+                        <p:selectOneButton value="#{dialogExportar.datos.estados}"
+                                           converter="javax.faces.Boolean"
+                                           styleClass="w95 botoneraRed"  maxlength="50">
+                            <f:selectItem itemValue="true" itemLabel="#{labels['dialogExportar.estado.todos']}" />
+                            <f:selectItem itemValue="false" itemLabel="#{labels['dialogExportar.estado.soloUno']}" />
+                        </p:selectOneButton>
+                    </div>
+                </div>
+            </c:if>
             <div class="row mb-5">
                 <div class="ui-g-12 ui-md-3 ui-lg-3">
                     <p:outputLabel value="#{labels['dict.cantidad']}:" />
@@ -71,6 +91,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </p:selectOneButton>
                 </div>
             </div>
+
             <p:dataTable id="datatable" var="td" value="#{dialogExportar.datos.campos}"
                          emptyMessage="#{labels['dict.tablaVacia']}"
                          paginator="false"

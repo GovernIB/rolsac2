@@ -37,6 +37,11 @@ public class ExportarDatos {
     private boolean todosLosDatos = true;
 
     /**
+     * Mostrar todos los estados o sólo uno.
+     */
+    private boolean estados = true;
+
+    /**
      * Constructor
      **/
     public ExportarDatos(List<ExportarCampos> campos) {
@@ -54,6 +59,7 @@ public class ExportarDatos {
         }
         this.formato = otro.formato;
         this.todosLosDatos = otro.todosLosDatos;
+        this.estados = otro.estados;
     }
 
 
@@ -184,5 +190,13 @@ public class ExportarDatos {
     @Override
     public ExportarDatos clone() {
         return new ExportarDatos(this);
+    }
+
+    public boolean isEstados() {
+        return estados;
+    }
+
+    public void setEstados(boolean estados) {
+        this.estados = estados;
     }
 }

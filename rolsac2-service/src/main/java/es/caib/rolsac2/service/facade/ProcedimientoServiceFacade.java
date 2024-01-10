@@ -228,5 +228,5 @@ public interface ProcedimientoServiceFacade {
 
     String obtenerIdiomaEntidad(Long codigo);
 
-    List<ProcedimientoBaseDTO> findExportByFiltro(ProcedimientoFiltro filtro, ExportarDatos exportarDatos);
+    List<ProcedimientoCompletoDTO> findExportByFiltro(ProcedimientoFiltro filtro, ExportarDatos exportarDatos);
 }
