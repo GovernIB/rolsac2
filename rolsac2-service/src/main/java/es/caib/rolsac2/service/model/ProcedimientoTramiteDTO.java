@@ -59,7 +59,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         ProcedimientoTramiteDTO procedimientoTramite = new ProcedimientoTramiteDTO();
         procedimientoTramite.setCodigoString(String.valueOf(Calendar.getInstance().getTime().getTime()));
         procedimientoTramite.setTramitPresencial(false);
-        procedimientoTramite.setTramitElectronica(false);
+        procedimientoTramite.setTramitElectronica(true);
         procedimientoTramite.setTramitTelefonica(false);
         if (idiomas == null || idiomas.isEmpty()) {
             procedimientoTramite.setRequisitos(Literal.createInstance());
@@ -611,10 +611,8 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         ProcedimientoTramiteDTO that = (ProcedimientoTramiteDTO) o;
         return codigo.equals(that.codigo);
     }
@@ -627,12 +625,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
 
     @Override
     public String toString() {
-        return "ProcedimientoTramiteDTO{" + "codigo=" + codigo + ", unidadAdministrativa=" + unidadAdministrativa
-                + ", procedimiento=" + procedimiento + ", tipoTramitacion=" + tipoTramitacion
-                + ", orden=" + orden
-                + ", listaDocumentos=" + listaDocumentos + ", listaModelos=" + listaModelos + ", tasaAsociada="
-                + tasaAsociada + ", requisitos=" + requisitos + ", nombre=" + nombre + ", documentacion="
-                + documentacion + ", observacion=" + observacion + ", terminoMaximo=" + terminoMaximo + '}';
+        return "ProcedimientoTramiteDTO{" + "codigo=" + codigo + ", unidadAdministrativa=" + unidadAdministrativa + ", procedimiento=" + procedimiento + ", tipoTramitacion=" + tipoTramitacion + ", orden=" + orden + ", listaDocumentos=" + listaDocumentos + ", listaModelos=" + listaModelos + ", tasaAsociada=" + tasaAsociada + ", requisitos=" + requisitos + ", nombre=" + nombre + ", documentacion=" + documentacion + ", observacion=" + observacion + ", terminoMaximo=" + terminoMaximo + '}';
     }
 
     @Override

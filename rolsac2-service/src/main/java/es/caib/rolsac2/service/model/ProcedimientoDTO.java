@@ -178,14 +178,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             procClonado.setPublicosObjetivo(publicos);
 
         }
-        if (getMateriasSIA() != null) {
-            List<TipoMateriaSIAGridDTO> mats = new ArrayList<>();
-            for (TipoMateriaSIAGridDTO materia : getMateriasSIA()) {
-                mats.add((TipoMateriaSIAGridDTO) materia.clone());
-            }
-            procClonado.setMateriasSIA(mats);
-
-        }
         if (getDocumentos() != null) {
             List<ProcedimientoDocumentoDTO> docs = new ArrayList<>();
             for (ProcedimientoDocumentoDTO documento : getDocumentos()) {
@@ -359,9 +351,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (TipoPublicoObjetivoEntidadGridDTO.compareTo(this.getPublicosObjetivo(), dataOriginal.getPublicosObjetivo()) != 0) {
             return TipoPublicoObjetivoEntidadGridDTO.compareTo(this.getPublicosObjetivo(), dataOriginal.getPublicosObjetivo());
         }
-        if (TipoMateriaSIAGridDTO.compareTo(this.getMateriasSIA(), dataOriginal.getMateriasSIA()) != 0) {
-            return TipoMateriaSIAGridDTO.compareTo(this.getMateriasSIA(), dataOriginal.getMateriasSIA());
-        }
         if (ProcedimientoDocumentoDTO.compareTo(this.getDocumentos(), dataOriginal.getDocumentos()) != 0) {
             return ProcedimientoDocumentoDTO.compareTo(this.getDocumentos(), dataOriginal.getDocumentos());
         }
@@ -434,7 +423,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
         //Relaciones
         AuditoriaUtil.auditarTipoPublico(data.getPublicosObjetivo(), dataOriginal.getPublicosObjetivo(), cambios, "auditoria.procedimiento.publicosObjetivo");
-        AuditoriaUtil.auditarMateriaSIA(data.getMateriasSIA(), dataOriginal.getMateriasSIA(), cambios, "auditoria.procedimiento.materiasSIA");
         AuditoriaUtil.auditarDocumentos(data.getDocumentos(), dataOriginal.getDocumentos(), cambios, "auditoria.procedimiento.documentos");
         AuditoriaUtil.auditarDocumentos(data.getDocumentosLOPD(), dataOriginal.getDocumentosLOPD(), cambios, "auditoria.procedimiento.documentosLOPD");
         AuditoriaUtil.auditarNormativas(data.getNormativas(), dataOriginal.getNormativas(), cambios, "auditoria.procedimiento.normativas");
@@ -464,5 +452,19 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             visible = Boolean.FALSE;
         }
         return visible;
+    }
+
+    /**
+     * Icono de visibilidad
+     *
+     * @return
+     */
+    public String getIcon() {
+        if (this.esVisible()) {
+            return "pi pi-eye iconoVerde";
+        } else {
+            return "pi pi-eye-slash iconoRojo";
+        }
+
     }
 }

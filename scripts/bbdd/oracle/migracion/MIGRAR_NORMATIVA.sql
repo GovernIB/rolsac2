@@ -99,6 +99,7 @@ create or replace PROCEDURE "MIGRAR_NORMATIVA" (codigoNormativa NUMBER, codigoEn
     EXISTE_RELACION NUMBER(2,0);
     EXISTE_NORMATIVA NUMBER(2,0);
     EXISTE_UA        NUMBER(2,0);
+    CODIGO_UA_RAIZ   NUMBER(10,0);
 BEGIN
 
     dbms_lob.createtemporary(l_clob, TRUE);
@@ -131,6 +132,11 @@ BEGIN
        THEN   
              /** CAPTURAMOS POR SI SE PRODUCE UN ERROR NO PREVISTO */
             BEGIN 
+
+              SELECT UNAD_CODIGO
+                INTO CODIGO_UA_RAIZ
+                FROM RS2_UNIADM
+                WHERE UNAD_CODENTI = codigoEntidad AND UNAD_UNADPADRE IS NULL AND ROWNUM = 1;
 
              INSERT INTO RS2_NORMA
                   ( NORM_CODIGO,
@@ -208,8 +214,11 @@ BEGIN
                           WHERE TRNO_CODTPNO = codigoNormativa
                             AND TRNO_IDIOMA = 'ca';
                 END IF;
-                
-                /** La relacion de UAs con Normativas **/
+
+                /** AHORA DIRECTAMENTE SE ASOCIA A LA UA RAIZ **/
+                INSERT INTO RS2_UADNOR (UANO_CODNORM, UANO_CODUNA)
+                VALUES (codigoNormativa,CODIGO_UA_RAIZ);
+                /** La relacion de UAs con Normativas
                 FOR normUA IN cursorUAsNORMATIVASsROLSAC1(codigoNormativa)
                 LOOP
                     SELECT COUNT(*)
@@ -217,19 +226,19 @@ BEGIN
                       FROM RS2_UADNOR
                       WHERE UANO_CODNORM = codigoNormativa
                         AND UANO_CODUNA = normUA.UNN_CODUNA;
-                        
+
                     SELECT COUNT(*)
                       INTO EXISTE_UA
                       FROM RS2_UNIADM
                       WHERE UNAD_CODIGO = normUA.UNN_CODUNA;
-                    
-                        
+
+
                     IF EXISTE_RELACION = 0 AND EXISTE_UA = 1
-                    THEN 
+                    THEN
                         INSERT INTO RS2_UADNOR (UANO_CODNORM, UANO_CODUNA)
-                          VALUES (codigoNormativa,normUA.UNN_CODUNA); 
+                          VALUES (codigoNormativa,normUA.UNN_CODUNA);
                     END IF;
-                END LOOP;
+                END LOOP; **/
                 
                 FOR documento IN cursorDocsNORMATIVASsROLSAC1(codigoNormativa)
                 LOOP

@@ -32,7 +32,9 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     List<ProcedimientoGridDTO> findProcedimientosPagedByFiltro(ProcedimientoFiltro filtro);
 
-    List<ProcedimientoBaseDTO> findProcedimientosPagedByFiltroRest(ProcedimientoFiltro filtro);
+    List<ProcedimientoCompletoDTO> findProcedimientosPagedByFiltroExport(ProcedimientoFiltro filtro);
+
+    List<ProcedimientoBaseDTO> findProcedimientosPagedByFiltroRest(ProcedimientoFiltro filtro, boolean ignorarDocs);
 
     List<ServicioGridDTO> findServiciosPagedByFiltro(ProcedimientoFiltro filtro);
 
@@ -61,10 +63,6 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
     void createWF(JProcedimientoWorkflow jProcWF);
 
     boolean existeProcedimientoConMateria(Long materiaSIA);
-
-    List<TipoMateriaSIAGridDTO> getMateriaGridSIAByWF(Long codigoWF);
-
-    void mergeMateriaSIAProcWF(Long codigoWF, List<TipoMateriaSIAGridDTO> listaNuevos);
 
     boolean existeProcedimientoConPublicoObjetivo(Long codigoPub);
 
@@ -234,5 +232,5 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      * @return
      */
     String obtenerIdiomaEntidad(Long codigoProc);
- 
+
 }

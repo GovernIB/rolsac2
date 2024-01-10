@@ -89,7 +89,6 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     /*** Lista de objetos **/
     private List<TipoPublicoObjetivoEntidadGridDTO> publicosObjetivo;
-    private List<TipoMateriaSIAGridDTO> materiasSIA;
     private List<ProcedimientoDocumentoDTO> documentos;
     private List<ProcedimientoDocumentoDTO> documentosLOPD;
     private List<NormativaGridDTO> normativas;
@@ -445,16 +444,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     public void setUaInstructor(UnidadAdministrativaDTO uaInstructor) {
         this.uaInstructor = uaInstructor;
     }
-
-
-    public List<TipoMateriaSIAGridDTO> getMateriasSIA() {
-        return materiasSIA;
-    }
-
-    public void setMateriasSIA(List<TipoMateriaSIAGridDTO> materiasSIA) {
-        this.materiasSIA = materiasSIA;
-    }
-
+ 
     public TipoProcedimientoDTO getTipoProcedimiento() {
         return tipoProcedimiento;
     }

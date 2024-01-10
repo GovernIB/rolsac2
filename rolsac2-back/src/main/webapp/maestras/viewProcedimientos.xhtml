@@ -552,7 +552,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              process="@form" update="panel"/>
                             <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                              actionListener="#{viewProcedimientos.buscar()}" update="messages dataTable"
-                                             process="@form" oncomplete="PF('panel').toggle()"/>
+                                             process="@form" /> <!-- oncomplete="PF('panel').toggle()" -->
                         </div>
                     </div>
                 </p>

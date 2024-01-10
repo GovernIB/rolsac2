@@ -545,6 +545,7 @@ BEGIN
                     INSERT INTO  RS2_PRCTEM (PRTM_CODPRWF, PRTM_CODTEMA)
                       VALUES (CODIGO_PROCWF,ROLSAC1_MATERIAS.SRM_CODMAT );
 
+                    /**
                     SELECT COUNT(TPMS_CODIGO)
                       INTO CODIGOSIAEXIST
                       FROM RS2_TIPOMSI
@@ -555,8 +556,7 @@ BEGIN
                             );
                             
                    
-                    /** METEMOS EL TIPO SIA **/  
-                    IF CODIGOSIAEXIST > 0 
+                    IF CODIGOSIAEXIST > 0
                     THEN
                          SELECT TPMS_CODIGO
                           INTO CODIGOSIAR2
@@ -574,13 +574,12 @@ BEGIN
                           WHERE PRMS_CODPRWF = CODIGO_PROCWF
                            AND  PRMS_TIPMSIA = CODIGOSIAR2;
 
-                        /** SI EXSITE TIPO SIA, NO VOLVERLO A METER **/
-                        IF EXISTE_MAT_PRC = 0 
+                        IF EXISTE_MAT_PRC = 0
                         THEN 
                             INSERT INTO RS2_PRCMAS(PRMS_CODPRWF, PRMS_TIPMSIA)
                             VALUES (CODIGO_PROCWF, CODIGOSIAR2);
                         END IF;
-                    END IF;
+                    END IF; **/
                 END LOOP;
                      /** INTRODUCIMOS LAS NORMATIVAS. **/
                 FOR ROLSAC1_NORMATIVA IN cursorNormativasRolsac1(codigo) 

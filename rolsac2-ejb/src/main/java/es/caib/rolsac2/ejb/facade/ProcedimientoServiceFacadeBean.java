@@ -172,7 +172,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         procedimientoRepository.createWF(jProcWF);
 
-        procedimientoRepository.mergeMateriaSIAProcWF(jProcWF.getCodigo(), dto.getMateriasSIA());
         procedimientoRepository.mergePublicoObjetivoProcWF(jProcWF.getCodigo(), dto.getPublicosObjetivo());
         procedimientoRepository.mergeNormativaProcWF(jProcWF.getCodigo(), dto.getNormativas());
         String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
@@ -321,7 +320,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         mergearTraducciones(jProcWF, dto);
         jProcWF.getProcedimiento().setFechaActualizacion(new Date());
         procedimientoRepository.updateWF(jProcWF);
-        procedimientoRepository.mergeMateriaSIAProcWF(jProcWF.getCodigo(), dto.getMateriasSIA());
         procedimientoRepository.mergePublicoObjetivoProcWF(jProcWF.getCodigo(), dto.getPublicosObjetivo());
         procedimientoRepository.mergeNormativaProcWF(jProcWF.getCodigo(), dto.getNormativas());
         String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
@@ -757,7 +755,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setObservaciones(observaciones);
         proc.setKeywords(keywords);
         // proc.setLopdInfoAdicional(lopdInfoAdicional);
-        proc.setMateriasSIA(procedimientoRepository.getMateriaGridSIAByWF(proc.getCodigoWF()));
         proc.setPublicosObjetivo(procedimientoRepository.getTipoPubObjEntByWF(proc.getCodigoWF()));
         proc.setNormativas(procedimientoRepository.getNormativasByWF(proc.getCodigoWF()));
         proc.setDocumentos(procedimientoRepository.getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
@@ -956,7 +953,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<ProcedimientoBaseDTO> findProcedimientosByFiltroRest(ProcedimientoFiltro filtro) {
-        List<ProcedimientoBaseDTO> items = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtro);
+        List<ProcedimientoBaseDTO> items = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtro, false);
         long total = procedimientoRepository.countByFiltro(filtro);
         return new Pagina<>(items, total);
     }
@@ -1299,7 +1296,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-    public List<ProcedimientoBaseDTO> findExportByFiltro(ProcedimientoFiltro filtro, ExportarDatos exportarDatos) {
+    public List<ProcedimientoCompletoDTO> findExportByFiltro(ProcedimientoFiltro filtro, ExportarDatos exportarDatos) {
         ProcedimientoFiltro filtroClonado = filtro.clone();
         if (filtroClonado.getEstadoWF() == null) {
             filtroClonado.setEstadoWF("T");
@@ -1309,7 +1306,30 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             filtroClonado.setPaginaTamanyo(10000);
         }
 
-        return procedimientoRepository.findProcedimientosPagedByFiltroRest(filtroClonado);
+        List<ProcedimientoCompletoDTO> procedimientos = new ArrayList<>();
+        if (exportarDatos.isEstados()) {
+            if (filtroClonado.getEstadoWF().equals("T")) {
+                return procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
+            } else {
+                List<ProcedimientoBaseDTO> procs = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtroClonado, true);
+                for (ProcedimientoBaseDTO proc : procs) {
+                    ProcedimientoCompletoDTO p = new ProcedimientoCompletoDTO();
+                    p.addProcedimientoBase(proc);
+                    p.setCodigo(proc.getCodigo());
+                    procedimientos.add(p);
+                }
+            }
+        } else {
+            procedimientos = procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
+            if (procedimientos != null && !procedimientos.isEmpty()) {
+                for (ProcedimientoCompletoDTO proc : procedimientos) {
+                    if (proc.isProcedimientoPub() && proc.isProcedimientoMod()) {
+                        proc.setProcedimientoMod(new ProcedimientoBaseDTO());
+                    }
+                }
+            }
+        }
+        return procedimientos;
     }
 
 }

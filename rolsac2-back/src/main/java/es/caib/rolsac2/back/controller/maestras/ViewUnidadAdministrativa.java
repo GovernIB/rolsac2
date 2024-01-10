@@ -5,26 +5,28 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilExport;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
-import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
-import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.*;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URLConnection;
 import java.util.*;
 
 @Named
@@ -175,6 +177,11 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         }
     }
 
+    /**
+     * El return dialog.
+     *
+     * @return
+     */
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
@@ -184,6 +191,11 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         }
     }
 
+    /**
+     * Abre la ventana de unidad administrativa
+     *
+     * @param modoAcceso
+     */
     private void abrirVentana(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
@@ -193,6 +205,11 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         UtilJSF.openDialog("dialogUnidadAdministrativa", modoAcceso, params, true, 975, 733);
     }
 
+    /**
+     * Abre la ventana de evolución de la unidad administrativa
+     *
+     * @param modoAcceso
+     */
     private void abrirVentanaEvolucion(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
@@ -202,6 +219,9 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         UtilJSF.openDialog("dialogEvolucionUnidadAdministrativa", modoAcceso, params, true, 775, 440);
     }
 
+    /**
+     * Borra una unidad administrativa
+     */
     public void borrarUnidadAdministrativa() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
@@ -253,158 +273,61 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         List<UnidadAdministrativaDTO> uas = unidadAdministrativaService.findExportByFiltro(filtro, exportarDatos);
         String[][] datos = UtilExport.getValoresUAs(uas, exportarDatos, this.getIdioma());
         String[] cabecera = UtilExport.getCabecera(exportarDatos);
-        return UtilExport.generarStreamedContent("UNIDAD_ADMINISTRATIVA", cabecera, datos, exportarDatos);
+        return UtilExport.generarStreamedContent("UnitatAdministrativa", cabecera, datos, exportarDatos);
     }
 
-    public StreamedContent getFileOld() {
-        List<UnidadAdministrativaDTO> uas = unidadAdministrativaService.findExportByFiltro(filtro, this.exportarDatos);
-
-        StringBuilder sb = new StringBuilder();
-
-        if (this.exportarDatos.getFormato().equals(TypeExportarFormato.CSV)) {
-            //Si exportamos en formato CSV, añadimos la cabecera
-            for (ExportarCampos exp : this.exportarDatos.getCampos()) {
-                sb.append(exp.getNombreCampo() + ";");
-            }
-
-            //Salto de linea
-            sb.append(System.lineSeparator());
-        }
-
-        String filename = "datos.txt";
-        if (this.exportarDatos.getFormato().equals(TypeExportarFormato.CSV)) {
-            filename = "uas.csv";
-        } else if (this.exportarDatos.getFormato().equals(TypeExportarFormato.TXT)) {
-            filename = "uas.txt";
-        }
-        for (UnidadAdministrativaDTO ua : uas) {
-
-            if (this.exportarDatos.getFormato().equals(TypeExportarFormato.TXT)) {
-                sb.append("UNIDAD_ADMINISTRATIVA: " + ua.getCodigo() + System.lineSeparator());
-            }
-
-            for (ExportarCampos exp : this.exportarDatos.getCampos()) {
-                if (!exp.isSeleccionado()) {
-                    continue;
-                }
-
-                if (this.exportarDatos.getFormato().equals(TypeExportarFormato.TXT)) {
-                    sb.append("\t" + getLiteral(exp.getLiteral()) + ": ");
-                }
-
-                switch (exp.getCampo()) {
-                    case "codigo":
-                        sb.append(UtilExport.getValor(ua.getCodigo(), this.getIdioma()));
-                        break;
-                    case "identificador":
-                        sb.append(UtilExport.getValor(ua.getIdentificador(), this.getIdioma()));
-                        break;
-                    case "codigoDIR3":
-                        sb.append(UtilExport.getValor(ua.getCodigoDIR3(), this.getIdioma()));
-                        break;
-                    case "nombreCat":
-                        sb.append(UtilExport.getValor(ua.getNombre(), Constantes.IDIOMA_CATALAN));
-                        break;
-                    case "nombreEsp":
-                        sb.append(UtilExport.getValor(ua.getNombre(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "tipo":
-                        if (ua.getTipo() == null) {
-                            sb.append("");
-                        } else {
-                            sb.append(UtilExport.getValor(ua.getTipo().getDescripcion(), Constantes.IDIOMA_ESPANYOL));
-                        }
-                        break;
-                    case "nombrePadre":
-                        if (ua.getPadre() == null) {
-                            sb.append("");
-                        } else {
-                            sb.append(UtilExport.getValor(ua.getPadre().getNombre(), Constantes.IDIOMA_ESPANYOL));
-                        }
-                        break;
-                    case "orden":
-                        sb.append(UtilExport.getValor(ua.getOrden(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "version":
-                        sb.append(UtilExport.getValor(ua.getVersion(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "abreviatura":
-                        sb.append(UtilExport.getValor(ua.getAbreviatura(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "url":
-                        sb.append(UtilExport.getValor(ua.getUrl(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "presentacion":
-                        sb.append(UtilExport.getValor(ua.getPresentacion(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "responsableNombre":
-                        sb.append(UtilExport.getValor(ua.getResponsableNombre(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "responsableEmail":
-                        sb.append(UtilExport.getValor(ua.getResponsableEmail(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "responsableSexo":
-                        if (ua.getResponsableSexo() == null) {
-                            sb.append("");
-                        } else {
-                            sb.append(UtilExport.getValor(ua.getResponsableSexo().getDescripcion(), Constantes.IDIOMA_ESPANYOL));
-                        }
-                        break;
-                    case "contactoTelf":
-                        sb.append(UtilExport.getValor(ua.getTelefono(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "contactoFax":
-                        sb.append(UtilExport.getValor(ua.getFax(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "contactoEmail":
-                        sb.append(UtilExport.getValor(ua.getEmail(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    case "contactoDominio":
-                        sb.append(UtilExport.getValor(ua.getDominio(), Constantes.IDIOMA_ESPANYOL));
-                        break;
-                    default:
-                        break;
-                }
-
-                if (this.exportarDatos.getFormato().equals(TypeExportarFormato.CSV)) {
-                    sb.append(";");
-                }
-                if (this.exportarDatos.getFormato().equals(TypeExportarFormato.TXT)) {
-                    sb.append(System.lineSeparator());
-                }
-            }
-            sb.append(System.lineSeparator());
-        }
-
-
-        String mimeType = URLConnection.guessContentTypeFromName(filename);
-        InputStream fis = new ByteArrayInputStream(sb.toString().getBytes());
-        StreamedContent file = DefaultStreamedContent.builder().name(filename).contentType(mimeType).stream(() -> fis).build();
-        return file;
-    }
-
+    /**
+     * Devuelve el dato seleccionado
+     *
+     * @return
+     */
     public UnidadAdministrativaGridDTO getDatoSeleccionado() {
         return datoSeleccionado;
     }
 
+    /**
+     * Setea el dato seleccionado
+     *
+     * @return
+     */
     public void setDatoSeleccionado(UnidadAdministrativaGridDTO datoSeleccionado) {
         this.datoSeleccionado = datoSeleccionado;
     }
 
+    /**
+     * Devuelve el filtro
+     *
+     * @return
+     */
     public UnidadAdministrativaFiltro getFiltro() {
         return filtro;
     }
 
+    /**
+     * Setea el filtro
+     *
+     * @return
+     */
     public void setFiltro(UnidadAdministrativaFiltro filtro) {
         this.filtro = filtro;
     }
 
+    /**
+     * Setea el filtro texto
+     *
+     * @return
+     */
     public void setFiltroTexto(String texto) {
         if (Objects.nonNull(this.filtro)) {
             this.filtro.setTexto(texto);
         }
     }
 
+    /**
+     * Devuelve el filtro texto
+     *
+     * @return
+     */
     public String getFiltroTexto() {
         if (Objects.nonNull(this.filtro)) {
             return this.filtro.getTexto();
@@ -412,14 +335,29 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         return "";
     }
 
+    /**
+     * Devuelve si es adm contenido
+     *
+     * @return
+     */
     public boolean isAdmContenidos() {
         return sessionBean.isPerfil(TypePerfiles.ADMINISTRADOR_CONTENIDOS);
     }
 
+    /**
+     * Devuelve el valor de mostrarOcultas
+     *
+     * @return
+     */
     public boolean isMostrarOcultas() {
         return mostrarOcultas;
     }
 
+    /**
+     * Setear el valor de mostrarOcultas
+     *
+     * @return
+     */
     public void setMostrarOcultas(boolean mostrarOcultas) {
         this.mostrarOcultas = mostrarOcultas;
     }

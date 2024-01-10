@@ -4,7 +4,6 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.persistence.converter.*;
 import es.caib.rolsac2.persistence.model.*;
-import es.caib.rolsac2.persistence.model.pk.JProcedimientoMateriaSIAPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoNormativaPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoPublicoObjectivoPK;
 import es.caib.rolsac2.persistence.model.traduccion.*;
@@ -224,10 +223,43 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         return procs;
     }
- 
 
     @Override
-    public List<ProcedimientoBaseDTO> findProcedimientosPagedByFiltroRest(ProcedimientoFiltro filtro) {
+    public List<ProcedimientoCompletoDTO> findProcedimientosPagedByFiltroExport(ProcedimientoFiltro filtro) {
+        Query query = getQuery(false, filtro, true);
+        query.setFirstResult(filtro.getPaginaFirst());
+        query.setMaxResults(filtro.getPaginaTamanyo());
+        List<ProcedimientoBaseDTO> procs = new ArrayList<>();
+        List<ProcedimientoCompletoDTO> retorno = new ArrayList<>();
+        List<JProcedimientoWorkflow[]> jprocs = query.getResultList();
+        for (Object[] proc : jprocs) {
+            if (proc != null) {
+                JProcedimientoWorkflow modificado = (JProcedimientoWorkflow) proc[0];
+                JProcedimientoWorkflow publicado = (JProcedimientoWorkflow) proc[1];
+
+                ProcedimientoCompletoDTO procCompleto = new ProcedimientoCompletoDTO();
+                if (publicado != null) {
+                    procCompleto.setProcedimientoPub(convertDTO(publicado));
+                    procCompleto.setCodigo(publicado.getProcedimiento().getCodigo());
+                } else {
+                    procCompleto.setProcedimientoPub(new ProcedimientoBaseDTO());
+                }
+                if (modificado != null) {
+                    procCompleto.setProcedimientoMod(convertDTO(modificado));
+                    procCompleto.setCodigo(modificado.getProcedimiento().getCodigo());
+                } else {
+                    procCompleto.setProcedimientoMod(new ProcedimientoBaseDTO());
+                }
+
+                retorno.add(procCompleto);
+            }
+
+        }
+        return retorno;
+    }
+
+    @Override
+    public List<ProcedimientoBaseDTO> findProcedimientosPagedByFiltroRest(ProcedimientoFiltro filtro, boolean ignorarDocumentos) {
         Query query = getQuery(false, filtro, true);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
@@ -248,7 +280,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             if (seleccionado != null) {
                                 ProcedimientoBaseDTO procDTO = convertDTO(seleccionado);
                                 procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionado.getProcedimiento()), filtro.getIdioma()));
-                                procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentos, filtro.getIdioma()));
+                                if (!ignorarDocumentos) {
+                                    procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentos, filtro.getIdioma()));
+                                }
                                 procs.add(procDTO);
                             }
                         }
@@ -263,7 +297,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
                             ProcedimientoBaseDTO procDTO = convertDTO(seleccionadoA);
                             procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoA.getProcedimiento()), filtro.getIdioma()));
-                            procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentosA, filtro.getIdioma()));
+                            if (!ignorarDocumentos) {
+                                procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentosA, filtro.getIdioma()));
+                            }
                             procs.add(procDTO);
 
 
@@ -286,12 +322,17 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
                             List<Long> idProcsT = new ArrayList<>();
                             idProcsT.add(seleccionado.getCodigo());
-                            List<JProcedimientoDocumento> documentosT = getDocumentosLopd(idProcsT);
+                            List<JProcedimientoDocumento> documentosT = null;
+                            if (!ignorarDocumentos) {
+                                documentosT = getDocumentosLopd(idProcsT);
+                            }
 
                             if (seleccionado != null) {
                                 ProcedimientoBaseDTO procDTO = convertDTO(seleccionado);
                                 procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionado.getProcedimiento()), filtro.getIdioma()));
-                                procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentosT, filtro.getIdioma()));
+                                if (!ignorarDocumentos) {
+                                    procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentosT, filtro.getIdioma()));
+                                }
                                 procs.add(procDTO);
                             }
 
@@ -312,7 +353,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
                     ProcedimientoBaseDTO procDTO = convertDTO(seleccionadoA);
                     procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoA.getProcedimiento()), filtro.getIdioma()));
-                    procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentos, filtro.getIdioma()));
+                    if (!ignorarDocumentos) {
+                        procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentos, filtro.getIdioma()));
+                    }
                     procs.add(procDTO);
 
 
@@ -721,85 +764,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         Long resultado = (Long) query.getSingleResult();
         return resultado > 0l;
     }
-
-    @Override
-    public List<TipoMateriaSIAGridDTO> getMateriaGridSIAByWF(Long codigoWF) {
-        List<TipoMateriaSIAGridDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
-        Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("codigoProcWF", codigoWF);
-        List<JProcedimientoMateriaSIA> jlista = query.getResultList();
-        if (jlista != null && !jlista.isEmpty()) {
-            for (JProcedimientoMateriaSIA elemento : jlista) {
-                lista.add(elemento.getTipoMateriaSIA().toModel());
-            }
-        }
-        return lista;
-    }
-
-    @Override
-    public void mergeMateriaSIAProcWF(Long codigoWF, List<TipoMateriaSIAGridDTO> listaNuevos) {
-        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoMateriaSIA j where j.procedimientoWF.codigo = :codigoProcWF ");
-        Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("codigoProcWF", codigoWF);
-        List<JProcedimientoMateriaSIA> jlista = query.getResultList();
-
-        List<JProcedimientoMateriaSIA> borrar = new ArrayList<>();
-        if (jlista != null && !jlista.isEmpty()) {
-            for (JProcedimientoMateriaSIA jelemento : jlista) {
-                boolean encontrado = false;
-                if (listaNuevos != null) {
-                    for (TipoMateriaSIAGridDTO elemento : listaNuevos) {
-                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getTipoMateriaSIA().getCodigo()) == 0) {
-                            encontrado = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    borrar.add(jelemento);
-                }
-            }
-        }
-
-        if (!borrar.isEmpty()) {
-            for (JProcedimientoMateriaSIA jelemento : borrar) {
-                entityManager.remove(jelemento);
-            }
-            jlista.removeAll(borrar);
-        }
-
-
-        if (listaNuevos != null && !listaNuevos.isEmpty()) {
-            JProcedimientoWorkflow jprocWF = entityManager.find(JProcedimientoWorkflow.class, codigoWF);
-            for (TipoMateriaSIAGridDTO elemento : listaNuevos) {
-                boolean encontrado = false;
-                if (!jlista.isEmpty()) {
-                    for (JProcedimientoMateriaSIA jelemento : jlista) {
-                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getTipoMateriaSIA().getCodigo()) == 0) {
-                            encontrado = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    JProcedimientoMateriaSIA nuevo = new JProcedimientoMateriaSIA();
-                    nuevo.setProcedimientoWF(jprocWF);
-                    JTipoMateriaSIA jTipoMateriaSIA = entityManager.find(JTipoMateriaSIA.class, elemento.getCodigo());
-                    nuevo.setTipoMateriaSIA(jTipoMateriaSIA);
-                    JProcedimientoMateriaSIAPK id = new JProcedimientoMateriaSIAPK();
-                    id.setTipoMateriaSIA(elemento.getCodigo());
-                    id.setProcedimiento(codigoWF);
-                    nuevo.setCodigo(id);
-                    entityManager.persist(nuevo);
-                    entityManager.flush();
-                }
-            }
-        }
-    }
-
 
     @Override
     public boolean existeProcedimientoConPublicoObjetivo(Long codigoPub) {
@@ -1689,7 +1653,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
      */
     @Override
     public String getEnlaceTelematico(ProcedimientoFiltro filtro) {
-        List<ProcedimientoBaseDTO> lista = this.findProcedimientosPagedByFiltroRest(filtro);
+        List<ProcedimientoBaseDTO> lista = this.findProcedimientosPagedByFiltroRest(filtro, true);
         ServicioDTO serv = null;
         ProcedimientoDTO proc = null;
         String res = "";
@@ -2569,6 +2533,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 if (jProcedimientoWorkflow.getUaCompetente() != null && jProcedimientoWorkflow.getUaCompetente().getCodigo().compareTo(codigoUAVieja) == 0) {
                     jProcedimientoWorkflow.setUaCompetente(uaNueva);
                 }
+
                 entityManager.merge(jProcedimientoWorkflow);
 
                 //Actualizamos los tramites
@@ -2735,7 +2700,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setWorkflow(TypeProcedimientoWorkflow.fromBoolean(jprocWF.getWorkflow()));
         proc.setEstado(TypeProcedimientoEstado.fromString(jprocWF.getEstado()));
         proc.setMensajes(jproc.getMensajes());
-        proc.setTieneTasa(jprocWF.getTieneTasa());
+        proc.setTieneTasa(jprocWF.getTieneTasa() == null ? false : jprocWF.getTieneTasa());
         proc.setResponsable(jprocWF.getResponsableNombre());
         proc.setLopdResponsable(jprocWF.getLopdResponsable());
         proc.setComun(jprocWF.getComun());
@@ -2822,7 +2787,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setObservaciones(observaciones);
         proc.setKeywords(keywords);
         // proc.setLopdInfoAdicional(lopdInfoAdicional);
-        proc.setMateriasSIA(getMateriaGridSIAByWF(proc.getCodigoWF()));
         proc.setPublicosObjetivo(getTipoPubObjEntByWF(proc.getCodigoWF()));
         proc.setNormativas(getNormativasByWF(proc.getCodigoWF()));
         proc.setDocumentos(getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
