@@ -101,6 +101,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
                     <h:outputText value="#{labels['dict.documento']}:"/>
+                    <p:outputLabel value=" *" rendered="#{dialogDocumentoProcedimiento.isTipoTramiteModelo()}"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-4">
                     <p:panel id="documentosMulti">

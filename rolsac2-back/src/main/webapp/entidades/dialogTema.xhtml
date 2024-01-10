@@ -98,6 +98,20 @@
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                     </my:literalComponent>
                 </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <p:outputLabel value="#{labels['viewTipoMateriaSIA.titulo']}:" for="txtMateriaSIA"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:selectOneMenu id="txtMateriaSIA" value="#{dialogTema.data.tipoMateriaSIA}"
+                                     styleClass="w95" autoWidth="false" required="false"
+                                     disabled="#{dialogTema.isModoConsulta()}"
+                                     converter="#{tipoMateriaSIAConverter}">
+                        <f:selectItem itemLabel="#{labels['dict.seleccione.tema']}" itemValue="#{null}"/>
+                        <f:selectItems value="#{dialogTema.materias}" var="tipoMateriaSIA"
+                                       itemLabel="#{tipoMateriaSIA.descripcion.getTraduccion(dialogTema.idioma)}" itemValue="#{tipoMateriaSIA}"/>
+                    </p:selectOneMenu>
+                </div>
             </div>
 
         </p:panel>

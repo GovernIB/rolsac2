@@ -37,7 +37,7 @@
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones
-            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico formDialog:dataTableMaterias dataNormativaProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat" />
+            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico dataNormativaProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat" />
         </p:selectOneButton>
         <p:commandButton action="#{dialogProcedimiento.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -631,46 +631,6 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogProcedimiento.isModoConsulta()}" action="#{dialogProcedimiento.borrarPubObjEnt}"
                                      process="@this" update="dataTablePublico messagesDialog"/>
-                </div>
-            </div>
-            <div class="row left-container mx-0 mb-2">
-                <div class="left-container-header ml-0 col-12 row">
-                    <div class="col-10 text-center">
-                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.materiasRelacionadas']}*</p>
-                    </div>
-                    <div class="col-2">
-                        <p:commandButton id="btnMateriasCol" onclick="colapsarModulo('#divMaterias','btnMaterias');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px" />
-                        <p:commandButton id="btnMateriasExp" onclick="expandirModulo('#divMaterias','btnMaterias');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px" />
-                    </div>
-                </div>
-                <div id="divMaterias" class="col-10 p-1">
-                    <p:dataTable id="dataTableMaterias" var="td" value="#{dialogProcedimiento.data.materiasSIA}"
-                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
-                                 paginator="false" selectionMode="single"
-                                 selection="#{dialogProcedimiento.materiaSIAGridSeleccionada}"
-                                 rowKey="#{td.codigo}" styleClass="noHeader">
-
-                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                        <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowUnselect" />
-                        <p:ajax event="rowDblselect"
-                                oncomplete="triggerDblClickMateria();"
-                                global="false"/>
-
-                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
-                        </p:column>
-                    </p:dataTable>
-                </div>
-                <div id="divMateriasBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
-                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this" actionListener="#{dialogProcedimiento.nuevaMateriaSIA()}">
-                        <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogMateria}" process="@this"
-                                update="dataTableMaterias"/>
-                    </p:commandButton>
-                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                                     disabled="#{dialogProcedimiento.isModoConsulta()}" action="#{dialogProcedimiento.borrarMateriaSIA}"
-                                     process="@this" update="dataTableMaterias messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">

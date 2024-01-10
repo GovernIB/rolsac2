@@ -96,6 +96,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             }
         } else if (this.isModoAlta()) {
             data = ProcedimientoTramiteDTO.createInstance(sessionBean.getIdiomasPermitidosList());
+            canalesSeleccionados.add("TEL");
             data.setUnidadAdministrativa(sessionBean.getUnidadActiva());
             data.getUnidadAdministrativa().setEntidad(sessionBean.getEntidad());
             if (mostrarIniciacion) {

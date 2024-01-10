@@ -10,6 +10,7 @@ import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -54,6 +55,8 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
 
     private String tipo;
 
+    private boolean documentoObligatorio = false;
+
 
     public void load() {
         this.setearIdioma();
@@ -76,6 +79,9 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
                 }
             }
             UtilJSF.vaciarMochila();
+        }
+        if (tipo != null && "TRAM_MOD".equals(tipo)) {
+            documentoObligatorio = true;
         }
     }
 
@@ -120,6 +126,19 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
 
     public boolean verificarGuardar() {
 
+        if (documentoObligatorio) {
+            if (data.getDocumentos() == null || data.getDocumentos().getTraducciones().isEmpty()) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "Debe añadir un documento", true);
+                return false;
+            }
+
+            for (DocumentoTraduccion doc : data.getDocumentos().getTraducciones()) {
+                if (doc.getFicheroDTO() == null || doc.getFicheroDTO().getCodigo() == null) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "Debe añadir un documento", true);
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
@@ -161,8 +180,7 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
     public void handleDocUpload(FileUploadEvent event) {
         try {
             InputStream is = event.getFile().getInputStream();
-            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(),
-                    TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS, idProcedimento);
+            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS, idProcedimento);
 
             FicheroDTO ficheroDTO = new FicheroDTO();
             ficheroDTO.setFilename(event.getFile().getFileName());
@@ -214,11 +232,7 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());
         String mimeType = URLConnection.guessContentTypeFromName(documento.getFilename());
         InputStream fis = new ByteArrayInputStream(documento.getContenido());
-        StreamedContent file = DefaultStreamedContent.builder()
-                .name(documento.getFilename())
-                .contentType(mimeType)
-                .stream(() -> fis)
-                .build();
+        StreamedContent file = DefaultStreamedContent.builder().name(documento.getFilename()).contentType(mimeType).stream(() -> fis).build();
         return file;
     }
 

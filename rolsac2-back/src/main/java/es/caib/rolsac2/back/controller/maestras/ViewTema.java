@@ -116,7 +116,7 @@ public class ViewTema extends AbstractController implements Serializable {
         } else if (this.datoSeleccionado != null && modoAcceso.equals(TypeModoAcceso.ALTA)) {
             params.put("padreSeleccionado", ((TemaGridDTO) this.datoSeleccionado.getData()).getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTema", modoAcceso, params, true, 850, 360);
+        UtilJSF.openDialog("dialogTema", modoAcceso, params, true, 850, 410);
     }
 
     public void borrarTema() {

@@ -516,10 +516,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             todoCorrecto = false;
         }
 
-        if (this.data.getMateriasSIA() == null || this.data.getMateriasSIA().isEmpty()) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaMateriaSIA"));
-            todoCorrecto = false;
-        }
+        //if (this.data.getMateriasSIA() == null || this.data.getMateriasSIA().isEmpty()) {
+        //    UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaMateriaSIA"));
+        //    todoCorrecto = false;
+        //}
 
         if (this.data.getNormativas() == null || this.data.getNormativas().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaNormativa"));
@@ -630,60 +630,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", data.getPublicosObjetivo());
             final Map<String, String> params = new HashMap<>();
             UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", modoAcceso, params, true, 1040, 460);
-        }
-    }
-
-    //MATERIA SIA
-
-    public void returnDialogMateria(final SelectEvent event) {
-        final DialogResult respuesta = (DialogResult) event.getObject();
-        if (!respuesta.isCanceled()) {
-            List<TipoMateriaSIAGridDTO> materiasSeleccionadas = (List<TipoMateriaSIAGridDTO>) respuesta.getResult();
-            if (materiasSeleccionadas == null) {
-                data.setMateriasSIA(new ArrayList<>());
-            } else {
-                if (data.getMateriasSIA() == null) {
-                    data.setMateriasSIA(new ArrayList<>());
-                }
-                data.setMateriasSIA(new ArrayList<>());
-                data.getMateriasSIA().addAll(materiasSeleccionadas);
-            }
-        }
-    }
-
-    public void nuevaMateriaSIA() {
-        abrirDialogMateria(TypeModoAcceso.ALTA);
-    }
-
-    public void consultarMateriaSIA() {
-        if (materiaSIAGridSeleccionada == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-        } else {
-            abrirDialogMateria(TypeModoAcceso.CONSULTA);
-        }
-    }
-
-    public void borrarMateriaSIA() {
-        if (materiaSIAGridSeleccionada == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-        } else {
-            // maestrasSupService.deleteTipoMateriaSIA(materiaSIAGridSeleccionada.getCodigo());
-            data.getMateriasSIA().remove(materiaSIAGridSeleccionada);
-            materiaSIAGridSeleccionada = null;
-            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
-        }
-    }
-
-    public void abrirDialogMateria(TypeModoAcceso modoAcceso) {
-
-        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
-            final Map<String, String> params = new HashMap<>();
-            params.put("ID", materiaSIAGridSeleccionada.getCodigo().toString());
-            UtilJSF.openDialog("tipo/dialogTipoMateriaSIA", modoAcceso, params, true, 700, 300);
-        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
-            UtilJSF.anyadirMochila("materiasSeleccionadas", data.getMateriasSIA());
-            final Map<String, String> params = new HashMap<>();
-            UtilJSF.openDialog("tipo/dialogSeleccionMateriaSIA", modoAcceso, params, true, 1040, 460);
         }
     }
 
@@ -822,7 +768,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("normativasSeleccionadas", data.getNormativas());
             final Map<String, String> params = new HashMap<>();
-            UtilJSF.openDialog("tipo/dialogSeleccionNormativa", modoAcceso, params, true, 1040, 510);
+            UtilJSF.openDialog("tipo/dialogSeleccionNormativa", modoAcceso, params, true, 1200, 750);
         }
 
     }
