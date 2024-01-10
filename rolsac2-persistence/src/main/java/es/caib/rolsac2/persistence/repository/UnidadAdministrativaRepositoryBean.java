@@ -48,8 +48,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
 
     @Override
     public UnidadAdministrativaDTO findUASimpleByID(Long id, String idioma, Long idEntidadRoot) {
-        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.identificador, t.nombre, jp " //" jp.codigo, jp.identificador, pt.nombre "
-                + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma " + " LEFT OUTER JOIN j.padre jp LEFT OUTER JOIN jp.traducciones pt ON pt.idioma = :idioma ");
+        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.identificador, t.nombre, jp, j.version " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma " + " LEFT OUTER JOIN j.padre jp LEFT OUTER JOIN jp.traducciones pt ON pt.idioma = :idioma ");
         sql.append(" WHERE 1 = 1  ");
         if (idEntidadRoot != null) {
             sql.append(" and j.padre.codigo IS NULL AND j.entidad.codigo = :entidadId ");
@@ -82,6 +81,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
                 uadto.setPadre(uaPadre);
             }
             uadto.setNombre(nombre);
+            uadto.setVersion((Integer) jresultado[4]);
             List<UnidadAdministrativaDTO> hijos = getHijosSimple(uadto.getCodigo(), idioma, uadto);
             uadto.setHijos(hijos);
         }
@@ -130,7 +130,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     @Override
     public List<UnidadAdministrativaDTO> getHijosSimple(Long idPadre, String idioma, UnidadAdministrativaDTO padre) {
 
-        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.identificador, t.nombre " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma " + " LEFT OUTER JOIN j.padre jp LEFT OUTER JOIN jp.traducciones pt ON pt.idioma = :idioma   WHERE j.estado = '" + ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_VIGENTE + "' AND j.padre.codigo = :idPadre ORDER BY j.orden ");
+        StringBuilder sql = new StringBuilder("SELECT j.codigo, j.identificador, j.version, t.nombre " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma " + " LEFT OUTER JOIN j.padre jp LEFT OUTER JOIN jp.traducciones pt ON pt.idioma = :idioma   WHERE j.estado = '" + ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_VIGENTE + "' AND j.padre.codigo = :idPadre ORDER BY j.orden ");
 
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("idPadre", idPadre);
@@ -143,8 +143,9 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
                 uadto = new UnidadAdministrativaDTO();
                 uadto.setCodigo((Long) jresultado[0]);
                 uadto.setIdentificador((String) jresultado[1]);
+                uadto.setVersion((Integer) jresultado[2]);
                 Literal nombre = new Literal();
-                nombre.add(new Traduccion(idioma, (String) jresultado[2]));
+                nombre.add(new Traduccion(idioma, (String) jresultado[3]));
                 uadto.setNombre(nombre);
                 uadto.setPadre(padre);
                 hijos.add(uadto);
@@ -507,6 +508,34 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
+    public UnidadAdministrativaGridDTO getUaRaizEntidad(Long codEntidad) {
+        Query query = entityManager.createQuery("select ua from JUnidadAdministrativa ua  where ua.entidad.codigo = :codEntidad and ua.padre is null");
+        query.setParameter("codEntidad", codEntidad);
+        List<JUnidadAdministrativa> juas = query.getResultList();
+        UnidadAdministrativaGridDTO uaRaiz = null;
+        if (juas != null && !juas.isEmpty()) {
+            JUnidadAdministrativa jua = juas.get(0);
+            uaRaiz = new UnidadAdministrativaGridDTO();
+            uaRaiz.setCodigo(jua.getCodigo());
+            uaRaiz.setCodigoDIR3(jua.getCodigoDIR3());
+            uaRaiz.setIdentificador(jua.getIdentificador());
+            Literal nombre = new Literal();
+            for (JUnidadAdministrativaTraduccion trad : jua.getTraducciones()) {
+                if (trad.getIdioma().equals("ca")) {
+                    nombre.add(new Traduccion("ca", trad.getNombre()));
+                } else if (trad.getIdioma().equals("es")) {
+                    nombre.add(new Traduccion("es", trad.getNombre()));
+                }
+            }
+            uaRaiz.setNombre(nombre);
+            uaRaiz.setIdEntidad(codEntidad);
+            uaRaiz.setOrden(jua.getOrden());
+
+        }
+        return uaRaiz;
+    }
+
+    @Override
     public JUnidadAdministrativa findJUAById(UnidadAdministrativaDTO ua) {
         if (ua == null || ua.getCodigo() == null) {
             return null;
@@ -864,8 +893,10 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     @Override
     public void marcarBajaConNormativas(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2, NormativaDTO normativaBaja, List<NormativaGridDTO> normativasBaja) {
         JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigo);
-        jua.setFechaBaja(fechaBaja);
-        jua.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_BORRADA);
+        if (fechaBaja != null) {
+            jua.setFechaBaja(fechaBaja);
+            jua.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_BORRADA);
+        }
         Set<JNormativa> normativas = new HashSet<>();
         if (normativaBaja != null) {
             JNormativa jNormativa = entityManager.find(JNormativa.class, normativaBaja.getCodigo());
@@ -878,6 +909,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             }
         }
         jua.setNormativas(normativas);
+
         entityManager.merge(jua);
 
         JUnidadAdministrativaAuditoria jAuditoria = new JUnidadAdministrativaAuditoria();

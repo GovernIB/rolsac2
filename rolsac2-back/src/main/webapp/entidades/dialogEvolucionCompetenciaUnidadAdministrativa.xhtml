@@ -9,20 +9,20 @@
 	<ui:define name="metadata">
 		<f:metadata>
 			<f:viewParam id="MODO_ACCESO" name="MODO_ACCESO"
-				value="#{dialogEvolucionDivisionUnidadAdministrativa.modoAcceso}" />
+				value="#{dialogEvolucionCompetenciaUnidadAdministrativa.modoAcceso}" />
 			<f:viewParam id="ID" name="ID"
-				value="#{dialogEvolucionDivisionUnidadAdministrativa.id}" />
+				value="#{dialogEvolucionCompetenciaUnidadAdministrativa.id}" />
 			<f:viewAction
-				action="#{dialogEvolucionDivisionUnidadAdministrativa.load}" />
+				action="#{dialogEvolucionCompetenciaUnidadAdministrativa.load}" />
 		</f:metadata>
 	</ui:define>
 	<ui:define name="pageTitleDialog">
 		<h:outputFormat
-			value="#{labels['dialogEvolucionDivisionUnidadAdministrativa.detalle']} "
-			rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoAlta()}" />
+			value="#{labels['dialogEvolucionCompetenciaUnidadAdministrativa.detalle']} "
+			rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoAlta()}" />
 		<h:outputFormat
-			value="#{labels['dialogEvolucionDivisionUnidadAdministrativa.detalle']} "
-			rendered="#{dialogEvolucionDivisionUnidadAdministrativa.isModoAlta()}" />
+			value="#{labels['dialogEvolucionCompetenciaUnidadAdministrativa.detalle']} "
+			rendered="#{dialogEvolucionCompetenciaUnidadAdministrativa.isModoAlta()}" />
 	</ui:define>
 	<ui:define name="contentIdioma">
 
@@ -30,13 +30,13 @@
 		<h:outputText value="#{labels['dict.idioma']}:"
 			style="margin-right:4px;margin-top:5px;" />
 		<p:selectOneButton id="opcionIdioma"
-			value="#{dialogEvolucionDivisionUnidadAdministrativa.idioma}"
+			value="#{dialogEvolucionCompetenciaUnidadAdministrativa.idioma}"
 			styleClass="botoneraRed" unselectable="false" maxlength="20">
 			<f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}"
 				var="idioma" itemValue="#{idioma}"
 				itemLabel="#{labels['idiomas.' += idioma]}" />
 			<p:ajax process="@this"
-				update="formDialog:txtOrigen formDialog:txtOrigen2 formDialog:txtFechaBaja formDialog:selectNormativa formDialog:txtFechaBaja2 formDialog:selectNormativa2 formDialog:txtCrear formDialog:txtCrear2" />
+				update="formDialog:txtOrigen formDialog:txtOrigen2 formDialog:selectNormativa formDialog:selectNormativa2 formDialog:txtCrear formDialog:txtCrear2" />
 		</p:selectOneButton>
 
 	</ui:define>
@@ -46,7 +46,7 @@
 
 		<h:outputStylesheet>
 			#formDialog:selectNormativa_input {
-				width: inherit !important; margin-right: 0px !important;
+			width: inherit !important; margin-right: 0px !important;
 			}
 			#formDialog\:selectNormativa_input {
 			width: inherit !important; margin-right: 0px !important;
@@ -61,9 +61,8 @@
 		</p:dialog>
 
 		<p:wizard nextLabel="#{labels['dict.siguiente']}" widgetVar="wiz"
-			backLabel="#{labels['dict.atras']}"
-			onnext="if(PF('wiz').currentStep == 'destino') { PF('statusDialog1').show(); }"
-			flowListener="#{dialogEvolucionDivisionUnidadAdministrativa.onFlowProcess}">
+			backLabel="#{labels['dict.atras']}" onnext="if(PF('wiz').currentStep == 'destino') { PF('statusDialog1').show(); }"
+			flowListener="#{dialogEvolucionCompetenciaUnidadAdministrativa.onFlowProcess}">
 			<p:tab id="origen"
 				title="#{labels['dialogEvolucionUnidadAdministrativa.uasOrigen']}">
 				<p:panel>
@@ -74,9 +73,10 @@
 								value="#{labels['dialogEvolucionUnidadAdministrativa.uaOrigen']}:"
 								for="txtOrigen" styleClass="mb-1 pt-0" />
 							<p:inputText id="txtOrigen" styleClass="w95" readonly="true"
-								value="#{dialogEvolucionDivisionUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
+								value="#{dialogEvolucionCompetenciaUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 						</div>
 					</div>
+					<!--
 					<div class="form-row">
 
 						<div class="form-group col-md-12">
@@ -88,30 +88,30 @@
 							<p:calendar id="txtFechaBaja"
 								requiredMessage="#{labels['dict.obligatorio.fechaBaja']}"
 								required="true" showOn="button"
-								value="#{dialogEvolucionDivisionUnidadAdministrativa.fechaBaja}"
+								value="#{dialogEvolucionCompetenciaUnidadAdministrativa.fechaBaja}"
 								pattern="dd/MM/yyyy" />
 						</div>
 
-					</div>
-
+					</div> -->
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
-								value="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:"
-								for="selectNormativa" />
+										   value="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:"
+										   for="selectNormativa" />
 							<p:autoComplete id="selectNormativa" var="normativa"
-								forceSelection="true" styleClass="w95"
-								value="#{dialogEvolucionDivisionUnidadAdministrativa.normativa}"
-								itemLabel="#{normativa.codigo} #{normativa.titulo.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}"
-								itemValue="#{normativa}" converter="#{normativaDTOConverter}"
-								autoHighlight="false"
-								completeMethod="#{dialogEvolucionDivisionUnidadAdministrativa.completeNormativa}"
-								dropdown="true" placeholder="#{dict.text_placeholder_lista}"
-								size="85" minQueryLength="3" cache="true" cacheTimeout="60000"
-								scrollHeight="200">
+											forceSelection="true" styleClass="w95"
+											value="#{dialogEvolucionCompetenciaUnidadAdministrativa.normativa}"
+											itemLabel="#{normativa.codigo} #{normativa.titulo.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}"
+											itemValue="#{normativa}" converter="#{normativaDTOConverter}"
+											autoHighlight="false"
+											completeMethod="#{dialogEvolucionCompetenciaUnidadAdministrativa.completeNormativa}"
+											dropdown="true" placeholder="#{dict.text_placeholder_lista}"
+											size="85" minQueryLength="3" cache="true" cacheTimeout="60000"
+											scrollHeight="200">
 							</p:autoComplete>
 						</div>
 					</div>
+
 				</p:panel>
 
 			</p:tab>
@@ -125,14 +125,14 @@
 							style="width: auto; margin-left: 8px;">
 							<div class="row left-container mx-0">
 								<div class="col-12 left-container-header text-center">
-									<p class="left-container-tit mt-2 mb-1">#{labels['dialogEvolucionDivisionUnidadAdministrativa.uaDestino']}</p>
+									<p class="left-container-tit mt-2 mb-1">#{labels['dialogEvolucionCompetenciaUnidadAdministrativa.uaDestino']}</p>
 								</div>
 								<div class="col-10 p-1">
 									<p:dataTable id="txtCrear" var="td"
-										value="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}"
+										value="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedUnidades}"
 										emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
 										scrollHeight="120" paginator="false" selectionMode="single"
-										selection="#{dialogEvolucionDivisionUnidadAdministrativa.uaSeleccionada}"
+										selection="#{dialogEvolucionCompetenciaUnidadAdministrativa.uaSeleccionada}"
 										rowKey="#{td.codigo}" styleClass="noHeader">
 
 										<!-- Necesario para actualizar en controlador la fila seleccionada -->
@@ -142,43 +142,45 @@
 										<p:column headerText="#{labels['msg.tablaVacia']}"
 											styleClass="text-center w75">
 											<h:outputText
-												value="#{td.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
+												value="#{td.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 										</p:column>
+
+
 
 									</p:dataTable>
 								</div>
 								<div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
 									<p:commandButton title="#{labels['dict.anyadir']}"
 										icon="pi pi-plus" styleClass="text-success" process="@this"
-										actionListener="#{dialogEvolucionDivisionUnidadAdministrativa.anyadirUAs()}"
-										rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}">
+										actionListener="#{dialogEvolucionCompetenciaUnidadAdministrativa.anyadirUAs()}"
+										rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}">
 										<p:ajax event="dialogReturn"
-											listener="#{dialogEvolucionDivisionUnidadAdministrativa.returnDialogo}"
+											listener="#{dialogEvolucionCompetenciaUnidadAdministrativa.returnDialogo}"
 											process="@this"
 											update="messagesDialog txtCrear" />
 									</p:commandButton>
 									<p:commandButton title="#{labels['dict.editar']}"
 													 icon="pi pi-pencil" styleClass="text-success"
-													 action="#{dialogEvolucionDivisionUnidadAdministrativa.editarUA()}"
+													 action="#{dialogEvolucionCompetenciaUnidadAdministrativa.editarUA()}"
 													 process="@this"
-													 disabled="{dialogEvolucionDivisionUnidadAdministrativa.uaSeleccionada.codigo > 0}"
+													 disabled="{dialogEvolucionCompetenciaUnidadAdministrativa.uaSeleccionada.codigo > 0}"
 													 update="messagesDialog txtCrear"
-													 rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}" />
+													 rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}" />
 									<p:commandButton title="#{labels['dict.eliminar']}"
 										icon="pi pi-minus" styleClass="text-danger"
-										action="#{dialogEvolucionDivisionUnidadAdministrativa.borrarUA()}"
+										action="#{dialogEvolucionCompetenciaUnidadAdministrativa.borrarUA()}"
 										process="@this"
 										update="messagesDialog txtCrear"
-										rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}" />
+										rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}" />
 								</div>
 								<p:commandButton title="#{labels['dict.crearUA']}" value="#{labels['dict.crearUA']}"
 												 icon="pi pi-plus" styleClass="text-success ml-2"
-												 action="#{dialogEvolucionDivisionUnidadAdministrativa.crearUA()}"
+												 action="#{dialogEvolucionCompetenciaUnidadAdministrativa.crearUA()}"
 												 process="@this"
 												 update="messagesDialog txtCrear"
-												 rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}" >
+												 rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}" >
 										<p:ajax event="dialogReturn"
-											listener="#{dialogEvolucionDivisionUnidadAdministrativa.returnDialogoCrearUA}"
+											listener="#{dialogEvolucionCompetenciaUnidadAdministrativa.returnDialogoCrearUA}"
 											process="@this"
 											update="messagesDialog txtCrear" />
 								</p:commandButton>
@@ -200,11 +202,11 @@
 							style="width: auto; margin-left: 8px;">
 							<div class="row left-container mx-0">
 								<div class="col-12 left-container-header text-center">
-									<p class="left-container-tit mt-2 mb-1">#{labels['dialogEvolucionDivisionUnidadAdministrativa.uaDestino']}</p>
+									<p class="left-container-tit mt-2 mb-1">#{labels['dialogEvolucionCompetenciaUnidadAdministrativa.uaDestino']}</p>
 								</div>
 								<div class="col-12 p-1">
-									<p:dataTable id="txtCrear3" var="td" style="width: auto !important;"
-										value="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}"
+									<p:dataTable id="txtCrear3" var="td" style="width: auto;"
+										value="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedUnidades}"
 										emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
 										scrollHeight="120" paginator="false" selectionMode="single"
 										rowKey="#{td.codigo}">
@@ -227,39 +229,37 @@
 										<p:column headerText="#{labels['dict.nombre']}">
 											<f:facet name="header" />
 											<h:outputText
-												value="#{td.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
+												value="#{td.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 										</p:column>
 
 
 									</p:dataTable>
+
 								</div>
+
 							</div>
 							<div class="mt-4">
 								<p:outputLabel styleClass="mr-2 mb-1 pt-0"
 											   value="#{labels['dialogEvolucionCompetenciaUnidadAdministrativa.asociarSeleccionadosA']}:" />
-								<p:selectOneMenu  value="#{dialogEvolucionDivisionUnidadAdministrativa.uaAsociar}"  autoWidth="false" styleClass="w130px">
-									<c:forEach items="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
-										<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}"/>
+								<p:selectOneMenu  value="#{dialogEvolucionCompetenciaUnidadAdministrativa.uaAsociar}"  autoWidth="false" styleClass="w130px">
+									<c:forEach items="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
+										<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}"/>
 									</c:forEach>
-									<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionDivisionUnidadAdministrativa.data.codigo}"/>
+									<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionCompetenciaUnidadAdministrativa.data.codigo}"/>
 								</p:selectOneMenu>
 								<p:commandButton
-										action="#{dialogEvolucionDivisionUnidadAdministrativa.asociar()}"
+										action="#{dialogEvolucionCompetenciaUnidadAdministrativa.asociar()}"
 										styleClass="ml-2"
 										value="#{labels['dict.asociar']}" update="messagesDialog tabViewProcsNormsServs"
-										rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}"
+										rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}"
 										process="@all" /> <!--  datatableProcs datatableNormativas datatableServs -->
 							</div>
 							<p:tabView id="tabViewProcsNormsServs">
 								<p:tab title="#{labels['dict.procedimientos']}">
-									<p:dataTable id="datatableProcs" var="td" value="#{dialogEvolucionDivisionUnidadAdministrativa.procedimientos}"
-												 selection="#{dialogEvolucionDivisionUnidadAdministrativa.selectedProcedimientos}" rowKey="#{td.codigo}"
+									<p:dataTable id="datatableProcs" var="td" value="#{dialogEvolucionCompetenciaUnidadAdministrativa.procedimientos}"
+												 selection="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedProcedimientos}" rowKey="#{td.codigo}"
 												 style="margin-bottom:0" paginator="false"  selectionPageOnly="false" rowSelectMode="none"
 												 scrollable="true" emptyMessage="#{labels['dict.tablaVacia']}"  >
-
-										<!-- Necesario para actualizar en controlador la fila seleccionada -->
-										<p:ajax event="rowSelect" global="false" />
-										<p:ajax event="rowUnselect" />
 
 										<p:column selectionMode="multiple" style="width:36px;text-align:center"/>
 										<p:column headerText=" " style="width:30px;text-align:center" >
@@ -269,26 +269,26 @@
 											<p:selectOneMenu  value="#{td.opcionUAdestino}"  autoWidth="false" styleClass="w150px">
 												<f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
 
-												<c:forEach items="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
-													<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}"/>
+												<c:forEach items="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
+													<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}"/>
 												</c:forEach>
-												<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionDivisionUnidadAdministrativa.data.codigo}"/>
+												<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionCompetenciaUnidadAdministrativa.data.codigo}"/>
 											</p:selectOneMenu>
 										</p:column>
 										<p:column headerText="#{labels['dict.estado']}" styleClass="text-center w150px">
 											<h:outputText
-											value="#{labels['TypeProcedimientoEstado.' += td.getEstado()]}"
+													value="#{labels['TypeProcedimientoEstado.' += td.getEstado()]}"
 											/>
 										</p:column>
 										<p:column headerText="#{labels['dict.procedimiento']}" styleClass="text-center">
-											<h:outputText value="#{td.codigo} #{td.getNombre(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
+											<h:outputText value="#{td.codigo} #{td.getNombre(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 										</p:column>
 									</p:dataTable>
 								</p:tab>
 								<!--
 								<p:tab title="#{labels['dict.normativas']}">
-									<p:dataTable id="datatableNormativas" var="td" value="#{dialogEvolucionDivisionUnidadAdministrativa.normativas}"
-												 selection="#{dialogEvolucionDivisionUnidadAdministrativa.selectedNormativas}" rowKey="#{td.codigo}"
+									<p:dataTable id="datatableNormativas" var="td" value="#{dialogEvolucionCompetenciaUnidadAdministrativa.normativas}"
+												 selection="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedNormativas}" rowKey="#{td.codigo}"
 												 style="margin-bottom:0" paginator="false"  selectionPageOnly="false" rowSelectMode="none"
 												 scrollable="true" emptyMessage="#{labels['dict.tablaVacia']}"  >
 
@@ -300,23 +300,22 @@
 											<p:selectOneMenu  value="#{td.opcionUAdestino}" autoWidth="false" styleClass="w150px">
 												<f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
 
-												<c:forEach items="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
-													<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}"/>
+												<c:forEach items="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
+													<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}"/>
 												</c:forEach>
-												<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionDivisionUnidadAdministrativa.data.codigo}"/>
+												<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionCompetenciaUnidadAdministrativa.data.codigo}"/>
 											</p:selectOneMenu>
 										</p:column>
 										<p:column headerText="#{labels['dict.normativa']}" styleClass="text-center w75">
-											<h:outputText value="#{td.codigo} #{td.titulo.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
+											<h:outputText value="#{td.codigo} #{td.titulo.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 										</p:column>
 									</p:dataTable>
-								</p:tab> -->
+								</p:tab>-->
 								<p:tab title="#{labels['dict.servicios']}">
-									<p:dataTable id="datatableServs" var="td"
-												 value="#{dialogEvolucionDivisionUnidadAdministrativa.servicios}"
-												 emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
-												 paginator="false" selectionMode="single"
-												 rowKey="#{td.codigo}">
+									<p:dataTable id="datatableServs" var="td" value="#{dialogEvolucionCompetenciaUnidadAdministrativa.servicios}"
+												 selection="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedServicios}" rowKey="#{td.codigo}"
+												 style="margin-bottom:0" paginator="false"  selectionPageOnly="false" rowSelectMode="none"
+												 scrollable="true" emptyMessage="#{labels['dict.tablaVacia']}"  >
 
 										<!-- Necesario para actualizar en controlador la fila seleccionada -->
 										<p:ajax event="rowSelect" global="false" />
@@ -324,13 +323,13 @@
 
 										<p:column selectionMode="multiple" style="width:36px;text-align:center"/>
 										<p:column headerText="#{labels['msg.seleccioneOpcion']}" styleClass="text-center w200px">
-											<p:selectOneMenu  value="#{td.opcionUAdestino}"  autoWidth="false" styleClass="w150px">
+											<p:selectOneMenu  value="#{td.opcionUAdestino}" autoWidth="false" styleClass="w150px">
 												<f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
 
-												<c:forEach items="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
-													<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}"/>
+												<c:forEach items="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
+													<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}"/>
 												</c:forEach>
-												<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionDivisionUnidadAdministrativa.data.codigo}"/>
+												<f:selectItem itemLabel="#{labels['dict.mantener']}" itemValue="#{dialogEvolucionCompetenciaUnidadAdministrativa.data.codigo}"/>
 											</p:selectOneMenu>
 										</p:column>
 										<p:column headerText="#{labels['dict.estado']}" styleClass="text-center w150px">
@@ -338,14 +337,16 @@
 													value="#{labels['TypeProcedimientoEstado.' += td.getEstado()]}"
 											/>
 										</p:column>
-										<p:column headerText="#{labels['dict.servicio']}"  styleClass="text-center">
-											<h:outputText value="#{td.codigo} #{td.getNombre(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
+										<p:column headerText="#{labels['dict.procedimiento']}" styleClass="text-center">
+											<h:outputText value="#{td.codigo} #{td.getNombre(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 										</p:column>
 									</p:dataTable>
 								</p:tab>
 							</p:tabView>
 						</div>
 					</div>
+
+
 
 				</p:panel>
 			</p:tab>
@@ -356,9 +357,10 @@
 					<p:messages />
 
 					<div class="form-row">
-						<div class="form-group col-md-12">#{labels['dialogEvolucionDivisionUnidadAdministrativa.resumen']}</div>
+						<div class="form-group col-md-12">#{labels['dialogEvolucionCompetenciaUnidadAdministrativa.resumen']}</div>
 					</div>
 
+					<!--
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<p class="mb-0">
@@ -367,10 +369,10 @@
 									for="txtFechaBaja2" />
 							</p>
 							<p:calendar id="txtFechaBaja2" showOn="button" disabled="true"
-								value="#{dialogEvolucionDivisionUnidadAdministrativa.fechaBaja}"
+								value="#{dialogEvolucionCompetenciaUnidadAdministrativa.fechaBaja}"
 								pattern="dd/MM/yyyy" />
 						</div>
-					</div>
+					</div> -->
 					<div class="form-row">
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
@@ -378,11 +380,11 @@
 								for="selectNormativa2" />
 							<p:autoComplete id="selectNormativa2" var="normativa"
 								forceSelection="true" styleClass="w95" disabled="true"
-								value="#{dialogEvolucionDivisionUnidadAdministrativa.normativa}"
-								itemLabel="#{normativa.codigo} #{normativa.titulo.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}"
+								value="#{dialogEvolucionCompetenciaUnidadAdministrativa.normativa}"
+								itemLabel="#{normativa.codigo} #{normativa.titulo.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}"
 								itemValue="#{normativa}" converter="#{normativaDTOConverter}"
 								autoHighlight="false"
-								completeMethod="#{dialogEvolucionDivisionUnidadAdministrativa.completeNormativa}"
+								completeMethod="#{dialogEvolucionCompetenciaUnidadAdministrativa.completeNormativa}"
 								placeholder="#{dict.text_placeholder_lista}" size="100"
 								minQueryLength="3" cache="true" cacheTimeout="60000"
 								scrollHeight="200">
@@ -397,7 +399,7 @@
 								value="#{labels['dialogEvolucionUnidadAdministrativa.uaOrigen']}:"
 								for="txtOrigen2" styleClass="mb-1 pt-0" />
 							<p:inputText id="txtOrigen2" styleClass="w95" readonly="true"
-								value="#{dialogEvolucionDivisionUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
+								value="#{dialogEvolucionCompetenciaUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 						</div>
 					</div>
 
@@ -407,15 +409,15 @@
 							style="width: auto; margin-left: 8px;">
 							<div class="row left-container mx-0">
 								<div class="col-12 left-container-header text-center">
-									<p class="left-container-tit mt-2 mb-1">#{labels['dialogEvolucionDivisionUnidadAdministrativa.uaDestino']}</p>
+									<p class="left-container-tit mt-2 mb-1">#{labels['dialogEvolucionCompetenciaUnidadAdministrativa.uaDestino']}</p>
 								</div>
 								<div class="col-12 p-1">
 									<p:dataTable id="txtCrear2" var="td"
-										value="#{dialogEvolucionDivisionUnidadAdministrativa.selectedUnidades}"
+										value="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedUnidades}"
 										emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
 										scrollHeight="120" paginator="false" selectionMode="single"
 										disabledSelection="true"
-										selection="#{dialogEvolucionDivisionUnidadAdministrativa.uaSeleccionada}"
+										selection="#{dialogEvolucionCompetenciaUnidadAdministrativa.uaSeleccionada}"
 										rowKey="#{td.codigo}" styleClass="noHeader">
 
 										<!-- Necesario para actualizar en controlador la fila seleccionada -->
@@ -425,7 +427,7 @@
 										<p:column headerText="#{labels['msg.tablaVacia']}"
 											styleClass="text-center w75">
 											<h:outputText
-												value="#{td.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
+												value="#{td.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 										</p:column>
 
 									</p:dataTable>
@@ -437,11 +439,12 @@
 					</div>
 				</p:panel>
 
-				<p:commandButton id="saveButton" widgetVar="saveButton"
-					action="#{dialogEvolucionDivisionUnidadAdministrativa.evolucionar}"
+				<p:commandButton
+						id="saveButton" widgetVar="saveButton"
+					action="#{dialogEvolucionCompetenciaUnidadAdministrativa.evolucionar}"
 					style="float: right; margin-top: 3px;"
 					value="#{labels['dict.aceptar']}" update="messagesDialog "
-					rendered="#{!dialogEvolucionDivisionUnidadAdministrativa.isModoConsulta()}"
+					rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}"
 					onclick="PF('saveButton').disable();" oncomplete="PF('saveButton').enable();"
 					process="@all" />
 			</p:tab>

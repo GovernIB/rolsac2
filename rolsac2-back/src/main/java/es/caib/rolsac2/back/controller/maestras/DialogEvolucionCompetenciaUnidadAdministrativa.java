@@ -25,8 +25,8 @@ import java.util.*;
 
 @Named
 @ViewScoped
-public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionController implements Serializable {
-    private static final Logger LOG = LoggerFactory.getLogger(DialogEvolucionDivisionUnidadAdministrativa.class);
+public class DialogEvolucionCompetenciaUnidadAdministrativa extends EvolucionController implements Serializable {
+    private static final Logger LOG = LoggerFactory.getLogger(DialogEvolucionCompetenciaUnidadAdministrativa.class);
 
     /**
      * Unidades destino
@@ -54,7 +54,6 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
      * Indica si se migrar todas las UAs
      **/
     private boolean comportamientoTodos = false;
-
     @EJB
     ProcedimientoServiceFacade procedimientoServiceFacade;
 
@@ -87,10 +86,12 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
     public String onFlowProcess(FlowEvent event) {
 
         if (event.getOldStep().contains("destino") && event.getNewStep().contains("reasignar")) {
+
+
             //Comprobamos que se han seleccionado al menos 2 UAs destino
-            if (selectedUnidades == null || selectedUnidades.isEmpty() || selectedUnidades.size() == 1) {
+            if (selectedUnidades == null || selectedUnidades.isEmpty() || selectedUnidades.size() == 0) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogEvolucionCompetenciaUnidadAdministrativa.error.debeSeleccionarMinimo1"), true);
                 PrimeFaces.current().executeScript("PF('statusDialog1').hide();");
-                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogEvolucionDivisionUnidadAdministrativa.error.debeSeleccionarMinimo2"), true);
                 return event.getOldStep();
             }
 
@@ -103,11 +104,9 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
             ExportarDatos exportarDatos = new ExportarDatos(new ArrayList<>());
             exportarDatos.setTodosLosDatos(true);
             procedimientos = procedimientoService.findExportByFiltro(filtroProcedimiento, exportarDatos);
-
             //procedimientos = unidadAdministrativaServiceFacade.getProcedimientosByUa(data.getCodigo(), Constantes.PROCEDIMIENTO, UtilJSF.getSessionBean().getLang(), null);
             filtroProcedimiento.setTipo(Constantes.SERVICIO);
             servicios = procedimientoService.findExportByFiltro(filtroProcedimiento, exportarDatos);
-
             //servicios = unidadAdministrativaServiceFacade.getProcedimientosByUa(data.getCodigo(), Constantes.SERVICIO, UtilJSF.getSessionBean().getLang(), null);
             NormativaFiltro filtroNormativas = new NormativaFiltro();
             filtroNormativas.setIdUA(data.getCodigo());
@@ -115,15 +114,15 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
             filtroNormativas.setPaginaFirst(0);
             filtroNormativas.setPaginaTamanyo(100000);
             normativas = normativaServiceFacade.findByFiltro(filtroNormativas).getItems();
-
         }
+
         if (event.getOldStep().contains("reasignar") && event.getNewStep().contains("finalizar")) {
             //Comprobamos que se han asignado las opciones de UA destino a todos los procedimientos, servicios y normativas
             if (procedimientos != null && !procedimientos.isEmpty()) {
                 for (ProcedimientoCompletoDTO procedimiento : procedimientos) {
                     if (procedimiento.getOpcionUAdestino() == null) {
-                        PrimeFaces.current().executeScript("PF('statusDialog1').hide();");
                         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogEvolucionCompetenciaUnidadAdministrativa.error.debeAsignarOpcionProc"), true);
+                        PrimeFaces.current().executeScript("PF('statusDialog1').hide();");
                         return event.getOldStep();
                     }
                 }
@@ -132,8 +131,8 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
             if (servicios != null && !servicios.isEmpty()) {
                 for (ProcedimientoCompletoDTO servicioGridDTO : servicios) {
                     if (servicioGridDTO.getOpcionUAdestino() == null) {
-                        PrimeFaces.current().executeScript("PF('statusDialog1').hide();");
                         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogEvolucionCompetenciaUnidadAdministrativa.error.debeAsignarOpcionServ"), true);
+                        PrimeFaces.current().executeScript("PF('statusDialog1').hide();");
                         return event.getOldStep();
                     }
                 }
@@ -142,8 +141,8 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
             if (normativas != null && !normativas.isEmpty()) {
                 for (NormativaGridDTO normativa : normativas) {
                     if (normativa.getOpcionUAdestino() == null) {
-                        PrimeFaces.current().executeScript("PF('statusDialog1').hide();");
                         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogEvolucionCompetenciaUnidadAdministrativa.error.debeAsignarOpcionNorm"), true);
+                        PrimeFaces.current().executeScript("PF('statusDialog1').hide();");
                         return event.getOldStep();
                     }
                 }
@@ -157,8 +156,9 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
      * Método para reasignar los procedimientos, servicios y normativas a las UAs destino
      */
     public void evolucionar() {
+
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-        unidadAdministrativaServiceFacade.evolucionDivisionCompetencias(true, this.data.getCodigo(), this.selectedUnidades, this.fechaBaja, this.normativa, this.procedimientos, this.servicios, this.normativas, UtilJSF.getSessionBean().getEntidad(), UtilJSF.getSessionBean().getPerfil(), usuario, noMigrarReserva, comportamientoTodos);
+        unidadAdministrativaServiceFacade.evolucionDivisionCompetencias(false, this.data.getCodigo(), this.selectedUnidades, this.fechaBaja, this.normativa, this.procedimientos, this.servicios, this.normativas, UtilJSF.getSessionBean().getEntidad(), UtilJSF.getSessionBean().getPerfil(), usuario, noMigrarReserva, comportamientoTodos);
 
         final DialogResult result = new DialogResult();
         result.setCanceled(false);
@@ -174,33 +174,6 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
         } else {
             abrirDialogUAs(TypeModoAcceso.CONSULTA);
         }
-    }
-
-    /**
-     * Asocia las seleccionadas a la UA destino.
-     */
-    public void asociar() {
-
-        if (selectedProcedimientos != null) {
-            for (ProcedimientoCompletoDTO proc : selectedProcedimientos) {
-                proc.setOpcionUAdestino(uaAsociar);
-            }
-        }
-
-        if (selectedServicios != null) {
-            for (ProcedimientoCompletoDTO serv : selectedServicios) {
-                serv.setOpcionUAdestino(uaAsociar);
-            }
-        }
-
-        if (selectedNormativas != null) {
-            for (NormativaGridDTO norm : selectedNormativas) {
-                norm.setOpcionUAdestino(uaAsociar);
-            }
-        }
-        selectedProcedimientos = new ArrayList<>();
-        selectedServicios = new ArrayList<>();
-        selectedNormativas = new ArrayList<>();
     }
 
     /**
@@ -307,6 +280,33 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
     }
 
     /**
+     * Asocia las seleccionadas a la UA destino.
+     */
+    public void asociar() {
+
+        if (selectedProcedimientos != null) {
+            for (ProcedimientoCompletoDTO proc : selectedProcedimientos) {
+                proc.setOpcionUAdestino(uaAsociar);
+            }
+        }
+
+        if (selectedServicios != null) {
+            for (ProcedimientoCompletoDTO serv : selectedServicios) {
+                serv.setOpcionUAdestino(uaAsociar);
+            }
+        }
+
+        if (selectedNormativas != null) {
+            for (NormativaGridDTO norm : selectedNormativas) {
+                norm.setOpcionUAdestino(uaAsociar);
+            }
+        }
+        selectedProcedimientos = new ArrayList<>();
+        selectedServicios = new ArrayList<>();
+        selectedNormativas = new ArrayList<>();
+    }
+
+    /**
      * El return dialog cuando se edita una UA (que tiene que tener codigo negativo, es decir, se tiene que crear)
      *
      * @param event
@@ -374,14 +374,6 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
         this.servicios = servicios;
     }
 
-    public Long getUaAsociar() {
-        return uaAsociar;
-    }
-
-    public void setUaAsociar(Long uaAsociar) {
-        this.uaAsociar = uaAsociar;
-    }
-
     public List<NormativaGridDTO> getSelectedNormativas() {
         return selectedNormativas;
     }
@@ -406,12 +398,12 @@ public class DialogEvolucionDivisionUnidadAdministrativa extends EvolucionContro
         this.selectedServicios = selectedServicios;
     }
 
-    public boolean isNoMigrarReserva() {
-        return noMigrarReserva;
+    public Long getUaAsociar() {
+        return uaAsociar;
     }
 
-    public void setNoMigrarReserva(boolean noMigrarReserva) {
-        this.noMigrarReserva = noMigrarReserva;
+    public void setUaAsociar(Long uaAsociar) {
+        this.uaAsociar = uaAsociar;
     }
 
     public boolean isComportamientoTodos() {

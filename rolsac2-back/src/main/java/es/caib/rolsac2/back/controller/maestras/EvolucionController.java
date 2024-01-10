@@ -2,6 +2,7 @@ package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
+import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
@@ -25,6 +26,10 @@ public abstract class EvolucionController extends AbstractController {
 
     @Inject
     protected UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
+
+
+    @Inject
+    protected ProcedimientoServiceFacade procedimientoService;
 
     @Inject
     protected NormativaServiceFacade normativaServiceFacade;

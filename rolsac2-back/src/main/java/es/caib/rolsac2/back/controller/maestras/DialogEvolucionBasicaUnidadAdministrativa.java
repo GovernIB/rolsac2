@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
+import org.primefaces.event.FlowEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,11 +28,16 @@ public class DialogEvolucionBasicaUnidadAdministrativa extends EvolucionControll
     private Long idUA;
 
     /**
+     * Version
+     */
+    private Integer version;
+
+    /**
      * LOAD
      **/
     public void load() {
         LOG.debug("init Evolucion basica");
-
+        version = 0;
         this.setearIdioma();
         if (id != null && id.split(",").length > 1) {
             ids = id.split(",");
@@ -59,16 +65,33 @@ public class DialogEvolucionBasicaUnidadAdministrativa extends EvolucionControll
     }
 
     /**
+     * Para activar de nuevo los botones.
+     *
+     * @param event
+     * @return
+     */
+    public String onFlowProcess(FlowEvent event) {
+        return event.getNewStep();
+    }
+
+    /**
      * Evoluciona UA
      **/
     public void evolucionar() {
 
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-        unidadAdministrativaServiceFacade.evolucionBasica(idUA, fechaBaja, uaDestino, getNormativa(), UtilJSF.getSessionBean().getEntidad(), UtilJSF.getSessionBean().getPerfil(), usuario);
+        unidadAdministrativaServiceFacade.evolucionBasica(idUA, fechaBaja, uaDestino, getNormativa(), UtilJSF.getSessionBean().getEntidad(), UtilJSF.getSessionBean().getPerfil(), usuario, version);
 
         final DialogResult result = new DialogResult();
         result.setCanceled(false);
         UtilJSF.closeDialog(result);
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 }

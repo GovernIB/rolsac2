@@ -25,6 +25,7 @@ public class DialogEvolucionDependenciaUnidadAdministrativa extends EvolucionCon
 
     private UnidadAdministrativaDTO padre;
     private Long idUA;
+    private Integer version;
     private UnidadAdministrativaDTO padreAntiguo;
 
     public void load() {
@@ -43,6 +44,7 @@ public class DialogEvolucionDependenciaUnidadAdministrativa extends EvolucionCon
             data = unidadAdministrativaServiceFacade.findUASimpleByID(idUA, UtilJSF.getSessionBean().getLang(), null);
         }
 
+        version = data.getVersion();
         padreAntiguo = data.getPadre();
         padre = data.getPadre();
     }
@@ -100,34 +102,12 @@ public class DialogEvolucionDependenciaUnidadAdministrativa extends EvolucionCon
      */
     public void evolucionar() {
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-        unidadAdministrativaServiceFacade.evolucionDependencia(idUA, padre.getCodigo(), UtilJSF.getSessionBean().getEntidad(), UtilJSF.getSessionBean().getPerfil(), usuario);
+        unidadAdministrativaServiceFacade.evolucionDependencia(idUA, padre.getCodigo(), UtilJSF.getSessionBean().getEntidad(), UtilJSF.getSessionBean().getPerfil(), usuario, version);
 
         final DialogResult result = new DialogResult();
         result.setCanceled(false);
         UtilJSF.closeDialog(result);
     }
-
-    /*
-    public List<UnidadAdministrativaDTO> completeUnidadAdministrativa(final String query) {
-        List<UnidadAdministrativaDTO> suggestions = new ArrayList<UnidadAdministrativaDTO>();
-        UnidadAdministrativaFiltro filtro = new UnidadAdministrativaFiltro();
-        filtro.setIdioma(getIdioma());
-
-        if (query == null || query.isBlank()) {
-            filtro.setPaginaFirst(0);
-            filtro.setPaginaTamanyo(10);
-        }
-
-        filtro.setNombre(StringUtils.stripAccents(query.toLowerCase()));
-
-        Pagina<UnidadAdministrativaDTO> resultado = unidadAdministrativaServiceFacade.findByFiltroRest(filtro);
-
-        if (resultado != null) {
-            suggestions = resultado.getItems();
-        }
-
-        return suggestions;
-    }*/
 
     public UnidadAdministrativaDTO getPadre() {
         return padre;
@@ -143,5 +123,13 @@ public class DialogEvolucionDependenciaUnidadAdministrativa extends EvolucionCon
 
     public void setPadreAntiguo(UnidadAdministrativaDTO padreAntiguo) {
         this.padreAntiguo = padreAntiguo;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

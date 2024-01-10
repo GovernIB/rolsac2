@@ -49,7 +49,7 @@
 			flowListener="#{dialogEvolucionFusionUnidadAdministrativa.onFlowProcess}">
 			<p:tab id="origen"
 				title="#{labels['dialogEvolucionUnidadAdministrativa.uasOrigen']}">
-				<p:panel style="height:330px;">
+				<p:panel style="height:410px;">
 					<p:messages />
 					<div class="form-row">
 						<div class="form-group col-md-4">
@@ -140,7 +140,7 @@
 			</p:tab>
 			<p:tab id="destino"
 				title="#{labels['dialogEvolucionUnidadAdministrativa.uasDestino']}">
-				<p:panel style="height:330px;">
+				<p:panel style="height:410px;">
 					<p:messages />
 
 					<div class="form-row">
@@ -177,7 +177,7 @@
 				title="#{labels['dialogEvolucionUnidadAdministrativa.finalizar']}">
 				<p:panel
 					header="#{labels['dialogEvolucionUnidadAdministrativa.resumen']}"
-					style="height:330px;">
+					style="height:410px;">
 					<p:messages />
 					<div class="form-row">
 						<div class="form-group col-md-12">#{labels['dialogEvolucionFusionUnidadAdministrativa.resumen']}</div>
@@ -207,7 +207,7 @@
 								itemValue="#{normativa}" converter="#{normativaDTOConverter}"
 								autoHighlight="false"
 								completeMethod="#{dialogEvolucionFusionUnidadAdministrativa.completeNormativa}"
-								placeholder="#{dict.text_placeholder_lista}" size="100"
+								placeholder="#{dict.text_placeholder_lista}" size="85"
 								minQueryLength="3" cache="true" cacheTimeout="60000"
 								scrollHeight="200">
 							</p:autoComplete>
@@ -273,11 +273,12 @@
 					</div>
 				</p:panel>
 
-				<p:commandButton
+				<p:commandButton id="saveButton" widgetVar="saveButton"
 					action="#{dialogEvolucionFusionUnidadAdministrativa.evolucionar}"
 					style="float: right; margin-top: 3px;"
 					value="#{labels['dict.aceptar']}" update="messagesDialog "
 					rendered="#{!dialogEvolucionFusionUnidadAdministrativa.isModoConsulta()}"
+					onclick="PF('saveButton').disable();" oncomplete="PF('saveButton').enable();"
 					process="@all" />
 			</p:tab>
 

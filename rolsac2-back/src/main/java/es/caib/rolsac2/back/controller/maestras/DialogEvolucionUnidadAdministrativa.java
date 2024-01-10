@@ -37,7 +37,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionBasicaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 570);
+        UtilJSF.openDialog("dialogEvolucionBasicaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 650);
     }
 
     public void irEvolucionFusion() {
@@ -46,7 +46,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionFusionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 875, 570);
+        UtilJSF.openDialog("dialogEvolucionFusionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 875, 640);
     }
 
     /**
@@ -69,7 +69,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionDivisionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 740);
+        UtilJSF.openDialog("dialogEvolucionDivisionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 1000, 800);
     }
 
     public void cerrar() {
@@ -89,7 +89,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionCompetenciasUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 570);
+        UtilJSF.openDialog("dialogEvolucionCompetenciaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 1000, 800);
     }
 
     public void irEvolucionDependencia() {

@@ -236,7 +236,7 @@ public interface UnidadAdministrativaServiceFacade {
      * @param nombreNuevo
      * @param entidad
      */
-    void evolucionBasica(Long codigoUA, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad, TypePerfiles perfil, String usuario);
+    void evolucionBasica(Long codigoUA, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad, TypePerfiles perfil, String usuario, Integer version);
 
     /**
      * Devuelve la normativa de baja de una UA
@@ -253,7 +253,7 @@ public interface UnidadAdministrativaServiceFacade {
      * @param codigoUAPadre
      * @param entidad
      */
-    void evolucionDependencia(Long codigoUA, Long codigoUAPadre, EntidadDTO entidad, TypePerfiles perfil, String usuario);
+    void evolucionDependencia(Long codigoUA, Long codigoUAPadre, EntidadDTO entidad, TypePerfiles perfil, String usuario, Integer version);
 
     /**
      * Comprueba si el padreNuevo cuelga del padreAntiguo
@@ -351,6 +351,7 @@ public interface UnidadAdministrativaServiceFacade {
     /**
      * Evolución de una UA (uaOrigen) dividido en varias ua (uasDestino)
      *
+     * @param evolucionDivision
      * @param uaOrigen
      * @param uasDestino
      * @param fechaBaja
@@ -361,8 +362,10 @@ public interface UnidadAdministrativaServiceFacade {
      * @param entidad
      * @param perfil
      * @param usuario
+     * @param noMigrarReserva
+     * @param comportamientoTodos
      */
-    void evolucionDivision(Long uaOrigen, List<UnidadAdministrativaDTO> uasDestino, Date fechaBaja, NormativaDTO normativa, List<ProcedimientoBaseDTO> procedimientos, List<ProcedimientoBaseDTO> servicios, List<NormativaGridDTO> normativas, EntidadDTO entidad, TypePerfiles perfil, String usuario);
+    void evolucionDivisionCompetencias(boolean evolucionDivision, Long uaOrigen, List<UnidadAdministrativaDTO> uasDestino, Date fechaBaja, NormativaDTO normativa, List<ProcedimientoCompletoDTO> procedimientos, List<ProcedimientoCompletoDTO> servicios, List<NormativaGridDTO> normativas, EntidadDTO entidad, TypePerfiles perfil, String usuario, boolean noMigrarReserva, boolean comportamientoTodos);
 
     /**
      * Devuelve la lista de UAs segun el filtro y los datos de exportar.
@@ -372,4 +375,12 @@ public interface UnidadAdministrativaServiceFacade {
      * @return
      */
     List<UnidadAdministrativaDTO> findExportByFiltro(UnidadAdministrativaFiltro filtro, ExportarDatos exportarDatos);
+
+    /**
+     * Devuelve la lista de UA raiz de una entidad
+     *
+     * @param codEntidad Código de la entidad
+     * @return UA raiz
+     */
+    UnidadAdministrativaGridDTO getUaRaizEntidad(Long codEntidad);
 }

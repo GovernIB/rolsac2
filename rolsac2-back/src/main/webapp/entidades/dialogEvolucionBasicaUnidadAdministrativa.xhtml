@@ -43,12 +43,13 @@
 		<p:growl id="messagesDialog" globalOnly="false" sticky="true"
 			showDetail="true" life="5000" escape="false" />
 
-		<p:wizard nextLabel="#{labels['dict.siguiente']}"
+		<p:wizard nextLabel="#{labels['dict.siguiente']}" id="wiz" widgetVar="wiz"
 			backLabel="#{labels['dict.atras']}"
 			flowListener="#{dialogEvolucionBasicaUnidadAdministrativa.onFlowProcess}">
+			<!-- onnext="alert('onnext');if(PF('wiz').currentStep == 'destino') { alert('onnext IF'); PF('wiz').nextNav.attr('disabled', 'disabled'); PF('wiz').nextNav.toggleClass('ui-state-default');PF('wiz').nextNav.toggleClass('ui-state-disabled'); alert('onnext IF2'); }" -->
 			<p:tab id="origen"
 				title="#{labels['dialogEvolucionUnidadAdministrativa.uasOrigen']}">
-				<p:panel style="height:330px;">
+				<p:panel style="height:410px;">
 					<p:messages />
 					<div class="form-row">
 						<div class="form-group col-md-12">
@@ -100,7 +101,7 @@
 			</p:tab>
 			<p:tab id="destino"
 				title="#{labels['dialogEvolucionUnidadAdministrativa.uasDestino']}">
-				<p:panel style="height:330px;">
+				<p:panel style="height:410px;">
 					<p:messages />
 
 					<div class="form-row">
@@ -123,6 +124,8 @@
 							</p>
 						</div>
 					</div>
+
+
 				</p:panel>
 			</p:tab>
 
@@ -130,7 +133,7 @@
 				title="#{labels['dialogEvolucionUnidadAdministrativa.finalizar']}">
 				<p:panel
 					header="#{labels['dialogEvolucionUnidadAdministrativa.resumen']}"
-					style="height:330px;">
+					style="height:410px;">
 					<p:messages />
 					<div class="form-row">
 						<div class="form-group col-md-12">#{labels['dialogEvolucionBasicaUnidadAdministrativa.resumen']}</div>
@@ -193,7 +196,7 @@
 								itemValue="#{normativa}" converter="#{normativaDTOConverter}"
 								autoHighlight="false"
 								completeMethod="#{dialogEvolucionBasicaUnidadAdministrativa.completeNormativa}"
-								placeholder="#{dict.text_placeholder_lista}" size="100"
+								placeholder="#{dict.text_placeholder_lista}" size="76"
 								minQueryLength="3" cache="true" cacheTimeout="60000"
 								scrollHeight="200">
 							</p:autoComplete>
@@ -202,10 +205,12 @@
 				</p:panel>
 
 				<p:commandButton
+						widgetVar="saveButton" id="saveButton"
 					action="#{dialogEvolucionBasicaUnidadAdministrativa.evolucionar}"
 					style="float: right; margin-top: 3px;"
 					value="#{labels['dict.aceptar']}" update="messagesDialog "
 					rendered="#{!dialogEvolucionBasicaUnidadAdministrativa.isModoConsulta()}"
+					onclick="PF('saveButton').disable();" oncomplete="PF('saveButton').enable();"
 					process="@all" />
 			</p:tab>
 

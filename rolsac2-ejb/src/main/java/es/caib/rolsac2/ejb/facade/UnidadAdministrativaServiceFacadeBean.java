@@ -551,10 +551,33 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     }
 
 
+    /**
+     * Incluye los 2 tipos de evolucion (division y competencias)
+     *
+     * @param evolucionDivision
+     * @param uaOrigen
+     * @param uasDestino
+     * @param fechaBaja
+     * @param normativaBaja
+     * @param procedimientos
+     * @param servicios
+     * @param normativas
+     * @param entidad
+     * @param perfil
+     * @param usuario
+     * @param noMigrarReserva
+     * @param comportamientoTodos
+     */
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR})
-    public void evolucionDivision(Long uaOrigen, List<UnidadAdministrativaDTO> uasDestino, Date fechaBaja, NormativaDTO normativaBaja, List<ProcedimientoBaseDTO> procedimientos, List<ProcedimientoBaseDTO> servicios, List<NormativaGridDTO> normativas, EntidadDTO entidad, TypePerfiles perfil, String usuario) {
+    public void evolucionDivisionCompetencias(boolean evolucionDivision, Long uaOrigen, List<UnidadAdministrativaDTO> uasDestino, Date fechaBaja, NormativaDTO normativaBaja, List<ProcedimientoCompletoDTO> procedimientos, List<ProcedimientoCompletoDTO> servicios, List<NormativaGridDTO> normativas, EntidadDTO entidad, TypePerfiles perfil, String usuario, boolean noMigrarReserva, boolean comportamientoTodos) {
 
+        String prefijoLiteral;
+        if (evolucionDivision) {
+            prefijoLiteral = "auditoria.uas.evolucionDivision";
+        } else {
+            prefijoLiteral = "auditoria.uas.evolucionCompet";
+        }
         JUnidadAdministrativa juaOrigen = unidadAdministrativaRepository.findById(uaOrigen);
         String nombreAntiguo = getNombreUA(juaOrigen.getTraducciones());
         String nombreDestinos = "";
@@ -587,7 +610,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
                 //Cambiamos el negativo por el nuevo código.
                 if (codigoAntiguo != null && codigoAntiguo < 0) {
                     if (procedimientos != null) {
-                        for (ProcedimientoBaseDTO proc : procedimientos) {
+                        for (ProcedimientoCompletoDTO proc : procedimientos) {
                             if (proc.getOpcionUAdestino().compareTo(codigoAntiguo) == 0) {
                                 proc.setOpcionUAdestino(ua.getCodigo());
                             }
@@ -601,7 +624,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
                         }
                     }
                     if (servicios != null) {
-                        for (ProcedimientoBaseDTO serv : servicios) {
+                        for (ProcedimientoCompletoDTO serv : servicios) {
                             if (serv.getOpcionUAdestino().compareTo(codigoAntiguo) == 0) {
                                 serv.setOpcionUAdestino(ua.getCodigo());
                             }
@@ -621,20 +644,22 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
             jAuditoria.setFechaModificacion(new Date());
             jAuditoria.setUsuarioModificacion(usuario);
             jAuditoria.setUsuarioPerfil(perfil.toString());
-            if (creado) {
-                jAuditoria.setLiteralFlujo("auditoria.uas.evolucionDivision.creadoSin");
-            } else {
-                jAuditoria.setLiteralFlujo("auditoria.uas.evolucionDivision.actualizadoSin");
-            }
             jAuditoria.setAccion(TypeAccionAuditoria.MODIFICACION.toString());
             valorCampo.setValorAnterior(nombreAntiguo);
             //valorCampo.setValorNuevo(nombreUAfusion);
             if (creado) {
-                auditoria.setIdCampo("auditoria.uas.evolucionDivision.creado");
+                jAuditoria.setLiteralFlujo(prefijoLiteral + ".creado");
+                //auditoria.setIdCampo(prefijoLiteral + ".creado");
             } else {
-                auditoria.setIdCampo("auditoria.uas.evolucionDivision.actualizado");
+                jAuditoria.setLiteralFlujo(prefijoLiteral + ".actualizado");
+                //auditoria.setIdCampo(prefijoLiteral + ".actualizado");
             }
             auditoria.setValoresModificados(Arrays.asList(valorCampo));
+            if (creado) {
+                auditoria.setIdCampo(prefijoLiteral + ".creadoSin");
+            } else {
+                auditoria.setIdCampo(prefijoLiteral + ".actualizadoSin");
+            }
             jAuditoria.setListaModificaciones(UtilJSON.toJSON(Arrays.asList(auditoria)));
             auditoriaRepository.guardar(jAuditoria);
         }
@@ -645,16 +670,16 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         }
 
         //Mover todos los datos de procedimientos a la nueva UA de la opción seleccionada
-        for (ProcedimientoBaseDTO proc : procedimientos) {
+        for (ProcedimientoCompletoDTO proc : procedimientos) {
             if (proc.getOpcionUAdestino().compareTo(uaOrigen) != 0) {
-                procedimientoRepository.evolucionarProc(proc.getCodigo(), uaOrigen, proc.getOpcionUAdestino(), "auditoria.uas.evolucionDivision", nombreAntiguo, nombreUasDestino.get(proc.getOpcionUAdestino()), perfil, usuario);
+                procedimientoRepository.evolucionarProc(proc.getCodigo(), uaOrigen, proc.getOpcionUAdestino(), prefijoLiteral, nombreAntiguo, nombreUasDestino.get(proc.getOpcionUAdestino()), perfil, usuario);
             }
         }
 
         //Mover todos los datos de servicios a la nueva UA de la opción seleccionada
-        for (ProcedimientoBaseDTO serv : servicios) {
+        for (ProcedimientoCompletoDTO serv : servicios) {
             if (serv.getOpcionUAdestino().compareTo(uaOrigen) != 0) {
-                procedimientoRepository.evolucionarProc(serv.getCodigo(), uaOrigen, serv.getOpcionUAdestino(), "auditoria.uas.evolucionDivision", nombreAntiguo, nombreUasDestino.get(serv.getOpcionUAdestino()), perfil, usuario);
+                procedimientoRepository.evolucionarProc(serv.getCodigo(), uaOrigen, serv.getOpcionUAdestino(), prefijoLiteral, nombreAntiguo, nombreUasDestino.get(serv.getOpcionUAdestino()), perfil, usuario);
             }
         }
 
@@ -669,14 +694,14 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         }
 
         //Hay que dar de baja todas las normativas y dejar sólo las que toque.
-        unidadAdministrativaRepository.marcarBajaConNormativas(uaOrigen, fechaBaja, perfil, usuario, "auditoria.uas.evolucionDivisionBaja", nombreAntiguo, nombreDestinos, normativaBaja, normativasBajaUaOrigen);
+        unidadAdministrativaRepository.marcarBajaConNormativas(uaOrigen, fechaBaja, perfil, usuario, prefijoLiteral + "Baja", nombreAntiguo, nombreDestinos, normativaBaja, normativasBajaUaOrigen);
 
     }
 
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR})
-    public void evolucionBasica(Long codigoUA, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad, TypePerfiles perfil, String usuario) {
+    public void evolucionBasica(Long codigoUA, Date fechaBaja, Literal nombreNuevo, NormativaDTO normativa, EntidadDTO entidad, TypePerfiles perfil, String usuario, Integer version) {
 
         JUnidadAdministrativa juaOriginal = unidadAdministrativaRepository.findById(codigoUA);
         String nombreAntiguo = getNombreUA(juaOriginal.getTraducciones());
@@ -689,7 +714,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         nueva.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_VIGENTE);
         nueva.setFechaBaja(null);
         nueva.setNombre(nombreNuevo);
-        nueva.setVersion(0);
+        nueva.setVersion(version);
         JUnidadAdministrativa jnueva = unidadAdministrativaConverter.createEntity(nueva);
         jnueva.setPadre(juaOriginal.getPadre());
         unidadAdministrativaRepository.create(jnueva);
@@ -770,7 +795,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR})
-    public void evolucionDependencia(Long codigoUA, Long codigoUAPadre, EntidadDTO entidad, TypePerfiles perfil, String usuario) {
+    public void evolucionDependencia(Long codigoUA, Long codigoUAPadre, EntidadDTO entidad, TypePerfiles perfil, String usuario, Integer version) {
         JUnidadAdministrativa juaOriginal = unidadAdministrativaRepository.findById(codigoUA);
         JUnidadAdministrativa juaPadre = unidadAdministrativaRepository.findById(codigoUAPadre);
 
@@ -794,6 +819,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
         //Cambiamos el padre (evolucion dependencia)
         juaOriginal.setPadre(juaPadre);
+        juaOriginal.setVersion(version);
         unidadAdministrativaRepository.update(juaOriginal);
     }
 
@@ -1000,5 +1026,11 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
             LOG.error("Error", e);
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public UnidadAdministrativaGridDTO getUaRaizEntidad(Long codEntidad) {
+        return unidadAdministrativaRepository.getUaRaizEntidad(codEntidad);
     }
 }

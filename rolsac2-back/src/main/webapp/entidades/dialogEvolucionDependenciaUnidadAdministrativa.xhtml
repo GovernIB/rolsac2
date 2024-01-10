@@ -96,7 +96,7 @@
 				title="#{labels['dialogEvolucionUnidadAdministrativa.finalizar']}">
 				<p:panel
 					header="#{labels['dialogEvolucionUnidadAdministrativa.resumen']}"
-					style="height:330px;">
+					style="height:340px;">
 					<p:messages />
 					<div class="form-row">
 						<div class="form-group col-md-12">#{labels['dialogEvolucionDependenciaUnidadAdministrativa.resumen']}</div>
@@ -133,13 +133,15 @@
 						</div>
 					</div>
 
+
 				</p:panel>
 
-				<p:commandButton
+				<p:commandButton widgetVar="saveButton" id="saveButton"
 					action="#{dialogEvolucionDependenciaUnidadAdministrativa.evolucionar}"
 					style="float: right; margin-top: 3px;"
 					value="#{labels['dict.aceptar']}" update="messagesDialog "
 					rendered="#{!dialogEvolucionDependenciaUnidadAdministrativa.isModoConsulta()}"
+					onclick="PF('saveButton').disable();" oncomplete="PF('saveButton').enable();"
 					process="@all" />
 			</p:tab>
 
