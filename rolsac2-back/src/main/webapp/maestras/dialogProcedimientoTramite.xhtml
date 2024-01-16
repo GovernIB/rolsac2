@@ -61,11 +61,11 @@
                  escape="false"/>
         <div class="ui-g-12 ui-md-9 pl-4 panel-container">
             <p:panel id="panelNombre" header="#{labels['dialogProcedimientoTramite.edicion']}"
-                     rendered="#{!empty dialogProcedimientoTramite.nombreProcedimiento.getTraduccion(sessionBean.lang)}">
+                     rendered="#{!empty dialogProcedimientoTramite.nombreProcedimiento.getTraduccionConValor(sessionBean.lang, 'ca')}">
                 <div class="form-row">
                     <div class="form-group">
                         <h6 id="txtTituloNombre"
-                            class="font-weight-bold mt-3">#{dialogProcedimientoTramite.nombreProcedimiento.getTraduccion(sessionBean.lang)}</h6>
+                            class="font-weight-bold mt-3">#{dialogProcedimientoTramite.nombreProcedimiento.getTraduccionConValor(sessionBean.lang, 'ca')}</h6>
                     </div>
                 </div>
             </p:panel>
