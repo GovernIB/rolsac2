@@ -1019,7 +1019,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         final Map<String, String> params = new HashMap<>();
         UtilJSF.anyadirMochila("temaPadre", temaPadre);
         UtilJSF.anyadirMochila("temasRelacionados", new ArrayList<>(data.getTemas()));
-        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", modoAcceso, params, true, 590, 460);
+        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", modoAcceso, params, true, 740, 500);
 
     }
 
@@ -1386,6 +1386,18 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void setLopdResponsable(Literal lopdResponsable) {
         this.lopdResponsable = lopdResponsable;
+    }
+
+    public String getIcono(TemaGridDTO valor) {
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return Constantes.INDEXAR_SIA_ICONO;
+        }
+    }
+
+    public String getIconoSIA() {
+        return Constantes.INDEXAR_SIA_ICONO;
     }
 }
 

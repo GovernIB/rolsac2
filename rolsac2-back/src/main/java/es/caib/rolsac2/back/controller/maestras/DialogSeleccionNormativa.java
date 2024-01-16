@@ -62,12 +62,14 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
         filtro = new NormativaFiltro();
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        cargarFiltros();
 
         // Generamos una búsqueda
         buscar();
         //  normativasSeleccionadas.add(new NormativaGridDTO());
         // normativasSeleccionadas = new ArrayList<>(
         normativasSeleccionadas = (List<NormativaGridDTO>) UtilJSF.getValorMochilaByKey("normativasSeleccionadas");
+
     }
 
     /**
