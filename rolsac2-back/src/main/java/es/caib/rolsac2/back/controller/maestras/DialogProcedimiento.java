@@ -1389,11 +1389,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public String getIcono(TemaGridDTO valor) {
-        if (valor.getTipoMateriaSIA() == null) {
-            return "";
-        } else {
-            return Constantes.INDEXAR_SIA_ICONO;
-        }
+    	return "";
     }
 
     public String getIconoSIA() {
