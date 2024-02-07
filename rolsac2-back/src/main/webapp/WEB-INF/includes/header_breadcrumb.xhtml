@@ -9,13 +9,42 @@
 <ui:composition>
 
     <nav class="navbar navbar-light navbar-expand-lg flex-column justify-content-start align-items-start">
-
-
-        <div class="d-flex flex-column mt-3">
+        <div class="d-flex flex-column mt-3" style="width: 100% !important;">
             <c:if test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR or sessionBean.getPerfil() == TypePerfiles.INFORMADOR}">
                 <ui:insert name="mollaPaGestor"></ui:insert>
+            </c:if>
 
-
+            <c:if test="#{!empty sessionBean.alertas}">
+                <h:outputStylesheet>
+                    .iconoAlertaLeido {
+                        background: transparent;
+                        border: none;
+                        box-shadow: none;
+                    }
+                </h:outputStylesheet>
+                <div style="flex-grow:100;margin-left:20px;">
+                    <ui:repeat value="#{sessionBean.alertas}" var="alerta">
+                        <div class="w-full row" >
+                            <div class="ui-g-12">
+                                <p:commandButton
+                                        action="#{sessionBean.marcarAlertaLeida(alerta.codigo)}"
+                                        icon="pi pi-times-circle"
+                                        value=" "
+                                        styleClass="w45px h25px iconoAlertaLeido"
+                                        process="@this"
+                                />
+                                <!--<i class="pi pi-times-circle" style="font-size: 2rem; margin-right:5px;top:8px;position:relative;"></i>-->
+                                <p:outputLabel value="#{alerta.fechaIni}" >
+                                    <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <p:outputLabel value="- #{alerta.fechaFin}" rendered=" #{!empty alerta.fechaFin}">
+                                    <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <p:outputLabel value=" : #{alerta.descripcion.getTraduccion(sessionBean.lang)}" styleClass="ml-2" />
+                            </div>
+                        </div>
+                    </ui:repeat>
+                </div>
             </c:if>
             <div id="bread" class="d-flex">
                 <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD) }">
@@ -47,7 +76,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div>
-                <div class="navbar-collapse collapse" id="collapsingNavbar2">
+                <div class="navbar-collapse collapse" id="collapsingNavbar2" style="display: flex;">
                     <ul id="listaOpciones" class="navbar-nav text-right">
                         <!-- Remote command para una vez se selecciona una opcion, actualizar la opcion visual en sessionBean-->
                         <p:remoteCommand name="commandSetearOpcion"
@@ -300,9 +329,9 @@
                                         <div class="menuTipos mt-4" id="menuMonitorizacion">
                                             <p:link id="viewAlertas"
                                                     styleClass="pb-4 dropdown-item mobil"
-                                                    outcome="/monitorizacion/viewAlertas.xhtml"
-                                                    title="#{labels['viewAlertas.titulo']}">
-                                                <span class="mb-0 float-right">#{labels['viewAlertas.titulo']}</span>
+                                                    outcome="/monitorizacion/viewConfiguracionesAlertas.xhtml"
+                                                    title="#{labels['viewConfiguracionesAlertas.titulo']}">
+                                                <span class="mb-0 float-right">#{labels['viewConfiguracionesAlertas.titulo']}</span>
                                             </p:link>
                                             <p:link id="viewCuadroControl"
                                                     styleClass="pb-4 dropdown-item mobil"
@@ -363,11 +392,12 @@
                                                     value="#{labels['menu.label.mon.entidad.migracion']}"></p:outputLabel>
 
                                             <p:link id="viewProcesosMigracion"
-                                                    styleClass="pb-4 dropdown-item mobil"
+                                                    styleClass="pb-5 dropdown-item mobil"
                                                     outcome="/monitorizacion/viewProcesosMigracion.xhtml"
                                                     title="#{labels['viewProcesosMigracion.titulo.pagina']}">
                                                 <span class="mb-0 float-right">#{labels['viewProcesosMigracion.titulo.pagina']}</span>
                                             </p:link>
+
                                         </div>
                                     </li>
                                     <li class="menuD nav-item mt-3 mb-1 opcion-menu"
@@ -547,6 +577,7 @@
                         </p:panelGrid>
 
                     </ul>
+
                 </div>
             </div>
         </div>

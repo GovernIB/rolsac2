@@ -8,9 +8,18 @@
     <!-- Logo i nom aplicació -->
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mobil">
+                <li class="nav-item dropdown colorRojo">
+                     <a class="nav-link dropdown mobil" title="#{labels['dict.avisosYalertas']}" href="#" id="alertas"
+                        onclick='window.location =$("#linkAvisos").attr("href");'
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <h:outputLabel class="mb-0 float-right botoCurt" style="cursor: pointer;" outcome="/configuracio">#{sessionBean.getNotificacionAvisos()} #{labels['dict.avisosYalertas']}</h:outputLabel>
+                        <span class="oi oi oi-bell" title="#{labels['dict.avisosYalertas']}" aria-hidden="true"></span>
+                         <p:link id="linkAvisos" outcome="/maestras/viewMisAlertas.xhtml" style="display:none" />
+                    </a>
+                </li>
                 <c:if test="#{sessionBean.getPerfil() != TypePerfiles.SUPER_ADMINISTRADOR}">
                     <li class="nav-item dropdown colorRojo">
-                        <a class="nav-link dropdown mobil" title="Entidades" href="#" id="entidades"
+                        <a class="nav-link dropdown mobil" title="#{labels['dict.entidades']}" href="#" id="entidades"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
                                                   aria-hidden="true"></span>
@@ -59,7 +68,7 @@
                                 title="#{labels['dict.configuracion']}">
                             <span class="mb-0 float-right">#{labels['dict.configuracion']}</span>
                         </p:link>
-                        <c:if test="${sessionBean.perfil ne TypePerfiles.GESTOR || sessionBean.entidad.admContenidoSeleccionIdioma == null}">
+                        <c:if test="${sessionBean.perfil eq TypePerfiles.SUPER_ADMINISTRADOR || sessionBean.perfil eq TypePerfiles.ADMINISTRADOR_ENTIDAD || sessionBean.entidad.admContenidoSeleccionIdioma == null}">
                             <p:repeat value="#{applicationLocales.available}" var="locale">
                                 <h:commandLink styleClass="dropdown-item mobil" hreflang="#{locale.toLanguageTag()}"
                                                action="#{sessionBean.reload()}"

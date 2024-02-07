@@ -101,20 +101,20 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 <p:panel id="panel" >
                     <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                        <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:inputText id="txtCodigo" value="#{viewConfiguracionEntidad.data.codigo}"
                                          styleClass="w95" disabled="true"/>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                        <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:inputText id="txtIdentificador" value="#{viewConfiguracionEntidad.data.identificador}"
                                          styleClass="w95" disabled="true" maxlength="50">
                                 <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
@@ -124,10 +124,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
 
                     <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <p:outputLabel value="#{labels['dict.comunUA']}:" for="txtUAComun"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                        <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <my:literalComponent id="txtUAComun" styleClass="w95"
                                                  value="#{viewConfiguracionEntidad.data.uaComun}"
                                                  soloLecture="#{viewLOPD.isModoConsulta()}"
@@ -145,10 +145,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
                     <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <h:outputText value="#{labels['dialogEntidad.idiomas.permitidos']}:" for="txtIdiomasPermitidos"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                        <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectManyButton id="txtIdiomasPermitidos" value="#{viewConfiguracionEntidad.idiomasPermitidos}"
                                                 styleClass="w95 botoneraRed" maxlength="50">
                                 <f:selectItems value="#{idiomasFijos.values()}" var="idioma"
@@ -161,11 +161,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                     </div>
                     <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <h:outputText value="#{labels['dialogEntidad.idiomas.obligatorios']}:"
                                           for="txtIdiomasObligatorios"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                        <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectManyButton id="txtIdiomasObligatorios" value="#{viewConfiguracionEntidad.idiomasObligatorios}"
                                                 styleClass="w95 botoneraRed"  maxlength="50">
                                 <f:selectItems value="#{viewConfiguracionEntidad.idiomasPermitidos}" var="idioma"
@@ -176,10 +176,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                     </div>
                     <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <h:outputText value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                        <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectOneMenu id="txtIdiomaDefecto" value="#{viewConfiguracionEntidad.data.idiomaDefectoRest}"
                                              styleClass="w95"
                                              disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50">
@@ -190,10 +190,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                     </div>
                     <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <h:outputText value="#{labels['dialogEntidad.idioma.admContenidoIdiomaPrioritario']}:" for="txtIdiomaPrioritario"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                        <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectOneMenu id="txtIdiomaPrioritario" value="#{viewConfiguracionEntidad.data.admContenidoIdiomaPrioritario}"
                                              styleClass="w95"
                                              disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50">
@@ -205,22 +205,21 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                     </div>
                     <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <h:outputText value="#{labels['dialogEntidad.idioma.admContenidoSeleccionIdioma']}:" for="txtAdmSeleccionIdioma"/>
                         </div>
-                        <div class="ui-g-12 ui-md-9 ui-lg-5">
+                        <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectOneMenu id="txtAdmSeleccionIdioma" value="#{viewConfiguracionEntidad.data.admContenidoSeleccionIdioma}"
                                              styleClass="w95"
                                              disabled="#{viewConfiguracionEntidad.isModoConsulta()}" maxlength="50">
                                 <f:selectItem itemValue="" itemLabel="#{labels['dict.ninguno']}"/>
                                 <f:selectItems value="#{viewConfiguracionEntidad.idiomasObligatorios}" var="idioma"
                                                itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-
                             </p:selectOneMenu>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <h:outputText value="#{labels['dialogEntidad.logo']}:" for=""/>
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
@@ -261,7 +260,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                     </div>
                     <div class="row">
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <h:outputText value="#{labels['viewConfiguracionEntidad.css']}:" for=""/>
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
