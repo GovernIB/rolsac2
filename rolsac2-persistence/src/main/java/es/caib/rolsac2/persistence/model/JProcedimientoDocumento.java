@@ -11,11 +11,7 @@ import java.util.List;
  */
 @Entity
 @SequenceGenerator(name = "procedimiento-doc-sequence", sequenceName = "RS2_DOCPR_SEQ", allocationSize = 1)
-@Table(name = "RS2_DOCPR",
-        indexes = {
-                @Index(name = "RS2_DOCPR_PK_I", columnList = "DOPR_CODIGO")
-        }
-)
+@Table(name = "RS2_DOCPR", indexes = {@Index(name = "RS2_DOCPR_PK_I", columnList = "DOPR_CODIGO")})
 public class JProcedimientoDocumento {
 
     /**
@@ -46,9 +42,19 @@ public class JProcedimientoDocumento {
     /**
      * Traducciones
      */
-    @OneToMany(mappedBy = "documento", fetch = FetchType.EAGER, cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "documento", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JProcedimientoDocumentoTraduccion> traducciones;
+
+    public static JProcedimientoDocumento clonar(JProcedimientoDocumento doc, Long codigoListaElementosDestino) {
+        JProcedimientoDocumento retorno = null;
+        if (doc != null) {
+            retorno = new JProcedimientoDocumento();
+            retorno.setListaDocumentos(codigoListaElementosDestino);
+            retorno.setOrden(doc.getOrden());
+            retorno.setTraducciones(JProcedimientoDocumentoTraduccion.clonar(doc.getTraducciones(), retorno));
+        }
+        return retorno;
+    }
 
     /**
      * Obtiene codigo.
@@ -147,7 +153,7 @@ public class JProcedimientoDocumento {
         }
         doc.setTitulo(titulo);
         doc.setDescripcion(descripcion);
-//        doc.setUrl(url);
+        //        doc.setUrl(url);
         doc.setDocumentos(documentos);
         return doc;
     }

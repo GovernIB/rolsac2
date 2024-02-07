@@ -237,10 +237,18 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:commandButton>
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                            <p:commandButton id="btnClonar" value="#{labels['dict.clonar']}" styleClass="mr-2" icon="pi pi-file-o"
+                                             iconPos="top" actionListener="#{viewProcedimientos.clonarProcedimiento}" update="messages"
+                                             disabled="#{viewProcedimientos.datoSeleccionado == null}"
+                                             process="@this" rendered="#{!viewProcedimientos.isModoConsulta()}">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogoClonar}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
                             <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2" icon="pi pi-file-o"
                                              iconPos="top" actionListener="#{viewProcedimientos.nuevoProcedimiento}"
                                              process="@this" rendered="#{!viewProcedimientos.isModoConsulta()}">
-                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" onstart="startCargando()"
+                                        oncomplete="stopCargando()"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" styleClass="mr-2"
@@ -574,7 +582,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                          sortOrder="#{viewProcedimientos.filtro.order}"
                          style="min-height: 300px;"
             >
-                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar"
+                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar @form:btnClonar"
                         process="@form"/>
                 <p:ajax event="rowDblselect" global="false" oncomplete="triggerDblClick();" process="@form"/>
 

@@ -47,6 +47,32 @@ public class JProcedimientoTramiteTraduccion {
         return traducciones;
     }
 
+    public static List<JProcedimientoTramiteTraduccion> clonar(List<JProcedimientoTramiteTraduccion> traducciones, JProcedimientoTramite clonado) {
+        List<JProcedimientoTramiteTraduccion> retorno = new ArrayList<>();
+        if (traducciones != null) {
+            for (JProcedimientoTramiteTraduccion traduccion : traducciones) {
+                JProcedimientoTramiteTraduccion traduccionClonada = JProcedimientoTramiteTraduccion.clonar(traduccion, clonado);
+                retorno.add(traduccionClonada);
+            }
+        }
+        return retorno;
+    }
+
+    public static JProcedimientoTramiteTraduccion clonar(JProcedimientoTramiteTraduccion traduccion, JProcedimientoTramite clonado) {
+        JProcedimientoTramiteTraduccion retorno = null;
+        if (traduccion != null) {
+            retorno = new JProcedimientoTramiteTraduccion();
+            retorno.setProcedimientoTramite(clonado);
+            retorno.setIdioma(traduccion.getIdioma());
+            retorno.setRequisitos(traduccion.getRequisitos());
+            retorno.setNombre(traduccion.getNombre());
+            retorno.setDocumentacion(traduccion.getDocumentacion());
+            retorno.setObservacion(traduccion.getObservacion());
+            retorno.setTerminoMaximo(traduccion.getTerminoMaximo());
+        }
+        return retorno;
+    }
+
     public Long getCodigo() {
         return codigo;
     }

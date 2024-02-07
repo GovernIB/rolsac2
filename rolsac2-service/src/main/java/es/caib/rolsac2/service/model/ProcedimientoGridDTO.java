@@ -101,6 +101,30 @@ public class ProcedimientoGridDTO extends ModelApi {
     private Date tramiteInicioFechaPublicacion;
     private Date tramiteIniciofechaCierre;
 
+    public static ProcedimientoGridDTO createGrid(ProcedimientoDTO proc) {
+        ProcedimientoGridDTO procedimientoGridDTO = null;
+        if (proc != null) {
+            procedimientoGridDTO = new ProcedimientoGridDTO();
+            procedimientoGridDTO.setCodigo(proc.getCodigo());
+            procedimientoGridDTO.setCodigoSIA(proc.getCodigoSIA());
+            //procedimientoGridDTO.setCodigoDir3SIA(proc.getCodigoDir3SIA());
+            //procedimientoGridDTO.setEstado(proc.getEstado());
+            procedimientoGridDTO.setEstadoSIA(proc.getEstadoSIA());
+            //procedimientoGridDTO.setFecha(proc.getFecha());
+            procedimientoGridDTO.setNombre(proc.getNombre());
+            procedimientoGridDTO.setTipo(proc.getTipo());
+            //procedimientoGridDTO.setTipoProcedimiento(proc.getTipoProcedimiento());
+            procedimientoGridDTO.setFechaActualizacion(proc.getFechaActualizacion());
+            //procedimientoGridDTO.setComun(proc.getComun());
+            //procedimientoGridDTO.setTramiteInicioCodigo(proc.getTramiteInicioCodigo());
+            //procedimientoGridDTO.setTramiteInicioFechaPublicacion(proc.getTramiteInicioFechaPublicacion());
+            //procedimientoGridDTO.setTramiteIniciofechaCierre(proc.getTramiteIniciofechaCierre());
+            //procedimientoGridDTO.setMensajesPendienteGestor(proc.isMensajesPendienteGestor());
+            //procedimientoGridDTO.setMensajesPendienteSupervisor(proc.isMensajesPendienteSupervisor());
+        }
+        return procedimientoGridDTO;
+    }
+
 
     /**
      * Obtiene codigo.
@@ -421,7 +445,7 @@ public class ProcedimientoGridDTO extends ModelApi {
     public void setMensajesPendienteSupervisor(boolean mensajesPendienteSupervisor) {
         this.mensajesPendienteSupervisor = mensajesPendienteSupervisor;
     }
- 
+
 
     /**
      * Icono de visibilidad

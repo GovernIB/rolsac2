@@ -346,10 +346,13 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             traduccion.setNombre(dto.getNombreProcedimientoWorkFlow().getTraduccion(traduccion.getIdioma()));
         }
         if (dto.getLopdInfoAdicional() != null) {
-            traduccion.setDatosPersonalesDestinatario(dto.getLopdInfoAdicional().getTraduccion(traduccion.getIdioma()));
+            traduccion.setLopdDestinatario(dto.getLopdInfoAdicional().getTraduccion(traduccion.getIdioma()));
         }
         if (dto.getLopdFinalidad() != null) {
-            traduccion.setDatosPersonalesFinalidad(dto.getLopdFinalidad().getTraduccion(traduccion.getIdioma()));
+            traduccion.setLopdFinalidad(dto.getLopdFinalidad().getTraduccion(traduccion.getIdioma()));
+        }
+        if (dto.getLopdDestinatario() != null) {
+            traduccion.setLopdDestinatario(dto.getLopdDestinatario().getTraduccion(traduccion.getIdioma()));
         }
         if (dto.getRequisitos() != null) {
             traduccion.setRequisitos(dto.getRequisitos().getTraduccion(traduccion.getIdioma()));
@@ -568,24 +571,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
-    public List<TipoMateriaSIADTO> getTipoMateriaByProc(Long codigo, String enlaceWF) {
-        List<JProcedimientoWorkflow> listJprocWF = new ArrayList<>();
-
-        JProcedimientoWorkflow jprocWF = obtenerProcedimientosWorkflow(codigo, enlaceWF, listJprocWF);
-
-        if (jprocWF != null) {
-            return procedimientoRepository.getMateriaSIAByWFRest(jprocWF.getCodigo());
-        } else if (!listJprocWF.isEmpty() && listJprocWF.size() == 1) {
-            return procedimientoRepository.getMateriaSIAByWFRest(listJprocWF.get(0).getCodigo());
-        } else if (!listJprocWF.isEmpty() && listJprocWF.size() == 2) {
-            return procedimientoRepository.getMateriaSIAByWFRest(listJprocWF.get(0).getCodigo(), listJprocWF.get(1).getCodigo(), enlaceWF);
-        }
-
-        return new ArrayList<>();
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public List<ProcedimientoDocumentoDTO> getDocumentosByProc(Long codigo, String enlaceWF) {
         List<JProcedimientoWorkflow> listJprocWF = new ArrayList<>();
 
@@ -726,8 +711,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         Literal nombreProcedimientoWorkFlow = new Literal();
         Literal requisitos = new Literal();
-        Literal datosPersonalesDestinatario = new Literal();
-        Literal detDatosPersonalesFinalidad = new Literal();
+        Literal lopdDestinatario = new Literal();
+        Literal lopdFinalidad = new Literal();
         Literal objeto = new Literal();
         Literal destinatarios = new Literal();
         Literal terminoResolucion = new Literal();
@@ -738,8 +723,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
                 nombreProcedimientoWorkFlow.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
                 requisitos.add(new Traduccion(trad.getIdioma(), trad.getRequisitos()));
-                datosPersonalesDestinatario.add(new Traduccion(trad.getIdioma(), trad.getDatosPersonalesDestinatario()));
-                detDatosPersonalesFinalidad.add(new Traduccion(trad.getIdioma(), trad.getDatosPersonalesFinalidad()));
+                lopdDestinatario.add(new Traduccion(trad.getIdioma(), trad.getLopdDestinatario()));
+                lopdFinalidad.add(new Traduccion(trad.getIdioma(), trad.getLopdFinalidad()));
                 objeto.add(new Traduccion(trad.getIdioma(), trad.getObjeto()));
                 destinatarios.add(new Traduccion(trad.getIdioma(), trad.getDestinatarios()));
                 terminoResolucion.add(new Traduccion(trad.getIdioma(), trad.getTerminoResolucion()));
@@ -754,6 +739,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setTerminoResolucion(terminoResolucion);
         proc.setObservaciones(observaciones);
         proc.setKeywords(keywords);
+        proc.setLopdFinalidad(lopdFinalidad);
+        proc.setLopdDestinatario(lopdDestinatario);
         // proc.setLopdInfoAdicional(lopdInfoAdicional);
         proc.setPublicosObjetivo(procedimientoRepository.getTipoPubObjEntByWF(proc.getCodigoWF()));
         proc.setNormativas(procedimientoRepository.getNormativasByWF(proc.getCodigoWF()));
@@ -1283,12 +1270,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
-    public List<TipoMateriaSIADTO> getTipoMateriaByCodProcWF(Long codigoWF) {
-        return procedimientoRepository.getMateriaSIAByWFRest(codigoWF);
-    }
-
-    @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public String obtenerIdiomaEntidad(Long codigoProc) {
         return procedimientoRepository.obtenerIdiomaEntidad(codigoProc);
@@ -1330,6 +1311,42 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             }
         }
         return procedimientos;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public boolean tieneWF(Long id, boolean tipoWF) {
+        return procedimientoRepository.checkExisteWF(id, tipoWF);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    public Long clonarProcedimiento(Long idProcedimiento, boolean wfSeleccionado, String usuario) {
+        JProcedimiento jprocClonado = JProcedimiento.clonar(procedimientoRepository.getReference(idProcedimiento));
+        Long idProcedimientoWF = procedimientoRepository.getCodigoByWF(idProcedimiento, wfSeleccionado);
+        JProcedimientoWorkflow jprocWFClonado = JProcedimientoWorkflow.clonar(procedimientoRepository.getWF(idProcedimiento, wfSeleccionado), jprocClonado, usuario);
+        String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+
+        Long idProcClonado = procedimientoRepository.create(jprocClonado);
+        if (jprocWFClonado.getTramiteElectronico() != null && jprocWFClonado.getTramiteElectronico().getCodigo() == null) {
+            JTipoTramitacion jtipo = procedimientoRepository.guardarTipoTramitacion(jprocWFClonado.getTramiteElectronico());
+            jprocWFClonado.setTramiteElectronico(jtipo);
+        }
+        Long idProcWFClonado = procedimientoRepository.createWF(jprocWFClonado);
+
+        //Normativa
+        procedimientoRepository.clonarNormativas(idProcedimientoWF, idProcWFClonado);
+
+        //Publicos objetivo
+        procedimientoRepository.clonarPublicoObjetivo(idProcedimientoWF, idProcWFClonado);
+
+        //Documentos
+        procedimientoRepository.clonarDocumentos(idProcedimientoWF, idProcWFClonado, ruta);
+
+        //Tramites
+        procedimientoRepository.clonarTramites(idProcedimientoWF, idProcWFClonado, ruta);
+
+        return idProcWFClonado;
     }
 
 }

@@ -53,6 +53,32 @@ public class ServicioGridDTO extends ModelApi {
     private Date fechaPublicacion;
     private Date fechaDespublicacion;
 
+    public static ServicioGridDTO createGrid(ServicioDTO serv) {
+        ServicioGridDTO retorno = new ServicioGridDTO();
+        retorno.setFechaPublicacion(serv.getFechaPublicacion());
+        //retorno.setFechaDespublicacion(serv.getFechaDespublicacion());
+        retorno.setFechaActualizacion(serv.getFechaActualizacion());
+        retorno.setCodigo(serv.getCodigo());
+        //retorno.setCodigoWFMod(serv.getCodigoWFMod());
+        //retorno.setCodigoWFPub(serv.getCodigoWFPub());
+        retorno.setTipo(serv.getTipo());
+        //retorno.setEstado(serv.getEstado());
+        retorno.setEstadoSIA(serv.getEstadoSIA());
+        //retorno.setSiaFecha(serv.getSiaFecha());
+        retorno.setCodigoSIA(serv.getCodigoSIA());
+        retorno.setNombre(serv.getNombre());
+        //retorno.setFecha(serv.getFecha());
+        //retorno.setComun(serv.isComun());
+        //retorno.setMensajesPendienteGestor(serv.isMensajesPendienteGestor());
+        //retorno.setMensajesPendienteSupervisor(serv.isMensajesPendienteSupervisor());
+        retorno.setFechaPublicacion(serv.getFechaPublicacion());
+        //retorno.setFechaDespublicacion(serv.getFechaDespublicacion());
+        retorno.setFechaActualizacion(serv.getFechaActualizacion());
+        //retorno.setNumero(serv.getNumero());
+
+        return retorno;
+    }
+
     public Long getCodigo() {
         return codigo;
     }

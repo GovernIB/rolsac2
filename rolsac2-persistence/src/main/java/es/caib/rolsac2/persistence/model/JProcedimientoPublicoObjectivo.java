@@ -4,6 +4,8 @@ import es.caib.rolsac2.persistence.model.pk.JProcedimientoPublicoObjectivoPK;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * La clase J procedimiento publico objectivo.
@@ -33,10 +35,32 @@ public class JProcedimientoPublicoObjectivo {
     @JoinColumn(name = "PRPO_TIPPOBJ", nullable = false)
     private JTipoPublicoObjetivoEntidad tipoPublicoObjetivo;
 
+    public static List<JProcedimientoPublicoObjectivo> clonar(List<JProcedimientoPublicoObjectivo> jProcedimientoPublicoObjectivo, JProcedimientoWorkflow jprocWFClonado) {
+        List<JProcedimientoPublicoObjectivo> retorno = new ArrayList<>();
+        if (jProcedimientoPublicoObjectivo != null) {
+            for (JProcedimientoPublicoObjectivo jProcedimientoPublicoObjectivo1 : jProcedimientoPublicoObjectivo) {
+                JProcedimientoPublicoObjectivo jProcedimientoPublicoObjectivo2 = JProcedimientoPublicoObjectivo.clonar(jProcedimientoPublicoObjectivo1, jprocWFClonado);
+                retorno.add(jProcedimientoPublicoObjectivo2);
+            }
+        }
+        return retorno;
+    }
+
+    public static JProcedimientoPublicoObjectivo clonar(JProcedimientoPublicoObjectivo jProcedimientoPublicoObjectivo, JProcedimientoWorkflow jprocWFClonado) {
+        JProcedimientoPublicoObjectivo retorno = null;
+        if (jProcedimientoPublicoObjectivo != null) {
+            retorno = new JProcedimientoPublicoObjectivo();
+            retorno.setCodigo(new JProcedimientoPublicoObjectivoPK(jprocWFClonado.getCodigo(), jProcedimientoPublicoObjectivo.getTipoPublicoObjetivo().getCodigo()));
+            retorno.setProcedimiento(jprocWFClonado);
+            retorno.setTipoPublicoObjetivo(jProcedimientoPublicoObjectivo.getTipoPublicoObjetivo());
+        }
+        return retorno;
+    }
+
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public JProcedimientoPublicoObjectivoPK getCodigo() {
         return codigo;
@@ -45,7 +69,7 @@ public class JProcedimientoPublicoObjectivo {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(JProcedimientoPublicoObjectivoPK id) {
         this.codigo = id;
@@ -54,7 +78,7 @@ public class JProcedimientoPublicoObjectivo {
     /**
      * Obtiene procedimiento.
      *
-     * @return  procedimiento
+     * @return procedimiento
      */
     public JProcedimientoWorkflow getProcedimiento() {
         return procedimiento;
@@ -63,7 +87,7 @@ public class JProcedimientoPublicoObjectivo {
     /**
      * Establece procedimiento.
      *
-     * @param prpoCodprwf  prpo codprwf
+     * @param prpoCodprwf prpo codprwf
      */
     public void setProcedimiento(JProcedimientoWorkflow prpoCodprwf) {
         this.procedimiento = prpoCodprwf;
@@ -72,7 +96,7 @@ public class JProcedimientoPublicoObjectivo {
     /**
      * Obtiene tipo publico objetivo.
      *
-     * @return  tipo publico objetivo
+     * @return tipo publico objetivo
      */
     public JTipoPublicoObjetivoEntidad getTipoPublicoObjetivo() {
         return tipoPublicoObjetivo;
@@ -81,7 +105,7 @@ public class JProcedimientoPublicoObjectivo {
     /**
      * Establece tipo publico objetivo.
      *
-     * @param prpoTippobj  prpo tippobj
+     * @param prpoTippobj prpo tippobj
      */
     public void setTipoPublicoObjetivo(JTipoPublicoObjetivoEntidad prpoTippobj) {
         this.tipoPublicoObjetivo = prpoTippobj;
@@ -90,7 +114,7 @@ public class JProcedimientoPublicoObjectivo {
     /**
      * To model tipo publico objetivo entidad grid dto.
      *
-     * @return  tipo publico objetivo entidad grid dto
+     * @return tipo publico objetivo entidad grid dto
      */
     public TipoPublicoObjetivoEntidadGridDTO toModel() {
         TipoPublicoObjetivoEntidadGridDTO tipo = this.getTipoPublicoObjetivo().toModel();

@@ -14,12 +14,7 @@ import java.util.List;
 @Entity
 @SequenceGenerator(name = "procedimiento-tram-sequence", sequenceName = "RS2_PRCTRM_SEQ", allocationSize = 1)
 @Table(name = "RS2_PRCTRM", indexes = {@Index(name = "RS2_PRCTRM_PK_I", columnList = "PRTA_CODIGO")})
-@NamedQueries({
-        @NamedQuery(name = JProcedimientoTramite.FIND_BY_ID,
-                query = "select p from JProcedimientoTramite p where p.codigo = :id"),
-        @NamedQuery(name = JProcedimientoTramite.FIND_BY_PROC_ID,
-                query = "select p from JProcedimientoTramite p where p.procedimiento.procedimiento.codigo = :id")
-})
+@NamedQueries({@NamedQuery(name = JProcedimientoTramite.FIND_BY_ID, query = "select p from JProcedimientoTramite p where p.codigo = :id"), @NamedQuery(name = JProcedimientoTramite.FIND_BY_PROC_ID, query = "select p from JProcedimientoTramite p where p.procedimiento.procedimiento.codigo = :id")})
 
 public class JProcedimientoTramite {
     /**
@@ -140,6 +135,31 @@ public class JProcedimientoTramite {
      */
     @OneToMany(mappedBy = "procedimientoTramite", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JProcedimientoTramiteTraduccion> traducciones;
+
+    public static JProcedimientoTramite clonar(JProcedimientoTramite jtramite, JProcedimientoWorkflow jprocWFClonado) {
+        JProcedimientoTramite clonado = null;
+        if (jtramite != null) {
+            clonado = new JProcedimientoTramite();
+            clonado.setFase(jtramite.getFase());
+            clonado.setOrden(jtramite.getOrden());
+            clonado.setUnidadAdministrativa(jtramite.getUnidadAdministrativa());
+            clonado.setProcedimiento(jprocWFClonado);
+            clonado.setTipoTramitacionPlantilla(jtramite.getTipoTramitacionPlantilla());
+            clonado.setTipoTramitacion(JTipoTramitacion.clonar(jtramite.getTipoTramitacion()));
+            clonado.setListaDocumentos(jtramite.getListaDocumentos());
+            clonado.setListaModelos(jtramite.getListaModelos());
+            clonado.setTasaAsociada(jtramite.getTasaAsociada());
+            clonado.setFechaPublicacion(jtramite.getFechaPublicacion());
+            clonado.setFechaInicio(jtramite.getFechaInicio());
+            clonado.setFechaCierre(jtramite.getFechaCierre());
+            clonado.setTramitPresencial(jtramite.isTramitPresencial());
+            clonado.setTramitElectronica(jtramite.isTramitElectronica());
+            clonado.setTramitTelefonica(jtramite.isTramitTelefonica());
+            clonado.setTraducciones(JProcedimientoTramiteTraduccion.clonar(jtramite.getTraducciones(), clonado));
+
+        }
+        return clonado;
+    }
 
     /**
      * Obtiene codigo.

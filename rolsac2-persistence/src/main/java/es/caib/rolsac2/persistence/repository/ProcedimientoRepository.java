@@ -5,6 +5,7 @@ import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.persistence.model.JListaDocumentos;
 import es.caib.rolsac2.persistence.model.JProcedimiento;
 import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
+import es.caib.rolsac2.persistence.model.JTipoTramitacion;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
@@ -56,11 +57,11 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     Long countServEstadoByUa(Long uaId, String estado);
 
-    Boolean checkExsiteProcedimiento(Long idProc);
+    Boolean checkExisteProcedimiento(Long idProc);
 
     JProcedimientoWorkflow getWF(Long id, boolean procedimientoEnmodificacion);
 
-    void createWF(JProcedimientoWorkflow jProcWF);
+    Long createWF(JProcedimientoWorkflow jProcWF);
 
     boolean existeProcedimientoConMateria(Long materiaSIA);
 
@@ -85,6 +86,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
     boolean existeTramitesConTipoTramitacionPlantilla(Long codigoNor);
 
     List<NormativaGridDTO> getNormativasByWF(Long codigoWF);
+
+    public void clonarNormativas(Long codigoWF, Long codigoWFNuevo);
 
     void mergeDocumentos(Long codigo, Long idListaDocumentos, boolean isLopd, List<ProcedimientoDocumentoDTO> docs, String ruta);
 
@@ -167,15 +170,17 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF);
 
-    List<TipoMateriaSIADTO> getMateriaSIAByWFRest(Long codigoWF);
-
     List<NormativaDTO> getNormativasByWFRest(Long codigoWF);
-
-    List<TipoMateriaSIADTO> getMateriaSIAByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
 
     List<NormativaDTO> getNormativasByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
 
     List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
+
+    void clonarPublicoObjetivo(Long idProcWF, Long idProcWFDestino);
+
+    void clonarTramites(Long idProcWF, Long idProcWFDestino, String ruta);
+
+    void clonarDocumentos(Long idProcWF, Long idProcWFDestino, String ruta);
 
     List<ProcedimientoDocumentoDTO> getDocumentosByListaDocumentos(JListaDocumentos listaDocumentos, JListaDocumentos listaDocumentos2, String enlaceWF);
 
@@ -233,4 +238,20 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      */
     String obtenerIdiomaEntidad(Long codigoProc);
 
+    /**
+     * Indica si existe el wf asociado al procedimiento.
+     *
+     * @param id
+     * @param tipoWF
+     * @return
+     */
+    boolean checkExisteWF(Long id, boolean tipoWF);
+
+    /**
+     * Guarda el tipo tramitacion
+     *
+     * @param tramiteElectronico
+     * @return
+     */
+    JTipoTramitacion guardarTipoTramitacion(JTipoTramitacion tramiteElectronico);
 }

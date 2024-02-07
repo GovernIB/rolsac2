@@ -14,6 +14,15 @@ public class JProcedimientoPublicoObjectivoPK implements Serializable {
     @Column(name = "PRPO_TIPPOBJ", nullable = false)
     private Long tipoPublicoObjetivo;
 
+    public JProcedimientoPublicoObjectivoPK() {
+        //Constructor vacio
+    }
+
+    public JProcedimientoPublicoObjectivoPK(Long procedimiento, Long tipoPublicoObjetivo) {
+        this.procedimiento = procedimiento;
+        this.tipoPublicoObjetivo = tipoPublicoObjetivo;
+    }
+
     public Long getProcedimiento() {
         return procedimiento;
     }
@@ -35,8 +44,7 @@ public class JProcedimientoPublicoObjectivoPK implements Serializable {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         JProcedimientoPublicoObjectivoPK entity = (JProcedimientoPublicoObjectivoPK) o;
-        return Objects.equals(this.tipoPublicoObjetivo, entity.tipoPublicoObjetivo) &&
-                Objects.equals(this.procedimiento, entity.procedimiento);
+        return Objects.equals(this.tipoPublicoObjetivo, entity.tipoPublicoObjetivo) && Objects.equals(this.procedimiento, entity.procedimiento);
     }
 
     @Override

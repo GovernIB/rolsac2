@@ -95,11 +95,11 @@ public interface ProcedimientoWorkflowConverter extends Converter<JProcedimiento
             }
 
             if (dto.getDatosPersonalesFinalidad() != null) {
-                traduccion.setDatosPersonalesFinalidad(dto.getDatosPersonalesFinalidad().getTraduccion(traduccion.getIdioma()));
+                traduccion.setLopdFinalidad(dto.getDatosPersonalesFinalidad().getTraduccion(traduccion.getIdioma()));
             }
 
             if (dto.getDatosPersonalesDestinatario() != null) {
-                traduccion.setDatosPersonalesDestinatario(dto.getDatosPersonalesDestinatario().getTraduccion(traduccion.getIdioma()));
+                traduccion.setLopdDestinatario(dto.getDatosPersonalesDestinatario().getTraduccion(traduccion.getIdioma()));
             }
 
             if (dto.getRequisitos() != null) {
@@ -141,10 +141,10 @@ public interface ProcedimientoWorkflowConverter extends Converter<JProcedimiento
                         literal = traduccion.getObservaciones();
                         break;
                     case "datosPersonalesFinalidad":
-                        literal = traduccion.getDatosPersonalesFinalidad();
+                        literal = traduccion.getLopdFinalidad();
                         break;
                     case "datosPersonalesDestinatario":
-                        literal = traduccion.getDatosPersonalesDestinatario();
+                        literal = traduccion.getLopdDestinatario();
                         break;
                     case "requisitos":
                         literal = traduccion.getRequisitos();

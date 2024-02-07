@@ -9,6 +9,8 @@ import es.caib.rolsac2.service.model.ProcedimientoNormativaDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * La clase J procedimiento normativa.
@@ -143,5 +145,32 @@ public class JProcedimientoNormativa {
         }
         procedimiento.setNombre(nombre);
         return procedimiento;
+    }
+
+
+    public static List<JProcedimientoNormativa> clonar(List<JProcedimientoNormativa> jNormativas, JProcedimientoWorkflow jprocWFClonado) {
+        List<JProcedimientoNormativa> retorno = new ArrayList<>();
+        if (jNormativas != null) {
+            for (JProcedimientoNormativa jProcedimientoNormativa : jNormativas) {
+                JProcedimientoNormativa jProcedimientoNormativaClonado = JProcedimientoNormativa.clonar(jProcedimientoNormativa, jprocWFClonado);
+                retorno.add(jProcedimientoNormativaClonado);
+            }
+        }
+        return retorno;
+    }
+
+
+    public static JProcedimientoNormativa clonar(JProcedimientoNormativa jNormativas, JProcedimientoWorkflow jprocWFClonado) {
+        JProcedimientoNormativa retorno = null;
+        if (jNormativas != null) {
+            JProcedimientoNormativaPK jProcedimientoNormativaPK = new JProcedimientoNormativaPK();
+            jProcedimientoNormativaPK.setProcedimiento(jprocWFClonado.getCodigo());
+            jProcedimientoNormativaPK.setNormativa(jNormativas.getCodigo().getNormativa());
+            retorno.setCodigo(jProcedimientoNormativaPK);
+            retorno.setProcedimiento(jprocWFClonado);
+            retorno.setNormativa(jNormativas.getNormativa());
+            retorno.setOrden(jNormativas.getOrden());
+        }
+        return retorno;
     }
 }

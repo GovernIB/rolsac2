@@ -706,9 +706,9 @@ BEGIN
                         TRPW_OBJETO,
                         TRPW_DESTIN,
                         TRPW_OBSER,
-                        TRPW_PRRESO
-                        /*TRPW_DPFINA,
-                        TRPW_DPDEST,
+                        TRPW_PRRESO,
+                        TRPW_DPFINA,
+                        TRPW_DPDEST/*
                         TRPW_DPDOC,
                         TRPW_SVREQ,*/)
                        VALUES (
@@ -719,7 +719,9 @@ BEGIN
                         ROLSAC1_TRADPROC.TPR_RESUME, 
                         ROLSAC1_TRADPROC.TPR_DESTIN,
                         ROLSAC1_TRADPROC.TPR_OBSERV,
-                        ROLSAC1_TRADPROC.TPR_RESOLUCION
+                        ROLSAC1_TRADPROC.TPR_RESOLUCION,
+                        ROLSAC1_TRADPROC.TPR_LOPDFI,
+                        ROLSAC1_TRADPROC.TPR_LOPDDS
                        );
 
 

@@ -491,7 +491,9 @@ BEGIN
                             TRPW_DESTIN,
                             TRPW_OBSER,
                             TRPW_SVREQ,
-                            TRPW_PRRESO)
+                            TRPW_PRRESO,
+                            TRPW_DPFINA,
+                            TRPW_DPDEST)
                            VALUES (
                             RS2_TRAPRWF_SEQ.NEXTVAL,
                             CODIGO_PROCWF,
@@ -501,7 +503,9 @@ BEGIN
                             ROLSAC1_TRADSERV.TSR_DESTIN,
                             ROLSAC1_TRADSERV.TSR_OBSERV,
                             ROLSAC1_TRADSERV.TSR_ULRSER,
-                            ROLSAC1_TRADSERV.TSR_REQUIS
+                            ROLSAC1_TRADSERV.TSR_REQUIS,
+                            ROLSAC1_TRADSERV.TSR_LOPDFI,
+                            ROLSAC1_TRADSERV.TSR_LOPDDS
                            );
                            
                            

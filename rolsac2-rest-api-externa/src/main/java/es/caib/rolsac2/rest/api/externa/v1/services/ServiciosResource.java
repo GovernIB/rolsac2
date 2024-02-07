@@ -266,37 +266,6 @@ public class ServiciosResource {
     }
 
     /**
-     * Listado de materias de servicios.
-     *
-     * @return
-     * @throws DelegateException
-     */
-    @Produces({MediaType.APPLICATION_JSON})
-    @POST
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
-    @Path("/materiasSia/{codigo}")
-    @Operation(operationId = "listarMateriasSia", summary = "Lista los tipos de materias SIA del servicio", description = "Lista los tipos de de materias SIA del servicio dado por código workflow")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoMateriaSia.class)))
-    @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarMateriasSia(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
-
-        List<TipoMateriaSIADTO> result = new ArrayList<>();
-        List<TipoMateriaSia> lista = new ArrayList<>();
-        TipoMateriaSia elemento = null;
-
-        if (codigo != null) {
-            result = servicioService.getTipoMateriaByCodProcWF(new Long(codigo));
-
-            for (TipoMateriaSIADTO nodo : result) {
-                elemento = new TipoMateriaSia(nodo, null, lang, true);
-                lista.add(elemento);
-            }
-        }
-
-        return Response.ok(new RespuestaTipoMateriaSia(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), new Long(result.size()), lista), MediaType.APPLICATION_JSON).build();
-    }
-
-    /**
      * Listado de normativas de servicios.
      *
      * @return

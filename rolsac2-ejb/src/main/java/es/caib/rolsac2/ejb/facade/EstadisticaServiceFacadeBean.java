@@ -15,8 +15,6 @@ import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.EstadisticaServiceFacade;
 import es.caib.rolsac2.service.model.auditoria.EstadisticaAccesoDTO;
 import es.caib.rolsac2.service.model.auditoria.EstadisticaDTO;
-import es.caib.rolsac2.service.model.EstadisticaGridDTO;
-import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.auditoria.Periodo;
 import es.caib.rolsac2.service.model.filtro.EstadisticaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -30,7 +28,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +37,7 @@ import java.util.List;
 @Stateless
 @Local(EstadisticaServiceFacade.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-public class EstadisticaServiceFacadeBean implements EstadisticaServiceFacade{
+public class EstadisticaServiceFacadeBean implements EstadisticaServiceFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(EstadisticaServiceFacade.class);
     private static final String ERROR_LITERAL = "Error";
@@ -76,7 +73,7 @@ public class EstadisticaServiceFacadeBean implements EstadisticaServiceFacade{
         JUnidadAdministrativa jUnidadAdministrativa = unidadAdministrativaRepository.findById(filtro.getCodigo());
         jEstadistica.setUnidadAdministrativa(jUnidadAdministrativa);
 
-        if(filtro.getTipo().equals("P") || filtro.getTipo().equals("S")) {
+        if (filtro.getTipo().equals("P") || filtro.getTipo().equals("S")) {
             JProcedimiento jProcedimiento = procedimientoRepository.findById(filtro.getCodigo());
             jEstadistica.setProcedimiento(jProcedimiento);
         }
@@ -96,25 +93,25 @@ public class EstadisticaServiceFacadeBean implements EstadisticaServiceFacade{
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public void grabarAcceso(EstadisticaFiltro filtro) throws EstadisticaException {
 
-        if(filtro.getTipo().equals("P") || filtro.getTipo().equals("S")) {
-            if(!procedimientoRepository.checkExsiteProcedimiento(filtro.getCodigo())) {
+        if (filtro.getTipo().equals("P") || filtro.getTipo().equals("S")) {
+            if (!procedimientoRepository.checkExisteProcedimiento(filtro.getCodigo())) {
                 throw new EstadisticaException("No existe el procedimiento o servicio al que se está grabando el acceso");
             }
         } else {
-            if(!unidadAdministrativaRepository.checkExsiteUa(filtro.getCodigo())) {
+            if (!unidadAdministrativaRepository.checkExsiteUa(filtro.getCodigo())) {
                 throw new EstadisticaException("No existe la unidad administrativa a la que se está grabando el acceso");
             }
         }
         try {
             Periodo periodo = PeriodoUtil.crearPeriodoMes();
             filtro.setPeriodo(periodo);
-            if(!estadisticaRepository.checkExisteEstadistica(filtro)) {
+            if (!estadisticaRepository.checkExisteEstadistica(filtro)) {
                 this.create(filtro);
             } else {
                 JEstadistica jEstadistica = estadisticaRepository.findByUk(filtro);
                 EstadisticaDTO estadistica = converter.createDTO(jEstadistica);
                 this.actualizarEstadistica(estadistica, periodo);
-                converter.mergeEntity(jEstadistica,estadistica);
+                converter.mergeEntity(jEstadistica, estadistica);
                 estadisticaRepository.update(jEstadistica);
             }
         } catch (Exception e) {
@@ -123,7 +120,7 @@ public class EstadisticaServiceFacadeBean implements EstadisticaServiceFacade{
     }
 
     private void actualizarEstadistica(EstadisticaDTO estadisticaDTO, Periodo periodo) {
-        if(estadisticaDTO.getAccesos() == null) {
+        if (estadisticaDTO.getAccesos() == null) {
             List<EstadisticaAccesoDTO> accesos = new ArrayList<>();
             EstadisticaAccesoDTO acceso = new EstadisticaAccesoDTO();
             acceso.setFechaCreacion(periodo.getFechaInicio());
@@ -131,10 +128,8 @@ public class EstadisticaServiceFacadeBean implements EstadisticaServiceFacade{
             accesos.add(acceso);
             estadisticaDTO.setAccesos(accesos);
         } else {
-            EstadisticaAccesoDTO accesoActual = estadisticaDTO.getAccesos().stream()
-                    .filter(e -> e.getFechaCreacion().after(periodo.getFechaInicio()) && e.getFechaCreacion().before(periodo.getFechaFin()))
-                    .findFirst().orElse(null);
-            if(accesoActual == null) {
+            EstadisticaAccesoDTO accesoActual = estadisticaDTO.getAccesos().stream().filter(e -> e.getFechaCreacion().after(periodo.getFechaInicio()) && e.getFechaCreacion().before(periodo.getFechaFin())).findFirst().orElse(null);
+            if (accesoActual == null) {
                 EstadisticaAccesoDTO acceso = new EstadisticaAccesoDTO();
                 acceso.setFechaCreacion(periodo.getFechaInicio());
                 acceso.setContador(1l);

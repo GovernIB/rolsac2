@@ -233,6 +233,13 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:commandButton>
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                            <p:commandButton id="btnClonar" value="#{labels['dict.clonar']}" styleClass="mr-2" icon="pi pi-file-o"
+                                             iconPos="top" actionListener="#{viewServicios.clonarServicio}" update="messages"
+                                             disabled="#{viewServicios.datoSeleccionado == null}"
+                                             process="@this" rendered="#{!viewServicios.isModoConsulta()}">
+                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogoClonar}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
                             <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2" icon="pi pi-file-o"
                                              iconPos="top" actionListener="#{viewServicios.nuevoProcedimiento}"
                                              process="@this" rendered="#{!viewServicios.isModoConsulta()}">
@@ -497,7 +504,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                          sortOrder="#{viewServicios.filtro.order}"
                          style="min-height: 300px;"
             >
-                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar" process="@form"/>
+                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar @form:btnClonar" process="@form"/>
                 <p:ajax event="rowDblselect" global="false" oncomplete="triggerDblClick();" process="@form"/>
 
                 <f:facet name="{RowsPerPageLabel}">

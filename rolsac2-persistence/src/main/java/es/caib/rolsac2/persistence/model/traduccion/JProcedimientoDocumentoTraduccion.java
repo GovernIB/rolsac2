@@ -44,6 +44,31 @@ public class JProcedimientoDocumentoTraduccion {
         return traducciones;
     }
 
+    public static List<JProcedimientoDocumentoTraduccion> clonar(List<JProcedimientoDocumentoTraduccion> traducciones, JProcedimientoDocumento retorno) {
+        List<JProcedimientoDocumentoTraduccion> retornoTraducciones = new ArrayList<>();
+        if (traducciones != null) {
+            for (JProcedimientoDocumentoTraduccion traduccion : traducciones) {
+                JProcedimientoDocumentoTraduccion traduccionClonada = JProcedimientoDocumentoTraduccion.clonar(traduccion, retorno);
+                retornoTraducciones.add(traduccionClonada);
+            }
+        }
+        return retornoTraducciones;
+    }
+
+    public static JProcedimientoDocumentoTraduccion clonar(JProcedimientoDocumentoTraduccion traducciones, JProcedimientoDocumento retorno) {
+        JProcedimientoDocumentoTraduccion retornoTraducciones = null;
+        if (traducciones != null) {
+            retornoTraducciones = new JProcedimientoDocumentoTraduccion();
+            retornoTraducciones.setDocumento(retorno);
+            retornoTraducciones.setIdioma(traducciones.getIdioma());
+            retornoTraducciones.setTitulo(traducciones.getTitulo());
+            retornoTraducciones.setDescripcion(traducciones.getDescripcion());
+            retornoTraducciones.setFichero(traducciones.getFichero());
+            //retornoTraducciones.setFicheroRolsac1(traducciones.getFicheroRolsac1());
+        }
+        return retornoTraducciones;
+    }
+
     public Long getCodigo() {
         return codigo;
     }

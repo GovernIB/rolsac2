@@ -36,10 +36,10 @@ public class JProcedimientoWorkflowTraduccion {
     private String observaciones;
 
     @Column(name = "TRPW_DPFINA")
-    private String datosPersonalesFinalidad;
+    private String lopdFinalidad;
 
     @Column(name = "TRPW_DPDEST")
-    private String datosPersonalesDestinatario;
+    private String lopdDestinatario;
 
     @Column(name = "TRPW_DPDOC")
     private Long documentoLOPD;
@@ -67,6 +67,30 @@ public class JProcedimientoWorkflowTraduccion {
             traducciones.add(trad);
         }
         return traducciones;
+    }
+
+    public static List<JProcedimientoWorkflowTraduccion> clonar(List<JProcedimientoWorkflowTraduccion> traducciones, JProcedimientoWorkflow jProcedimientoWorkflow) {
+        List<JProcedimientoWorkflowTraduccion> retorno = null;
+        if (traducciones != null) {
+            retorno = new ArrayList<>();
+            for (JProcedimientoWorkflowTraduccion traduccion : traducciones) {
+                JProcedimientoWorkflowTraduccion trad = new JProcedimientoWorkflowTraduccion();
+                trad.setProcedimientoWorkflow(jProcedimientoWorkflow);
+                trad.setIdioma(traduccion.getIdioma());
+                trad.setNombre(traduccion.getNombre());
+                trad.setObjeto(traduccion.getObjeto());
+                trad.setDestinatarios(traduccion.getDestinatarios());
+                trad.setObservaciones(traduccion.getObservaciones());
+                trad.setLopdFinalidad(traduccion.getLopdFinalidad());
+                trad.setLopdDestinatario(traduccion.getLopdDestinatario());
+                //trad.setDocumentoLOPD(traduccion.getDocumentoLOPD());
+                trad.setKeywords(traduccion.getKeywords());
+                trad.setRequisitos(traduccion.getRequisitos());
+                trad.setTerminoResolucion(traduccion.getTerminoResolucion());
+                retorno.add(trad);
+            }
+        }
+        return retorno;
     }
 
     public Long getCodigo() {
@@ -125,20 +149,20 @@ public class JProcedimientoWorkflowTraduccion {
         this.observaciones = trpwObser;
     }
 
-    public String getDatosPersonalesFinalidad() {
-        return datosPersonalesFinalidad;
+    public String getLopdFinalidad() {
+        return lopdFinalidad;
     }
 
-    public void setDatosPersonalesFinalidad(String trpwDpfina) {
-        this.datosPersonalesFinalidad = trpwDpfina;
+    public void setLopdFinalidad(String lopdFin) {
+        this.lopdFinalidad = lopdFin;
     }
 
-    public String getDatosPersonalesDestinatario() {
-        return datosPersonalesDestinatario;
+    public String getLopdDestinatario() {
+        return lopdDestinatario;
     }
 
-    public void setDatosPersonalesDestinatario(String trpwDpdest) {
-        this.datosPersonalesDestinatario = trpwDpdest;
+    public void setLopdDestinatario(String lopdDest) {
+        this.lopdDestinatario = lopdDest;
     }
 
     public Long getDocumentoLOPD() {

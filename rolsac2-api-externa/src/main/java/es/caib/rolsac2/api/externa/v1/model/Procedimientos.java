@@ -268,9 +268,12 @@ public class Procedimientos extends EntidadBase {
             if (nodo.getLopdFinalidad() != null) {
                 this.lopdFinalidad = nodo.getLopdFinalidad().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
-            if (nodo.getLopdInfoAdicional() != null) {
-                this.lopdDestinatario = nodo.getLopdInfoAdicional().getTraduccionConValor(idioma, idiomaPorDefecto);
+            if (nodo.getLopdDestinatario() != null) {
+                this.lopdDestinatario = nodo.getLopdDestinatario().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
+            //if (nodo.getLopdInfoAdicional() != null) {
+            //    this.lopdDestinatario = nodo.getLopdInfoAdicional().getTraduccionConValor(idioma, idiomaPorDefecto);
+            //}
             if (nodo.getLopdCabecera() != null) {
                 this.lopdCabecera = nodo.getLopdCabecera().getTraduccionConValor(idioma, idiomaPorDefecto);
             }

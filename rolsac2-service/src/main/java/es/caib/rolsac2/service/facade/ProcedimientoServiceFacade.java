@@ -50,13 +50,19 @@ public interface ProcedimientoServiceFacade {
 
 
     /**
-     * Borra una ficha de la bbdd
+     * Borra un procedimiento de la bbdd
      *
      * @param id identificador del proc/serv a borrar
      * @throws RecursoNoEncontradoException si el proc/serv con el id no existe.
      */
     void delete(Long id) throws RecursoNoEncontradoException;
 
+    /**
+     * Borra por wf.
+     *
+     * @param idWF
+     * @throws RecursoNoEncontradoException
+     */
     void deleteWF(Long idWF) throws RecursoNoEncontradoException;
 
 
@@ -70,6 +76,12 @@ public interface ProcedimientoServiceFacade {
      */
     ProcedimientoDTO findProcedimientoById(Long id);
 
+    /**
+     * Obtiene el dato procedimiento de indexacion.
+     *
+     * @param codigoWF
+     * @return
+     */
     ProcedimientoSolrDTO findDataIndexacionProcById(Long codigoWF);
 
     /**
@@ -80,6 +92,12 @@ public interface ProcedimientoServiceFacade {
      */
     ServicioDTO findServicioById(Long id);
 
+    /**
+     * Obtiene el dato servicio de indexacion.
+     *
+     * @param codigoWF
+     * @return
+     */
     ProcedimientoSolrDTO findDataIndexacionServById(Long codigoWF);
 
     /**
@@ -198,8 +216,6 @@ public interface ProcedimientoServiceFacade {
 
     List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByProc(Long codigo, String estadoWF);
 
-    List<TipoMateriaSIADTO> getTipoMateriaByProc(Long codigo, String estadoWF);
-
     List<ProcedimientoDocumentoDTO> getDocumentosByProc(Long codigo, String estadoWF);
 
     List<ProcedimientoDocumentoDTO> getDocumentosLOPDByProc(Long codigo, String estadoWF);
@@ -224,9 +240,26 @@ public interface ProcedimientoServiceFacade {
 
     List<NormativaDTO> getNormativasByCodProcWF(Long codigo);
 
-    List<TipoMateriaSIADTO> getTipoMateriaByCodProcWF(Long codigo);
-
     String obtenerIdiomaEntidad(Long codigo);
 
     List<ProcedimientoCompletoDTO> findExportByFiltro(ProcedimientoFiltro filtro, ExportarDatos exportarDatos);
+
+    /**
+     * Indica si tiene el WF indicado
+     *
+     * @param id     El id del proc/serv
+     * @param tipoWF true es definitivo, false es en modificacion
+     * @return
+     */
+    boolean tieneWF(Long id, boolean tipoWF);
+
+    /**
+     * Clona un procedimiento.
+     *
+     * @param idLong
+     * @param wfSeleccionado
+     * @param usuario
+     * @return
+     */
+    Long clonarProcedimiento(Long idLong, boolean wfSeleccionado, String usuario);
 }

@@ -75,6 +75,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     Literal lopdInfoAdicional = new Literal();
     Literal lopdFinalidad = new Literal();
     Literal lopdDerechos = new Literal();
+    Literal lopdDestinatario = new Literal();
     Literal lopdCabecera = new Literal();
 
     /**
@@ -128,6 +129,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
         proc.setLopdFinalidad(Literal.createInstance(idiomas));
         proc.setLopdInfoAdicional(Literal.createInstance(idiomas));
         proc.setRequisitos(Literal.createInstance(idiomas));
+        proc.setLopdDestinatario(Literal.createInstance(idiomas));
         proc.setObjeto(Literal.createInstance(idiomas));
         proc.setDestinatarios(Literal.createInstance(idiomas));
         proc.setTerminoResolucion(Literal.createInstance(idiomas));
@@ -264,6 +266,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setLopdFinalidad(Literal lopdFinalidad) {
         this.lopdFinalidad = lopdFinalidad;
+    }
+
+    public Literal getLopdDestinatario() {
+        return lopdDestinatario;
+    }
+
+    public void setLopdDestinatario(Literal lopdDestinatario) {
+        this.lopdDestinatario = lopdDestinatario;
     }
 
     public String getLopdResponsable() {
@@ -444,7 +454,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     public void setUaInstructor(UnidadAdministrativaDTO uaInstructor) {
         this.uaInstructor = uaInstructor;
     }
- 
+
     public TipoProcedimientoDTO getTipoProcedimiento() {
         return tipoProcedimiento;
     }

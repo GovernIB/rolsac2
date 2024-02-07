@@ -108,6 +108,29 @@ public class JProcedimiento extends BaseEntity {
     @OneToMany(mappedBy = "procedimiento", fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     private List<JProcedimientoWorkflow> procedimientoWF;
 
+    public static JProcedimiento clonar(JProcedimiento otro) {
+        JProcedimiento jproc = null;
+        if (otro != null) {
+            jproc = new JProcedimiento();
+            // jproc.setCodigo(otro.getCodigo());
+            jproc.setTipo(otro.getTipo());
+            // jproc.setCodigoSIA(otro.getCodigoSIA());
+            // jproc.setEstadoSIA(otro.getEstadoSIA());
+            // jproc.setSiaFecha(otro.getSiaFecha());
+            // jproc.setMensajes(otro.getMensajes());
+            // jproc.setFechaIndexacion(otro.getFechaIndexacion());
+            // jproc.setFechaInicioIndexacion(otro.getFechaInicioIndexacion());
+            // jproc.setMensajeIndexacion(otro.getMensajeIndexacion());
+            // jproc.setMensajeIndexacionSIA(otro.getMensajeIndexacionSIA());
+            // jproc.setMensajesPendienteGestor(otro.isMensajesPendienteGestor());
+            // jproc.setMensajesPendienteSupervisor(otro.isMensajesPendienteSupervisor());
+            // jproc.setFechaActualizacion(otro.getFechaActualizacion());
+            jproc.setFechaActualizacion(new Date());
+        }
+        return jproc;
+    }
+
+
     /**
      * Obtiene codigo.
      *

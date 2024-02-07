@@ -510,6 +510,36 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         }*/
     }
 
+    public void clonarProcedimiento() {
+        if (datoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put(TypeParametroVentana.ID.toString(), datoSeleccionado.getCodigo().toString());
+            params.put(TypeParametroVentana.TIPO.toString(), "P");
+            UtilJSF.openDialog("dialogClonar", TypeModoAcceso.ALTA, params, true, 500, 340);
+        }
+    }
+
+    public void returnDialogoClonar(final SelectEvent event) {
+
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        // Verificamos si se ha modificado
+        if (!respuesta.isCanceled()) {
+            //ProcedimientoDTO proc = procedimientoService.findProcedimientoById((Long) respuesta.getResult());
+            this.buscar();
+            filtro.setPaginaFirst(0);  //La pongo al principio donde saldra
+            ProcedimientoFiltro filtroClonado = filtro.clone();
+            filtroClonado.setCodigoWF((Long) respuesta.getResult());
+            Pagina<ProcedimientoGridDTO> pagina = procedimientoService.findProcedimientosByFiltro(filtroClonado);
+            if (pagina != null && pagina.getItems() != null && !pagina.getItems().isEmpty()) {
+                this.seleccionarPorId(pagina.getItems().get(0));
+            }
+            //abrirVentana(TypeModoAcceso.EDICION, proc);
+        }
+    }
+
     private void abrirVentana(TypeModoAcceso modoAcceso, ProcedimientoDTO proc) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
@@ -609,7 +639,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void seleccionarNormativas() {
         UtilJSF.anyadirMochila("normativasSeleccionadas", filtro.getNormativas());
-        UtilJSF.openDialog("tipo/dialogSeleccionNormativa", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 460);
+        UtilJSF.openDialog("tipo/dialogSeleccionNormativa", TypeModoAcceso.EDICION, new HashMap<>(), true, 1200, 750);
     }
 
     public void seleccionarPubObjetivos() {
@@ -621,7 +651,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         final Map<String, String> params = new HashMap<>();
         params.put("filtrado", "true");
         UtilJSF.anyadirMochila("temas", filtro.getTemas());
-        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", TypeModoAcceso.EDICION, params, true, 1040, 460);
+        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", TypeModoAcceso.EDICION, params, true, 1040, 500);
     }
 
     public void returnDialogMateria(final SelectEvent event) {

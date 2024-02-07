@@ -1,6 +1,8 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -67,6 +69,7 @@ public class JProcedimientoWorkflow {
 
     @Column(name = "PROC_LOPDRESP", nullable = false)
     private String lopdResponsable;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_DPTIPLEGI", nullable = false)
     private JTipoLegitimacion datosPersonalesLegitimacion;
@@ -165,6 +168,48 @@ public class JProcedimientoWorkflow {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "RS2_PRCTEM", joinColumns = {@JoinColumn(name = "PRTM_CODPRWF")}, inverseJoinColumns = {@JoinColumn(name = "PRTM_CODTEMA")})
     private Set<JTema> temas;
+
+    public static JProcedimientoWorkflow clonar(JProcedimientoWorkflow wf, JProcedimiento jprocClonado, String usuario) {
+        JProcedimientoWorkflow retorno = null;
+        if (wf != null) {
+            retorno = new JProcedimientoWorkflow();
+            //retorno.setCodigo(wf.getCodigo());
+            retorno.setProcedimiento(jprocClonado);
+            retorno.setWorkflow(TypeProcedimientoWorkflow.MODIFICACION.getValor()); //(wf.getWorkflow());
+            retorno.setEstado(TypeProcedimientoEstado.MODIFICACION.toString());//wf.getEstado());
+            retorno.setFechaPublicacion(wf.getFechaPublicacion());
+            retorno.setFechaCaducidad(wf.getFechaCaducidad());
+            retorno.setUsuario(usuario); //wf.getUsuario());
+            retorno.setUaResponsable(wf.getUaResponsable());
+            retorno.setUaInstructor(wf.getUaInstructor());
+            retorno.setInterno(wf.getInterno());
+            retorno.setResponsableNombre(wf.getResponsableNombre());
+            retorno.setResponsableEmail(wf.getResponsableEmail());
+            retorno.setResponsableTelefono(wf.getResponsableTelefono());
+            retorno.setActivoLOPD(wf.getActivoLOPD());
+            retorno.setLopdResponsable(wf.getLopdResponsable());
+            retorno.setDatosPersonalesLegitimacion(wf.getDatosPersonalesLegitimacion());
+            retorno.setTipoProcedimiento(wf.getTipoProcedimiento());
+            retorno.setTipoVia(wf.getTipoVia());
+            //retorno.setListaDocumentos(wf.getListaDocumentos());
+            //retorno.setListaDocumentosLOPD(wf.getListaDocumentosLOPD());
+            retorno.setUaCompetente(wf.getUaCompetente());
+            retorno.setFormaInicio(wf.getFormaInicio());
+            retorno.setSilencioAdministrativo(wf.getSilencioAdministrativo());
+            retorno.setTieneTasa(wf.getTieneTasa());
+            retorno.setTramiteElectronicoPlantilla(wf.getTramiteElectronicoPlantilla());
+            retorno.setTramiteElectronico(JTipoTramitacion.clonar(wf.getTramiteElectronico()));
+            retorno.setTramitPresencial(wf.getTramitPresencial());
+            retorno.setTramitElectronica(wf.getTramitElectronica());
+            retorno.setTramitTelefonica(wf.getTramitTelefonica());
+            retorno.setComun(wf.getComun());
+            retorno.setHabilitadoApoderado(wf.isHabilitadoApoderado());
+            retorno.setHabilitadoFuncionario(wf.getHabilitadoFuncionario());
+            retorno.setTraducciones(JProcedimientoWorkflowTraduccion.clonar(wf.getTraducciones(), retorno));
+            retorno.setTemas(JTema.clonar(wf.getTemas()));
+        }
+        return retorno;
+    }
 
     public Long getCodigo() {
         return codigo;

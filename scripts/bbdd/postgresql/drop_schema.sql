@@ -27,7 +27,6 @@ drop table 	RS2_PERSON	cascade constraints;
 drop table 	RS2_PLATRE	cascade constraints;
 drop table 	RS2_PLUGIN	cascade constraints;
 drop table 	RS2_PRAUDIT	cascade constraints;
-drop table 	RS2_PRCMAS	cascade constraints;
 drop table 	RS2_PRCNOR	cascade constraints;
 drop table 	RS2_PRCPUB	cascade constraints;
 drop table 	RS2_PRCTEM	cascade constraints;
