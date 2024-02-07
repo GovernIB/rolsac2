@@ -349,10 +349,19 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
                 boolean existe = false;
                 for (NormativaGridDTO tipo2 : dato2) {
                     if (tipo2.getCodigo() != null && tipo.getCodigo() != null && tipo.getCodigo().compareTo(tipo2.getCodigo()) == 0) {
-                        if (tipo.getOrden().compareTo(tipo2.getOrden()) != 0) {
-                            return tipo.getOrden().compareTo(tipo2.getOrden());
+                        if (tipo.getOrden() == null) {
+                            if (tipo2.getOrden() == null) {
+                                return 0;
+                            } else {
+                                return -1;
+                            }
+                        } else {
+                            if (tipo2.getOrden() == null) {
+                                return 1;
+                            } else {
+                                return tipo.getOrden().compareTo(tipo2.getOrden());
+                            }
                         }
-                        existe = true;
                     }
                 }
                 if (!existe) {
