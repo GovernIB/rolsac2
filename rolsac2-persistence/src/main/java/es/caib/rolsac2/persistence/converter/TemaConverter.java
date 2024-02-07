@@ -47,7 +47,7 @@ public interface TemaConverter extends Converter<JTema, TemaDTO> {
     @Mapping(target = "mathPath", ignore = true)
     @Mapping(target = "entidad", ignore = true)
     @Mapping(target = "temaPadre", ignore = true)
-        /*@Mapping(target = "tipoMateriaSIA", ignore = true)*/
+    @Mapping(target = "tipoMateriaSIA", ignore = true)
     void mergeEntity(@MappingTarget JTema entity, TemaDTO dto);
 
     default List<TemaDTO> createTreeDTOs(List<JTema> entities) {

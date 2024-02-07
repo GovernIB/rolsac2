@@ -5,6 +5,7 @@ import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.TemaConverter;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JTema;
+import es.caib.rolsac2.persistence.model.JTipoMateriaSIA;
 import es.caib.rolsac2.persistence.repository.EntidadRepository;
 import es.caib.rolsac2.persistence.repository.TemaRepository;
 import es.caib.rolsac2.persistence.repository.TipoMateriaSIARepository;
@@ -106,11 +107,15 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
         JEntidad jEntidad = entidadRepository.getReference(dto.getEntidad().getCodigo());
         JTema jTema = temaRepository.getReference(dto.getCodigo());
 
+        JTipoMateriaSIA jTipoMateriaSIA = null;
+        if (dto.getTipoMateriaSIA() != null) {
+            jTipoMateriaSIA = tipoMateriaSIARepository.findById(dto.getTipoMateriaSIA().getCodigo());
+        }
         this.verificarModificacionTemaPadre(dto, jTema, idioma);
         jTema.setEntidad(jEntidad);
         converter.mergeEntity(jTema, dto);
-        temaRepository.update(jTema);
-
+        //temaRepository.update(jTema);
+        temaRepository.actualizar(jTema, jTipoMateriaSIA);
     }
 
     @Override
@@ -233,6 +238,7 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
     public List<TipoMateriaSIADTO> getTipoMateriasSIA(String idioma) {
         TipoMateriaSIAFiltro filtro = new TipoMateriaSIAFiltro();
         filtro.setIdioma(idioma);
+        filtro.setPaginaTamanyo(1000);
         return tipoMateriaSIARepository.getListTipoMateriaSIADTO(filtro);
     }
 }

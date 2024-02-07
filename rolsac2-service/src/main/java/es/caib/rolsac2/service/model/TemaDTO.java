@@ -251,7 +251,7 @@ public class TemaDTO extends ModelApi {
         temaGridDTO.setEntidad(this.entidad.getCodigo());
         temaGridDTO.setCodigo(this.codigo);
         temaGridDTO.setIdentificador(this.identificador);
-       // temaGridDTO.setTipoMateriaSIA(this.tipoMateriaSIA);
+        temaGridDTO.setTipoMateriaSIA(this.tipoMateriaSIA);
 
         return temaGridDTO;
     }

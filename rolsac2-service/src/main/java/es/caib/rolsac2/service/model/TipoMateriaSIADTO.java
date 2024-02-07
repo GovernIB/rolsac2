@@ -153,7 +153,8 @@ public class TipoMateriaSIADTO extends ModelApi implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TipoMateriaSIADTO that = (TipoMateriaSIADTO) o;
-        return codigo.equals(that.codigo);
+        boolean igual = codigo.equals(that.codigo);
+        return igual;
     }
 
     @Override

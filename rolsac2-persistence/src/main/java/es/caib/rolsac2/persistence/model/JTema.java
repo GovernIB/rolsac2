@@ -5,6 +5,7 @@ import es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * La clase J tema.
@@ -70,6 +71,32 @@ public class JTema extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEMA_MATSIA", nullable = true)
     private JTipoMateriaSIA tipoMateriaSIA;
+
+    public static Set<JTema> clonar(Set<JTema> otros) {
+        Set<JTema> temas = null;
+        if (otros != null) {
+            temas = new java.util.HashSet<JTema>();
+            for (JTema tema : otros) {
+                temas.add(JTema.clonar(tema));
+            }
+        }
+        return temas;
+    }
+
+    public static JTema clonar(JTema otro) {
+        JTema tema = null;
+        if (otro != null) {
+            tema = new JTema();
+            tema.setCodigo(otro.getCodigo());
+            tema.setEntidad(otro.getEntidad());
+            tema.setIdentificador(otro.getIdentificador());
+            //tema.setTemaPadre(JTema.clonar(otro.getTemaPadre()));
+            tema.setTemaPadre(otro.getTemaPadre());
+            tema.setDescripcion(otro.getDescripcion());
+            tema.setMathPath(otro.getMathPath());
+        }
+        return tema;
+    }
 
     /**
      * Obtiene codigo.
