@@ -9,6 +9,7 @@ import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
+import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.event.FileUploadEvent;
@@ -133,13 +134,17 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
             }
 
             for (DocumentoTraduccion doc : data.getDocumentos().getTraducciones()) {
-                if (doc.getFicheroDTO() == null || doc.getFicheroDTO().getCodigo() == null) {
+                if (esIdiomaObligatorio(doc.getIdioma()) && (doc.getFicheroDTO() == null || doc.getFicheroDTO().getCodigo() == null)) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "Debe añadir un documento", true);
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    private boolean esIdiomaObligatorio(String idioma) {
+        return TypeIdiomaFijo.CATALAN.toString().equals(idioma) || TypeIdiomaFijo.CASTELLANO.toString().equals(idioma);
     }
 
     public void cerrar() {

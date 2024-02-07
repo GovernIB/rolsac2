@@ -99,9 +99,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private boolean esSoloGuardar;
     private String uaRaiz;
     private Literal lopdDerechos;
-    private Literal lopdDestinatario;
     private Literal lopdInfoAdicional;
-    private Literal lopdFinalidad;
 
     public void load() {
         LOG.debug("init");
@@ -113,9 +111,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         temasPadreAnyadidos = new ArrayList<>();
 
         this.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
-        this.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
         this.setLopdInfoAdicional(new Literal());
-        this.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
 
         if (this.isModoAlta()) {
             data = ProcedimientoDTO.createInstance(sessionBean.getIdiomasPermitidosList());
@@ -124,7 +120,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
-
+            data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
+            data.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
 
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             if (id != null && !id.isEmpty()) {
@@ -208,7 +205,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void traducir() {
-        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
         final Map<String, String> params = new HashMap<>();
         UtilJSF.anyadirMochila("dataTraduccion", data);
         UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
@@ -1332,28 +1328,12 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         this.lopdDerechos = lopdDerechos;
     }
 
-    public Literal getLopdDestinatario() {
-        return lopdDestinatario;
-    }
-
-    public void setLopdDestinatario(Literal lopdDestinatario) {
-        this.lopdDestinatario = lopdDestinatario;
-    }
-
     public Literal getLopdInfoAdicional() {
         return lopdInfoAdicional;
     }
 
     public void setLopdInfoAdicional(Literal lopdInfoAdicional) {
         this.lopdInfoAdicional = lopdInfoAdicional;
-    }
-
-    public Literal getLopdFinalidad() {
-        return lopdFinalidad;
-    }
-
-    public void setLopdFinalidad(Literal lopdFinalidad) {
-        this.lopdFinalidad = lopdFinalidad;
     }
 
     public boolean isMostrarRefreshSIA() {
@@ -1389,7 +1369,19 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public String getIcono(TemaGridDTO valor) {
-    	return "";
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return Constantes.INDEXAR_SIA_ICONO;
+        }
+    }
+
+    public String getTooltip(TemaGridDTO valor) {
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return "SIA: " + valor.getTipoMateriaSIA().getDescripcion().getTraduccion(this.getIdioma()) + " - " + valor.getTipoMateriaSIA().getCodigoSIA();
+        }
     }
 
     public String getIconoSIA() {

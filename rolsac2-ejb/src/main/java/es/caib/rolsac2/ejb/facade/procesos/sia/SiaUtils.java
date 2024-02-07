@@ -328,6 +328,14 @@ public class SiaUtils {
         sia.setNormativas(getNormativas(procedimiento.getNormativas()));
 
         final List<String> materias = new ArrayList<String>();
+        if (procedimiento.getTemas() != null) {
+            for (TemaGridDTO tema : procedimiento.getTemas()) {
+                if (tema.getTipoMateriaSIA() != null && tema.getTipoMateriaSIA().getCodigoSIA() != null) {
+                    materias.add(tema.getTipoMateriaSIA().getCodigoSIA().toString());
+                }
+            }
+        }
+        sia.setMaterias(materias);
 
         if (procedimiento.getTipoVia() == null) {
             sia.setFinVia(SiaUtils.NO);
@@ -505,7 +513,15 @@ public class SiaUtils {
                 resultado.setResumen(resumen);
             }
 
-            tieneMaterias = true; //TODO Pendiente
+            tieneMaterias = false;
+            for (TemaGridDTO tema : procedimiento.getTemas()) {
+                if (tema.getTipoMateriaSIA() != null && tema.getTipoMateriaSIA().getCodigoSIA() != null) {
+                    tieneMaterias = true;
+                }
+            }
+            if (!tieneMaterias && activo) {
+                mensajeError.append("No té matèries.");
+            }
 
             tieneNormativas = procedimiento.getNormativas().size() > 0;
             if (!tieneNormativas && activo) {

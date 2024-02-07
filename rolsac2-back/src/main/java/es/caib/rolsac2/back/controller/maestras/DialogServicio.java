@@ -112,9 +112,8 @@ public class DialogServicio extends AbstractController implements Serializable {
     private TemaServiceFacade temaServiceFacade;
 
     private Literal lopdDerechos;
-    private Literal lopdDestinatario;
     private Literal lopdInfoAdicional;
-    private Literal lopdFinalidad;
+
 
     /**
      * Variable booleana para saber si es guardar o flujo
@@ -137,9 +136,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         temasPadreAnyadidos = new ArrayList<>();
 
         this.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
-        this.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
         this.setLopdInfoAdicional(new Literal());
-        this.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
 
         if (this.isModoAlta()) {
             data = ServicioDTO.createInstance(sessionBean.getIdiomasPermitidosList());
@@ -148,7 +145,8 @@ public class DialogServicio extends AbstractController implements Serializable {
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
-
+            data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
+            data.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
 
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             if (id != null && !id.isEmpty()) {
@@ -689,7 +687,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", modoAcceso, params, true, 1040, 460);
         }
     }
- 
+
     //NORMATIVA
     public void returnDialogNormativa(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
@@ -934,7 +932,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         final Map<String, String> params = new HashMap<>();
         UtilJSF.anyadirMochila("temaPadre", temaPadre);
         UtilJSF.anyadirMochila("temasRelacionados", new ArrayList<>(data.getTemas()));
-        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", modoAcceso, params, true, 590, 460);
+        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", modoAcceso, params, true, 740, 500);
 
     }
 
@@ -1275,14 +1273,6 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.lopdDerechos = lopdDerechos;
     }
 
-    public Literal getLopdDestinatario() {
-        return lopdDestinatario;
-    }
-
-    public void setLopdDestinatario(Literal lopdDestinatario) {
-        this.lopdDestinatario = lopdDestinatario;
-    }
-
     public Literal getLopdInfoAdicional() {
         return lopdInfoAdicional;
     }
@@ -1291,13 +1281,6 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.lopdInfoAdicional = lopdInfoAdicional;
     }
 
-    public Literal getLopdFinalidad() {
-        return lopdFinalidad;
-    }
-
-    public void setLopdFinalidad(Literal lopdFinalidad) {
-        this.lopdFinalidad = lopdFinalidad;
-    }
 
     public Integer getOpcionTelematica() {
         return opcionTelematica;
@@ -1329,6 +1312,26 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void setLopdResponsable(Literal lopdResponsable) {
         this.lopdResponsable = lopdResponsable;
+    }
+
+    public String getIcono(TemaGridDTO valor) {
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return Constantes.INDEXAR_SIA_ICONO;
+        }
+    }
+
+    public String getTooltip(TemaGridDTO valor) {
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return "SIA: " + valor.getTipoMateriaSIA().getDescripcion().getTraduccion(this.getIdioma()) + " - " + valor.getTipoMateriaSIA().getCodigoSIA();
+        }
+    }
+
+    public String getIconoSIA() {
+        return Constantes.INDEXAR_SIA_ICONO;
     }
 }
 
