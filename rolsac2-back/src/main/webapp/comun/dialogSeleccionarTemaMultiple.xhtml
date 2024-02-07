@@ -97,6 +97,10 @@
             .hide{
                 display:none;
             }
+            .ui-outputlabel {
+                padding-top: 0px !important;
+                height: 2px !important;
+            }
         </style>
     </ui:define>
 
@@ -113,8 +117,10 @@
                     selection="#{dialogSeleccionarTemaMultiple.temasSeleccionados}"
                     >
                 <p:treeNode type="default" >
-                    <!--<h:outputText value="#{node.nombre.getTraduccion(sessionBean.lang)}"/>-->
-                    <h:outputText value="#{node.descripcion.getTraduccion(dialogSeleccionarTemaMultiple.idioma)}"/>
+                    <!--<i id="icono#{node.codigo}" class="#{dialogSeleccionarTemaMultiple.getIcono(node)}"></i> -->
+                    <p:outputLabel class="#{dialogSeleccionarTemaMultiple.getIcono(node)}" />
+                    <p:tooltip id="toolTipFade#{node.codigo}" for="texto" value="#{dialogSeleccionarTemaMultiple.getTooltip(node)}" position="right"/>
+                    <h:outputText id="texto" value="#{node.descripcion.getTraduccion(dialogSeleccionarTemaMultiple.idioma)}" />
                 </p:treeNode>
             </p:tree>
         </div>
@@ -122,14 +128,17 @@
     </ui:define>
 
     <ui:define name="contentFooterDialogLeft">
+        <i class="#{dialogSeleccionarTemaMultiple.getIconoSIA()}"></i>
+        <h:outputText value="#{labels['dict.indexacionSIA.icono']}"   />
 
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
+        <!--
         <p:commandButton  action="#{dialogSeleccionarTemaMultiple.ayuda}"
                           icon="pi pi-info-circle" iconPos="top"
                           value="#{labels['dict.ayuda']}"
-                          process="@this" />
+                          process="@this" /> -->
         <p:commandButton action="#{dialogSeleccionarTemaMultiple.guardar}"
                          value="#{labels['dict.seleccionar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionarTemaMultiple.isModoConsulta()}"

@@ -1,8 +1,10 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.TemaConverter;
+import es.caib.rolsac2.persistence.converter.TipoMateriaSIAConverter;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JTema;
+import es.caib.rolsac2.persistence.model.JTipoMateriaSIA;
 import es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TemaDTO;
@@ -33,6 +35,10 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
     @Inject
     private TemaConverter converter;
 
+
+    @Inject
+    private TipoMateriaSIAConverter converterSIA;
+
     @Override
     public Optional<JTema> findById(String id) {
         TypedQuery<JTema> query = entityManager.createNamedQuery(JTema.FIND_BY_ID, JTema.class);
@@ -59,7 +65,9 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
                 if (tema[3] != null) {
                     temaGridDTO.setTemaPadre(((JTema) tema[3]).getIdentificador());
                 }
-
+                if (tema[4] != null) {
+                    temaGridDTO.setTipoMateriaSIA(converterSIA.createDTO((JTipoMateriaSIA) tema[4]));
+                }
                 temaGridDTOS.add(temaGridDTO);
             }
         }
@@ -73,7 +81,7 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
         } else if (isRest) {
             sql = new StringBuilder("SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder("SELECT j.codigo, j.entidad, j.identificador, j.temaPadre " + " FROM JTema j LEFT OUTER JOIN j.temaPadre tp " + " LEFT OUTER JOIN j.descripcion jd ON jd.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, j.entidad, j.identificador, j.temaPadre, j.tipoMateriaSIA " + " FROM JTema j LEFT OUTER JOIN j.temaPadre tp " + " LEFT OUTER JOIN j.descripcion jd ON jd.idioma=:idioma where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and (LOWER (j.identificador) LIKE :filtro OR cast(j.codigo as string) like :filtro " + " OR LOWER (j.entidad.identificador) LIKE :filtro OR LOWER (j.temaPadre.identificador) LIKE :filtro ) ");
@@ -255,5 +263,18 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
             }
         }
         return temas;
+    }
+
+    @Override
+    public void actualizar(JTema jTema, JTipoMateriaSIA jTipoMateriaSIA) {
+        if (jTipoMateriaSIA == null) {
+            jTema.setTipoMateriaSIA(null);
+        }
+        entityManager.merge(jTema);
+        if (jTipoMateriaSIA != null && (jTema.getTipoMateriaSIA() == null || jTipoMateriaSIA.getCodigo().compareTo(jTema.getTipoMateriaSIA().getCodigo()) != 0)) {
+            jTema.setTipoMateriaSIA(jTipoMateriaSIA);
+            entityManager.flush();
+            entityManager.merge(jTema);
+        }
     }
 }

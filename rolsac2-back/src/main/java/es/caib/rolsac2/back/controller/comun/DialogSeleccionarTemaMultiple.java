@@ -1,18 +1,15 @@
 package es.caib.rolsac2.back.controller.comun;
 
-import es.caib.rolsac2.back.comparators.TreeNodeTemaComparator;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
-import es.caib.rolsac2.service.model.TemaDTO;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.TemaGridDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.model.CheckboxTreeNode;
-import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
-import org.primefaces.util.TreeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,14 +45,14 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
         LOG.debug("init");
         this.setearIdioma();
         filtrado = UtilJSF.getDialogParam("filtrado") != null ? Boolean.valueOf((String) UtilJSF.getDialogParam("filtrado")) : Boolean.FALSE;
-        if(filtrado) {
+        if (filtrado) {
             temasRelacionados = (List<TemaGridDTO>) UtilJSF.getValorMochilaByKey("temas");
             root = new CheckboxTreeNode(new TemaGridDTO(), null);
             List<TemaGridDTO> temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
-            for(TemaGridDTO tema : temasPadre) {
+            for (TemaGridDTO tema : temasPadre) {
                 TreeNode nodo = new CheckboxTreeNode(tema, root);
                 nodo.setExpanded(true);
-                if(temasRelacionados != null && temasRelacionados.contains(tema)) {
+                if (temasRelacionados != null && temasRelacionados.contains(tema)) {
                     nodo.setSelected(true);
                 }
                 this.construirArbolFiltro(tema, nodo);
@@ -82,6 +79,27 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
         UtilJSF.vaciarMochila();
     }
 
+    public String getIcono(TemaGridDTO valor) {
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return Constantes.INDEXAR_SIA_ICONO;
+        }
+    }
+
+    public String getTooltip(TemaGridDTO valor) {
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return "SIA: " + valor.getTipoMateriaSIA().getDescripcion().getTraduccion(this.getIdioma()) + " - " + valor.getTipoMateriaSIA().getCodigoSIA();
+        }
+    }
+
+
+    public String getIconoSIA() {
+        return Constantes.INDEXAR_SIA_ICONO;
+    }
+
     private void construirArbolDesdeHoja(TemaGridDTO hoja, TreeNode arbol) {
         CheckboxTreeNode nodo = null;
         List<TemaGridDTO> hijos = temaServiceFacade.getGridHijos(hoja.getCodigo(), sessionBean.getLang());
@@ -105,7 +123,7 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
         List<TemaGridDTO> hijos = temaServiceFacade.getGridHijos(hoja.getCodigo(), sessionBean.getLang());
         for (TemaGridDTO hijo : hijos) {
             nodo = new CheckboxTreeNode(hijo, arbol);
-            if(temasRelacionados!= null && temasRelacionados.contains(hijo)) {
+            if (temasRelacionados != null && temasRelacionados.contains(hijo)) {
                 nodo.setSelected(true);
             }
             this.construirArbolFiltro(hijo, nodo);
@@ -113,8 +131,8 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
     }
 
     public void guardar() {
-        if(filtrado) {
-            if(temasSeleccionados != null) {
+        if (filtrado) {
+            if (temasSeleccionados != null) {
                 List<TemaGridDTO> temas = new ArrayList<>();
                 for (TreeNode tree : Arrays.asList(temasSeleccionados)) {
                     TemaGridDTO tema = (TemaGridDTO) tree.getData();
@@ -127,8 +145,7 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
             }
         } else {
             if (temasSeleccionados == null) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-                        getLiteral("msg.seleccioneElemento"));
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
                 return;
             } else {
                 temasRelacionados.clear();

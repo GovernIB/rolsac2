@@ -6,9 +6,7 @@ import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.TemaDTO;
-import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.event.NodeExpandEvent;
@@ -56,38 +54,37 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
         esCabecera = Boolean.parseBoolean((String) UtilJSF.getDialogParam("esCabecera"));
         root = new LazyLoadingTreeNode();
 
-        if (tema != null && tema.getCodigo() != null){
+        if (tema != null && tema.getCodigo() != null) {
             tema = temaServiceFacade.findById(tema.getCodigo());
             temaAux = tema.clone();
-                List<TemaDTO> temasRoot =
-                        temaServiceFacade.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+            List<TemaDTO> temasRoot = temaServiceFacade.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
 
-                TemaDTO temaP = new TemaDTO();
-                if(tema.getTemaPadre()!=null) {
-	                temaP = tema.getTemaPadre();
-	                while(temaP.getTemaPadre()!=null) {
-	                	temaP = temaP.getTemaPadre();
-	                }
+            TemaDTO temaP = new TemaDTO();
+            if (tema.getTemaPadre() != null) {
+                temaP = tema.getTemaPadre();
+                while (temaP.getTemaPadre() != null) {
+                    temaP = temaP.getTemaPadre();
+                }
+            }
+
+            for (TemaDTO temaRoot : temasRoot) {
+                if (temaRoot.getCodigo().equals(tema.getCodigo())) {
+                    LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
+                    rootChildNode.setSelected(true);
+                    addTreeNodeCargando(rootChildNode);
+
+                } else if (temaRoot.getCodigo().equals(temaP.getCodigo())) {
+                    construirArbolDesdeHoja(tema, (LazyLoadingTreeNode) root);
+                } else {
+                    LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
+                    addTreeNodeCargando(rootChildNode);
                 }
 
-                for(TemaDTO temaRoot : temasRoot) {
-                    if(temaRoot.getCodigo().equals(tema.getCodigo())) {
-                        LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
-                    	rootChildNode.setSelected(true);
-                    	addTreeNodeCargando(rootChildNode);
-
-                    }else if(temaRoot.getCodigo().equals(temaP.getCodigo())) {
-                    	construirArbolDesdeHoja(tema, (LazyLoadingTreeNode) root);
-                    }else {
-                        LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
-                    	addTreeNodeCargando(rootChildNode);
-                    }
-
-                }
+            }
 
         } else {
             List<TemaDTO> temasRoot = temaServiceFacade.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
-            for(TemaDTO temaRoot : temasRoot) {
+            for (TemaDTO temaRoot : temasRoot) {
                 LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
                 addTreeNodeCargando(rootChildNode);
             }
@@ -157,8 +154,7 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
     public void onNodeExpand(NodeExpandEvent event) {
         final TreeNode expandedTreeNode = event.getTreeNode();
 
-        List<TemaDTO> childs = temaServiceFacade.getHijos(
-                ((TemaDTO) expandedTreeNode.getData()).getCodigo(), sessionBean.getLang());
+        List<TemaDTO> childs = temaServiceFacade.getHijos(((TemaDTO) expandedTreeNode.getData()).getCodigo(), sessionBean.getLang());
 
         if (!childs.isEmpty()) {
             expandedTreeNode.getChildren().clear();
@@ -175,6 +171,18 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
         }
     }
 
+    public String getIcono(TemaGridDTO valor) {
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return Constantes.INDEXAR_SIA_ICONO;
+        }
+    }
+
+    public String getIconoSIA() {
+        return Constantes.INDEXAR_SIA_ICONO;
+    }
+
     public void onNodeSelect(NodeSelectEvent event) {
         String node = event.getTreeNode().getData().toString();
     }
@@ -182,8 +190,7 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
     public void guardar() {
 
         if (selectedNode == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
             return;
         } /*else {
             sessionBean.cambiarTema((TemaDTO) selectedNode.getData());
@@ -210,7 +217,7 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
             result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
         }
         if (selectedNode != null) {
-//            temaAux = (TemaDTO) selectedNode.getData();
+            //            temaAux = (TemaDTO) selectedNode.getData();
             result.setModoAcceso(TypeModoAcceso.EDICION);
             result.setResult(temaAux);
         } else {

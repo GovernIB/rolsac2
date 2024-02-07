@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JTema;
+import es.caib.rolsac2.persistence.model.JTipoMateriaSIA;
 import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.TemaGridDTO;
 import es.caib.rolsac2.service.model.filtro.TemaFiltro;
@@ -30,4 +31,12 @@ public interface TemaRepository extends CrudRepository<JTema, Long> {
     void deleteByEntidad(Long id);
 
     List<TemaGridDTO> getTemasByUas(List<Long> uas);
+
+    /**
+     * Actualizar el jtema
+     *
+     * @param jTema
+     * @param jTipoMateriaSIA
+     */
+    void actualizar(JTema jTema, JTipoMateriaSIA jTipoMateriaSIA);
 }

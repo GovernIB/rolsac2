@@ -114,8 +114,8 @@
                 <p:ajax event="select" listener="#{dialogSeleccionarTema.onNodeSelect}" update="@form:messagesDialog"/>
 
                 <p:treeNode type="TemaDTO" nodeType="TemaDTO" >
-                    <!--<h:outputText value="#{node.nombre.getTraduccion(sessionBean.lang)}"/>-->
-                    <h:outputText value="#{node.descripcion.getTraduccion(dialogSeleccionarTema.idioma)}" class="etElemento"/>
+                    <h:outputText value="#{node.descripcion.getTraduccion(dialogSeleccionarTema.idioma)}" />
+                    <i class="#{dialogSeleccionarTema.getIcono(node)}"></i>
                 </p:treeNode>
             </p:tree>
         </div>
@@ -123,10 +123,9 @@
     </ui:define>
 
     <ui:define name="contentFooterDialogLeft">
-        <p:commandButton  action="#{dialogSeleccionarTema.ayuda}"
-                          icon="pi pi-info-circle" iconPos="top"
-                          value="#{labels['dict.ayuda']}"
-                          process="@this" />
+
+        <h:outputText value="#{labels['dict.indexacionSIA.icono']}" />
+        <i class="#{dialogSeleccionarTemaMultiple.getIconoSIA()}"></i>
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
@@ -137,7 +136,10 @@
         <p:commandButton action="#{dialogSeleccionarTema.cerrar}"
                          value="#{labels['dict.cerrar']}"
                          process="@this" />
-
+        <p:commandButton  action="#{dialogSeleccionarTema.ayuda}"
+                          icon="pi pi-info-circle" iconPos="top"
+                          value="#{labels['dict.ayuda']}"
+                          process="@this" />
     </ui:define>
 
 </ui:composition>
