@@ -145,7 +145,12 @@
 												value="#{td.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 										</p:column>
 
-
+										<!-- Codigo -->
+										<p:column style="width: 66px;"
+												  headerText="#{labels['dict.version']}">
+											<f:facet name="header" />
+											<p:inputText styleClass="w95" value="#{td.version}"  />
+										</p:column>
 
 									</p:dataTable>
 								</div>
@@ -232,6 +237,12 @@
 												value="#{td.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 										</p:column>
 
+										<!-- Version -->
+										<p:column style="width: 66px;"
+												  headerText="#{labels['dict.version']}">
+											<f:facet name="header" />
+											<p:inputText styleClass="w95" value="#{td.version}"  />
+										</p:column>
 
 									</p:dataTable>
 
@@ -282,6 +293,8 @@
 										</p:column>
 										<p:column headerText="#{labels['dict.procedimiento']}" styleClass="text-center">
 											<h:outputText value="#{td.codigo} #{td.getNombre(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
+										</p:column>
+										<p:column headerText="#{labels['dict.procedimiento']}" styleClass="text-center">
 										</p:column>
 									</p:dataTable>
 								</p:tab>
@@ -337,7 +350,7 @@
 													value="#{labels['TypeProcedimientoEstado.' += td.getEstado()]}"
 											/>
 										</p:column>
-										<p:column headerText="#{labels['dict.procedimiento']}" styleClass="text-center">
+										<p:column headerText="#{labels['dict.procedimiento']}" styleClass="text-center w75">
 											<h:outputText value="#{td.codigo} #{td.getNombre(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 										</p:column>
 									</p:dataTable>

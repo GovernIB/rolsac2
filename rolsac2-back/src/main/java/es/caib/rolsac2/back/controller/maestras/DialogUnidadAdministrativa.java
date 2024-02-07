@@ -405,7 +405,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         final Map<String, String> params = new HashMap<>();
         UtilJSF.anyadirMochila("temaPadre", temaPadre);
         UtilJSF.anyadirMochila("temasRelacionados", new ArrayList<>(data.getTemas()));
-        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", modoAcceso, params, true, 590, 460);
+        UtilJSF.openDialog("/comun/dialogSeleccionarTemaMultiple", modoAcceso, params, true, 740, 500);
 
     }
 

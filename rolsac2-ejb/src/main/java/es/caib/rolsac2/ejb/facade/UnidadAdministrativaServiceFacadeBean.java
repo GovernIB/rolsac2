@@ -589,7 +589,9 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         if (nombreDestinos.endsWith(",")) {
             nombreDestinos = nombreDestinos.substring(0, nombreDestinos.length() - 1);
         }
-
+        if (nombreDestinos.endsWith(", ")) {
+            nombreDestinos = nombreDestinos.substring(0, nombreDestinos.length() - 2);
+        }
         //Revisamos todas las UAs destino para ver si hay que crearlas y luego añadir una auditoria
         for (int indice = 0; indice < uasDestino.size(); indice++) {
             UnidadAdministrativaDTO ua = uasDestino.get(indice);

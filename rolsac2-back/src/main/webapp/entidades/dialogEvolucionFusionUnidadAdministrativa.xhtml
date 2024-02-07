@@ -75,7 +75,7 @@
 							<p:autoComplete id="selectNormativa" var="normativa"
 											forceSelection="true" styleClass="w95"
 											value="#{dialogEvolucionFusionUnidadAdministrativa.normativa}"
-											itemLabel="#{normativa.codigo} #{normativa.titulo.getTraduccion(dialogEvolucionBasicaUnidadAdministrativa.idioma)}"
+											itemLabel="#{normativa.codigo} #{normativa.titulo.getTraduccion(dialogEvolucionFusionUnidadAdministrativa.idioma)}"
 											itemValue="#{normativa}" converter="#{normativaDTOConverter}"
 											autoHighlight="false" dropdown="true"
 											completeMethod="#{dialogEvolucionFusionUnidadAdministrativa.completeNormativa}"

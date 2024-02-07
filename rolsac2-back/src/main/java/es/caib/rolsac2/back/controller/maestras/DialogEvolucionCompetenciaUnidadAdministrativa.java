@@ -38,7 +38,7 @@ public class DialogEvolucionCompetenciaUnidadAdministrativa extends EvolucionCon
     /**
      * Datos de la UA para dividir
      **/
-    private List<NormativaGridDTO> normativas;
+    private List<NormativaGridDTO> normativas = new ArrayList<>();
     private List<ProcedimientoCompletoDTO> procedimientos;
     private List<ProcedimientoCompletoDTO> servicios;
 
@@ -113,7 +113,7 @@ public class DialogEvolucionCompetenciaUnidadAdministrativa extends EvolucionCon
             filtroNormativas.setIdioma(getIdioma());
             filtroNormativas.setPaginaFirst(0);
             filtroNormativas.setPaginaTamanyo(100000);
-            normativas = normativaServiceFacade.findByFiltro(filtroNormativas).getItems();
+            //normativas = normativaServiceFacade.findByFiltro(filtroNormativas).getItems();
         }
 
         if (event.getOldStep().contains("reasignar") && event.getNewStep().contains("finalizar")) {
@@ -138,7 +138,7 @@ public class DialogEvolucionCompetenciaUnidadAdministrativa extends EvolucionCon
                 }
             }
 
-            if (normativas != null && !normativas.isEmpty()) {
+            /*if (normativas != null && !normativas.isEmpty()) {
                 for (NormativaGridDTO normativa : normativas) {
                     if (normativa.getOpcionUAdestino() == null) {
                         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogEvolucionCompetenciaUnidadAdministrativa.error.debeAsignarOpcionNorm"), true);
@@ -146,7 +146,7 @@ public class DialogEvolucionCompetenciaUnidadAdministrativa extends EvolucionCon
                         return event.getOldStep();
                     }
                 }
-            }
+            }*/
         }
         PrimeFaces.current().executeScript("PF('statusDialog1').hide();");
         return event.getNewStep();

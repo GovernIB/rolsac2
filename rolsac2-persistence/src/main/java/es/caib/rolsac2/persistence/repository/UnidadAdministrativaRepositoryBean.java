@@ -96,6 +96,28 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         return (Long) query.getSingleResult() > 0;
     }
 
+    @Override
+    public List<Long> listarPadres(Long idUa) {
+        String sql = "SELECT j FROM JUnidadAdministrativa j WHERE j.codigo = :codigo";
+        Query query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
+        query.setParameter("codigo", idUa);
+        List<JUnidadAdministrativa> juas = query.getResultList();
+        List<Long> padres = new ArrayList<>();
+        if (juas != null && !juas.isEmpty()) {
+            JUnidadAdministrativa jua = juas.get(0);
+            JUnidadAdministrativa padre = jua.getPadre();
+            padres.add(jua.getCodigo()); //Se anyade a si mismo
+            while (padre != null) {
+                padres.add(padre.getCodigo());
+                padre = padre.getPadre();
+            }
+        }
+
+        Collections.reverse(padres);
+
+        return padres;
+    }
+
     private UnidadAdministrativaDTO getPadre(String idioma, JUnidadAdministrativa jUnidadAdministrativa) {
         if (jUnidadAdministrativa.getPadre() == null) {
             UnidadAdministrativaDTO uaPadre = jpaToDto(jUnidadAdministrativa, idioma);

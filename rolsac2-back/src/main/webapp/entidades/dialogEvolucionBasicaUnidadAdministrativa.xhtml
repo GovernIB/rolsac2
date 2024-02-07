@@ -125,7 +125,19 @@
 						</div>
 					</div>
 
-
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+										   value="#{labels['dict.version']}:"
+										   for="txtVersion" />
+							<p>
+								<p:inputNumber id="txtVersion" value="#{dialogEvolucionBasicaUnidadAdministrativa.version}"
+											   styleClass="w96"
+											   minValue="0"
+											   maxValue="999" decimalPlaces="0"/>
+							</p>
+						</div>
+					</div>
 				</p:panel>
 			</p:tab>
 
@@ -200,6 +212,19 @@
 								minQueryLength="3" cache="true" cacheTimeout="60000"
 								scrollHeight="200">
 							</p:autoComplete>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+										   value="#{labels['dict.version']}:"
+										   for="txtVersion2" />
+							<p>
+							<p:inputNumber id="txtVersion2" value="#{dialogEvolucionBasicaUnidadAdministrativa.version}"
+										   styleClass="w96" disabled="true"
+										   minValue="0"
+										   maxValue="999" decimalPlaces="0"/>
+							</p>
 						</div>
 					</div>
 				</p:panel>

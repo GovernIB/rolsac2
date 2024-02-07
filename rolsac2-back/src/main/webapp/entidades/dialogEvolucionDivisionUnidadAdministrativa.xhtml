@@ -230,6 +230,12 @@
 												value="#{td.nombre.getTraduccion(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
 										</p:column>
 
+										<!-- Version -->
+										<p:column style="width: 66px;"
+												  headerText="#{labels['dict.version']}">
+											<f:facet name="header" />
+											<p:inputText styleClass="w95" value="#{td.version}"  />
+										</p:column>
 
 									</p:dataTable>
 								</div>
@@ -280,7 +286,7 @@
 											value="#{labels['TypeProcedimientoEstado.' += td.getEstado()]}"
 											/>
 										</p:column>
-										<p:column headerText="#{labels['dict.procedimiento']}" styleClass="text-center">
+										<p:column headerText="#{labels['dict.procedimiento']}" styleClass="text-center w75">
 											<h:outputText value="#{td.codigo} #{td.getNombre(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
 										</p:column>
 									</p:dataTable>
@@ -338,7 +344,7 @@
 													value="#{labels['TypeProcedimientoEstado.' += td.getEstado()]}"
 											/>
 										</p:column>
-										<p:column headerText="#{labels['dict.servicio']}"  styleClass="text-center">
+										<p:column headerText="#{labels['dict.servicio']}"  styleClass="text-center w75">
 											<h:outputText value="#{td.codigo} #{td.getNombre(dialogEvolucionDivisionUnidadAdministrativa.idioma)}" />
 										</p:column>
 									</p:dataTable>

@@ -89,6 +89,19 @@
 							</p:commandButton>
 						</div>
 					</div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-2 mt-3 pt-0"
+										   value="#{labels['dict.version']}:"
+										   for="txtVersion" />
+							<p>
+								<p:inputNumber id="txtVersion" value="#{dialogEvolucionDependenciaUnidadAdministrativa.version}"
+											   styleClass="w96"
+											   minValue="0"
+											   maxValue="999" decimalPlaces="0"/>
+							</p>
+						</div>
+					</div>
 				</p:panel>
 			</p:tab>
 
@@ -133,6 +146,19 @@
 						</div>
 					</div>
 
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
+										   value="#{labels['dict.version']}:"
+										   for="txtVersion2" />
+							<p>
+							<p:inputNumber id="txtVersion2" value="#{dialogEvolucionDependenciaUnidadAdministrativa.version}"
+										   styleClass="w96" disabled="true"
+										   minValue="0"
+										   maxValue="999" decimalPlaces="0"/>
+							</p>
+						</div>
+					</div>
 
 				</p:panel>
 
