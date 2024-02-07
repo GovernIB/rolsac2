@@ -8,6 +8,8 @@
  **/
 
 drop sequence "RS2_AFECTA_SEQ" ;
+drop sequence "RS2_ALERTAS_SEQ";
+drop sequence "RS2_ALERUSU_SEQ";
 drop sequence "RS2_BOLETI_SEQ" ;
 drop sequence "RS2_CNFGLO_SEQ" ;
 drop sequence "RS2_DOCNORM_SEQ" ;
@@ -56,6 +58,7 @@ drop sequence "RS2_TIPOSEX_SEQ" ;
 drop sequence "RS2_TIPOSPU_SEQ" ;
 drop sequence "RS2_TIPOUNA_SEQ" ;
 drop sequence "RS2_TIPOVIA_SEQ" ;
+drop sequence "RS2_TRAALE_SEQ";
 drop sequence "RS2_TRADONO_SEQ" ;
 drop sequence "RS2_TRADOPR_SEQ" ;
 drop sequence "RS2_TRAEDIF_SEQ" ;
@@ -98,6 +101,8 @@ drop sequence "RS2_UNIADM_SEQ" ;
 drop sequence "RS2_UNIORG_SEQ" ;
 drop sequence "RS2_USER_SEQ" ;
 drop table "RS2_AFECTA" cascade constraints;
+drop table "RS2_ALERTAS" cascade constraints;
+drop table "RS2_ALERUSU" cascade constraints;
 drop table "RS2_BOLETI" cascade constraints;
 drop table "RS2_CNFGLO" cascade constraints;
 drop table "RS2_DOCNORM" cascade constraints;
@@ -153,6 +158,7 @@ drop table "RS2_TIPOSEX" cascade constraints;
 drop table "RS2_TIPOSPU" cascade constraints;
 drop table "RS2_TIPOUNA" cascade constraints;
 drop table "RS2_TIPOVIA" cascade constraints;
+drop table "RS2_TRAALE" cascade constraints;
 drop table "RS2_TRADONO" cascade constraints;
 drop table "RS2_TRADOPR" cascade constraints;
 drop table "RS2_TRAEDIF" cascade constraints;
