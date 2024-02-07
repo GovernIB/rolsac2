@@ -17,8 +17,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "RS2_TRATPTRA", indexes = {@Index(name = "RS2_TRATPTRA_PK_I", columnList = "TRTT_CODIGO")})
 @SequenceGenerator(name = "tipo-tramitaciontra-sequence", sequenceName = "RS2_TRATPTRA_SEQ", allocationSize = 1)
-@NamedQueries({
-        @NamedQuery(name = JTipoTramitacionTraduccion.FIND_BY_ID, query = "select p from JTipoTramitacionTraduccion p where p.codigo = :id")})
+@NamedQueries({@NamedQuery(name = JTipoTramitacionTraduccion.FIND_BY_ID, query = "select p from JTipoTramitacionTraduccion p where p.codigo = :id")})
 public class JTipoTramitacionTraduccion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -51,6 +50,23 @@ public class JTipoTramitacionTraduccion extends BaseEntity {
             traducciones.add(trad);
         }
         return traducciones;
+    }
+
+    public static List<JTipoTramitacionTraduccion> clonar(List<JTipoTramitacionTraduccion> traducciones, JTipoTramitacion tipoTramitacion) {
+        List<JTipoTramitacionTraduccion> retorno = null;
+        if (traducciones != null) {
+            retorno = new ArrayList<>();
+            for (JTipoTramitacionTraduccion otroTrad : traducciones) {
+                JTipoTramitacionTraduccion traduccion = new JTipoTramitacionTraduccion();
+                //traduccion.setCodigo(otroTrad.getcodigo());
+                traduccion.setDescripcion(otroTrad.getDescripcion());
+                traduccion.setIdioma(otroTrad.getIdioma());
+                traduccion.setTipoTramitacion(tipoTramitacion);
+                traduccion.setUrl(otroTrad.getUrl());
+                retorno.add(traduccion);
+            }
+        }
+        return retorno;
     }
 
     public Long getCodigo() {
@@ -95,10 +111,8 @@ public class JTipoTramitacionTraduccion extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         JTipoTramitacionTraduccion that = (JTipoTramitacionTraduccion) o;
         return codigo.equals(that.codigo);
     }

@@ -15,13 +15,7 @@ import java.util.Objects;
 @Entity
 @SequenceGenerator(name = "plat-tramit-electronica-sequence", sequenceName = "RS2_PLATRE_SEQ", allocationSize = 1)
 @Table(name = "RS2_PLATRE", indexes = {@Index(name = "RS2_PLATRE_PK", columnList = "PTTR_CODIGO")})
-@NamedQueries({
-        @NamedQuery(name = JPlatTramitElectronica.FIND_BY_ID,
-                query = "select p from JPlatTramitElectronica p where p.codigo = :id"),
-        @NamedQuery(name = JPlatTramitElectronica.FIND_ALL, query = "select p from JPlatTramitElectronica p"),
-        @NamedQuery(name = JPlatTramitElectronica.COUNT_BY_IDENTIFICADOR,
-                query = "select count(p) from JPlatTramitElectronica p where p.identificador = :identificador")
-})
+@NamedQueries({@NamedQuery(name = JPlatTramitElectronica.FIND_BY_ID, query = "select p from JPlatTramitElectronica p where p.codigo = :id"), @NamedQuery(name = JPlatTramitElectronica.FIND_ALL, query = "select p from JPlatTramitElectronica p"), @NamedQuery(name = JPlatTramitElectronica.COUNT_BY_IDENTIFICADOR, query = "select count(p) from JPlatTramitElectronica p where p.identificador = :identificador")})
 public class JPlatTramitElectronica extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -65,14 +59,14 @@ public class JPlatTramitElectronica extends BaseEntity {
      * Traducciones
      */
 
-    @OneToMany(mappedBy = "platTramitElectronica", fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "platTramitElectronica", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JPlatTramitElectronicaTraduccion> traducciones;
 
 
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -81,7 +75,7 @@ public class JPlatTramitElectronica extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -90,7 +84,7 @@ public class JPlatTramitElectronica extends BaseEntity {
     /**
      * Obtiene cod entidad.
      *
-     * @return  cod entidad
+     * @return cod entidad
      */
     public JEntidad getCodEntidad() {
         return codEntidad;
@@ -99,7 +93,7 @@ public class JPlatTramitElectronica extends BaseEntity {
     /**
      * Establece cod entidad.
      *
-     * @param codEntidad  cod entidad
+     * @param codEntidad cod entidad
      */
     public void setCodEntidad(JEntidad codEntidad) {
         this.codEntidad = codEntidad;
@@ -108,7 +102,7 @@ public class JPlatTramitElectronica extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -117,7 +111,7 @@ public class JPlatTramitElectronica extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -126,24 +120,26 @@ public class JPlatTramitElectronica extends BaseEntity {
     /**
      * Obtiene traducciones.
      *
-     * @return  traducciones
+     * @return traducciones
      */
-    public List<JPlatTramitElectronicaTraduccion> getTraducciones()  {return this.traducciones;  }
+    public List<JPlatTramitElectronicaTraduccion> getTraducciones() {
+        return this.traducciones;
+    }
 
     /**
      * Establece traducciones.
      *
-     * @param traducciones  traducciones
+     * @param traducciones traducciones
      */
-    public void setTraducciones(List<JPlatTramitElectronicaTraduccion> traducciones) { this.traducciones = traducciones; }
+    public void setTraducciones(List<JPlatTramitElectronicaTraduccion> traducciones) {
+        this.traducciones = traducciones;
+    }
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof JPlatTramitElectronica))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof JPlatTramitElectronica)) return false;
         JPlatTramitElectronica that = (JPlatTramitElectronica) o;
         return Objects.equals(codigo, that.codigo);
     }
@@ -156,11 +152,6 @@ public class JPlatTramitElectronica extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JPlatTramitElectronica{" +
-                "codigo=" + codigo +
-                ", codEntidad=" + codEntidad +
-                ", identificador='" + identificador + '\'' +
-                ", traducciones=" + traducciones +
-                '}';
+        return "JPlatTramitElectronica{" + "codigo=" + codigo + ", codEntidad=" + codEntidad + ", identificador='" + identificador + '}';
     }
 }

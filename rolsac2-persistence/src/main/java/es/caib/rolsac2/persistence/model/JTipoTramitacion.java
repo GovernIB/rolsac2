@@ -99,6 +99,26 @@ public class JTipoTramitacion extends BaseEntity {
     @JoinColumn(name = "PRES_CODENTI")
     private JEntidad entidad;
 
+    public static JTipoTramitacion clonar(JTipoTramitacion otro) {
+        JTipoTramitacion tipoTramitacion = null;
+        if (otro != null) {
+            tipoTramitacion = new JTipoTramitacion();
+            //tipoTramitacion.setCodigo(otro.getCodigo());
+            tipoTramitacion.setTramitElectronica(otro.isTramitElectronica());
+            tipoTramitacion.setCodPlatTramitacion(otro.getCodPlatTramitacion());
+            tipoTramitacion.setFaseProc(otro.getFaseProc());
+            tipoTramitacion.setTramiteId(otro.getTramiteId());
+            tipoTramitacion.setTramiteVersion(otro.getTramiteVersion());
+            tipoTramitacion.setTramiteParametros(otro.getTramiteParametros());
+            tipoTramitacion.setTramitPresencial(otro.isTramitPresencial());
+            tipoTramitacion.setTramitElectronica(otro.isTramitElectronica());
+            tipoTramitacion.setPlantilla(otro.isPlantilla());
+            tipoTramitacion.setEntidad(otro.getEntidad());
+            tipoTramitacion.setTraducciones(JTipoTramitacionTraduccion.clonar(otro.getTraducciones(), tipoTramitacion));
+        }
+        return tipoTramitacion;
+    }
+
 
     /**
      * Obtiene codigo.
