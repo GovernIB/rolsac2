@@ -1,0 +1,94 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:t="http://back.rolsac2.caib.es/tags">
+
+<!--
+Pàgina amb el llistat de personal d'una unitat administrativa.
+-->
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogClonar.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogClonar.id}"/>
+            <f:viewParam id="TIPO" name="TIPO" value="#{dialogClonar.tipo}"/>
+            <f:viewAction action="#{dialogClonar.load}"/>
+        </f:metadata>
+    </ui:define>
+
+
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogClonar.titulo']}" />
+    </ui:define>
+
+    <ui:define name="contentIdioma">
+
+    </ui:define>
+
+    <ui:define name="contentDialog">
+
+        <p:importConstants type="es.caib.rolsac2.service.model.types.TypeExportarFormato"
+                           var="tipos"></p:importConstants>
+
+        <h:outputStylesheet library="css">
+            body {
+                overflow: hidden;
+            }
+        </h:outputStylesheet>
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+        <p:panel id="form">
+            <div class="row">
+                <div class="ui-g-12 ui-md-12 ui-lg-12">
+                   <p:outputLabel value="#{labels['dialogClonar.cabecera']}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="ui-g-12 ui-md-3 ui-lg-3">
+                   <p:outputLabel value="#{labels['dialogClonar.tipo']}:" />
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-9">
+                    <p:commandButton action="#{dialogClonar.clonarDef}"
+                                     value="#{labels['dict.wf.0']}"
+                                     update="messagesDialog"
+                                     disabled="#{!dialogClonar.tieneWFDefinitivo}"
+                                     process="@this"/>
+
+                    <p:commandButton action="#{dialogClonar.clonarMod}"
+                                     value="#{labels['dict.wf.1']}"
+                                     update="messagesDialog"
+                                     styleClass="ml-3"
+                                     disabled="#{!dialogClonar.tieneWFEnModificacion}"
+                                     process="@this"/>
+                    <!--
+                    <p:selectOneButton value="#{dialogClonar.estadoWF}"
+                                       converter="javax.faces.Boolean"
+                                       styleClass="w95 botoneraRed"  maxlength="50">
+                        <f:selectItem itemValue="true" itemLabel="#{labels['dict.wf.1']}" />
+                        <f:selectItem itemValue="false" itemLabel="#{labels['dict.wf.0']}" />
+                    </p:selectOneButton>
+                    -->
+                </div>
+            </div>
+        </p:panel>
+    </ui:define>
+
+    <ui:define name="contentFooterDialogRight">
+        <!--<p:commandButton action="#{dialogClonar.guardar}"
+                         value="#{labels['dict.guardar']}"
+                         update="messagesDialog"
+                         process="@this"/> -->
+        <p:commandButton action="#{dialogClonar.cerrar}" update="messagesDialog"
+                         value="#{labels['dict.cerrar']}" id="closeButton"
+                          />
+    </ui:define>
+
+</ui:composition>
+</html>

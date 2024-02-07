@@ -1,0 +1,227 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+>
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogConfiguracionAlerta.modoAcceso}"/>
+            <f:viewParam id="ID" name="ID" value="#{dialogConfiguracionAlerta.id}"/>
+            <f:viewAction action="#{dialogConfiguracionAlerta.load}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogConfiguracionAlerta.consulta']}"
+                        rendered="#{dialogConfiguracionAlerta.isModoConsulta()}"/>
+        <h:outputFormat value="#{labels['dialogConfiguracionAlerta.detalle']}"
+                        rendered="#{dialogConfiguracionAlerta.isModoEdicion()}"/>
+        <h:outputFormat value="#{labels['dialogConfiguracionAlerta.nuevo']}"
+                        rendered="#{dialogConfiguracionAlerta.isModoAlta()}"/>
+    </ui:define>
+    <ui:define name="contentIdioma">
+        <span class="pi pi-tag" style="margin-top:5px"/>
+        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogConfiguracionAlerta.idioma}" styleClass="botoneraRed"
+                           unselectable="false">
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+            <p:ajax process="@this" update="formDialog:txtDescripcion"/>
+        </p:selectOneButton>
+        <p:commandButton action="#{dialogConfiguracionAlerta.traducir}"
+                         icon="pi pi-compass" iconPos="top"
+                         value="#{labels['dict.traducir']}"
+                         style="margin-left:10px"
+                         update="messagesDialog"
+                         process="@this"
+                         rendered="#{!dialogConfiguracionAlerta.isModoConsulta() and dialogConfiguracionAlerta.tradExiste()}">
+            <p:ajax event="dialogReturn" listener="#{dialogConfiguracionAlerta.returnDialogTraducir}" process="@this"
+                    update="formDialog:txtDescripcion"/>
+        </p:commandButton>
+    </ui:define>
+    <ui:define name="contentDialog">
+        <p:panel id="form">
+            <p:growl id="messagesDialog"
+                     globalOnly="false"
+                     showDetail="false"
+                     life="5000"
+                     escape="false"/>
+            <div class="row">
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:inputText id="txtCodigo" value="#{dialogConfiguracionAlerta.data.codigo}"
+                                 styleClass="w95" disabled="true" maxlength="50"/>
+                </div>
+
+                    <div class="ui-g-12 ui-md-2 ui-lg-1">
+                        <h:outputText value="#{labels['dict.descripcion']}: *" for="txtDescripcion"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-10 ui-lg-5">
+                        <my:literalComponent id="txtDescripcion" styleClass="w95"
+                                             value="#{dialogConfiguracionAlerta.data.descripcion}"
+                                             soloLecture="#{dialogConfiguracionAlerta.isModoConsulta()}"
+                                             required="#{empty param['formDialog:closeButton']}"
+                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             idioma="#{dialogConfiguracionAlerta.idioma}"
+                                             literal="#{dialogConfiguracionAlerta.data.descripcion}"
+                                             maxlength="255"
+                                             nombreLiteral="#{labels['dict.descripcion']}">
+                            <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                        </my:literalComponent>
+                    </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.tipo']}:" for="txtTipo"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:selectOneMenu id="txtTipo" requiredMessage="#{labels['dict.obligatorio.tipo']}"
+                                     styleClass="w36"
+                                     required="#{empty param['formDialog:closeButton']}" value="#{dialogConfiguracionAlerta.data.tipo}"
+                                     disabled="#{dialogConfiguracionAlerta.isModoConsulta()}">
+                        <f:selectItem
+                                itemLabel="#{labels['dialogConfiguracionAlerta.tipo.seleccione']}"
+                                itemValue="#{null}"/>
+                        <f:selectItem itemValue="ALE" itemLabel="#{labels['dict.alerta.tipo.ALE']}"/>
+                        <f:selectItem itemValue="AVI" itemLabel="#{labels['dict.alerta.tipo.AVI']}"/>
+                        <!--<p:ajax event="valueChange" process="@this" update="seleccionNormativa"></p:ajax> -->
+
+                    </p:selectOneMenu>
+                </div>
+
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.fechaInicio']}:" for="txtFechaInicio"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:calendar id="txtFechaInicio" styleClass="fecha w40"
+                                disabled="#{dialogConfiguracionAlerta.isModoConsulta()}"
+                                required="true"
+                                requiredMessage="#{labels['dict.obligatorio.fechaInicio']}"
+                                value="#{dialogConfiguracionAlerta.data.fechaIni}" pattern="dd/MM/yyyy HH:mm"
+                                showOn="button">
+                        <p:ajax event="change"/>
+                    </p:calendar>
+                </div>
+
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.fechaFin']}:" for="txtFechaFin"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:calendar id="txtFechaFin" styleClass="fecha w40"
+                                disabled="#{dialogConfiguracionAlerta.isModoConsulta()}"
+                                value="#{dialogConfiguracionAlerta.data.fechaFin}" pattern="dd/MM/yyyy HH:mm"
+                                showOn="button">
+                        <p:ajax event="change"/>
+                    </p:calendar>
+                </div>
+
+
+                <div class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.ambito']}:" for="txtAmbito"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:selectOneMenu id="txtAmbito" requiredMessage="#{labels['dict.obligatorio.ambito']}"
+                                     styleClass="w36"
+                                     required="#{empty param['formDialog:closeButton']}" value="#{dialogConfiguracionAlerta.data.ambito}"
+                                     disabled="#{dialogConfiguracionAlerta.isModoConsulta()}">
+                        <f:selectItem
+                                itemLabel="#{labels['dialogConfiguracionAlerta.ambito.seleccione']}"
+                                itemValue="#{null}"/>
+                        <f:selectItem itemValue="TOD" itemLabel="#{labels['dict.alerta.ambito.TOD']}"/>
+                        <f:selectItem itemValue="PER" itemLabel="#{labels['dict.alerta.ambito.PER']}"/>
+                        <f:selectItem itemValue="UNA" itemLabel="#{labels['dict.alerta.ambito.UNA']}"/>
+
+                        <p:ajax event="change" oncomplete="checkDivs();" update="txtUnaDescendiente txtUA"/>
+                    </p:selectOneMenu>
+                </div>
+
+                <div id="divPerfil" class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.perfil']}:" rendered="true" />
+                </div>
+                <div id="divPerfil2"  class="ui-g-12 ui-md-10 ui-lg-5">
+                    <p:selectOneMenu id="txtPerfiles" requiredMessage="#{labels['dict.obligatorio.perfil']}"
+                                     styleClass="w36"
+                                     required="#{empty param['formDialog:closeButton'] and dialogConfiguracionAlerta.data.ambito == 'PER'}" value="#{dialogConfiguracionAlerta.data.perfil}"
+                                     disabled="#{dialogConfiguracionAlerta.isModoConsulta()}">
+                        <f:selectItem
+                                itemLabel="#{labels['dialogConfiguracionAlerta.perfil.seleccione']}"
+                                itemValue="#{null}"/>
+                        <f:selectItem itemValue="RS2_ADC" itemLabel="#{labels['dict.alerta.perfil.ADM']}"/>
+                        <f:selectItem itemValue="RS2_GES" itemLabel="#{labels['dict.alerta.perfil.GES']}"/>
+                        <f:selectItem itemValue="RS2_INF" itemLabel="#{labels['dict.alerta.perfil.INF']}"/>
+                    </p:selectOneMenu>
+
+                </div>
+
+                <div id="divUna" class="ui-g-12 ui-md-2 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.unidadAdministrativa']}: *"   />
+                </div>
+                <div id="divUna2"  class="ui-g-12 ui-md-10 ui-lg-5">
+                        <my:unidadAdministrativaComponent id="txtUA"
+                                                          value="#{dialogConfiguracionAlerta.data.unidadAdministrativa}"
+                                                          idioma="#{dialogConfiguracionAlerta.idioma}"
+                                                          ocultarTexto="false" esCabecera="false"
+                        />
+                    <p:outputLabel value="Incluir descendientes" styleClass="mr-3" />
+                    <p:selectBooleanCheckbox id="txtUnaDescendiente" label="xefw"
+                                             value="#{dialogConfiguracionAlerta.data.descendientes}" />
+                </div>
+            </div>
+            <h:outputScript>
+                function checkDivs() {
+                    var valor = $("#formDialog\\:txtAmbito_label")[0].innerText;
+                    if (valor == 'Todos' || valor == 'Tots' || valor == 'Seleccione un ámbito' || valor == 'Seleccioni un àmbit') {
+                        $("#divPerfil").hide();
+                        $("#divPerfil2").hide();
+                        $("#divUna").hide();
+                        $("#divUna2").hide();
+                    }
+                    if (valor == 'Perfil') {
+                        $("#divPerfil").show();
+                        $("#divPerfil2").show();
+                        $("#divUna").hide();
+                        $("#divUna2").hide();
+                    }
+                    if (valor == 'Unidad Administrativa' || valor == 'Unitat administrativa') {
+                        $("#divPerfil").hide();
+                        $("#divPerfil2").hide();
+                        $("#divUna").show();
+                        $("#divUna2").show();
+                    }
+                }
+
+                $(document).ready(function () {
+                    checkDivs();
+                });
+            </h:outputScript>
+        </p:panel>
+    </ui:define>
+
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogConfiguracionAlerta.ayuda}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
+        <p:commandButton action="#{dialogConfiguracionAlerta.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog form"
+                         process="@all"/>
+        <p:commandButton action="#{dialogConfiguracionAlerta.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         update="messagesDialog form" responsive="true" width="458px"
+                         message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
+            <p:commandButton value="Sí" process="@this" action="#{dialogConfiguracionAlerta.cerrarDefinitivo}"
+                             oncomplete="PF('confirmCerrar').hide();"/>
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"/>
+        </p:confirmDialog>
+    </ui:define>
+</ui:composition>
+</html>

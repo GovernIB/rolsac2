@@ -5,11 +5,9 @@ import es.caib.rolsac2.back.exception.NoAutorizadoException;
 import es.caib.rolsac2.back.exception.PerfilException;
 import es.caib.rolsac2.back.security.Security;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
-import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceFacade;
-import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.types.TypeAlertas;
 import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
 import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -61,8 +59,13 @@ public class SessionBean implements Serializable {
 
     @EJB
     private AdministracionSupServiceFacade entidadservice;
+
     @EJB
     private UnidadAdministrativaServiceFacade uaService;
+
+    @EJB
+    private AlertaServiceFacade alertaService;
+
 
     @EJB
     private AdministracionSupServiceFacade administracionSupServiceFacade;
@@ -116,6 +119,8 @@ public class SessionBean implements Serializable {
      */
     private List<String> roles;
 
+    private List<AlertaDTO> alertasAvisos;
+
     /**
      * Opcion seleccionada
      **/
@@ -142,6 +147,11 @@ public class SessionBean implements Serializable {
         // inicializamos mochila
         mochilaDatos = new HashMap<>();
         cargarDatos();
+        cargarAlertas();
+    }
+
+    public void cargarAlertas() {
+        alertasAvisos = alertaService.getAlertas(seguridad.getIdentificadorUsuario(), perfiles, lang);
     }
 
     /************************************************************************************************************************************************
@@ -232,6 +242,7 @@ public class SessionBean implements Serializable {
             String rolsac2back = context.getExternalContext().getRequestContextPath();
             context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/error/usuarioAltaException.xhtml')");
         }
+
     }
 
     /**
@@ -247,8 +258,8 @@ public class SessionBean implements Serializable {
         TypePerfiles perfilAntiguo = this.perfil;
 
         //Actualizamos la seleccion de idioma está seteado a nivel de adm contenido seleccion idioma y es Adm. contenido
-        if (perfil == TypePerfiles.GESTOR && entidad != null && entidad.getAdmContenidoSeleccionIdioma() != null) {
-            lang = entidad.getAdmContenidoSeleccionIdioma();  //getGestorForzarIdioma()
+        if ((perfil == TypePerfiles.GESTOR || perfil == TypePerfiles.ADMINISTRADOR_CONTENIDOS || perfil == TypePerfiles.INFORMADOR) && entidad != null && entidad.getAdmContenidoSeleccionIdioma() != null) {
+            lang = entidad.getAdmContenidoSeleccionIdioma();
             sesionDTO.setIdioma(lang); //Forzamos el idioma de sesion
             current = Locale.forLanguageTag(lang); //Forzamos el idioma/locale de la aplicación
         }
@@ -941,7 +952,7 @@ public class SessionBean implements Serializable {
     public boolean isMonitorizacionActivo() {
         if (this.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD) {
             List<String> tiposViewIds = new ArrayList<>();
-            tiposViewIds.add("/monitorizacion/viewAlertas.xhtml");
+            tiposViewIds.add("/monitorizacion/viewConfiguracionesAlertas.xhtml");
             tiposViewIds.add("/monitorizacion/viewCuadroControl.xhtml");
             tiposViewIds.add("/monitorizacion/viewEventosPlat.xhtml");
             tiposViewIds.add("/monitorizacion/viewProcesos.xhtml");
@@ -1250,5 +1261,41 @@ public class SessionBean implements Serializable {
 
     public void setPerfilesBack(List<TypePerfiles> perfilesBack) {
         this.perfilesBack = perfilesBack;
+    }
+
+    public List<AlertaDTO> getAlertasAvisos() {
+        return alertasAvisos;
+    }
+
+    public void setAlertasAvisos(List<AlertaDTO> alertasAvisos) {
+        this.alertasAvisos = alertasAvisos;
+    }
+
+    public List<AlertaDTO> getAlertas() {
+        if (this.alertasAvisos == null) {
+            return new ArrayList<>();
+        }
+        return this.alertasAvisos.stream().filter(a -> a.getTipo().equals(TypeAlertas.ALERTAS.toString())).collect(Collectors.toList());
+    }
+
+    public List<AlertaDTO> getAvisos() {
+        if (this.alertasAvisos == null) {
+            return new ArrayList<>();
+        }
+        return this.alertasAvisos.stream().filter(a -> a.getTipo().equals(TypeAlertas.AVISOS.toString())).collect(Collectors.toList());
+    }
+
+    public String getNotificacionAvisos() {
+        List<AlertaDTO> avisos = getAvisos();
+        if (avisos == null || avisos.isEmpty()) {
+            return "";
+        }
+        return " (" + avisos.size() + ") ";
+    }
+
+    public void marcarAlertaLeida(Long codigo) {
+        alertaService.marcarAlertaLeida(codigo, seguridad.getIdentificadorUsuario());
+
+        this.alertasAvisos = alertaService.getAlertas(seguridad.getIdentificadorUsuario(), perfiles, lang);
     }
 }
