@@ -84,7 +84,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          value="#{dialogLiteral.textosEnIdioma[idioma]}" rows="5" cols="30"
                                          styleClass="w95"
                                          autoResize="false"
-                                         required="#{dialogLiteral.calcularRequired(idioma)}"
+                                         required="#{dialogLiteral.calcularRequired(idioma) and empty param['formDialog:btnTraducir']}"
                                          maxlength="#{dialogLiteral.maxlength}"/>
                     </div>
                 </c:forEach>
@@ -100,7 +100,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          process="@this"/>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogLiteral.traducirLiterales}"
+        <p:commandButton id="btnTraducir"
+                         action="#{dialogLiteral.traducirLiterales}"
                          value="#{labels['dict.traducir']}" update="messagesDialog "
                          rendered="#{!dialogLiteral.isModoConsulta()}"
                          process="@all" />

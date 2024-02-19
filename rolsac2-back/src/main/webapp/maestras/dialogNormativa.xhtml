@@ -74,6 +74,7 @@
                                              idioma="#{dialogNormativa.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             maxlength="2000"
                                              nombreLiteral="#{labels['dict.titulo']}">
                             <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                         </my:literalComponent>
@@ -172,6 +173,7 @@
                                              idioma="#{dialogNormativa.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             maxlength="500"
                                              nombreLiteral="#{labels['dialogNormativa.urlBoletin']}">
                             <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                         </my:literalComponent>
@@ -190,6 +192,7 @@
                                              idioma="#{dialogNormativa.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             maxlength="500"
                                              nombreLiteral="#{labels['dialogNormativa.nombreResponsable']}"/>
                     </div>
                 </div>

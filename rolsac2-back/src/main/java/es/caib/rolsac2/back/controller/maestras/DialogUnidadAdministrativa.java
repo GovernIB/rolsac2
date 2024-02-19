@@ -266,7 +266,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         if (!verificarGuardar()) {
             return;
         }
-
+        
         //Si no es modo evolución, se guarda (En modo evolución, sólo se guarda al final de realizar todos los pasos)
         //     y si el codigo es nulo o mayor de 0 (si es negativo, es porque se tiene que crear en la evolucion)
         if (!activoModoEvolucion && (this.data.getCodigo() == null || this.data.getCodigo() >= 0)) {
@@ -340,6 +340,23 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             return false;
         }
 
+        if (data.getPresentacion() != null) {
+            for (String idioma : sessionBean.getIdiomasObligatoriosList()) {
+                if (data.getPresentacion().getTraduccion(idioma) != null && data.getPresentacion().getTraduccion(idioma).length() > 4000) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogUnidadAdministrativa.error.presentacionLarga"), true);
+                    return false;
+                }
+            }
+        }
+
+        if (data.getResponsable() != null) {
+            for (String idioma : sessionBean.getIdiomasObligatoriosList()) {
+                if (data.getResponsable().getTraduccion(idioma) != null && data.getResponsable().getTraduccion(idioma).length() > 4000) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogUnidadAdministrativa.error.cvLarga"), true);
+                    return false;
+                }
+            }
+        }
 
         return true;
     }

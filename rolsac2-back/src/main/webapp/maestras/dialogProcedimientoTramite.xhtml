@@ -418,6 +418,7 @@
                                              disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
                                              !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                              value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteParametros}"
+                                             maxlength="255"
                                              styleClass="w95"/>
                             </div>
                         </div>
@@ -438,6 +439,7 @@
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      idioma="#{dialogProcedimientoTramite.idioma}"
                                                      literal="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
+                                                     maxlength="512"
                                                      nombreLiteral="#{labels['dialogProcedimientoTramite.url']}">
                                     <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral" disabled="#{dialogProcedimientoTramite.isModoConsulta() or
                                                              !dialogProcedimientoTramite.isOpcionTelematicaUrl()}"/>

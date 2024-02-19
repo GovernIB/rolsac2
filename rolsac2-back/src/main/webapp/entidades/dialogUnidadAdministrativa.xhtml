@@ -140,6 +140,7 @@
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      idioma="#{dialogUnidadAdministrativa.idioma}"
+                                                     maxlength="255"
                                                      nombreLiteral="#{labels['dict.nombre']}">
                                     <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                                 </my:literalComponent>
@@ -170,6 +171,7 @@
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogUnidadAdministrativa.idioma}"
+                                                 maxlength="64"
                                                  nombreLiteral="#{labels['dialogUnidadAdministrativa.abreviatura']}">
                             </my:literalComponent>
                         </div>
@@ -200,7 +202,7 @@
                                 <my:literalComponent id="txtUrl"
                                                      literal="#{dialogUnidadAdministrativa.data.url}"
                                                      idioma="#{dialogUnidadAdministrativa.idioma}"
-
+                                                     maxlength="255"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      nombreLiteral="#{labels['dialogUnidadAdministrativa.url']}"
@@ -230,6 +232,7 @@
                                                      width="600px"
                                                      toolbar="true"
                                                      idCompuesto="formDialog\:txtPresentacion"
+                                                     maxlength="4000"
                                                      nombreLiteral="#{labels['dialogUnidadAdministrativa.presentacion']}"/>
                             </p>
 
@@ -266,6 +269,7 @@
                             <p:inputText id="txtResponsableNombre"
                                          value="#{dialogUnidadAdministrativa.data.responsableNombre}"
                                          styleClass="w95"
+                                         maxlength="255"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
                         <div class="form-group col-md-4">
@@ -297,6 +301,7 @@
                             <p:inputText id="txtResponsableEmail"
                                          value="#{dialogUnidadAdministrativa.data.responsableEmail}"
                                          styleClass="w95"
+                                         maxlength="100"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
 
@@ -317,6 +322,7 @@
                                                      tipo="html"
                                                      height="100px"
                                                      width="700px"
+                                                     maxlength="255"
                                                      idCompuesto="formDialog\:txtResponsable"
                                                      nombreLiteral="#{labels['dialogUnidadAdminsitrativa.responsableCV']}"/>
                             </p>
@@ -333,6 +339,7 @@
                             </p>
                             <p:inputText id="txtTelefono" value="#{dialogUnidadAdministrativa.data.telefono}"
                                          styleClass="w95"
+                                         maxlength="9"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
                         <div class="form-group col-md-2">
@@ -340,6 +347,7 @@
                                 <h:outputText value="#{labels['dialogUnidadAdministrativa.fax']}:" for="txtFax"/>
                             </p>
                             <p:inputText id="txtFax" value="#{dialogUnidadAdministrativa.data.fax}" styleClass="w95"
+                                         maxlength="9"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                             />
                         </div>
@@ -349,6 +357,7 @@
                             </p>
                             <p:inputText id="txtEmail" value="#{dialogUnidadAdministrativa.data.email}"
                                          styleClass="w95"
+                                         maxlength="100"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
                         <div class="form-group col-md-4">
@@ -358,6 +367,7 @@
                             </p>
                             <p:inputText id="txtDominio" value="#{dialogUnidadAdministrativa.data.dominio}"
                                          styleClass="w95"
+                                         maxlength="255"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
                     </div>

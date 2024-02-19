@@ -177,6 +177,11 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             return false;
         }
 
+        if (this.data.getUnidadAdministrativa() == null || this.data.getUnidadAdministrativa().getCodigo() == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUnidadAdministrativa"));
+            return false;
+        }
+
         if (data.getPlantillaSel() == null || data.getPlantillaSel().getCodigo() == null) {
             if (this.data.isTramitElectronica() && (this.data.getTipoTramitacion().getUrl() == null || this.data.getTipoTramitacion().getUrl().estaVacio()) && this.data.getTipoTramitacion().getCodPlatTramitacion() == null) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlPlataforma"));

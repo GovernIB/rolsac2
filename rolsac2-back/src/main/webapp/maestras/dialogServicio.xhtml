@@ -263,7 +263,8 @@
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogServicio.idioma}"
                                                  literal="#{dialogServicio.data.keywords}"
-                                                 nombreLiteral="#{labels['dialogProcedimiento.keywords']}"/>
+                                                 nombreLiteral="#{labels['dialogProcedimiento.keywords']}"
+                                                 maxlength="500"/>
                         </p>
                     </div>
                 </div>
@@ -357,6 +358,7 @@
                                          disabled="#{dialogServicio.isModoConsulta()}"
                                          required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.responsable']}"
+                                         maxlength="255"
                                          styleClass="w95"/>
                         </p>
                     </div>
@@ -370,6 +372,7 @@
                         <p:inputText id="txtEmailResp" value="#{dialogServicio.data.responsableEmail}"
                                      validatorMessage="#{labels['dict.emailNoValido']}"
                                      update="messagesDialog"
+                                     maxlength="100"
                                      disabled="#{dialogServicio.isModoConsulta()}" styleClass="w95">
                             <f:validateRegex
                                     pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
@@ -524,6 +527,7 @@
                                              disabled="#{dialogServicio.isModoConsulta()  ||
                                                         !dialogServicio.canalesSeleccionados.contains('TEL')}"
                                              value="#{dialogServicio.data.tipoTramitacion.tramiteParametros}"
+                                             maxlength="255"
                                              styleClass="w95"/>
                             </div>
                         </div>
@@ -658,6 +662,7 @@
             </p:panel>
         </div>
 
+
         <div class="ui-g-12 ui-md-3 pr-1 ">
             <div class="row left-container mx-0 mb-2">
                 <div class="left-container-header ml-0 col-12 row">
@@ -710,7 +715,74 @@
                                      process="@this" update="dataTablePublico messagesDialog"/>
                 </div>
             </div>
-            <div class="row left-container mx-0 mb-2">
+            <h:panelGroup id="panelTemas">
+                <c:forEach items="#{dialogServicio.roots}" var="tema" varStatus="status">
+                    <div class="row left-container mx-0 mt-2">
+                        <div class="left-container-header ml-0 col-12 row">
+                            <div class="col-10 text-center">
+                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
+                                    #{tema.data.descripcion.getTraduccion(dialogServicio.idioma)}</p>
+                            </div>
+                            <div class="col-2">
+                                <p:commandButton id="btnTema#{tema.data.codigo}Col"
+                                                 onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
+                                                 title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
+                                                 style="margin-left:-10px"/>
+                                <p:commandButton id="btnTema#{tema.data.codigo}Exp"
+                                                 onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
+                                                 title="#{labels['dict.expandir']}" icon="pi pi-plus"
+                                                 styleClass="mt-2 importantOcultar" style="margin-left:-10px"/>
+                            </div>
+                        </div>
+                        <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
+                            <p:treeTable
+                                    value="#{tema}"
+                                    var="td"
+                                    emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+                                    paginator="false" selectionMode="single"
+                                    selection="#{dialogServicio.temasTabla[status.index]}"
+                                    rowKey="#{td.codigo}"
+                                    styleClass="noHeader">
+
+                                <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                                <p:ajax event="select" global="false"/>
+                                <!--<p:ajax event="rowUnselect"/>-->
+
+
+                                <p:column headerText="" styleClass="w75">
+
+                                    <div class="ui-chkbox ui-widget ui-selection">
+                                        <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
+                                            <h:outputText
+                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
+                                        </div>
+                                    </div>
+                                    <i class="#{dialogServicio.getIcono(td)}"></i>
+                                    <h:outputText id="texto"
+                                                  value="#{td.descripcion.getTraduccion(dialogServicio.idioma)}"/>
+                                    <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
+                                               value="#{dialogServicio.getTooltip(td)}" position="right"/>
+                                </p:column>
+
+                            </p:treeTable>
+                        </div>
+                        <div id="divTema#{tema.data.codigo}Btns"
+                             class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                            <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
+                                             styleClass="text-success"
+                                             process="@this"
+                                             actionListener="#{dialogServicio.altaTematicas(tema.data)}"
+                                             rendered="#{!dialogServicio.isModoConsulta()}">
+                                <p:ajax event="dialogReturn"
+                                        listener="#{dialogServicio.returnDialogTemas}" process="@this"
+                                        update="messagesDialog panelTemas"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </c:forEach>
+
+            </h:panelGroup>
+            <div class="row left-container mx-0 mb-2 mt-2">
                 <div class="col-12 left-container-header text-center">
                     <div class="left-container-header ml-0 col-12 row">
                         <div class="col-10 text-center">
@@ -899,74 +971,7 @@
                     </p:commandButton>
                 </div>
             </h:panelGroup>
-            <!--</div>-->
-            <h:panelGroup id="panelTemas">
-                <c:forEach items="#{dialogServicio.roots}" var="tema" varStatus="status">
-                    <div class="row left-container mx-0 mt-2">
-                        <div class="left-container-header ml-0 col-12 row">
-                            <div class="col-10 text-center">
-                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                    #{tema.data.descripcion.getTraduccion(dialogServicio.idioma)}</p>
-                            </div>
-                            <div class="col-2">
-                                <p:commandButton id="btnTema#{tema.data.codigo}Col"
-                                                 onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
-                                                 title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                                 style="margin-left:-10px"/>
-                                <p:commandButton id="btnTema#{tema.data.codigo}Exp"
-                                                 onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
-                                                 title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                                 styleClass="mt-2 importantOcultar" style="margin-left:-10px"/>
-                            </div>
-                        </div>
-                        <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
-                            <p:treeTable
-                                    value="#{tema}"
-                                    var="td"
-                                    emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
-                                    paginator="false" selectionMode="single"
-                                    selection="#{dialogServicio.temasTabla[status.index]}"
-                                    rowKey="#{td.codigo}"
-                                    styleClass="noHeader">
 
-                                <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                                <p:ajax event="select" global="false"/>
-                                <!--<p:ajax event="rowUnselect"/>-->
-
-
-                                <p:column headerText="" styleClass="w75">
-
-                                    <div class="ui-chkbox ui-widget ui-selection">
-                                        <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
-                                            <h:outputText
-                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
-                                        </div>
-                                    </div>
-                                    <i class="#{dialogServicio.getIcono(td)}"></i>
-                                    <h:outputText id="texto"
-                                                  value="#{td.descripcion.getTraduccion(dialogServicio.idioma)}"/>
-                                    <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
-                                               value="#{dialogServicio.getTooltip(td)}" position="right"/>
-                                </p:column>
-
-                            </p:treeTable>
-                        </div>
-                        <div id="divTema#{tema.data.codigo}Btns"
-                             class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
-                            <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
-                                             styleClass="text-success"
-                                             process="@this"
-                                             actionListener="#{dialogServicio.altaTematicas(tema.data)}"
-                                             rendered="#{!dialogServicio.isModoConsulta()}">
-                                <p:ajax event="dialogReturn"
-                                        listener="#{dialogServicio.returnDialogTemas}" process="@this"
-                                        update="messagesDialog panelTemas"/>
-                            </p:commandButton>
-                        </div>
-                    </div>
-                </c:forEach>
-
-            </h:panelGroup>
         </div>
         <h:outputScript>
             function triggerDblClickPublico() {

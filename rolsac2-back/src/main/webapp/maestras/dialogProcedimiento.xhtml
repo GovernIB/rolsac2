@@ -403,7 +403,8 @@
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogProcedimiento.idioma}"
                                                  literal="#{dialogProcedimiento.data.keywords}"
-                                                 nombreLiteral="#{labels['dialogProcedimiento.keywords']}"/>
+                                                 nombreLiteral="#{labels['dialogProcedimiento.keywords']}"
+                                                 maxlength="500"/>
                         </p>
                     </div>
                 </div>
@@ -533,6 +534,7 @@
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.responsable']}"
+                                         maxlength="255"
                                          styleClass="w95"/>
                         </p>
                     </div>
@@ -544,6 +546,7 @@
                         <p:inputText id="txtEmailResp" value="#{dialogProcedimiento.data.responsableEmail}"
                                      validatorMessage="#{labels['dict.emailNoValido']}"
                                      update="messagesDialog"
+                                     maxlength="100"
                                      disabled="#{dialogProcedimiento.isModoConsulta()}" styleClass="w95">
                             <f:validateRegex
                                     pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
@@ -696,7 +699,69 @@
                                      process="@this" update="dataTablePublico messagesDialog"/>
                 </div>
             </div>
-            <div class="row left-container mx-0 mb-2">
+            <h:panelGroup id="panelTemas">
+                <c:forEach items="#{dialogProcedimiento.roots}" var="tema" varStatus="status">
+                    <div class="row left-container mx-0 mt-2">
+                        <div class="left-container-header ml-0 col-12 row">
+                            <div class="col-10 text-center">
+                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
+                                    #{tema.data.descripcion.getTraduccion(dialogProcedimiento.idioma)}</p>
+                            </div>
+                            <div class="col-2">
+                                <p:commandButton id="btnTema#{tema.data.codigo}Col"
+                                                 onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
+                                                 title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
+                                                 style="margin-left:-10px"/>
+                                <p:commandButton id="btnTema#{tema.data.codigo}Exp"
+                                                 onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
+                                                 title="#{labels['dict.expandir']}" icon="pi pi-plus"
+                                                 styleClass="mt-2 importantOcultar" style="margin-left:-10px"/>
+                            </div>
+                        </div>
+                        <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
+                            <p:treeTable
+                                    value="#{tema}"
+                                    var="td"
+                                    emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+                                    paginator="false" selectionMode="single"
+                                    selection="#{dialogProcedimiento.temasTabla[status.index]}"
+                                    rowKey="#{td.codigo}"
+                                    styleClass="noHeader">
+
+                                <p:ajax event="select" global="false"/>
+                                <p:column headerText="" styleClass="w75">
+                                    <div class="ui-chkbox ui-widget ui-selection">
+                                        <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
+                                            <h:outputText
+                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
+                                        </div>
+                                    </div>
+                                    <i class="#{dialogProcedimiento.getIcono(td)}"></i>
+                                    <h:outputText id="texto"
+                                                  value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
+                                    <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
+                                               value="#{dialogProcedimiento.getTooltip(td)}" position="right"/>
+                                </p:column>
+
+                            </p:treeTable>
+                        </div>
+                        <div id="divTema#{tema.data.codigo}Btns"
+                             class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                            <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
+                                             styleClass="text-success"
+                                             process="@this"
+                                             actionListener="#{dialogProcedimiento.altaTematicas(tema.data)}"
+                                             rendered="#{!dialogProcedimiento.isModoConsulta()}">
+                                <p:ajax event="dialogReturn"
+                                        listener="#{dialogProcedimiento.returnDialogTemas}" process="@this"
+                                        update="messagesDialog panelTemas"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </c:forEach>
+
+            </h:panelGroup>
+            <div class="row left-container mx-0 mb-2 mt-2">
                 <div class="left-container-header ml-0 col-12 row">
                     <div class="col-10 text-center">
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.normativaProc']}*</p>
@@ -756,67 +821,6 @@
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogProcedimiento.bajarNormativa}"
                                      process="@this" update="dataNormativaProcedimiento messagesDialog"/>
-                </div>
-            </div>
-            <div class="row left-container mx-0 mb-2">
-                <div class="left-container-header ml-0 col-12 row">
-                    <div class="col-10 text-center">
-                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.tramites']}</p>
-                    </div>
-                    <div class="col-2">
-                        <p:commandButton id="btnTramitesCol" onclick="colapsarModulo('#divTramites','btnTramites');"
-                                         title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                         style="margin-left:-10px;margin-bottom:10px"/>
-                        <p:commandButton id="btnTramitesExp" onclick="expandirModulo('#divTramites','btnTramites');"
-                                         title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                         styleClass="mt-2 importantOcultar"
-                                         style="margin-left:-10px;margin-bottom:10px"/>
-                    </div>
-                </div>
-                <div id="divTramites" class="col-10 p-1">
-                    <p:dataTable id="dataTableTramite" var="td" value="#{dialogProcedimiento.data.tramites}"
-                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
-                                 paginator="false" selectionMode="single"
-                                 selection="#{dialogProcedimiento.tramiteSeleccionado}"
-                                 rowKey="#{td.codigoString}" styleClass="noHeader">
-
-                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                        <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect"
-                                oncomplete="triggerDblClickTramite();"
-                                global="false"/>
-
-                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.nombre.getTraduccion(dialogProcedimiento.idioma)}"/>
-                        </p:column>
-                    </p:dataTable>
-                </div>
-                <div id="divTramitesBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
-                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
-                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this"
-                                     actionListener="#{dialogProcedimiento.nuevoTramite()}">
-                        <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogTramite}"
-                                process="@this"
-                                update="dataTableTramite"/>
-                    </p:commandButton>
-                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
-                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                     action="#{dialogProcedimiento.borrarTramite}"
-                                     process="@this" update="dataTableTramite messagesDialog"/>
-                    <p:commandButton id="btnEditarTramite" title="#{labels['dict.editar']}" icon="pi pi-pencil"
-                                     action="#{dialogProcedimiento.editarTramite}"
-                                     process="@this" update="dataTableTramite messagesDialog">
-                        <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogTramite}"
-                                process="@this"
-                                update="dataTableTramite"/>
-                    </p:commandButton>
-                    <p:commandButton id="btnSubirTramite" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
-                                     action="#{dialogProcedimiento.subirTramite}"
-                                     process="@this" update="dataTableTramite messagesDialog"/>
-                    <p:commandButton id="btnBajarTramite" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down"
-                                     action="#{dialogProcedimiento.bajarTramite}"
-                                     process="@this" update="dataTableTramite messagesDialog"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -942,68 +946,67 @@
                     </p:commandButton>
                 </div>
             </div>
-            <h:panelGroup id="panelTemas">
-                <c:forEach items="#{dialogProcedimiento.roots}" var="tema" varStatus="status">
-                    <div class="row left-container mx-0 mt-2">
-                        <div class="left-container-header ml-0 col-12 row">
-                            <div class="col-10 text-center">
-                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                    #{tema.data.descripcion.getTraduccion(dialogProcedimiento.idioma)}</p>
-                            </div>
-                            <div class="col-2">
-                                <p:commandButton id="btnTema#{tema.data.codigo}Col"
-                                                 onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
-                                                 title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                                 style="margin-left:-10px"/>
-                                <p:commandButton id="btnTema#{tema.data.codigo}Exp"
-                                                 onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
-                                                 title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                                 styleClass="mt-2 importantOcultar" style="margin-left:-10px"/>
-                            </div>
-                        </div>
-                        <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
-                            <p:treeTable
-                                    value="#{tema}"
-                                    var="td"
-                                    emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
-                                    paginator="false" selectionMode="single"
-                                    selection="#{dialogProcedimiento.temasTabla[status.index]}"
-                                    rowKey="#{td.codigo}"
-                                    styleClass="noHeader">
-
-                                <p:ajax event="select" global="false"/>
-                                <p:column headerText="" styleClass="w75">
-                                    <div class="ui-chkbox ui-widget ui-selection">
-                                        <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
-                                            <h:outputText
-                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
-                                        </div>
-                                    </div>
-                                    <i class="#{dialogProcedimiento.getIcono(td)}"></i>
-                                    <h:outputText id="texto"
-                                                  value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
-                                    <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
-                                               value="#{dialogProcedimiento.getTooltip(td)}" position="right"/>
-                                </p:column>
-
-                            </p:treeTable>
-                        </div>
-                        <div id="divTema#{tema.data.codigo}Btns"
-                             class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
-                            <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
-                                             styleClass="text-success"
-                                             process="@this"
-                                             actionListener="#{dialogProcedimiento.altaTematicas(tema.data)}"
-                                             rendered="#{!dialogProcedimiento.isModoConsulta()}">
-                                <p:ajax event="dialogReturn"
-                                        listener="#{dialogProcedimiento.returnDialogTemas}" process="@this"
-                                        update="messagesDialog panelTemas"/>
-                            </p:commandButton>
-                        </div>
+            <div class="row left-container mx-0 mb-2">
+                <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-10 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.tramites']}</p>
                     </div>
-                </c:forEach>
+                    <div class="col-2">
+                        <p:commandButton id="btnTramitesCol" onclick="colapsarModulo('#divTramites','btnTramites');"
+                                         title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
+                                         style="margin-left:-10px;margin-bottom:10px"/>
+                        <p:commandButton id="btnTramitesExp" onclick="expandirModulo('#divTramites','btnTramites');"
+                                         title="#{labels['dict.expandir']}" icon="pi pi-plus"
+                                         styleClass="mt-2 importantOcultar"
+                                         style="margin-left:-10px;margin-bottom:10px"/>
+                    </div>
+                </div>
+                <div id="divTramites" class="col-10 p-1">
+                    <p:dataTable id="dataTableTramite" var="td" value="#{dialogProcedimiento.data.tramites}"
+                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{dialogProcedimiento.tramiteSeleccionado}"
+                                 rowKey="#{td.codigoString}" styleClass="noHeader">
 
-            </h:panelGroup>
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickTramite();"
+                                global="false"/>
+
+                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
+                            <h:outputText value="#{td.nombre.getTraduccion(dialogProcedimiento.idioma)}"/>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div id="divTramitesBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this"
+                                     actionListener="#{dialogProcedimiento.nuevoTramite()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogTramite}"
+                                process="@this"
+                                update="dataTableTramite"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                     action="#{dialogProcedimiento.borrarTramite}"
+                                     process="@this" update="dataTableTramite messagesDialog"/>
+                    <p:commandButton id="btnEditarTramite" title="#{labels['dict.editar']}" icon="pi pi-pencil"
+                                     action="#{dialogProcedimiento.editarTramite}"
+                                     process="@this" update="dataTableTramite messagesDialog">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogTramite}"
+                                process="@this"
+                                update="dataTableTramite"/>
+                    </p:commandButton>
+                    <p:commandButton id="btnSubirTramite" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
+                                     action="#{dialogProcedimiento.subirTramite}"
+                                     process="@this" update="dataTableTramite messagesDialog"/>
+                    <p:commandButton id="btnBajarTramite" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down"
+                                     action="#{dialogProcedimiento.bajarTramite}"
+                                     process="@this" update="dataTableTramite messagesDialog"/>
+                </div>
+            </div>
         </div>
         <h:outputScript>
             function triggerDblClickPublico() {
