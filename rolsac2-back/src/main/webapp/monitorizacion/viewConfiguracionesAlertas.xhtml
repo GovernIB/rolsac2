@@ -117,13 +117,6 @@
                         <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
                     </h:outputText>
                 </p:column>
-                <p:column sortBy="#{alerta.fechaFin}" headerText=" "
-                          renderer="#{viewConfiguracionesAlertas.renderMarcarLeido}">
-                    <f:facet name="header"/>
-                    <h:outputText  icon="pi pi-info-circle"  value="#{alerta.fechaFin}">
-                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-                    </h:outputText>
-                </p:column>
             </p:dataTable>
             <h:outputScript>
                 function triggerDblClick() {

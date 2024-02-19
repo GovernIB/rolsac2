@@ -169,9 +169,11 @@
                                                           idioma="#{dialogConfiguracionAlerta.idioma}"
                                                           ocultarTexto="false" esCabecera="false"
                         />
-                    <p:outputLabel value="Incluir descendientes" styleClass="mr-3" />
-                    <p:selectBooleanCheckbox id="txtUnaDescendiente" label="xefw"
+                    <br />
+                        <p:outputLabel value="Incluir descendientes" styleClass="mr-3" />
+                        <p:selectBooleanCheckbox id="txtUnaDescendiente" label="xefw"
                                              value="#{dialogConfiguracionAlerta.data.descendientes}" />
+
                 </div>
             </div>
             <h:outputScript>
@@ -189,7 +191,7 @@
                         $("#divUna").hide();
                         $("#divUna2").hide();
                     }
-                    if (valor == 'Unidad Administrativa' || valor == 'Unitat administrativa') {
+                    if (valor.startsWith("Uni")) {
                         $("#divPerfil").hide();
                         $("#divPerfil2").hide();
                         $("#divUna").show();
