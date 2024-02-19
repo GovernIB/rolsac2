@@ -645,41 +645,6 @@ BEGIN
                     INSERT INTO  RS2_PRCTEM (PRTM_CODPRWF, PRTM_CODTEMA)
                       VALUES (CODIGO_PROCWF,ROLSAC1_MATERIAS.PRM_CODMAT );
 
-                    /**
-                    SELECT COUNT(TPMS_CODIGO)
-                      INTO CODIGOSIAEXIST
-                      FROM RS2_TIPOMSI
-                     WHERE TPMS_CODSIA IN (
-                                SELECT MAT_CODSIA
-                                 FROM R1_MATERIAS
-                                WHERE MAT_CODI = ROLSAC1_MATERIAS.PRM_CODMAT
-                            );
-                            
-                   
-                     IF CODIGOSIAEXIST > 0
-                    THEN
-                         SELECT TPMS_CODIGO
-                          INTO CODIGOSIAR2
-                          FROM RS2_TIPOMSI
-                         WHERE TPMS_CODSIA IN (
-                                    SELECT MAT_CODSIA
-                                     FROM R1_MATERIAS
-                                    WHERE MAT_CODI = ROLSAC1_MATERIAS.PRM_CODMAT
-                                )
-                           AND ROWNUM = 1;
-                           
-                        SELECT COUNT(*)
-                          INTO EXISTE_MAT_PRC
-                          FROM RS2_PRCMAS
-                          WHERE PRMS_CODPRWF = CODIGO_PROCWF
-                           AND  PRMS_TIPMSIA = CODIGOSIAR2;
-
-                        IF EXISTE_MAT_PRC = 0
-                        THEN 
-                            INSERT INTO RS2_PRCMAS(PRMS_CODPRWF, PRMS_TIPMSIA)
-                            VALUES (CODIGO_PROCWF, CODIGOSIAR2);
-                        END IF;
-                    END IF; **/
                 END LOOP;
 
                 /** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
