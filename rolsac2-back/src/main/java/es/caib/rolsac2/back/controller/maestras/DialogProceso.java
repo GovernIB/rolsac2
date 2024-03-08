@@ -6,13 +6,14 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.ProcesoServiceFacade;
-import es.caib.rolsac2.service.facade.ProcesoTimerServiceFacade;
-
 import es.caib.rolsac2.service.model.ProcesoDTO;
 import es.caib.rolsac2.service.model.ProcesoGridDTO;
 import es.caib.rolsac2.service.model.Propiedad;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
-import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 import es.caib.rolsac2.service.utils.UtilComparador;
 import es.caib.rolsac2.service.utils.UtilJSON;
 import org.primefaces.PrimeFaces;
@@ -58,7 +59,7 @@ public class DialogProceso extends AbstractController implements Serializable {
         LOG.debug("init");
 
         this.setearIdioma();
-        if(isModoAlta()) {
+        if (isModoAlta()) {
             data = new ProcesoDTO();
             data.setEntidad(sessionBean.getEntidad());
             data.setParametrosInvocacion(new ArrayList<>());
@@ -73,7 +74,7 @@ public class DialogProceso extends AbstractController implements Serializable {
 
     public void guardar() {
 
-        if(!verificarGuardar()) {
+        if (!verificarGuardar()) {
             return;
         }
 
@@ -99,8 +100,8 @@ public class DialogProceso extends AbstractController implements Serializable {
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         List<ProcesoGridDTO> procesosEntidad = procesoServiceFacade.listar(filtro);
-        for(ProcesoGridDTO proceso : procesosEntidad) {
-            if(proceso.getIdentificadorProceso().equals(data.getIdentificadorProceso())) {
+        for (ProcesoGridDTO proceso : procesosEntidad) {
+            if (proceso.getIdentificadorProceso().equals(data.getIdentificadorProceso())) {
                 return true;
             }
         }
@@ -108,7 +109,7 @@ public class DialogProceso extends AbstractController implements Serializable {
     }
 
     private boolean verificarGuardar() {
-        if(isModoAlta() && existeTipoProcesoEntidad()) {
+        if (isModoAlta() && existeTipoProcesoEntidad()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcesos.existe.tipo"), true);
             return false;
         }
@@ -123,7 +124,7 @@ public class DialogProceso extends AbstractController implements Serializable {
                 break;
             }
             case "SOLR_PUNT": {
-                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(),TypePluginEntidad.INDEXACION.toString())) {
+                if (!administracionEntServiceFacade.existePluginTipoByEntidad(sessionBean.getEntidad().getCodigo(), TypePluginEntidad.INDEXACION.toString())) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProceso.faltaPluginSOLR"), true);
                     return false;
                 }
@@ -158,7 +159,7 @@ public class DialogProceso extends AbstractController implements Serializable {
      * Crea nueva propiedad.
      */
     public void nuevaPropiedad() {
-        UtilJSF.openDialog("/entidades/dialogPropiedad", TypeModoAcceso.ALTA, null, true, 500, 200);
+        UtilJSF.openDialog("/entidades/dialogPropiedad", TypeModoAcceso.ALTA, null, true, 500, 220);
     }
 
     /**
@@ -166,21 +167,19 @@ public class DialogProceso extends AbstractController implements Serializable {
      */
     public void editarPropiedad() {
 
-        if (!verificarFilaSeleccionada())
-            return;
+        if (!verificarFilaSeleccionada()) return;
         String direccion = "/entidades/dialogPropiedad";
         final Map<String, String> params = new HashMap<>();
         params.put(TypeParametroVentana.DATO.toString(), UtilJSON.toJSON(this.propiedadSeleccionada));
 
-        UtilJSF.openDialog(direccion, TypeModoAcceso.EDICION, params, true, 500, 200);
+        UtilJSF.openDialog(direccion, TypeModoAcceso.EDICION, params, true, 500, 220);
     }
 
     /**
      * Quita una propiedad.
      */
     public void quitarPropiedad() {
-        if (!verificarFilaSeleccionada())
-            return;
+        if (!verificarFilaSeleccionada()) return;
 
         this.data.getParametrosInvocacion().remove(this.propiedadSeleccionada);
 
@@ -190,8 +189,7 @@ public class DialogProceso extends AbstractController implements Serializable {
      * Baja la propiedad de posición.
      */
     public void bajarPropiedad() {
-        if (!verificarFilaSeleccionada())
-            return;
+        if (!verificarFilaSeleccionada()) return;
 
         final int posicion = this.data.getParametrosInvocacion().indexOf(this.propiedadSeleccionada);
         if (posicion >= this.data.getParametrosInvocacion().size() - 1) {
@@ -207,8 +205,7 @@ public class DialogProceso extends AbstractController implements Serializable {
      * Sube la propiedad de posición.
      */
     public void subirPropiedad() {
-        if (!verificarFilaSeleccionada())
-            return;
+        if (!verificarFilaSeleccionada()) return;
 
         final int posicion = this.data.getParametrosInvocacion().indexOf(this.propiedadSeleccionada);
         if (posicion <= 0) {
@@ -307,10 +304,7 @@ public class DialogProceso extends AbstractController implements Serializable {
     }
 
     private boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
-                || !dataOriginal.getParametrosInvocacion().equals(data.getParametrosInvocacion())
-                || UtilComparador.compareTo(data.getCron(), dataOriginal.getCron()) != 0;
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0 || !dataOriginal.getParametrosInvocacion().equals(data.getParametrosInvocacion()) || UtilComparador.compareTo(data.getCron(), dataOriginal.getCron()) != 0;
     }
 
     public void cerrarDefinitivo() {

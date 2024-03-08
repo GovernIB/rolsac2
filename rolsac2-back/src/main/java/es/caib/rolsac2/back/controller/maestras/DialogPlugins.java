@@ -1,7 +1,6 @@
 package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
-import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
@@ -9,7 +8,6 @@ import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.PluginDTO;
 import es.caib.rolsac2.service.model.Propiedad;
 import es.caib.rolsac2.service.model.TipoBoletinDTO;
-import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
@@ -23,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.*;
@@ -76,9 +73,8 @@ public class DialogPlugins extends AbstractController implements Serializable {
             dataOriginal = data.clone();
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             data = administracionEntService.findPluginById(Long.valueOf(id));
-            if(this.data.getTipo().equals(TypePluginEntidad.BOLETIN.toString())) {
-                Propiedad prop = this.data.getPropiedades().stream().
-                        filter(propiedad -> propiedad.getCodigo().equals(TIPO_BOLETIN_PROPIEDAD)).findFirst().get();
+            if (this.data.getTipo().equals(TypePluginEntidad.BOLETIN.toString())) {
+                Propiedad prop = this.data.getPropiedades().stream().filter(propiedad -> propiedad.getCodigo().equals(TIPO_BOLETIN_PROPIEDAD)).findFirst().get();
                 this.data.getPropiedades().remove(prop);
                 boletinSeleccionado = maestrasSupServiceFacade.findTipoBoletinById(Long.valueOf(prop.getValor()));
             }
@@ -90,7 +86,7 @@ public class DialogPlugins extends AbstractController implements Serializable {
 
 
     public void guardar() {
-        if(this.data.getTipo().equals(TypePluginEntidad.BOLETIN.toString())) {
+        if (this.data.getTipo().equals(TypePluginEntidad.BOLETIN.toString())) {
             this.altaPropiedadNormativa();
         }
 
@@ -134,7 +130,7 @@ public class DialogPlugins extends AbstractController implements Serializable {
      * Crea nueva propiedad.
      */
     public void nuevaPropiedad() {
-        UtilJSF.openDialog("/entidades/dialogPropiedad", TypeModoAcceso.ALTA, null, true, 500, 200);
+        UtilJSF.openDialog("/entidades/dialogPropiedad", TypeModoAcceso.ALTA, null, true, 500, 220);
     }
 
     /**
@@ -142,21 +138,19 @@ public class DialogPlugins extends AbstractController implements Serializable {
      */
     public void editarPropiedad() {
 
-        if (!verificarFilaSeleccionada())
-            return;
+        if (!verificarFilaSeleccionada()) return;
         String direccion = "/entidades/dialogPropiedad";
         final Map<String, String> params = new HashMap<>();
         params.put(TypeParametroVentana.DATO.toString(), UtilJSON.toJSON(this.propiedadSeleccionada));
 
-        UtilJSF.openDialog(direccion, TypeModoAcceso.EDICION, params, true, 500, 200);
+        UtilJSF.openDialog(direccion, TypeModoAcceso.EDICION, params, true, 500, 220);
     }
 
     /**
      * Quita una propiedad.
      */
     public void quitarPropiedad() {
-        if (!verificarFilaSeleccionada())
-            return;
+        if (!verificarFilaSeleccionada()) return;
 
         this.data.getPropiedades().remove(this.propiedadSeleccionada);
 
@@ -166,8 +160,7 @@ public class DialogPlugins extends AbstractController implements Serializable {
      * Baja la propiedad de posición.
      */
     public void bajarPropiedad() {
-        if (!verificarFilaSeleccionada())
-            return;
+        if (!verificarFilaSeleccionada()) return;
 
         final int posicion = this.data.getPropiedades().indexOf(this.propiedadSeleccionada);
         if (posicion >= this.data.getPropiedades().size() - 1) {
@@ -183,8 +176,7 @@ public class DialogPlugins extends AbstractController implements Serializable {
      * Sube la propiedad de posición.
      */
     public void subirPropiedad() {
-        if (!verificarFilaSeleccionada())
-            return;
+        if (!verificarFilaSeleccionada()) return;
 
         final int posicion = this.data.getPropiedades().indexOf(this.propiedadSeleccionada);
         if (posicion <= 0) {
@@ -305,13 +297,7 @@ public class DialogPlugins extends AbstractController implements Serializable {
     }
 
     public boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getEntidad().getCodigo(), dataOriginal.getEntidad().getCodigo()) != 0
-                || UtilComparador.compareTo(data.getTipo(), dataOriginal.getTipo()) != 0
-                || UtilComparador.compareTo(data.getClassname(), dataOriginal.getClassname()) != 0
-                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
-                || !data.getPropiedades().equals(dataOriginal.getPropiedades())
-                || UtilComparador.compareTo(data.getPrefijoPropiedades(), dataOriginal.getPrefijoPropiedades()) != 0;
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getEntidad().getCodigo(), dataOriginal.getEntidad().getCodigo()) != 0 || UtilComparador.compareTo(data.getTipo(), dataOriginal.getTipo()) != 0 || UtilComparador.compareTo(data.getClassname(), dataOriginal.getClassname()) != 0 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0 || !data.getPropiedades().equals(dataOriginal.getPropiedades()) || UtilComparador.compareTo(data.getPrefijoPropiedades(), dataOriginal.getPrefijoPropiedades()) != 0;
 
     }
 

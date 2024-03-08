@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JUnidadOrganica;
-import es.caib.rolsac2.persistence.model.JTipoAfectacion;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -18,8 +17,7 @@ import java.util.List;
 @Stateless
 @Local(UnidadOrganicaRepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-public class UnidadOrganicaRepositoryBean extends AbstractCrudRepository<JUnidadOrganica, Long>
-        implements UnidadOrganicaRepository {
+public class UnidadOrganicaRepositoryBean extends AbstractCrudRepository<JUnidadOrganica, Long> implements UnidadOrganicaRepository {
 
     protected UnidadOrganicaRepositoryBean() {
         super(JUnidadOrganica.class);
@@ -39,7 +37,7 @@ public class UnidadOrganicaRepositoryBean extends AbstractCrudRepository<JUnidad
         String sql = "SELECT p FROM JUnidadOrganica p WHERE p.codigoDir3Padre is null AND p.entidad.codigo =:idEntidad";
         Query query = entityManager.createQuery(sql, JUnidadOrganica.class);
         query.setParameter("idEntidad", idEntidad);
-        return (JUnidadOrganica) query.getSingleResult();
+        return (JUnidadOrganica) query.getResultList().get(0);
     }
 
     @Override

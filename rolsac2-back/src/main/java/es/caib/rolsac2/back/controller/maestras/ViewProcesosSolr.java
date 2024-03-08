@@ -54,6 +54,7 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
 
     private ProcesoSolrFiltro filtro;
     private ProcesoLogFiltro filtroLog;
+    private Integer activeTab = 1;
 
     public LazyDataModel<IndexacionDTO> getLazyModel() {
         return lazyModel;
@@ -282,5 +283,13 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
 
     public void setFiltroLog(ProcesoLogFiltro filtroLog) {
         this.filtroLog = filtroLog;
+    }
+
+    public Integer getActiveTab() {
+        return activeTab;
+    }
+
+    public void setActiveTab(Integer activeTab) {
+        this.activeTab = activeTab;
     }
 }

@@ -60,8 +60,8 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     PathUA getPath(UnidadAdministrativaGridDTO uaInstructor);
 
     UnidadOrganicaDTO obtenerUnidadRaiz(Long idEntidad);
-
-    List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad);
+ 
+    List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad, String idioma);
 
     Pagina<IndexacionDTO> getUAsParaIndexacion(Long idEntidad);
 

@@ -649,11 +649,10 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad) {
+    public List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad, String idioma) {
         String sql = "SELECT p.codigoDIR3, p.padre.codigoDIR3, t.nombre, p.version FROM JUnidadAdministrativa p LEFT OUTER JOIN p.traducciones t ON t.idioma = :idioma " + "WHERE p.padre.codigoDIR3 = :codigoDir3 AND p.entidad.codigo=:idEntidad";
         Query query = entityManager.createQuery(sql);
-        //Lo recuperamos en catalán ya que el organigrama DIR3 viene en catalán también
-        query.setParameter("idioma", "ca");
+        query.setParameter("idioma", idioma);
         query.setParameter("codigoDir3", codigoDir3);
         query.setParameter("idEntidad", idEntidad);
         List<Object[]> resultado = query.getResultList();
@@ -818,17 +817,27 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     private JUnidadAdministrativa getJUnidadAdministrativaSimpleDir3(Long codigo) {
-        Query query = entityManager.createQuery("SELECT j.codigoDIR3, j.padre FROM JUnidadAdministrativa j WHERE j.codigo = :codigo");
-        query.setParameter("codigo", codigo);
-        Object[] respuesta = (Object[]) query.getSingleResult();
-        JUnidadAdministrativa jua = new JUnidadAdministrativa();
-        jua.setCodigoDIR3((String) respuesta[0]);
-        if (respuesta[1] == null) {
-            JUnidadAdministrativa padre = (JUnidadAdministrativa) respuesta[1];
-            jua.setPadre(padre);
+        try {
+            Query query = entityManager.createQuery("SELECT j.codigoDIR3, j.padre.codigo FROM JUnidadAdministrativa j WHERE j.codigo = :codigo");
+            query.setParameter("codigo", codigo);
+            List<Object[]> resultados = query.getResultList();
+            if (resultados == null || resultados.isEmpty()) {
+                return null;
+            }
+            Object[] respuesta = resultados.get(0);
+            JUnidadAdministrativa jua = new JUnidadAdministrativa();
+            jua.setCodigoDIR3((String) respuesta[0]);
+            if (respuesta[1] != null) {
+                Long codigoPadre = (Long) respuesta[1];
+                JUnidadAdministrativa juaPadre = new JUnidadAdministrativa();
+                juaPadre.setCodigo(codigoPadre);
+                jua.setPadre(juaPadre);
+            }
+            jua.setCodigo(codigo);
+            return jua;
+        } catch (Exception e) {
+            return null;
         }
-        jua.setCodigo(codigo);
-        return jua;
     }
 
     @Override

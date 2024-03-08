@@ -161,7 +161,7 @@ public interface UnidadAdministrativaServiceFacade {
      * @return
      */
 
-    List<UnidadOrganicaDTO> obtenerUnidadesHijasDir3(String codigoDir3, Long idEntidad);
+    List<UnidadOrganicaDTO> obtenerUnidadesHijasDir3(String codigoDir3, Long idEntidad, String idioma);
 
 
     /**
@@ -170,7 +170,7 @@ public interface UnidadAdministrativaServiceFacade {
      * @param codigoDir3
      * @return
      */
-    List<UnidadOrganicaDTO> obtenerUnidadesHijasRolsac(String codigoDir3, Long idEntidad);
+    List<UnidadOrganicaDTO> obtenerUnidadesHijasRolsac(String codigoDir3, Long idEntidad, String idioma);
 
     /**
      * Obtiene la unidad raíz del organigrama de DIR3
