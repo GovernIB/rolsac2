@@ -39,14 +39,13 @@ Pàgina amb el llistat de processos automàtics
                 </p:commandButton>
                 <p:dataTable id="dataTable" value="#{viewProcesosSIA.lazyModelLogs}" var="proceso"
                              paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTable"
-                             rows="#{viewProcesosSIA.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
-                             first="#{viewProcesosSIA.filtro.paginaFirst}"
+                             rows="#{viewProcesosSIA.filtroLog.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                             first="#{viewProcesosSIA.filtroLog.paginaFirst}"
                              paginatorPosition="bottom" paginatorAlwaysVisible="true"
                              paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                              {NextPageLink} {LastPageLink}"
                              currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                              emptyMessage="#{labels['dict.noHayDatos']}"
-                             selectionMode="single" selection="#{viewProcesosSIA.datoSeleccionado}"
                              rowKey="#{proceso.codigo}"
                              reflow="true"
                              sortBy="#{viewProcesosSIA.filtroLog.orderBy}"
@@ -63,6 +62,11 @@ Pàgina amb el llistat de processos automàtics
                     <f:facet name="{RowsPerPageLabel}">
                         #{labels.dataTable_rowsPerPage}
                     </f:facet>
+                    <p:column headerText="#{labels['dict.codigo']}" styleClass="w140px">
+                        <f:facet name="header"/>
+                        <h:outputText value="#{proceso.codigo}"/>
+                    </p:column>
+
                     <p:column headerText="#{labels['dict.descripcion']}" styleClass="w140px">
                         <f:facet name="header"/>
                         <h:outputText value="#{proceso.proceso.descripcion}"/>
@@ -101,7 +105,7 @@ Pàgina amb el llistat de processos automàtics
                                  process="@this" update="dataTable dataTablePendientes messages">
                 </p:commandButton>
                  <p:dataTable id="dataTablePendientes" value="#{viewProcesosSIA.lazyModel}" var="proceso"
-                         paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTable"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTablePendientes"
                          rows="#{viewProcesosSIA.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
                          first="#{viewProcesosSIA.filtro.paginaFirst}"
                          paginatorPosition="bottom" paginatorAlwaysVisible="true"
@@ -161,7 +165,7 @@ Pàgina amb el llistat de processos automàtics
                 </div>
                 <div class="ui-g-8 ui-md-8 ui-lg-8">
                         <p:commandButton value="#{labels['viewProcesosSIA.volcadoCompleto']}" icon="pi pi-file-o" iconPos="top"
-                                         actionListener="#{viewProcesosSIA.volcadoCompleto()}" styleClass="mr10"
+                                         actionListener="#{viewProcesosSIA.indexarTodo()}" styleClass="mr10"
                                          process="@this" update="messages">
                         </p:commandButton>
 

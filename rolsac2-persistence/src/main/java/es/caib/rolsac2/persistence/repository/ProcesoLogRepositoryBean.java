@@ -178,6 +178,7 @@ public class ProcesoLogRepositoryBean extends AbstractCrudRepository<JProcesoLog
     public Long auditarInicioProceso(final String idProceso, final Long idEntidad) {
         final JProceso jproceso = obtenerProcesoPorIdentificador(idProceso, idEntidad);
         jproceso.setActivo(true);
+        entityManager.merge(jproceso);
         final JProcesoLog jproclog = new JProcesoLog();
         jproclog.setProceso(jproceso);
         jproclog.setFechaInicio(new Date());

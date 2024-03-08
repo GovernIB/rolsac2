@@ -453,6 +453,16 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         return resultado;
     }
 
+    @Override
+    public String isSolrActivo() {
+        return this.isPropiedadSolrActivo() ? "true" : "false";
+    }
+
+    @Override
+    public String isElasticActivo() {
+        return isPropiedadElasticActivo() ? "true" : "false";
+    }
+
     private List<es.caib.solr.api.model.types.EnumCategoria> calcularCategorias(List<EnumCategoria> categorias) {
         List<es.caib.solr.api.model.types.EnumCategoria> enumCategorias = new ArrayList<>();
         if (categorias != null) {

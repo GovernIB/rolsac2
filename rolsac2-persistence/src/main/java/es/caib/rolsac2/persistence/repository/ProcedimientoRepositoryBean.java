@@ -614,15 +614,20 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public void actualizarSolr(IndexacionDTO dato, ResultadoAccion resultadoAccion) {
         JProcedimiento jproc = entityManager.find(JProcedimiento.class, dato.getCodElemento());
-        jproc.setFechaIndexacion(new Date());
-        jproc.setMensajeIndexacion(resultadoAccion.getMensaje());
-        entityManager.merge(jproc);
+        if (jproc != null) {
+            jproc.setFechaIndexacion(new Date());
+            jproc.setMensajeIndexacion(resultadoAccion.getMensaje());
+            entityManager.merge(jproc);
+        }
     }
 
     @Override
     public void actualizarSIA(IndexacionSIADTO dato, ResultadoSIA resultadoAccion) {
         JProcedimiento jproc = entityManager.find(JProcedimiento.class, dato.getCodElemento());
         if (resultadoAccion == null) {
+            return;
+        }
+        if (jproc == null) {
             return;
         }
         if (resultadoAccion.isCorrecto() || (resultadoAccion.getMensaje() != null && resultadoAccion.getMensaje().startsWith("0167"))) {

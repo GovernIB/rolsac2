@@ -65,38 +65,50 @@
                  escape="false"/>
         <div class="ui-g-12 ui-md-9 pl-4 panel-container">
             <p:panel header="#{labels['dialogServicio.datosSIA']}" id="formDatosSIA">
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <p:outputLabel value="#{labels['dialogServicio.estado.sia']}:" for="txtEstadoSIA"
+                                   styleClass="mb-1 pt-0"/>
 
-                <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <p:outputLabel value="#{labels['dialogServicio.estado.sia']}:" for="txtEstadoSIA"
+                    <br/>
+
+                    <p:inputText id="txtEstadoSIA" value="#{dialogServicio.getEstadoSIA()}"
+                                 styleClass="w95"
+                                 disabled="true"/>
+                </div>
+                <div class="form-group col-md-2">
+                    <h:outputText value="#{labels['dialogServicio.codigo.sia']}:"
+                                  styleClass="mb-1 pt-0" for="txtCodigoSIA"/>
+
+                    <p:inputText id="txtCodigoSIA" value="#{dialogServicio.data.codigoSIA}"
+                                 styleClass="w95"
+                                 disabled="true"/>
+
+                </div>
+                <div class="form-group col-md-2">
+                    <p>
+                        <p:outputLabel value="#{labels['dialogServicio.fecha.sia']}:" for="txtFechaSIA"
                                        styleClass="mb-1 pt-0"/>
-
-                        <br/>
-                        <p:inputText id="txtEstadoSIA"
-                                     value="#{dialogServicio.getEstadoSIA()}"
+                        <p:inputText id="txtFechaSIA" value="#{dialogServicio.data.fechaSIA}"
                                      styleClass="w95"
-                                     disabled="true"/>
-
-                    </div>
-                    <div class="form-group col-md-2">
-                        <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dialogServicio.codigo.sia']}:"
-                                          for="txtCodigoSIA"/>
-                            <p:inputText id="txtCodigoSIA" value="#{dialogServicio.data.codigoSIA}"
-                                         styleClass="w95"
-                                         disabled="true"/>
-                        </p>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <p>
-                            <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" for="txtFechaSIA"
-                                           styleClass="mb-1 pt-0"/>
-                            <p:inputText id="txtFechaSIA" value="#{dialogServicio.data.fechaSIA}"
-                                         styleClass="w95"
-                                         disabled="true"/>
-                        </p>
-                    </div>
-                    <div class="form-group col-md-2">
+                                     disabled="true">
+                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                        </p:inputText>
+                    </p>
+                </div>
+                <div class="form-group col-md-4">
+                    <p>
+                        <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" for="txtErrorSIA"
+                                       styleClass="mb-1 pt-0"/>
+                        <p:inputText id="txtErrorSIA" value="#{dialogServicio.data.errorSIA}"
+                                     styleClass="w95" disabled="true"
+                        />
+                        <p:tooltip id="toolTipFade" for="txtErrorSIA" value="#{dialogServicio.data.errorSIA}"
+                                   position="top"/>
+                    </p>
+                </div>
+                <div class="form-group col-md-2">
+                    <p>
                         <p:commandButton id="btnIndexacionSIA" action="#{dialogServicio.enviarSIA}"
                                          value="#{labels['dict.enviarSIA']}"
                                          update="messagesDialog formDatosSIA btnRefrescarSIA btnIndexacionSIA"
@@ -108,9 +120,11 @@
                                          rendered="#{dialogServicio.mostrarRefreshSIA}"
                                          style="margin-top:19px"
                                          process="@all"/>
-                    </div>
+                    </p>
                 </div>
+            </div>
             </p:panel>
+
             <p:panel id="panelDatosPublicacion" header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}"
                      styleClass="panel">
                 <div class="form-row">
@@ -669,7 +683,7 @@
                     <div class="col-10 text-center">
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.publicoObjetivo']}*</p>
                     </div>
-                    <div class="col-2">
+                    <div class="col-2 pb-2">
                         <p:commandButton id="btnPubObjCol" onclick="colapsarModulo('#divPublico','btnPubObj');"
                                          title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
                                          style="margin-left:-10px"/>

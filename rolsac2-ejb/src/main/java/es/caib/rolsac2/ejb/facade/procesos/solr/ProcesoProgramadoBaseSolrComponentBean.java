@@ -6,6 +6,7 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumCategoria;
+import es.caib.rolsac2.ejb.facade.procesos.ProcesosExecComponentFacade;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
@@ -68,6 +69,9 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
      */
     private static Logger log = LoggerFactory.getLogger(ProcesoProgramadoBaseSolrComponentBean.class);
 
+    @Inject
+    ProcesosExecComponentFacade procesosExecComponent;
+
 
     public ResultadoProcesoProgramado ejecutarPadre(final Long instanciaProceso, final ListaPropiedades params, boolean pendiente, Long idEntidad) {
         log.info("Ejecución proceso solr");
@@ -76,6 +80,9 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
         final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String fechaInicio = "La dada de inici es " + sdf.format(new Date());
         detalles.addPropiedad("Informació del procés", fechaInicio);
+
+        final StringBuilder mensajeTraza = new StringBuilder();
+        procesosExecComponent.auditarMitadProceso(instanciaProceso, mensajeTraza.toString() + "\n Estado actual: Inicio de la ejecución.");
 
         try {
             String accion;
@@ -93,6 +100,9 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
 
             try {
                 plugin = (IPluginIndexacion) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.INDEXACION, idEntidad);
+                detalles.addPropiedad("SOLR Activo", plugin.isSolrActivo());
+                detalles.addPropiedad("Elastic Activo", plugin.isElasticActivo());
+
             } catch (Exception e) {
                 res.setFinalizadoOk(false);
                 detalles.addPropiedad("Informació del procés", "Error obteniendo plugin de indexacion.");
@@ -107,7 +117,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 res.setDetalles(detalles);
                 return res;
             }
-            StringBuilder mensajeTraza = new StringBuilder();
+
 
             ProcesoSolrFiltro filtro = new ProcesoSolrFiltro();
             filtro.setIdEntidad(idEntidad);
@@ -145,6 +155,9 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
 
                 for (IndexacionDTO dato : datos.getItems()) {
                     cuantos++;
+                    if (cuantos % 5 == 0) {
+                        procesosExecComponent.auditarMitadProceso(instanciaProceso, "Ejecutándose todavia. Estado: " + (cuantos * 100 / datos.getItems().size()) + "%\n\n" + mensajeTraza.toString());
+                    }
 
                     // Si la acción es 1, es indexar
                     switch (TypeIndexacion.fromString(dato.getTipo())) {
@@ -155,6 +168,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                             } else {
                                 resultadoPro = desindexarProcedimiento(dato, plugin, mensajeTraza);
                             }
+
                             if (dato.getCodigo() != null) {
                                 //Si es distinto null, significa que es un dato pendiente
                                 procedimientoService.actualizarSolr(dato, resultadoPro);

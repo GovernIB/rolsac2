@@ -465,7 +465,7 @@ public class SiaUtils {
         boolean tieneSiaUA;
         if (siaUA == null) {
             tieneSiaUA = false;
-            mensajeError.append("El procediment no té associat a una entitat arrel.");
+            mensajeError.append("El procediment/servei no té associat a una entitat arrel.");
         } else {
             tieneSiaUA = true;
             resultado.setSiaUA(siaUA);
@@ -497,7 +497,7 @@ public class SiaUtils {
             final String nombre = getNombreProcedimiento(procedimiento);
 
             if (StringUtils.isBlank(nombre)) {
-                mensajeError.append("El procediment no té títol.");
+                mensajeError.append("El procediment/servei no té títol.");
                 tieneNombre = false;
             } else {
                 tieneNombre = true;
@@ -506,7 +506,7 @@ public class SiaUtils {
 
             final String resumen = getResumenProcedimiento(procedimiento);
             if (StringUtils.isBlank(resumen)) {
-                mensajeError.append("El procediment no té resum.");
+                mensajeError.append("El procediment/servei no té resum.");
                 tieneResumen = false;
             } else {
                 tieneResumen = true;

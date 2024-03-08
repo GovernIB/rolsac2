@@ -360,7 +360,7 @@ public class CastUtil {
         final LiteralMultilang searchTextOptional = new LiteralMultilang();
         final List<EnumIdiomas> idiomas = new ArrayList<EnumIdiomas>();
         String urlCAT = "";
-        if (norm.getUrlBoletin() != null && !norm.getUrlBoletin().getTraduccion("ca").isEmpty()) {
+        if (norm.getUrlBoletin() != null && norm.getUrlBoletin().getTraduccion("ca") != null && !norm.getUrlBoletin().getTraduccion("ca").isEmpty()) {
             urlCAT = norm.getUrlBoletin().getTraduccion("ca");
         }
         // Recorremos las traducciones

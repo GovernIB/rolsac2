@@ -360,9 +360,9 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<UnidadOrganicaDTO> obtenerUnidadesHijasDir3(String codigoDir3, Long idEntidad) {
+    public List<UnidadOrganicaDTO> obtenerUnidadesHijasDir3(String codigoDir3, Long idEntidad, String idioma) {
         List<JUnidadOrganica> jUnidadesHijas = unidadOrganicaRepository.listarUnidadesHijas(codigoDir3, idEntidad);
-        List<UnidadOrganicaDTO> unidadesHijasRolsac = obtenerUnidadesHijasRolsac(codigoDir3, idEntidad);
+        List<UnidadOrganicaDTO> unidadesHijasRolsac = obtenerUnidadesHijasRolsac(codigoDir3, idEntidad, idioma);
         List<UnidadOrganicaDTO> unidadesHijasDir3 = new ArrayList<>();
         for (JUnidadOrganica unidad : jUnidadesHijas) {
             unidadesHijasDir3.add(unidadOrganicaConverter.createDTO(unidad));
@@ -373,8 +373,8 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<UnidadOrganicaDTO> obtenerUnidadesHijasRolsac(String codigoDir3, Long idEntidad) {
-        List<UnidadOrganicaDTO> unidadesHijasRolsac = unidadAdministrativaRepository.obtenerUnidadesHijas(codigoDir3, idEntidad);
+    public List<UnidadOrganicaDTO> obtenerUnidadesHijasRolsac(String codigoDir3, Long idEntidad, String idioma) {
+        List<UnidadOrganicaDTO> unidadesHijasRolsac = unidadAdministrativaRepository.obtenerUnidadesHijas(codigoDir3, idEntidad, idioma);
         List<JUnidadOrganica> jUnidadesHijas = unidadOrganicaRepository.listarUnidadesHijas(codigoDir3, idEntidad);
         List<UnidadOrganicaDTO> unidadesHijasDir3 = new ArrayList<>();
         for (JUnidadOrganica unidad : jUnidadesHijas) {

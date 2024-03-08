@@ -6,7 +6,6 @@ import es.caib.rolsac2.service.facade.ProcesoTimerServiceFacade;
 import es.caib.rolsac2.service.facade.ProcesosExecServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.EntidadDTO;
-import es.caib.rolsac2.service.model.EntidadGridDTO;
 import es.caib.rolsac2.service.model.ListaPropiedades;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
@@ -49,8 +48,7 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
     TimerService timerService;
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void initTimer(String idInstancia) {
         this.setIdInstancia(idInstancia);
         String cron = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PROCESOS_AUTOMATICOS_CRON);
@@ -61,15 +59,14 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
      * Proceso que se lanza en el intérvalo indicado
      */
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     @Timeout
     public void procesar() {
         LOG.info("Procesos ROLSAC2 desde EJB");
         if (procesosExecServiceFacade.verificarMaestro(this.idInstancia)) {
             LOG.debug("Es maestro. Recupera procesos a lanzar..,");
             final List<EntidadDTO> entidades = administracionSupServiceFacade.findEntidadActivas();
-            for(EntidadDTO entidad : entidades) {
+            for (EntidadDTO entidad : entidades) {
                 final List<String> procesos = procesosExecServiceFacade.calcularProcesosEjecucion(entidad.getCodigo());
                 for (final String p : procesos) {
                     try {
@@ -89,8 +86,7 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
      * Método utilizado para el procesado manual de los procesos
      */
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void procesadoManual(String proceso, Long idEntidad) {
         try {
             LOG.debug("Lanza proceso " + proceso);
@@ -104,8 +100,7 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
      * Método utilizado para el procesado manual de los procesos
      */
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void procesadoManual(String proceso, ListaPropiedades listaPropiedades, Long idEntidad) {
         try {
             LOG.debug("Lanza proceso " + proceso);

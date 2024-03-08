@@ -121,4 +121,18 @@ public interface IPluginIndexacion extends IPlugin {
      */
     ResultadoBusqueda buscar(String sesionId, String textoBusqueda, EnumIdiomas idiomaBusqueda, FiltroBusqueda filtroBusqueda, BusquedaPaginacion paginacionBusqueda) throws IPluginIndexacionExcepcion;
 
+    /**
+     * Indica si es solr activo segun el plugin.
+     *
+     * @return
+     */
+    String isSolrActivo();
+
+    /**
+     * Indica si es solr activo segun el plugin.
+     *
+     * @return
+     */
+    String isElasticActivo();
+
 }

@@ -133,4 +133,14 @@ public class PluginIndexacionMock extends AbstractPluginProperties implements IP
         resultData.setNumResultados(2);
         return resultData;
     }
+
+    @Override
+    public String isSolrActivo() {
+        return "true(MOCK)";
+    }
+
+    @Override
+    public String isElasticActivo() {
+        return "true(MOCK)";
+    }
 }

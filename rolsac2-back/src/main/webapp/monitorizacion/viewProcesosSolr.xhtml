@@ -40,14 +40,14 @@ Pàgina amb el llistat de processos automàtics
 
                 <p:dataTable id="dataTable" value="#{viewProcesosSolr.lazyModelLogs}" var="proceso"
                              paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTable"
-                             rows="#{viewProcesosSolr.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
-                             first="#{viewProcesosSolr.filtro.paginaFirst}"
+                             rows="#{viewProcesosSolr.filtroLog.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                             first="#{viewProcesosSolr.filtroLog.paginaFirst}"
                              paginatorPosition="bottom" paginatorAlwaysVisible="true"
                              paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                              {NextPageLink} {LastPageLink}"
                              currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                              emptyMessage="#{labels['dict.noHayDatos']}"
-                             selectionMode="single" selection="#{viewProcesosSolr.datoSeleccionado}"
+
                              rowKey="#{proceso.codigo}"
                              reflow="true"
                              sortBy="#{viewProcesosSolr.filtroLog.orderBy}"
@@ -64,6 +64,10 @@ Pàgina amb el llistat de processos automàtics
                     <f:facet name="{RowsPerPageLabel}">
                         #{labels.dataTable_rowsPerPage}
                     </f:facet>
+                    <p:column headerText="#{labels['dict.codigo']}" styleClass="w140px">
+                        <f:facet name="header"/>
+                        <h:outputText value="#{proceso.codigo}"/>
+                    </p:column>
                     <p:column headerText="#{labels['dict.descripcion']}" styleClass="w140px">
                         <f:facet name="header"/>
                         <h:outputText value="#{proceso.proceso.descripcion}"/>
@@ -102,7 +106,7 @@ Pàgina amb el llistat de processos automàtics
                                  process="@this" update="dataTable dataTablePendientes messages">
                 </p:commandButton>
             <p:dataTable id="dataTablePendientes" value="#{viewProcesosSolr.lazyModel}" var="proceso"
-                         paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTable"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTablePendientes"
                          rows="#{viewProcesosSolr.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
                          first="#{viewProcesosSolr.filtro.paginaFirst}"
                          paginatorPosition="bottom" paginatorAlwaysVisible="true"
