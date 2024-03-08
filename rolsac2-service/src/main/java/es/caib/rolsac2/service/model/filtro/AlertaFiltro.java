@@ -64,6 +64,6 @@ public class AlertaFiltro extends AbstractFiltro {
 
     @Override
     protected String getDefaultOrder() {
-        return "id";
+        return "fechaIni";
     }
 }

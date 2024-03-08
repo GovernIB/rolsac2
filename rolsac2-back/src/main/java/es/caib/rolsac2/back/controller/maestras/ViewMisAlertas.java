@@ -66,6 +66,7 @@ public class ViewMisAlertas extends AbstractController implements Serializable {
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        filtro.setAscendente(false);
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         filtro.setUsuario(usuario);
 

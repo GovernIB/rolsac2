@@ -235,6 +235,7 @@ public class AlertaRepositoryBean extends AbstractCrudRepository<JAlerta, Long> 
         StringBuilder sql = null;
         //AMBITO TODOS
         sql = new StringBuilder(" SELECT J FROM JAlerta J WHERE J.ambito = 'TOD' AND J.fechaIni < sysdate() AND (j.fechaFin is null OR j.fechaFin > sysdate()) AND J.codigo not in (SELECT alerusu.alerta from JAlertaUsuario alerusu where alerusu.usuario like :usuario ) ");
+        sql.append(" order by J.fechaIni desc ");
         Query query = entityManager.createQuery(sql.toString(), JAlerta.class);
         query.setParameter("usuario", usuario);
         List<JAlerta> jalertas = query.getResultList();
@@ -247,6 +248,7 @@ public class AlertaRepositoryBean extends AbstractCrudRepository<JAlerta, Long> 
 
         //AMBITO PERFIL
         sql = new StringBuilder(" SELECT J FROM JAlerta J WHERE J.ambito = 'PER' AND J.fechaIni < sysdate() AND (j.fechaFin is null OR j.fechaFin > sysdate()) AND J.perfil IN :perfiles AND J.codigo not in (SELECT alerusu.alerta from JAlertaUsuario alerusu where alerusu.usuario like :usuario ) ");
+        sql.append(" order by J.fechaIni desc ");
         query = entityManager.createQuery(sql.toString(), JAlerta.class);
         query.setParameter("perfiles", perfiles);
         query.setParameter("usuario", usuario);
@@ -259,10 +261,16 @@ public class AlertaRepositoryBean extends AbstractCrudRepository<JAlerta, Long> 
         }
 
         //AMBITO UNIDAD ADMINISTRATIVA
-        sql = new StringBuilder(" SELECT J FROM JAlerta J WHERE J.ambito = 'UNA' AND J.fechaIni < sysdate() AND (j.fechaFin is null OR j.fechaFin > sysdate()) AND j.unidadAdministrativa.codigo IN :uas AND J.codigo not in (SELECT alerusu.alerta from JAlertaUsuario alerusu where alerusu.usuario like :usuario ) ");
+        sql = new StringBuilder(" SELECT J FROM JAlerta J WHERE J.ambito = 'UNA' AND J.fechaIni < sysdate() AND (j.fechaFin is null OR j.fechaFin > sysdate()) AND J.codigo not in (SELECT alerusu.alerta from JAlertaUsuario alerusu where alerusu.usuario like :usuario ) ");
+        if (uas != null && uas.size() > 0) {
+            sql.append(" AND j.unidadAdministrativa.codigo IN :uas  ");
+        }
+        sql.append(" order by J.fechaIni desc ");
         query = entityManager.createQuery(sql.toString(), JAlerta.class);
         query.setParameter("usuario", usuario);
-        query.setParameter("uas", uas);
+        if (uas != null && uas.size() > 0) {
+            query.setParameter("uas", uas);
+        }
         jalertas = query.getResultList();
         if (jalertas != null) {
             for (JAlerta jalerta : jalertas) {
@@ -271,6 +279,7 @@ public class AlertaRepositoryBean extends AbstractCrudRepository<JAlerta, Long> 
             }
         }
 
+        alertas.sort((o1, o2) -> o2.getFechaIni().compareTo(o1.getFechaIni()) < 0 ? -1 : 1);
         return alertas;
     }
 

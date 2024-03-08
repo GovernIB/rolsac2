@@ -58,7 +58,7 @@ public class ViewConfiguracionesAlertas extends AbstractController implements Se
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
-
+        filtro.setAscendente(false);
         if (sessionBean.isPerfil(TypePerfiles.SUPER_ADMINISTRADOR) || sessionBean.isPerfil(TypePerfiles.ADMINISTRADOR_ENTIDAD)) {
             renderMarcarLeido = false;
             renderBotones = true;
