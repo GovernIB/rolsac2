@@ -59,6 +59,7 @@
                                         <h:outputText value="#{evol.codigoDir3} - v#{evol.version}"/>
                                     </li>
                                     <li>
+
                                         <h:outputText value="#{evol.denominacion}"/>
                                     </li>
                                 </ul>
@@ -126,7 +127,12 @@
                                       styleClass="w100 h35px #{unidad.estado.equals(TypeEstadoDir3.NUEVO) ? 'org-nuevo' :
                                       unidad.estado.equals(TypeEstadoDir3.EXISTE_MODIFICADA) ? 'org-descr-nueva' : ''}">
                                 <f:facet name="header"/>
-                                <h:outputText value="#{unidad.denominacionDir3}"/>
+                                <c:if test="#{sessionBean.esCatalan()}">
+                                    <h:outputText value="#{unidad.denominacionCooficialDir3}"/>
+                                </c:if>
+                                <c:if test="#{!sessionBean.esCatalan()}">
+                                    <h:outputText value="#{unidad.denominacionDir3}"/>
+                                </c:if>
                             </p:column>
 
                         </p:treeTable>

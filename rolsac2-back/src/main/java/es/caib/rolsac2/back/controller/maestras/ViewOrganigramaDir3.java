@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.facade.ProcesoLogServiceFacade;
 import es.caib.rolsac2.service.facade.ProcesoTimerServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.facade.integracion.Dir3ServiceFacade;
+import es.caib.rolsac2.service.model.ListaPropiedades;
 import es.caib.rolsac2.service.model.UnidadOrganicaDTO;
 import es.caib.rolsac2.service.model.types.TypeEstadoDir3;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -88,7 +89,7 @@ public class ViewOrganigramaDir3 extends AbstractController implements Serializa
     }
 
     public void construirArbolDesdeRaizDir3(TreeNode raiz, UnidadOrganicaDTO padre) {
-        List<UnidadOrganicaDTO> unidadesHijas = uaService.obtenerUnidadesHijasDir3(padre.getCodigoDir3(), sessionBean.getEntidad().getCodigo());
+        List<UnidadOrganicaDTO> unidadesHijas = uaService.obtenerUnidadesHijasDir3(padre.getCodigoDir3(), sessionBean.getEntidad().getCodigo(), sessionBean.getLang());
         Collections.sort(unidadesHijas);
         if (unidadesHijas == null || unidadesHijas.isEmpty()) {
             return;
@@ -104,7 +105,7 @@ public class ViewOrganigramaDir3 extends AbstractController implements Serializa
     }
 
     public void construirArbolDesdeRaizRolsac(TreeNode raiz, UnidadOrganicaDTO padre) {
-        List<UnidadOrganicaDTO> unidadesHijas = uaService.obtenerUnidadesHijasRolsac(padre.getCodigoDir3(), sessionBean.getEntidad().getCodigo());
+        List<UnidadOrganicaDTO> unidadesHijas = uaService.obtenerUnidadesHijasRolsac(padre.getCodigoDir3(), sessionBean.getEntidad().getCodigo(), sessionBean.getLang());
         Collections.sort(unidadesHijas);
         if (unidadesHijas == null || unidadesHijas.isEmpty()) {
             return;
@@ -205,7 +206,12 @@ public class ViewOrganigramaDir3 extends AbstractController implements Serializa
 
 
     public void actualizarOrganigramaDir3() {
-        procesoTimerServiceFacade.procesadoManual(TypeTipoProceso.DIR3.toString(), sessionBean.getEntidad().getCodigo());
+        ListaPropiedades listaPropiedades = new ListaPropiedades();
+        listaPropiedades.addPropiedad("idEntidad", sessionBean.getEntidad().getCodigo().toString());
+        listaPropiedades.addPropiedad("denominacionCooficial", "ca".equals(this.getIdioma()) ? "true" : "false");
+        listaPropiedades.addPropiedad("codigoDir3", "A04003003");
+
+        procesoTimerServiceFacade.procesadoManual(TypeTipoProceso.DIR3.toString(), listaPropiedades, sessionBean.getEntidad().getCodigo());
     }
 
     public TreeNode getRootRolsac() {
