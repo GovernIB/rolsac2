@@ -28,7 +28,7 @@ public class JUnidadOrganica extends BaseEntity {
     private String codigoDir3;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="ORG_CODENTI", nullable = false)
+    @JoinColumn(name = "ORG_CODENTI", nullable = false)
     private JEntidad entidad;
 
     /**
@@ -42,6 +42,12 @@ public class JUnidadOrganica extends BaseEntity {
      */
     @Column(name = "ORG_DENOM")
     private String denominacion;
+
+    /**
+     * Denominación de la unidad administrativa
+     */
+    @Column(name = "ORG_DENCO")
+    private String denominacionCooficial;
 
     /**
      * Versión de la unidad administrativa
@@ -89,6 +95,14 @@ public class JUnidadOrganica extends BaseEntity {
         this.denominacion = denominacion;
     }
 
+    public String getDenominacionCooficial() {
+        return denominacionCooficial;
+    }
+
+    public void setDenominacionCooficial(String denominacionCooficial) {
+        this.denominacionCooficial = denominacionCooficial;
+    }
+
     public Integer getVersion() {
         return version;
     }
@@ -113,13 +127,6 @@ public class JUnidadOrganica extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JUnidadOrganica{" +
-                "codigo=" + codigo +
-                ", codigoDir3='" + codigoDir3 + '\'' +
-                ", entidad=" + entidad +
-                ", codigoDir3Padre='" + codigoDir3Padre + '\'' +
-                ", denominacion='" + denominacion + '\'' +
-                ", version=" + version +
-                '}';
+        return "JUnidadOrganica{" + "codigo=" + codigo + ", codigoDir3='" + codigoDir3 + '\'' + ", entidad=" + entidad + ", codigoDir3Padre='" + codigoDir3Padre + '\'' + ", denominacion='" + denominacion + '\'' + ", version=" + version + '}';
     }
 }

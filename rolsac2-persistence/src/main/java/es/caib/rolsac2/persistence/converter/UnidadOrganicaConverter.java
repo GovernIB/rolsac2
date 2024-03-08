@@ -15,8 +15,9 @@ import org.mapstruct.MappingTarget;
 public interface UnidadOrganicaConverter extends Converter<JUnidadOrganica, UnidadOrganicaDTO> {
 
     @Override
-    @Mapping(source = "entidad.codigo", target="idEntidad")
+    @Mapping(source = "entidad.codigo", target = "idEntidad")
     @Mapping(target = "denominacionDir3", expression = "java(convertDenominacionDir3(entity))")
+    @Mapping(target = "denominacionCooficialDir3", expression = "java(convertDenominacionCooficialDir3(entity))")
     UnidadOrganicaDTO createDTO(JUnidadOrganica entity);
 
     @Override
@@ -31,4 +32,7 @@ public interface UnidadOrganicaConverter extends Converter<JUnidadOrganica, Unid
         return entity.getDenominacion() + " (" + entity.getCodigoDir3() + ")";
     }
 
+    default String convertDenominacionCooficialDir3(JUnidadOrganica entity) {
+        return entity.getDenominacionCooficial() + " (" + entity.getCodigoDir3() + ")";
+    }
 }

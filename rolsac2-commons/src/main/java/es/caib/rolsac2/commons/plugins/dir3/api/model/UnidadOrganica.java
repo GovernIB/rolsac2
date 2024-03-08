@@ -8,6 +8,7 @@ public class UnidadOrganica {
     private Integer version;
 
     private String denominacion;
+    private String denominacionCooficial;
 
     private String codigoEstadoEntidad;
 
@@ -50,8 +51,23 @@ public class UnidadOrganica {
         return denominacion;
     }
 
+    public String denominacionByLang(String lang) {
+        if (lang != null && lang.equals("ca") && denominacionCooficial != null) {
+            return denominacionCooficial;
+        }
+        return denominacion;
+    }
+
     public void setDenominacion(String denominacion) {
         this.denominacion = denominacion;
+    }
+
+    public String getDenominacionCooficial() {
+        return denominacionCooficial;
+    }
+
+    public void setDenominacionCooficial(String denominacionCooficial) {
+        this.denominacionCooficial = denominacionCooficial;
     }
 
     public String getCodigoEstadoEntidad() {
@@ -146,21 +162,6 @@ public class UnidadOrganica {
 
     @Override
     public String toString() {
-        return "UnidadOrganica{" +
-                "codigo='" + codigo + '\'' +
-                ", version=" + version +
-                ", denominacion='" + denominacion + '\'' +
-                ", codigoEstadoEntidad='" + codigoEstadoEntidad + '\'' +
-                ", codUnidadSuperior='" + codUnidadSuperior + '\'' +
-                ", codUnidadRaiz='" + codUnidadRaiz + '\'' +
-                ", competencias='" + competencias + '\'' +
-                ", fechaAltaOficial=" + fechaAltaOficial +
-                ", fechaBajaOficial=" + fechaBajaOficial +
-                ", nivelJerarquico=" + nivelJerarquico +
-                ", nivelAdministracion=" + nivelAdministracion +
-                ", descripcionLocalidad='" + descripcionLocalidad + '\'' +
-                ", codPostal='" + codPostal + '\'' +
-                ", nifCif='" + nifCif + '\'' +
-                '}';
+        return "UnidadOrganica{" + "codigo='" + codigo + '\'' + ", version=" + version + ", denominacion='" + denominacion + '\'' + ", codigoEstadoEntidad='" + codigoEstadoEntidad + '\'' + ", codUnidadSuperior='" + codUnidadSuperior + '\'' + ", codUnidadRaiz='" + codUnidadRaiz + '\'' + ", competencias='" + competencias + '\'' + ", fechaAltaOficial=" + fechaAltaOficial + ", fechaBajaOficial=" + fechaBajaOficial + ", nivelJerarquico=" + nivelJerarquico + ", nivelAdministracion=" + nivelAdministracion + ", descripcionLocalidad='" + descripcionLocalidad + '\'' + ", codPostal='" + codPostal + '\'' + ", nifCif='" + nifCif + '\'' + '}';
     }
 }

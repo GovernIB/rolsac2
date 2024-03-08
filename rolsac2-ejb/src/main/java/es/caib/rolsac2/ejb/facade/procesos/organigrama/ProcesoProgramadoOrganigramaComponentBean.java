@@ -79,6 +79,7 @@ public class ProcesoProgramadoOrganigramaComponentBean implements ProcesoProgram
                 res.setFinalizadoOk(true);
                 return res;
             } catch (Exception e) {
+                log.error("Error al obtener el organigrama DIR3", e);
                 res.setFinalizadoOk(false);
                 detalles.addPropiedad("Informació del procés", "No s'ha pogut obtenir l'organigrama DIR3");
                 res.setMensajeErrorTraza(ExceptionUtils.getStackTrace(e));

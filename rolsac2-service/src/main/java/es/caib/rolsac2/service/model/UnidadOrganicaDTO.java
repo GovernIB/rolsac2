@@ -39,6 +39,11 @@ public class UnidadOrganicaDTO extends ModelApi implements Comparable<UnidadOrga
     private String denominacion;
 
     /**
+     * Denominación de la unidad administrativa
+     */
+    private String denominacionCooficial;
+
+    /**
      * Versión de la unidad administrativa
      */
     private Integer version;
@@ -47,6 +52,7 @@ public class UnidadOrganicaDTO extends ModelApi implements Comparable<UnidadOrga
      * Concatenación de la denominación y código DIR3 en un solo String para facilitar la búsqueda
      */
     private String denominacionDir3;
+    private String denominacionCooficialDir3;
 
     /**
      * Aplicación de la que proviene
@@ -97,8 +103,24 @@ public class UnidadOrganicaDTO extends ModelApi implements Comparable<UnidadOrga
         return denominacion;
     }
 
+    public String getDenominacionByLang(String lang) {
+        if (lang != null && lang.equals("ca") && denominacionCooficial != null) {
+            return denominacionCooficial;
+        }
+        return denominacion;
+    }
+
     public void setDenominacion(String denominacion) {
         this.denominacion = denominacion;
+    }
+
+
+    public String getDenominacionCooficial() {
+        return denominacionCooficial;
+    }
+
+    public void setDenominacionCooficial(String denominacionCooficial) {
+        this.denominacionCooficial = denominacionCooficial;
     }
 
     public TypeEstadoDir3 getEstado() {
@@ -111,6 +133,14 @@ public class UnidadOrganicaDTO extends ModelApi implements Comparable<UnidadOrga
 
     public String getDenominacionDir3() {
         return denominacionDir3;
+    }
+
+    public String getDenominacionCooficialDir3() {
+        return denominacionCooficialDir3;
+    }
+
+    public void setDenominacionCooficialDir3(String denominacionCooficialDir3) {
+        this.denominacionCooficialDir3 = denominacionCooficialDir3;
     }
 
     public void setDenominacionDir3(String denominacionDir3) {

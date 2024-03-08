@@ -3,7 +3,6 @@ package es.caib.rolsac2.commons.plugins.dir3.api.model;
 import es.caib.rolsac2.commons.plugins.dir3.api.UtilsDir3;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 
 public class UnidadOrganicaResponse {
     private String codigo;
@@ -11,6 +10,7 @@ public class UnidadOrganicaResponse {
     private Integer version;
 
     private String denominacion;
+    private String denominacionCooficial;
 
     private String codigoEstadoEntidad;
 
@@ -41,6 +41,10 @@ public class UnidadOrganicaResponse {
         unidad.setCodUnidadSuperior(this.codUnidadSuperior);
         unidad.setCompetencias(this.competencias);
         unidad.setDenominacion(this.denominacion);
+        unidad.setDenominacionCooficial(this.denominacionCooficial);
+        if (unidad.getDenominacionCooficial() == null || unidad.getDenominacionCooficial().isEmpty()) {
+            unidad.setDenominacionCooficial(unidad.getDenominacion());
+        }
         unidad.setCodPostal(this.codPostal);
         unidad.setDescripcionLocalidad(this.descripcionLocalidad);
         unidad.setNifCif(this.nifCif);
@@ -48,10 +52,10 @@ public class UnidadOrganicaResponse {
         unidad.setNivelJerarquico(this.nivelJerarquico);
         unidad.setVersion(this.version);
         unidad.setNivelAdministracion(this.nivelAdministracion);
-        if(this.fechaAltaOficial != null) {
+        if (this.fechaAltaOficial != null) {
             UtilsDir3.parsearFecha(this.fechaAltaOficial);
         }
-        if(this.fechaBajaOficial != null) {
+        if (this.fechaBajaOficial != null) {
             UtilsDir3.parsearFecha(this.fechaBajaOficial);
         }
 
@@ -172,5 +176,11 @@ public class UnidadOrganicaResponse {
         this.nifCif = nifCif;
     }
 
+    public String getDenominacionCooficial() {
+        return denominacionCooficial;
+    }
 
+    public void setDenominacionCooficial(String denominacionCooficial) {
+        this.denominacionCooficial = denominacionCooficial;
+    }
 }
