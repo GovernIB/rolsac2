@@ -87,19 +87,20 @@ AS
      
 
     CURSOR cursorTradUAsROLSAC1 (codUA NUMBER) IS
-        SELECT * 
-          FROM R1_UNIADM_TRAD
-         WHERE TUN_CODUNA = codUA;
-    CURSOR cursorUserUAsROLSAC1 (codUA NUMBER) IS
-        SELECT *
-          FROM  R1_UNIADM_USU
-         WHERE UNU_CODUNA = codUA;
-    CURSOR cursorMateriasRolsac1 (codUA NUMBER) IS 
-        SELECT DISTINCT UNM_CODMAT  
-          FROM R1_UNIADM_MATE
-         WHERE UNM_CODUNA = codUA
-           AND UNM_CODMAT IN (SELECT TEMA_CODIGO FROM RS2_TEMA);
-    maximoIdUAS NUMBER;
+SELECT *
+FROM R1_UNIADM_TRAD
+WHERE TUN_CODUNA = codUA
+  AND TUN_NOMBRE IS NOT NULL;
+CURSOR cursorUserUAsROLSAC1 (codUA NUMBER) IS
+SELECT *
+FROM  R1_UNIADM_USU
+WHERE UNU_CODUNA = codUA;
+CURSOR cursorMateriasRolsac1 (codUA NUMBER) IS
+SELECT DISTINCT UNM_CODMAT
+FROM R1_UNIADM_MATE
+WHERE UNM_CODUNA = codUA
+  AND UNM_CODMAT IN (SELECT TEMA_CODIGO FROM RS2_TEMA);
+maximoIdUAS NUMBER;
     VALOR       NUMBER;
     INDEXAR     BOOLEAN;
     EXISTE      NUMBER;
@@ -120,66 +121,66 @@ BEGIN
         /** RS2_UNIADM **/
         INDEXAR := FALSE;
 
-        SELECT COUNT(*)
-        INTO EXISTE
-        FROM RS2_UNIADM
-        WHERE UNAD_CODIGO = codigoUA;
+SELECT COUNT(*)
+INTO EXISTE
+FROM RS2_UNIADM
+WHERE UNAD_CODIGO = codigoUA;
 
-        SELECT TUN_NOMBRE
-        INTO NOMBRE
-        FROM  R1_UNIADM_TRAD
-        WHERE TUN_CODUNA = codigoUA AND ROWNUM = 1 ;
-        /*
-        IF EXISTE = 0
-        THEN
-            INDEXAR := CHECK_CUELGA_UA(codigoUA,codigoUARaiz);
-        END IF;*/
+SELECT TUN_NOMBRE
+INTO NOMBRE
+FROM  R1_UNIADM_TRAD
+WHERE TUN_CODUNA = codigoUA AND ROWNUM = 1 ;
+/*
+IF EXISTE = 0
+THEN
+    INDEXAR := CHECK_CUELGA_UA(codigoUA,codigoUARaiz);
+END IF;*/
 
-        IF EXISTE = 0 /*AND INDEXAR*/
+IF EXISTE = 0 /*AND INDEXAR*/
             THEN
             /** CAPTURAMOS POR SI SE PRODUCE UN ERROR NO PREVISTO */
-        BEGIN
+BEGIN
                          /** MIGRAMOS LOS DATOS BASE EN UN NUEVO CAMPO EN ROLSAC2  */
-        INSERT INTO RS2_UNIADM
-        ( UNAD_CODIGO,
-          UNAD_UNADPADRE,
-          UNAD_DIR3,
-          UNAD_IDENTI,
-          UNAD_ORDEN,
-          UNAD_TFNO,
-          UNAD_FAX,
-          UNAD_EMAIL,
-          UNAD_RSPNOM,
-          UNAD_RSPSEX,
-          UNAD_RSPEMA,
-          UNAD_DOMINI,
-          UNAD_CODENTI,
-          UNAD_VERSION,
-          UNAD_TIPOUA)
-        SELECT
-            codigoUA,
-            UNA_CODUNA,
-            UNA_CODDR3,
-            UNA_CODDR3,
-            UNA_ORDEN,
-            replace(UNA_TELEFO,' ',''),
-            replace(UNA_FAX,' ',''),
-            UNA_EMAIL,
-            UNA_RESPON,
-            UNA_SEXRES,
-            UNA_EMAILR,
-            UNA_DOMINI,
-            codigoEntidad,
-            1,
-            UNA_CODTRT
-        FROM R1_UNIADM
-        WHERE UNA_CODI = codigoUA;
+INSERT INTO RS2_UNIADM
+( UNAD_CODIGO,
+  UNAD_UNADPADRE,
+  UNAD_DIR3,
+  UNAD_IDENTI,
+  UNAD_ORDEN,
+  UNAD_TFNO,
+  UNAD_FAX,
+  UNAD_EMAIL,
+  UNAD_RSPNOM,
+  UNAD_RSPSEX,
+  UNAD_RSPEMA,
+  UNAD_DOMINI,
+  UNAD_CODENTI,
+  UNAD_VERSION,
+  UNAD_TIPOUA)
+SELECT
+    codigoUA,
+    UNA_CODUNA,
+    UNA_CODDR3,
+    UNA_CODDR3,
+    UNA_ORDEN,
+    replace(UNA_TELEFO,' ',''),
+    replace(UNA_FAX,' ',''),
+    UNA_EMAIL,
+    UNA_RESPON,
+    UNA_SEXRES,
+    UNA_EMAILR,
+    UNA_DOMINI,
+    codigoEntidad,
+    1,
+    UNA_CODTRT
+FROM R1_UNIADM
+WHERE UNA_CODI = codigoUA;
 
-        /** INTRODUCIMOS LAS TRADUCCIONES **/ 
-        FOR ROLSAC1_TRADUA IN cursorTradUAsROLSAC1(codigoUA)
+/** INTRODUCIMOS LAS TRADUCCIONES **/
+FOR ROLSAC1_TRADUA IN cursorTradUAsROLSAC1(codigoUA)
         LOOP
             INSERT INTO RS2_TRAUNAD(
-                TRUA_CODIGO, 
+                TRUA_CODIGO,
                 TRUA_CODUNAD,
                 TRUA_IDIOMA,
                 TRUA_NOMBRE,
@@ -198,34 +199,36 @@ BEGIN
                 ROLSAC1_TRADUA.TUN_ABREVI
                );
 
-         END LOOP; 
+END LOOP;
 
-        SELECT COUNT(*)
-        INTO EXISTE_TRAD_ES
-        FROM RS2_TRAUNAD
-        WHERE TRUA_CODUNAD = codigoUA
-          AND TRUA_IDIOMA = 'es'
-        ;
+SELECT COUNT(*)
+INTO EXISTE_TRAD_ES
+FROM RS2_TRAUNAD
+WHERE TRUA_CODUNAD = codigoUA
+  AND TRUA_NOMBRE IS NOT NULL
+  AND TRUA_IDIOMA = 'es'
+;
 
-        SELECT COUNT(*)
-        INTO EXISTE_TRAD_CA
-        FROM RS2_TRAUNAD
-        WHERE TRUA_CODUNAD = codigoUA
-          AND TRUA_IDIOMA =  'ca'
-        ;
+SELECT COUNT(*)
+INTO EXISTE_TRAD_CA
+FROM RS2_TRAUNAD
+WHERE TRUA_CODUNAD = codigoUA
+  AND TRUA_NOMBRE IS NOT NULL
+  AND TRUA_IDIOMA =  'ca'
+;
 
-        /** INTRODUCIMOS LAS MATERIAS. **/
-        FOR ROLSAC1_MATERIAS IN cursorMateriasRolsac1(codigoUA) 
-        LOOP  
+/** INTRODUCIMOS LAS MATERIAS. **/
+FOR ROLSAC1_MATERIAS IN cursorMateriasRolsac1(codigoUA)
+        LOOP
             /**  dbms_output.put_line('materias: ' || ROLSAC1_MATERIAS.PRM_CODMAT); **/
             INSERT INTO  RS2_UATEMA (UATE_CODUNA, UATE_CODTEMA)
               VALUES (codigoUA,ROLSAC1_MATERIAS.UNM_CODMAT );
-                   
-        END LOOP;
-            
+
+END LOOP;
+
         /** SI NO EXISTE LA TRADUCCION EN ESPANYOL, DUPLICAMOS LA CATALAN **/
         IF EXISTE_TRAD_ES = 0 AND EXISTE_TRAD_CA = 1
-                            THEN
+        THEN
                                  INSERT INTO RS2_TRAUNAD(
                                             TRUA_CODIGO,
                                             TRUA_CODUNAD,
@@ -235,71 +238,71 @@ BEGIN
                                             TRUA_URLWEB,
                                             TRUA_RSPCV,
                                             TRUA_ABREVI )
-        SELECT  TRUA_CODIGO,
-                TRUA_CODUNAD,
-                'es',
-                TRUA_NOMBRE,
-                TRUA_PRESEN,
-                TRUA_URLWEB,
-                TRUA_RSPCV,
-                TRUA_ABREVI
-        FROM RS2_TRAUNAD
-        WHERE TRUA_CODUNAD = codigoUA
-          AND TRUA_IDIOMA =  'ca';
-        END IF;
+SELECT  RS2_TRAUNAD_SEQ.NEXTVAL,
+        TRUA_CODUNAD,
+        'es',
+        TRUA_NOMBRE,
+        TRUA_PRESEN,
+        TRUA_URLWEB,
+        TRUA_RSPCV,
+        TRUA_ABREVI
+FROM RS2_TRAUNAD
+WHERE TRUA_CODUNAD = codigoUA
+  AND TRUA_IDIOMA =  'ca';
+END IF;
 
-                             /** Introducimos los usuarios **/
-        FOR ROLSAC1_USERUA IN cursorUserUAsROLSAC1(codigoUA)
+        /** Introducimos los usuarios **/
+FOR ROLSAC1_USERUA IN cursorUserUAsROLSAC1(codigoUA)
         LOOP
                 /** SI EXISTE EL USUARIO EN ROLSAC2, VEMOS DE AÃ`ADIR LA RELACION **/
-                SELECT USU_USERNA
-                INTO NICK
-                FROM R1_USUARIO
-                WHERE USU_CODI = ROLSAC1_USERUA.UNU_CODUSU;
+SELECT USU_USERNA
+INTO NICK
+FROM R1_USUARIO
+WHERE USU_CODI = ROLSAC1_USERUA.UNU_CODUSU;
 
-                SELECT COUNT(*)
-                INTO EXISTE_USER
-                FROM RS2_USER
-                WHERE USER_USER = NICK;
+SELECT COUNT(*)
+INTO EXISTE_USER
+FROM RS2_USER
+WHERE USER_USER = NICK;
 
-                IF EXISTE_USER > 0
+IF EXISTE_USER > 0
                 THEN
 
-                    SELECT USER_CODIGO
-                    INTO codigoUser
-                    FROM RS2_USER
-                    WHERE USER_USER = NICK
-                      AND ROWNUM = 1;
+SELECT USER_CODIGO
+INTO codigoUser
+FROM RS2_USER
+WHERE USER_USER = NICK
+  AND ROWNUM = 1;
 
-                    SELECT COUNT(*)
-                    INTO EXISTE_UA_USER
-                    FROM RS2_USERUA
-                    WHERE UAUS_CODUA = codigoUA
-                      AND UAUS_CODUSER = codigoUser;
+SELECT COUNT(*)
+INTO EXISTE_UA_USER
+FROM RS2_USERUA
+WHERE UAUS_CODUA = codigoUA
+  AND UAUS_CODUSER = codigoUser;
 
-                    IF EXISTE_UA_USER = 0
+IF EXISTE_UA_USER = 0
                     THEN
                                                 INSERT INTO RS2_USERUA (UAUS_CODUA,UAUS_CODUSER )
                                                   VALUES (codigoUA,codigoUser );
-                    END IF;
-                END IF;
-        END LOOP;
-        COMMIT;
-        resultado := 'La UA ' || codigoUA || ' "' || NOMBRE || '" se ha migrado.';
-        EXCEPTION
+END IF;
+END IF;
+END LOOP;
+COMMIT;
+resultado := 'La UA ' || codigoUA || ' "' || NOMBRE || '" se ha migrado.';
+EXCEPTION
                     WHEN OTHERS THEN
                        ROLLBACK;
                        resultado := 'La UA ' || codigoUA || ' "' || NOMBRE || '" ha dado el error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '.';
-        END;
-     ELSE
+END;
+ELSE
 
                 IF EXISTE > 0
                 THEN
                    resultado := 'La UA ' || codigoUA || ' "' || NOMBRE || '" ya existe.';
-                ELSE
+ELSE
                    resultado := 'La UA ' || codigoUA || ' "' || NOMBRE || '" no cualga de la raiz ' || codigoUA || ' .';
-                END IF;
-     END IF;
+END IF;
+END IF;
 
 EXCEPTION 
     WHEN OTHERS THEN
