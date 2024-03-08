@@ -1737,3 +1737,13 @@ a.iconoXarxes {
 .g-15 {gap: 1.5em;}
 .g-20 {gap: 2em;}
 
+.claseAlerta{
+    background-color: antiquewhite;
+}
+
+.botonBordeado{
+    border:1px solid #000 !important;
+    width: 40px;
+    height: 30px;
+    margin-right: 10px;
+}

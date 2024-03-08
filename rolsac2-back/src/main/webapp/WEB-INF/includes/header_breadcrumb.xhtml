@@ -10,8 +10,10 @@
 
     <nav class="navbar navbar-light navbar-expand-lg flex-column justify-content-start align-items-start">
         <div class="d-flex flex-column mt-3" style="width: 100% !important;">
-            <c:if test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR or sessionBean.getPerfil() == TypePerfiles.INFORMADOR}">
+            <c:if test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR or sessionBean.getPerfil() == TypePerfiles.INFORMADOR or sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD)}">
+                <div class="mt-2">
                 <ui:insert name="mollaPaGestor"></ui:insert>
+                </div>
             </c:if>
 
             <c:if test="#{!empty sessionBean.alertas}">
@@ -25,12 +27,12 @@
                 <div style="flex-grow:100;margin-left:20px;">
                     <ui:repeat value="#{sessionBean.alertas}" var="alerta">
                         <div class="w-full row" >
-                            <div class="ui-g-12">
+                            <div class="ui-g-12 claseAlerta mt-2 mr-3">
                                 <p:commandButton
                                         action="#{sessionBean.marcarAlertaLeida(alerta.codigo)}"
                                         icon="pi pi-times-circle"
                                         value=" "
-                                        styleClass="w45px h25px iconoAlertaLeido"
+                                        styleClass="w45px h25px iconoAlertaLeido botonBordeado"
                                         process="@this"
                                 />
                                 <!--<i class="pi pi-times-circle" style="font-size: 2rem; margin-right:5px;top:8px;position:relative;"></i>-->
@@ -46,32 +48,6 @@
                     </ui:repeat>
                 </div>
             </c:if>
-            <div id="bread" class="d-flex">
-                <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD) }">
-                    <div style="margin-top: 5px">
-                        <div style="margin-top: 5px">
-                            <my:unidadAdministrativaComponent id="uaGeneral"
-                                                              value="#{sessionBean.unidadActiva}"
-                                                              idioma="#{sessionBean.lang}"
-                                                              ocultarTexto="true" esCabecera="true"
-                            >
-
-                                <!--<p:ajax event="eventoUpdate"   oncomplete="rc()" listener="#{viewUnidadAdministrativa.buscarEvt()}"  />-->
-                                <ui:insert name="breadcrumbBoton"/>
-
-                            </my:unidadAdministrativaComponent>
-                        </div>
-                    </div>
-                </c:if>
-                <c:if test="#{(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS) or (sessionBean.getUri().contains('viewUnidadAdministrativa.xhtml') and sessionBean.getPerfil()== TypePerfiles.ADMINISTRADOR_ENTIDAD)}">
-                    <p:breadCrumb id="migaPan" styleClass="breadcrumb migaPan"
-                                  homeDisplay="text"
-                                  style="background-image: none !important;background: transparent;  border: none; margin-top: 5px">
-
-                        <ui:insert name="breadcrumb"/>
-                    </p:breadCrumb>
-                </c:if>
-            </div>
             <button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target="#collapsingNavbar2">
                 <span class="navbar-toggler-icon"></span>
             </button>

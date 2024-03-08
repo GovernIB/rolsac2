@@ -755,7 +755,7 @@ public class SessionBean implements Serializable {
     }
 
     public boolean isUnidadesActivasGestor() {
-        return unidadActiva != null && unidadActivaAux.getCodigo().compareTo(unidadActiva.getCodigo()) != 0;
+        return unidadActiva != null && unidadActivaAux != null && unidadActiva.getCodigo().compareTo(unidadActivaAux.getCodigo()) != 0;
     }
 
     public List<UnidadAdministrativaDTO> getUnidadesActivasGestor() {
@@ -1117,6 +1117,14 @@ public class SessionBean implements Serializable {
 
     public String getLang() {
         return lang;
+    }
+
+    public boolean esCatalan() {
+        return lang != null && "ca".equals(lang);
+    }
+
+    public boolean esCastellano() {
+        return lang != null && "es".equals(lang);
     }
 
     public void setLang(String lang) {
