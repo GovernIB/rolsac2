@@ -1005,12 +1005,20 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoTramite> jlista = query.getResultList();
+
+        //List<JProcedimientoDocumento> docs = getDocumentosByJTramites(jlista);
+
         if (jlista != null) {
             for (JProcedimientoTramite jtramite : jlista) {
                 ProcedimientoTramiteDTO tramite = procedimientoTramiteConverter.createDTO(jtramite);
+                if (jtramite.getUnidadAdministrativa() != null) {
+                    tramite.setUnidadAdministrativa(converterSencillo(jtramite.getUnidadAdministrativa(), true));
+                }
+                tramite.setProcedimiento(converterSencillo(jtramite.getProcedimiento()));
                 tramite.setTramitElectronica(jtramite.isTramitElectronica());
                 tramite.setTramitPresencial(jtramite.isTramitPresencial());
                 tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
+
                 if (jtramite.getTipoTramitacion() != null) {
                     //tramite.setTipoTramitacion(tramite.getTipoTramitacion());
                     tramite.setPlantillaSel(null);
@@ -1018,16 +1026,110 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
                     tramite.setTipoTramitacion(null);
                 }
+
+
                 if (jtramite.getListaDocumentos() != null) {
+                    // tramite.setListaDocumentos(obtenerDocs(docs, jtramite.getListaDocumentos().getCodigo()));
                     tramite.setListaDocumentos(this.getDocumentosByListaDocumentos(jtramite.getListaDocumentos()));
                 }
+
                 if (jtramite.getListaModelos() != null) {
+                    //tramite.setListaModelos(obtenerDocs(docs, jtramite.getListaModelos().getCodigo()));
                     tramite.setListaModelos(this.getDocumentosByListaDocumentos(jtramite.getListaModelos()));
                 }
                 tramites.add(tramite);
             }
         }
         return tramites;
+    }
+
+    /**
+     * Convierte una junidad administrativa a un DTO sencillo
+     *
+     * @param junidad
+     * @param incluirPadre
+     * @return
+     */
+    private UnidadAdministrativaDTO converterSencillo(JUnidadAdministrativa junidad, boolean incluirPadre) {
+
+        if (junidad == null) {
+            return null;
+        }
+        UnidadAdministrativaDTO unidadAdministrativaDTO = new UnidadAdministrativaDTO();
+        unidadAdministrativaDTO.setCodigo(junidad.getCodigo());
+        unidadAdministrativaDTO.setCodigoDIR3(junidad.getCodigoDIR3());
+        unidadAdministrativaDTO.setIdentificador(junidad.getIdentificador());
+        Literal nombre = new Literal();
+        for (JUnidadAdministrativaTraduccion trad : junidad.getTraducciones()) {
+            nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+        }
+        unidadAdministrativaDTO.setNombre(nombre);
+        unidadAdministrativaDTO.setOrden(junidad.getOrden());
+        if (incluirPadre && junidad.getPadre() != null) {
+            unidadAdministrativaDTO.setPadre(converterSencillo(junidad.getPadre(), false));
+        }
+        return unidadAdministrativaDTO;
+    }
+
+    /**
+     * Convierte una junidad administrativa a un DTO sencillo
+     *
+     * @param jprocWF jprocWF a convertir
+     * @return DTO sencillo
+     */
+    private ProcedimientoWorkflowDTO converterSencillo(JProcedimientoWorkflow jprocWF) {
+
+        if (jprocWF == null) {
+            return null;
+        }
+        ProcedimientoWorkflowDTO procWFDTO = new ProcedimientoWorkflowDTO();
+        procWFDTO.setCodigo(jprocWF.getCodigo());
+        procWFDTO.setWorkflow(jprocWF.getWorkflow());
+        procWFDTO.setEstado(jprocWF.getEstado());
+        Literal nombre = new Literal();
+        Literal observaciones = new Literal();
+
+        for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
+            nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+            observaciones.add(new Traduccion(trad.getIdioma(), trad.getObservaciones()));
+        }
+        procWFDTO.setNombre(nombre);
+        procWFDTO.setObservaciones(observaciones);
+        return procWFDTO;
+    }
+
+
+    /**
+     * Devuelve los docs que hay en la lista que tiene el codigo pasado
+     *
+     * @param docs
+     * @param codigo
+     * @return
+     */
+    private List<ProcedimientoDocumentoDTO> obtenerDocs(List<JProcedimientoDocumento> docs, Long codigo) {
+        List<ProcedimientoDocumentoDTO> resultado = new ArrayList<>();
+        for (JProcedimientoDocumento doc : docs) {
+            if (doc.getListaDocumentos().compareTo(codigo) == 0) {
+                resultado.add(doc.toModel());
+            }
+        }
+        return resultado;
+    }
+
+    private List<JProcedimientoDocumento> getDocumentosByJTramites(List<JProcedimientoTramite> jlista) {
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoDocumento j where j.listaDocumentos IN (:codigoListaDocumentos) ");
+        Query query = entityManager.createQuery(sql.toString());
+        List<Long> codigos = new ArrayList<>();
+        for (JProcedimientoTramite jtramite : jlista) {
+            if (jtramite.getListaDocumentos() != null) {
+                codigos.add(jtramite.getListaDocumentos().getCodigo());
+            }
+            if (jtramite.getListaModelos() != null) {
+                codigos.add(jtramite.getListaModelos().getCodigo());
+            }
+        }
+        query.setParameter("codigoListaDocumentos", codigos);
+        return query.getResultList();
     }
 
     @Override
@@ -1252,7 +1354,26 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     private List<JProcedimientoDocumento> getDocumentosLopd(List<Long> idProcedimientos) {
-        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoDocumento j where j.listaDocumentos IN (select wf.listaDocumentosLOPD from JProcedimientoWorkflow wf where wf.codigo IN (:idProcedimientos) ) ");
+        if (idProcedimientos == null || idProcedimientos.isEmpty()) {
+            return null;
+        }
+
+        /*
+        StringBuilder sql = new StringBuilder("select lopd.codigo from JProcedimientoWorkflow wf LEFT OUTER JOIN wf.listaDocumentosLOPD lopd where wf.codigo IN (:idProcedimientos) ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("idProcedimientos", idProcedimientos);
+        List<Long> listaDocumentos = query.getResultList();
+
+        if (listaDocumentos == null || listaDocumentos.isEmpty()) {
+            return null;
+        }
+
+        sql = new StringBuilder("SELECT j FROM JProcedimientoDocumento j where j.listaDocumentos IN (:idListaDocumentos) ");
+        query = entityManager.createQuery(sql.toString());
+        query.setParameter("idListaDocumentos", listaDocumentos);
+        return query.getResultList();
+        */
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoDocumento j where j.listaDocumentos IN (select lopd.codigo from JProcedimientoWorkflow wf LEFT OUTER JOIN wf.listaDocumentosLOPD lopd where wf.codigo IN (:idProcedimientos) ) ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("idProcedimientos", idProcedimientos);
         return query.getResultList();
@@ -2918,6 +3039,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         if (proc instanceof ProcedimientoDTO) {
             ((ProcedimientoDTO) proc).setTramites(this.getTramitesByWF(proc.getCodigoWF()));
+
             Collections.sort(((ProcedimientoDTO) proc).getTramites());
             if (((ProcedimientoDTO) proc).getTramites() != null && !((ProcedimientoDTO) proc).getTramites().isEmpty()) {
                 for (ProcedimientoTramiteDTO tram : ((ProcedimientoDTO) proc).getTramites()) {

@@ -914,13 +914,23 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public String getEnlaceTelematicoByServicio(ProcedimientoFiltro filtro) {
-        return procedimientoRepository.getEnlaceTelematico(filtro);
+        try {
+            return procedimientoRepository.getEnlaceTelematico(filtro);
+        } catch (Exception e) {
+            LOG.error("Error obteniendo enlace telemático", e);
+            throw e;
+        }
     }
 
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public String getEnlaceTelematicoByTramite(ProcedimientoTramiteFiltro filtro) {
-        return procedimientoTramiteRepository.getEnlaceTelematico(filtro);
+        try {
+            return procedimientoTramiteRepository.getEnlaceTelematico(filtro);
+        } catch (Exception e) {
+            LOG.error("Error obteniendo enlace telemático", e);
+            throw e;
+        }
     }
 
     @Override
