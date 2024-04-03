@@ -98,7 +98,7 @@ public class EstadisticaServiceFacadeBean implements EstadisticaServiceFacade {
                 throw new EstadisticaException("No existe el procedimiento o servicio al que se está grabando el acceso");
             }
         } else {
-            if (!unidadAdministrativaRepository.checkExsiteUa(filtro.getCodigo())) {
+            if (!unidadAdministrativaRepository.checkExisteUa(filtro.getCodigo())) {
                 throw new EstadisticaException("No existe la unidad administrativa a la que se está grabando el acceso");
             }
         }

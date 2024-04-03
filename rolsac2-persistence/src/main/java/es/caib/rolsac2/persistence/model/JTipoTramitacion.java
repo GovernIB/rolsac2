@@ -4,6 +4,7 @@ import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -377,9 +378,47 @@ public class JTipoTramitacion extends BaseEntity {
         this.setTramiteParametros(tipoTramitacion.getTramiteParametros());
         this.setTramitPresencial(tipoTramitacion.isTramitPresencial());
         this.setTramitElectronica(tipoTramitacion.isTramitElectronica());
+
+        //Vamos a crear primero las traducciones que antes no existian
+        if (tipoTramitacion.getUrl() != null || tipoTramitacion.getDescripcion() != null) {
+            List<String> idiomas = new ArrayList<>();
+            if (tipoTramitacion.getUrl() != null) {
+                idiomas.addAll(tipoTramitacion.getUrl().getIdiomas());
+            }
+            if (tipoTramitacion.getDescripcion() != null) {
+                List<String> idiomasDescripcion = tipoTramitacion.getDescripcion().getIdiomas();
+                for (String idioma : idiomasDescripcion) {
+                    if (!idiomas.contains(idioma)) {
+                        idiomas.add(idioma);
+                    }
+                }
+            }
+            for (String idioma : idiomas) {
+                boolean encontrado = false;
+                for (JTipoTramitacionTraduccion traduccion : this.getTraducciones()) {
+                    if (traduccion.getIdioma().equals(idioma)) {
+                        encontrado = true;
+                        break;
+                    }
+                }
+                if (!encontrado) {
+                    JTipoTramitacionTraduccion traduccion = new JTipoTramitacionTraduccion();
+                    traduccion.setIdioma(idioma);
+                    traduccion.setTipoTramitacion(this);
+                    this.getTraducciones().add(traduccion);
+                }
+            }
+        }
+
         if (this.getTraducciones() != null && tipoTramitacion.getUrl() != null) {
             for (JTipoTramitacionTraduccion traduccion : this.getTraducciones()) {
-                traduccion.setUrl(tipoTramitacion.getUrl().getTraduccion(traduccion.getIdioma()));
+                if (tipoTramitacion.getUrl() != null) {
+                    traduccion.setUrl(tipoTramitacion.getUrl().getTraduccion(traduccion.getIdioma()));
+                }
+                if (tipoTramitacion.getDescripcion() != null) {
+                    traduccion.setDescripcion(tipoTramitacion.getDescripcion().getTraduccion(traduccion.getIdioma()));
+                }
+
             }
         }
     }

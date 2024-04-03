@@ -1,17 +1,10 @@
 package es.caib.rolsac2.rest.api.externa.v1.services;
 
-import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
-import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
-import es.caib.rolsac2.api.externa.v1.model.Procedimientos;
 import es.caib.rolsac2.api.externa.v1.model.Servicios;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaServicios;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.ProcedimientoBaseDTO;
-import es.caib.rolsac2.service.model.ProcedimientoDTO;
-import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -24,6 +17,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,73 +27,66 @@ import java.util.List;
 public class TestGetResource {
 
     @EJB
-    private ProcedimientoServiceFacade procedimientoService;
+    ProcedimientoServiceFacade procedimientoService;
 
     /**
      * Metodo de tipo test para hacer una prueba que se llega a la url.
      *
-     * @return
-     * @throws DelegateException
+     * @return Devuelve test
+     * @throws ValidationException Manejo de excepciones
      */
     @GET
     @Path("/")
     @Operation(operationId = "test", summary = "Test", description = "Test")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response test() throws DelegateException, ExcepcionAplicacion, ValidationException {
+    public Response test() throws ValidationException {
+        Instant start = Instant.now();
         List<Servicios> lista = new ArrayList<>();
-        Servicios elemento = null;
+        Servicios elemento;
         elemento = new Servicios();
-        elemento.setCodigo(1l);
+        elemento.setCodigo(1L);
         elemento.setNombre("nombre");
         lista.add(elemento);
         lista.add(elemento);
         lista.add(elemento);
-        RespuestaServicios resp = new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(3), Long.valueOf(3), lista);
-
-        ProcedimientoFiltro filtro = new ProcedimientoFiltro();
-        filtro.setIdioma("ca");
-        //codigo = {Long@22870} 2882769
-        //codigoWFPub = {Long@22871} 14868
-        filtro.setCodigoProc(Long.parseLong("2882769"));
-        filtro.setTipo("P");
-
-        Pagina<ProcedimientoBaseDTO> resultadoBusqueda = procedimientoService.findProcedimientosByFiltroRest(filtro);
-
-
-        for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
-            Procedimientos x = new Procedimientos((ProcedimientoDTO) nodo, null, filtro.getIdioma(), true, "ca");
-            //            lista.add(elemento);
-        }
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+        RespuestaServicios resp = new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(3), 3L, lista, tiempoMiliSegundos);
 
         return Response.ok(resp, MediaType.APPLICATION_JSON).build();
     }
 
 
     /**
-     * Para obtener un servicio.
+     * Es prueba get
      *
-     * @return
-     * @throws Exception
-     * @Parameter idioma
-     * @Parameter id
+     * @return Devuelve test
+     * @throws Exception Manejo de excepciones
      */
     @GET
     @Path("/{codigo}")
     @Operation(operationId = "getPorId", summary = "Obtiene un servicio", description = "Obtiene el servicio con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response getPorId() throws Exception, ValidationException {
+    public Response getPorId() throws Exception {
 
+        Instant start = Instant.now();
         List<Servicios> lista = new ArrayList<>();
-        Servicios elemento = null;
+        Servicios elemento;
         elemento = new Servicios();
-        elemento.setCodigo(1l);
+        elemento.setCodigo(1L);
         elemento.setNombre("nombre");
         lista.add(elemento);
         lista.add(elemento);
         lista.add(elemento);
-        RespuestaServicios resp = new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(3), Long.valueOf(3), lista);
+
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+
+        RespuestaServicios resp = new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(3), 3L, lista, tiempoMiliSegundos);
+
+
         return Response.ok(resp, MediaType.APPLICATION_JSON).build();
     }
 

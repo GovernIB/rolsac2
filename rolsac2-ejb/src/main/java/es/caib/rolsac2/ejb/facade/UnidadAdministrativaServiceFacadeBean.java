@@ -348,14 +348,47 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<UnidadAdministrativaDTO> getUnidadesAdministrativasByUsuario(Long usuarioId) {
+    public List<UnidadAdministrativaDTO> getUnidadesAdministrativasByUsuario(Long usuarioId, boolean simplificado) {
         List<JUnidadAdministrativa> jUnidadesAdministrativas = unidadAdministrativaRepository.getUnidadesAdministrativaByUsuario(usuarioId);
         List<UnidadAdministrativaDTO> unidadesAdministrativas = new ArrayList<>();
         for (JUnidadAdministrativa ua : jUnidadesAdministrativas) {
-            UnidadAdministrativaDTO unidadAdministrativaDTO = converter.createDTO(ua);
+            UnidadAdministrativaDTO unidadAdministrativaDTO;
+            if (simplificado) {
+                unidadAdministrativaDTO = converterSencillo(ua, true);
+            } else {
+                unidadAdministrativaDTO = converter.createDTO(ua);
+            }
             unidadesAdministrativas.add(unidadAdministrativaDTO);
         }
         return unidadesAdministrativas;
+    }
+
+    /**
+     * Convierte una junidad administrativa a un DTO sencillo
+     *
+     * @param junidad
+     * @param incluirPadre
+     * @return
+     */
+    private UnidadAdministrativaDTO converterSencillo(JUnidadAdministrativa junidad, boolean incluirPadre) {
+
+        if (junidad == null) {
+            return null;
+        }
+        UnidadAdministrativaDTO unidadAdministrativaDTO = new UnidadAdministrativaDTO();
+        unidadAdministrativaDTO.setCodigo(junidad.getCodigo());
+        unidadAdministrativaDTO.setCodigoDIR3(junidad.getCodigoDIR3());
+        unidadAdministrativaDTO.setIdentificador(junidad.getIdentificador());
+        Literal nombre = new Literal();
+        for (JUnidadAdministrativaTraduccion trad : junidad.getTraducciones()) {
+            nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+        }
+        unidadAdministrativaDTO.setNombre(nombre);
+        unidadAdministrativaDTO.setOrden(junidad.getOrden());
+        if (incluirPadre && junidad.getPadre() != null) {
+            unidadAdministrativaDTO.setPadre(converterSencillo(junidad.getPadre(), false));
+        }
+        return unidadAdministrativaDTO;
     }
 
     @Override
@@ -1034,5 +1067,16 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public UnidadAdministrativaGridDTO getUaRaizEntidad(Long codEntidad) {
         return unidadAdministrativaRepository.getUaRaizEntidad(codEntidad);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public UnidadAdministrativaDTO findUaRaizByEntidad(Long idEntidad) {
+        JUnidadAdministrativa jUnidadAdministrativa = unidadAdministrativaRepository.obtenerUnidadAdministrativaRaiz(idEntidad);
+        if (jUnidadAdministrativa == null) {
+            return null;
+        } else {
+            return converterSencillo(jUnidadAdministrativa, true);
+        }
     }
 }

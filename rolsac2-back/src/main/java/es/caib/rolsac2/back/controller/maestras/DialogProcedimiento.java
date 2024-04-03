@@ -107,8 +107,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         // De momento, no tenemos desplegables.
         this.setearIdioma();
 
-        temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
-        temasPadreAnyadidos = new ArrayList<>();
 
         this.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
         this.setLopdInfoAdicional(new Literal());
@@ -130,23 +128,23 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 data = (ProcedimientoDTO) UtilJSF.getValorMochilaByKey("PROC");
             }
 
-            UtilJSF.vaciarMochila();
         }
-        temasTabla = new ArrayList<>();
-        for (TemaGridDTO tema : temasPadre) {
-            temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
-        }
-        this.construirArbol();
+
 
         uaRaiz = Boolean.valueOf(this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz()).toString();
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
         comunUA = sessionBean.getEntidad().getUaComun();
-        listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
-        listTipoSilencio = maestrasSupService.findAllTipoSilencio();
-        listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
-        listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
-        listTipoVia = maestrasSupService.findAllTipoVia();
+
+        cargarListas();
+        temasPadreAnyadidos = new ArrayList<>();
+
+        temasTabla = new ArrayList<>();
+        for (TemaGridDTO tema : temasPadre) {
+            temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
+        }
+        this.construirArbol();
+        UtilJSF.vaciarMochila();
 
         /** Si es alta y hay un tipo legitimacion por defecto, lo setea **/
         if (this.isModoAlta() && listTipoLegitimacion != null && !listTipoLegitimacion.isEmpty()) {
@@ -160,6 +158,38 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
         actualizarResponsable();
         dataOriginal = (ProcedimientoDTO) data.clone();
+    }
+
+    /**
+     * Metodo para cargar las listas
+     **/
+    private void cargarListas() {
+        listTipoFormaInicio = (List<TipoFormaInicioDTO>) UtilJSF.getValorMochilaByKey("listTipoFormaInicio");
+        listTipoSilencio = (List<TipoSilencioAdministrativoDTO>) UtilJSF.getValorMochilaByKey("listTipoSilencio");
+        listTipoLegitimacion = (List<TipoLegitimacionDTO>) UtilJSF.getValorMochilaByKey("listTipoLegitimacion");
+        listTipoProcedimiento = (List<TipoProcedimientoDTO>) UtilJSF.getValorMochilaByKey("listTipoProcedimiento");
+        listTipoVia = (List<TipoViaDTO>) UtilJSF.getValorMochilaByKey("listFinVias");
+        temasPadre = (List<TemaGridDTO>) UtilJSF.getValorMochilaByKey("temasPadre");
+
+        if (temasPadre == null || temasPadre.isEmpty()) {
+            temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+        }
+        if (listTipoFormaInicio == null || listTipoFormaInicio.isEmpty()) {
+            listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
+        }
+        if (listTipoSilencio == null || listTipoSilencio.isEmpty()) {
+            listTipoSilencio = maestrasSupService.findAllTipoSilencio();
+        }
+        if (listTipoLegitimacion == null || listTipoLegitimacion.isEmpty()) {
+            listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
+        }
+        if (listTipoProcedimiento == null || listTipoProcedimiento.isEmpty()) {
+            listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
+        }
+        if (listTipoVia == null || listTipoVia.isEmpty()) {
+            listTipoVia = maestrasSupService.findAllTipoVia();
+        }
+
     }
 
     /**

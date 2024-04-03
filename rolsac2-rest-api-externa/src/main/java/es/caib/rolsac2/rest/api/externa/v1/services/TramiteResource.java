@@ -1,7 +1,5 @@
 package es.caib.rolsac2.rest.api.externa.v1.services;
 
-import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
-import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.ProcedimientoDocumento;
 import es.caib.rolsac2.api.externa.v1.model.Tramite;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroTramite;
@@ -32,6 +30,8 @@ import javax.validation.ValidationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,19 +40,21 @@ import java.util.List;
 public class TramiteResource {
 
     @EJB
-    private ProcedimientoServiceFacade procedimientoService;
+    ProcedimientoServiceFacade procedimientoService;
 
     @EJB
-    private SystemServiceFacade systemService;
+    SystemServiceFacade systemService;
 
     @EJB
-    private EntidadServiceFacade entidadService;
+    EntidadServiceFacade entidadService;
 
     /**
      * Listado de procedimientoTramites.
      *
-     * @return
-     * @throws DelegateException
+     * @param lang   Código de idioma
+     * @param filtro Filtro de trámites
+     * @return Listado de procedimientoTramites
+     * @throws ValidationException Manejo de excepciones
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
@@ -61,8 +63,9 @@ public class TramiteResource {
     @Operation(operationId = "listarTramites", summary = "Lista los trámites", description = "Lista los trámites disponibles en funcion de los filtros")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTramite.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarTramites(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de trámites: " + FiltroTramite.SAMPLE, name = "filtro", content = @Content(example = FiltroTramite.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTramite.class))) FiltroTramite filtro) throws DelegateException, ExcepcionAplicacion, ValidationException {
+    public Response listarTramites(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de trámites: " + FiltroTramite.SAMPLE, name = "filtro", content = @Content(example = FiltroTramite.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTramite.class))) FiltroTramite filtro) throws ValidationException {
 
+        Instant start = Instant.now();
         if (filtro == null) {
             filtro = new FiltroTramite();
         }
@@ -90,17 +93,16 @@ public class TramiteResource {
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
         }
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start), MediaType.APPLICATION_JSON).build();
     }
 
     /**
      * Para obtener una procedimientoTramite.
      *
-     * @param codigo
-     * @param lang
-     * @return
-     * @throws Exception
-     * @throws ValidationException
+     * @param codigo Código trámite
+     * @param lang   Código de idioma
+     * @return ProcedimientoTramite
+     * @throws Exception Manejo de excepciones
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
@@ -109,8 +111,9 @@ public class TramiteResource {
     @Operation(operationId = "getPorId", summary = "Obtiene una trámite", description = "Obtiene el trámite con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTramite.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response getPorId(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
+    public Response getPorId(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception {
 
+        Instant start = Instant.now();
         ProcedimientoTramiteFiltro fg = new ProcedimientoTramiteFiltro();
         String idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
         if (lang != null) {
@@ -118,44 +121,46 @@ public class TramiteResource {
         } else {
             fg.setIdioma(idiomaPorDefecto);
         }
-        fg.setCodigo(new Long(codigo));
+        fg.setCodigo(Long.valueOf(codigo));
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaTramite getRespuesta(ProcedimientoTramiteFiltro filtro, String idiomaPorDefecto) throws DelegateException {
+    private RespuestaTramite getRespuesta(ProcedimientoTramiteFiltro filtro, String idiomaPorDefecto, Instant start) {
         Pagina<ProcedimientoTramiteDTO> resultadoBusqueda = procedimientoService.findProcedimientoTramiteByFiltroRest(filtro);
 
         List<Tramite> lista = new ArrayList<>();
-        Tramite elemento = null;
+        Tramite elemento;
 
         for (ProcedimientoTramiteDTO nodo : resultadoBusqueda.getItems()) {
             elemento = new Tramite(nodo, null, filtro.getIdioma(), true, idiomaPorDefecto);
             lista.add(elemento);
         }
 
-        return new RespuestaTramite(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista);
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+
+        return new RespuestaTramite(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
     }
 
     /**
      * Para obtener el enlace.
      *
-     * @param codigo
-     * @param lang
-     * @return
-     * @throws Exception
-     * @throws ValidationException
+     * @param codigo Código trámite
+     * @param lang   Código de idioma
+     * @return Enlace telemático
+     * @throws ValidationException Manejo de excepciones
      */
     @POST
     @Path("/enlaceTelematico/{codigo}")
     @Operation(operationId = "getEnlaceTelematico", summary = "Obtiene enlace telematico", description = "Obtiene enlace telematico dado tramite")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTramite.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response getEnlaceTelematico(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
+    public Response getEnlaceTelematico(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws ValidationException {
 
+        Instant start = Instant.now();
         ProcedimientoTramiteFiltro fg = new ProcedimientoTramiteFiltro();
-        fg.setCodigo(new Long(codigo));
-        //		fg.setEstadoWF(estadoWF);
+        fg.setCodigo(Long.valueOf(codigo));
 
         if (lang != null) {
             fg.setIdioma(lang);
@@ -166,14 +171,18 @@ public class TramiteResource {
         final String url = procedimientoService.getEnlaceTelematicoByTramite(fg);
         RespuestaSimple respuesta = new RespuestaSimple();
         respuesta.setResultado(url);
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+        respuesta.setTiempo(tiempoMiliSegundos);
         return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
     }
 
     /**
      * Listado de documentos de tramites.
      *
-     * @return
-     * @throws DelegateException
+     * @param codigo Código trámite
+     * @param lang   Código de idioma
+     * @return Lista de documentos
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
@@ -182,12 +191,13 @@ public class TramiteResource {
     @Operation(operationId = "listarDocumentos", summary = "Lista los documentos del trámite", description = "Lista los documentos del trámite dado por código")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoDocumento.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarDocumentos(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
+    public Response listarDocumentos(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
+        Instant start = Instant.now();
         List<ProcedimientoDocumentoDTO> result = new ArrayList<>();
         List<ProcedimientoDocumento> lista = new ArrayList<>();
-        ProcedimientoDocumento elemento = null;
-        String idioma = null;
+        ProcedimientoDocumento elemento;
+        String idioma;
 
         if (lang != null) {
             idioma = lang;
@@ -196,7 +206,7 @@ public class TramiteResource {
         }
 
         if (codigo != null) {
-            result = procedimientoService.getDocumentosByTram(new Long(codigo));
+            result = procedimientoService.getDocumentosByTram(Long.valueOf(codigo));
 
             for (ProcedimientoDocumentoDTO nodo : result) {
                 elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), idioma, true);
@@ -204,14 +214,18 @@ public class TramiteResource {
             }
         }
 
-        return Response.ok(new RespuestaProcedimientoDocumento(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), new Long(result.size()), lista), MediaType.APPLICATION_JSON).build();
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+
+        return Response.ok(new RespuestaProcedimientoDocumento(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), (long) (result.size()), lista, tiempoMiliSegundos), MediaType.APPLICATION_JSON).build();
     }
 
     /**
      * Listado de modelos de tramites.
      *
-     * @return
-     * @throws DelegateException
+     * @param codigo Código trámite
+     * @param lang   Código de idioma
+     * @return Lista de modelos
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
@@ -220,12 +234,13 @@ public class TramiteResource {
     @Operation(operationId = "listarModelos", summary = "Lista los modelos del trámite", description = "Lista los modelos del trámite dado por código")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoDocumento.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarModelos(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
+    public Response listarModelos(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
+        Instant start = Instant.now();
         List<ProcedimientoDocumentoDTO> result = new ArrayList<>();
         List<ProcedimientoDocumento> lista = new ArrayList<>();
-        ProcedimientoDocumento elemento = null;
-        String idioma = null;
+        ProcedimientoDocumento elemento;
+        String idioma;
 
         if (lang != null) {
             idioma = lang;
@@ -234,7 +249,7 @@ public class TramiteResource {
         }
 
         if (codigo != null) {
-            result = procedimientoService.getModelosByTram(new Long(codigo));
+            result = procedimientoService.getModelosByTram(Long.valueOf(codigo));
 
             for (ProcedimientoDocumentoDTO nodo : result) {
                 elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), idioma, true);
@@ -242,7 +257,10 @@ public class TramiteResource {
             }
         }
 
-        return Response.ok(new RespuestaProcedimientoDocumento(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), new Long(result.size()), lista), MediaType.APPLICATION_JSON).build();
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+
+        return Response.ok(new RespuestaProcedimientoDocumento(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), (long) (result.size()), lista, tiempoMiliSegundos), MediaType.APPLICATION_JSON).build();
     }
 
 }

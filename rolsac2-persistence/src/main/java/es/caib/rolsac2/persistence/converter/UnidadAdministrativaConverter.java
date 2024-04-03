@@ -27,6 +27,7 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "usuariosUnidadAdministrativa", expression = "java(convertUsuariostoDTO(entity.getUsuarios()))")
     @Mapping(target = "temas", expression = "java(convertTematoDTO(entity.getTemas()))")
     @Mapping(target = "normativas", expression = "java(convertNormativasDTO(entity.getNormativas()))")
+    @Mapping(target = "padre", expression = "java(convertSencillo(entity.getPadre(), true))")
     UnidadAdministrativaDTO createDTO(JUnidadAdministrativa entity);
 
     @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
@@ -224,6 +225,34 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
         }
 
         return temasDTO;
+    }
+
+    /**
+     * Convierte una junidad administrativa a un DTO sencillo
+     *
+     * @param junidad
+     * @param incluirPadre
+     * @return
+     */
+    default UnidadAdministrativaDTO convertSencillo(JUnidadAdministrativa junidad, boolean incluirPadre) {
+
+        if (junidad == null) {
+            return null;
+        }
+        UnidadAdministrativaDTO unidadAdministrativaDTO = new UnidadAdministrativaDTO();
+        unidadAdministrativaDTO.setCodigo(junidad.getCodigo());
+        unidadAdministrativaDTO.setCodigoDIR3(junidad.getCodigoDIR3());
+        unidadAdministrativaDTO.setIdentificador(junidad.getIdentificador());
+        Literal nombre = new Literal();
+        for (JUnidadAdministrativaTraduccion trad : junidad.getTraducciones()) {
+            nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+        }
+        unidadAdministrativaDTO.setNombre(nombre);
+        unidadAdministrativaDTO.setOrden(junidad.getOrden());
+        if (incluirPadre && junidad.getPadre() != null) {
+            unidadAdministrativaDTO.setPadre(convertSencillo(junidad.getPadre(), false));
+        }
+        return unidadAdministrativaDTO;
     }
 
     default List<NormativaDTO> convertNormativasDTO(Set<JNormativa> normativas) {

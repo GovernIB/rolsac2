@@ -1,42 +1,44 @@
 package es.caib.rolsac2.api.externa.v1.model.respuestas;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlRootElement;
-
 import es.caib.rolsac2.api.externa.v1.model.TipoProcedimiento;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 /**
  * RespuestaTipoProcedimiento
  *
  * @author indra
- *
  */
 
 @XmlRootElement
 @Schema(name = "RespuestaTipoProcedimiento", description = Constantes.TXT_RESPUESTA + Constantes.ENTIDAD_TIPO_PROCEDIMIENTO)
 public class RespuestaTipoProcedimiento extends RespuestaBase {
 
-	/** Resultado. **/
-	@Schema(name = "resultado", description = "Listado con los objetos de resultado", required = false)
-	private List<TipoProcedimiento> resultado;
+    /**
+     * Resultado.
+     **/
+    @Schema(name = "resultado", description = "Listado con los objetos de resultado", required = false)
+    private List<TipoProcedimiento> resultado;
 
-	public RespuestaTipoProcedimiento(String status, String mensaje, long l, List<TipoProcedimiento> resultado) {
-		super(status, mensaje, l);
-		this.resultado = resultado;
-	};
+    public RespuestaTipoProcedimiento(String status, String mensaje, long l, List<TipoProcedimiento> resultado, Long tiempo) {
+        super(status, mensaje, l, tiempo);
+        this.resultado = resultado;
+    }
 
-	public RespuestaTipoProcedimiento() {
-		super();
-	}
+    ;
 
-	public List<TipoProcedimiento> getResultado() {
-		return resultado;
-	}
+    public RespuestaTipoProcedimiento() {
+        super();
+    }
 
-	public void setResultado(List<TipoProcedimiento> resultado) {
-		this.resultado = resultado;
-	}
+    public List<TipoProcedimiento> getResultado() {
+        return resultado;
+    }
+
+    public void setResultado(List<TipoProcedimiento> resultado) {
+        this.resultado = resultado;
+    }
 }

@@ -141,7 +141,16 @@ public class Literal implements Cloneable {
      * @param idiomaPorDefecto idioma por defecto (normalmenete ca)
      * @return el valor de traduccion
      */
-    public String getTraduccionConValor(final String idioma, final String idiomaPorDefecto) {
+    public String getTraduccionConValor(final String idioma, String idiomaPorDefecto) {
+
+
+        if (trads == null || idioma == null) {
+            return null;
+        }
+
+        if (idiomaPorDefecto == null || idiomaPorDefecto.isEmpty()) {
+            idiomaPorDefecto = "ca";
+        }
 
         if (idioma != null) {
             for (final Traduccion traduccion : trads) {
@@ -169,6 +178,17 @@ public class Literal implements Cloneable {
         }
 
         return null;
+    }
+
+
+    /**
+     * Obtiene el valor de traduccion (si está relleno, sino devuelve el del idioma por defecto).
+     *
+     * @param idioma idioma
+     * @return el valor de traduccion
+     */
+    public String getTraduccionConValor(final String idioma) {
+        return getTraduccionConValor(idioma, "ca");
     }
 
     /**
@@ -374,5 +394,25 @@ public class Literal implements Cloneable {
             }
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Literal{" + "trads=" + toStringTrads() + ", codigo=" + codigo + '}';
+    }
+
+    private String toStringTrads() {
+        if (trads == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Traduccion trad : trads) {
+            sb.append("{Idioma:");
+            sb.append(trad.getIdioma());
+            sb.append(", Literal:");
+            sb.append(trad.getLiteral());
+            sb.append("}");
+        }
+        return sb.toString();
     }
 }

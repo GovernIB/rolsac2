@@ -132,8 +132,6 @@ public class DialogServicio extends AbstractController implements Serializable {
         canalesSeleccionados = new ArrayList<>();
         platTramitElectronica = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
         plantillasTipoTramitacion = maestrasSupServiceFacade.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), 1);
-        temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
-        temasPadreAnyadidos = new ArrayList<>();
 
         this.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
         this.setLopdInfoAdicional(new Literal());
@@ -172,11 +170,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
 
         uaRaiz = Boolean.valueOf(this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz()).toString();
-        temasTabla = new ArrayList<>();
-        for (TemaGridDTO tema : temasPadre) {
-            temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
-        }
-        this.construirArbol();
+
 
         if (data != null && data.isTramitPresencial()) {
             canalesSeleccionados.add("PRE");
@@ -191,11 +185,14 @@ public class DialogServicio extends AbstractController implements Serializable {
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
         comunUA = sessionBean.getEntidad().getUaComun();
-        listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
-        listTipoSilencio = maestrasSupService.findAllTipoSilencio();
-        listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
-        listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
-        listTipoVia = maestrasSupService.findAllTipoVia();
+        cargarListas();
+
+        temasPadreAnyadidos = new ArrayList<>();
+        temasTabla = new ArrayList<>();
+        for (TemaGridDTO tema : temasPadre) {
+            temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
+        }
+
         if (this.data.getTipoTramitacion() == null) {
             this.data.setTipoTramitacion(TipoTramitacionDTO.createInstance(sessionBean.getIdiomasPermitidosList()));
             this.data.getTipoTramitacion().setEntidad(UtilJSF.getSessionBean().getEntidad());
@@ -215,6 +212,34 @@ public class DialogServicio extends AbstractController implements Serializable {
         //revisarLiterales();
         actualizarResponsable();
         dataOriginal = (ServicioDTO) data.clone();
+    }
+
+    private void cargarListas() {
+        listTipoFormaInicio = (List<TipoFormaInicioDTO>) UtilJSF.getValorMochilaByKey("listTipoFormaInicio");
+        listTipoSilencio = (List<TipoSilencioAdministrativoDTO>) UtilJSF.getValorMochilaByKey("listTipoSilencio");
+        listTipoLegitimacion = (List<TipoLegitimacionDTO>) UtilJSF.getValorMochilaByKey("listTipoLegitimacion");
+        listTipoProcedimiento = (List<TipoProcedimientoDTO>) UtilJSF.getValorMochilaByKey("listTipoProcedimiento");
+        listTipoVia = (List<TipoViaDTO>) UtilJSF.getValorMochilaByKey("listFinVias");
+        temasPadre = (List<TemaGridDTO>) UtilJSF.getValorMochilaByKey("temasPadre");
+
+        if (listTipoFormaInicio == null || listTipoFormaInicio.isEmpty()) {
+            listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
+        }
+        if (listTipoSilencio == null || listTipoSilencio.isEmpty()) {
+            listTipoSilencio = maestrasSupService.findAllTipoSilencio();
+        }
+        if (listTipoLegitimacion == null || listTipoLegitimacion.isEmpty()) {
+            listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
+        }
+        if (listTipoProcedimiento == null || listTipoProcedimiento.isEmpty()) {
+            listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
+        }
+        if (listTipoVia == null || listTipoVia.isEmpty()) {
+            listTipoVia = maestrasSupService.findAllTipoVia();
+        }
+        if (temasPadre == null || temasPadre.isEmpty()) {
+            temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+        }
     }
 
     /**

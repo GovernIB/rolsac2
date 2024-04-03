@@ -18,23 +18,19 @@ import java.util.Objects;
  * Conversor entre JProcedimientoTramite y ProcedimientoTramiteDTO. La implementacion se generará automaticamente por
  * MapStruct
  */
-@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-        uses = {UnidadAdministrativaConverter.class, ProcedimientoWorkflowConverter.class,
-                TipoTramitacionConverter.class})
+@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {UnidadAdministrativaConverter.class, ProcedimientoWorkflowConverter.class, TipoTramitacionConverter.class})
 public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoTramite, ProcedimientoTramiteDTO> {
 
     @Override
-    @Mapping(target = "requisitos",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"requisitos\"))")
+    @Mapping(target = "requisitos", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"requisitos\"))")
     @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
-    @Mapping(target = "documentacion",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"documentacion\"))")
-    @Mapping(target = "observacion",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observacion\"))")
-    @Mapping(target = "terminoMaximo",
-            expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"terminoMaximo\"))")
+    @Mapping(target = "documentacion", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"documentacion\"))")
+    @Mapping(target = "observacion", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"observacion\"))")
+    @Mapping(target = "terminoMaximo", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"terminoMaximo\"))")
     @Mapping(target = "listaDocumentos", ignore = true)
     @Mapping(target = "listaModelos", ignore = true)
+    @Mapping(target = "unidadAdministrativa", ignore = true)
+    @Mapping(target = "procedimiento", ignore = true)
     ProcedimientoTramiteDTO createDTO(JProcedimientoTramite entity);
 
     @Override
@@ -58,11 +54,9 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
     void mergeEntity(@MappingTarget JProcedimientoTramite entity, ProcedimientoTramiteDTO dto);
 
 
-    default List<JProcedimientoTramiteTraduccion> convierteLiteralToTraduccion(
-            JProcedimientoTramite jProcedimientoTramite, ProcedimientoTramiteDTO dto) {
+    default List<JProcedimientoTramiteTraduccion> convierteLiteralToTraduccion(JProcedimientoTramite jProcedimientoTramite, ProcedimientoTramiteDTO dto) {
 
-        List<String> idiomasPermitidos =
-                List.of(dto.getUnidadAdministrativa().getEntidad().getIdiomasPermitidos().split(";"));
+        List<String> idiomasPermitidos = List.of(dto.getUnidadAdministrativa().getEntidad().getIdiomasPermitidos().split(";"));
 
         if (jProcedimientoTramite.getTraducciones() == null || jProcedimientoTramite.getTraducciones().isEmpty()) {
             jProcedimientoTramite.setTraducciones(JProcedimientoTramiteTraduccion.createInstance(idiomasPermitidos));
@@ -110,14 +104,12 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
         return jProcedimientoTramite.getTraducciones();
     }
 
-    default Literal convierteTraduccionToLiteral(List<JProcedimientoTramiteTraduccion> traducciones,
-                                                 String nombreLiteral) {
+    default Literal convierteTraduccionToLiteral(List<JProcedimientoTramiteTraduccion> traducciones, String nombreLiteral) {
         Literal resultado = null;
 
         if (Objects.nonNull(traducciones) && !traducciones.isEmpty()) {
             resultado = new Literal();
-            resultado.setCodigo(traducciones.stream().map(t -> t.getProcedimientoTramite().getCodigo()).findFirst()
-                    .orElse(null));
+            resultado.setCodigo(traducciones.stream().map(t -> t.getProcedimientoTramite().getCodigo()).findFirst().orElse(null));
             for (JProcedimientoTramiteTraduccion traduccion : traducciones) {
                 Traduccion trad = new Traduccion();
                 trad.setCodigo(traduccion.getCodigo());

@@ -1,7 +1,5 @@
 package es.caib.rolsac2.rest.api.externa.v1.services;
 
-import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
-import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.TipoBoletin;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroTipoBoletin;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
@@ -27,6 +25,8 @@ import javax.validation.ValidationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,76 +34,80 @@ import java.util.List;
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_BOLETINES, name = Constantes.ENTIDAD_BOLETINES)
 public class TipoBoletinResource {
 
-	@EJB
-	private MaestrasSupServiceFacade tipoBoletinService;
+    @EJB
+    MaestrasSupServiceFacade tipoBoletinService;
 
-	@EJB
-	private SystemServiceFacade systemService;
+    @EJB
+    SystemServiceFacade systemService;
 
-	/**
-	 * Listado de Boletines.
-	 *
-	 * @return
-	 * @throws DelegateException
-	 */
-	@Produces({MediaType.APPLICATION_JSON})
-	@POST
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
-	@Path("/")
-	@Operation(operationId = "listarBoletines", summary = "Lista de boletines", description = "Lista todos los boletines disponibles")
-	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoBoletin.class)))
-	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response listarBoletines(@RequestBody(description = "Filtro: " + FiltroTipoBoletin.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoBoletin.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoBoletin.class))) FiltroTipoBoletin filtro) throws DelegateException, ExcepcionAplicacion, ValidationException {
+    /**
+     * Listado de Boletines.
+     *
+     * @param filtro Filtro de boletines
+     * @return Listado de Boletines
+     * @throws ValidationException Manejo de excepciones
+     */
+    @Produces({MediaType.APPLICATION_JSON})
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+    @Path("/")
+    @Operation(operationId = "listarBoletines", summary = "Lista de boletines", description = "Lista todos los boletines disponibles")
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoBoletin.class)))
+    @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
+    public Response listarBoletines(@RequestBody(description = "Filtro: " + FiltroTipoBoletin.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoBoletin.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoBoletin.class))) FiltroTipoBoletin filtro) throws ValidationException {
 
-		if (filtro == null) {
-			filtro = new FiltroTipoBoletin();
-		}
+        Instant start = Instant.now();
+        if (filtro == null) {
+            filtro = new FiltroTipoBoletin();
+        }
 
-		TipoBoletinFiltro fg = filtro.toTipoBoletinFiltro();
+        TipoBoletinFiltro fg = filtro.toTipoBoletinFiltro();
 
-		// si no vienen los filtros se completan con los datos por defecto
-		if (filtro.getFiltroPaginacion() != null) {
-			fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
-			fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
-		}
+        // si no vienen los filtros se completan con los datos por defecto
+        if (filtro.getFiltroPaginacion() != null) {
+            fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
+            fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
+        }
 
-		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
-	}
+        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+    }
 
-	/**
-	 * Para obtener el idioma.
-	 *
-	 * @param idioma
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	@Produces({MediaType.APPLICATION_JSON})
-	@POST
-	@Consumes({MediaType.APPLICATION_FORM_URLENCODED})
-	@Path("/{codigo}")
-	@Operation(operationId = "getBoletin", summary = "Obtiene un boletín", description = "Obtiene el boletín con el id(código) indicado")
-	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoBoletin.class)))
-	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response getBoletin(@Parameter(description = "Código de boletín", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) throws Exception, ValidationException {
+    /**
+     * Para obtener el boletin
+     *
+     * @param codigo Código de boletín
+     * @return Boletín
+     */
+    @Produces({MediaType.APPLICATION_JSON})
+    @POST
+    @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+    @Path("/{codigo}")
+    @Operation(operationId = "getBoletin", summary = "Obtiene un boletín", description = "Obtiene el boletín con el id(código) indicado")
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoBoletin.class)))
+    @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
+    public Response getBoletin(@Parameter(description = "Código de boletín", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
-		TipoBoletinFiltro fg = new TipoBoletinFiltro();
-		fg.setCodigo(new Long(codigo));
+        Instant start = Instant.now();
+        TipoBoletinFiltro fg = new TipoBoletinFiltro();
+        fg.setCodigo(Long.valueOf(codigo));
 
-		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
-	}
+        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+    }
 
-	private RespuestaTipoBoletin getRespuesta(TipoBoletinFiltro fg) throws DelegateException {
-		Pagina<TipoBoletinDTO> resultadoBusqueda = tipoBoletinService.findByFiltroRest(fg);
+    private RespuestaTipoBoletin getRespuesta(TipoBoletinFiltro fg, Instant start) {
+        Pagina<TipoBoletinDTO> resultadoBusqueda = tipoBoletinService.findByFiltroRest(fg);
 
-		List<TipoBoletin> lista = new ArrayList<TipoBoletin>();
-		TipoBoletin elemento = null;
+        List<TipoBoletin> lista = new ArrayList<>();
+        TipoBoletin elemento;
 
-		for (TipoBoletinDTO nodo : resultadoBusqueda.getItems()) {
-			elemento = new TipoBoletin(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), fg.getIdioma(), true);
-			lista.add(elemento);
-		}
+        for (TipoBoletinDTO nodo : resultadoBusqueda.getItems()) {
+            elemento = new TipoBoletin(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), fg.getIdioma(), true);
+            lista.add(elemento);
+        }
 
-		return new RespuestaTipoBoletin(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista);
-	}
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+
+        return new RespuestaTipoBoletin(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
+    }
 }

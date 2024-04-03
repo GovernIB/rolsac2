@@ -1,7 +1,5 @@
 package es.caib.rolsac2.rest.api.externa.v1.services;
 
-import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
-import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.Normativa;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroNormativas;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
@@ -28,6 +26,8 @@ import javax.validation.ValidationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,20 +36,19 @@ import java.util.List;
 public class NormativaResource {
 
     @EJB
-    private NormativaServiceFacade normativaService;
+    NormativaServiceFacade normativaService;
 
     @EJB
-    private SystemServiceFacade systemService;
+    SystemServiceFacade systemService;
 
     @EJB
-    private EntidadServiceFacade entidadService;
+    EntidadServiceFacade entidadService;
 
 
     /**
      * Listado de normativas.
      *
-     * @return
-     * @throws DelegateException
+     * @return Listado de normativas
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
@@ -58,8 +57,9 @@ public class NormativaResource {
     @Operation(operationId = "listar", summary = "Lista las normativas", description = "Lista las normativas disponibles en funcion de los filtros")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaNormativa.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listar(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de normativas: " + FiltroNormativas.SAMPLE, name = "filtro", content = @Content(example = FiltroNormativas.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroNormativas.class))) FiltroNormativas filtro) throws DelegateException, ExcepcionAplicacion, ValidationException {
+    public Response listar(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de normativas: " + FiltroNormativas.SAMPLE, name = "filtro", content = @Content(example = FiltroNormativas.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroNormativas.class))) FiltroNormativas filtro) throws ValidationException {
 
+        Instant start = Instant.now();
         if (filtro == null) {
             filtro = new FiltroNormativas();
         }
@@ -87,17 +87,17 @@ public class NormativaResource {
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
         }
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start), MediaType.APPLICATION_JSON).build();
     }
 
     /**
      * Obtiene una normativa.
      *
-     * @param codigo
-     * @param lang
-     * @return
-     * @throws Exception
-     * @throws ValidationException
+     * @param codigo Código de la normativa
+     * @param lang   Código de idioma
+     * @return Normativa
+     * @throws Exception           Manejo de excepciones
+     * @throws ValidationException Manejo de excepciones
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
@@ -108,6 +108,7 @@ public class NormativaResource {
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getPorId(@Parameter(description = "Código normativa", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
 
+        Instant start = Instant.now();
         NormativaFiltro fg = new NormativaFiltro();
         String idiomaPorDefecto = normativaService.obtenerIdiomaEntidad(Long.valueOf(codigo));
 
@@ -116,23 +117,26 @@ public class NormativaResource {
         } else {
             fg.setIdioma(idiomaPorDefecto);
         }
-        fg.setCodigo(new Long(codigo));
+        fg.setCodigo(Long.valueOf(codigo));
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaNormativa getRespuesta(NormativaFiltro filtro, String idiomaPorDefecto) throws DelegateException {
+    private RespuestaNormativa getRespuesta(NormativaFiltro filtro, String idiomaPorDefecto, Instant start) {
         Pagina<NormativaDTO> resultadoBusqueda = normativaService.findByFiltroRest(filtro);
 
         List<Normativa> lista = new ArrayList<>();
-        Normativa elemento = null;
+        Normativa elemento;
 
         for (NormativaDTO nodo : resultadoBusqueda.getItems()) {
             elemento = new Normativa(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), filtro.getIdioma(), true, idiomaPorDefecto);
             lista.add(elemento);
         }
 
-        return new RespuestaNormativa(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista);
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+
+        return new RespuestaNormativa(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
     }
 
 }

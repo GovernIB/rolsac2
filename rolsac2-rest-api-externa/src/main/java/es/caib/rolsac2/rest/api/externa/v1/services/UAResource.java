@@ -1,7 +1,5 @@
 package es.caib.rolsac2.rest.api.externa.v1.services;
 
-import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
-import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.UnidadAdministrativa;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroUA;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
@@ -31,6 +29,8 @@ import javax.validation.ValidationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,16 +45,17 @@ public class UAResource {
     UnidadAdministrativaServiceFacade unidadAdministrativaService;
 
     @EJB
-    private SystemServiceFacade systemService;
+    SystemServiceFacade systemService;
 
     @EJB
-    private EntidadServiceFacade entidadService;
+    EntidadServiceFacade entidadService;
 
     /**
      * Listado de unidades administrativas.
      *
-     * @return
-     * @throws DelegateException
+     * @param lang   Código de idioma
+     * @param filtro Filtro de unidades administrativas
+     * @return Listado de unidades administrativas
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
@@ -63,8 +64,9 @@ public class UAResource {
     @Operation(operationId = "listarUA", summary = "Lista las Unidades Administrativas", description = "Lista las Unidades administrativas disponibles en funcion de los filtros")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaUA.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarUA(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de Unidades Administrativas: " + FiltroUA.SAMPLE, name = "filtro", content = @Content(example = FiltroUA.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroUA.class))) FiltroUA filtro) throws DelegateException, ExcepcionAplicacion, ValidationException {
+    public Response listarUA(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de Unidades Administrativas: " + FiltroUA.SAMPLE, name = "filtro", content = @Content(example = FiltroUA.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroUA.class))) FiltroUA filtro) throws ValidationException {
 
+        Instant start = Instant.now();
         if (filtro == null) {
             filtro = new FiltroUA();
         }
@@ -98,15 +100,14 @@ public class UAResource {
             fg.setAscendente(filtro.getOrden().getTipoOrden().compareTo("ASC") == 0);
         }
 
-        return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
     }
 
     /**
      * Para obtener una unidad administrativa.
      *
-     * @param codigo
-     * @return
-     * @throws Exception
+     * @param codigo Código de la unidad administrativa
+     * @return UnidadAdministrativa
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
@@ -115,8 +116,9 @@ public class UAResource {
     @Operation(operationId = "getUA", summary = "Obtiene una Unidad Administrativa", description = "Obtiene La Unidad Administrativa con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = "application/json", schema = @Schema(implementation = RespuestaUA.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = "application/json", schema = @Schema(implementation = RespuestaError.class)))
-    public Response getUA(@Parameter(description = "Código Unidad Administrativa", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
+    public Response getUA(@Parameter(description = "Código Unidad Administrativa", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
+        Instant start = Instant.now();
         UnidadAdministrativaFiltro fg = new UnidadAdministrativaFiltro();
 
         if (lang != null) {
@@ -125,18 +127,17 @@ public class UAResource {
             fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
         }
 
-        fg.setCodigo(new Long(codigo));
+        fg.setCodigo(Long.valueOf(codigo));
 
-        return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
 
     }
 
     /**
      * Para obtener el código DIR3 de la UA (el suyo o el antecesor) .
      *
-     * @param codigo
-     * @return
-     * @throws Exception
+     * @param codigo Código de la UA de la que se desea obtener el DIR3
+     * @return Codigo DIR3
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
@@ -145,22 +146,20 @@ public class UAResource {
     @Operation(operationId = "getCodDir3UA", summary = "Obtiene el codigo dir3 de la Unidad Administrativa", description = "Obtiene el codigo dir3 de la Unidad Administrativa ")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = "application/json", schema = @Schema(implementation = RespuestaSimple.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = "application/json", schema = @Schema(implementation = RespuestaError.class)))
-    public Response getCodDir3UA(@Parameter(description = "Codigo de la UA de la que se desea obtener el DIR3", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo) throws Exception, ValidationException {
+    public Response getCodDir3UA(@Parameter(description = "Codigo de la UA de la que se desea obtener el DIR3", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
+        Instant start = Instant.now();
         UnidadAdministrativaFiltro fg = new UnidadAdministrativaFiltro();
-
         fg.setCodigo(Long.valueOf(codigo));
-
-        return Response.ok(getRespuestaDir3(fg), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuestaDir3(fg, start), MediaType.APPLICATION_JSON).build();
 
     }
 
     /**
      * Para obtener el código DIR3 de la UA (el suyo o el antecesor) .
      *
-     * @param codigo
-     * @return
-     * @throws Exception
+     * @param codigo Código de la UA de la que se desea obtener el DIR3
+     * @return RespuestaSimple
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
@@ -169,14 +168,15 @@ public class UAResource {
     @Operation(operationId = "getCodDir3UA", summary = "Obtiene el codigo dir3 de la Unidad Administrativa", description = "Obtiene el codigo dir3 de la Unidad Administrativa ")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = "application/json", schema = @Schema(implementation = RespuestaSimple.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = "application/json", schema = @Schema(implementation = RespuestaError.class)))
-    public Response getCodsDir3UA(@Parameter(description = "Codigo de la UA de la que se desea obtener el DIR3", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo) throws Exception, ValidationException {
+    public Response getCodsDir3UA(@Parameter(description = "Codigo de la UA de la que se desea obtener el DIR3", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
+        Instant start = Instant.now();
         UnidadAdministrativaFiltro fg = new UnidadAdministrativaFiltro();
         fg.setCodigos(Stream.of(codigo.split(",")).map(Long::valueOf).collect(Collectors.toList()));
-        return Response.ok(getRespuestasDir3(fg), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuestasDir3(fg, start), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaUA getRespuesta(UnidadAdministrativaFiltro fg) throws DelegateException {
+    private RespuestaUA getRespuesta(UnidadAdministrativaFiltro fg, Instant start) {
         Pagina<UnidadAdministrativaDTO> resultadoBusqueda = unidadAdministrativaService.findByFiltroRest(fg);
         List<UnidadAdministrativa> lista = new ArrayList<>();
         UnidadAdministrativa elemento;
@@ -186,22 +186,36 @@ public class UAResource {
             lista.add(elemento);
         }
 
-        return new RespuestaUA(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista);
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+
+        return new RespuestaUA(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
     }
 
-    private RespuestaSimple getRespuestaDir3(UnidadAdministrativaFiltro fg) {
+    private RespuestaSimple getRespuestaDir3(UnidadAdministrativaFiltro fg, Instant start) {
         String dir3 = unidadAdministrativaService.obtenerCodigoDIR3(fg.getCodigo());
-        return new RespuestaSimple(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(1), 1l, dir3);
+
+        Instant finish = Instant.now();
+        long tiempoSegundos = Duration.between(start, finish).toMillis();
+
+        return new RespuestaSimple(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(1), 1L, dir3, tiempoSegundos);
     }
 
-    private RespuestaSimple getRespuestasDir3(UnidadAdministrativaFiltro fg) {
+    private RespuestaSimple getRespuestasDir3(UnidadAdministrativaFiltro fg, Instant start) {
         Map<Long, String> dir3 = unidadAdministrativaService.obtenerCodigosDIR3(fg.getCodigos());
-        String respuesta = "";
+        StringBuilder respuesta = new StringBuilder();
         if (dir3 != null && !dir3.isEmpty()) {
             for (Map.Entry<Long, String> entry : dir3.entrySet()) {
-                respuesta += entry.getKey() + ":" + entry.getValue() + ",";
+                respuesta.append(entry.getKey());
+                respuesta.append(":");
+                respuesta.append(entry.getValue());
+                respuesta.append(",");
             }
         }
-        return new RespuestaSimple(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(1), 1l, respuesta);
+
+        Instant finish = Instant.now();
+        long tiempoSegundos = Duration.between(start, finish).toMillis();
+
+        return new RespuestaSimple(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(1), 1L, respuesta.toString(), tiempoSegundos);
     }
 }

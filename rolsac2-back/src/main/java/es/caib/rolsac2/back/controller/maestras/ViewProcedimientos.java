@@ -7,10 +7,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilExport;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
-import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
-import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
@@ -54,6 +51,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     private MaestrasSupServiceFacade maestrasSupService;
 
     @EJB
+    private TemaServiceFacade temaServiceFacade;
+
+    @EJB
     private PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;
     private ProcedimientoGridDTO datoSeleccionado;
     private ProcedimientoFiltro filtro;
@@ -65,6 +65,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     private List<TipoFormaInicioDTO> listTipoFormaInicio;
     private List<TipoLegitimacionDTO> listTipoLegitimacion;
     private List<TipoViaDTO> listFinVias;
+    private List<TemaGridDTO> temasPadre;
     private List<TipoTramitacionDTO> listPlantillas;
     private List<PlatTramitElectronicaDTO> listPlataformas;
 
@@ -147,6 +148,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
         listTipoPublicoObjetivo = maestrasSupService.findAllTiposPublicoObjetivo();
         listFinVias = maestrasSupService.findAllTipoVia();
+        temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
         listPlantillas = new ArrayList<>();
         TipoTramitacionDTO plantillaFake = new TipoTramitacionDTO();
         Literal literal = Literal.createInstance();
@@ -546,11 +548,14 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         if (proc != null) {
             UtilJSF.anyadirMochila("PROC", proc);
         }
-        //Integer ancho = sessionBean.getScreenWidthInt();
-        //if (ancho == null) {
-        //    ancho = 1433;
-        //}
         Integer ancho = 1010;
+        /** Anyadimos también los tipos. **/
+        UtilJSF.anyadirMochila("listTipoFormaInicio", listTipoFormaInicio);
+        UtilJSF.anyadirMochila("listTipoSilencio", listTipoSilencio);
+        UtilJSF.anyadirMochila("listTipoLegitimacion", listTipoLegitimacion);
+        UtilJSF.anyadirMochila("listTipoProcedimiento", listTipoProcedimiento);
+        UtilJSF.anyadirMochila("listFinVias", listFinVias);
+        UtilJSF.anyadirMochila("temasPadre", temasPadre);
         UtilJSF.openDialog("dialogProcedimiento", modoAcceso, params, true, ancho, 733);
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Entity
 @SequenceGenerator(name = "procedimiento-tram-sequence", sequenceName = "RS2_PRCTRM_SEQ", allocationSize = 1)
-@Table(name = "RS2_PRCTRM", indexes = {@Index(name = "RS2_PRCTRM_PK_I", columnList = "PRTA_CODIGO")})
+@Table(name = "RS2_PRCTRM", indexes = {@Index(name = "RS2_PRCTRM_PK_I", columnList = "PRTA_CODIGO"), @Index(name = "RS2_PRCTRAM_IDX", columnList = "PRTA_CODPRWF"), @Index(name = "RS2_PRCTRAM_IDX2", columnList = "PRTA_TRMPRE"), @Index(name = "RS2_PRCTRAM_IDX3", columnList = "PRTA_TRMTRM"), @Index(name = "RS2_PRCTRAM_IDX4", columnList = "PRTA_LSTDOC"), @Index(name = "RS2_PRCTRAM_IDX5", columnList = "LSDO_CODIGO")})
 @NamedQueries({@NamedQuery(name = JProcedimientoTramite.FIND_BY_ID, query = "select p from JProcedimientoTramite p where p.codigo = :id"), @NamedQuery(name = JProcedimientoTramite.FIND_BY_PROC_ID, query = "select p from JProcedimientoTramite p where p.procedimiento.procedimiento.codigo = :id")})
 
 public class JProcedimientoTramite {

@@ -33,9 +33,6 @@ public class JProcedimientoDocumento {
     /**
      * Lista de documentos
      **/
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "DOCPR_CODLSD")
-    //private JListaDocumentos listaDocumentos;
     @Column(name = "DOCPR_CODLSD")
     private Long listaDocumentos;
 

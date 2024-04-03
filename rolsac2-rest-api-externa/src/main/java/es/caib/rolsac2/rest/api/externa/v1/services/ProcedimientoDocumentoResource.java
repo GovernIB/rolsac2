@@ -1,7 +1,5 @@
 package es.caib.rolsac2.rest.api.externa.v1.services;
 
-import es.caib.rolsac2.api.externa.v1.exception.DelegateException;
-import es.caib.rolsac2.api.externa.v1.exception.ExcepcionAplicacion;
 import es.caib.rolsac2.api.externa.v1.model.ProcedimientoDocumento;
 import es.caib.rolsac2.api.externa.v1.model.filters.FiltroProcedimientoDocumento;
 import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaError;
@@ -27,6 +25,8 @@ import javax.validation.ValidationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,103 +34,104 @@ import java.util.List;
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PROCEDIMIENTO_DOCUMENTO, name = Constantes.ENTIDAD_PROCEDIMIENTO_DOCUMENTO)
 public class ProcedimientoDocumentoResource {
 
-	@EJB
-	private ProcedimientoServiceFacade procedimientoService;
+    @EJB
+    ProcedimientoServiceFacade procedimientoService;
 
-	@EJB
-	private SystemServiceFacade systemService;
-
-
-	/**
-	 * Listado de procedimientoDocumentos.
-	 *
-	 * @param lang
-	 * @param filtro
-	 * @return
-	 * @throws DelegateException
-	 * @throws ExcepcionAplicacion
-	 * @throws ValidationException
-	 */
+    @EJB
+    SystemServiceFacade systemService;
 
 
-	@Produces({MediaType.APPLICATION_JSON})
-	@POST
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
-	@Path("/")
-	@Operation(operationId = "listar", summary = "Lista los procedimientos documentos", description = "Lista los procedimientos documentos disponibles en funcion de los filtros")
-	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoDocumento.class)))
-	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response listar(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de procedimiento documentos: " + FiltroProcedimientoDocumento.SAMPLE, name = "filtro", content = @Content(example = FiltroProcedimientoDocumento.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroProcedimientoDocumento.class))) FiltroProcedimientoDocumento filtro) throws DelegateException, ExcepcionAplicacion, ValidationException {
+    /**
+     * Listado de procedimientoDocumentos.
+     *
+     * @param lang   Código de idioma
+     * @param filtro Filtro de procedimientoDocumentos
+     * @return Listado de procedimientoDocumentos
+     * @throws ValidationException Manejo de excepciones
+     */
+    @Produces({MediaType.APPLICATION_JSON})
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+    @Path("/")
+    @Operation(operationId = "listar", summary = "Lista los procedimientos documentos", description = "Lista los procedimientos documentos disponibles en funcion de los filtros")
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoDocumento.class)))
+    @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
+    public Response listar(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de procedimiento documentos: " + FiltroProcedimientoDocumento.SAMPLE, name = "filtro", content = @Content(example = FiltroProcedimientoDocumento.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroProcedimientoDocumento.class))) FiltroProcedimientoDocumento filtro) throws ValidationException {
 
-		if (filtro == null) {
-			filtro = new FiltroProcedimientoDocumento();
-		}
+        Instant start = Instant.now();
+        if (filtro == null) {
+            filtro = new FiltroProcedimientoDocumento();
+        }
 
-		ProcedimientoDocumentoFiltro fg = filtro.toProcedimientoDocumentoFiltro();
+        ProcedimientoDocumentoFiltro fg = filtro.toProcedimientoDocumentoFiltro();
 
-		if (lang != null) {
-			fg.setIdioma(lang);
-		} else {
-			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
-		}
+        if (lang != null) {
+            fg.setIdioma(lang);
+        } else {
+            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+        }
 
-		// si no vienen los filtros se completan con los datos por defecto
-		if (filtro.getFiltroPaginacion() != null) {
-			fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
-			fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
-		}
+        // si no vienen los filtros se completan con los datos por defecto
+        if (filtro.getFiltroPaginacion() != null) {
+            fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
+            fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
+        }
 
-		// si viene el orden intentamos rellenarlo
-		if (filtro.getCampoOrden() != null) {
-			fg.setOrderBy(filtro.getCampoOrden().getCampo());
-			fg.setAscendente(filtro.getCampoOrden().getTipoOrden().compareTo("ASC") == 0);
-		}
+        // si viene el orden intentamos rellenarlo
+        if (filtro.getCampoOrden() != null) {
+            fg.setOrderBy(filtro.getCampoOrden().getCampo());
+            fg.setAscendente(filtro.getCampoOrden().getTipoOrden().compareTo("ASC") == 0);
+        }
 
-		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
-	}
+        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+    }
 
-	/**
-	 * Para obtener una procedimientoDocumento.
-	 *
-	 * @param codigo
-	 * @param lang
-	 * @return
-	 * @throws Exception
-	 * @throws ValidationException
-	 */
-	@Produces({MediaType.APPLICATION_JSON})
-	@POST
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
-	@Path("/{codigo}")
-	@Operation(operationId = "getPorId", summary = "Obtiene una procedimiento documento", description = "Obtiene el procedimiento documento con el código indicado")
-	@APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoDocumento.class)))
-	@APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-	public Response getPorId(@Parameter(description = "Código procedimiento documento", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
+    /**
+     * Para obtener una procedimientoDocumento.
+     *
+     * @param codigo Código del procedimientoDocumento
+     * @param lang   Código de  idioma
+     * @return Devuelve la procedimientoDocumento
+     * @throws Exception           Manejo de excepciones
+     * @throws ValidationException Manejo de excepciones
+     */
+    @Produces({MediaType.APPLICATION_JSON})
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+    @Path("/{codigo}")
+    @Operation(operationId = "getPorId", summary = "Obtiene una procedimiento documento", description = "Obtiene el procedimiento documento con el código indicado")
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoDocumento.class)))
+    @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
+    public Response getPorId(@Parameter(description = "Código procedimiento documento", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
 
-		ProcedimientoDocumentoFiltro fg = new ProcedimientoDocumentoFiltro();
+        Instant start = Instant.now();
+        ProcedimientoDocumentoFiltro fg = new ProcedimientoDocumentoFiltro();
 
-		if (lang != null) {
-			fg.setIdioma(lang);
-		} else {
-			fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
-		}
-		fg.setCodigo(new Long(codigo));
+        if (lang != null) {
+            fg.setIdioma(lang);
+        } else {
+            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+        }
+        fg.setCodigo(Long.valueOf(codigo));
 
-		return Response.ok(getRespuesta(fg), MediaType.APPLICATION_JSON).build();
-	}
+        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+    }
 
-	private RespuestaProcedimientoDocumento getRespuesta(ProcedimientoDocumentoFiltro filtro) throws DelegateException {
-		Pagina<ProcedimientoDocumentoDTO> resultadoBusqueda = procedimientoService.findProcedimientoDocumentoByFiltroRest(filtro);
+    private RespuestaProcedimientoDocumento getRespuesta(ProcedimientoDocumentoFiltro filtro, Instant start) {
+        Pagina<ProcedimientoDocumentoDTO> resultadoBusqueda = procedimientoService.findProcedimientoDocumentoByFiltroRest(filtro);
 
-		List<ProcedimientoDocumento> lista = new ArrayList<>();
-		ProcedimientoDocumento elemento = null;
+        List<ProcedimientoDocumento> lista = new ArrayList<>();
+        ProcedimientoDocumento elemento;
 
-		for (ProcedimientoDocumentoDTO nodo : resultadoBusqueda.getItems()) {
-			elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), filtro.getIdioma(), true);
-			lista.add(elemento);
-		}
+        for (ProcedimientoDocumentoDTO nodo : resultadoBusqueda.getItems()) {
+            elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), filtro.getIdioma(), true);
+            lista.add(elemento);
+        }
 
-		return new RespuestaProcedimientoDocumento(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista);
-	}
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+
+        return new RespuestaProcedimientoDocumento(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
+    }
 
 }

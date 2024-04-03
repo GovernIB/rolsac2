@@ -7,10 +7,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilExport;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
-import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
-import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
@@ -52,6 +49,10 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     @EJB
     PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;
+
+    @EJB
+    private TemaServiceFacade temaServiceFacade;
+
     private ServicioGridDTO datoSeleccionado;
     private ProcedimientoFiltro filtro;
     private LazyDataModel<ServicioGridDTO> lazyModel;
@@ -63,6 +64,8 @@ public class ViewServicios extends AbstractController implements Serializable {
     private List<TipoLegitimacionDTO> listTipoLegitimacion;
     private List<TipoTramitacionDTO> listPlantillas;
     private List<PlatTramitElectronicaDTO> listPlataformas;
+    private List<TipoViaDTO> listFinVias;
+    private List<TemaGridDTO> temasPadre;
 
     private String[] canalesSeleccionados;
 
@@ -146,6 +149,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
         listTipoPublicoObjetivo = maestrasSupService.findAllTiposPublicoObjetivo();
         listPlantillas = new ArrayList<>();
+        listFinVias = maestrasSupService.findAllTipoVia();
         TipoTramitacionDTO plantillaFake = new TipoTramitacionDTO();
         Literal literal = Literal.createInstance();
         List<Traduccion> traduccions = new ArrayList<>();
@@ -157,6 +161,8 @@ public class ViewServicios extends AbstractController implements Serializable {
         listPlantillas.add(plantillaFake);
         listPlantillas.addAll(maestrasSupService.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), null));
         listPlataformas = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
+        temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+
     }
 
     public void nuevoProcedimiento() {
@@ -336,11 +342,14 @@ public class ViewServicios extends AbstractController implements Serializable {
         if (serv != null) {
             UtilJSF.anyadirMochila("SERV", serv);
         }
-        //Integer ancho = sessionBean.getScreenWidthInt();
-        //if (ancho == null) {
-        //    ancho = 1433;
-        //}
         Integer ancho = 1010;
+        /** Anyadimos también los tipos. **/
+        UtilJSF.anyadirMochila("listTipoFormaInicio", listTipoFormaInicio);
+        UtilJSF.anyadirMochila("listTipoSilencio", listTipoSilencio);
+        UtilJSF.anyadirMochila("listTipoLegitimacion", listTipoLegitimacion);
+        UtilJSF.anyadirMochila("listTipoProcedimiento", listTipoProcedimiento);
+        UtilJSF.anyadirMochila("temasPadre", temasPadre);
+        UtilJSF.anyadirMochila("listFinVias", listFinVias);
         UtilJSF.openDialog("dialogServicio", modoAcceso, params, true, ancho, 743);
     }
 

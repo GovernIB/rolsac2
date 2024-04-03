@@ -67,6 +67,7 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
             LOG.debug("Es maestro. Recupera procesos a lanzar..,");
             final List<EntidadDTO> entidades = administracionSupServiceFacade.findEntidadActivas();
             for (EntidadDTO entidad : entidades) {
+
                 final List<String> procesos = procesosExecServiceFacade.calcularProcesosEjecucion(entidad.getCodigo());
                 for (final String p : procesos) {
                     try {

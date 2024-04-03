@@ -116,6 +116,7 @@ public class AlertaServiceFacadeBean implements AlertaServiceFacade {
         for (TypePerfiles perfil : iperfiles) {
             perfiles.add(perfil.toString());
         }
+
         List<Long> uas = new ArrayList<>();
         UsuarioDTO usuarioDTO = usuarioRepository.findSimpleByIdentificador(usuario, lang);
         if (usuarioDTO != null) {
@@ -123,9 +124,9 @@ public class AlertaServiceFacadeBean implements AlertaServiceFacade {
             for (UnidadAdministrativaGridDTO ua : unidadesAdministrativas) {
                 List<Long> uasPadres = unidadAdministrativaRepository.listarPadres(ua.getCodigo());
                 uas.addAll(uasPadres);
+                uas.add(ua.getCodigo());
             }
         }
-
 
         return alertaRepository.getAlertas(usuario, perfiles, uas);
     }

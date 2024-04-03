@@ -28,6 +28,7 @@ public class JProcedimientoWorkflow {
      */
     @Column(name = "PRWF_WF", nullable = false)
     private Boolean workflow = false;
+
     public final static boolean WORKFLOW_DEFINITIVO = false;
     public final static boolean WORKFLOW_EN_MODIFICACION = true;
     @Column(name = "PRWF_WFESTADO", nullable = false, length = 1)
@@ -38,6 +39,7 @@ public class JProcedimientoWorkflow {
 
     @Column(name = "PRWF_FECCAD")
     private Date fechaCaducidad;
+
     @Column(name = "PRWF_WFUSUA", length = 100)
     private String usuario;
 
@@ -73,7 +75,6 @@ public class JProcedimientoWorkflow {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_DPTIPLEGI", nullable = false)
     private JTipoLegitimacion datosPersonalesLegitimacion;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRWF_TIPPRO", nullable = false)

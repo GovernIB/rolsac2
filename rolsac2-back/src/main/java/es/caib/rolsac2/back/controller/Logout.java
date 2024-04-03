@@ -43,7 +43,12 @@ public class Logout {
                 session.invalidate();
             }
         } catch (ServletException e) {
-            LOG.error("Error durant el logout", e);
+            LOG.error("Error durant el logout (servlet exception)", e);
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+            // Atès que farem una redirecció fixam l'objecte flash perquè guardi el missatge fins la visualització
+            context.getExternalContext().getFlash().setKeepMessages(true);
+        } catch (Exception e) {
+            LOG.error("Error durant el logout (exception)", e);
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
             // Atès que farem una redirecció fixam l'objecte flash perquè guardi el missatge fins la visualització
             context.getExternalContext().getFlash().setKeepMessages(true);

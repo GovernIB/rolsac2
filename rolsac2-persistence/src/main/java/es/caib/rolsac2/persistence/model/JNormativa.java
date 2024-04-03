@@ -16,7 +16,6 @@ public class JNormativa extends BaseEntity {
 
     public static final String FIND_BY_ID = "normativa.FIND_BY_ID";
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "normativa-sequence")
     @Column(name = "NORM_CODIGO", nullable = false)
