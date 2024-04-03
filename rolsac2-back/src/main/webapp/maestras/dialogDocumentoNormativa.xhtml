@@ -65,7 +65,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogDocumentoNormativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.titulo']}"/>
+                                         nombreLiteral="#{labels['dict.titulo']}"
+                                         maxlength="512"
+                    />
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
@@ -78,7 +80,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogDocumentoNormativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.descripcion']}"/>
+                                         nombreLiteral="#{labels['dict.descripcion']}"
+                                         maxlength="4000"
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['dict.url']}:" for="txtUrl"/>
@@ -90,7 +94,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogDocumentoNormativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.url']}"/>
+                                         nombreLiteral="#{labels['dict.url']}"
+                                         maxlength="512"
+                    />
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
                     <h:outputText value="#{labels['dialogDocumentoNormativa.documento']}:"/>

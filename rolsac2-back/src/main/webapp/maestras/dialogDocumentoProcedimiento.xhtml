@@ -68,7 +68,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogDocumentoProcedimiento.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.titulo']}">
+                                         nombreLiteral="#{labels['dict.titulo']}"
+                                         maxlength="256"
+                                         >
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                     </my:literalComponent>
                 </div>
