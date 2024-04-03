@@ -136,6 +136,11 @@ public class SessionBean implements Serializable {
     private Boolean renderPanelHijas;
 
     /**
+     * Usuario
+     */
+    private UsuarioDTO usuario;
+
+    /**
      * Inicializacion de los datos de usuario
      */
     @PostConstruct
@@ -144,10 +149,15 @@ public class SessionBean implements Serializable {
         Application app = context.getApplication();
         current = app.getViewHandler().calculateLocale(context);
         lang = current.getDisplayLanguage().contains("ca") ? "ca" : "es";
+        current = Locale.forLanguageTag(lang);
         // inicializamos mochila
         mochilaDatos = new HashMap<>();
+        String idUsuario = seguridad.getIdentificadorUsuario();
+        usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(seguridad.getIdentificadorUsuario(), lang);
+
         cargarDatos();
         cargarAlertas();
+
     }
 
     public void cargarAlertas() {
@@ -162,8 +172,8 @@ public class SessionBean implements Serializable {
      * Método utilizado para la carga inicial de datos en la aplicación (entidad, UA...)
      */
     private void cargarDatos() {
-        String idUsuario = seguridad.getIdentificadorUsuario();
         perfiles = seguridad.getPerfiles();
+        String idUsuario = seguridad.getIdentificadorUsuario();
         if (perfiles != null) {
             perfilesBack = new ArrayList<>();
             for (TypePerfiles typePerfil : perfiles) {
@@ -185,9 +195,12 @@ public class SessionBean implements Serializable {
             roles = seguridad.getRoles(idEntidades);
             if (systemServiceBean.checkSesion(usuario.getCodigo())) {
                 SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
-                if (!TypePerfiles.SUPER_ADMINISTRADOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
+                //if (!TypePerfiles.SUPER_ADMINISTRADOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
+                if (TypePerfiles.ADMINISTRADOR_ENTIDAD.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
-                    unidadActiva = uaService.findUASimpleByID(sesion.getIdUa(), this.lang, null); //findById(sesion.getIdUa());
+                    unidadActiva = uaService.findUASimpleByID(sesion.getIdUa(), this.lang, null);
+                    //unidadActivaAux = unidadActiva.convertDTOtoGridDTO();
+                    unidadActivaAux = uaService.findUaRaizByEntidad(sesion.getIdEntidad()).convertDTOtoGridDTO();
                 } else if (TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
                     try {
@@ -324,7 +337,6 @@ public class SessionBean implements Serializable {
      */
     private Boolean checkPermisosPerfil(TypePerfiles perfilActivo) {
         Boolean perfilCorrecto = Boolean.FALSE;
-        UsuarioDTO usuario = obtenerUsuarioAutenticado();
         switch (perfilActivo) {
             case ADMINISTRADOR_ENTIDAD: {
                 for (String rol : roles) {
@@ -534,13 +546,13 @@ public class SessionBean implements Serializable {
     }
 
     public void actualizarUaSesion() {
-        SesionDTO sesionDTO = systemServiceBean.findSesionById(obtenerUsuarioAutenticado().getCodigo());
+        SesionDTO sesionDTO = systemServiceBean.findSesionById(usuario.getCodigo());
         sesionDTO.setIdUa(unidadActiva.getCodigo());
         systemServiceBean.updateSesion(sesionDTO);
     }
 
     public List<UnidadAdministrativaGridDTO> obtenerUasEntidad() {
-        return obtenerUsuarioAutenticado().getUnidadesAdministrativas().stream().filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).collect(Collectors.toList());
+        return usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).collect(Collectors.toList());
     }
 
     /**
@@ -549,11 +561,9 @@ public class SessionBean implements Serializable {
      * @param ent
      */
     public void actualizarEntidad(EntidadGridDTO ent) {
-        UsuarioDTO usuarioDTO = obtenerUsuarioAutenticado();
-        SesionDTO sesionDTO = systemServiceBean.findSesionById(usuarioDTO.getCodigo());
+        SesionDTO sesionDTO = systemServiceBean.findSesionById(usuario.getCodigo());
         if (ent != null && entidades.contains(ent)) {
             entidad = administracionSupServiceFacade.findEntidadById(ent.getCodigo());
-            UsuarioDTO usuario = obtenerUsuarioAutenticado();
             actualizarUnidadAdministrativa(usuario, perfil, sesionDTO);
             sesionDTO.setIdEntidad(entidad.getCodigo());
             sesionDTO.setIdUa(unidadActiva.getCodigo());
@@ -585,7 +595,6 @@ public class SessionBean implements Serializable {
      * Actualiza el listado de entidades del usuario
      */
     public void actualizarEntidades() {
-        UsuarioDTO usuario = obtenerUsuarioAutenticado();
         entidades.clear();
         for (EntidadGridDTO entidad : usuario.getEntidades()) {
             if (entidad.getActiva() && tieneRolEntidadRelacionada(entidad)) {
@@ -604,15 +613,6 @@ public class SessionBean implements Serializable {
         return perfil != null && perfil == typePerfil;
     }
 
-    /**
-     * Obtiene el usuario autenticado en la sesión
-     *
-     * @return
-     */
-    public UsuarioDTO obtenerUsuarioAutenticado() {
-        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(seguridad.getIdentificadorUsuario(), lang);
-        return usuario;
-    }
 
     public boolean isSuperAdministrador() {
         return this.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR;
@@ -629,7 +629,7 @@ public class SessionBean implements Serializable {
         if (idUa != null) {
             UnidadAdministrativaDTO ua = uaService.findUASimpleByID(idUa, this.lang, null);//findById(idUa);
             cambiarUnidadAdministrativa(ua);
-            SesionDTO sesionDTO = systemServiceBean.findSesionById(obtenerUsuarioAutenticado().getCodigo());
+            SesionDTO sesionDTO = systemServiceBean.findSesionById(usuario.getCodigo());
             sesionDTO.setFechaUltimaSesion(new Date());
             sesionDTO.setIdUa(ua.getCodigo());
             systemServiceBean.updateSesion(sesionDTO);
@@ -642,12 +642,26 @@ public class SessionBean implements Serializable {
         return uaService.getCountHijos(unidadActiva.getCodigo()) >= 1;
     }
 
+    private List<UnidadAdministrativaGridDTO> lasUnidadesHijasActivas = null;
+    private Long codigoUnidadActiva = null;
+
     public List<UnidadAdministrativaGridDTO> getUnidadesHijasActiva() {
-        return uaService.getHijosGrid(unidadActiva.getCodigo(), lang);
+        if ((lasUnidadesHijasActivas == null || lasUnidadesHijasActivas.isEmpty()) || !codigoUnidadActiva.equals(unidadActiva.getCodigo())) {
+            lasUnidadesHijasActivas = uaService.getHijosGrid(unidadActiva.getCodigo(), lang);
+            codigoUnidadActiva = unidadActiva.getCodigo();
+        }
+        return lasUnidadesHijasActivas; //uaService.getHijosGrid(unidadActiva.getCodigo(), lang);
     }
 
+    private List<UnidadAdministrativaGridDTO> lasUnidadesHijasUA = null;
+    private Long codigoUA = null;
+
     public List<UnidadAdministrativaGridDTO> getUnidadesHijasUA(Long idUa) {
-        return uaService.getHijosGrid(idUa, lang);
+        if ((lasUnidadesHijasUA == null || lasUnidadesHijasUA.isEmpty()) || !codigoUA.equals(idUa)) {
+            lasUnidadesHijasUA = uaService.getHijosGrid(idUa, lang);
+            codigoUA = idUa;
+        }
+        return lasUnidadesHijasUA; //uaService.getHijosGrid(idUa, lang);
     }
 
     public void renderPanelHijas() {
@@ -731,7 +745,7 @@ public class SessionBean implements Serializable {
      * @return
      */
     public List<UnidadAdministrativaDTO> obtenerUnidadesAdministrativasUsuario() {
-        return uaService.getUnidadesAdministrativasByUsuario(obtenerUsuarioAutenticado().getCodigo());
+        return uaService.getUnidadesAdministrativasByUsuario(usuario.getCodigo(), true);
     }
 
     /**
@@ -1305,5 +1319,17 @@ public class SessionBean implements Serializable {
         alertaService.marcarAlertaLeida(codigo, seguridad.getIdentificadorUsuario());
 
         this.alertasAvisos = alertaService.getAlertas(seguridad.getIdentificadorUsuario(), perfiles, lang);
+    }
+
+    public UsuarioDTO getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDTO usuario) {
+        this.usuario = usuario;
+    }
+
+    public UsuarioDTO obtenerUsuarioAutenticado() {
+        return usuario;
     }
 }

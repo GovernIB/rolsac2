@@ -127,7 +127,7 @@ public interface UnidadAdministrativaServiceFacade {
      * @param usuarioId
      * @return
      */
-    List<UnidadAdministrativaDTO> getUnidadesAdministrativasByUsuario(Long usuarioId);
+    List<UnidadAdministrativaDTO> getUnidadesAdministrativasByUsuario(Long usuarioId, boolean simplificado);
 
     /**
      * Obtiene el padre DIR3 de una UA
@@ -383,4 +383,12 @@ public interface UnidadAdministrativaServiceFacade {
      * @return UA raiz
      */
     UnidadAdministrativaGridDTO getUaRaizEntidad(Long codEntidad);
+
+    /**
+     * Obtiene la ua raiz de una entidad
+     *
+     * @param idEntidad
+     * @return
+     */
+    UnidadAdministrativaDTO findUaRaizByEntidad(Long idEntidad);
 }

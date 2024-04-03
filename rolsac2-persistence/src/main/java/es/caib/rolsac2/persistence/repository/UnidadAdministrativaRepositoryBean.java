@@ -89,33 +89,94 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public Boolean checkExsiteUa(Long idUa) {
+    public Boolean checkExisteUa(Long idUa) {
         String sql = "SELECT COUNT (j) FROM JUnidadAdministrativa j WHERE j.codigo = :codigo";
         Query query = entityManager.createQuery(sql, Long.class);
         query.setParameter("codigo", idUa);
         return (Long) query.getSingleResult() > 0;
     }
 
+    /**
+     * Devuelve la lista de padres de una unidad administrativa. <br />
+     * El orden es desde la raiz hacia abajo.<br />
+     * Es importante tener en cuenta que la propia ua no cuenta como padre.<br />
+     *
+     * @param idUa Identificador de la unidad administrativa
+     * @return Lista de padres de la unidad administrativa
+     */
     @Override
     public List<Long> listarPadres(Long idUa) {
-        String sql = "SELECT j FROM JUnidadAdministrativa j WHERE j.codigo = :codigo";
-        Query query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
-        query.setParameter("codigo", idUa);
-        List<JUnidadAdministrativa> juas = query.getResultList();
+        if (idUa == null) {
+            return new ArrayList<>();
+        }
+        List<Long> padres = listarPadresRecursivo(idUa);
+        if (padres == null) {
+            padres = new ArrayList<>();
+        }
+        Collections.reverse(padres);
+        return padres;
+    }
+
+    /**
+     * Metodo recursivo para listar los padres de una unidad administrativa.
+     *
+     * @param codigoUA Codigo de la unidad administrativa
+     * @return Lista de padres de la unidad administrativa
+     */
+    private List<Long> listarPadresRecursivo(Long codigoUA) {
+        JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigoUA);
         List<Long> padres = new ArrayList<>();
-        if (juas != null && !juas.isEmpty()) {
-            JUnidadAdministrativa jua = juas.get(0);
-            JUnidadAdministrativa padre = jua.getPadre();
-            padres.add(jua.getCodigo()); //Se anyade a si mismo
-            while (padre != null) {
-                padres.add(padre.getCodigo());
-                padre = padre.getPadre();
+
+        // Si la unidad administrativa tiene padre, se añade a la lista y se llama recursivamente
+        if (jua != null && jua.getPadre() != null) {
+            padres.add(jua.getPadre().getCodigo());
+            padres.addAll(listarPadresRecursivo(jua.getPadre().getCodigo()));
+        }
+        return padres;
+    }
+
+    /**
+     * Devuelve la lista de hijos de una unidad administrativa. <br />
+     * El orden en este caso no sigue un orden en concreto ya que al ser recursivo hacia abajo, es dificil mantener un orden (si las UAs tuvieran un peso segun la profundidad sería posible).<br />
+     * Es importante tener en cuenta que la propia ua no cuenta como hijo.<br />
+     *
+     * @param idUa Identificador de la unidad administrativa
+     * @return Lista de padres de la unidad administrativa
+     */
+    @Override
+    public List<Long> listarHijos(Long idUa) {
+        if (idUa == null) {
+            return new ArrayList<>();
+        }
+        List<Long> hijos = listarHijosRecursivo(idUa);
+        if (hijos == null) {
+            hijos = new ArrayList<>();
+        }
+        return hijos;
+    }
+
+    /**
+     * Metodo recursivo para listar los hijos de una unidad administrativa.
+     *
+     * @param codigoUA Codigo de la unidad administrativa
+     * @return Lista de hijos de la unidad administrativa
+     */
+    private List<Long> listarHijosRecursivo(Long codigoUA) {
+        List<Long> juasHijos = entityManager.createQuery("SELECT ua.codigo FROM JUnidadAdministrativa ua WHERE ua.padre.codigo = :codigoUA", Long.class).setParameter("codigoUA", codigoUA).getResultList();
+        List<Long> hijos;
+
+        // Si la unidad administrativa tiene hijos, se añade a la lista y se llama recursivamente para que añada a los hijos de los hijos
+        if (juasHijos != null) {
+            hijos = new ArrayList<>();
+            for (Long uaHijo : juasHijos) {
+                hijos.add(uaHijo);
+                hijos.addAll(listarHijosRecursivo(uaHijo));
             }
+        } else {
+            hijos = new ArrayList<>();
         }
 
-        Collections.reverse(padres);
-
-        return padres;
+        return hijos;
     }
 
     private UnidadAdministrativaDTO getPadre(String idioma, JUnidadAdministrativa jUnidadAdministrativa) {
@@ -555,6 +616,47 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
 
         }
         return uaRaiz;
+    }
+
+
+    @Override
+    public JUnidadAdministrativa obtenerUnidadAdministrativaRaiz(Long idEntidad) {
+        Query query = entityManager.createQuery("select ua from JUnidadAdministrativa ua  where ua.entidad.codigo = :codEntidad and ua.padre is null");
+        query.setParameter("codEntidad", idEntidad);
+        List<JUnidadAdministrativa> juas = query.getResultList();
+        if (juas != null && !juas.isEmpty()) {
+            return juas.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Convierte una junidad administrativa a un DTO sencillo
+     *
+     * @param junidad
+     * @param incluirPadre
+     * @return
+     */
+    private UnidadAdministrativaDTO converterSencillo(JUnidadAdministrativa junidad, boolean incluirPadre) {
+        UnidadAdministrativaDTO unidadAdministrativaDTO = new UnidadAdministrativaDTO();
+        unidadAdministrativaDTO.setCodigo(junidad.getCodigo());
+        unidadAdministrativaDTO.setCodigoDIR3(junidad.getCodigoDIR3());
+        unidadAdministrativaDTO.setIdentificador(junidad.getIdentificador());
+        Literal nombre = new Literal();
+        for (JUnidadAdministrativaTraduccion trad : junidad.getTraducciones()) {
+            if (trad.getIdioma().equals("ca")) {
+                nombre.add(new Traduccion("ca", trad.getNombre()));
+            } else if (trad.getIdioma().equals("es")) {
+                nombre.add(new Traduccion("es", trad.getNombre()));
+            }
+        }
+        unidadAdministrativaDTO.setNombre(nombre);
+        unidadAdministrativaDTO.setOrden(junidad.getOrden());
+        if (incluirPadre && junidad.getPadre() != null) {
+            unidadAdministrativaDTO.setPadre(converterSencillo(junidad.getPadre(), false));
+        }
+        return unidadAdministrativaDTO;
     }
 
     @Override

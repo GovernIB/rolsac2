@@ -16,7 +16,7 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     UnidadAdministrativaDTO findUASimpleByID(Long id, String idioma, Long idEntidadRoot);
 
-    Boolean checkExsiteUa(Long idUa);
+    Boolean checkExisteUa(Long idUa);
 
     Optional<JUnidadAdministrativa> findById(String id);
 
@@ -43,6 +43,8 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     List<Long> listarPadres(Long idUa);
 
+    List<Long> listarHijos(Long idUa);
+
     List<UnidadAdministrativaDTO> getHijosSimple(Long idUnitat, String idioma, UnidadAdministrativaDTO padre);
 
     List<JUnidadAdministrativa> getUnidadesAdministrativaByUsuario(Long usuarioId);
@@ -60,7 +62,7 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     PathUA getPath(UnidadAdministrativaGridDTO uaInstructor);
 
     UnidadOrganicaDTO obtenerUnidadRaiz(Long idEntidad);
- 
+
     List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad, String idioma);
 
     Pagina<IndexacionDTO> getUAsParaIndexacion(Long idEntidad);
@@ -90,4 +92,6 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     List<UnidadAdministrativaGridDTO> getUnidadesAdministrativaGridDTOByUsuario(Long codigo, String lang);
 
     UnidadAdministrativaGridDTO getUaRaizEntidad(Long codEntidad);
+
+    JUnidadAdministrativa obtenerUnidadAdministrativaRaiz(Long idEntidad);
 }
