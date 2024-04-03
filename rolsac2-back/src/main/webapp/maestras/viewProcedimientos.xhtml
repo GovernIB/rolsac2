@@ -54,7 +54,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <div class="btn-group">
                         <p:commandButton styleClass="btn btn-danger btn-molla" process="@this @form"
                                          actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
-                                         value="#{sessionBean.unidadActivaAux.nombre.getTraduccion(sessionBean.lang)}"
+                                         value="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}"
                                          update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
                         </p:commandButton>
                         <button type="button"
@@ -67,7 +67,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                     var="ua">
                                 <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                 value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                                                 value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
                                                  update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
                                     <f:actionListener binding="#{sessionBean.cambiarUaActivaAux(ua)}"/>
                                 </p:commandButton>
@@ -81,7 +81,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <div class="btn-group">
                                 <p:commandButton styleClass="btn btn-danger btn-molla" process="@this"
                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                 value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                                                 value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
                                                  update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
                                 </p:commandButton>
                                 <button type="button"
@@ -95,7 +95,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                             var="ua">
                                         <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                          actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                                                         value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
                                                          update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
                                         </p:commandButton>
                                     </c:forEach>
@@ -135,7 +135,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                     var="ua">
                                                 <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                                 value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
+                                                                 value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
                                                                  update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
                                                 </p:commandButton>
                                             </c:forEach>
