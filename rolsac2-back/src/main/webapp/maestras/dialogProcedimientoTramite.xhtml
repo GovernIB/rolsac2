@@ -32,7 +32,7 @@
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:5px"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogProcedimientoTramite.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -54,6 +54,11 @@
     </ui:define>
 
     <ui:define name="contentDialog">
+        <h:outputStylesheet library="css">
+            .ui-chkbox ~ label {
+                font-size: 1.2em;
+            }
+        </h:outputStylesheet>
         <p:growl id="messagesDialog"
                  globalOnly="false"
                  showDetail="false"
@@ -64,17 +69,15 @@
                      rendered="#{!empty dialogProcedimientoTramite.nombreProcedimiento.getTraduccionConValor(sessionBean.lang, 'ca')}">
                 <div class="form-row">
                     <div class="form-group">
-                        <h6 id="txtTituloNombre"
+                        <h6 id="txtTituloNombre" style="font-size:1.2em"
                             class="font-weight-bold mt-3">#{dialogProcedimientoTramite.nombreProcedimiento.getTraduccionConValor(sessionBean.lang, 'ca')}</h6>
                     </div>
                 </div>
             </p:panel>
             <p:panel id="panelDatosPublicacion" header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}">
                 <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
-                        </p>
+                    <div class="form-group col-md-2" style="margin-top:-5px">
+                        <p:outputLabel styleClass="mb-1" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                         <p:inputText id="txtCodigo" value="#{dialogProcedimientoTramite.data.codigo}"
                                      styleClass="w95" disabled="true"/>
                     </div>
@@ -456,7 +459,7 @@
         <div class="ui-g-12 ui-md-3 pr-1 ">
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimientoTramite.modelos']}</p>
+                    <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em">#{labels['dialogProcedimientoTramite.modelos']}</p>
                 </div>
                 <div class="col-10 p-1">
                     <p:dataTable id="dataDocumentosModelo" var="td"
@@ -476,7 +479,7 @@
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}"/>
+                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}"/>
                         </p:column>
 
                     </p:dataTable>
@@ -506,7 +509,7 @@
             </div>
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimientoTramite.documentosRelacionados']}</p>
+                    <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em">#{labels['dialogProcedimientoTramite.documentosRelacionados']}</p>
                 </div>
                 <div class="col-10 p-1">
                     <p:dataTable id="dataDocumentosRelacionados" var="td"
@@ -525,7 +528,7 @@
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}"/>
+                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}"/>
                         </p:column>
                     </p:dataTable>
                 </div>

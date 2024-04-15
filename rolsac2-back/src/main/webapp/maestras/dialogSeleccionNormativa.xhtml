@@ -20,7 +20,8 @@
                              update="dataTable messagesDialogSelec"/>
             <p:toolbar id="toolbar">
                 <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                    <p:outputLabel value="#{labels['dict.filtro']}"/>:
+                    <p:inputText id="filtroBusqueda"
                                                                                      value="#{dialogSeleccionNormativa.filtroTexto}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
                                      update="dataTable messagesDialogSelec"
@@ -59,22 +60,17 @@
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
-                <!--
-                <p:column sortBy="#{pubobjent.codigo}">
-                    <f:facet name="header">#{labels['dict.codigo']}</f:facet>
-                    <h:outputText value="#{pubobjent.codigo}"/>
-                </p:column> -->
                 <p:column sortBy="#{pubobjent.identificador}">
                     <f:facet name="header">#{labels['dict.identificador']}</f:facet>
-                    <h:outputText value="#{pubobjent.identificador}"/>
+                    <p:outputLabel  value="#{pubobjent.identificador}"/>
                 </p:column>
                 <p:column sortBy="#{pubobjent.tipo}">
                     <f:facet name="header">#{labels['viewPublicoObjetivoEntidad.tipoPublicoObjetivo']}</f:facet>
-                    <h:outputText value="#{pubobjent.tipo}"/>
+                    <p:outputLabel value="#{pubobjent.tipo}"/>
                 </p:column>
                 <p:column sortBy="#{pubobjent.entidad}">
                     <f:facet name="header">#{labels['viewPublicoObjetivoEntidad.entidad']}</f:facet>
-                    <h:outputText value="#{pubobjent.entidad}"/>
+                    <p:outputLabel value="#{pubobjent.entidad}"/>
                 </p:column>
             </p:dataTable>
 

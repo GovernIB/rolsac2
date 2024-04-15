@@ -151,7 +151,7 @@ public class ViewTipoFormaInicio extends AbstractController implements Serializa
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogTipoFormaInicio", modoAcceso, params, true, 780, 320);
+        UtilJSF.openDialog("dialogTipoFormaInicio", modoAcceso, params, true, 780, 330);
     }
 
 

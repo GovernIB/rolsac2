@@ -23,8 +23,8 @@
                         rendered="#{dialogConfiguracionAlerta.isModoAlta()}"/>
     </ui:define>
     <ui:define name="contentIdioma">
-        <span class="pi pi-tag" style="margin-top:5px"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <span class="pi pi-tag" style="margin-top:10px"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogConfiguracionAlerta.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -51,7 +51,7 @@
                      escape="false"/>
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogConfiguracionAlerta.data.codigo}"
@@ -59,7 +59,7 @@
                 </div>
 
                     <div class="ui-g-12 ui-md-2 ui-lg-1">
-                        <h:outputText value="#{labels['dict.descripcion']}: *" for="txtDescripcion"/>
+                        <p:outputLabel value="#{labels['dict.descripcion']}:" for="txtDescripcion"/>
                     </div>
                     <div class="ui-g-12 ui-md-10 ui-lg-5">
                         <my:literalComponent id="txtDescripcion" styleClass="w95"

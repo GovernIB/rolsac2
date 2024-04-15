@@ -25,8 +25,8 @@
     </ui:define>
     <ui:define name="contentIdioma">
 
-        <span class="pi pi-tag mt-1"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <span class="pi pi-tag mt-2"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogUsuario.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -64,7 +64,7 @@
             <div class="row">
                 <div class="ui-g-12 ui-md-8 pl-4 panel-container">
                     <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                        <p:outputLabel styleClass="d-inline"  value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                     </div>
                     <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <p:inputText id="txtCodigo" value="#{dialogUsuario.data.codigo}"
@@ -143,7 +143,7 @@
 
 
                                         <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                            <h:outputText value="#{td.nombre.getTraduccion(dialogUsuario.idioma)}"/>
+                                            <p:outputLabel value="#{td.nombre.getTraduccion(dialogUsuario.idioma)}"/>
                                         </p:column>
 
                                     </p:dataTable>
@@ -188,7 +188,7 @@
                                                 global="false"/>
 
                                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w75">
-                                            <h:outputText value="#{td.descripcion.getTraduccion(sessionBean.lang)}"/>
+                                            <p:outputLabel value="#{td.descripcion.getTraduccion(sessionBean.lang)}"/>
                                         </p:column>
 
                                     </p:dataTable>

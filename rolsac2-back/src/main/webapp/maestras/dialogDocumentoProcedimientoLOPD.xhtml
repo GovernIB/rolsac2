@@ -30,8 +30,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="contentIdioma">
 
-        <span class="pi pi-tag" style="margin-top:5px"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <span class="pi pi-tag" style="margin-top:10px"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogDocumentoProcedimientoLOPD.idioma}" styleClass="botoneraRed">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -40,7 +40,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogDocumentoProcedimientoLOPD.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
-                         style="margin-left:10px"
+                         style="margin-left:10px;height:35px;"
                          update="messagesDialog"
                          process="@this"
                          rendered="#{!dialogDocumentoProcedimientoLOPD.isModoConsulta() &amp;&amp; dialogDocumentoProcedimientoLOPD.tradExiste()}"/>
@@ -60,24 +60,17 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:outputLabel value="#{labels['dict.plantilla']}:"  />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <!--<c:forEach items="#{sessionBean.getIdiomasPermitidosList()}" var="idioma">
-                        <p:column rendered="#{!empty dialogDocumentoProcedimientoLOPD.getPlantilla(idioma)}">
-                            <h:outputLink value="#{dialogDocumentoProcedimientoLOPD.getPlantilla(idioma)}" style="margin-right:15px;font-weight: bold; color: #177ff0;" target="_blank">
-                                    <h:outputText value="#{labels['dict.' += idioma]}" />
-                            </h:outputLink>
-                        </p:column>
-                    </c:forEach>-->
                     <c:forEach items="#{sessionBean.getIdiomasPermitidosList()}" var="idioma">
                         <p:column rendered="#{!empty sessionBean.entidad.lopdPlantilla.getTraduccion(idioma)}">
                             <h:outputLink value="#{sessionBean.entidad.lopdPlantilla.getTraduccion(idioma)}" style="margin-right:15px;font-weight: bold; color: #177ff0;" target="_blank">
-                                <h:outputText value="#{labels['dict.' += idioma]}" />
+                                <p:outputLabel value="#{labels['dict.' += idioma]}" />
                             </h:outputLink>
                         </p:column>
                     </c:forEach>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
-                    <h:outputText value="#{labels['dict.documento']}*:"/>
+                    <p:outputLabel value="#{labels['dict.documento']}*:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-4">
                     <p:panel id="documentosMulti">

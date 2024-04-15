@@ -28,9 +28,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
 	 <ui:define name="contentIdioma">
-
-        <span class="pi pi-tag" style="margin-top:5px"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+         <h:outputStylesheet library="css">
+         .ui-chkbox-box ~ span  {
+         font-size: 1.1em;
+         }
+         </h:outputStylesheet>
+        <span class="pi pi-tag" style="margin-top:10px"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogTipoTramitacion.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -62,7 +66,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtCodigo" value="#{dialogTipoTramitacion.data.codigo}"

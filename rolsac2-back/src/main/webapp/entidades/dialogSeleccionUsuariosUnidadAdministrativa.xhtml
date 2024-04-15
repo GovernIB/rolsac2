@@ -25,10 +25,10 @@
                              style="display:none" ajax="false"
                              action="#{dialogSeleccionUsuariosUnidadAdministrativa.buscar}"
                              update="dataTable messagesDialog"/>
-            <p:toolbar id="toolbar">
+            <p:toolbar id="toolbar" styleClass="mb-2">
                 <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>:
-                    <p:inputText id="filtroBusqueda"
+                    <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
+                    <p:inputText id="filtroBusqueda"  styleClass="mr-2"
                                  value="#{dialogSeleccionUsuariosUnidadAdministrativa.filtroTexto}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
                                      update="dataTable messagesDialog"
@@ -69,15 +69,15 @@
                 </f:facet>
                 <p:column sortBy="#{usuario.identificador}">
                     <f:facet name="header">#{labels['dict.identificador']}</f:facet>
-                    <h:outputText value="#{usuario.identificador}"/>
+                    <p:outputLabel value="#{usuario.identificador}"/>
                 </p:column>
                 <p:column sortBy="#{usuario.nombre}">
                     <f:facet name="header">#{labels['dict.nombre']}</f:facet>
-                    <h:outputText value="#{usuario.nombre}"/>
+                    <p:outputLabel value="#{usuario.nombre}"/>
                 </p:column>
                 <p:column sortBy="#{usuario.email}">
                     <f:facet name="header">#{labels['dict.email']}</f:facet>
-                    <h:outputText value="#{usuario.email}"/>
+                    <p:outputLabel value="#{usuario.email}"/>
                 </p:column>
             </p:dataTable>
 
@@ -114,7 +114,7 @@
                     <p:ajax event="rowSelect" global="false"/>
                     <p:ajax event="rowUnselect"/>
                     <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center">
-                        <h:outputText value="#{td.identificador}"/>
+                        <p:outputLabel value="#{td.identificador}"/>
                     </p:column>
                 </p:dataTable>
             </div>

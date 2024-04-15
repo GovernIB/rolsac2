@@ -23,8 +23,8 @@
     </ui:define>
     <ui:define name="contentIdioma">
 
-        <span class="pi pi-tag mt-1"/>
-        <h:outputText value="#{labels['dict.idioma']}:" styleClass="mr-1 mt-1"/>
+        <span class="pi pi-tag mt-1" style="padding-top:5px" />
+        <p:outputLabel value="#{labels['dict.idioma']}:" styleClass="mr-1"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogNormativa.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -36,7 +36,7 @@
         <p:commandButton action="#{dialogNormativa.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
-                         style="margin-left:10px"
+                         style="margin-left:10px; height:35px;"
                          update="messagesDialog"
                          process="@this"
                          rendered="#{!dialogNormativa.isModoConsulta() and dialogNormativa.tradExiste()}">
@@ -45,6 +45,14 @@
         </p:commandButton>
     </ui:define>
     <ui:define name="contentDialog">
+        <h:outputStylesheet library="css">
+            .ui-chkbox-box ~ span  {
+                font-size: 1.2em;
+            }
+            .ui-chkbox ~ label {
+                font-size: 1.2em;
+            }
+        </h:outputStylesheet>
         <p:growl id="messagesDialog"
                  globalOnly="false"
                  showDetail="false"
@@ -80,9 +88,7 @@
                         </my:literalComponent>
                     </div>
                     <div class="form-group col-md-2">
-                        <p class="mb-1">
-                            <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
-                        </p>
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                         <p:inputText id="txtCodigo" value="#{dialogNormativa.data.codigo}"
                                      styleClass="w95" disabled="true" maxlength="50"/>
                     </div>
@@ -105,8 +111,8 @@
                         </p:selectOneMenu>
                     </div>
                     <div class="form-group col-md-4">
-                        <p class="mb-1">
-                            <h:outputText value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
+                        <p class="mb-0">
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
                         </p>
                         <p:inputText id="txtNumero" value="#{dialogNormativa.data.numero}"
                                      placeholder="NNNNN/YYYY"
@@ -152,12 +158,12 @@
                                      disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
                     </div>
                     <div class="form-group col-md-4">
-                        <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dialogNormativa.fechaBoletin']}:"
+                            <p:outputLabel  value="#{labels['dialogNormativa.fechaBoletin']}:" styleClass="mb-1 pt-0 mt-0"
                                           for="txtFechaBoletin"/>
-                        </p>
-                        <p:calendar id="txtFechaBoletin" disabled="#{dialogNormativa.isModoConsulta()}"
+                        <p>
+                            <p:calendar id="txtFechaBoletin" disabled="#{dialogNormativa.isModoConsulta()}"
                                     value="#{dialogNormativa.data.fechaBoletin}" pattern="dd/MM/yyyy" showOn="button"/>
+                        </p>
                     </div>
                 </div>
                 <div class="form-row">
@@ -182,7 +188,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <p class="mb-1">
-                            <h:outputText value="#{labels['dialogNormativa.nombreResponsable']}:"
+                            <p:outputLabel value="#{labels['dialogNormativa.nombreResponsable']}:"
                                           for="txtNombreResponsable"/>
                         </p>
                         <my:literalComponent id="txtNombreResponsable"
@@ -232,7 +238,7 @@
 
 
                         <p:column styleClass="w75">
-                            <h:outputText value="#{doc.titulo.getTraduccion(dialogNormativa.idioma)}"/>
+                            <p:outputLabel value="#{doc.titulo.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
 
                     </p:dataTable>
@@ -294,7 +300,7 @@
 
 
                             <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                <h:outputText value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
+                                <p:outputLabel value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
                             </p:column>
 
                         </p:dataTable>
@@ -345,7 +351,7 @@
 
 
                         <p:column headerText="#{labels['dict.nombre']}" styleClass="w75">
-                            <h:outputText value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
+                            <p:outputLabel value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
 
                     </p:dataTable>
@@ -385,7 +391,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dict.descripcion']}" styleClass="w75">
-                            <h:outputText value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
+                            <p:outputLabel value="#{td.nombre.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
 
                     </p:dataTable>
@@ -422,10 +428,10 @@
                         />
 
                         <p:column headerText="#{labels['dialogNormativa.tipoAfectacion']}" styleClass="w25">
-                            <h:outputText value="#{td.tipo.descripcion.getTraduccion(dialogNormativa.idioma)}"/>
+                            <p:outputLabel value="#{td.tipo.descripcion.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
                         <p:column headerText="#{labels['dialogNormativa.normativaAfectada']}" styleClass="w75">
-                            <h:outputText value="#{td.normativaAfectada.titulo.getTraduccion(dialogNormativa.idioma)}"/>
+                            <p:outputLabel value="#{td.normativaAfectada.titulo.getTraduccion(dialogNormativa.idioma)}"/>
                         </p:column>
 
                     </p:dataTable>

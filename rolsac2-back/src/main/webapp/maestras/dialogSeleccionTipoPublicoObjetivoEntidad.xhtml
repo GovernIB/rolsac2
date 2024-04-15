@@ -23,18 +23,18 @@
             <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{dialogSeleccionTipoPublicoObjetivoEntidad.buscar}"
                              update="dataTable messagesDialog"/>
-            <p:toolbar id="toolbar">
+            <p:toolbar id="toolbar" styleClass="mb-1">
                 <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
-                                                                                     value="#{dialogSeleccionTipoPublicoObjetivoEntidad.filtroTexto}"/>
+                    <p:outputLabel value="#{labels['dict.filtro']}" styleClass="ml-1" />:
+                    <p:inputText id="filtroBusqueda"      value="#{dialogSeleccionTipoPublicoObjetivoEntidad.filtroTexto}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
-                                     update="dataTable messagesDialog"
+                                     update="dataTable messagesDialog" styleClass="ml-1 estiloGrande"
                                      actionListener="#{dialogSeleccionTipoPublicoObjetivoEntidad.buscar()}" process="@form"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
                                      actionListener="#{dialogSeleccionTipoPublicoObjetivoEntidad.anadirPubObjEntLista()}"
-                                     update="messagesDialog dataTablePubObjEnt"
+                                     update="messagesDialog dataTablePubObjEnt" styleClass="estiloGrande mt-1"
                                      disabled="#{empty dialogSeleccionTipoPublicoObjetivoEntidad.datoSeleccionado}"
                                      icon="pi pi-plus"></p:commandButton>
                 </f:facet>
@@ -64,25 +64,13 @@
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
 
-                <!--<p:column sortBy="#{pubobjent.codigo}">
-                    <f:facet name="header">#{labels['dict.codigo']}</f:facet>
-                    <h:outputText value="#{pubobjent.codigo}"/>
-                </p:column>
-                <p:column sortBy="#{pubobjent.identificador}">
-                    <f:facet name="header">#{labels['dict.identificador']}</f:facet>
-                    <h:outputText value="#{pubobjent.identificador}"/>
-                </p:column>-->
                 <p:column sortBy="#{pubobjent.tipo}">
                     <f:facet name="header">#{labels['viewPublicoObjetivoEntidad.tipoPublicoObjetivo']}</f:facet>
-                    <h:outputText value="#{pubobjent.tipo.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
+                    <p:outputLabel value="#{pubobjent.tipo.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
                 </p:column>
-                <!--<p:column sortBy="#{pubobjent.identificador}">
-                    <f:facet name="header">#{labels['dict.identificador']}</f:facet>
-                    <h:outputText value="#{pubobjent.identificador}"/>
-                </p:column>-->
                 <p:column sortBy="#{pubobjent.descripcion}">
                     <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
-                    <h:outputText value="#{pubobjent.descripcion.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
+                    <p:outputLabel value="#{pubobjent.descripcion.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
                 </p:column>
                 <p:column sortBy="#{pubobjent.empleadoPublico}">
                     <f:facet name="header">#{labels['dict.esEmpleadoPublico']}</f:facet>
@@ -114,7 +102,7 @@
                     <p:ajax event="rowSelect" global="false"/>
                     <p:ajax event="rowUnselect"/>
                     <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                        <h:outputText value="#{td.descripcion.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
+                        <p:outputLabel value="#{td.descripcion.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
                     </p:column>
                 </p:dataTable>
             </div>

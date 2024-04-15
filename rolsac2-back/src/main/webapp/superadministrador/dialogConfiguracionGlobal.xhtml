@@ -36,7 +36,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:panel>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtPropiedad"/>
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtPropiedad"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtPropiedad" value="#{dialogConfiguracionGlobal.data.propiedad}"
@@ -47,7 +47,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             </div>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dict.valor']}:" for="txtValor"/>
+                    <p:outputLabel value="#{labels['dict.valor']}:" for="txtValor"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtValor" value="#{dialogConfiguracionGlobal.data.valor}"
@@ -58,7 +58,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             </div>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dict.descripcion']}:" for="txtDescripcion"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="txtDescripcion"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputTextarea id="txtDescripcion" value="#{dialogConfiguracionGlobal.data.descripcion}"

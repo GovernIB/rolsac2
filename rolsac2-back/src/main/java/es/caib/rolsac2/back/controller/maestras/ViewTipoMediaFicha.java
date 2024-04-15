@@ -151,7 +151,7 @@ public class ViewTipoMediaFicha extends AbstractController implements Serializab
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoMediaFicha", modoAcceso, params, true, 800, 315);
+        UtilJSF.openDialog("dialogTipoMediaFicha", modoAcceso, params, true, 800, 330);
 
 
     }

@@ -148,7 +148,7 @@ public class ViewUsuario extends AbstractController implements Serializable {
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogUsuario", modoAcceso, params, true, 935, 410);
+        UtilJSF.openDialog("dialogUsuario", modoAcceso, params, true, 935, 445);
     }
 
     public void borrarUsuario() {

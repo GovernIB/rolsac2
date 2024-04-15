@@ -32,8 +32,8 @@
         </p:panel>
     </ui:define>
     <ui:define name="contentIdioma">
-        <span class="pi pi-tag" style="margin-top:5px"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <span class="pi pi-tag" style="margin-top:15px"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogProcedimiento.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -44,7 +44,7 @@
         <p:commandButton action="#{dialogProcedimiento.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
-                         style="margin-left:10px"
+                         style="margin-left:10px;font-size:1.2em; height: 35px;margin-top:1px"
                          update="messagesDialog"
                          process="@this"
                          rendered="#{!dialogProcedimiento.isModoConsulta() and dialogProcedimiento.tradExiste()}">
@@ -73,7 +73,7 @@
                                      disabled="true"/>
                     </div>
                     <div class="form-group col-md-2">
-                        <h:outputText value="#{labels['dialogProcedimiento.codigo.sia']}:"
+                        <p:outputLabel value="#{labels['dialogProcedimiento.codigo.sia']}:"
                                       styleClass="mb-1 pt-0" for="txtCodigoSIA"/>
 
                         <p:inputText id="txtCodigoSIA" value="#{dialogProcedimiento.data.codigoSIA}"
@@ -123,11 +123,9 @@
             <p:panel id="panelDatosPublicacion" header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}"
                      styleClass="panel">
                 <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dialogProcedimiento.codigo']}:"
-                                          for="txtCodigo"/>
-                        </p>
+                    <div class="form-group col-md-2" style="margin-top: -7px;">
+                        <p:outputLabel styleClass="mb-1" value="#{labels['dialogProcedimiento.codigo']}:"
+                                       for="txtCodigo"/>
                         <p:inputText id="txtCodigo" value="#{dialogProcedimiento.data.codigo}"
                                      styleClass="w85" disabled="true"/>
                     </div>
@@ -375,7 +373,7 @@
                 </div>
                 <div class="form-row mt-4">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mt-1 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.observaciones']}:"
                                        for="txtObservaciones"/>
                         <p>
@@ -540,7 +538,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dialogProcedimiento.correoElectronico']}:"
+                            <p:outputLabel styleClass="mb-1" value="#{labels['dialogProcedimiento.correoElectronico']}:"
                                           for="txtEmailResp"/>
                         </p>
                         <p:inputText id="txtEmailResp" value="#{dialogProcedimiento.data.responsableEmail}"
@@ -562,7 +560,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <p class="mb-1">
-                            <h:outputText styleClass="mb-1"
+                            <p:outputLabel styleClass="mb-1"
                                           value="#{labels['dialogProcedimiento.responsableTratamiento']}:"
                                           for="txtRespTrat"/>
                         </p>
@@ -578,7 +576,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.legitimacion']}:"
                                        for="txtLegitimacion"/>
                         <p:selectOneMenu id="txtLegitimacion"
@@ -595,7 +593,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.finalidad']}:"
                                        for="txtLopdFinalidad"/>
                         <p>
@@ -613,7 +611,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.destinatario']}:"
                                        for="txtLopdDestinatario"/>
                         <p>
@@ -631,7 +629,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.derechos']}:"
                                        for="txtLopdDerechos"/>
                         <p>
@@ -656,7 +654,7 @@
                     <div class="col-10 text-center">
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.publicoObjetivo']}*</p>
                     </div>
-                    <div class="col-2">
+                    <div class="col-2 mb-1">
                         <p:commandButton id="btnPubObjCol" onclick="colapsarModulo('#divPublico','btnPubObj');"
                                          title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
                                          style="margin-left:-10px"/>
@@ -680,7 +678,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
+                            <p:outputLabel value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
                         </p:column>
 
                     </p:dataTable>
@@ -704,8 +702,8 @@
                     <div class="row left-container mx-0 mt-2">
                         <div class="left-container-header ml-0 col-12 row">
                             <div class="col-10 text-center">
-                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                    #{tema.data.descripcion.getTraduccion(dialogProcedimiento.idioma)}</p>
+                                <p:outputLabel styleClass="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
+                                    #{tema.data.descripcion.getTraduccion(dialogProcedimiento.idioma)}</p:outputLabel>
                             </div>
                             <div class="col-2">
                                 <p:commandButton id="btnTema#{tema.data.codigo}Col"
@@ -732,12 +730,12 @@
                                 <p:column headerText="" styleClass="w75">
                                     <div class="ui-chkbox ui-widget ui-selection">
                                         <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
-                                            <h:outputText
-                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
+                                            <p:outputLabel
+                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></p:outputLabel>
                                         </div>
                                     </div>
                                     <i class="#{dialogProcedimiento.getIcono(td)}"></i>
-                                    <h:outputText id="texto"
+                                    <p:outputLabel id="texto"
                                                   value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
                                     <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
                                                value="#{dialogProcedimiento.getTooltip(td)}" position="right"/>
@@ -794,7 +792,7 @@
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}"/>
+                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}"/>
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -853,7 +851,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}"/>
+                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}"/>
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -914,7 +912,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                            <h:outputText value="LOPD"/>
+                            <p:outputLabel value="LOPD"/>
                         </p:column>
 
                     </p:dataTable>
@@ -976,7 +974,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.nombre.getTraduccion(dialogProcedimiento.idioma)}"/>
+                            <p:outputLabel value="#{td.nombre.getTraduccion(dialogProcedimiento.idioma)}"/>
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -1085,7 +1083,7 @@
     <ui:define name="contentFooterDialogLeft">
 
         <div class="d-flex flex-column flex-sm-row align-items-center mb-2 mb-sm-0" style="gap: 5px;">
-            <h:outputText value="#{labels['dialogProcedimiento.estado']}:" for="txtWorkFlow"/>
+            <p:outputLabel value="#{labels['dialogProcedimiento.estado']}:" for="txtWorkFlow"/>
             <p:inputText id="txtWorkFlow"
                          value="#{labels['dialogProcedimiento.tipoEstado.' += dialogProcedimiento.data.estado.toString()]}"
                          styleClass="w95 "

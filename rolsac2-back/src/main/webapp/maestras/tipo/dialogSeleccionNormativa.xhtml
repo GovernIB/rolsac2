@@ -28,12 +28,13 @@
                         <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{dialogSeleccionNormativa.buscar}"
                              update="dataTable messagesDialog"/>
-                     <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
+                     <p:panel id="panel" styleClass="panelSinBotonToggle mb-1" toggleSpeed="500" toggleable="true" closeSpeed="500"
                                  widgetVar="panel" collapsed="true">
                         <f:facet name="header">
                             <div class="row">
                                 <div class="ui-g-12 ui-md-9 ui-lg-9">
-                                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                                    <p:outputLabel value="#{labels['dict.filtro']}"/>:
+                                    <p:inputText id="filtroBusqueda"
                                                                                                      value="#{dialogSeleccionNormativa.filtro.texto}"/>
                                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" styleClass="ml-2"
                                                      update="dataTable messagesDialog"
@@ -65,14 +66,14 @@
                              <div class="row">
 
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <h:outputText value="#{labels['dict.titulo']}:" for="txtTitulo"/>
+                                     <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:inputText id="txtTitulo" value="#{dialogSeleccionNormativa.filtro.nombre}"
                                                   styleClass="w95" />
                                  </div>
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <h:outputText value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion"/>
+                                     <p:outputLabel value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:calendar id="txtFechaAprobacion" showOn="button" widgetVar="fechaAprobacionWidget"
@@ -80,7 +81,7 @@
                                                  value="#{dialogSeleccionNormativa.filtro.fechaAprobacion}" pattern="dd/MM/yyyy"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <h:outputText value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin"/>
+                                     <p:outputLabel value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:calendar id="txtFechaBoletin" showOn="button" widgetVar="fechaAprobacionWidget" size="18"
@@ -90,14 +91,14 @@
 
 
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <h:outputText value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
+                                     <p:outputLabel value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:inputText id="txtNumero" value="#{dialogSeleccionNormativa.filtro.numero}"
                                                   styleClass="w95" />
                                  </div>
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <h:outputText value="#{labels['viewNormativas.tipoNormativa']}:" for="txtTipoNormativa"/>
+                                     <p:outputLabel value="#{labels['viewNormativas.tipoNormativa']}:" for="txtTipoNormativa"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:selectOneMenu id="txtTipoNormativa" value="#{dialogSeleccionNormativa.filtro.tipoNormativa}"
@@ -108,7 +109,7 @@
                                      </p:selectOneMenu>
                                  </div>
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <h:outputText value="#{labels['viewNormativas.boletin']}:" for="txtBoletin"/>
+                                     <p:outputLabel value="#{labels['viewNormativas.boletin']}:" for="txtBoletin"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:selectOneMenu id="txtBoletin" value="#{dialogSeleccionNormativa.filtro.tipoBoletin}"
@@ -120,7 +121,7 @@
                                  </div>
 
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigoNorm"/>
+                                     <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigoNorm"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:inputText id="txtCodigoNorm" value="#{dialogSeleccionNormativa.filtro.codigo}"
@@ -170,28 +171,28 @@
                 </f:facet>
                 <p:column sortBy="#{normativa.codigo}" headerText="#{labels['dict.codigo']}">
                     <f:facet name="header"/>
-                    <h:outputText value="#{normativa.codigo}"/>
+                    <p:outputLabel value="#{normativa.codigo}"/>
                 </p:column>
                 <p:column sortBy="#{normativa.titulo}" headerText="#{labels['dict.titulo']}" styleClass="w45">
                     <f:facet name="header"/>
-                    <h:outputText value="#{normativa.titulo.getTraduccion(sessionBean.lang)}"/>
+                    <p:outputLabel value="#{normativa.titulo.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
                 <p:column sortBy="#{normativa.tipoNormativa}" headerText="#{labels['viewNormativas.tipoNormativa']}" >
                     <f:facet name="header"/>
-                    <h:outputText
+                    <p:outputLabel
                             value="#{normativa.tipoNormativa}"/>
                 </p:column>
                 <p:column sortBy="#{normativa.numero}" headerText="#{labels['viewNormativas.numero']}" >
                     <f:facet name="header"/>
-                    <h:outputText value="#{normativa.numero}"/>
+                    <p:outputLabel value="#{normativa.numero}"/>
                 </p:column>
                 <p:column sortBy="#{normativa.boletinOficial}" headerText="#{labels['viewNormativas.boletin']}" styleClass="w10">
                     <f:facet name="header"/>
-                    <h:outputText value="#{normativa.boletinOficial}"/>
+                    <p:outputLabel value="#{normativa.boletinOficial}"/>
                 </p:column>
                 <p:column sortBy="#{normativa.fechaAprobacion}" headerText="#{labels['viewNormativas.fechaAprobacion']}" styleClass="w17">
                     <f:facet name="header"/>
-                    <h:outputText value="#{normativa.fechaAprobacion}"/>
+                    <p:outputLabel value="#{normativa.fechaAprobacion}"/>
                 </p:column>
             </p:dataTable>
 
@@ -212,7 +213,7 @@
 
         <div class="ui-g-12 ui-md-3 row p-0 mt-2 pl-3">
             <div class="col-12 left-container-header text-center">
-                <p class="left-container-tit mt-2 mb-1">#{labels['viewNormativas.titulo.pagina']}</p>
+                <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em;">#{labels['viewNormativas.titulo.pagina']}</p>
             </div>
             <div class="col-10 p-1 left-container">
                 <p:dataTable id="dataTableNormativa" var="td" value="#{dialogSeleccionNormativa.normativasSeleccionadas}"
@@ -225,7 +226,7 @@
                     <p:ajax event="rowSelect" global="false"/>
                     <p:ajax event="rowUnselect"/>
                     <p:column headerText="#{labels['dict.titulo']}" styleClass="text-center">
-                        <h:outputText value="#{td.titulo.getTraduccion(sessionBean.lang)}"/>
+                        <p:outputLabel value="#{td.titulo.getTraduccion(sessionBean.lang)}"/>
                     </p:column>
                 </p:dataTable>
             </div>

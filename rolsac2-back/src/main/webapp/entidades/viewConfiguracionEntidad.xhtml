@@ -79,6 +79,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
              right: 10px;
          }
 
+         .ui-outputlabel {
+            font-size: 1.1em !important;
+         }
+
      </h:outputStylesheet>
 
      <h:form id="form" >
@@ -146,7 +150,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <h:outputText value="#{labels['dialogEntidad.idiomas.permitidos']}:" for="txtIdiomasPermitidos"/>
+                            <p:outputLabel value="#{labels['dialogEntidad.idiomas.permitidos']}:" for="txtIdiomasPermitidos"/>
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectManyButton id="txtIdiomasPermitidos" value="#{viewConfiguracionEntidad.idiomasPermitidos}"
@@ -162,7 +166,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <h:outputText value="#{labels['dialogEntidad.idiomas.obligatorios']}:"
+                            <p:outputLabel value="#{labels['dialogEntidad.idiomas.obligatorios']}:"
                                           for="txtIdiomasObligatorios"/>
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
@@ -177,7 +181,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <h:outputText value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto"/>
+                            <p:outputLabel value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto"/>
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectOneMenu id="txtIdiomaDefecto" value="#{viewConfiguracionEntidad.data.idiomaDefectoRest}"
@@ -191,7 +195,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <h:outputText value="#{labels['dialogEntidad.idioma.admContenidoIdiomaPrioritario']}:" for="txtIdiomaPrioritario"/>
+                            <p:outputLabel value="#{labels['dialogEntidad.idioma.admContenidoIdiomaPrioritario']}:" for="txtIdiomaPrioritario"/>
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectOneMenu id="txtIdiomaPrioritario" value="#{viewConfiguracionEntidad.data.admContenidoIdiomaPrioritario}"
@@ -206,7 +210,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <h:outputText value="#{labels['dialogEntidad.idioma.admContenidoSeleccionIdioma']}:" for="txtAdmSeleccionIdioma"/>
+                            <p:outputLabel value="#{labels['dialogEntidad.idioma.admContenidoSeleccionIdioma']}:" for="txtAdmSeleccionIdioma"/>
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectOneMenu id="txtAdmSeleccionIdioma" value="#{viewConfiguracionEntidad.data.admContenidoSeleccionIdioma}"
@@ -220,11 +224,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <h:outputText value="#{labels['dialogEntidad.logo']}:" for=""/>
+                            <p:outputLabel value="#{labels['dialogEntidad.logo']}:" for=""/>
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
                             <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
-                                <h:outputText value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
+                                <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
                             </c:if>
                             <c:if test="#{!dialogEntidad.isModoAlta()}">
                                 <p:panel id="logo" styleClass="logo-form w95">
@@ -261,11 +265,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <h:outputText value="#{labels['viewConfiguracionEntidad.css']}:" for=""/>
+                            <p:outputLabel value="#{labels['viewConfiguracionEntidad.css']}:" for=""/>
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
                             <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
-                                <h:outputText value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
+                                <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
                             </c:if>
                             <c:if test="#{!dialogEntidad.isModoAlta()}">
                                 <p:panel id="css" styleClass="logo-form w95">

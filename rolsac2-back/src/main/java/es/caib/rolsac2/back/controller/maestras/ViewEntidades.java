@@ -161,7 +161,7 @@ public class ViewEntidades extends AbstractController implements Serializable {
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogEntidad", modoAcceso, params, true, 780, 570);
+        UtilJSF.openDialog("dialogEntidad", modoAcceso, params, true, 780, 620);
     }
 
     private void abrirVentanaBorrar() {

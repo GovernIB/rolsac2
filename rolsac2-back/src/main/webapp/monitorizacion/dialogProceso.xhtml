@@ -34,7 +34,7 @@
                 <c:choose>
                     <c:when test="#{dialogProceso.isModoAlta()}">
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['dict.codigo']}:" for="txtOpcion"/>
+                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtOpcion"/>
                         </div>
                         <div class="ui-g-12 ui-md-10 ui-lg-5">
                             <p:selectOneMenu id="txtOpcion" value="#{dialogProceso.data.identificadorProceso}">
@@ -45,7 +45,7 @@
                     </c:when>
                     <c:otherwise>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                         </div>
                         <div class="ui-g-12 ui-md-10 ui-lg-5">
                             <p:inputText id="txtCodigo" value="#{dialogProceso.data.identificadorProceso}"
@@ -97,11 +97,11 @@
 
                         <!-- Columnas -->
                         <p:column headerText="#{labels['dialogPropiedades.codigo']}" class="ui-panelgrid-cell">
-                            <h:outputText value="#{td.codigo}"/>
+                            <p:outputLabel value="#{td.codigo}"/>
                         </p:column>
 
                         <p:column headerText="#{labels['dialogPropiedades.valor']}" class="ui-panelgrid-cell">
-                            <h:outputText value="#{td.valor}"/>
+                            <p:outputLabel value="#{td.valor}"/>
                         </p:column>
 
                     </p:dataTable>

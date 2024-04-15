@@ -342,7 +342,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         if (serv != null) {
             UtilJSF.anyadirMochila("SERV", serv);
         }
-        Integer ancho = 1010;
+        Integer ancho = 1190;
         /** Anyadimos también los tipos. **/
         UtilJSF.anyadirMochila("listTipoFormaInicio", listTipoFormaInicio);
         UtilJSF.anyadirMochila("listTipoSilencio", listTipoSilencio);

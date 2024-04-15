@@ -23,8 +23,8 @@
     </ui:define>
     <ui:define name="contentIdioma">
 
-        <span class="pi pi-tag mt-1"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <span class="pi pi-tag mt-2"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:3px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogUnidadAdministrativa.idioma}"
                            styleClass="botoneraRed" unselectable="false" maxlength="50">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -62,7 +62,7 @@
                         </div>
                         <div class="form-group col-md-8">
                             <p class="mb-1">
-                                <h:outputText styleClass="mr-2 mb-1" value="#{labels['dict.fechaBaja']}:" />
+                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dict.fechaBaja']}:" />
                             </p>
                              <p:inputText value="#{dialogUnidadAdministrativa.data.fechaBaja}"  disabled="true"  styleClass="w95" >
                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
@@ -75,7 +75,7 @@
                         </div>
                         <div class="form-group col-md-8">
                             <p class="mb-1">
-                                <h:outputText styleClass="mr-2 mb-1" value="#{labels['dict.normativaBaja']}:" />
+                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dict.normativaBaja']}:" />
                             </p>
                             <p:inputText id="txtNormativaBajaNoasociada" value="#{labels['dialogUnidadAdministrativa.bajaSinNormativa']}"
                                          styleClass="w95" disabled="true" rendered="#{empty dialogUnidadAdministrativa.normativaBaja}"/>
@@ -89,11 +89,9 @@
                     </div>
                 </p:panel>
                 <p:panel header="#{labels['dialogUnidadAdministrativa.datos']}" id="formDatos">
-                    <div class="form-row">
+                    <div class="form-row mb-3">
                         <div class="form-group col-md-3">
-                            <p class="mb-1">
-                                <h:outputText styleClass="mr-2 mb-1" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
-                            </p>
+                            <p:outputLabel styleClass="mb-1 pt-0" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                             <p:inputText id="txtCodigo" value="#{dialogUnidadAdministrativa.data.codigo}"
                                          styleClass="w95" disabled="true"/>
                         </div>
@@ -127,7 +125,7 @@
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
                     </div>
-                    <div class="form-row">
+                    <div class="form-row mb-3">
                         <div class="form-group col-md-12">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.nombre']}:"
                                            for="txtNombre"/>
@@ -148,18 +146,20 @@
 
                         </div>
                     </div>
-                    <div class="form-row">
+                    <div class="form-row mb-3">
                         <div class="form-group col-md-3">
-                            <p:outputLabel styleClass="mb-1 pt-0"
+                            <p class="mb-1">
+                            <p:outputLabel styleClass="mr-2 mb-1"
                                            value="#{labels['dialogUnidadAdministrativa.codigo.dir3']}:"
                                            for="txtCodigoDIR3"/>
+                            </p>
                             <p:inputText id="txtCodigoDIR3" value="#{dialogUnidadAdministrativa.data.codigoDIR3}"
                                          styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                          required="#{empty param['formDialog:closeButton']}"/>
                         </div>
                         <div class="form-group col-md-5">
                             <p class="mb-1">
-                                <h:outputText styleClass="mr-2 mb-1"
+                                <p:outputLabel styleClass="mr-2 mb-1"
                                               value="#{labels['dialogUnidadAdministrativa.abreviatura']}:"
                                               for="txtAbreviatura"/>
                             </p>
@@ -177,7 +177,7 @@
                         </div>
                         <div class="form-group col-md-3">
                             <p class="mb-1">
-                                <h:outputText value="#{labels['dialogUnidadAdministrativa.tipo']}:" for="txtTipo"/>
+                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dialogUnidadAdministrativa.tipo']}:" for="txtTipo"/>
                             </p>
                             <p:selectOneMenu id="txtTipo" value="#{dialogUnidadAdministrativa.data.tipo}"
                                              styleClass="w95" autoWidth="false"
@@ -192,10 +192,10 @@
                             </p:selectOneMenu>
                         </div>
                     </div>
-                    <div class="form-row" style="height:auto;">
+                    <div class="form-row">
                         <div class="form-group col-md-12">
                             <p class="mb-1">
-                                <h:outputText styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.url']}:"
+                                <p:outputLabel styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.url']}:"
                                               for="txtUrl"/>
                             </p>
                             <p>
@@ -215,7 +215,7 @@
                     <div class="form-row" style="height:auto;">
                         <div class="form-group col-md-12">
                             <p class="mb-1">
-                                <h:outputText styleClass="mr-2 mb-1"
+                                <p:outputLabel styleClass="mr-2 mb-1"
                                               value="#{labels['dialogUnidadAdministrativa.presentacion']}:"
                                               for="txtPresentacion"/>
                             </p>
@@ -243,7 +243,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <p class="mb-1">
-                                <h:outputText styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.padre']}:"
+                                <p:outputLabel styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.padre']}:"
                                               for="txtPadre"/>
                             </p>
                             <p>
@@ -260,10 +260,10 @@
 
                 </p:panel>
                 <p:panel id="formResponsable" header="#{labels['dialogUnidadAdministrativa.responsable']}">
-                    <div class="form-row">
+                    <div class="form-row mb-3">
                         <div class="form-group col-md-8">
                             <p class="mb-1">
-                                <h:outputText value="#{labels['dialogUnidadAdministrativa.responsableNombre']}:"
+                                <p:outputLabel value="#{labels['dialogUnidadAdministrativa.responsableNombre']}:"
                                               for="txtResponsableNombre"/>
                             </p>
                             <p:inputText id="txtResponsableNombre"
@@ -273,9 +273,11 @@
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
                         <div class="form-group col-md-4">
-                            <p:outputLabel styleClass=" mb-1 pt-0"
+                            <p class="mb-1">
+                                <p:outputLabel
                                            value="#{labels['dialogUnidadAdministrativa.tipoSexo']}:"
                                            for="txtTipoSexo"/>
+                            </p>
                             <p:selectOneMenu id="txtTipoSexo"
                                              value="#{dialogUnidadAdministrativa.data.responsableSexo}"
                                              styleClass="w95" autoWidth="false" required="#{empty param['formDialog:closeButton']}"
@@ -292,10 +294,10 @@
                             </p:selectOneMenu>
                         </div>
                     </div>
-                    <div class="form-row" style="height:auto;">
+                    <div class="form-row mb-3">
                         <div class="form-group col-md-4">
                             <p class="mb-1">
-                                <h:outputText value="#{labels['dialogUnidadAdministrativa.responsableEmail']}:"
+                                <p:outputLabel value="#{labels['dialogUnidadAdministrativa.responsableEmail']}:"
                                               for="txtResponsableEmail"/>
                             </p>
                             <p:inputText id="txtResponsableEmail"
@@ -309,7 +311,7 @@
                     <div class="form-row" style="height:auto;">
                         <div class="form-group col-md-11">
                             <p class="mb-1">
-                                <h:outputText value="#{labels['dialogUnidadAdminsitrativa.responsableCV']}:"
+                                <p:outputLabel value="#{labels['dialogUnidadAdminsitrativa.responsableCV']}:"
                                               for="txtResponsable"/>
                             </p>
                             <p>
@@ -334,7 +336,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-2">
                             <p class="mb-1">
-                                <h:outputText value="#{labels['dialogUnidadAdministrativa.telefono']}:"
+                                <p:outputLabel value="#{labels['dialogUnidadAdministrativa.telefono']}:"
                                               for="txtTelefono"/>
                             </p>
                             <p:inputText id="txtTelefono" value="#{dialogUnidadAdministrativa.data.telefono}"
@@ -344,7 +346,7 @@
                         </div>
                         <div class="form-group col-md-2">
                             <p class="mb-1">
-                                <h:outputText value="#{labels['dialogUnidadAdministrativa.fax']}:" for="txtFax"/>
+                                <p:outputLabel value="#{labels['dialogUnidadAdministrativa.fax']}:" for="txtFax"/>
                             </p>
                             <p:inputText id="txtFax" value="#{dialogUnidadAdministrativa.data.fax}" styleClass="w95"
                                          maxlength="9"
@@ -353,7 +355,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <p class="mb-1">
-                                <h:outputText value="#{labels['dialogUnidadAdministrativa.email']}:" for="txtEmail"/>
+                                <p:outputLabel value="#{labels['dialogUnidadAdministrativa.email']}:" for="txtEmail"/>
                             </p>
                             <p:inputText id="txtEmail" value="#{dialogUnidadAdministrativa.data.email}"
                                          styleClass="w95"
@@ -362,7 +364,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <p class="mb-1">
-                                <h:outputText value="#{labels['dialogUnidadAdministrativa.dominio']}:"
+                                <p:outputLabel value="#{labels['dialogUnidadAdministrativa.dominio']}:"
                                               for="txtDominio"/>
                             </p>
                             <p:inputText id="txtDominio" value="#{dialogUnidadAdministrativa.data.dominio}"
@@ -399,7 +401,7 @@
 
 
                             <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                <h:outputText value="#{td.identificador} - #{td.nombre}"/>
+                                <p:outputLabel value="#{td.identificador} - #{td.nombre}"/>
                             </p:column>
 
                         </p:dataTable>
@@ -455,11 +457,11 @@
 
                                         <div class="ui-chkbox ui-widget ui-selection">
                                             <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
-                                                <h:outputText
-                                                        styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
+                                                <p:outputLabel
+                                                        styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></p:outputLabel>
                                             </div>
                                         </div>
-                                        <h:outputText
+                                        <p:outputLabel
                                                 value="#{td.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}"/>
                                     </p:column>
 
@@ -509,8 +511,8 @@
 
 
                                 <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                    <!--<h:outputText value="#{td.codigo} - #{labels['TypeProcedimientoEstado.' += td.estado]}"/>-->
-                                    <h:outputText value="#{labels['TypeProcedimientoEstado.' += td.estado]} - #{td.nombreProcedimientoWorkFlow.getTraduccion(sessionBean.lang)} "/>
+                                    <!--<p:outputLabel value="#{td.codigo} - #{labels['TypeProcedimientoEstado.' += td.estado]}"/>-->
+                                    <p:outputLabel value="#{labels['TypeProcedimientoEstado.' += td.estado]} - #{td.nombreProcedimientoWorkFlow.getTraduccion(sessionBean.lang)} "/>
                                 </p:column>
 
                             </p:dataTable>
@@ -548,7 +550,7 @@
 
 
                                 <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                    <h:outputText value="#{td.codigo} - #{td.titulo.getTraduccion(sessionBean.lang)}"/>
+                                    <p:outputLabel value="#{td.codigo} - #{td.titulo.getTraduccion(sessionBean.lang)}"/>
                                 </p:column>
 
                             </p:dataTable>

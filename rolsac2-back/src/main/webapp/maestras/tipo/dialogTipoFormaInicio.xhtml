@@ -28,8 +28,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="contentIdioma">
 
-        <span class="pi pi-tag" style="margin-top:5px"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <span class="pi pi-tag" style="margin-top:10px"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogTipoFormaInicio.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -58,7 +58,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogTipoFormaInicio.data.codigo}"

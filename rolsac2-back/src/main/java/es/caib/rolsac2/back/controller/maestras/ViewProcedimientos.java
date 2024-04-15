@@ -548,7 +548,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         if (proc != null) {
             UtilJSF.anyadirMochila("PROC", proc);
         }
-        Integer ancho = 1010;
+        Integer ancho = 1190;
         /** Anyadimos también los tipos. **/
         UtilJSF.anyadirMochila("listTipoFormaInicio", listTipoFormaInicio);
         UtilJSF.anyadirMochila("listTipoSilencio", listTipoSilencio);

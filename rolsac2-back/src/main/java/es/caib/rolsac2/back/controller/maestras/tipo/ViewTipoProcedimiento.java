@@ -153,7 +153,7 @@ public class ViewTipoProcedimiento extends AbstractController implements Seriali
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoProcedimiento", modoAcceso, params, true, 800, 310);
+        UtilJSF.openDialog("dialogTipoProcedimiento", modoAcceso, params, true, 800, 330);
     }
 
     public void borrarTipoProcedimiento() {

@@ -31,8 +31,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
     <ui:define name="contentIdioma">
 
-        <span class="pi pi-tag" style="margin-top:5px"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <span class="pi pi-tag" style="margin-top:10px"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogDocumentoProcedimiento.idioma}" styleClass="botoneraRed">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -41,7 +41,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogDocumentoProcedimiento.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
-                         style="margin-left:10px"
+                         style="margin-left:10px; height: 35px;"
                          update="messagesDialog"
                          process="@this"
                          rendered="#{!dialogDocumentoProcedimiento.isModoConsulta() and dialogDocumentoProcedimiento.tradExiste()}"/>
@@ -86,23 +86,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                          nombreLiteral="#{labels['dict.descripcion']}"/>
                 </div>
-
-                <!--
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.url']}:" for="txtUrl"/>
-                </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <my:literalComponent id="txtUrl"
-                                         literal="#{dialogDocumentoProcedimiento.data.url}"
-                                         soloLecture="#{dialogDocumentoProcedimiento.isModoConsulta()}"
-                                         idioma="#{dialogDocumentoProcedimiento.idioma}"
-                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.url']}"/>
-                </div> -->
-
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
-                    <h:outputText value="#{labels['dict.documento']}:"/>
+                    <p:outputLabel value="#{labels['dict.documento']}:"/>
                     <p:outputLabel value=" *" rendered="#{dialogDocumentoProcedimiento.isTipoTramiteModelo()}"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-4">

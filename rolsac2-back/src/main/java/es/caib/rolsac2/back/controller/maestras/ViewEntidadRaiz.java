@@ -161,7 +161,7 @@ public class ViewEntidadRaiz extends AbstractController implements Serializable 
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogEntidadRaiz", modoAcceso, params, true, 800, 320);
+        UtilJSF.openDialog("dialogEntidadRaiz", modoAcceso, params, true, 800, 340);
     }
 
     public EntidadRaizGridDTO getDatoSeleccionado() {

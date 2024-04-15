@@ -81,7 +81,7 @@ public class DialogTipoSexo extends AbstractController implements Serializable {
 
     public void abrirDlg() {
         final Map<String, String> params = new HashMap<>();
-        UtilJSF.openDialog("dialogTipoSexo", TypeModoAcceso.ALTA, params, true, 1050, 550);
+        UtilJSF.openDialog("dialogTipoSexo", TypeModoAcceso.ALTA, params, true, 1050, 560);
     }
 
     public void guardar() {
@@ -114,8 +114,7 @@ public class DialogTipoSexo extends AbstractController implements Serializable {
             return false;
         }
 
-        if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equals(this.data.getIdentificador())
-                && tipoSexoService.existeIdentificadorTipoSexo(this.data.getIdentificador())) {
+        if (Objects.nonNull(this.data.getCodigo()) && !identificadorAntiguo.equals(this.data.getIdentificador()) && tipoSexoService.existeIdentificadorTipoSexo(this.data.getIdentificador())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.existeIdentificador"), true);
             return false;
         }
@@ -138,9 +137,7 @@ public class DialogTipoSexo extends AbstractController implements Serializable {
     }
 
     private boolean comprobarModificacion() {
-        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
-                || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
-                || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0;
+        return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0 || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0;
     }
 
     public void cerrarDefinitivo() {

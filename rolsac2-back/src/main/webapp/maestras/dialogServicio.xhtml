@@ -32,8 +32,8 @@
     </ui:define>
     <ui:define name="contentIdioma">
 
-        <span class="pi pi-tag" style="margin-top:5px"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <span class="pi pi-tag" style="margin-top:15px"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogServicio.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -44,7 +44,7 @@
         <p:commandButton action="#{dialogServicio.traducir}"
                          icon="pi pi-compass" iconPos="top"
                          value="#{labels['dict.traducir']}"
-                         style="margin-left:10px"
+                         style="margin-left:10px;font-size:1.2em; height: 35px;margin-top:1px;"
                          update="messagesDialog"
                          process="@this"
                          rendered="#{!dialogServicio.isModoConsulta() and dialogServicio.tradExiste()}">
@@ -55,7 +55,10 @@
     <ui:define name="contentDialog">
         <h:outputStylesheet library="css">
             html {
-            overflow: hidden;
+                overflow: hidden;
+            }
+            .ui-chkbox ~ label {
+                font-size: 1.2em;
             }
         </h:outputStylesheet>
         <p:growl id="messagesDialog"
@@ -77,7 +80,7 @@
                                  disabled="true"/>
                 </div>
                 <div class="form-group col-md-2">
-                    <h:outputText value="#{labels['dialogServicio.codigo.sia']}:"
+                    <p:outputLabel value="#{labels['dialogServicio.codigo.sia']}:"
                                   styleClass="mb-1 pt-0" for="txtCodigoSIA"/>
 
                     <p:inputText id="txtCodigoSIA" value="#{dialogServicio.data.codigoSIA}"
@@ -129,10 +132,9 @@
                      styleClass="panel">
                 <div class="form-row">
                     <div class="form-group col-md-2">
-                        <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dialogServicio.codigo']}:"
+                        <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.codigo']}:"
                                           for="txtCodigo"/>
-                        </p>
+
                         <p:inputText id="txtCodigo" value="#{dialogServicio.data.codigo}"
                                      styleClass="w85" disabled="true"/>
                     </div>
@@ -379,10 +381,9 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dialogServicio.correoElectronico']}:"
+                          <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.correoElectronico']}:"
                                           for="txtEmailResp"/>
-                        </p>
+
                         <p:inputText id="txtEmailResp" value="#{dialogServicio.data.responsableEmail}"
                                      validatorMessage="#{labels['dict.emailNoValido']}"
                                      update="messagesDialog"
@@ -394,10 +395,8 @@
                         </p:inputText>
                     </div>
                     <div class="form-group col-md-5">
-                        <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dialogServicio.responsableTelefono']}:"
+                         <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.responsableTelefono']}:"
                                           for="textResponsableTelf"/>
-                        </p>
                         <p:inputText id="textResponsableTelf" value="#{dialogServicio.data.responsableTelefono}"
                                      disabled="#{dialogServicio.isModoConsulta()}" styleClass="w95" maxlength="25"/>
                     </div>
@@ -590,10 +589,9 @@
 
                 <div id="filaLOPDTratamiento" class="form-row">
                     <div class="form-group col-md-12">
-                        <p class="mb-1">
-                            <h:outputText styleClass="mb-1" value="#{labels['dialogServicio.responsableTratamiento']}:"
+                         <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.responsableTratamiento']}:"
                                           for="txtRespTrat"/>
-                        </p>
+
                         <my:literalComponent id="txtRespTrat"
                                              literal="#{dialogServicio.lopdResponsable}"
                                              soloLecture="#{true}"
@@ -707,7 +705,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogServicio.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.identificador}"/>
+                            <p:outputLabel value="#{td.identificador}"/>
                         </p:column>
 
                         <!--
@@ -767,12 +765,12 @@
 
                                     <div class="ui-chkbox ui-widget ui-selection">
                                         <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
-                                            <h:outputText
-                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></h:outputText>
+                                            <p:outputLabel
+                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></p:outputLabel>
                                         </div>
                                     </div>
                                     <i class="#{dialogServicio.getIcono(td)}"></i>
-                                    <h:outputText id="texto"
+                                    <p:outputLabel id="texto"
                                                   value="#{td.descripcion.getTraduccion(dialogServicio.idioma)}"/>
                                     <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
                                                value="#{dialogServicio.getTooltip(td)}" position="right"/>
@@ -830,7 +828,7 @@
 
                         <p:column headerText="#{labels['dialogServicio.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(dialogServicio.idioma)}"/>
+                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogServicio.idioma)}"/>
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -889,7 +887,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(dialogServicio.idioma)}"/>
+                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogServicio.idioma)}"/>
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -952,7 +950,7 @@
                                     global="false"/>
 
                             <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                                <h:outputText value="LOPD"/>
+                                <p:outputLabel value="LOPD"/>
                             </p:column>
 
                         </p:dataTable>
@@ -1066,7 +1064,7 @@
     </ui:define>
     <ui:define name="contentFooterDialogLeft">
         <div class="d-flex flex-column flex-sm-row align-items-center mb-2 mb-sm-0" style="gap: 5px;">
-            <h:outputText value="#{labels['dialogServicio.estado']}:" for="txtWorkFlow"/>
+            <p:outputLabel value="#{labels['dialogServicio.estado']}:" for="txtWorkFlow"/>
             <p:inputText id="txtWorkFlow"
                          value="#{labels['dialogServicio.tipoEstado.' += dialogServicio.data.estado.toString()]}"
                          styleClass="w95 "

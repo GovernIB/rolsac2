@@ -130,7 +130,7 @@ public class ViewPlugins extends AbstractController implements Serializable {
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogPlugins", modoAcceso, params, true, 850, 585);
+        UtilJSF.openDialog("dialogPlugins", modoAcceso, params, true, 850, 670);
     }
 
     public void borrarPlugin() {

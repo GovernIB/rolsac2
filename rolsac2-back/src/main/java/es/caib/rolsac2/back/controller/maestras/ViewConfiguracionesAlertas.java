@@ -143,7 +143,7 @@ public class ViewConfiguracionesAlertas extends AbstractController implements Se
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogConfiguracionAlerta", modoAcceso, params, true, 750, 520);
+        UtilJSF.openDialog("dialogConfiguracionAlerta", modoAcceso, params, true, 760, 540);
     }
 
     public void borrarAlerta() {

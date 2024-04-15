@@ -141,7 +141,7 @@ public class ViewPlatTramitElectronica extends AbstractController implements Ser
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogPlatTramitElectronica", modoAcceso, params, true, 850, 360);
+        UtilJSF.openDialog("dialogPlatTramitElectronica", modoAcceso, params, true, 850, 390);
     }
 
     public PlatTramitElectronicaFiltro getFiltro() {

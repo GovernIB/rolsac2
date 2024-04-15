@@ -932,3 +932,18 @@ legend {
 .importantOcultar {
 	display: none !important;
 }
+.ui-outputlabel {
+	font-size: 1.1em !important;
+}
+.ui-treetable-empty-message{
+	font-size: 1.1em !important;
+}
+.ui-datatable-empty-message{
+	font-size: 1.1em !important;
+}
+.cabeceraIdiomas .ui-selectonebutton {
+	font-size: 1.1em !important;
+}
+.ui-column-title,.ui-paginator {
+	font-size: 1.1em;
+}

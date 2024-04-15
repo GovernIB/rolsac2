@@ -247,7 +247,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
         if (TypeModoAcceso.CONSULTA.equals(modoAcceso) && entidadSeleccionada != null) {
             final Map<String, String> params = new HashMap<>();
             params.put(TypeParametroVentana.ID.toString(), entidadSeleccionada.getCodigo().toString());
-            UtilJSF.openDialog("/superadministrador/dialogEntidad", modoAcceso, params, true, 700, 580);
+            UtilJSF.openDialog("/superadministrador/dialogEntidad", modoAcceso, params, true, 700, 620);
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("entidadesSeleccionada", data.getEntidades());
             final Map<String, String> params = new HashMap<>();

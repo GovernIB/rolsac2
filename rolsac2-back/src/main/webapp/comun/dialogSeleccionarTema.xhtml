@@ -114,7 +114,7 @@
                 <p:ajax event="select" listener="#{dialogSeleccionarTema.onNodeSelect}" update="@form:messagesDialog"/>
 
                 <p:treeNode type="TemaDTO" nodeType="TemaDTO" >
-                    <h:outputText value="#{node.descripcion.getTraduccion(dialogSeleccionarTema.idioma)}" />
+                    <p:outputLabel value="#{node.descripcion.getTraduccion(dialogSeleccionarTema.idioma)}" />
                     <i class="#{dialogSeleccionarTema.getIcono(node)}"></i>
                 </p:treeNode>
             </p:tree>
@@ -124,7 +124,7 @@
 
     <ui:define name="contentFooterDialogLeft">
 
-        <h:outputText value="#{labels['dict.indexacionSIA.icono']}" />
+        <p:outputLabel value="#{labels['dict.indexacionSIA.icono']}" />
         <i class="#{dialogSeleccionarTemaMultiple.getIconoSIA()}"></i>
     </ui:define>
 

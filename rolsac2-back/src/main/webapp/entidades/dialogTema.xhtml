@@ -23,8 +23,8 @@
     </ui:define>
     <ui:define name="contentIdioma">
 
-        <span class="pi pi-tag" style="margin-top:5px"/>
-        <h:outputText value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <span class="pi pi-tag" style="margin-top:10px"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogTema.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -72,7 +72,7 @@
                     </p:inputText>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dialogTema.temaPadre']}:" for="txtTemaPadre"/>
+                    <p:outputLabel value="#{labels['dialogTema.temaPadre']}:" for="txtTemaPadre"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">

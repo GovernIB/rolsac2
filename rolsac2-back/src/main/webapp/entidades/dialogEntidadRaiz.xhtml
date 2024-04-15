@@ -28,17 +28,17 @@
                      life="5000"
                      escape="false"/>
             <div class="row">
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                <div class="ui-g-12 ui-md-3 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" />
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                <div class="ui-g-12 ui-md-9 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogEntidadRaiz.data.codigo}"
                                  styleClass="w96" disabled="true" maxlength="50"/>
                 </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.unidadAdministrativa']}:" for="txtUa" />
+                <div class="ui-g-12 ui-md-3 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.unidadAdministrativa']}:" for="txtUa" />
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                <div class="ui-g-12 ui-md-9 ui-lg-5">
                     <my:unidadAdministrativaComponent id="txtUa"
                                                       value="#{dialogEntidadRaiz.data.ua}"
                                                       idioma="#{dialogEntidadRaiz.idioma}"
@@ -46,20 +46,20 @@
                                                       soloLecture="#{dialogEntidadRaiz.isModoEdicion() || dialogEntidadRaiz.isModoConsulta()}"
                     />
                 </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dict.usuario']}:" for="txtUser" />
+                <div class="ui-g-12 ui-md-3 ui-lg-1">
+                    <p:outputLabel value="#{labels['dict.usuario']}:" for="txtUser" />
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                <div class="ui-g-12 ui-md-9 ui-lg-5">
                     <p:inputText id="txtUser" value="#{dialogEntidadRaiz.data.user}"
                                  styleClass="w96" disabled="#{dialogEntidadRaiz.isModoConsulta()}"
                                  required="#{empty param['formDialog:closeButton']}" maxlength="100">
                         <f:validateBean disabled="true" />
                     </p:inputText>
                 </div>
-                <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <h:outputText value="#{labels['dialogEntidadRaiz.pwd']}:" for="txtPwd" />
+                <div class="ui-g-12 ui-md-3 ui-lg-1">
+                    <p:outputLabel value="#{labels['dialogEntidadRaiz.pwd']}:" for="txtPwd" />
                 </div>
-                <div class="ui-g-12 ui-md-10 ui-lg-5">
+                <div class="ui-g-12 ui-md-9 ui-lg-5">
                     <p:password id="txtPwd" value="#{dialogEntidadRaiz.data.pwd}"
                                 styleClass="w96" disabled="#{dialogEntidadRaiz.isModoConsulta()}" toggleMask="true" redisplay="true"
                                 maxlength="100" required="#{empty param['formDialog:closeButton']}"/>

@@ -151,7 +151,7 @@ public class ViewTipoMediaUA extends AbstractController implements Serializable 
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
 
-        UtilJSF.openDialog("dialogTipoMediaUA", modoAcceso, params, true, 800, 310);
+        UtilJSF.openDialog("dialogTipoMediaUA", modoAcceso, params, true, 800, 330);
 
 
     }

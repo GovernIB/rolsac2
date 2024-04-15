@@ -24,7 +24,7 @@
             <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{dialogSeleccionUsuario.buscar}"
                              update="dataTable"/>
-            <p:toolbar id="toolbar">
+            <p:toolbar id="toolbar mb-2">
                 <f:facet name="left">
                     <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
                                                                                      value="#{dialogSeleccionUsuario.filtroTexto}"/>
@@ -56,15 +56,15 @@
                 </f:facet>
                 <p:column sortBy="#{usuario.codigo}" headerText="#{labels['dict.codigo']}">
                     <f:facet name="header"/>
-                    <h:outputText value="#{usuario.codigo}"/>
+                    <p:outputLabel value="#{usuario.codigo}"/>
                 </p:column>
                 <p:column sortBy="#{usuario.identificador}" headerText="#{labels['dict.identificador']}">
                     <f:facet name="header"/>
-                    <h:outputText value="#{usuario.identificador}"/>
+                    <p:outputLabel value="#{usuario.identificador}"/>
                 </p:column>
                 <p:column sortBy="#{usuario.entidad}" headerText="#{labels['viewUsuario.entidad']}">
                     <f:facet name="header"/>
-                    <h:outputText value="#{usuario.entidad}"/>
+                    <p:outputLabel value="#{usuario.entidad}"/>
                 </p:column>
             </p:dataTable>        </h:form>
     </ui:define>
