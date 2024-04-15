@@ -1,10 +1,12 @@
 package es.caib.rolsac2.persistence.converter;
 
 import es.caib.rolsac2.persistence.model.JProcedimientoTramite;
+import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
+import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoTramiteTraduccion;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
-import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
+import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
+import es.caib.rolsac2.service.model.*;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -29,8 +31,8 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
     @Mapping(target = "terminoMaximo", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"terminoMaximo\"))")
     @Mapping(target = "listaDocumentos", ignore = true)
     @Mapping(target = "listaModelos", ignore = true)
-    @Mapping(target = "unidadAdministrativa", ignore = true)
-    @Mapping(target = "procedimiento", ignore = true)
+    @Mapping(target = "unidadAdministrativa", expression = "java(convertSencillo(entity.getUnidadAdministrativa(), true))")
+    @Mapping(target = "procedimiento", expression = "java(convierteProcedimientoSimple(entity.getProcedimiento()))")
     ProcedimientoTramiteDTO createDTO(JProcedimientoTramite entity);
 
     @Override
@@ -53,6 +55,33 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
     @Mapping(target = "listaModelos", ignore = true)
     void mergeEntity(@MappingTarget JProcedimientoTramite entity, ProcedimientoTramiteDTO dto);
 
+    /**
+     * Convierte una junidad administrativa a un DTO sencillo
+     *
+     * @param junidad
+     * @param incluirPadre
+     * @return
+     */
+    default UnidadAdministrativaDTO convertSencillo(JUnidadAdministrativa junidad, boolean incluirPadre) {
+
+        if (junidad == null) {
+            return null;
+        }
+        UnidadAdministrativaDTO unidadAdministrativaDTO = new UnidadAdministrativaDTO();
+        unidadAdministrativaDTO.setCodigo(junidad.getCodigo());
+        unidadAdministrativaDTO.setCodigoDIR3(junidad.getCodigoDIR3());
+        unidadAdministrativaDTO.setIdentificador(junidad.getIdentificador());
+        Literal nombre = new Literal();
+        for (JUnidadAdministrativaTraduccion trad : junidad.getTraducciones()) {
+            nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+        }
+        unidadAdministrativaDTO.setNombre(nombre);
+        unidadAdministrativaDTO.setOrden(junidad.getOrden());
+        if (incluirPadre && junidad.getPadre() != null) {
+            unidadAdministrativaDTO.setPadre(convertSencillo(junidad.getPadre(), false));
+        }
+        return unidadAdministrativaDTO;
+    }
 
     default List<JProcedimientoTramiteTraduccion> convierteLiteralToTraduccion(JProcedimientoTramite jProcedimientoTramite, ProcedimientoTramiteDTO dto) {
 
@@ -102,6 +131,22 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
             }
         }
         return jProcedimientoTramite.getTraducciones();
+    }
+
+    default ProcedimientoWorkflowDTO convierteProcedimientoSimple(JProcedimientoWorkflow procedimiento) {
+        ProcedimientoWorkflowDTO resultado = new ProcedimientoWorkflowDTO();
+        resultado.setCodigo(procedimiento.getCodigo());
+        ProcedimientoDTO proc = new ProcedimientoDTO();
+        proc.setCodigo(procedimiento.getProcedimiento().getCodigo());
+        resultado.setProcedimiento(proc);
+        Literal nombre = new Literal();
+        for (JProcedimientoWorkflowTraduccion trad : procedimiento.getTraducciones()) {
+            nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+        }
+        resultado.setNombre(nombre);
+        resultado.setEstado(procedimiento.getEstado());
+        resultado.setWorkflow(procedimiento.getWorkflow());
+        return resultado;
     }
 
     default Literal convierteTraduccionToLiteral(List<JProcedimientoTramiteTraduccion> traducciones, String nombreLiteral) {

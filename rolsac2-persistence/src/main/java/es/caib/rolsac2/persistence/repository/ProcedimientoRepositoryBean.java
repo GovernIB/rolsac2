@@ -46,50 +46,43 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     FicheroExternoRepository ficheroExternoRepository;
 
     @Inject
-    private ProcedimientoConverter converter;
+    ProcedimientoConverter converter;
 
     @Inject
-    private TipoMateriaSIAConverter converterSIA;
-
-
-    @Inject
-    private TipoPublicoObjetivoEntidadConverter publicoObjetivoConverter;
+    TipoMateriaSIAConverter converterSIA;
 
     @Inject
-    private TipoMateriaSIAConverter materiaSiaConverter;
+    TipoPublicoObjetivoEntidadConverter publicoObjetivoConverter;
 
     @Inject
-    private NormativaConverter normativaConverter;
+    TipoMateriaSIAConverter materiaSiaConverter;
 
     @Inject
-    private PlatTramitElectronicaConverter platTramitElectronicaConverter;
+    NormativaConverter normativaConverter;
 
     @Inject
-    private TipoFormaInicioConverter tipoFormaInicioConverter;
+    PlatTramitElectronicaConverter platTramitElectronicaConverter;
 
     @Inject
-    private ProcedimientoAuditoriaConverter procedimientoAuditoriaConverter;
+    TipoFormaInicioConverter tipoFormaInicioConverter;
 
     @Inject
-    private TipoSilencioAdministrativoConverter tipoSilencioAdministrativoConverter;
+    TipoSilencioAdministrativoConverter tipoSilencioAdministrativoConverter;
 
     @Inject
-    private TipoProcedimientoConverter tipoProcedimientoConverter;
+    TipoProcedimientoConverter tipoProcedimientoConverter;
 
     @Inject
-    private TipoViaConverter tipoViaConverter;
+    TipoViaConverter tipoViaConverter;
 
     @Inject
-    private TemaConverter temaConverter;
+    TipoTramitacionConverter tipoTramitacionConverter;
 
     @Inject
-    private TipoTramitacionConverter tipoTramitacionConverter;
+    TipoLegitimacionConverter tipoLegitimacionConverter;
 
     @Inject
-    private TipoLegitimacionConverter tipoLegitimacionConverter;
-
-    @Inject
-    private ProcedimientoTramiteConverter procedimientoTramiteConverter;
+    ProcedimientoTramiteConverter procedimientoTramiteConverter;
 
     protected ProcedimientoRepositoryBean() {
         super(JProcedimiento.class);
@@ -210,7 +203,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                         }
                         if (valores.length == 3 && valores[2] != null) {
                             try {
-                                Date fecha = sdf.parse((String) valores[2]);
+                                Date fecha = sdf.parse(valores[2]);
                                 procedimientoGridDTO.setTramiteIniciofechaCierre(fecha);
                             } catch (ParseException e) {
                                 LOG.error("Error parseando en el codigo " + procedimientoGridDTO.getCodigo() + " la fecha Cierre Tram :" + valores[1], e);
@@ -269,7 +262,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         query.setMaxResults(filtro.getPaginaTamanyo());
         List<ProcedimientoBaseDTO> procs = new ArrayList<>();
 
-        JProcedimientoWorkflow seleccionado = null;
+        JProcedimientoWorkflow seleccionado;
 
         if (filtro.getEstadoWF() != null) {
             switch (filtro.getEstadoWF()) {
@@ -976,7 +969,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
             entityManager.merge(jprocWF);
         } else {
-            //jListaDocumentos = entityManager.find(JListaDocumentos.class, idListaDocumentos);
             idLDosc = idListaDocumentos;
         }
 
@@ -1006,8 +998,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoTramite> jlista = query.getResultList();
 
-        //List<JProcedimientoDocumento> docs = getDocumentosByJTramites(jlista);
-
         if (jlista != null) {
             for (JProcedimientoTramite jtramite : jlista) {
                 ProcedimientoTramiteDTO tramite = procedimientoTramiteConverter.createDTO(jtramite);
@@ -1020,7 +1010,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
 
                 if (jtramite.getTipoTramitacion() != null) {
-                    //tramite.setTipoTramitacion(tramite.getTipoTramitacion());
                     tramite.setPlantillaSel(null);
                 } else if (jtramite.getTipoTramitacionPlantilla() != null) {
                     tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
@@ -1029,12 +1018,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
 
                 if (jtramite.getListaDocumentos() != null) {
-                    // tramite.setListaDocumentos(obtenerDocs(docs, jtramite.getListaDocumentos().getCodigo()));
                     tramite.setListaDocumentos(this.getDocumentosByListaDocumentos(jtramite.getListaDocumentos()));
                 }
 
                 if (jtramite.getListaModelos() != null) {
-                    //tramite.setListaModelos(obtenerDocs(docs, jtramite.getListaModelos().getCodigo()));
                     tramite.setListaModelos(this.getDocumentosByListaDocumentos(jtramite.getListaModelos()));
                 }
                 tramites.add(tramite);
@@ -1068,7 +1055,24 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (incluirPadre && junidad.getPadre() != null) {
             unidadAdministrativaDTO.setPadre(converterSencillo(junidad.getPadre(), false));
         }
+        unidadAdministrativaDTO.setEntidad(converterSencillo(junidad.getEntidad()));
         return unidadAdministrativaDTO;
+    }
+
+    private EntidadDTO converterSencillo(JEntidad jentidad) {
+        if (jentidad == null) {
+            return null;
+        }
+        EntidadDTO entidadDTO = new EntidadDTO();
+        entidadDTO.setCodigo(jentidad.getCodigo());
+        entidadDTO.setIdiomasPermitidos(jentidad.getIdiomasPermitidos());
+        entidadDTO.setIdentificador(jentidad.getIdentificador());
+        Literal nombre = new Literal();
+        for (JEntidadTraduccion trad : jentidad.getDescripcion()) {
+            nombre.add(new Traduccion(trad.getIdioma(), trad.getDescripcion()));
+        }
+        entidadDTO.setDescripcion(nombre);
+        return entidadDTO;
     }
 
     /**

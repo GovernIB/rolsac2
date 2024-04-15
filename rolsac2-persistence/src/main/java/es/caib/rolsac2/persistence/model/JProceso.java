@@ -22,9 +22,7 @@ import java.util.List;
 @Entity
 @SequenceGenerator(name = "proces-sequence", sequenceName = "RS2_PROCES_SEQ", allocationSize = 1)
 @Table(name = "RS2_PROCES", indexes = {@Index(name = "RS2_PROCES_PK_I", columnList = "PROCES_CODIGO")})
-// @NamedQuery(name = "JProceso.findAll", query = "SELECT s FROM JProceso s")
-/*@NamedStoredProcedureQueries({@NamedStoredProcedureQuery(name = "proceso_atenea", procedureName = "RS2_ATENEA",
-    parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, name = "ret", type = String.class)})})*/ public class JProceso extends BaseEntity {
+public class JProceso extends BaseEntity {
 
     /**
      * Serial version UID.
@@ -64,7 +62,7 @@ import java.util.List;
      * Activo
      */
     @Column(name = "PROCES_ACTIVO", nullable = false)
-    private Boolean activo; // NUMBER(1,0) No 0 5 ParamSIAACTUACIONESACTUACIONACTIVO
+    private Boolean activo;
 
     /**
      * Parametros del a invocacion serializados en Json

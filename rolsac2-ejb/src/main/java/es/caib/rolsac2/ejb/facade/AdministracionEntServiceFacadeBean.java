@@ -17,6 +17,7 @@ import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -285,7 +286,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @PermitAll
     public UsuarioDTO findUsuarioSimpleByIdentificador(String identificador, String lang) {
         UsuarioDTO usuarioDTO = usuarioRepository.findSimpleByIdentificador(identificador, lang);
         if (usuarioDTO == null) {
@@ -335,7 +336,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @PermitAll
     public Boolean checkIdentificadorUsuario(String identificador) {
         return usuarioRepository.checkIdentificador(identificador);
 
