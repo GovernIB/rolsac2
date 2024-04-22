@@ -31,8 +31,8 @@
     </ui:define>
     <ui:define name="contentIdioma">
 
-        <span class="pi pi-tag" style="margin-top:5px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <span class="pi pi-tag" style="margin-top:10px"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogProcedimientoTramite.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -479,7 +479,7 @@
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}"/>
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
                         </p:column>
 
                     </p:dataTable>
@@ -528,7 +528,7 @@
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}"/>
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>

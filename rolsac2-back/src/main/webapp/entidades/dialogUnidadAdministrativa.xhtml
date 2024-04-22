@@ -49,7 +49,11 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
-
+        <h:outputStylesheet>
+            tr.ui-state-highlight td div div.ui-chkbox-box {
+                background: #22F !important;
+            }
+        </h:outputStylesheet>
         <div class="row" style="margin-right: 0px;">
             <div class="ui-g-12 ui-md-9 pl-4 panel-container">
                 <p:panel header="#{labels['dialogUnidadAdministrativa.datosBaja']}" id="formDatosBaja" rendered="#{dialogUnidadAdministrativa.data.isBorrado()}" >
@@ -401,7 +405,7 @@
 
 
                             <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                <p:outputLabel value="#{td.identificador} - #{td.nombre}"/>
+                                <h:outputText value="#{td.identificador} - #{td.nombre}" class="labelGrande" />
                             </p:column>
 
                         </p:dataTable>
@@ -461,8 +465,7 @@
                                                         styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></p:outputLabel>
                                             </div>
                                         </div>
-                                        <p:outputLabel
-                                                value="#{td.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}"/>
+                                        <h:outputText value="#{td.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}" class="labelGrande" />
                                     </p:column>
 
                                 </p:treeTable>
@@ -511,8 +514,7 @@
 
 
                                 <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                    <!--<p:outputLabel value="#{td.codigo} - #{labels['TypeProcedimientoEstado.' += td.estado]}"/>-->
-                                    <p:outputLabel value="#{labels['TypeProcedimientoEstado.' += td.estado]} - #{td.nombreProcedimientoWorkFlow.getTraduccion(sessionBean.lang)} "/>
+                                    <h:outputText value="#{labels['TypeProcedimientoEstado.' += td.estado]} - #{td.nombreProcedimientoWorkFlow.getTraduccion(sessionBean.lang)} " class="labelGrande" />
                                 </p:column>
 
                             </p:dataTable>
@@ -550,7 +552,7 @@
 
 
                                 <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                    <p:outputLabel value="#{td.codigo} - #{td.titulo.getTraduccion(sessionBean.lang)}"/>
+                                    <h:outputText value="#{td.codigo} - #{td.titulo.getTraduccion(sessionBean.lang)}" class="labelGrande" />
                                 </p:column>
 
                             </p:dataTable>

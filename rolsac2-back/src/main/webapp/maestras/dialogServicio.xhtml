@@ -705,7 +705,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogServicio.descripcion']}" styleClass="text-center">
-                            <p:outputLabel value="#{td.identificador}"/>
+                            <h:outputText value="#{td.identificador}" class="labelGrande" />
                         </p:column>
 
                         <!--
@@ -770,10 +770,8 @@
                                         </div>
                                     </div>
                                     <i class="#{dialogServicio.getIcono(td)}"></i>
-                                    <p:outputLabel id="texto"
-                                                  value="#{td.descripcion.getTraduccion(dialogServicio.idioma)}"/>
-                                    <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
-                                               value="#{dialogServicio.getTooltip(td)}" position="right"/>
+                                    <h:outputText id="texto" value="#{td.descripcion.getTraduccion(dialogServicio.idioma)}" class="labelGrande" />
+                                    <p:tooltip id="toolTipFade#{td.codigo}" for="texto" value="#{dialogServicio.getTooltip(td)}" position="right"/>
                                 </p:column>
 
                             </p:treeTable>
@@ -828,7 +826,7 @@
 
                         <p:column headerText="#{labels['dialogServicio.descripcion']}"
                                   styleClass="text-center w75">
-                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogServicio.idioma)}"/>
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogServicio.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -887,7 +885,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogServicio.idioma)}"/>
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogServicio.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -950,7 +948,7 @@
                                     global="false"/>
 
                             <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                                <p:outputLabel value="LOPD"/>
+                                <h:outputText value="LOPD" class="labelGrande" />
                             </p:column>
 
                         </p:dataTable>

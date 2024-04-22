@@ -66,11 +66,11 @@
 
                 <p:column sortBy="#{pubobjent.tipo}">
                     <f:facet name="header">#{labels['viewPublicoObjetivoEntidad.tipoPublicoObjetivo']}</f:facet>
-                    <p:outputLabel value="#{pubobjent.tipo.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
+                    <h:outputText value="#{pubobjent.tipo.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}" class="labelGrande" />
                 </p:column>
                 <p:column sortBy="#{pubobjent.descripcion}">
                     <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
-                    <p:outputLabel value="#{pubobjent.descripcion.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
+                    <h:outputText value="#{pubobjent.descripcion.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}" class="labelGrande" />
                 </p:column>
                 <p:column sortBy="#{pubobjent.empleadoPublico}">
                     <f:facet name="header">#{labels['dict.esEmpleadoPublico']}</f:facet>

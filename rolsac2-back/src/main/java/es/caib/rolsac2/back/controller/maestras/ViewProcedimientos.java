@@ -48,10 +48,10 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     UnidadAdministrativaServiceFacade uaService;
 
     @EJB
-    private MaestrasSupServiceFacade maestrasSupService;
+    MaestrasSupServiceFacade maestrasSupService;
 
     @EJB
-    private TemaServiceFacade temaServiceFacade;
+    TemaServiceFacade temaServiceFacade;
 
     @EJB
     private PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;

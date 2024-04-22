@@ -51,6 +51,13 @@
 			#formDialog\:selectNormativa_input {
 			width: inherit !important; margin-right: 0px !important;
 			}
+			th[role=columnheader] div div.ui-state-active span{
+				filter: brightness(0) invert(1);
+			}
+			div.ui-state-active {
+				background: #22F !important;
+			}
+
 		</h:outputStylesheet>
 		<p:dialog modal="true" widgetVar="statusDialog1" id="statusDialog1"
 				  header="#{labels['dict.cargandoLaInfo']}" draggable="false"

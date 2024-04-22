@@ -171,28 +171,27 @@
                 </f:facet>
                 <p:column sortBy="#{normativa.codigo}" headerText="#{labels['dict.codigo']}">
                     <f:facet name="header"/>
-                    <p:outputLabel value="#{normativa.codigo}"/>
+                    <h:outputText value="#{normativa.codigo}" class="labelGrande" />
                 </p:column>
                 <p:column sortBy="#{normativa.titulo}" headerText="#{labels['dict.titulo']}" styleClass="w45">
                     <f:facet name="header"/>
-                    <p:outputLabel value="#{normativa.titulo.getTraduccion(sessionBean.lang)}"/>
+                    <h:outputText value="#{normativa.titulo.getTraduccion(sessionBean.lang)}" class="labelGrande" />
                 </p:column>
                 <p:column sortBy="#{normativa.tipoNormativa}" headerText="#{labels['viewNormativas.tipoNormativa']}" >
                     <f:facet name="header"/>
-                    <p:outputLabel
-                            value="#{normativa.tipoNormativa}"/>
+                    <h:outputText value="#{normativa.tipoNormativa}" class="labelGrande" />
                 </p:column>
                 <p:column sortBy="#{normativa.numero}" headerText="#{labels['viewNormativas.numero']}" >
                     <f:facet name="header"/>
-                    <p:outputLabel value="#{normativa.numero}"/>
+                    <h:outputText value="#{normativa.numero}" class="labelGrande" />
                 </p:column>
                 <p:column sortBy="#{normativa.boletinOficial}" headerText="#{labels['viewNormativas.boletin']}" styleClass="w10">
                     <f:facet name="header"/>
-                    <p:outputLabel value="#{normativa.boletinOficial}"/>
+                    <h:outputText value="#{normativa.boletinOficial}" class="labelGrande" />
                 </p:column>
                 <p:column sortBy="#{normativa.fechaAprobacion}" headerText="#{labels['viewNormativas.fechaAprobacion']}" styleClass="w17">
                     <f:facet name="header"/>
-                    <p:outputLabel value="#{normativa.fechaAprobacion}"/>
+                    <h:outputText value="#{normativa.fechaAprobacion}" class="labelGrande" />
                 </p:column>
             </p:dataTable>
 

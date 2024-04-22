@@ -449,7 +449,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
             UtilJSF.anyadirMochila("afectacionesNormativa", this.data.getAfectaciones());
         }
         params.put("modoAccesoNormativa", this.getModoAcceso());
-        UtilJSF.openDialog("dialogSeleccionNormativaAfectacion", modoAcceso, params, true, 1000, 733);
+        UtilJSF.openDialog("dialogSeleccionNormativaAfectacion", modoAcceso, params, true, 1410, 733);
     }
 
     public void returnDialogoAfectacion(final SelectEvent event) {

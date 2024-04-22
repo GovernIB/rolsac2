@@ -58,6 +58,11 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
+        <h:outputStylesheet>
+            tr.ui-state-highlight td div div.ui-chkbox-box {
+            background: #22F !important;
+            }
+        </h:outputStylesheet>
         <div class="ui-g-12 ui-md-9 pl-4 panel-container">
             <p:panel header="#{labels['dialogProcedimiento.datosSIA']}" id="formDatosSIA">
 
@@ -109,7 +114,7 @@
                                              value="#{labels['dict.enviarSIA']}"
                                              update="messagesDialog formDatosSIA btnRefrescarSIA btnIndexacionSIA"
                                              rendered="#{empty dialogProcedimiento.data.codigoSIA and !empty dialogProcedimiento.data.codigo and !dialogProcedimiento.mostrarRefreshSIA}"
-                                             style="margin-top:19px"
+                                             style="margin-top:24px"
                                              process="@all"/>
                             <p:commandButton id="btnRefrescarSIA" action="#{dialogProcedimiento.refrescarSIA}"
                                              value="#{labels['dict.refrescarSIA']}" update="messagesDialog formDatosSIA"
@@ -364,14 +369,14 @@
                             <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
                         </p:selectOneMenu>
                     </div>
-                    <div class="form-group col-md-2 d-flex flex-column mt-3">
+                    <div class="form-group col-md-2 d-flex flex-column">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.tasa']}:"
                                        for="txtTasa"/>
                         <p:selectBooleanCheckbox id="txtTasa" styleClass="mt-1"
                                                  value="#{dialogProcedimiento.data.tieneTasa}"/>
                     </div>
                 </div>
-                <div class="form-row mt-4">
+                <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mt-1 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.observaciones']}:"
@@ -537,10 +542,8 @@
                         </p>
                     </div>
                     <div class="form-group col-md-4">
-                        <p class="mb-1">
-                            <p:outputLabel styleClass="mb-1" value="#{labels['dialogProcedimiento.correoElectronico']}:"
+                        <p:outputLabel styleClass="mb-1 pt-0" value="#{labels['dialogProcedimiento.correoElectronico']}:"
                                           for="txtEmailResp"/>
-                        </p>
                         <p:inputText id="txtEmailResp" value="#{dialogProcedimiento.data.responsableEmail}"
                                      validatorMessage="#{labels['dict.emailNoValido']}"
                                      update="messagesDialog"
@@ -678,7 +681,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <p:outputLabel value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
+                            <h:outputText value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                         </p:column>
 
                     </p:dataTable>
@@ -731,12 +734,12 @@
                                     <div class="ui-chkbox ui-widget ui-selection">
                                         <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
                                             <p:outputLabel
-                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></p:outputLabel>
+                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"/>
                                         </div>
                                     </div>
                                     <i class="#{dialogProcedimiento.getIcono(td)}"></i>
-                                    <p:outputLabel id="texto"
-                                                  value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}"/>
+                                    <h:outputText id="texto"
+                                                  value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                                     <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
                                                value="#{dialogProcedimiento.getTooltip(td)}" position="right"/>
                                 </p:column>
@@ -792,7 +795,7 @@
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}"/>
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -851,7 +854,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                            <p:outputLabel value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}"/>
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -912,7 +915,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                            <p:outputLabel value="LOPD"/>
+                            <h:outputText value="LOPD" class="labelGrande" />
                         </p:column>
 
                     </p:dataTable>
@@ -974,7 +977,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <p:outputLabel value="#{td.nombre.getTraduccion(dialogProcedimiento.idioma)}"/>
+                            <h:outputText value="#{td.nombre.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
