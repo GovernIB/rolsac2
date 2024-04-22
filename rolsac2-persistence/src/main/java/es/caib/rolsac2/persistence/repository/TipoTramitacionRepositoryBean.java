@@ -134,7 +134,7 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JTipoTramitacion j JOIN j.codPlatTramitacion p where 1 = 1 ");
         } else if (isRest) {
-            sql = new StringBuilder("SELECT j FROM JTipoTramitacion j JOIN j.codPlatTramitacion p LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j FROM JTipoTramitacion j LEFT OUTER JOIN j.codPlatTramitacion p LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma where 1 = 1 ");
         } else {
             sql = new StringBuilder("SELECT j.codigo, j.tramitPresencial, j.tramitElectronica, '', p.identificador, " + " j.tramiteId, j.tramiteVersion, j.tramiteParametros FROM JTipoTramitacion j " + " JOIN j.codPlatTramitacion p where 1 = 1 ");
         }

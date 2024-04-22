@@ -41,6 +41,8 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     JUnidadAdministrativa findJUAById(UnidadAdministrativaDTO uaResponsable);
 
+    boolean hayBucle(Long idEntidad);
+
     List<Long> listarPadres(Long idUa);
 
     List<Long> listarHijos(Long idUa);

@@ -97,6 +97,42 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     /**
+     * Método que calcula a partir de una entidad, si hay un bucle en la jerarquía de unidades administrativas.
+     *
+     * @param idEntidad Identificador de la entidad
+     * @return true si hay bucle, false si no lo hay
+     */
+    @Override
+    public boolean hayBucle(Long idEntidad) {
+        UnidadAdministrativaGridDTO uaRaiz = getUaRaizEntidad(idEntidad);
+        List<Long> uas = new ArrayList<>();
+        uas.add(uaRaiz.getCodigo());
+        return hayBucleRecursivo(uaRaiz.getCodigo(), uas);
+    }
+
+    /**
+     * Metodo recursivo que lo comprueba
+     *
+     * @param codigo Codigo UA
+     * @param uas    Lista de codigo de UAs ya calculadas
+     * @return true si hay bucle, false si no lo hay
+     */
+    private boolean hayBucleRecursivo(Long codigo, List<Long> uas) {
+        List<JUnidadAdministrativa> juas = getUnidadesAdministrativaByPadre(codigo);
+        if (juas != null) {
+            for (JUnidadAdministrativa jua : juas) {
+                if (uas.contains(jua.getCodigo())) {
+                    return true;
+                } else {
+                    uas.add(jua.getCodigo());
+                    return hayBucleRecursivo(jua.getCodigo(), uas);
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Devuelve la lista de padres de una unidad administrativa. <br />
      * El orden es desde la raiz hacia abajo.<br />
      * Es importante tener en cuenta que la propia ua no cuenta como padre.<br />
@@ -109,7 +145,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         if (idUa == null) {
             return new ArrayList<>();
         }
-        List<Long> padres = listarPadresRecursivo(idUa);
+        List<Long> padres = listarPadresRecursivo(idUa, 1);
         if (padres == null) {
             padres = new ArrayList<>();
         }
@@ -123,14 +159,18 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
      * @param codigoUA Codigo de la unidad administrativa
      * @return Lista de padres de la unidad administrativa
      */
-    private List<Long> listarPadresRecursivo(Long codigoUA) {
+    private List<Long> listarPadresRecursivo(Long codigoUA, int repeticion) {
+        if (repeticion >= 20) {
+            //Es poner un limite para que no sea eterno
+            return new ArrayList<>();
+        }
         JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigoUA);
         List<Long> padres = new ArrayList<>();
 
         // Si la unidad administrativa tiene padre, se añade a la lista y se llama recursivamente
         if (jua != null && jua.getPadre() != null) {
             padres.add(jua.getPadre().getCodigo());
-            padres.addAll(listarPadresRecursivo(jua.getPadre().getCodigo()));
+            padres.addAll(listarPadresRecursivo(jua.getPadre().getCodigo(), repeticion + 1));
         }
         return padres;
     }
@@ -148,7 +188,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         if (idUa == null) {
             return new ArrayList<>();
         }
-        List<Long> hijos = listarHijosRecursivo(idUa);
+        List<Long> hijos = listarHijosRecursivo(idUa, 1);
         if (hijos == null) {
             hijos = new ArrayList<>();
         }
@@ -161,7 +201,11 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
      * @param codigoUA Codigo de la unidad administrativa
      * @return Lista de hijos de la unidad administrativa
      */
-    private List<Long> listarHijosRecursivo(Long codigoUA) {
+    private List<Long> listarHijosRecursivo(Long codigoUA, int repeticion) {
+        if (repeticion >= 20) {
+            //Es poner un limite para que no sea eterno
+            return new ArrayList<>();
+        }
         List<Long> juasHijos = entityManager.createQuery("SELECT ua.codigo FROM JUnidadAdministrativa ua WHERE ua.padre.codigo = :codigoUA", Long.class).setParameter("codigoUA", codigoUA).getResultList();
         List<Long> hijos;
 
@@ -170,7 +214,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             hijos = new ArrayList<>();
             for (Long uaHijo : juasHijos) {
                 hijos.add(uaHijo);
-                hijos.addAll(listarHijosRecursivo(uaHijo));
+                hijos.addAll(listarHijosRecursivo(uaHijo, repeticion + 1));
             }
         } else {
             hijos = new ArrayList<>();
