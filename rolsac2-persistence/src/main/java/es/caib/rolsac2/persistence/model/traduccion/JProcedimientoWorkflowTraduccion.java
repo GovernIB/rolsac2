@@ -83,7 +83,6 @@ public class JProcedimientoWorkflowTraduccion {
                 trad.setObservaciones(traduccion.getObservaciones());
                 trad.setLopdFinalidad(traduccion.getLopdFinalidad());
                 trad.setLopdDestinatario(traduccion.getLopdDestinatario());
-                //trad.setDocumentoLOPD(traduccion.getDocumentoLOPD());
                 trad.setKeywords(traduccion.getKeywords());
                 trad.setRequisitos(traduccion.getRequisitos());
                 trad.setTerminoResolucion(traduccion.getTerminoResolucion());

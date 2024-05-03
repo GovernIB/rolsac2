@@ -124,6 +124,8 @@ public class Servicios extends EntidadBase {
     private boolean tieneTasa = false;
     @Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
     private String responsableEmail;
+    @Schema(description = "incidenciasEmail", type = SchemaType.STRING, required = false)
+    private String incidenciasEmail;
     @Schema(description = "responsableTelefono", type = SchemaType.STRING, required = false)
     private String responsableTelefono;
     @Schema(description = "nombreProcedimientoWorkFlow", type = SchemaType.STRING, required = false)
@@ -187,6 +189,7 @@ public class Servicios extends EntidadBase {
             this.publicado = elem.isPublicado();
             this.requisitos = elem.getRequisitos() == null ? null : elem.getRequisitos().getTraduccionConValor(idioma, idiomaPorDefecto);
             this.responsableEmail = elem.getResponsableEmail();
+            this.incidenciasEmail = elem.getIncidenciasEmail();
             this.responsableTelefono = elem.getResponsableTelefono();
             this.terminoResolucion = elem.getTerminoResolucion() == null ? null : elem.getTerminoResolucion().getTraduccionConValor(idioma, idiomaPorDefecto);
             this.tieneTasa = elem.isTieneTasa();
@@ -701,6 +704,14 @@ public class Servicios extends EntidadBase {
 
     public void setResponsableEmail(String responsableEmail) {
         this.responsableEmail = responsableEmail;
+    }
+
+    public String getIncidenciasEmail() {
+        return incidenciasEmail;
+    }
+
+    public void setIncidenciasEmail(String incidenciasEmail) {
+        this.incidenciasEmail = incidenciasEmail;
     }
 
     public String getResponsableTelefono() {

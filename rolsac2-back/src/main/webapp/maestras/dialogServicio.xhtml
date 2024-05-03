@@ -304,7 +304,7 @@
             </p:panel>
             <p:panel id="panelOrganos" header="#{labels['dialogProcedimientoTramite.organos']}" styleClass="panel" >
                 <div class="form-row">
-                    <div class="form-group col-md-9">
+                    <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.organoInstructor']}:"
                                        for="txtOrgComp"/>
@@ -316,16 +316,16 @@
                                                         <p:inputText id="labelComun"
                                                                      value="#{dialogServicio.comunUA.getTraduccion(dialogServicio.idioma)}"
                                                                      rendered="#{dialogServicio.data.esComun()}"
-                                                                     styleClass="w95"
+                                                                     styleClass="w89"
                                                                      disabled="true"/>
                                                         <p:inputText id="txtOrgComp"
                                                                      rendered="#{!dialogServicio.data.esComun()}"
-                                                                     value="#{dialogServicio.data.uaResponsable.nombre.getTraduccion(dialogServicio.idioma)}"
-                                                                     styleClass="w90 mr-1" disabled="true"/>
+                                                                     value="#{dialogServicio.data.uaInstructor.nombre.getTraduccion(dialogServicio.idioma)}"
+                                                                     styleClass="w89 mr-1" disabled="true"/>
                                                         <p:inputText id="txtOrgCompRaiz" styleClass="ocultar"
                                                                      value="#{dialogServicio.uaRaiz}"
                                                         />
-                                                        <p:commandButton action="#{dialogServicio.abrirVentanaUA()}"
+                                                        <p:commandButton action="#{dialogServicio.abrirVentanaUAInstr()}"
                                                                          icon="pi pi-sitemap"
                                                                          value=" "
                                                                          styleClass="w45px h25px iconoUAselector"
@@ -356,11 +356,40 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.servicio']}:"
                                        for="txtServResp"/>
                         <p>
+                            <!--
                             <my:unidadAdministrativaComponent id="txtServResp"
                                                               value="#{dialogServicio.data.uaResponsable}"
                                                               idioma="#{dialogServicio.idioma}"
                                                               ocultarTexto="false" esCabecera="false"
                             />
+                            -->
+
+
+                            <p:inputText id="txtServResp"
+                                         value="#{dialogServicio.data.uaResponsable.nombre.getTraduccion(dialogServicio.idioma)}"
+                                         styleClass="w89 mr-1" disabled="true"/>
+
+                            <p:commandButton
+                                    action="#{dialogServicio.abrirVentanaUAResp()}"
+                                    icon="pi pi-sitemap"
+                                    value=" "
+                                    styleClass="w45px h25px iconoUAselector"
+                                    process="@this"
+                                    rendered="#{!dialogProcedimiento.data.esComun()}"
+                                    disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                    id="btnAbrirUAResp"
+                            >
+                                <p:ajax event="dialogReturn"
+                                        listener="#{dialogServicio.returnDialogoUAResp}"
+                                        process="@this"
+                                        update="formDialog:txtOrgComp formDialog:txtServResp formDialog:lblUAiconoResp"
+                                        oncomplete="checkUAraiz()"/>
+                            </p:commandButton>
+
+                            <h:outputLink id="lblUAiconoResp" value="#" styleClass="w20px">
+                                <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 pi #{dialogServicio.getCssUAResponsable()}" />
+                            </h:outputLink>
+                            <p:tooltip id="toolTipFadeResp" for="lblUAiconoResp" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
                         </p>
                     </div>
                 </div>
@@ -394,13 +423,31 @@
                             <p:ajax partialSubmit="@this" update="messagesDialog"/>
                         </p:inputText>
                     </div>
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-6">
                          <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.responsableTelefono']}:"
                                           for="textResponsableTelf"/>
                         <p:inputText id="textResponsableTelf" value="#{dialogServicio.data.responsableTelefono}"
-                                     disabled="#{dialogServicio.isModoConsulta()}" styleClass="w95" maxlength="25"/>
+                                     disabled="#{dialogServicio.isModoConsulta()}" styleClass="w90" maxlength="25"/>
                     </div>
 
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p:outputLabel styleClass="mb-1 pt-0" value="#{labels['dialogProcedimiento.correoIncidencias']}:"
+                                       for="txtEmailIncidencias"/>
+                        <p:inputText id="txtEmailIncidencias" value="#{dialogServicio.data.incidenciasEmail}"
+                                     validatorMessage="#{labels['dict.emailNoValido']}"
+                                     update="messagesDialog"
+                                     maxlength="100"
+                                     requiredMessage="#{labels['dict.obligatorio.incidenciasEmail']}"
+                                     required="#{empty param['formDialog:closeButton']}"
+                                     disabled="#{dialogServicio.isModoConsulta()}" styleClass="w95">
+                            <f:validateRegex
+                                    pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
+                                    update="messagesDialog"/>
+                            <p:ajax partialSubmit="@this" update="messagesDialog"/>
+                        </p:inputText>
+                    </div>
                 </div>
             </p:panel>
             <p:panel id="panelCanales" header="#{labels['dialogServicio.canales']}" styleClass="panel">

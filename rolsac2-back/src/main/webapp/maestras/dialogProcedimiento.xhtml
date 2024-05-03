@@ -104,7 +104,7 @@
                             <p:inputText id="txtErrorSIA" value="#{dialogProcedimiento.data.errorSIA}"
                                          styleClass="w95" disabled="true"
                             />
-                            <p:tooltip id="toolTipFade" for="txtErrorSIA" value="#{dialogProcedimiento.data.errorSIA}"
+                            <p:tooltip id="toolTipFadeSIA" for="txtErrorSIA" value="#{dialogProcedimiento.data.errorSIA}"
                                        position="top"/>
                         </p>
                     </div>
@@ -448,10 +448,14 @@
                                                 <p:ajax event="dialogReturn"
                                                         listener="#{dialogProcedimiento.returnDialogoUAResp}"
                                                         process="@this"
-                                                        update="formDialog:txtOrgComp formDialog:txtOrgCompRaiz formDialog:selectComun"
+                                                        update="formDialog:txtOrgComp formDialog:txtOrgCompRaiz formDialog:selectComun formDialog:lblUAiconoResp"
                                                         oncomplete="checkUAraiz()"/>
                                             </p:commandButton>
 
+                                            <h:outputLink id="lblUAiconoResp" value="#" styleClass="w20px">
+                                                <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 pi #{dialogProcedimiento.getCssUAResponsable()}" />
+                                            </h:outputLink>
+                                           <p:tooltip id="toolTipFadeResp" for="lblUAiconoResp" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
 
                                     </span>
                             </h:panelGroup>
@@ -501,7 +505,6 @@
                                                     oncomplete="checkUAraiz()"/>
                                         </p:commandButton>
 
-
                                 </span>
 
                             </h:panelGroup>
@@ -517,13 +520,34 @@
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.servicio']}:"
-                                       for="txtServResp"/>
+                                       for="txtOrgResp"/>
                         <p>
-                            <my:unidadAdministrativaComponent id="txtServResp"
-                                                              value="#{dialogProcedimiento.data.uaResponsable}"
-                                                              idioma="#{dialogProcedimiento.idioma}"
-                                                              ocultarTexto="false" esCabecera="false"
-                            />
+                            <p:inputText id="txtOrgResp"
+                                         rendered="#{!dialogProcedimiento.data.esComun()}"
+                                         value="#{dialogProcedimiento.data.uaCompetente.nombre.getTraduccion(dialogProcedimiento.idioma)}"
+                                         styleClass="w85 mr-1"
+                                         disabled="true"/>
+                            <p:commandButton
+                                    action="#{dialogProcedimiento.abrirVentanaUACompetente()}"
+                                    icon="pi pi-sitemap"
+                                    value=" "
+                                    styleClass="w40px h25px iconoUAselector"
+                                    process="@this"
+                                    rendered="#{!dialogProcedimiento.data.esComun()}"
+                                    disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                    id="btnAbrirUAResp"
+                            >
+                                <p:ajax event="dialogReturn"
+                                        listener="#{dialogProcedimiento.returnDialogoUACompetente}"
+                                        process="@this"
+                                        update="formDialog:txtOrgResp lblUAiconoCompetente lblUAiconoCompetente2 toolTipFadeCompetente"
+                                        oncomplete="checkUAraiz()"/>
+                            </p:commandButton>
+                            <h:outputLink id="lblUAiconoCompetente" value="#" styleClass="w20px">
+                                <h:outputText id="lblUAiconoCompetente2" value=" "  styleClass="ml-3 pt-1 pi #{dialogProcedimiento.getCssUACompetente()}" />
+                            </h:outputLink>
+                            <p:tooltip id="toolTipFadeCompetente" for="lblUAiconoCompetente" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
+
                         </p>
                     </div>
                 </div>
@@ -541,20 +565,37 @@
                                          styleClass="w95"/>
                         </p>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-5">
                         <p:outputLabel styleClass="mb-1 pt-0" value="#{labels['dialogProcedimiento.correoElectronico']}:"
                                           for="txtEmailResp"/>
                         <p:inputText id="txtEmailResp" value="#{dialogProcedimiento.data.responsableEmail}"
                                      validatorMessage="#{labels['dict.emailNoValido']}"
                                      update="messagesDialog"
                                      maxlength="100"
-                                     disabled="#{dialogProcedimiento.isModoConsulta()}" styleClass="w95">
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" styleClass="w90">
                             <f:validateRegex
                                     pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
                                     update="messagesDialog"/>
                             <p:ajax partialSubmit="@this" update="messagesDialog"/>
                         </p:inputText>
-                        <h:message for="txtEmailResp"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p:outputLabel styleClass="mb-1 pt-0" value="#{labels['dialogProcedimiento.correoIncidencias']}:"
+                                       for="txtEmailIncidencias"/>
+                        <p:inputText id="txtEmailIncidencias" value="#{dialogProcedimiento.data.incidenciasEmail}"
+                                     validatorMessage="#{labels['dict.emailNoValido']}"
+                                     update="messagesDialog"
+                                     maxlength="100"
+                                     requiredMessage="#{labels['dict.obligatorio.incidenciasEmail']}"
+                                     required="#{empty param['formDialog:closeButton']}"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" styleClass="w96">
+                            <f:validateRegex
+                                    pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
+                                    update="messagesDialog"/>
+                            <p:ajax partialSubmit="@this" update="messagesDialog"/>
+                        </p:inputText>
                     </div>
                 </div>
             </p:panel>

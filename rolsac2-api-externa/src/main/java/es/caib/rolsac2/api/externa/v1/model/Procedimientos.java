@@ -202,6 +202,9 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
     private String responsableEmail;
 
+    @Schema(description = "incidenciasEmail", type = SchemaType.STRING, required = false)
+    private String incidenciasEmail;
+
     @Schema(description = "responsableTelefono", type = SchemaType.STRING, required = false)
     private String responsableTelefono;
 
@@ -676,6 +679,14 @@ public class Procedimientos extends EntidadBase {
 
     public void setResponsableEmail(String responsableEmail) {
         this.responsableEmail = responsableEmail;
+    }
+
+    public String getIncidenciasEmail() {
+        return incidenciasEmail;
+    }
+
+    public void setIncidenciasEmail(String incidenciasEmail) {
+        this.incidenciasEmail = incidenciasEmail;
     }
 
     public String getResponsableTelefono() {

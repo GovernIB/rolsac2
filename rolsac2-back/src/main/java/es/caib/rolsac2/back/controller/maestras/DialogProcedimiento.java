@@ -7,10 +7,7 @@ import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import es.caib.rolsac2.service.model.types.*;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -72,6 +69,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     private List<TemaGridDTO> temasPadreAnyadidos;
 
+    private List<Long> uasInstructor = new ArrayList<>();
+
     @EJB
     private ProcedimientoServiceFacade procedimientoServiceFacade;
 
@@ -86,6 +85,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     @EJB
     private ProcesoTimerServiceFacade procesoTimerServiceFacade;
+
+    @EJB
+    private SystemServiceFacade systemService;
 
     private String id = "";
     private boolean mostrarRefreshSIA = false;
@@ -158,6 +160,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
         actualizarResponsable();
         dataOriginal = (ProcedimientoDTO) data.clone();
+
+        //Eso es para cargar las uas del instructor
+        calcularUAhijosPadres();
     }
 
     /**
@@ -189,6 +194,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (listTipoVia == null || listTipoVia.isEmpty()) {
             listTipoVia = maestrasSupService.findAllTipoVia();
         }
+
 
     }
 
@@ -266,10 +272,67 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
             if (uaSeleccionada != null) {
                 this.data.setUaInstructor(uaSeleccionada);
+                boolean misma = uaSeleccionada.getCodigo().compareTo(data.getUaInstructor().getCodigo()) == 0;
                 uaRaiz = Boolean.valueOf(uaSeleccionada.esRaiz()).toString();
                 if (!uaSeleccionada.esRaiz()) {
                     this.data.setComun(0); //Es raro que lo estuviese como comun pero por si acaso
                 }
+                if (!misma) {
+                    calcularUAhijosPadres();
+                }
+            }
+        }
+    }
+
+    private void calcularUAhijosPadres() {
+        uasInstructor = new ArrayList<>();
+        if (data.getUaInstructor() == null) {
+            return;
+        }
+        List<Long> idHijos = uaService.listarHijos(data.getUaInstructor().getCodigo());
+        List<Long> idPadres = uaService.listarPadres(data.getUaInstructor().getCodigo());
+
+        uasInstructor.add(data.getUaInstructor().getCodigo());
+        uasInstructor.addAll(idHijos);
+        uasInstructor.addAll(idPadres);
+    }
+
+    /**
+     * Devuelve el css para el boton de la UA Instructor.
+     * Si no está en la lista de UA del instructor, se pone en rojo y se muestra el ojo
+     *
+     * @return
+     */
+    public String getCssUAResponsable() {
+        if (data.getUaResponsable() == null) {
+            return "";
+        }
+        return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-eye botonRojoRequired";
+    }
+
+    public String getCssUACompetente() {
+        if (data.getUaCompetente() == null) {
+            return "";
+        }
+        return uasInstructor.contains(data.getUaCompetente().getCodigo()) ? "" : "pi-eye botonRojoRequired";
+    }
+
+    public boolean mostrarAlertaUAResponsable() {
+        return !uasInstructor.contains(data.getUaResponsable().getCodigo());
+    }
+
+    public boolean mostrarAlertaUAInstructor() {
+        return !uasInstructor.contains(data.getUaInstructor().getCodigo());
+    }
+
+    public void returnDialogoUACompetente(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        // Verificamos si se ha modificado
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
+            if (uaSeleccionada != null) {
+                this.data.setUaCompetente(uaSeleccionada);
             }
         }
     }
@@ -282,23 +345,23 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
             if (uaSeleccionada != null) {
                 this.data.setUaResponsable(uaSeleccionada);
-                uaRaiz = Boolean.valueOf(uaSeleccionada.esRaiz()).toString();
-                if (!uaSeleccionada.esRaiz()) {
-                    this.data.setComun(0); //Es raro que lo estuviese como comun pero por si acaso
-                }
             }
         }
     }
 
     public void abrirVentanaUAResp() {
-        abrirVentanaUAInstr(this.data.getUaResponsable());
+        abrirVentanaUA(this.data.getUaResponsable());
     }
 
-    public void abrirVentanaUAInstr() {
-        abrirVentanaUAInstr(this.data.getUaInstructor());
+    public void abrirVentanaUA() {
+        abrirVentanaUA(this.data.getUaInstructor());
     }
 
-    private void abrirVentanaUAInstr(UnidadAdministrativaDTO ua) {
+    public void abrirVentanaUACompetente() {
+        abrirVentanaUA(this.data.getUaCompetente());
+    }
+
+    private void abrirVentanaUA(UnidadAdministrativaDTO ua) {
         final Map<String, String> params = new HashMap<>();
         /*
          * if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso ==
@@ -388,7 +451,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
 
             resetearOrdenListas();
-            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo());
+            String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
             final DialogResult result = new DialogResult();
             if (this.getModoAcceso() != null) {
                 result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
@@ -448,11 +512,12 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     public void guardarSinCheck() {
 
         resetearOrdenListas();
+        String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
 
         if (this.data.getCodigo() == null) {
-            procedimientoServiceFacade.create(this.data, sessionBean.getPerfil());
+            procedimientoServiceFacade.create(this.data, sessionBean.getPerfil(), ruta);
         } else {
-            procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil(), UtilJSF.getSessionBean().getEntidad().getCodigo());
+            procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
         }
 
 
@@ -750,6 +815,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 }
                 //params.put(TypeParametroVentana.ID.toString(), String.valueOf(contadorProcMemoria--));
             }
+            UtilJSF.anyadirMochila("uasInstructor", uasInstructor);
             UtilJSF.anyadirMochila("nombreProcedimiento", data.getNombreProcedimientoWorkFlow());
             UtilJSF.openDialog("dialogProcedimientoTramite", modoAcceso, params, true, 950, 600);
         }
@@ -874,7 +940,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void abrirDialogDocumento(TypeModoAcceso modoAcceso) {
         final Map<String, String> params = new HashMap<>();
-        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
+        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigoWF().toString());
         if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
             UtilJSF.anyadirMochila("documento", this.documentoSeleccionado.clone());
         }

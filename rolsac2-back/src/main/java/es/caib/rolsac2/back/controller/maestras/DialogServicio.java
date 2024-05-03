@@ -7,10 +7,7 @@ import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import es.caib.rolsac2.service.model.types.*;
 import org.primefaces.PrimeFaces;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.SelectEvent;
@@ -76,6 +73,8 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     private List<TemaGridDTO> temasPadreAnyadidos;
 
+    private List<Long> uasInstructor = new ArrayList<>();
+
     @EJB
     private SystemServiceFacade systemServiceFacade;
     @EJB
@@ -89,6 +88,9 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     @EJB
     private ProcesoTimerServiceFacade procesoTimerServiceFacade;
+
+    @EJB
+    private SystemServiceFacade systemService;
 
     private String id = "";
 
@@ -212,6 +214,23 @@ public class DialogServicio extends AbstractController implements Serializable {
         //revisarLiterales();
         actualizarResponsable();
         dataOriginal = (ServicioDTO) data.clone();
+
+        //Eso es para cargar las uas del instructor
+        calcularUAhijosPadres();
+    }
+
+
+    private void calcularUAhijosPadres() {
+        uasInstructor = new ArrayList<>();
+        if (data.getUaInstructor() == null) {
+            return;
+        }
+        List<Long> idHijos = uaService.listarHijos(data.getUaInstructor().getCodigo());
+        List<Long> idPadres = uaService.listarPadres(data.getUaInstructor().getCodigo());
+
+        uasInstructor.add(data.getUaInstructor().getCodigo());
+        uasInstructor.addAll(idHijos);
+        uasInstructor.addAll(idPadres);
     }
 
     private void cargarListas() {
@@ -361,6 +380,30 @@ public class DialogServicio extends AbstractController implements Serializable {
     }
 
 
+    public void abrirVentanaUAInstr() {
+        abrirVentanaUA(this.data.getUaInstructor());
+    }
+
+    public void abrirVentanaUAResp() {
+        abrirVentanaUA(this.data.getUaResponsable());
+    }
+
+    private void abrirVentanaUA(UnidadAdministrativaDTO ua) {
+        final Map<String, String> params = new HashMap<>();
+        /*
+         * if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso ==
+         * TypeModoAcceso.CONSULTA)) { params.put(TypeParametroVentana.ID.toString(),
+         * this.datoSeleccionado.getId().toString()); }
+         */
+
+        params.put(TypeParametroVentana.MODO_ACCESO.toString(), this.getModoAcceso());
+        String direccion = "/comun/dialogSeleccionarUA";
+
+        UtilJSF.anyadirMochila("ua", ua);
+        //params.put("esCabecera", null);
+        UtilJSF.openDialog(direccion, TypeModoAcceso.valueOf(this.getModoAcceso()), params, true, 850, 575);
+    }
+
     public boolean esUAResponsableRaiz() {
         return this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz();
     }
@@ -373,29 +416,43 @@ public class DialogServicio extends AbstractController implements Serializable {
             UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
             if (uaSeleccionada != null) {
                 this.data.setUaInstructor(uaSeleccionada);
+                boolean misma = uaSeleccionada.getCodigo().compareTo(data.getUaInstructor().getCodigo()) == 0;
                 uaRaiz = Boolean.valueOf(uaSeleccionada.esRaiz()).toString();
                 if (!uaSeleccionada.esRaiz()) {
                     this.data.setComun(0); //Es raro que lo estuviese como comun pero por si acaso
+                }
+                if (!misma) {
+                    calcularUAhijosPadres();
                 }
             }
         }
     }
 
-    public void abrirVentanaUA() {
-        final Map<String, String> params = new HashMap<>();
-        /*
-         * if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso ==
-         * TypeModoAcceso.CONSULTA)) { params.put(TypeParametroVentana.ID.toString(),
-         * this.datoSeleccionado.getId().toString()); }
-         */
-
-        params.put(TypeParametroVentana.MODO_ACCESO.toString(), this.getModoAcceso());
-        String direccion = "/comun/dialogSeleccionarUA";
-
-        UtilJSF.anyadirMochila("ua", data.getUaResponsable());
-        //params.put("esCabecera", null);
-        UtilJSF.openDialog(direccion, TypeModoAcceso.valueOf(this.getModoAcceso()), params, true, 850, 575);
+    /**
+     * Devuelve el css para el boton de la UA Instructor.
+     * Si no está en la lista de UA del instructor, se pone en rojo y se muestra el ojo
+     *
+     * @return
+     */
+    public String getCssUAResponsable() {
+        if (data.getUaResponsable() == null) {
+            return "";
+        }
+        return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-eye botonRojoRequired";
     }
+
+    public void returnDialogoUAResp(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        // Verificamos si se ha modificado
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
+            if (uaSeleccionada != null) {
+                this.data.setUaResponsable(uaSeleccionada);
+            }
+        }
+    }
+
 
     public void guardarFlujo() {
         esSoloGuardar = false;
@@ -455,7 +512,8 @@ public class DialogServicio extends AbstractController implements Serializable {
         if (!respuesta.isCanceled()) {
             RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
             resetearOrdenListas();
-            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo());
+            String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
             final DialogResult result = new DialogResult();
             if (this.getModoAcceso() != null) {
                 result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
@@ -545,10 +603,11 @@ public class DialogServicio extends AbstractController implements Serializable {
     public void guardarSinCheck() {
 
         resetearOrdenListas();
+        String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
         if (this.data.getCodigo() == null) {
-            procedimientoServiceFacade.create(this.data, sessionBean.getPerfil());
+            procedimientoServiceFacade.create(this.data, sessionBean.getPerfil(), ruta);
         } else {
-            procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil(), UtilJSF.getSessionBean().getEntidad().getCodigo());
+            procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
         }
 
         final DialogResult result = new DialogResult();
@@ -819,7 +878,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void abrirDialogDocumento(TypeModoAcceso modoAcceso) {
         final Map<String, String> params = new HashMap<>();
-        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
+        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigoWF().toString());
         if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
             UtilJSF.anyadirMochila("documento", this.documentoSeleccionado.clone());
         }
