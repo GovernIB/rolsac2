@@ -15,14 +15,12 @@ import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.DocumentoNormativaFiltro;
 import es.caib.rolsac2.service.model.filtro.NormativaFiltro;
 import es.caib.rolsac2.service.model.types.TypeIndexacion;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
-import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,61 +45,53 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(NormativaServiceFacadeBean.class);
 
     @Inject
-    private NormativaRepository normativaRepository;
+    NormativaRepository normativaRepository;
 
     @Inject
-    private EntidadRepository entidadRepository;
+    EntidadRepository entidadRepository;
 
     @Inject
-    private TipoNormativaRepository tipoNormativaRepository;
+    TipoNormativaRepository tipoNormativaRepository;
 
     @Inject
-    private NormativaConverter converter;
+    NormativaConverter converter;
 
     @Inject
-    private AfectacionRepository afectacionRepository;
+    AfectacionRepository afectacionRepository;
 
     @Inject
-    private DocumentoNormativaConverter documentoNormativaConverter;
+    DocumentoNormativaConverter documentoNormativaConverter;
 
     @Inject
-    private DocumentoNormativaRepository documentoNormativaRepository;
+    DocumentoNormativaRepository documentoNormativaRepository;
 
     @Inject
-    private SystemServiceFacade systemService;
+    FicheroExternoRepository ficheroExternoRepository;
 
     @Inject
-    private FicheroExternoRepository ficheroExternoRepository;
+    ProcedimientoRepository procedimientoRepository;
 
     @Inject
-    private SystemServiceFacade systemServiceBean;
+    IndexacionRepository indexacionRepository;
 
     @Inject
-    private ProcedimientoRepository procedimientoRepository;
+    UnidadAdministrativaRepository unidadAdministrativaRepository;
 
     @Inject
-    private IndexacionRepository indexacionRepository;
+    TipoBoletinRepository tipoBoletinRepository;
 
     @Inject
-    private UnidadAdministrativaRepository unidadAdministrativaRepository;
-
-    @Inject
-    private TipoBoletinRepository tipoBoletinRepository;
-
-    @Inject
-    private TipoAfectacionConverter tipoAfectacionConverter;
+    TipoAfectacionConverter tipoAfectacionConverter;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(NormativaDTO dto) {
+    public Long create(NormativaDTO dto, String path) {
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
         JNormativa jNormativa = converter.createEntity(dto);
 
-        /**
-         * Asociación de afectaciones a la normativa
-         */
+        //Asociación de afectaciones a la normativa
         List<JAfectacion> afectaciones = new ArrayList<>();
         if (dto.getAfectaciones() != null) {
             for (AfectacionDTO afectacionDTO : dto.getAfectaciones()) {
@@ -117,10 +107,8 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         jNormativa.setAfectaciones(afectaciones);
 
 
-        /**
-         * Asociación para UAs. En caso de que se hayan asignado UAs a la normativa,
-         * se recuperan las UAs añadidas y se añaden al modelo de Normativa.
-         */
+        // Asociación para UAs. En caso de que se hayan asignado UAs a la normativa,
+        // se recuperan las UAs añadidas y se añaden al modelo de Normativa.
         Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
         if (dto.getUnidadesAdministrativas() != null) {
             JUnidadAdministrativa jUnidadAdministrativa;
@@ -134,30 +122,40 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         normativaRepository.create(jNormativa);
         dto.setCodigo(jNormativa.getCodigo());
 
-        /**
-         * Como se pueden dar de alta documentos al crearse la normativa,
-         * revisamos si se han dado de alta algunos y, en caso afirmativo,
-         * persistimos los documentos creados y actualizamos la entidad Normativa.
-         */
+        // Como se pueden dar de alta documentos al crearse la normativa,
+        // revisamos si se han dado de alta algunos y, en caso afirmativo,
+        // persistimos los documentos creados y actualizamos la entidad Normativa.
         if (dto.getDocumentosNormativa() != null) {
             List<JDocumentoNormativa> documentosNormativa = new ArrayList<>();
             for (DocumentoNormativaDTO documentoNormativaDTO : dto.getDocumentosNormativa()) {
                 documentoNormativaDTO.setNormativa(dto);
-                Long id = createDocumentoNormativa(documentoNormativaDTO);
+                Long id = createDocumentoNormativa(documentoNormativaDTO, path);
                 documentosNormativa.add(documentoNormativaRepository.findById(id));
             }
             jNormativa.setDocumentosNormativa(documentosNormativa);
             normativaRepository.update(jNormativa);
+
+            //Una vez guardados todos los documentos, persistimos los ficheros externos
+            if (jNormativa.getDocumentosNormativa() != null) {
+                for (JDocumentoNormativa jDocumentoNormativa : jNormativa.getDocumentosNormativa()) {
+                    for (JDocumentoNormativaTraduccion trad : jDocumentoNormativa.getTraducciones()) {
+                        if (trad.getDocumento() != null) {
+                            ficheroExternoRepository.persistFicheroExterno(trad.getDocumento().getCodigo(), jNormativa.getCodigo(), path);
+                        }
+                    }
+                }
+            }
         }
 
         indexacionRepository.guardarIndexar(jNormativa.getCodigo(), TypeIndexacion.NORMATIVA, jNormativa.getEntidad().getCodigo(), 1);
+
 
         return jNormativa.getCodigo();
     }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void update(NormativaDTO dto) throws RecursoNoEncontradoException {
+    public void update(NormativaDTO dto, String path) throws RecursoNoEncontradoException {
         JTipoBoletin jBoletinOficial = dto.getBoletinOficial() != null ? tipoBoletinRepository.findById(dto.getBoletinOficial().getCodigo()) : null;
         JTipoNormativa jTipoNormativa = dto.getTipoNormativa() != null ? tipoNormativaRepository.getReference(dto.getTipoNormativa().getCodigo()) : null;
         JEntidad jEntidad = entidadRepository.getReference(dto.getEntidad().getCodigo());
@@ -166,20 +164,11 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         jNormativa.setTipoNormativa(jTipoNormativa);
         jNormativa.setEntidad(jEntidad);
 
-        /**
-         * Actualizamos la asociación de las afectaciones
-         */
-        List<JAfectacion> jAfectaciones = afectacionRepository.findAfectacionesRelacionadas(jNormativa.getCodigo());
-        List<JAfectacion> jAfectacionesOrigen = afectacionRepository.findAfectacionesOrigen(jNormativa.getCodigo());
-        jNormativa.getAfectaciones().clear();
-        jNormativa.getAfectaciones().addAll(jAfectaciones);
-        jNormativa.getAfectacionesOrigen().clear();
-        jNormativa.getAfectacionesOrigen().addAll(jAfectacionesOrigen);
+        // Actualizamos la asociación de las afectaciones
+        afectacionRepository.actualizarAfectaciones(dto.getCodigo(), dto.getAfectaciones());
 
-        /**
-         * Asociación para UAs. En caso de que se hayan asignado UAs a la normativa,
-         * se recuperan las UAs añadidas y se añaden al modelo de Normativa.
-         */
+        // Asociación para UAs. En caso de que se hayan asignado UAs a la normativa,
+        // se recuperan las UAs añadidas y se añaden al modelo de Normativa.
         Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
         if (dto.getUnidadesAdministrativas() != null) {
             JUnidadAdministrativa jUnidadAdministrativa;
@@ -195,10 +184,8 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
 
         converter.mergeEntity(jNormativa, dto);
 
-        List<JDocumentoNormativa> jDocumentosNormativas = documentoNormativaRepository.findDocumentosRelacionados(dto.getCodigo());
-        jNormativa.getDocumentosNormativa().clear();
-        jNormativa.getDocumentosNormativa().addAll(jDocumentosNormativas);
-        normativaRepository.update(jNormativa);
+        // Actualizamos los documentos
+        documentoNormativaRepository.actualizarDocumentacion(dto.getCodigo(), dto.getDocumentosNormativa(), path);
 
         indexacionRepository.guardarIndexar(jNormativa.getCodigo(), TypeIndexacion.NORMATIVA, jNormativa.getEntidad().getCodigo(), 1);
 
@@ -266,8 +253,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         } catch (Exception e) {
             LOG.error("Error", e);
             List<NormativaGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -338,7 +324,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long createDocumentoNormativa(DocumentoNormativaDTO dto) {
+    public Long createDocumentoNormativa(DocumentoNormativaDTO dto, String path) {
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
@@ -350,7 +336,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         if (dto.getDocumentos() != null) {
             for (String idioma : dto.getDocumentos().getIdiomas()) {
                 if (dto.getDocumentos().getTraduccion(idioma) != null) {
-                    ficheroExternoRepository.persistFicheroExterno(jDocumentoNormativa.getCodigo(), dto.getNormativa().getCodigo(), systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
+                    ficheroExternoRepository.persistFicheroExterno(jDocumentoNormativa.getCodigo(), dto.getNormativa().getCodigo(), path);
                 }
             }
         }
@@ -360,12 +346,12 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void updateDocumentoNormativa(DocumentoNormativaDTO dto) {
+    public void updateDocumentoNormativa(DocumentoNormativaDTO dto, String path) {
         JDocumentoNormativa jDocumentoNormativa = documentoNormativaRepository.getReference(dto.getCodigo());
         if (dto.getDocumentos() != null) {
             for (String idioma : dto.getDocumentos().getIdiomas()) {
                 if (dto.getDocumentos().getTraduccion(idioma) != null) {
-                    ficheroExternoRepository.persistFicheroExterno(jDocumentoNormativa.getCodigo(), dto.getNormativa().getCodigo(), systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS));
+                    ficheroExternoRepository.persistFicheroExterno(jDocumentoNormativa.getCodigo(), dto.getNormativa().getCodigo(), path);
                 }
             }
         }
@@ -447,13 +433,13 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void updateAfectacion(AfectacionDTO afectacionDTO) {
         JAfectacion jAfectacion = afectacionRepository.findById(afectacionDTO.getCodigo());
-        if (afectacionDTO.getTipo().getCodigo() != jAfectacion.getTipoAfectacion().getCodigo()) {
+        if (afectacionDTO.getTipo().getCodigo().equals(jAfectacion.getTipoAfectacion().getCodigo())) {
             jAfectacion.setTipoAfectacion(tipoAfectacionConverter.createEntity(afectacionDTO.getTipo()));
         }
-        if (afectacionDTO.getNormativaOrigen().getCodigo() != afectacionDTO.getNormativaAfectada().getCodigo()) {
+        if (afectacionDTO.getNormativaOrigen().getCodigo().equals(afectacionDTO.getNormativaAfectada().getCodigo())) {
             jAfectacion.setNormativaOrigen(normativaRepository.findById(afectacionDTO.getNormativaOrigen().getCodigo()));
         }
-        if (afectacionDTO.getNormativaAfectada().getCodigo() != jAfectacion.getNormativaAfectada().getCodigo()) {
+        if (afectacionDTO.getNormativaAfectada().getCodigo().equals(jAfectacion.getNormativaAfectada().getCodigo())) {
             jAfectacion.setNormativaAfectada(normativaRepository.findById(afectacionDTO.getNormativaAfectada().getCodigo()));
         }
         afectacionRepository.update(jAfectacion);
@@ -487,9 +473,8 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public IndexFile findDataIndexacionDocNormById(NormativaDTO normativaDTO, DocumentoNormativaDTO doc, DocumentoTraduccion docTraduccion, List<PathUA> pathUAs) {
-        String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
-        FicheroDTO ficheroDTO = ficheroExternoRepository.getContentById(docTraduccion.getFicheroDTO().getCodigo(), ruta);
+    public IndexFile findDataIndexacionDocNormById(NormativaDTO normativaDTO, DocumentoNormativaDTO doc, DocumentoTraduccion docTraduccion, List<PathUA> pathUAs, String path) {
+        FicheroDTO ficheroDTO = ficheroExternoRepository.getContentById(docTraduccion.getFicheroDTO().getCodigo(), path);
         return CastUtil.getDataIndexacion(normativaDTO, doc, docTraduccion, ficheroDTO, docTraduccion.getIdioma(), pathUAs);
     }
 
@@ -516,8 +501,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         } catch (Exception e) {
             LOG.error("Error", e);
             List<NormativaDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -531,8 +515,7 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         } catch (Exception e) {
             LOG.error("Error", e);
             List<DocumentoNormativaDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -542,9 +525,5 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         return normativaRepository.obtenerIdiomaEntidad(codigo);
     }
 
-
-    /*******************************************************************************************************************
-     * Funciones privadas del servicio
-     *******************************************************************************************************************/
 
 }

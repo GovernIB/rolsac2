@@ -11,6 +11,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -25,8 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URLConnection;
+import java.util.Calendar;
 import java.util.List;
-import java.util.UUID;
 
 
 @Named
@@ -62,19 +63,20 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
             data = new DocumentoNormativaDTO();
             //En caso de que la normativa se esté dando de alta, no se puede crear el documento desde esta pantalla,
             // sino que se creará al realizar el create de la normativa
-            if(modoAccesoNormativa!= null && !modoAccesoNormativa.equals(TypeModoAcceso.ALTA.toString())) {
+            if (modoAccesoNormativa != null && !modoAccesoNormativa.equals(TypeModoAcceso.ALTA.toString())) {
                 data.setNormativa(normativaServiceFacade.findById(Long.valueOf(idNormativa)));
             }
             data.setTitulo(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setDocumentos(DocumentoMultiIdioma.createInstance(sessionBean.getIdiomasPermitidosList()));
-            data.setCodigoTabla(UUID.randomUUID().toString());
-        } else if (modoAccesoNormativa.equals(TypeModoAcceso.ALTA.toString()) && (this.isModoEdicion() || this.isModoConsulta())) {
-            data = (DocumentoNormativaDTO) UtilJSF.getValorMochilaByKey("documentoNormativa");
+            data.setCodigoTemporal(Calendar.getInstance().getTimeInMillis());//UUID.randomUUID().toString()));
         } else {
-            String idDocumento = (String) UtilJSF.getDialogParam("idDocumento");
-            data = normativaServiceFacade.findDocumentoNormativa(Long.valueOf(idDocumento));
+            data = (DocumentoNormativaDTO) UtilJSF.getValorMochilaByKey("documentoNormativa");
+            if (data == null && UtilJSF.getDialogParam("idDocumento") != null) {
+                String idDocumento = (String) UtilJSF.getDialogParam("idDocumento");
+                data = normativaServiceFacade.findDocumentoNormativa(Long.valueOf(idDocumento));
+            }
         }
 
         UtilJSF.vaciarMochila();
@@ -87,15 +89,6 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
     public void guardar() {
         if (!verificarGuardar()) {
             return;
-        }
-        //En caso de que la normativa se esté dando de alta, no se puede crear el documento desde esta pantalla,
-        // sino que se creará al realizar el create de la normativa
-        if (this.data.getCodigo() == null && modoAccesoNormativa!= null
-                && modoAccesoNormativa.equals(TypeModoAcceso.EDICION.toString()) && isModoAlta()) {
-            normativaServiceFacade.createDocumentoNormativa(data);
-        } else if(this.data.getCodigo() != null && modoAccesoNormativa!= null
-                && modoAccesoNormativa.equals(TypeModoAcceso.EDICION.toString()) && isModoEdicion()){
-            normativaServiceFacade.updateDocumentoNormativa(data);
         }
 
         // Retornamos resultados
@@ -146,8 +139,8 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
     public void handleDocUpload(FileUploadEvent event) {
         try {
             InputStream is = event.getFile().getInputStream();
-            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(),
-                    TypeFicheroExterno.NORMATIVA_DOCUMENTO, idNormativa);
+            String path = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.NORMATIVA_DOCUMENTO, idNormativa, path);
 
             FicheroDTO ficheroDTO = new FicheroDTO();
             ficheroDTO.setFilename(event.getFile().getFileName());
@@ -181,16 +174,13 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
         FicheroDTO documento = this.data.getDocumentos().getTraduccion(idioma);
         if (documento.getContenido() == null) {
             //Nos bajamos el fichero si está vacío
-            documento = ficheroServiceFacade.getContentById(documento.getCodigo());
+            String path = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            documento = ficheroServiceFacade.getContentById(documento.getCodigo(), path);
         }
         //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());
         String mimeType = URLConnection.guessContentTypeFromName(documento.getFilename());
         InputStream fis = new ByteArrayInputStream(documento.getContenido());
-        StreamedContent file = DefaultStreamedContent.builder()
-                .name(documento.getFilename())
-                .contentType(mimeType)
-                .stream(() -> fis)
-                .build();
+        StreamedContent file = DefaultStreamedContent.builder().name(documento.getFilename()).contentType(mimeType).stream(() -> fis).build();
         return file;
     }
 

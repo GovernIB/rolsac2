@@ -225,7 +225,7 @@
                                  styleClass="noHeader text-center"
                                  selectionMode="single"
                                  selection="#{dialogNormativa.documentoRelacionadoSeleccionado}"
-                                 rowKey="#{doc.codigoTabla}">
+                                 rowKey="#{doc.codigoString}">
 
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax
@@ -430,8 +430,8 @@
                         <p:column headerText="#{labels['dialogNormativa.tipoAfectacion']}" styleClass="w25">
                             <h:outputText value="#{td.tipo.descripcion.getTraduccion(dialogNormativa.idioma)}" class="labelGrande" />
                         </p:column>
-                        <p:column headerText="#{labels['dialogNormativa.normativaAfectada']}" styleClass="w75">
-                            <h:outputText value="#{td.normativaAfectada.titulo.getTraduccion(dialogNormativa.idioma)}" class="labelGrande" />
+                        <p:column headerText="#{labels['dialogNormativa.normativaOrigen']}" styleClass="w75">
+                            <h:outputText value="#{td.normativaOrigen.titulo.getTraduccion(dialogNormativa.idioma)}" class="labelGrande" />
                         </p:column>
 
                     </p:dataTable>
