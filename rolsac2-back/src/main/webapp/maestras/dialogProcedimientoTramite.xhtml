@@ -261,6 +261,7 @@
                                        value="#{labels['dialogProcedimientoTramite.organoCompetente']}:"
                                        for="txtOrgInstr"/>
                         <p>
+                            <!--
                             <my:unidadAdministrativaComponent id="txtOrgInstr"
                                                               value="#{dialogProcedimientoTramite.data.unidadAdministrativa}"
                                                               idioma="#{dialogProcedimientoTramite.idioma}"
@@ -269,7 +270,33 @@
                                                               nombreLiteral="#{labels['dialogProcedimientoTramite.organoCompetente']}"
                             >
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorUASelector"/>
-                            </my:unidadAdministrativaComponent>
+                            </my:unidadAdministrativaComponent> -->
+
+
+
+                            <p:inputText id="txtOrgInstr"
+                                         value="#{dialogProcedimientoTramite.data.unidadAdministrativa.nombre.getTraduccion(dialogProcedimientoTramite.idioma)}"
+                                         styleClass="w80 mr-1"
+                                         disabled="true"/>
+                            <p:commandButton
+                                    action="#{dialogProcedimientoTramite.abrirVentanaUA()}"
+                                    icon="pi pi-sitemap"
+                                    value=" "
+                                    styleClass="w45px h25px iconoUAselector"
+                                    process="@this"
+                                    disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                    id="btnAbrirUAInstr"
+                            >
+                                <p:ajax event="dialogReturn"
+                                        listener="#{dialogProcedimientoTramite.returnDialogoUA}"
+                                        process="@this"
+                                        update="lblUAiconoResp lblUAiconoResp2" />
+                            </p:commandButton>
+
+                            <h:outputLink id="lblUAiconoResp" value="#" styleClass="w20px">
+                                <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 pi #{dialogProcedimientoTramite.getCssUA()}" />
+                            </h:outputLink>
+                            <p:tooltip id="toolTipFadeInstr" for="lblUAiconoResp" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
                         </p>
                     </div>
                 </div>

@@ -139,7 +139,6 @@
                 <p:dataTable id="dataTableAfectaciones" var="td"
                              value="#{dialogSeleccionNormativaAfectacion.afectacionesRelacionadas}"
                              emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
-                             scrollHeight="120"
                              paginator="false" selectionMode="single"
                              selection="#{dialogSeleccionNormativaAfectacion.afectacionSeleccionada}"
                              rowKey="#{td.codigoTabla}">
@@ -148,12 +147,10 @@
                     <p:ajax event="rowSelect" global="false"/>
                     <p:ajax event="rowUnselect"/>
                     <p:column headerText="#{labels['dialogNormativa.tipoAfectacion']}" styleClass="text-center">
-                        <p:outputLabel
-                                value="#{td.tipo.descripcion.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}"/>
+                        <h:outputText value="#{td.tipo.descripcion.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}" class="labelGrande" />
                     </p:column>
                     <p:column headerText="#{labels['dialogNormativa.normativaOrigen']}" styleClass="text-center w70" >
-                        <p:outputLabel
-                                value="#{td.normativaOrigen.titulo.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}"/>
+                        <h:outputText value="#{td.normativaOrigen.titulo.getTraduccion(dialogSeleccionNormativaAfectacion.idioma)}" class="labelGrande" />
                     </p:column>
                 </p:dataTable>
             </div>
