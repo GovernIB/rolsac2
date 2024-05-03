@@ -46,13 +46,13 @@ public class TipoUnidadAdministrativaServiceFacadeBean implements TipoUnidadAdmi
     private static final Logger LOG = LoggerFactory.getLogger(TipoUnidadAdministrativaServiceFacadeBean.class);
 
     @Inject
-    private TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
+    TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
 
     @Inject
-    private EntidadRepository entidadRepository;
+    EntidadRepository entidadRepository;
 
     @Inject
-    private TipoUnidadAdministrativaObjetivoConverter converter;
+    TipoUnidadAdministrativaObjetivoConverter converter;
 
     @Override
     //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
@@ -92,8 +92,7 @@ public class TipoUnidadAdministrativaServiceFacadeBean implements TipoUnidadAdmi
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoUnidadAdministrativaDTO findById(Long id) {
         JTipoUnidadAdministrativa jTipoUnidadAdministrativa = tipoUnidadAdministrativaRepository.getReference(id);
-        TipoUnidadAdministrativaDTO tipoUnidadAdministrativaDTO = converter.createDTO(jTipoUnidadAdministrativa);
-        return tipoUnidadAdministrativaDTO;
+        return converter.createDTO(jTipoUnidadAdministrativa);
     }
 
     @Override
@@ -136,8 +135,7 @@ public class TipoUnidadAdministrativaServiceFacadeBean implements TipoUnidadAdmi
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoUnidadAdministrativaDTO> findTipo() {
         try {
-            List<TipoUnidadAdministrativaDTO> items = tipoUnidadAdministrativaRepository.findTipo();
-            return items;
+            return tipoUnidadAdministrativaRepository.findTipo();
         } catch (Exception e) {
             LOG.error("Error: ", e);
             return new ArrayList<>();

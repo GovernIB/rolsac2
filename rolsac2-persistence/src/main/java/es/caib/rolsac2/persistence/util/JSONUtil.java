@@ -19,7 +19,7 @@ public class JSONUtil {
      * Constructor privado.
      */
     private JSONUtil() {
-        // not called
+        // Constructor vacio
     }
 
     /**

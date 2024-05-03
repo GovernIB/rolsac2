@@ -90,7 +90,6 @@ public class JTema extends BaseEntity {
             tema.setCodigo(otro.getCodigo());
             tema.setEntidad(otro.getEntidad());
             tema.setIdentificador(otro.getIdentificador());
-            //tema.setTemaPadre(JTema.clonar(otro.getTemaPadre()));
             tema.setTemaPadre(otro.getTemaPadre());
             tema.setDescripcion(otro.getDescripcion());
             tema.setMathPath(otro.getMathPath());

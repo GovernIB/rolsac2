@@ -112,19 +112,7 @@ public class JProcedimiento extends BaseEntity {
         JProcedimiento jproc = null;
         if (otro != null) {
             jproc = new JProcedimiento();
-            // jproc.setCodigo(otro.getCodigo());
             jproc.setTipo(otro.getTipo());
-            // jproc.setCodigoSIA(otro.getCodigoSIA());
-            // jproc.setEstadoSIA(otro.getEstadoSIA());
-            // jproc.setSiaFecha(otro.getSiaFecha());
-            // jproc.setMensajes(otro.getMensajes());
-            // jproc.setFechaIndexacion(otro.getFechaIndexacion());
-            // jproc.setFechaInicioIndexacion(otro.getFechaInicioIndexacion());
-            // jproc.setMensajeIndexacion(otro.getMensajeIndexacion());
-            // jproc.setMensajeIndexacionSIA(otro.getMensajeIndexacionSIA());
-            // jproc.setMensajesPendienteGestor(otro.isMensajesPendienteGestor());
-            // jproc.setMensajesPendienteSupervisor(otro.isMensajesPendienteSupervisor());
-            // jproc.setFechaActualizacion(otro.getFechaActualizacion());
             jproc.setFechaActualizacion(new Date());
         }
         return jproc;

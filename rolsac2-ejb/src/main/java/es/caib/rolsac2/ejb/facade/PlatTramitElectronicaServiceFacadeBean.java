@@ -10,14 +10,10 @@ import es.caib.rolsac2.persistence.repository.PlatTramitElectronicaRepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
-import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
-import es.caib.rolsac2.service.model.TipoTramitacionDTO;
-import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
-import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,20 +44,19 @@ import java.util.List;
 public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectronicaServiceFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlatTramitElectronicaServiceFacadeBean.class);
-	private static final String ERROR_LITERAL = "Error";
+    private static final String ERROR_LITERAL = "Error";
 
     @Inject
-    private PlatTramitElectronicaRepository platTramitElectronicaRepository;
+    PlatTramitElectronicaRepository platTramitElectronicaRepository;
 
     @Inject
-    private PlatTramitElectronicaConverter converter;
+    PlatTramitElectronicaConverter converter;
 
     @Inject
-    private EntidadRepository entidadRepository;
+    EntidadRepository entidadRepository;
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(PlatTramitElectronicaDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
 
         if (dto.getCodigo() != null) {
@@ -74,8 +69,7 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void update(PlatTramitElectronicaDTO dto) throws RecursoNoEncontradoException {
         JPlatTramitElectronica jPlatTramitElectronica = platTramitElectronicaRepository.getReference(dto.getCodigo());
         JEntidad jEntidad = entidadRepository.getReference(dto.getCodEntidad().getCodigo());
@@ -85,34 +79,28 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void delete(Long id) throws RecursoNoEncontradoException {
         JPlatTramitElectronica jPlatTramitElectronica = platTramitElectronicaRepository.getReference(id);
         platTramitElectronicaRepository.delete(jPlatTramitElectronica);
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public PlatTramitElectronicaDTO findById(Long id) {
         JPlatTramitElectronica jPlatTramitElectronica = platTramitElectronicaRepository.getReference(id);
-        PlatTramitElectronicaDTO tipoMateriaSIADTO = converter.createDTO(jPlatTramitElectronica);
-        return tipoMateriaSIADTO;
+        return converter.createDTO(jPlatTramitElectronica);
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<PlatTramitElectronicaDTO> findAll(Long idEntidad) {
         List<JPlatTramitElectronica> listaEntidades = platTramitElectronicaRepository.findAll(idEntidad);
-        List<PlatTramitElectronicaDTO> listaDTOs = converter.toDTOs(listaEntidades);
-        return listaDTOs;
+        return converter.toDTOs(listaEntidades);
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<PlatTramitElectronicaGridDTO> findByFiltro(PlatTramitElectronicaFiltro filtro) {
         try {
             List<PlatTramitElectronicaGridDTO> items = platTramitElectronicaRepository.findPagedByFiltro(filtro);
@@ -121,8 +109,7 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
         } catch (Exception e) {
             LOG.error("Error", e);
             List<PlatTramitElectronicaGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -133,17 +120,16 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
     }
 
     @Override
-	@RolesAllowed({TypePerfiles.RESTAPI_VALOR })
-	public Pagina<PlatTramitElectronicaDTO> findByFiltroRest(PlatTramitElectronicaFiltro filtro) {
-		try {
-			List<PlatTramitElectronicaDTO> items = platTramitElectronicaRepository.findPagedByFiltroRest(filtro);
-			long total = platTramitElectronicaRepository.countByFiltro(filtro);
-			return new Pagina<>(items, total);
-		} catch (Exception e) {
-			LOG.error(ERROR_LITERAL, e);
-			List<PlatTramitElectronicaDTO> items = new ArrayList<>();
-			long total = items.size();
-			return new Pagina<>(items, total);
-		}
-	}
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    public Pagina<PlatTramitElectronicaDTO> findByFiltroRest(PlatTramitElectronicaFiltro filtro) {
+        try {
+            List<PlatTramitElectronicaDTO> items = platTramitElectronicaRepository.findPagedByFiltroRest(filtro);
+            long total = platTramitElectronicaRepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error(ERROR_LITERAL, e);
+            List<PlatTramitElectronicaDTO> items = new ArrayList<>();
+            return new Pagina<>(items, 0L);
+        }
+    }
 }

@@ -62,7 +62,6 @@ public class AlertaServiceFacadeBean implements AlertaServiceFacade {
         if (dto.getUnidadAdministrativa() != null && dto.getUnidadAdministrativa().getCodigo() != null) {
             jAlerta.setUnidadAdministrativa(unidadAdministrativaRepository.getReference(dto.getUnidadAdministrativa().getCodigo()));
         }
-        String path = "";
 
         alertaRepository.create(jAlerta);
         return jAlerta.getCodigo();
@@ -141,8 +140,7 @@ public class AlertaServiceFacadeBean implements AlertaServiceFacade {
         } catch (Exception e) {
             LOG.error("Error", e);
             List<AlertaGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -162,8 +160,7 @@ public class AlertaServiceFacadeBean implements AlertaServiceFacade {
         } catch (Exception e) {
             LOG.error("Error", e);
             List<AlertaGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -184,8 +181,7 @@ public class AlertaServiceFacadeBean implements AlertaServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<AlertaDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 

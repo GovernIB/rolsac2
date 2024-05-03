@@ -66,6 +66,11 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     private String responsableEmail;
 
     /**
+     * Email del responsable
+     */
+    private String incidenciasEmail;
+
+    /**
      * Telefono del responsable
      */
     private String responsableTelefono;
@@ -170,7 +175,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Estos dos metodos se necesitan para el datatable y el rowKey
      *
-     * @return  codigo
+     * @return codigo
      */
     public String getIdString() {
         if (codigo == null) {
@@ -183,7 +188,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece id string.
      *
-     * @param idString  codigo to set
+     * @param idString codigo to set
      */
     public void setIdString(final String idString) {
         if (idString == null) {
@@ -196,7 +201,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Instantiates a new Procedimiento workflow dto.
      *
-     * @param id  id
+     * @param id id
      */
     public ProcedimientoWorkflowDTO(Long id) {
         this.codigo = id;
@@ -205,7 +210,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -214,7 +219,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece codigo.
      *
-     * @param codigo  codigo
+     * @param codigo codigo
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
@@ -223,7 +228,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene procedimiento.
      *
-     * @return  procedimiento
+     * @return procedimiento
      */
     public ProcedimientoDTO getProcedimiento() {
         return procedimiento;
@@ -232,7 +237,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece procedimiento.
      *
-     * @param procedimiento  procedimiento
+     * @param procedimiento procedimiento
      */
     public void setProcedimiento(ProcedimientoDTO procedimiento) {
         this.procedimiento = procedimiento;
@@ -241,7 +246,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene workflow.
      *
-     * @return  workflow
+     * @return workflow
      */
     public Boolean getWorkflow() {
         return workflow;
@@ -250,7 +255,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece workflow.
      *
-     * @param workflow  workflow
+     * @param workflow workflow
      */
     public void setWorkflow(Boolean workflow) {
         this.workflow = workflow;
@@ -259,7 +264,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene estado.
      *
-     * @return  estado
+     * @return estado
      */
     public String getEstado() {
         return estado;
@@ -268,7 +273,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece estado.
      *
-     * @param estado  estado
+     * @param estado estado
      */
     public void setEstado(String estado) {
         this.estado = estado;
@@ -277,7 +282,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene usuario.
      *
-     * @return  usuario
+     * @return usuario
      */
     public String getUsuario() {
         return usuario;
@@ -286,7 +291,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece usuario.
      *
-     * @param usuario  usuario
+     * @param usuario usuario
      */
     public void setUsuario(String usuario) {
         this.usuario = usuario;
@@ -295,7 +300,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene ua responsable.
      *
-     * @return  ua responsable
+     * @return ua responsable
      */
     public UnidadAdministrativaDTO getUaResponsable() {
         return uaResponsable;
@@ -304,7 +309,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece ua responsable.
      *
-     * @param uaResponsable  ua responsable
+     * @param uaResponsable ua responsable
      */
     public void setUaResponsable(UnidadAdministrativaDTO uaResponsable) {
         this.uaResponsable = uaResponsable;
@@ -313,7 +318,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene ua instructor.
      *
-     * @return  ua instructor
+     * @return ua instructor
      */
     public UnidadAdministrativaDTO getUaInstructor() {
         return uaInstructor;
@@ -322,7 +327,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece ua instructor.
      *
-     * @param uaInstructor  ua instructor
+     * @param uaInstructor ua instructor
      */
     public void setUaInstructor(UnidadAdministrativaDTO uaInstructor) {
         this.uaInstructor = uaInstructor;
@@ -331,7 +336,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene interno.
      *
-     * @return  interno
+     * @return interno
      */
     public Boolean getInterno() {
         return interno;
@@ -340,7 +345,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece interno.
      *
-     * @param interno  interno
+     * @param interno interno
      */
     public void setInterno(Boolean interno) {
         this.interno = interno;
@@ -349,7 +354,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene responsable nombre.
      *
-     * @return  responsable nombre
+     * @return responsable nombre
      */
     public String getResponsableNombre() {
         return responsableNombre;
@@ -358,7 +363,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece responsable nombre.
      *
-     * @param responsableNombre  responsable nombre
+     * @param responsableNombre responsable nombre
      */
     public void setResponsableNombre(String responsableNombre) {
         this.responsableNombre = responsableNombre;
@@ -367,7 +372,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene responsable email.
      *
-     * @return  responsable email
+     * @return responsable email
      */
     public String getResponsableEmail() {
         return responsableEmail;
@@ -376,16 +381,34 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece responsable email.
      *
-     * @param responsableEmail  responsable email
+     * @param responsableEmail responsable email
      */
     public void setResponsableEmail(String responsableEmail) {
         this.responsableEmail = responsableEmail;
     }
 
     /**
+     * Obtiene responsable email.
+     *
+     * @return responsable email
+     */
+    public String getIncidenciasEmail() {
+        return incidenciasEmail;
+    }
+
+    /**
+     * Establece responsable email.
+     *
+     * @param responsableEmail responsable email
+     */
+    public void setIncidenciasEmail(String incidenciasEmail) {
+        this.incidenciasEmail = incidenciasEmail;
+    }
+
+    /**
      * Obtiene responsable telefono.
      *
-     * @return  responsable telefono
+     * @return responsable telefono
      */
     public String getResponsableTelefono() {
         return responsableTelefono;
@@ -394,7 +417,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece responsable telefono.
      *
-     * @param responsableTelefono  responsable telefono
+     * @param responsableTelefono responsable telefono
      */
     public void setResponsableTelefono(String responsableTelefono) {
         this.responsableTelefono = responsableTelefono;
@@ -403,7 +426,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene datos personales activo.
      *
-     * @return  datos personales activo
+     * @return datos personales activo
      */
     public Boolean getDatosPersonalesActivo() {
         return datosPersonalesActivo;
@@ -412,7 +435,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece datos personales activo.
      *
-     * @param datosPersonalesActivo  datos personales activo
+     * @param datosPersonalesActivo datos personales activo
      */
     public void setDatosPersonalesActivo(Boolean datosPersonalesActivo) {
         this.datosPersonalesActivo = datosPersonalesActivo;
@@ -421,7 +444,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene datos personales legitimacion.
      *
-     * @return  datos personales legitimacion
+     * @return datos personales legitimacion
      */
     public TipoLegitimacionDTO getDatosPersonalesLegitimacion() {
         return datosPersonalesLegitimacion;
@@ -430,7 +453,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece datos personales legitimacion.
      *
-     * @param datosPersonalesLegitimacion  datos personales legitimacion
+     * @param datosPersonalesLegitimacion datos personales legitimacion
      */
     public void setDatosPersonalesLegitimacion(TipoLegitimacionDTO datosPersonalesLegitimacion) {
         this.datosPersonalesLegitimacion = datosPersonalesLegitimacion;
@@ -439,7 +462,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene lista documentos.
      *
-     * @return  lista documentos
+     * @return lista documentos
      */
     public ListaDocumentosDto getListaDocumentos() {
         return listaDocumentos;
@@ -448,7 +471,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece lista documentos.
      *
-     * @param listaDocumentos  lista documentos
+     * @param listaDocumentos lista documentos
      */
     public void setListaDocumentos(ListaDocumentosDto listaDocumentos) {
         this.listaDocumentos = listaDocumentos;
@@ -457,7 +480,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene ua competente.
      *
-     * @return  ua competente
+     * @return ua competente
      */
     public UnidadAdministrativaDTO getUaCompetente() {
         return uaCompetente;
@@ -466,7 +489,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece ua competente.
      *
-     * @param uaCompetente  ua competente
+     * @param uaCompetente ua competente
      */
     public void setUaCompetente(UnidadAdministrativaDTO uaCompetente) {
         this.uaCompetente = uaCompetente;
@@ -475,7 +498,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene forma inicio.
      *
-     * @return  forma inicio
+     * @return forma inicio
      */
     public TipoFormaInicioDTO getFormaInicio() {
         return formaInicio;
@@ -484,7 +507,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece forma inicio.
      *
-     * @param formaInicio  forma inicio
+     * @param formaInicio forma inicio
      */
     public void setFormaInicio(TipoFormaInicioDTO formaInicio) {
         this.formaInicio = formaInicio;
@@ -493,7 +516,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene silencio administrativo.
      *
-     * @return  silencio administrativo
+     * @return silencio administrativo
      */
     public TipoSilencioAdministrativoDTO getSilencioAdministrativo() {
         return silencioAdministrativo;
@@ -502,7 +525,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece silencio administrativo.
      *
-     * @param silencioAdministrativo  silencio administrativo
+     * @param silencioAdministrativo silencio administrativo
      */
     public void setSilencioAdministrativo(TipoSilencioAdministrativoDTO silencioAdministrativo) {
         this.silencioAdministrativo = silencioAdministrativo;
@@ -511,7 +534,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene fin via.
      *
-     * @return  fin via
+     * @return fin via
      */
     public TipoViaDTO getFinVia() {
         return finVia;
@@ -520,7 +543,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece fin via.
      *
-     * @param finVia  fin via
+     * @param finVia fin via
      */
     public void setFinVia(TipoViaDTO finVia) {
         this.finVia = finVia;
@@ -529,7 +552,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene tiene tasa.
      *
-     * @return  tiene tasa
+     * @return tiene tasa
      */
     public Boolean getTieneTasa() {
         return tieneTasa;
@@ -538,7 +561,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece tiene tasa.
      *
-     * @param tieneTasa  tiene tasa
+     * @param tieneTasa tiene tasa
      */
     public void setTieneTasa(Boolean tieneTasa) {
         this.tieneTasa = tieneTasa;
@@ -547,7 +570,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene tramite electronico.
      *
-     * @return  tramite electronico
+     * @return tramite electronico
      */
     public TipoTramitacionDTO getTramiteElectronico() {
         return tramiteElectronico;
@@ -556,7 +579,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece tramite electronico.
      *
-     * @param tramiteElectronico  tramite electronico
+     * @param tramiteElectronico tramite electronico
      */
     public void setTramiteElectronico(TipoTramitacionDTO tramiteElectronico) {
         this.tramiteElectronico = tramiteElectronico;
@@ -565,7 +588,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene nombre.
      *
-     * @return  nombre
+     * @return nombre
      */
     public Literal getNombre() {
         return nombre;
@@ -574,7 +597,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece nombre.
      *
-     * @param nombre  nombre
+     * @param nombre nombre
      */
     public void setNombre(Literal nombre) {
         this.nombre = nombre;
@@ -583,7 +606,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene objeto.
      *
-     * @return  objeto
+     * @return objeto
      */
     public Literal getObjeto() {
         return objeto;
@@ -592,7 +615,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece objeto.
      *
-     * @param objeto  objeto
+     * @param objeto objeto
      */
     public void setObjeto(Literal objeto) {
         this.objeto = objeto;
@@ -601,7 +624,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene destinatarios.
      *
-     * @return  destinatarios
+     * @return destinatarios
      */
     public Literal getDestinatarios() {
         return destinatarios;
@@ -610,7 +633,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece destinatarios.
      *
-     * @param destinatarios  destinatarios
+     * @param destinatarios destinatarios
      */
     public void setDestinatarios(Literal destinatarios) {
         this.destinatarios = destinatarios;
@@ -619,7 +642,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene observaciones.
      *
-     * @return  observaciones
+     * @return observaciones
      */
     public Literal getObservaciones() {
         return observaciones;
@@ -628,7 +651,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece observaciones.
      *
-     * @param observaciones  observaciones
+     * @param observaciones observaciones
      */
     public void setObservaciones(Literal observaciones) {
         this.observaciones = observaciones;
@@ -637,7 +660,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene datos personales finalidad.
      *
-     * @return  datos personales finalidad
+     * @return datos personales finalidad
      */
     public Literal getDatosPersonalesFinalidad() {
         return datosPersonalesFinalidad;
@@ -646,7 +669,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece datos personales finalidad.
      *
-     * @param datosPersonalesFinalidad  datos personales finalidad
+     * @param datosPersonalesFinalidad datos personales finalidad
      */
     public void setDatosPersonalesFinalidad(Literal datosPersonalesFinalidad) {
         this.datosPersonalesFinalidad = datosPersonalesFinalidad;
@@ -655,7 +678,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene datos personales destinatario.
      *
-     * @return  datos personales destinatario
+     * @return datos personales destinatario
      */
     public Literal getDatosPersonalesDestinatario() {
         return datosPersonalesDestinatario;
@@ -664,7 +687,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece datos personales destinatario.
      *
-     * @param datosPersonalesDestinatario  datos personales destinatario
+     * @param datosPersonalesDestinatario datos personales destinatario
      */
     public void setDatosPersonalesDestinatario(Literal datosPersonalesDestinatario) {
         this.datosPersonalesDestinatario = datosPersonalesDestinatario;
@@ -673,7 +696,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene documento lopd.
      *
-     * @return  documento lopd
+     * @return documento lopd
      */
     public Long getDocumentoLOPD() {
         return documentoLOPD;
@@ -682,7 +705,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece documento lopd.
      *
-     * @param documentoLOPD  documento lopd
+     * @param documentoLOPD documento lopd
      */
     public void setDocumentoLOPD(Long documentoLOPD) {
         this.documentoLOPD = documentoLOPD;
@@ -691,7 +714,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene requisitos.
      *
-     * @return  requisitos
+     * @return requisitos
      */
     public Literal getRequisitos() {
         return requisitos;
@@ -700,7 +723,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece requisitos.
      *
-     * @param requisitos  requisitos
+     * @param requisitos requisitos
      */
     public void setRequisitos(Literal requisitos) {
         this.requisitos = requisitos;
@@ -709,7 +732,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Obtiene termino resolucion.
      *
-     * @return  termino resolucion
+     * @return termino resolucion
      */
     public Literal getTerminoResolucion() {
         return terminoResolucion;
@@ -718,7 +741,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece termino resolucion.
      *
-     * @param terminoResolucion  termino resolucion
+     * @param terminoResolucion termino resolucion
      */
     public void setTerminoResolucion(Literal terminoResolucion) {
         this.terminoResolucion = terminoResolucion;
@@ -727,7 +750,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Is interna boolean.
      *
-     * @return  boolean
+     * @return boolean
      */
     public boolean isInterna() {
         return isInterna;
@@ -736,7 +759,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece interna.
      *
-     * @param interna  interna
+     * @param interna interna
      */
     public void setInterna(boolean interna) {
         isInterna = interna;
@@ -744,10 +767,8 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         ProcedimientoWorkflowDTO that = (ProcedimientoWorkflowDTO) o;
         return codigo.equals(that.codigo);
     }
@@ -759,36 +780,6 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "ProcedimientoWorkflowDTO{" +
-                "codigo=" + codigo +
-                ", procedimiento=" + procedimiento +
-                ", workflow=" + workflow +
-                ", estado='" + estado + '\'' +
-                ", usuario='" + usuario + '\'' +
-                ", uaResponsable=" + uaResponsable +
-                ", uaInstructor=" + uaInstructor +
-                ", interno=" + interno +
-                ", responsableNombre='" + responsableNombre + '\'' +
-                ", responsableEmail='" + responsableEmail + '\'' +
-                ", responsableTelefono='" + responsableTelefono + '\'' +
-                ", datosPersonalesActivo=" + datosPersonalesActivo +
-                ", datosPersonalesLegitimacion=" + datosPersonalesLegitimacion +
-                ", listaDocumentos=" + listaDocumentos +
-                ", uaCompetente=" + uaCompetente +
-                ", formaInicio=" + formaInicio +
-                ", silencioAdministrativo=" + silencioAdministrativo +
-                ", finVia=" + finVia +
-                ", tieneTasa=" + tieneTasa +
-                ", tramiteElectronico=" + tramiteElectronico +
-                ", nombre=" + nombre +
-                ", objeto=" + objeto +
-                ", destinatarios=" + destinatarios +
-                ", observaciones=" + observaciones +
-                ", datosPersonalesFinalidad=" + datosPersonalesFinalidad +
-                ", datosPersonalesDestinatario=" + datosPersonalesDestinatario +
-                ", documentoLOPD=" + documentoLOPD +
-                ", requisitos=" + requisitos +
-                ", terminoResolucion=" + terminoResolucion +
-                '}';
+        return "ProcedimientoWorkflowDTO{" + "codigo=" + codigo + ", procedimiento=" + procedimiento + ", workflow=" + workflow + ", estado='" + estado + '\'' + ", usuario='" + usuario + '\'' + ", uaResponsable=" + uaResponsable + ", uaInstructor=" + uaInstructor + ", interno=" + interno + ", responsableNombre='" + responsableNombre + '\'' + ", responsableEmail='" + responsableEmail + '\'' + ", responsableTelefono='" + responsableTelefono + '\'' + ", datosPersonalesActivo=" + datosPersonalesActivo + ", datosPersonalesLegitimacion=" + datosPersonalesLegitimacion + ", listaDocumentos=" + listaDocumentos + ", uaCompetente=" + uaCompetente + ", formaInicio=" + formaInicio + ", silencioAdministrativo=" + silencioAdministrativo + ", finVia=" + finVia + ", tieneTasa=" + tieneTasa + ", tramiteElectronico=" + tramiteElectronico + ", nombre=" + nombre + ", objeto=" + objeto + ", destinatarios=" + destinatarios + ", observaciones=" + observaciones + ", datosPersonalesFinalidad=" + datosPersonalesFinalidad + ", datosPersonalesDestinatario=" + datosPersonalesDestinatario + ", documentoLOPD=" + documentoLOPD + ", requisitos=" + requisitos + ", terminoResolucion=" + terminoResolucion + '}';
     }
 }

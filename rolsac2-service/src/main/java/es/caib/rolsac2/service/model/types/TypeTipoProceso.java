@@ -15,7 +15,9 @@ public enum TypeTipoProceso {
 
     SIA_PUNT("SIA_PUNT"),
 
-    DIR3("DIR3");
+    DIR3("DIR3"),
+
+    BORRAR_FIC("BORRAR_FIC");
 
 
     /**

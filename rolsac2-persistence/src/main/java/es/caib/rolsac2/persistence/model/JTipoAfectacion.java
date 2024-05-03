@@ -15,12 +15,7 @@ import java.util.Objects;
 @Entity
 @SequenceGenerator(name = "tipo-afectacion-sequence", sequenceName = "RS2_TIPOAFE_SEQ", allocationSize = 1)
 @Table(name = "RS2_TIPOAFE", indexes = {@Index(name = "RS2_TIPOAFE_PK", columnList = "TPAN_CODIGO")})
-@NamedQueries({
-        @NamedQuery(name = JTipoAfectacion.FIND_BY_ID,
-                query = "select p from JTipoAfectacion p where p.codigo = :id"),
-        @NamedQuery(name = JTipoAfectacion.COUNT_BY_IDENTIFICADOR,
-                query = "select COUNT(p) from JTipoAfectacion p where p.identificador = :identificador")
-})
+@NamedQueries({@NamedQuery(name = JTipoAfectacion.FIND_BY_ID, query = "select p from JTipoAfectacion p where p.codigo = :id"), @NamedQuery(name = JTipoAfectacion.COUNT_BY_IDENTIFICADOR, query = "select COUNT(p) from JTipoAfectacion p where p.identificador = :identificador")})
 public class JTipoAfectacion extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -52,14 +47,13 @@ public class JTipoAfectacion extends BaseEntity {
     /**
      * Descripción
      */
-    //@OneToMany(mappedBy = "tipoAfectacion", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @OneToMany(mappedBy = "tipoAfectacion", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JTipoAfectacionTraduccion> descripcion;
 
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -68,7 +62,7 @@ public class JTipoAfectacion extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -77,7 +71,7 @@ public class JTipoAfectacion extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -86,7 +80,7 @@ public class JTipoAfectacion extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificacion  identificacion
+     * @param identificacion identificacion
      */
     public void setIdentificador(String identificacion) {
         this.identificador = identificacion;
@@ -95,7 +89,7 @@ public class JTipoAfectacion extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public List<JTipoAfectacionTraduccion> getDescripcion() {
         return descripcion;
@@ -104,7 +98,7 @@ public class JTipoAfectacion extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(List<JTipoAfectacionTraduccion> descripcion) {
         this.descripcion = descripcion;
@@ -112,10 +106,8 @@ public class JTipoAfectacion extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof JTipoAfectacion))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof JTipoAfectacion)) return false;
         JTipoAfectacion that = (JTipoAfectacion) o;
         return Objects.equals(codigo, that.codigo);
     }

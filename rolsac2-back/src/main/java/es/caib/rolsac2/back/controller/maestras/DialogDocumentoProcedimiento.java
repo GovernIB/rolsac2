@@ -8,10 +8,7 @@ import es.caib.rolsac2.service.facade.FicheroServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
-import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.*;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -61,7 +58,6 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
 
     public void load() {
         this.setearIdioma();
-        String idNormativa = (String) UtilJSF.getDialogParam("idNormativa");
 
         if (this.isModoAlta()) {
             data = new ProcedimientoDocumentoDTO();
@@ -185,7 +181,8 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
     public void handleDocUpload(FileUploadEvent event) {
         try {
             InputStream is = event.getFile().getInputStream();
-            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS, idProcedimento);
+            String path = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS, idProcedimento, path);
 
             FicheroDTO ficheroDTO = new FicheroDTO();
             ficheroDTO.setFilename(event.getFile().getFileName());
@@ -213,7 +210,8 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
             uploadedFile = new FicheroUpload(trad.getContenido(), trad.getFilename(), "");
 
         } else if (trad.getCodigo() != null) {
-            FicheroDTO fic = ficheroServiceFacade.getContentById(trad.getCodigo());
+            String path = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            FicheroDTO fic = ficheroServiceFacade.getContentById(trad.getCodigo(), path);
             uploadedFile = new FicheroUpload(fic.getContenido(), fic.getFilename(), "");
         }
         return uploadedFile;
@@ -232,7 +230,8 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         FicheroDTO documento = this.data.getDocumentos().getTraduccion(idioma);
         if (documento.getContenido() == null) {
             //Nos bajamos el fichero si está vacío
-            documento = ficheroServiceFacade.getContentById(documento.getCodigo());
+            String path = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            documento = ficheroServiceFacade.getContentById(documento.getCodigo(), path);
         }
         //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());
         String mimeType = URLConnection.guessContentTypeFromName(documento.getFilename());
@@ -279,6 +278,7 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
     public void setIdProcedimento(Long idProcedimento) {
         this.idProcedimento = idProcedimento;
     }
+
 
     public String getTipo() {
         return tipo;

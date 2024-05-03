@@ -14,8 +14,10 @@ public class DocumentoNormativaDTO extends ModelApi {
     /* Código del documento*/
     private Long codigo;
 
-    /*Código que se utiliza para seleccionar los docs en la tabla de normativa*/
-    private String codigoTabla;
+    /**
+     * Codigo Temporal (NO SE GUARDA )
+     **/
+    private Long codigoTemporal;
 
     /*Normativa asociada al documento*/
     private NormativaDTO normativa;
@@ -54,6 +56,24 @@ public class DocumentoNormativaDTO extends ModelApi {
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
+    }
+
+    /**
+     * Gets codigo temporal.
+     *
+     * @return the codigo temporal
+     */
+    public Long getCodigoTemporal() {
+        return codigoTemporal;
+    }
+
+    /**
+     * Sets codigo temporal.
+     *
+     * @param codigoTemporal the codigo temporal
+     */
+    public void setCodigoTemporal(Long codigoTemporal) {
+        this.codigoTemporal = codigoTemporal;
     }
 
     /**
@@ -146,13 +166,20 @@ public class DocumentoNormativaDTO extends ModelApi {
         this.documentos = documentos;
     }
 
-    public String getCodigoTabla() {
-        return codigoTabla;
+    public String getCodigoString() {
+        if (codigo != null) {
+            return codigo.toString();
+        }
+        if (codigoTemporal != null) {
+            return codigoTemporal.toString();
+        }
+        return "";
     }
 
-    public void setCodigoTabla(String codigoTabla) {
-        this.codigoTabla = codigoTabla;
+    public void setCodigoString(String codigoString) {
+        //Vacio
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -169,13 +196,6 @@ public class DocumentoNormativaDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "DocumentoNormativaDTO{" +
-                "codigo=" + codigo +
-                ", normativaDTO=" + normativa +
-                ", titulo=" + titulo +
-                ", url=" + url +
-                ", descripcion=" + descripcion +
-                ", documentos=" + documentos +
-                '}';
+        return "DocumentoNormativaDTO{" + "codigo=" + codigo + ", normativaDTO=" + normativa + ", titulo=" + titulo + ", url=" + url + ", descripcion=" + descripcion + ", documentos=" + documentos + '}';
     }
 }

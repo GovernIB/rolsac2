@@ -76,7 +76,8 @@ public class FicheroResource {
 
 
     private RespuestaFichero getRespuesta(Long codigo, Instant start) {
-        FicheroDTO resultadoBusqueda = ficheroService.getContentById(codigo);
+        String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+        FicheroDTO resultadoBusqueda = ficheroService.getContentById(codigo, path);
 
         List<Fichero> lista = new ArrayList<>();
 
@@ -92,7 +93,8 @@ public class FicheroResource {
     }
 
     private RespuestaFichero getRespuestaMetadatos(Long codigo, Instant start) {
-        FicheroDTO resultadoBusqueda = ficheroService.getContentMetadata(codigo);
+        String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+        FicheroDTO resultadoBusqueda = ficheroService.getContentMetadata(codigo, path);
 
         List<Fichero> lista = new ArrayList<>();
 

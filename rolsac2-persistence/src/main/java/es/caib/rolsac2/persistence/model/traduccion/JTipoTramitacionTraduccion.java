@@ -58,7 +58,6 @@ public class JTipoTramitacionTraduccion extends BaseEntity {
             retorno = new ArrayList<>();
             for (JTipoTramitacionTraduccion otroTrad : traducciones) {
                 JTipoTramitacionTraduccion traduccion = new JTipoTramitacionTraduccion();
-                //traduccion.setCodigo(otroTrad.getcodigo());
                 traduccion.setDescripcion(otroTrad.getDescripcion());
                 traduccion.setIdioma(otroTrad.getIdioma());
                 traduccion.setTipoTramitacion(tipoTramitacion);

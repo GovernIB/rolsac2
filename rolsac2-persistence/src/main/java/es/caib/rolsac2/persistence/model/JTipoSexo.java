@@ -11,17 +11,8 @@ import java.util.Objects;
  */
 @Entity
 @SequenceGenerator(name = "tipo-sexo-sequence", sequenceName = "RS2_TIPOSEX_SEQ", allocationSize = 1)
-@Table(name = "RS2_TIPOSEX",
-        indexes = {
-                @Index(name = "RS2_TIPOSEX_PK", columnList = "TPSX_CODIGO")
-        }
-)
-@NamedQueries({
-        @NamedQuery(name = JTipoSexo.FIND_BY_ID,
-                query = "select p from JTipoSexo p where p.codigo = :id"),
-        @NamedQuery(name = JTipoSexo.COUNT_BY_IDENTIFICADOR,
-                query = "select COUNT(p) from JTipoSexo p where p.identificador = :identificador")
-})
+@Table(name = "RS2_TIPOSEX", indexes = {@Index(name = "RS2_TIPOSEX_PK", columnList = "TPSX_CODIGO")})
+@NamedQueries({@NamedQuery(name = JTipoSexo.FIND_BY_ID, query = "select p from JTipoSexo p where p.codigo = :id"), @NamedQuery(name = JTipoSexo.COUNT_BY_IDENTIFICADOR, query = "select COUNT(p) from JTipoSexo p where p.identificador = :identificador")})
 public class JTipoSexo extends BaseEntity {
 
     /**
@@ -58,13 +49,12 @@ public class JTipoSexo extends BaseEntity {
      */
     public JTipoSexo() {
         super();
-        // descripcion = new ArrayList<>();
     }
 
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -73,7 +63,7 @@ public class JTipoSexo extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -82,7 +72,7 @@ public class JTipoSexo extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -91,7 +81,7 @@ public class JTipoSexo extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -100,7 +90,7 @@ public class JTipoSexo extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public List<JTipoSexoTraduccion> getDescripcion() {
         return descripcion;
@@ -109,7 +99,7 @@ public class JTipoSexo extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(List<JTipoSexoTraduccion> descripcion) {
         if (this.descripcion == null || this.descripcion.isEmpty()) {

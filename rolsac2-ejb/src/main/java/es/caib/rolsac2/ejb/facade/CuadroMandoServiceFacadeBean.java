@@ -28,10 +28,10 @@ import java.util.List;
 public class CuadroMandoServiceFacadeBean implements CuadroMandoServiceFacade {
 
     @Inject
-    private ProcedimientoAuditoriaRepository auditoriaRepository;
+    ProcedimientoAuditoriaRepository auditoriaRepository;
 
     @Inject
-    private ProcedimientoRepository procedimientoRepository;
+    ProcedimientoRepository procedimientoRepository;
 
     @Inject
     EstadisticaRepository estadisticaRepository;
@@ -72,18 +72,6 @@ public class CuadroMandoServiceFacadeBean implements CuadroMandoServiceFacade {
     public Long countAllServicio() {
         return procedimientoRepository.countAllServicio();
     }
-
-    //@Override
-    //@RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    //public Long countProcEstadoByUa(Long uaId, String estado) {
-    //    return procedimientoRepository.countProcEstadoByUa(uaId, estado);
-    //}
-
-    //@Override
-    //@RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    //public Long countServEstadoByUa(Long uaId, String estado) {
-    //    return procedimientoRepository.countServEstadoByUa(uaId, estado);
-    //}
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})

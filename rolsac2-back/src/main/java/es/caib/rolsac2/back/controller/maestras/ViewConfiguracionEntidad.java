@@ -5,12 +5,14 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.FicheroServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -45,11 +47,15 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
     private EntidadDTO data;
 
     private String identificadorAntiguo;
+
     @EJB
     private AdministracionSupServiceFacade administracionSupServiceFacade;
 
     @EJB
     private FicheroServiceFacade ficheroServiceFacade;
+
+    @EJB
+    private SystemServiceFacade systemServiceFacade;
 
     private List<String> idiomasPermitidos = new ArrayList<>();
 
@@ -195,7 +201,8 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
     public void handleLogoUpload(FileUploadEvent event) {
         try {
             InputStream is = event.getFile().getInputStream();
-            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.ENTIDAD, this.data.getCodigo());
+            String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.ENTIDAD, this.data.getCodigo(), path);
 
             FicheroDTO logo = new FicheroDTO();
             logo.setFilename(event.getFile().getFileName());
@@ -221,7 +228,8 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
         }
         if (this.data.getLogo().getContenido() == null) {
             //Nos bajamos el fichero si está vacío
-            FicheroDTO fichero = ficheroServiceFacade.getContentById(this.data.getLogo().getCodigo());
+            String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            FicheroDTO fichero = ficheroServiceFacade.getContentById(this.data.getLogo().getCodigo(), path);
             this.data.setLogo(fichero);
         }
         //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());
@@ -239,7 +247,8 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
     public void handleCssUpload(FileUploadEvent event) {
         try {
             InputStream is = event.getFile().getInputStream();
-            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.ENTIDAD, this.data.getCodigo());
+            String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.ENTIDAD, this.data.getCodigo(), path);
 
             FicheroDTO css = new FicheroDTO();
             css.setFilename(event.getFile().getFileName());
@@ -265,7 +274,8 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
         }
         if (this.data.getCssPersonalizado().getContenido() == null) {
             //Nos bajamos el fichero si está vacío
-            FicheroDTO fichero = ficheroServiceFacade.getContentById(this.data.getCssPersonalizado().getCodigo());
+            String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            FicheroDTO fichero = ficheroServiceFacade.getContentById(this.data.getCssPersonalizado().getCodigo(), path);
             this.data.setCssPersonalizado(fichero);
         }
         //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());

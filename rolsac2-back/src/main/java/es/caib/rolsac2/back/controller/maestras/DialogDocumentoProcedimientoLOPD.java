@@ -145,8 +145,8 @@ public class DialogDocumentoProcedimientoLOPD extends AbstractController impleme
     public void handleDocUpload(FileUploadEvent event) {
         try {
             InputStream is = event.getFile().getInputStream();
-            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(),
-                    TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS, idProcedimento);
+            String path = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS, idProcedimento, path);
 
             FicheroDTO ficheroDTO = new FicheroDTO();
             ficheroDTO.setFilename(event.getFile().getFileName());
@@ -197,16 +197,13 @@ public class DialogDocumentoProcedimientoLOPD extends AbstractController impleme
         FicheroDTO documento = this.data.getDocumentos().getTraduccion(idioma);
         if (documento.getContenido() == null) {
             //Nos bajamos el fichero si está vacío
-            documento = ficheroServiceFacade.getContentById(documento.getCodigo());
+            String path = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            documento = ficheroServiceFacade.getContentById(documento.getCodigo(), path);
         }
         //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());
         String mimeType = URLConnection.guessContentTypeFromName(documento.getFilename());
         InputStream fis = new ByteArrayInputStream(documento.getContenido());
-        StreamedContent file = DefaultStreamedContent.builder()
-                .name(documento.getFilename())
-                .contentType(mimeType)
-                .stream(() -> fis)
-                .build();
+        StreamedContent file = DefaultStreamedContent.builder().name(documento.getFilename()).contentType(mimeType).stream(() -> fis).build();
         return file;
     }
 

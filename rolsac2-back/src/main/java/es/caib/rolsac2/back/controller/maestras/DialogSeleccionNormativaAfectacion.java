@@ -60,28 +60,19 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
 
     private AfectacionDTO afectacionSeleccionada;
 
-    private NormativaDTO normativaAfectada;
+    private NormativaGridDTO normativaAfectada;
 
 
     public void load() {
         LOG.debug("load");
         this.setearIdioma();
         modoAccesoNormativa = (String) UtilJSF.getDialogParam("modoAccesoNormativa");
-        List<AfectacionDTO> afectaciones = (List<AfectacionDTO>) UtilJSF.getValorMochilaByKey("afectacionesNormativa");
+        normativaAfectada = ((NormativaDTO) UtilJSF.getValorMochilaByKey("normativa")).convertDTOtoGridDTO();
+        afectacionesRelacionadas = (List<AfectacionDTO>) UtilJSF.getValorMochilaByKey("afectacionesNormativa");
 
-        if(modoAccesoNormativa != null && modoAccesoNormativa.equals(TypeModoAcceso.EDICION.toString())) {
-            afectacionesRelacionadas = normativaServiceFacade.findAfectacionesByNormativa(Long.valueOf(id));
-            afectacionesRelacionadasAux = afectaciones == null ? new ArrayList<>() : afectaciones;
-            normativaAfectada = normativaServiceFacade.findById(Long.valueOf(id));
-            if(afectacionesRelacionadas != null) {
-                for(AfectacionDTO afectacionDTO : afectacionesRelacionadas) {
-                    afectacionDTO.setCodigoTabla(UUID.randomUUID().toString());
-                }
-            }
-        } else {
-            afectacionesRelacionadas = afectaciones == null ? new ArrayList<>() : afectaciones;
+        if (afectacionesRelacionadas == null) {
+            afectacionesRelacionadas = new ArrayList<>();
         }
-
 
         tiposAfectacion = maestrasSupServiceFacade.findTipoAfectaciones();
 
@@ -108,8 +99,7 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
             @Override
             public NormativaGridDTO getRowData(String rowKey) {
                 for (NormativaGridDTO pers : (List<NormativaGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
@@ -120,8 +110,7 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
             }
 
             @Override
-            public List<NormativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-                                               Map<String, FilterMeta> filterBy) {
+            public List<NormativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
@@ -150,18 +139,19 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
             result.setModoAcceso(TypeModoAcceso.CONSULTA);
         }
 
-        if (modoAccesoNormativa!= null && modoAccesoNormativa.equals(TypeModoAcceso.EDICION.toString()) && isModoAlta()) {
-            for(AfectacionDTO afectacionDTO : afectacionesRelacionadas) {
-                if(afectacionDTO.getCodigo() == null) {
-                    normativaServiceFacade.createAfectacion(afectacionDTO);
-                } else if(hasChanged(afectacionDTO)) {
-                    normativaServiceFacade.updateAfectacion(afectacionDTO);
-                }
-            }
-        }
+        /***
+         if (modoAccesoNormativa!= null && modoAccesoNormativa.equals(TypeModoAcceso.EDICION.toString()) && isModoAlta()) {
+         for(AfectacionDTO afectacionDTO : afectacionesRelacionadas) {
+         if(afectacionDTO.getCodigo() == null) {
+         normativaServiceFacade.createAfectacion(afectacionDTO);
+         } else if(hasChanged(afectacionDTO)) {
+         normativaServiceFacade.updateAfectacion(afectacionDTO);
+         }
+         }
+         }
+         **/
 
         result.setResult(afectacionesRelacionadas);
-
         UtilJSF.closeDialog(result);
     }
 
@@ -180,15 +170,9 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
         if (afectacionSeleccionada == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            if(modoAccesoNormativa.equals(TypeModoAcceso.EDICION.toString()) && afectacionesRelacionadasAux.contains(afectacionSeleccionada)) {
-                normativaServiceFacade.deleteAfectacion(afectacionSeleccionada.getCodigo());
-                afectacionSeleccionada = null;
-                addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
-            } else {
-                afectacionesRelacionadas.remove(afectacionSeleccionada);
-                afectacionSeleccionada = null;
-                addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
-            }
+            afectacionesRelacionadas.remove(afectacionSeleccionada);
+            afectacionSeleccionada = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
         }
     }
 
@@ -206,8 +190,8 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
             AfectacionDTO afectacionDTO = new AfectacionDTO();
             afectacionDTO.setTipo(tipoAfectacionSeleccionado);
             afectacionDTO.setNormativaOrigen(normativaServiceFacade.findById(this.datoSeleccionado.getCodigo()).convertDTOtoGridDTO());
-            if(modoAccesoNormativa.equals(TypeModoAcceso.EDICION.toString())) {
-                afectacionDTO.setNormativaAfectada(normativaAfectada.convertDTOtoGridDTO());
+            if (modoAccesoNormativa.equals(TypeModoAcceso.EDICION.toString())) {
+                afectacionDTO.setNormativaAfectada(normativaAfectada);
             }
             afectacionDTO.setCodigoTabla(UUID.randomUUID().toString());
             afectacionesRelacionadas.add(afectacionDTO);
@@ -215,7 +199,7 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
     }
 
     public boolean esPosibleAnyadir() {
-        if(datoSeleccionado == null || tipoAfectacionSeleccionado == null) {
+        if (datoSeleccionado == null || tipoAfectacionSeleccionado == null) {
             return true;
         } else {
             return false;
@@ -227,8 +211,7 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
         if (dat != null) {
             if (afectacionesRelacionadas != null && !afectacionesRelacionadas.isEmpty()) {
                 for (AfectacionDTO afect : afectacionesRelacionadas) {
-                    if (afect.getNormativaOrigen().getCodigo().compareTo(dat.getCodigo()) == 0
-                            && afect.getTipo().getCodigo().compareTo(tipo.getCodigo()) == 0) {
+                    if (afect.getNormativaOrigen().getCodigo().compareTo(dat.getCodigo()) == 0 && afect.getTipo().getCodigo().compareTo(tipo.getCodigo()) == 0) {
                         contiene = true;
                         break;
                     }
@@ -240,14 +223,13 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
 
     private boolean hasChanged(AfectacionDTO afectacionDTO) {
         boolean changed = true;
-        for(AfectacionDTO afect : afectacionesRelacionadasAux) {
-            if(afect.equals(afectacionDTO)) {
+        for (AfectacionDTO afect : afectacionesRelacionadasAux) {
+            if (afect.equals(afectacionDTO)) {
                 changed = false;
             }
         }
         return changed;
     }
-
 
 
     public NormativaGridDTO getDatoSeleccionado() {
@@ -296,9 +278,13 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
         this.normativaGridSeleccionada = n;
     }
 
-    public String getId() {  return id; }
+    public String getId() {
+        return id;
+    }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public List<AfectacionDTO> getAfectacionesRelacionadas() {
         return afectacionesRelacionadas;

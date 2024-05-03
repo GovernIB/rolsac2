@@ -149,10 +149,8 @@ public class JIndexacion extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof JIndexacion))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof JIndexacion)) return false;
         JIndexacion that = (JIndexacion) o;
         return Objects.equals(codigo, that.codigo);
     }
@@ -164,9 +162,7 @@ public class JIndexacion extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JPersonal{" + "id=" + codigo +
-                // ", codiSia='" + codiSia + '\'' +
-                '}';
+        return "JPersonal{" + "id=" + codigo + '}';
     }
 
 }

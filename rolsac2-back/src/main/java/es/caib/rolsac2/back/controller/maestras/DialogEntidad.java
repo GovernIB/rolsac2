@@ -260,7 +260,8 @@ public class DialogEntidad extends AbstractController implements Serializable {
     public void handleLogoUpload(FileUploadEvent event) {
         try {
             InputStream is = event.getFile().getInputStream();
-            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.ENTIDAD, this.data.getCodigo());
+            String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.ENTIDAD, this.data.getCodigo(), path);
 
             FicheroDTO logo = new FicheroDTO();
             logo.setFilename(event.getFile().getFileName());
@@ -285,7 +286,8 @@ public class DialogEntidad extends AbstractController implements Serializable {
         }
         if (this.data.getLogo().getContenido() == null) {
             //Nos bajamos el fichero si está vacío
-            FicheroDTO fichero = ficheroServiceFacade.getContentById(this.data.getLogo().getCodigo());
+            String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            FicheroDTO fichero = ficheroServiceFacade.getContentById(this.data.getLogo().getCodigo(), path);
             this.data.setLogo(fichero);
         }
         //FicheroDTO logo = administracionSupServiceFacade.getLogoEntidad(this.data.getLogo().getCodigo());

@@ -22,7 +22,6 @@ import java.util.Date;
 @Entity
 @SequenceGenerator(name = "proces-log-sequence", sequenceName = "RS2_PROCLOG_SEQ", allocationSize = 1)
 @Table(name = "RS2_PROCLOG")
-// @NamedQuery(name = "JProcesoLog.findAll", query = "SELECT s FROM JProcesoLog s")
 public class JProcesoLog extends BaseEntity {
     private static final long serialVersionUID = 1L;
 

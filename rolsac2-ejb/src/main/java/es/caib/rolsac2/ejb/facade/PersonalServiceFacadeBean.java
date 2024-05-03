@@ -6,7 +6,6 @@ import es.caib.rolsac2.persistence.converter.PersonalConverter;
 import es.caib.rolsac2.persistence.model.JPersonal;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.repository.PersonalRepository;
-import es.caib.rolsac2.persistence.repository.PersonalRepositoryBean;
 import es.caib.rolsac2.persistence.repository.UnidadAdministrativaRepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
@@ -16,12 +15,12 @@ import es.caib.rolsac2.service.model.PersonalDTO;
 import es.caib.rolsac2.service.model.PersonalGridDTO;
 import es.caib.rolsac2.service.model.filtro.PersonalFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.*;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.List;
 
@@ -41,27 +40,18 @@ import java.util.List;
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class PersonalServiceFacadeBean implements PersonalServiceFacade {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PersonalRepositoryBean.class);
-
-    @Resource
-    private SessionContext context;
     @Inject
-    private PersonalRepository personalRepository;
-    // @Inject
-    // private ProcedimientoAuditoriaOldRepository auditoriaRepository;
-    @Inject
-    private PersonalConverter converter;
+    PersonalRepository personalRepository;
 
     @Inject
-    private UnidadAdministrativaRepository unidadAdministrativaRepository;
+    PersonalConverter converter;
+
+    @Inject
+    UnidadAdministrativaRepository unidadAdministrativaRepository;
 
     @Override
-    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(PersonalDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
-
-        // Principal p = context.getCallerPrincipal();
-        // context.isCallerInRole()
 
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());

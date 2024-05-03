@@ -12,6 +12,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
 import es.caib.rolsac2.service.model.types.TypeIndexacion;
 import es.caib.rolsac2.service.model.types.TypePluginEntidad;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,10 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
 
     @Inject
     private ProcesoServiceFacade procesoServiceFacade;
+
+    @Inject
+    private SystemServiceFacade systemService;
+
     @Inject
     private NormativaServiceFacade normativaService;
 
@@ -63,6 +68,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
     private int totalUas = 0;
     private int totalUasOK = 0;
     private int totalUasERROR = 0;
+    private String ruta;
 
     /**
      * log.
@@ -91,7 +97,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             } else {
                 accion = params.getPropiedad("accion");
             }
-
+            ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
             detalles.addPropiedades(params);
 
             Pagina<IndexacionDTO> datos = null;
@@ -149,6 +155,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
 
             //Variable que se utiliza para hacer un commit cada 5
             int cuantos = 0;
+            String ruta = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
 
             if (datos != null && datos.getItems() != null && !datos.getItems().isEmpty()) {
 
@@ -215,7 +222,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                             totalNormativas++;
                             ResultadoAccion resultadoNormativa;
                             if (dato.getAccion() == 1) {
-                                resultadoNormativa = indexarNormativa(dato, plugin, mensajeTraza);
+                                resultadoNormativa = indexarNormativa(dato, plugin, mensajeTraza, ruta);
                             } else {
                                 resultadoNormativa = desindexarNormativa(dato, plugin, mensajeTraza);
                             }
@@ -381,7 +388,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
         }
     }
 
-    private ResultadoAccion indexarNormativa(IndexacionDTO dato, IPluginIndexacion plugin, StringBuilder mensaje) {
+    private ResultadoAccion indexarNormativa(IndexacionDTO dato, IPluginIndexacion plugin, StringBuilder mensaje, String path) {
 
         try {
             ProcedimientoSolrDTO procedimientoSolrDTO = normativaService.findDataIndexacionNormById(dato.getCodElemento());
@@ -401,7 +408,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                         if (doc.getDocumentos() != null) {
                             for (DocumentoTraduccion docTraduccion : doc.getDocumentos().getTraducciones()) {
                                 if (docTraduccion.getFicheroDTO() != null) {
-                                    IndexFile indexFile = normativaService.findDataIndexacionDocNormById(procedimientoSolrDTO.getNormativaDTO(), doc, docTraduccion, procedimientoSolrDTO.getPathUAs());
+                                    IndexFile indexFile = normativaService.findDataIndexacionDocNormById(procedimientoSolrDTO.getNormativaDTO(), doc, docTraduccion, procedimientoSolrDTO.getPathUAs(), path);
                                     ResultadoAccion resultadoDoc = plugin.indexarFichero(indexFile);
                                     if (resultadoDoc != null && !resultadoDoc.isCorrecto()) {
                                         mensaje.append("La normativa " + dato.getCodElemento() + " s'ha indexat correctament però algún document ha dado problemas \n");
@@ -481,7 +488,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                                         // FicheroDTO ficheroDTO = procedimientoService.getFicheroDTOByDocumentoTraduccion(fichero.getCodigo());
                                         if (fichero.getFicheroDTO() != null && fichero.getFicheroDTO().getCodigo() != null) {
                                             totalProcedimientosDOC++;
-                                            IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionProcDoc(procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA());
+                                            IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionProcDoc(procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA(), ruta);
                                             ResultadoAccion resultadoDoc = plugin.indexarFichero(datoIndexadoDoc);
                                             if (resultadoDoc != null && resultadoDoc.isCorrecto()) {
                                                 totalProcedimientosDOCOK++;
@@ -511,7 +518,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                                                 for (DocumentoTraduccion fichero : doc.getDocumentos().getTraducciones()) {
                                                     if (fichero.getFicheroDTO() != null && fichero.getFicheroDTO().getCodigo() != null) {
                                                         totalTramitesDOC++;
-                                                        IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionTramDoc(tramite, procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA());
+                                                        IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionTramDoc(tramite, procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA(), ruta);
                                                         ResultadoAccion resultadoDoc = plugin.indexarFichero(datoIndexadoDoc);
                                                         if (resultadoDoc != null && resultadoDoc.isCorrecto()) {
                                                             totalTramitesDOCOK++;
@@ -534,7 +541,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                                                     if (fichero.getFicheroDTO() != null && fichero.getFicheroDTO().getCodigo() != null) {
 
                                                         totalTramitesDOC++;
-                                                        IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionTramDoc(tramite, procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA());
+                                                        IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionTramDoc(tramite, procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA(), ruta);
                                                         ResultadoAccion resultadoDoc = plugin.indexarFichero(datoIndexadoDoc);
                                                         if (resultadoDoc != null && resultadoDoc.isCorrecto()) {
                                                             totalTramitesDOCOK++;

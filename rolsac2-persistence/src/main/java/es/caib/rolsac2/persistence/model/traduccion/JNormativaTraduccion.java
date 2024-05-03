@@ -171,6 +171,6 @@ public class JNormativaTraduccion {
 
     @Override
     public String toString() {
-        return "JNormativaTraduccion{" + "codigo=" + codigo + ", normativa=" + normativa + ", idioma='" + idioma + '\'' + ", titulo='" + titulo + '\'' + ", urlBoletin='" + urlBoletin + '\'' + '}';
+        return "JNormativaTraduccion{" + "codigo=" + codigo + ", idioma='" + idioma + '\'' + ", titulo='" + titulo + '\'' + ", urlBoletin='" + urlBoletin + '\'' + '}';
     }
 }

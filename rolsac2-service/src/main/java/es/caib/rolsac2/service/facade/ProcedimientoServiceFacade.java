@@ -31,10 +31,11 @@ public interface ProcedimientoServiceFacade {
      *
      * @param dto    el procedimiento
      * @param perfil El perfil
+     * @param ruta   La ruta de ficheros
      * @return EL identificador del nuevo proc/serv
      * @throws RecursoNoEncontradoException si la unidad no existe
      */
-    Long create(ProcedimientoBaseDTO dto, TypePerfiles perfil) throws RecursoNoEncontradoException;
+    Long create(ProcedimientoBaseDTO dto, TypePerfiles perfil, String ruta) throws RecursoNoEncontradoException;
 
 
     /**
@@ -44,9 +45,10 @@ public interface ProcedimientoServiceFacade {
      * @param dtoAntiguo datos antiguos
      * @param perfil     El perfil
      * @param idEntidad  Id de la entidad
+     * @param ruta       La ruta de ficheros
      * @throws RecursoNoEncontradoException si el persoanl con el id no existe.
      */
-    void update(ProcedimientoBaseDTO dto, ProcedimientoBaseDTO dtoAntiguo, TypePerfiles perfil, Long idEntidad) throws RecursoNoEncontradoException;
+    void update(ProcedimientoBaseDTO dto, ProcedimientoBaseDTO dtoAntiguo, TypePerfiles perfil, Long idEntidad, String ruta) throws RecursoNoEncontradoException;
 
 
     /**
@@ -146,13 +148,13 @@ public interface ProcedimientoServiceFacade {
 
     void deleteProcedimientoTramite(Long id) throws RecursoNoEncontradoException;
 
-    void guardarFlujo(ProcedimientoBaseDTO data, TypeProcedimientoEstado estadoDestino, String mensajes, TypePerfiles perfil, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor, Long idEntidad);
+    void guardarFlujo(ProcedimientoBaseDTO data, TypeProcedimientoEstado estadoDestino, String mensajes, TypePerfiles perfil, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor, Long idEntidad, String ruta);
 
     void actualizarMensajes(Long idProc, String mensajes, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor);
 
     Long getCodigoByWF(Long codigo, boolean valor);
 
-    Long generarModificacion(Long codigoWFPub, String usuario, TypePerfiles perfil);
+    Long generarModificacion(Long codigoWFPub, String usuario, TypePerfiles perfil, String ruta);
 
     /**
      * Devuelve las auditorias segun el id
@@ -198,9 +200,9 @@ public interface ProcedimientoServiceFacade {
 
     Pagina<IndexacionSIADTO> getProcedimientosParaIndexacionSIA(Long idEntidad);
 
-    IndexFile findDataIndexacionProcDoc(ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion documentoTraduccion, PathUA pathUA);
+    IndexFile findDataIndexacionProcDoc(ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion documentoTraduccion, PathUA pathUA, String ruta);
 
-    IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA);
+    IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA, String ruta);
 
     Pagina<ProcedimientoDocumentoDTO> findProcedimientoDocumentoByFiltroRest(ProcedimientoDocumentoFiltro filtro);
 
@@ -262,5 +264,5 @@ public interface ProcedimientoServiceFacade {
      * @param usuario
      * @return
      */
-    Long clonarProcedimiento(Long idLong, boolean wfSeleccionado, String usuario);
+    Long clonarProcedimiento(Long idLong, boolean wfSeleccionado, String usuario, String ruta);
 }

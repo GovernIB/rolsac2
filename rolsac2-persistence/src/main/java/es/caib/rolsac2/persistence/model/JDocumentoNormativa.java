@@ -11,11 +11,7 @@ import java.util.Objects;
 @Entity
 @SequenceGenerator(name = "documento-normativa-sequence", sequenceName = "RS2_DOCNORM_SEQ", allocationSize = 1)
 @Table(name = "RS2_DOCNORM")
-@NamedQueries({
-        @NamedQuery(name = JDocumentoNormativa.FIND_BY_ID,
-                query = "select p from JDocumentoNormativa p where p.codigo = :codigo"),
-        @NamedQuery(name = JDocumentoNormativa.FIND_BY_NORMATIVA,
-                query="select p from JDocumentoNormativa p left outer join p.normativa t where t.codigo=:codigo")
+@NamedQueries({@NamedQuery(name = JDocumentoNormativa.FIND_BY_ID, query = "select p from JDocumentoNormativa p where p.codigo = :codigo"), @NamedQuery(name = JDocumentoNormativa.FIND_BY_NORMATIVA, query = "select p from JDocumentoNormativa p left outer join p.normativa t where t.codigo=:codigo")
 
 })
 public class JDocumentoNormativa extends BaseEntity {
@@ -38,14 +34,14 @@ public class JDocumentoNormativa extends BaseEntity {
     @JoinColumn(name = "DONO_CODNORM", nullable = false)
     private JNormativa normativa;
 
-    @OneToMany(mappedBy = "documentoNormativa", fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "documentoNormativa", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JDocumentoNormativaTraduccion> traducciones;
 
 
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -54,7 +50,7 @@ public class JDocumentoNormativa extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -64,7 +60,7 @@ public class JDocumentoNormativa extends BaseEntity {
     /**
      * Obtiene normativa.
      *
-     * @return  normativa
+     * @return normativa
      */
     public JNormativa getNormativa() {
         return normativa;
@@ -73,7 +69,7 @@ public class JDocumentoNormativa extends BaseEntity {
     /**
      * Establece normativa.
      *
-     * @param normativa  normativa
+     * @param normativa normativa
      */
     public void setNormativa(JNormativa normativa) {
         this.normativa = normativa;
@@ -82,7 +78,7 @@ public class JDocumentoNormativa extends BaseEntity {
     /**
      * Obtiene traducciones.
      *
-     * @return  traducciones
+     * @return traducciones
      */
     public List<JDocumentoNormativaTraduccion> getTraducciones() {
         return traducciones;
@@ -91,7 +87,7 @@ public class JDocumentoNormativa extends BaseEntity {
     /**
      * Establece traducciones.
      *
-     * @param traducciones  traducciones
+     * @param traducciones traducciones
      */
     public void setTraducciones(List<JDocumentoNormativaTraduccion> traducciones) {
         this.traducciones = traducciones;
@@ -112,10 +108,6 @@ public class JDocumentoNormativa extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JDocumentoNormativa{" +
-                "codigo=" + codigo +
-                ", normativa=" + normativa +
-                ", traducciones=" + traducciones +
-                '}';
+        return "JDocumentoNormativa{" + "codigo=" + codigo + '}';
     }
 }

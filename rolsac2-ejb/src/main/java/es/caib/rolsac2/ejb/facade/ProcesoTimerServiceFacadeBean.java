@@ -36,13 +36,13 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
     private static String idInstancia = "";
 
     @Inject
-    private ProcesosExecServiceFacade procesosExecServiceFacade;
+    ProcesosExecServiceFacade procesosExecServiceFacade;
 
     @Inject
-    private SystemServiceFacade systemServiceFacade;
+    SystemServiceFacade systemServiceFacade;
 
     @Inject
-    private AdministracionSupServiceFacade administracionSupServiceFacade;
+    AdministracionSupServiceFacade administracionSupServiceFacade;
 
     @Resource
     TimerService timerService;
@@ -50,7 +50,7 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void initTimer(String idInstancia) {
-        this.setIdInstancia(idInstancia);
+        ProcesoTimerServiceFacadeBean.setIdInstancia(idInstancia);
         String cron = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PROCESOS_AUTOMATICOS_CRON);
         timerService.createCalendarTimer(parseCron(cron), new TimerConfig("ProcesosTimer", false));
     }
@@ -63,7 +63,7 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
     @Timeout
     public void procesar() {
         LOG.info("Procesos ROLSAC2 desde EJB");
-        if (procesosExecServiceFacade.verificarMaestro(this.idInstancia)) {
+        if (procesosExecServiceFacade.verificarMaestro(ProcesoTimerServiceFacadeBean.getIdInstancia())) {
             LOG.debug("Es maestro. Recupera procesos a lanzar..,");
             final List<EntidadDTO> entidades = administracionSupServiceFacade.findEntidadActivas();
             for (EntidadDTO entidad : entidades) {
@@ -114,7 +114,7 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
     /**
      * Se utiliza para parsear la expresión cron definida por properties y convertirla en
      *
-     * @param cron
+     * @param cron String con la expresión cron
      * @return ScheduleExpression intérvalo de tiempo en el que se lanzan los procesos automáticos
      */
     private ScheduleExpression parseCron(String cron) {
@@ -141,11 +141,11 @@ public class ProcesoTimerServiceFacadeBean implements ProcesoTimerServiceFacade 
         }
     }
 
-    public String getIdInstancia() {
-        return idInstancia;
+    static String getIdInstancia() {
+        return ProcesoTimerServiceFacadeBean.idInstancia;
     }
 
-    public void setIdInstancia(final String idInstancia) {
-        this.idInstancia = idInstancia;
+    public static void setIdInstancia(final String idInstancia) {
+        ProcesoTimerServiceFacadeBean.idInstancia = idInstancia;
     }
 }

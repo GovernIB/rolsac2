@@ -34,23 +34,14 @@ import java.util.List;
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
 
-
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 1L;
+    @Inject
+    ProcesoRepository procesoRepository;
 
     @Inject
-    private ProcesoRepository procesoRepository;
+    IndexacionRepository indexacionRepository;
 
     @Inject
-    private IndexacionRepository procedimientoRepository;
-
-    @Inject
-    private IndexacionRepository indexacionRepository;
-
-    @Inject
-    private IndexacionSIARepository indexacionSIARepository;
+    IndexacionSIARepository indexacionSIARepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -80,8 +71,7 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<ProcesoGridDTO> listar(final ProcesoFiltro filtro) {
-        List<ProcesoGridDTO> listaProcesos = this.procesoRepository.listar(filtro);
-        return listaProcesos;
+        return this.procesoRepository.listar(filtro);
     }
 
     @Override
@@ -114,8 +104,7 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
             return new Pagina<>(items, total);
         } catch (Exception e) {
             List<ProcesoGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -128,8 +117,7 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
             return new Pagina<>(items, total);
         } catch (Exception e) {
             List<IndexacionDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -142,8 +130,7 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
             return new Pagina<>(items, total);
         } catch (Exception e) {
             List<IndexacionSIADTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 

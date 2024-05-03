@@ -34,8 +34,6 @@ public class JPersonal extends BaseEntity {
      * Identificacion del personal.
      */
     @Column(name = "PERS_IDENTI", length = 50)
-    // @NotNull
-    // @Pattern(regexp = "[0-9]{6,8}", message = "{codiSia.Pattern.message}")
     private String identificador;
 
     /**
@@ -48,7 +46,6 @@ public class JPersonal extends BaseEntity {
      * Cargo de la persona.
      */
     @Column(name = "PERS_CARGO", /* nullable = false, */ length = 500)
-    // @NotEmpty
     @Size(max = 500)
     private String cargo;
 
@@ -56,7 +53,6 @@ public class JPersonal extends BaseEntity {
      * Funciones
      **/
     @Column(name = "PERS_FUNC", /* nullable = false, */ length = 4000)
-    // @NotEmpty
     @Size(max = 4000)
     private String funciones;
 
@@ -105,7 +101,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -114,7 +110,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -123,7 +119,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -132,7 +128,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificacion  identificacion
+     * @param identificacion identificacion
      */
     public void setIdentificador(String identificacion) {
         this.identificador = identificacion;
@@ -141,7 +137,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene cargo.
      *
-     * @return  cargo
+     * @return cargo
      */
     public String getCargo() {
         return cargo;
@@ -150,7 +146,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece cargo.
      *
-     * @param cargo  cargo
+     * @param cargo cargo
      */
     public void setCargo(String cargo) {
         this.cargo = cargo;
@@ -159,7 +155,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene unidad administrativa.
      *
-     * @return  unidad administrativa
+     * @return unidad administrativa
      */
     public JUnidadAdministrativa getUnidadAdministrativa() {
         return unidadAdministrativa;
@@ -168,7 +164,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece unidad administrativa.
      *
-     * @param unidadAdministrativa  unidad administrativa
+     * @param unidadAdministrativa unidad administrativa
      */
     public void setUnidadAdministrativa(JUnidadAdministrativa unidadAdministrativa) {
         this.unidadAdministrativa = unidadAdministrativa;
@@ -177,7 +173,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene email.
      *
-     * @return  email
+     * @return email
      */
     public String getEmail() {
         return email;
@@ -186,7 +182,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece email.
      *
-     * @param email  email
+     * @param email email
      */
     public void setEmail(String email) {
         this.email = email;
@@ -195,7 +191,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene telefono fijo.
      *
-     * @return  telefono fijo
+     * @return telefono fijo
      */
     public String getTelefonoFijo() {
         return telefonoFijo;
@@ -204,7 +200,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece telefono fijo.
      *
-     * @param telefonoFijo  telefono fijo
+     * @param telefonoFijo telefono fijo
      */
     public void setTelefonoFijo(String telefonoFijo) {
         this.telefonoFijo = telefonoFijo;
@@ -213,7 +209,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene telefono movil.
      *
-     * @return  telefono movil
+     * @return telefono movil
      */
     public String getTelefonoMovil() {
         return telefonoMovil;
@@ -222,7 +218,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece telefono movil.
      *
-     * @param telefonoMovil  telefono movil
+     * @param telefonoMovil telefono movil
      */
     public void setTelefonoMovil(String telefonoMovil) {
         this.telefonoMovil = telefonoMovil;
@@ -231,7 +227,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene telefono exterior fijo.
      *
-     * @return  telefono exterior fijo
+     * @return telefono exterior fijo
      */
     public String getTelefonoExteriorFijo() {
         return telefonoExteriorFijo;
@@ -240,7 +236,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece telefono exterior fijo.
      *
-     * @param telefonoExteriorFijo  telefono exterior fijo
+     * @param telefonoExteriorFijo telefono exterior fijo
      */
     public void setTelefonoExteriorFijo(String telefonoExteriorFijo) {
         this.telefonoExteriorFijo = telefonoExteriorFijo;
@@ -249,7 +245,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene telefono exterior movil.
      *
-     * @return  telefono exterior movil
+     * @return telefono exterior movil
      */
     public String getTelefonoExteriorMovil() {
         return telefonoExteriorMovil;
@@ -258,7 +254,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene funciones.
      *
-     * @return  funciones
+     * @return funciones
      */
     public String getFunciones() {
         return funciones;
@@ -267,7 +263,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece funciones.
      *
-     * @param funciones  funciones
+     * @param funciones funciones
      */
     public void setFunciones(String funciones) {
         this.funciones = funciones;
@@ -276,7 +272,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece telefono exterior movil.
      *
-     * @param telefonoExteriorMovil  telefono exterior movil
+     * @param telefonoExteriorMovil telefono exterior movil
      */
     public void setTelefonoExteriorMovil(String telefonoExteriorMovil) {
         this.telefonoExteriorMovil = telefonoExteriorMovil;
@@ -285,7 +281,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Obtiene nombre.
      *
-     * @return  nombre
+     * @return nombre
      */
     public String getNombre() {
         return nombre;
@@ -294,7 +290,7 @@ public class JPersonal extends BaseEntity {
     /**
      * Establece nombre.
      *
-     * @param nombre  nombre
+     * @param nombre nombre
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -302,10 +298,8 @@ public class JPersonal extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof JPersonal))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof JPersonal)) return false;
         JPersonal that = (JPersonal) o;
         return Objects.equals(codigo, that.codigo);
     }
@@ -317,9 +311,7 @@ public class JPersonal extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JPersonal{" + "id=" + codigo +
-                // ", codiSia='" + codiSia + '\'' +
-                '}';
+        return "JPersonal{" + "id=" + codigo + '}';
     }
 
 }

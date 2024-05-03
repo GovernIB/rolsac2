@@ -32,9 +32,11 @@ import es.caib.rolsac2.service.utils.UtilJSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.*;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.*;
 
@@ -56,54 +58,50 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     private static final Logger LOG = LoggerFactory.getLogger(UnidadAdministrativaServiceFacadeBean.class);
 
-    @Resource
-    private SessionContext context;
+    @Inject
+    UnidadAdministrativaRepository unidadAdministrativaRepository;
 
     @Inject
-    private UnidadAdministrativaRepository unidadAdministrativaRepository;
+    EntidadRaizRepository entidadRaizRepository;
 
     @Inject
-    private EntidadRaizRepository entidadRaizRepository;
+    ProcedimientoRepository procedimientoRepository;
 
     @Inject
-    private ProcedimientoRepository procedimientoRepository;
+    NormativaRepository normativaRepository;
 
     @Inject
-    private NormativaRepository normativaRepository;
+    IndexacionRepository indexacionRepository;
 
     @Inject
-    private IndexacionRepository indexacionRepository;
+    EntidadRepository entidadRepository;
 
     @Inject
-    private EntidadRepository entidadRepository;
+    TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
 
     @Inject
-    private TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
+    UnidadAdministrativaConverter converter;
 
     @Inject
-    private UnidadAdministrativaConverter converter;
+    TipoSexoRepository tipoSexoRepository;
 
     @Inject
-    private TipoSexoRepository tipoSexoRepository;
-
-
-    @Inject
-    private UsuarioRepository usuarioRepository;
+    UsuarioRepository usuarioRepository;
 
     @Inject
-    private TemaRepository temaRepository;
+    TemaRepository temaRepository;
 
     @Inject
-    private UnidadAdministrativaAuditoriaRepository auditoriaRepository;
+    UnidadAdministrativaAuditoriaRepository auditoriaRepository;
 
     @Inject
-    private UnidadOrganicaRepository unidadOrganicaRepository;
+    UnidadOrganicaRepository unidadOrganicaRepository;
 
     @Inject
-    private UnidadOrganicaConverter unidadOrganicaConverter;
+    UnidadOrganicaConverter unidadOrganicaConverter;
 
     @Inject
-    private UnidadAdministrativaConverter unidadAdministrativaConverter;
+    UnidadAdministrativaConverter unidadAdministrativaConverter;
 
 
     @Override
@@ -145,9 +143,16 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<Long> getListaHijosRecursivo(Long codigoUA) {
-        return unidadAdministrativaRepository.getListaHijosRecursivo(codigoUA);
+    public List<Long> listarHijos(Long codigoUA) {
+        return unidadAdministrativaRepository.listarHijos(codigoUA);
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<Long> listarPadres(Long codigoUA) {
+        return unidadAdministrativaRepository.listarPadres(codigoUA);
+    }
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -286,8 +291,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         } catch (Exception e) {
             LOG.error("Error", e);
             List<UnidadAdministrativaGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -319,8 +323,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoSexoDTO> findTipoSexo() {
         try {
-            List<TipoSexoDTO> items = tipoSexoRepository.findAll();
-            return items;
+            return tipoSexoRepository.findAll();
         } catch (Exception e) {
             LOG.error("Error: ", e);
             return new ArrayList<>();
@@ -366,9 +369,9 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     /**
      * Convierte una junidad administrativa a un DTO sencillo
      *
-     * @param junidad
-     * @param incluirPadre
-     * @return
+     * @param junidad      junida d administrativa
+     * @param incluirPadre si se incluye el padre
+     * @return DTO sencillo
      */
     private UnidadAdministrativaDTO converterSencillo(JUnidadAdministrativa junidad, boolean incluirPadre) {
 
@@ -455,20 +458,19 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         }
     }
 
-    /*******************************************************************************************************************
-     * Funciones privadas
-     ******************************************************************************************************************/
+    // ******************************************************************************************************************
+    // Funciones privadas
+    // ******************************************************************************************************************
 
     /**
      * Crear auditoria
      *
-     * @param uaAntigua
-     * @param uaNueva
+     * @param uaAntigua Unidad administrativa antigua
+     * @param uaNueva   Unidad administrativa nueva
      */
     private void crearAuditoria(final UnidadAdministrativaDTO uaAntigua, final UnidadAdministrativaDTO uaNueva, TypePerfiles perfil, String literalFlujo, String accion) {
 
-        List<AuditoriaCambio> cambios = new ArrayList<>();
-        AuditoriaCambio cambio = null;
+        List<AuditoriaCambio> cambios;
         cambios = UnidadAdministrativaDTO.auditar(uaAntigua, uaNueva);
 
         if (!cambios.isEmpty()) {
@@ -531,7 +533,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public ProcedimientoSolrDTO findDataIndexacionUAById(Long codElemento) {
-        UnidadAdministrativaDTO uaDTO = (UnidadAdministrativaDTO) this.findById(codElemento);
+        UnidadAdministrativaDTO uaDTO = this.findById(codElemento);
         PathUA pathUA = unidadAdministrativaRepository.getPath(uaDTO.getUAGrid());
 
         DataIndexacion dataIndexacion = CastUtil.getDataIndexacion(uaDTO, pathUA);
@@ -587,19 +589,19 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     /**
      * Incluye los 2 tipos de evolucion (division y competencias)
      *
-     * @param evolucionDivision
-     * @param uaOrigen
-     * @param uasDestino
-     * @param fechaBaja
-     * @param normativaBaja
-     * @param procedimientos
-     * @param servicios
-     * @param normativas
-     * @param entidad
-     * @param perfil
-     * @param usuario
-     * @param noMigrarReserva
-     * @param comportamientoTodos
+     * @param evolucionDivision   true si es evolución por división, false si es por competencias
+     * @param uaOrigen            UA origen
+     * @param uasDestino          UAs destino
+     * @param fechaBaja           Fecha de baja
+     * @param normativaBaja       Normativa de baja
+     * @param procedimientos      Procedimientos
+     * @param servicios           Servicios
+     * @param normativas          Normativas
+     * @param entidad             Entidad
+     * @param perfil              Perfil
+     * @param usuario             Usuario
+     * @param noMigrarReserva     true si no se migra la reserva
+     * @param comportamientoTodos true si se aplica a todos los procedimientos
      */
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR})
@@ -629,7 +631,6 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         for (int indice = 0; indice < uasDestino.size(); indice++) {
             UnidadAdministrativaDTO ua = uasDestino.get(indice);
             boolean creado;
-            String nombreUAfusion;
             if (ua.getCodigo() == null || ua.getCodigo() <= 0) {
                 Long codigoAntiguo = ua.getCodigo();
                 ua.setCodigo(null);
@@ -640,7 +641,6 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
                 unidadAdministrativaRepository.update(junid);
                 uasDestino.get(indice).setCodigo(codigoNuevo);
                 creado = true;
-                nombreUAfusion = ua.getNombre().getTraduccion();
 
                 //Cambiamos el negativo por el nuevo código.
                 if (codigoAntiguo != null && codigoAntiguo < 0) {
@@ -668,7 +668,6 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
                 }
             } else {
                 creado = false;
-                nombreUAfusion = unidadAdministrativaRepository.getNombreUA(Arrays.asList(ua.getCodigo()));
             }
 
             JUnidadAdministrativa juaFusion = unidadAdministrativaRepository.getReference(ua.getCodigo());
@@ -681,13 +680,10 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
             jAuditoria.setUsuarioPerfil(perfil.toString());
             jAuditoria.setAccion(TypeAccionAuditoria.MODIFICACION.toString());
             valorCampo.setValorAnterior(nombreAntiguo);
-            //valorCampo.setValorNuevo(nombreUAfusion);
             if (creado) {
                 jAuditoria.setLiteralFlujo(prefijoLiteral + ".creado");
-                //auditoria.setIdCampo(prefijoLiteral + ".creado");
             } else {
                 jAuditoria.setLiteralFlujo(prefijoLiteral + ".actualizado");
-                //auditoria.setIdCampo(prefijoLiteral + ".actualizado");
             }
             auditoria.setValoresModificados(Arrays.asList(valorCampo));
             if (creado) {
@@ -743,7 +739,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         UnidadAdministrativaDTO uaOriginal = unidadAdministrativaConverter.createDTO(juaOriginal);
 
         unidadAdministrativaRepository.marcarBaja(codigoUA, fechaBaja, perfil, usuario, "auditoria.uas.evolucionBasicaBaja", nombreAntiguo, getNombreLiteral(nombreNuevo));
-        UnidadAdministrativaDTO nueva = (UnidadAdministrativaDTO) uaOriginal;
+        UnidadAdministrativaDTO nueva = uaOriginal;
         nueva.setEntidad(entidad);
         nueva.setCodigo(null);
         nueva.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_VIGENTE);
@@ -861,8 +857,8 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     /**
      * Devuelve el nombre de la unidad administrativa en catalán, si no existe en catalán, devuelve el nombre en el primer idioma que encuentre
      *
-     * @param traducciones
-     * @return
+     * @param traducciones Traducciones
+     * @return Nombre
      */
     private String getNombreUA(List<JUnidadAdministrativaTraduccion> traducciones) {
         if (traducciones == null || traducciones.isEmpty()) {
@@ -881,8 +877,8 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     /**
      * Devuelve el literal en catalán, si no existe en catalán, devuelve el literal en el primer idioma que encuentre
      *
-     * @param traducciones
-     * @return
+     * @param traducciones Traducciones
+     * @return Literal
      */
     private String getNombreLiteral(Literal traducciones) {
         if (traducciones == null || traducciones.estaVacio()) {
@@ -1040,8 +1036,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         } catch (Exception e) {
             LOG.error("Error", e);
             List<UnidadAdministrativaDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 

@@ -40,40 +40,37 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     public static final String ERROR_LITERAL = "Error";
 
     @Inject
-    private EdificioRepository edificioRepository;
+    EdificioRepository edificioRepository;
 
     @Inject
-    private EdificioConverter edificioConverter;
+    EdificioConverter edificioConverter;
 
     @Inject
-    private UsuarioRepository usuarioRepository;
+    UsuarioRepository usuarioRepository;
 
     @Inject
-    private EntidadRepository entidadRepository;
+    EntidadRepository entidadRepository;
 
     @Inject
-    private EntidadConverter entidadConverter;
+    EntidadConverter entidadConverter;
 
     @Inject
-    private UsuarioConverter converter;
+    UsuarioConverter converter;
 
     @Inject
-    private PluginRepository pluginRepository;
+    PluginRepository pluginRepository;
 
     @Inject
-    private PluginConverter pluginConverter;
+    PluginConverter pluginConverter;
 
     @Inject
-    private UnidadAdministrativaConverter uaConverter;
+    UnidadAdministrativaRepository unidadAdministrativaRepository;
 
     @Inject
-    private UnidadAdministrativaRepository unidadAdministrativaRepository;
+    EntidadRaizConverter entidadRaizConverter;
 
     @Inject
-    private EntidadRaizConverter entidadRaizConverter;
-
-    @Inject
-    private EntidadRaizRepository entidadRaizRepository;
+    EntidadRaizRepository entidadRaizRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -134,10 +131,8 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         }
         JUsuario jUsuario = converter.createEntity(dto);
 
-        /**
-         * Asociación para UAs. En caso de que se hayan asignado UAs al usuario,
-         * se recuperan las UAs añadidas y se añaden al modelo de Usuario.
-         */
+        //Asociación para UAs. En caso de que se hayan asignado UAs al usuario,
+        //se recuperan las UAs añadidas y se añaden al modelo de Usuario.
         Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
         if (dto.getUnidadesAdministrativas() != null) {
             JUnidadAdministrativa jUnidadAdministrativa;
@@ -159,13 +154,6 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         jUsuario.setEntidades(entidades);
         usuarioRepository.create(jUsuario);
 
-        //Añadir en la tabla de JUsuarioEntidad el valor adecuado.
-        // Al ser la creación de este usuario, se da de alta en una entidad
-        // por lo que solo debería tener una entidad en el listado.
-       /* EntidadGridDTO entidad = dto.getEntidades().get(0);
-        usuarioRepository.anyadirNuevoUsuarioEntidad(jUsuario, entidad.getCodigo());*/
-
-
         return jUsuario.getCodigo();
     }
 
@@ -181,11 +169,8 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     public void update(UsuarioDTO dto) throws RecursoNoEncontradoException {
         JUsuario jUsuario = usuarioRepository.getReference(dto.getCodigo());
 
-        /**
-         * Asociación para UAs. En caso de que se hayan asignado UAs al usuario,
-         * se recuperan las UAs añadidas y se añaden al modelo de Usuario.
-         */
-
+        //Asociación para UAs. En caso de que se hayan asignado UAs al usuario,
+        //se recuperan las UAs añadidas y se añaden al modelo de Usuario.
         Set<JUnidadAdministrativa> unidadesAdministrativas = new HashSet<>();
         if (dto.getUnidadesAdministrativas() != null) {
             JUnidadAdministrativa jUnidadAdministrativa;
@@ -314,8 +299,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         } catch (Exception e) {
             LOG.error("Error", e);
             List<UsuarioGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -330,8 +314,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         } catch (Exception e) {
             LOG.error("Error", e);
             List<UsuarioGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -374,8 +357,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public PluginDTO findPluginById(Long id) {
         JPlugin jPlugin = pluginRepository.getReference(id);
-        PluginDTO pluginDto = pluginConverter.createDTO(jPlugin);
-        return pluginDto;
+        return pluginConverter.createDTO(jPlugin);
     }
 
     @Override
@@ -389,8 +371,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         } catch (Exception e) {
             LOG.error("Error", e);
             List<PluginGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -447,8 +428,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public EntidadRaizDTO findEntidadRaizById(Long id) {
         JEntidadRaiz jEntidadRaiz = entidadRaizRepository.getReference(id);
-        EntidadRaizDTO entidadRaizDTO = entidadRaizConverter.createDTO(jEntidadRaiz);
-        return entidadRaizDTO;
+        return entidadRaizConverter.createDTO(jEntidadRaiz);
     }
 
     @Override
@@ -462,8 +442,7 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         } catch (Exception e) {
             LOG.error("Error", e);
             List<EntidadRaizGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 

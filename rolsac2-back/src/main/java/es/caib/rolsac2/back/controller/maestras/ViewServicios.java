@@ -12,10 +12,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
-import es.caib.rolsac2.service.model.types.TypeExportarFormato;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.model.types.*;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.*;
@@ -40,7 +37,6 @@ public class ViewServicios extends AbstractController implements Serializable {
     @EJB
     ProcedimientoServiceFacade procedimientoService;
 
-
     @EJB
     UnidadAdministrativaServiceFacade uaService;
 
@@ -49,6 +45,9 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     @EJB
     PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;
+
+    @EJB
+    SystemServiceFacade systemService;
 
     @EJB
     private TemaServiceFacade temaServiceFacade;
@@ -88,12 +87,12 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void filtroHijasActivasChange() {
         if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsInstructor(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
+            filtro.setIdUAsInstructor(uaService.listarHijos(sessionBean.getUnidadActiva().getCodigo()));
         } else if (filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
             List<Long> ids = new ArrayList<>();
 
             for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
+                List<Long> idsUa = uaService.listarHijos(ua.getCodigo());
                 ids.addAll(idsUa);
             }
             filtro.setIdUAsInstructor(ids);
@@ -113,7 +112,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                 List<Long> ids = new ArrayList<>();
 
                 for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                    List<Long> idsUa = uaService.getListaHijosRecursivo(ua.getCodigo());
+                    List<Long> idsUa = uaService.listarHijos(ua.getCodigo());
                     ids.addAll(idsUa);
                 }
                 filtro.setIdUAsInstructor(ids);
@@ -126,7 +125,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                 filtro.setIdUAsInstructor(idsUa);
             }
         } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsInstructor(uaService.getListaHijosRecursivo(sessionBean.getUnidadActiva().getCodigo()));
+            filtro.setIdUAsInstructor(uaService.listarHijos(sessionBean.getUnidadActiva().getCodigo()));
         }
     }
 
@@ -201,7 +200,8 @@ public class ViewServicios extends AbstractController implements Serializable {
             Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
             if (idProcMod == null) {
                 String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-                idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub(), usuario, sessionBean.getPerfil());
+                String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+                idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub(), usuario, sessionBean.getPerfil(), ruta);
                 this.datoSeleccionado.setCodigoWFMod(idProcMod);
             }
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);

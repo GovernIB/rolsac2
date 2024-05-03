@@ -117,6 +117,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         procClonado.setUsuarioAuditoria(this.getUsuarioAuditoria());
         procClonado.setResponsable(this.getResponsable());
         procClonado.setResponsableEmail(this.getResponsableEmail());
+        procClonado.setIncidenciasEmail(this.getIncidenciasEmail());
         procClonado.setHabilitadoApoderado(this.isHabilitadoApoderado());
         procClonado.setHabilitadoFuncionario(this.getHabilitadoFuncionario());
 
@@ -314,6 +315,9 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         }
         if (UtilComparador.compareTo(this.getResponsableEmail(), dataOriginal.getResponsableEmail()) != 0) {
             return UtilComparador.compareTo(this.getResponsableEmail(), dataOriginal.getResponsableEmail());
+        }
+        if (UtilComparador.compareTo(this.getIncidenciasEmail(), dataOriginal.getIncidenciasEmail()) != 0) {
+            return UtilComparador.compareTo(this.getIncidenciasEmail(), dataOriginal.getIncidenciasEmail());
         }
         if (UtilComparador.compareTo(this.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario()) != 0) {
             return UtilComparador.compareTo(this.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario());

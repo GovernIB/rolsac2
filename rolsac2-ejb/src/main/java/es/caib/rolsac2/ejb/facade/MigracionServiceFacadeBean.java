@@ -40,23 +40,22 @@ import java.util.List;
 //@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MigracionServiceFacadeBean implements MigracionServiceFacade {
 
-
     /**
-     * serialVersionUID
+     * log.
      */
-    private static final long serialVersionUID = 1L;
+    private static final Logger log = LoggerFactory.getLogger(MigracionServiceFacadeBean.class);
 
     @Inject
-    private MigracionRepository migracionRepository;
+    MigracionRepository migracionRepository;
 
     @Inject
-    private FicheroExternoRepository ficheroRepository;
+    FicheroExternoRepository ficheroRepository;
 
     @Inject
-    private UnidadAdministrativaRepository uaRepository;
+    UnidadAdministrativaRepository uaRepository;
 
     @Inject
-    private UsuarioRepository usuarioRepository;
+    UsuarioRepository usuarioRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -79,7 +78,7 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
                 String resultadoUA = migracionRepository.importarUA(idUA.longValue(), idEntidad, idUARaiz);
                 resultado.append(resultadoUA);
 
-                /** Creamos las relaciones de los usuarios con la UA raiz **/
+                // Creamos las relaciones de los usuarios con la UA raiz
                 if (idUARaiz.compareTo(idUA.longValue()) == 0) {
                     if (usuarios != null && !usuarios.isEmpty()) {
                         JUnidadAdministrativa jua = uaRepository.findById(idUARaiz);
@@ -124,8 +123,7 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String migrarNormativasAfe() {
-        String resultadoNormativa = migracionRepository.importarNormativasAfectaciones();
-        return resultadoNormativa;
+        return migracionRepository.importarNormativasAfectaciones();
     }
 
 
@@ -232,11 +230,6 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
         return migracionRepository.getDocumentos(idEntidad, uaRaiz, false, true);
     }
 
-    /**
-     * log.
-     */
-    private static Logger log = LoggerFactory.getLogger(MigracionServiceFacadeBean.class);
-
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -262,10 +255,16 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
             infoDoc.setCodigoPadre(idPadre);
             Long idFichero = ficheroRepository.createFicheroExternoMigracion(ficheroRolsac1.getContenido(), ficheroRolsac1.getFilename(), tipoficheroExterno, idPadre, pathAlmacenamiento, ficheroRolsac1.getCodigo());
             migracionRepository.migrarArchivo(idFichero, infoDoc.getCodigoDocumentoTraduccion(), tipoficheroExterno);
-            resultado.append("\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " migrado correctamente \n");
+            resultado.append("\tFichero de rolsac1 ");
+            resultado.append(infoDoc.getCodigoFicheroRolsac1());
+            resultado.append(" migrado correctamente \n");
         } catch (Exception e) {
             log.error("Error migrando fichero " + infoDoc, e);
-            resultado.append("\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " ha dado un error. Error:" + e.getLocalizedMessage() + " \n");
+            resultado.append("\tFichero de rolsac1 ");
+            resultado.append(infoDoc.getCodigoFicheroRolsac1());
+            resultado.append(" ha dado un error. Error:");
+            resultado.append(e.getLocalizedMessage());
+            resultado.append(" \n");
         }
         return resultado.toString();
     }

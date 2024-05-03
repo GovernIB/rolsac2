@@ -64,7 +64,6 @@ public class JProcedimientoDocumentoTraduccion {
             retornoTraducciones.setTitulo(traducciones.getTitulo());
             retornoTraducciones.setDescripcion(traducciones.getDescripcion());
             retornoTraducciones.setFichero(traducciones.getFichero());
-            //retornoTraducciones.setFicheroRolsac1(traducciones.getFicheroRolsac1());
         }
         return retornoTraducciones;
     }

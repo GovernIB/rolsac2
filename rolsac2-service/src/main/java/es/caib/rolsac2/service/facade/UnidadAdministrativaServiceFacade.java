@@ -152,7 +152,15 @@ public interface UnidadAdministrativaServiceFacade {
      * @param codigoUA
      * @return
      */
-    List<Long> getListaHijosRecursivo(Long codigoUA);
+    List<Long> listarHijos(Long codigoUA);
+
+    /**
+     * Devuelve una lista recursiva de los padres segun un codigo UA
+     *
+     * @param codigoUA
+     * @return
+     */
+    List<Long> listarPadres(Long codigoUA);
 
     /**
      * Obtiene las unidades hijas asociadas a una unidad orgánica del organigrama de DIR3

@@ -8,7 +8,6 @@ import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.EntidadServiceFacade;
-import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
@@ -47,67 +46,64 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     private static final String ERROR_LITERAL = "Error";
 
     @Inject
-    private EntidadRepository entidadRepository;
+    EntidadRepository entidadRepository;
 
     @Inject
-    private EntidadConverter converter;
+    EntidadConverter converter;
 
     @Inject
-    private UnidadOrganicaRepository unidadOrganicaRepository;
+    UnidadOrganicaRepository unidadOrganicaRepository;
 
     @Inject
-    private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
+    NormativaRepository normativaRepository;
 
     @Inject
-    private NormativaRepository normativaRepository;
+    ProcedimientoRepository procedimientoRepository;
 
     @Inject
-    private ProcedimientoRepository procedimientoRepository;
+    ProcedimientoAuditoriaRepository auditoriaProcedimientoRepository;
 
     @Inject
-    private ProcedimientoAuditoriaRepository auditoriaProcedimientoRepository;
+    TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
 
     @Inject
-    private TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
+    TipoMediaUARepository tipoMediaUARepository;
 
     @Inject
-    private TipoMediaUARepository tipoMediaUARepository;
+    TipoMediaEdificioRepository tipoMediaEdificioRepository;
 
     @Inject
-    private TipoMediaEdificioRepository tipoMediaEdificioRepository;
+    TipoProcedimientoRepository tipoProcedimientoRepository;
 
     @Inject
-    private TipoProcedimientoRepository tipoProcedimientoRepository;
+    TipoPublicoObjetivoEntidadRepository tipoPublicoObjetivoEntRepository;
 
     @Inject
-    private TipoPublicoObjetivoEntidadRepository tipoPublicoObjetivoEntRepository;
+    PlatTramitElectronicaRepository platTramitElectronicaRepository;
 
     @Inject
-    private PlatTramitElectronicaRepository platTramitElectronicaRepository;
+    TipoTramitacionRepository tipoTramitacionRepository;
 
     @Inject
-    private TipoTramitacionRepository tipoTramitacionRepository;
+    ProcesoRepository procesoRepository;
 
     @Inject
-    private ProcesoRepository procesoRepository;
+    UnidadAdministrativaRepository unidadAdministrativaRepository;
 
     @Inject
-    private UnidadAdministrativaRepository unidadAdministrativaRepository;
+    UsuarioRepository usuarioRepository;
 
     @Inject
-    private UsuarioRepository usuarioRepository;
+    IndexacionRepository indexacionRepository;
 
     @Inject
-    private IndexacionRepository indexacionRepository;
+    IndexacionSIARepository indexacionSIARepository;
 
     @Inject
-    private IndexacionSIARepository indexacionSIARepository;
+    PluginRepository pluginRepository;
 
     @Inject
-    private PluginRepository pluginRepository;
-
-    @Inject
-    private TemaRepository temaRepository;
+    TemaRepository temaRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -160,9 +156,7 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
 
                 listaServ = procedimientoRepository.findServiciosPagedByFiltro(procedimientoFiltro);
                 if (!listaServ.isEmpty()) {
-                    if (!listaServ.isEmpty()) {
-                        listaServ.forEach(p -> borrarProcedimientoBase(p.getCodigo()));
-                    }
+                    listaServ.forEach(p -> borrarProcedimientoBase(p.getCodigo()));
                 }
             }
 
@@ -245,16 +239,14 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public EntidadDTO findById(Long id) {
         JEntidad jEntidad = entidadRepository.getReference(id);
-        EntidadDTO entidadDTO = converter.createDTO(jEntidad);
-        return entidadDTO;
+        return converter.createDTO(jEntidad);
     }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<EntidadDTO> findAll() {
         List<JEntidad> listaEntidades = entidadRepository.findAll();
-        List<EntidadDTO> listaDTOs = converter.toDTOs(listaEntidades);
-        return listaDTOs;
+        return converter.toDTOs(listaEntidades);
     }
 
     @Override
@@ -267,8 +259,7 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
         } catch (Exception e) {
             LOG.error("Error", e);
             List<EntidadGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -288,8 +279,7 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<EntidadDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 

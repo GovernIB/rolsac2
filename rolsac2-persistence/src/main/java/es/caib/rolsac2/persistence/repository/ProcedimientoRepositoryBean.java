@@ -433,7 +433,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public Long countByEntidad(Long entidadId) {
-        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c LEFT OUTER JOIN c.entidad d WHERE d.codigo= :entidadId  and a.tipo='P' ";
+        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaInstructor c LEFT OUTER JOIN c.entidad d WHERE d.codigo= :entidadId  and a.tipo='P' ";
         TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
         query.setParameter("entidadId", entidadId);
         return query.getSingleResult();
@@ -441,7 +441,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public Long countByUa(Long uaId) {
-        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='P' ";
+        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaInstructor c WHERE c.codigo= :uaId and a.tipo='P' ";
         TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
         query.setParameter("uaId", uaId);
         return query.getSingleResult();
@@ -449,14 +449,14 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public Long countAll() {
-        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE a.tipo='P' ";
+        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaInstructor c WHERE a.tipo='P' ";
         TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
         return query.getSingleResult();
     }
 
     @Override
     public Long countServicioByEntidad(Long entidadId) {
-        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c LEFT OUTER JOIN c.entidad d WHERE d.codigo= :entidadId and a.tipo='S' ";
+        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaInstructor c LEFT OUTER JOIN c.entidad d WHERE d.codigo= :entidadId and a.tipo='S' ";
         TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
         query.setParameter("entidadId", entidadId);
         return query.getSingleResult();
@@ -464,7 +464,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public Long countServicioByUa(Long uaId) {
-        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='S' ";
+        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaInstructor c WHERE c.codigo= :uaId and a.tipo='S' ";
         TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
         query.setParameter("uaId", uaId);
         return query.getSingleResult();
@@ -472,7 +472,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public Long countAllServicio() {
-        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE a.tipo='S' ";
+        String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaInstructor c WHERE a.tipo='S' ";
         TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
         return query.getSingleResult();
     }
@@ -481,13 +481,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public Long countProcEstadoByUa(Long uaId, String estado) {
         switch (estado) {
             case "1": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='P' and b.estado = 'P' ";
+                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaInstructor c WHERE c.codigo= :uaId and a.tipo='P' and b.estado = 'P' ";
                 TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
                 query.setParameter("uaId", uaId);
                 return query.getSingleResult();
             }
             case "2": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='P' and b.estado not like 'P' ";
+                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaInstructor c WHERE c.codigo= :uaId and a.tipo='P' and b.estado not like 'P' ";
                 TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
                 query.setParameter("uaId", uaId);
                 return query.getSingleResult();
@@ -509,13 +509,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public Long countServEstadoByUa(Long uaId, String estado) {
         switch (estado) {
             case "1": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='S' and b.estado='P' ";
+                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaInstructor c WHERE c.codigo= :uaId and a.tipo='S' and b.estado='P' ";
                 TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
                 query.setParameter("uaId", uaId);
                 return query.getSingleResult();
             }
             case "2": {
-                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaResponsable c WHERE c.codigo= :uaId and a.tipo='S' and b.estado not like 'P' ";
+                String sql = "SELECT count(a) FROM JProcedimiento a LEFT OUTER JOIN a.procedimientoWF b LEFT OUTER JOIN b.uaInstructor c WHERE c.codigo= :uaId and a.tipo='S' and b.estado not like 'P' ";
                 TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
                 query.setParameter("uaId", uaId);
                 return query.getSingleResult();
@@ -674,7 +674,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public Pagina<IndexacionDTO> getProcedimientosParaIndexacion(boolean isTipoProcedimiento, Long idEntidad) {
         StringBuilder sql = new StringBuilder("SELECT j.codigo ");
 
-        sql.append("  FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " WHERE WF.uaResponsable.entidad.codigo = :entidad ");
+        sql.append("  FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " WHERE WF.uaInstructor.entidad.codigo = :entidad ");
         if (isTipoProcedimiento) {
             sql.append(" AND j.tipo = '" + Constantes.PROCEDIMIENTO + "'");
         } else {
@@ -709,7 +709,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public Pagina<IndexacionSIADTO> getProcedimientosParaIndexacionSIA(Long idEntidad) {
         StringBuilder sql = new StringBuilder("SELECT j.codigo, j.tipo ");
 
-        sql.append("  FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " WHERE WF.uaResponsable.entidad.codigo = :entidad ");
+        sql.append("  FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " WHERE WF.uaInstructor.entidad.codigo = :entidad ");
 
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("entidad", idEntidad);
@@ -1881,7 +1881,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF ON wf.workflow = true or wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma  where 1 = 1 ");
             }
         } else {
-            sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, t.nombre, t2.nombre, tipoPro1.descripcion, tipoPro2.descripcion, j.fechaActualizacion, wf.comun, wf2.comun, (select tram.codigo || '#' || to_char(tram.fechaPublicacion, 'DD/MM/YYYY HH24:MI') || '#' || to_char(tram.fechaCierre, 'DD/MM/YYYY HH24:MI') FROM JProcedimientoTramite tram where wf.codigo = tram.procedimiento.codigo and tram.fase = 1), wf.fechaPublicacion, wf.fechaCaducidad, j.mensajesPendienteGestor, j.mensajesPendienteSupervisor FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, t.nombre, t2.nombre, tipoPro1.descripcion, tipoPro2.descripcion, j.fechaActualizacion, wf.comun, wf2.comun, (select tram.codigo || '#' || to_char(tram.fechaPublicacion, 'DD/MM/YYYY HH24:MI') || '#' || to_char(tram.fechaCierre, 'DD/MM/YYYY HH24:MI') FROM JProcedimientoTramite tram where wf.codigo = tram.procedimiento.codigo and tram.fase = 1 and rownum = 1), wf.fechaPublicacion, wf.fechaCaducidad, j.mensajesPendienteGestor, j.mensajesPendienteSupervisor FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
             ambosWf = true;
         }
 
@@ -1953,7 +1953,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         } else if (filtro.isRellenoIdUA()) {
             if (ambosWf) {
-                sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA OR WF.uaResponsable.codigo = :idUA OR WF2.uaResponsable.codigo = :idUA OR WF.uaCompetente.codigo = :idUA OR WF2.uaCompetente.codigo = :idUA) ");
+                sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA OR WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA OR WF.uaCompetente.codigo = :idUA OR WF2.uaCompetente.codigo = :idUA) ");
             } else {
                 sql.append(" AND (WF.uaInstructor.codigo = :idUA) ");
             }
@@ -2838,12 +2838,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         sql.append(" WHERE ");
 
         if (tipo == null) {
-            sql.append(" wf.uaResponsable.codigo in (:uas) OR wf2.uaResponsable.codigo in (:uas) OR wf.uaInstructor.codigo in (:uas) OR wf2.uaInstructor.codigo in (:uas) OR wf.uaCompetente.codigo in (:uas) OR wf2.uaCompetente.codigo in (:uas) ");
+            sql.append(" wf.uaInstructor.codigo in (:uas) OR wf2.uaInstructor.codigo in (:uas) OR wf.uaInstructor.codigo in (:uas) OR wf2.uaInstructor.codigo in (:uas) OR wf.uaCompetente.codigo in (:uas) OR wf2.uaCompetente.codigo in (:uas) ");
         } else {
             sql.append(" j.tipo = :tipo");
             if (tipo.equals(Constantes.PROCEDIMIENTO)) {
-                //En procedimientos solo se muestran los que tienen uaResponsable
-                sql.append(" AND (wf.uaResponsable.codigo in (:uas) OR wf2.uaResponsable.codigo in (:uas) ) ");
+                //En procedimientos solo se muestran los que tienen uaInstructor (antes uaResponsable)
+                sql.append(" AND (wf.uaInstructor.codigo in (:uas) OR wf2.uaInstructor.codigo in (:uas) ) ");
             } else {
                 //En servicios solo se muestran los que tienen uaInstructor
                 sql.append(" AND (wf.uaInstructor.codigo in (:uas) OR wf2.uaInstructor.codigo in (:uas) ) ");
@@ -2909,6 +2909,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setFechaCaducidad(jprocWF.getFechaCaducidad());
         proc.setFechaActualizacion(jproc.getFechaActualizacion());
         proc.setResponsableEmail(jprocWF.getResponsableEmail());
+        proc.setIncidenciasEmail(jprocWF.getIncidenciasEmail());
         proc.setResponsableTelefono(jprocWF.getResponsableTelefono());
         proc.setWorkflow(TypeProcedimientoWorkflow.fromBoolean(jprocWF.getWorkflow()));
         proc.setEstado(TypeProcedimientoEstado.fromString(jprocWF.getEstado()));

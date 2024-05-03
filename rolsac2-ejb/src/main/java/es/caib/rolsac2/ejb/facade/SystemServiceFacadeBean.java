@@ -2,8 +2,8 @@ package es.caib.rolsac2.ejb.facade;
 
 import es.caib.rolsac2.persistence.converter.SesionConverter;
 import es.caib.rolsac2.persistence.model.JSesion;
-import es.caib.rolsac2.persistence.repository.SesionRepository;
 import es.caib.rolsac2.persistence.repository.ConfiguracionGlobalRepository;
+import es.caib.rolsac2.persistence.repository.SesionRepository;
 import es.caib.rolsac2.service.exception.PluginErrorException;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
@@ -77,8 +77,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public String obtenerPropiedadConfiguracion(TypePropiedadConfiguracion propiedad) {
         ConfiguracionGlobalGridDTO conf = configGlobal.findByPropiedad(propiedad.toString());
         if (conf != null && conf.getValor() != null && !conf.getValor().isEmpty()) {
@@ -89,8 +88,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String obtenerPropiedadConfiguracion(String propiedad) {
         ConfiguracionGlobalGridDTO conf = configGlobal.findByPropiedad(propiedad);
         if (conf != null && conf.getValor() != null && !conf.getValor().isEmpty()) {
@@ -101,8 +99,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String obtenerPropiedadConfiguracion(TypePropiedadConfiguracion propiedad, String idioma) {
         ConfiguracionGlobalGridDTO conf = configGlobal.findByPropiedad(propiedad.toString() + "." + idioma);
         if (conf != null && conf.getValor() != null && !conf.getValor().isEmpty()) {
@@ -113,24 +110,21 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public IPlugin obtenerPluginEntidad(TypePluginEntidad tipoPlugin, Long idEntidad) {
 
         return createPlugin(administracionEntServiceFacade.listPluginsByEntidad(idEntidad), tipoPlugin.toString());
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void crearSesion(SesionDTO sesionDTO) {
         JSesion sesion = sesionConverter.createEntity(sesionDTO);
         sesionRepository.create(sesion);
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void updateSesion(SesionDTO sesionDTO) {
         JSesion sesion = sesionRepository.findById(sesionDTO.getIdUsuario());
         sesionConverter.mergeEntity(sesion, sesionDTO);
@@ -138,39 +132,36 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void deleteSesion(Long idUsuario) {
         JSesion sesion = sesionRepository.findById(idUsuario);
         sesionRepository.delete(sesion);
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public SesionDTO findSesionById(Long idUsuario) {
         return sesionConverter.createDTO(sesionRepository.findById(idUsuario));
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Boolean checkSesion(Long idUsuario) {
         return sesionRepository.checkSesion(idUsuario);
     }
 
-    /*********************************************************************************************************************************************
-     * Métodos privados
-     **********************************************************************************************************************************************/
+    //********************************************************************************************************************************************
+    //      Métodos privados
+    //*********************************************************************************************************************************************/
 
     /**
      * Carga de propiedades locales desde fichero de properties
+     *
+     * @return Properties
      */
-
-    /* Carga de propiedades locales de fichero de properties*/
     private Properties recuperarConfiguracionProperties() {
         final String pathProperties = System.getProperty("es.caib.rolsac2.properties");
-        try (FileInputStream fis = new FileInputStream(pathProperties);) {
+        try (FileInputStream fis = new FileInputStream(pathProperties)) {
             final Properties props = new Properties();
             props.load(fis);
             return props;
@@ -183,28 +174,15 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     /**
      * Función encargada de instanciar un plugin
      *
-     * @param plugins
-     * @param plgTipo
-     * @return
+     * @param plugins Lista de plugins
+     * @param plgTipo Tipo de plugin
+     * @return IPlugin
      */
     private IPlugin createPlugin(final List<PluginDTO> plugins, final String plgTipo) {
 
-        /**
-         * Como aún no está implementada la parte de configuración, dejamos el prefijo global harcodeado
-         * TODO: Añadir la lógica de leer el prefijo global de los plugins una vez implementada la config
-         */
-        /*String prefijoGlobal = this.getPropiedadGlobal(TypePropiedadConfiguracion.PLUGINS_PREFIJO);
-        if (prefijoGlobal == null) {
-            throw new PluginErrorException("No s'ha definit propietat global per prefix global per plugins: "
-                    + TypePropiedadConfiguracion.PLUGINS_PREFIJO);
-        }
-        if (!prefijoGlobal.endsWith(".")) {
-            prefijoGlobal = prefijoGlobal + ".";
-        }*/
-
         String prefijoGlobal = "es.caib.rolsac2.";
 
-        IPlugin plg = null;
+        IPlugin plg;
         PluginDTO rplg = null;
         String classname = null;
         try {
@@ -222,8 +200,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
             classname = rplg.getClassname();
 
             Properties prop = null;
-            if (rplg.getPrefijoPropiedades() != null && rplg.getPropiedades() != null
-                    && !rplg.getPropiedades().isEmpty()) {
+            if (rplg.getPrefijoPropiedades() != null && rplg.getPropiedades() != null && !rplg.getPropiedades().isEmpty()) {
                 prop = new Properties();
                 for (final Propiedad propiedad : rplg.getPropiedades()) {
                     //Se carga la propiedad en el sistema
@@ -236,8 +213,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
             plg = (IPlugin) PluginsManager.instancePluginByClassName(classname, prefijoGlobal + rplg.getPrefijoPropiedades(), prop);
 
             if (plg == null) {
-                throw new PluginErrorException(
-                        "No s'ha pogut instanciar plugin de tipus " + plgTipo + " , PluginManager retorna nulo.");
+                throw new PluginErrorException("No s'ha pogut instanciar plugin de tipus " + plgTipo + " , PluginManager retorna nulo.");
             }
 
             return plg;

@@ -9,6 +9,7 @@ import es.caib.rolsac2.service.model.ListaPropiedades;
  */
 public interface ProcesoTimerServiceFacade {
 
+
     /**
      * Iniciar el timer de los procesos
      */
@@ -21,6 +22,7 @@ public interface ProcesoTimerServiceFacade {
 
     /**
      * Metodo utilizado para el proceso manual de los procesos
+     *
      * @param proceso
      * @param idEntidad
      */

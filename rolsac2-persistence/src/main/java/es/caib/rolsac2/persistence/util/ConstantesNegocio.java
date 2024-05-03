@@ -25,7 +25,6 @@ public class ConstantesNegocio {
      **/
     public static final String SEPARADOR = "###";
 
-    // CONSTANTES DE PARÁMETROS ==>
     /**
      * Parámetro con el tiempo de bloqueo
      */
@@ -51,7 +50,6 @@ public class ConstantesNegocio {
      */
     public static final String PARAMETRO_SALT_CLIENTE_TIMEOUT = "salt.cliente.timeout";
 
-    // <== CONSTANTES DE PARÁMETROS
 
     /**
      * Tipos de valores en personas.

@@ -50,31 +50,31 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
     private static final Logger LOG = LoggerFactory.getLogger(AdministracionSupServiceFacadeBean.class);
 
     @Inject
-    private EntidadRepository entidadRepository;
+    EntidadRepository entidadRepository;
 
     @Inject
-    private ConfiguracionGlobalRepository configuracionGlobalRepository;
+    ConfiguracionGlobalRepository configuracionGlobalRepository;
 
     @Inject
-    private EntidadConverter entidadConverter;
+    EntidadConverter entidadConverter;
 
     @Inject
-    private ConfiguracionGlobalConverter configuracionGlobalConverter;
+    ConfiguracionGlobalConverter configuracionGlobalConverter;
 
     @Inject
-    private UnidadAdministrativaRepository unidadAdministrativaRepository;
+    UnidadAdministrativaRepository unidadAdministrativaRepository;
 
     @Inject
-    private UsuarioRepository usuarioRepository;
+    UsuarioRepository usuarioRepository;
 
     @Inject
-    private UnidadAdministrativaConverter unidadAdministrativaConverter;
+    UnidadAdministrativaConverter unidadAdministrativaConverter;
 
     @Inject
-    private SystemServiceFacade systemServiceBean;
+    SystemServiceFacade systemServiceBean;
 
     @Inject
-    private FicheroExternoRepository ficheroExternoRepository;
+    FicheroExternoRepository ficheroExternoRepository;
 
     @Override
     // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
@@ -176,10 +176,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public EntidadDTO findEntidadById(Long id) {
         JEntidad jEntidad = entidadRepository.getReference(id);
-        EntidadDTO entidadDTO = entidadConverter.createDTO(jEntidad);
-
-
-        return entidadDTO;
+        return entidadConverter.createDTO(jEntidad);
     }
 
     @Override
@@ -231,8 +228,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public ConfiguracionGlobalDTO findConfGlobalById(Long id) {
         JConfiguracionGlobal jConfiguracionGlobal = configuracionGlobalRepository.getReference(id);
-        ConfiguracionGlobalDTO configuracionGlobalDTO = configuracionGlobalConverter.createDTO(jConfiguracionGlobal);
-        return configuracionGlobalDTO;
+        return configuracionGlobalConverter.createDTO(jConfiguracionGlobal);
     }
 
     @Override

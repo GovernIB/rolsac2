@@ -16,8 +16,9 @@ public interface DocumentoNormativaRepository extends CrudRepository<JDocumentoN
 
     List<JDocumentoNormativa> findDocumentosRelacionados(Long idNormativa);
 
-	long countByFiltro(DocumentoNormativaFiltro filtro);
+    long countByFiltro(DocumentoNormativaFiltro filtro);
 
-	List<DocumentoNormativaDTO> findPagedByFiltroRest(DocumentoNormativaFiltro filtro);
+    List<DocumentoNormativaDTO> findPagedByFiltroRest(DocumentoNormativaFiltro filtro);
 
+    void actualizarDocumentacion(Long codigo, List<DocumentoNormativaDTO> documentosNormativa, String path);
 }

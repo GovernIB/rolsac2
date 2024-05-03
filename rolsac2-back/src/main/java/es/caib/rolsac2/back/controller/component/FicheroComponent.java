@@ -3,9 +3,11 @@ package es.caib.rolsac2.back.controller.component;
 
 import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.service.facade.FicheroServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.keycloak.common.util.MimeTypeUtil;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -36,6 +38,9 @@ public class FicheroComponent extends UIInput implements NamingContainer {
 
     @Inject
     protected FicheroServiceFacade ficheroServiceFacade;
+
+    @Inject
+    protected SystemServiceFacade systemServiceBean;
 
     private UIInput textoInicializado;
     private UIInput textoID;
@@ -184,7 +189,8 @@ public class FicheroComponent extends UIInput implements NamingContainer {
     public void handleLogoUpload(FileUploadEvent event) {
         try {
             InputStream is = event.getFile().getInputStream();
-            Long idFichero = ((FicheroServiceFacade) CDI.current().select(FicheroServiceFacade.class).get()).createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), (TypeFicheroExterno) getAttributes().get("tipoFichero"), (Long) getAttributes().get("idElemento"));
+            String path = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            Long idFichero = ((FicheroServiceFacade) CDI.current().select(FicheroServiceFacade.class).get()).createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), (TypeFicheroExterno) getAttributes().get("tipoFichero"), (Long) getAttributes().get("idElemento"), path);
             FicheroDTO logo = new FicheroDTO();
             logo.setFilename(event.getFile().getFileName());
             //logo.setContenido(is.readAllBytes());
@@ -229,15 +235,12 @@ public class FicheroComponent extends UIInput implements NamingContainer {
         }
         if (this.fichero.getContenido() == null) {
             //Nos bajamos el fichero si está vacío
-            fichero = ficheroServiceFacade.getContentById(this.fichero.getCodigo());
+            String path = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            fichero = ficheroServiceFacade.getContentById(this.fichero.getCodigo(), path);
         }
         String mimeType = URLConnection.guessContentTypeFromName(fichero.getFilename());
         InputStream fis = new ByteArrayInputStream(fichero.getContenido());
-        StreamedContent file = DefaultStreamedContent.builder()
-                .name(fichero.getFilename())
-                .contentType(mimeType)
-                .stream(() -> fis)
-                .build();
+        StreamedContent file = DefaultStreamedContent.builder().name(fichero.getFilename()).contentType(mimeType).stream(() -> fis).build();
         return file;
     }
 

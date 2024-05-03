@@ -43,7 +43,7 @@ AS
             PRO_TAXA    ---> TAXA
             PRO_CODUNA_RESOL --> ORGANO RESOLUTORIO [PRWF_CODUAI]
             PRO_RESPON  ---> RESPONSABLE [PRWF_RSNOM]
-            PRO_CODUNA_SERV --> ORGANO SERVICIO
+            PRO_CODUNA_SERV --> ORGANO SERVICIO [PRWF_PRCODUAC]
             PRO_CODSIA  ---> CODIGO SIA [PROC_SIACOD]
             PRO_CODSIL  ---> SILENCIO ADMINISTRATIVO [PRWF_PRTIPSIAD]
             PRO_ESTSIA  ---> ESTADO SIA  [PROC_SIAEST]
@@ -414,6 +414,7 @@ BEGIN
                 /*PRWF_WFUSUA,*/
              prwf_coduar,
              prwf_coduai,
+             prwf_PRCODUAC,
              prwf_interno,
              prwf_rsnom,
              prwf_rsema,
@@ -447,6 +448,7 @@ BEGIN
                 /*PRWF_WFUSUA,*/
                    pro_coduna,
                    Coalesce (pro_coduna_resol, pro_coduna),
+                   Coalesce (PRO_CODUNA_SERV, pro_coduna),
                    interno,
                    Coalesce (pro_respon, 'Desconegut'),
                    pro_info,

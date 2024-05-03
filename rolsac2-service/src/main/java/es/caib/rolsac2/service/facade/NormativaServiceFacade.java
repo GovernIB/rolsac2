@@ -18,18 +18,20 @@ public interface NormativaServiceFacade {
     /**
      * Crea un nueva ua a la base de datos.
      *
-     * @param dto datos de la Normativa
+     * @param dto  datos de la Normativa
+     * @param path path del fichero
      * @return EL identificador de la nueva Normativa
      */
-    Long create(NormativaDTO dto);
+    Long create(NormativaDTO dto, String path);
 
     /**
      * Actualiza los datos de una Normativa a la base de datos.
      *
-     * @param dto nuevos datos de la Normativa
+     * @param dto  nuevos datos de la Normativa
+     * @param path path del fichero
      * @throws RecursoNoEncontradoException si la Normativa con el id no existe.
      */
-    void update(NormativaDTO dto) throws RecursoNoEncontradoException;
+    void update(NormativaDTO dto, String path) throws RecursoNoEncontradoException;
 
     /**
      * Borra una Normativa de la bbdd
@@ -116,17 +118,19 @@ public interface NormativaServiceFacade {
     /**
      * Crea un documento de normativa asociado a ésta.
      *
-     * @param dto nuevos datos del documento Normativa
+     * @param dto  nuevos datos del documento Normativa
+     * @param path path del fichero
      * @return id del documento de normativa
      */
-    Long createDocumentoNormativa(DocumentoNormativaDTO dto);
+    Long createDocumentoNormativa(DocumentoNormativaDTO dto, String path);
 
     /**
      * Actualiza un documento de normativa asociado a ésta.
      *
-     * @param dto datos actualizados del documento normativa
+     * @param dto  datos actualizados del documento normativa
+     * @param path path del fichero
      */
-    void updateDocumentoNormativa(DocumentoNormativaDTO dto);
+    void updateDocumentoNormativa(DocumentoNormativaDTO dto, String path);
 
     /**
      * Borra un documento normativa de la bbdd
@@ -200,7 +204,7 @@ public interface NormativaServiceFacade {
 
     ProcedimientoSolrDTO findDataIndexacionNormById(Long idNormativa);
 
-    IndexFile findDataIndexacionDocNormById(NormativaDTO normativaDTO, DocumentoNormativaDTO doc, DocumentoTraduccion docTraduccion, List<PathUA> pathUAs);
+    IndexFile findDataIndexacionDocNormById(NormativaDTO normativaDTO, DocumentoNormativaDTO doc, DocumentoTraduccion docTraduccion, List<PathUA> pathUAs, String path);
 
     /**
      * Devuelve todas las normativas para indexar en solr/elastic

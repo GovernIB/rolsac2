@@ -1,18 +1,14 @@
 package es.caib.rolsac2.back.config;
 
-import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.service.facade.FicheroServiceFacade;
-import es.caib.rolsac2.service.facade.ProcesoTimerServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.FicheroDTO;
-import es.caib.rolsac2.service.utils.GeneradorId;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
-
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,6 +28,8 @@ public final class ResourcesServlet extends HttpServlet {
     @EJB
     FicheroServiceFacade ficheroServiceFacade;
 
+    @EJB
+    SystemServiceFacade systemServiceFacade;
 
     public void init() {
         /**
@@ -48,7 +46,8 @@ public final class ResourcesServlet extends HttpServlet {
         response.setContentType("text/css;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setDateHeader("Expires", System.currentTimeMillis() + 604800000L);
-        FicheroDTO fichero = ficheroServiceFacade.getContentById(Long.valueOf(request.getParameter("id")));
+        String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+        FicheroDTO fichero = ficheroServiceFacade.getContentById(Long.valueOf(request.getParameter("id")), path);
         response.getOutputStream().write(fichero.getContenido());
     }
 }

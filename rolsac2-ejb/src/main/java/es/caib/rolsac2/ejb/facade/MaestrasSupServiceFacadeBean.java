@@ -46,102 +46,91 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     private static final String ERROR_LITERAL = "Error";
 
     @Inject
-    private EntidadRepository entidadRepository;
-    @Inject
-    private TipoAfectacionRepository tipoAfectacionRepository;
+    EntidadRepository entidadRepository;
 
     @Inject
-    private TipoAfectacionConverter tipoAfectacionConverter;
+    TipoAfectacionRepository tipoAfectacionRepository;
 
     @Inject
-    private TipoBoletinRepository tipoBoletinRepository;
+    TipoAfectacionConverter tipoAfectacionConverter;
 
     @Inject
-    private TipoBoletinConverter tipoBoletinConverter;
+    TipoBoletinRepository tipoBoletinRepository;
 
     @Inject
-    private TipoFormaInicioRepository tipoFormaInicioRepository;
+    TipoBoletinConverter tipoBoletinConverter;
 
     @Inject
-    private TipoFormaInicioConverter tipoFormaInicioConverter;
+    TipoFormaInicioRepository tipoFormaInicioRepository;
 
     @Inject
-    private TipoLegitimacionRepository tipoLegitimacionRepository;
+    TipoFormaInicioConverter tipoFormaInicioConverter;
 
     @Inject
-    private TipoLegitimacionConverter tipoLegitimacionConverter;
+    TipoLegitimacionRepository tipoLegitimacionRepository;
 
     @Inject
-    private TipoMateriaSIARepository tipoMateriaSIARepository;
+    TipoLegitimacionConverter tipoLegitimacionConverter;
 
     @Inject
-    private TipoMateriaSIAConverter tipoMateriaSIAConverter;
+    TipoMateriaSIARepository tipoMateriaSIARepository;
 
     @Inject
-    private TipoNormativaRepository tipoNormativaRepository;
+    TipoMateriaSIAConverter tipoMateriaSIAConverter;
 
     @Inject
-    private TipoNormativaConverter tipoNormativaConverter;
+    TipoNormativaRepository tipoNormativaRepository;
 
     @Inject
-    private TipoMediaFichaRepository tipoMediaFichaRepository;
+    TipoNormativaConverter tipoNormativaConverter;
 
     @Inject
-    private TipoMediaFichaConverter tipoMediaFichaConverter;
+    TipoMediaFichaRepository tipoMediaFichaRepository;
 
     @Inject
-    private TipoMediaUARepository tipoMediaUARepository;
+    TipoMediaUARepository tipoMediaUARepository;
 
     @Inject
-    private TipoMediaUAConverter tipoMediaUAConverter;
+    TipoMediaEdificioRepository tipoMediaEdificioRepository;
 
     @Inject
-    private TipoMediaEdificioRepository tipoMediaEdificioRepository;
+    TipoPublicoObjetivoRepository tipoPublicoObjetivoRepository;
 
     @Inject
-    private TipoMediaEdificioConverter tipoMediaEdificioConverter;
+    TipoPublicoObjetivoConverter tipoPublicoObjetivoConverter;
 
     @Inject
-    private TipoPublicoObjetivoRepository tipoPublicoObjetivoRepository;
+    TipoSilencioAdministrativoRepository tipoSilencioAdministrativoRepository;
 
     @Inject
-    private TipoPublicoObjetivoConverter tipoPublicoObjetivoConverter;
+    TipoSilencioAdministrativoConverter tipoSilencioAdministrativoConverter;
 
     @Inject
-    private TipoSilencioAdministrativoRepository tipoSilencioAdministrativoRepository;
+    TipoTramitacionRepository tipoTramitacionRepository;
 
     @Inject
-    private TipoSilencioAdministrativoConverter tipoSilencioAdministrativoConverter;
+    TipoTramitacionConverter tipoTramitacionConverter;
 
     @Inject
-    private TipoTramitacionRepository tipoTramitacionRepository;
+    TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
 
     @Inject
-    private TipoTramitacionConverter tipoTramitacionConverter;
+    PlatTramitElectronicaRepository platTramitElectronicaRepository;
 
     @Inject
-    private TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
+    TipoViaRepository tipoViaRepository;
 
     @Inject
-    private PlatTramitElectronicaRepository platTramitElectronicaRepository;
+    TipoViaConverter tipoViaConverter;
 
     @Inject
-    private PlatTramitElectronicaConverter platTramitElectronicaConverter;
+    TipoPublicoObjetivoEntidadConverter tipoPublicoObjetivoEntidadConverter;
 
     @Inject
-    private TipoViaRepository tipoViaRepository;
+    TipoPublicoObjetivoEntidadRepository tipoPublicoObjetivoEntidadRepository;
 
     @Inject
-    private TipoViaConverter tipoViaConverter;
-
-    @Inject
-    private TipoPublicoObjetivoEntidadConverter tipoPublicoObjetivoEntidadConverter;
-
-    @Inject
-    private TipoPublicoObjetivoEntidadRepository tipoPublicoObjetivoEntidadRepository;
-
-    @Inject
-    private ProcedimientoRepository procedimientoRepository;
+    ProcedimientoRepository procedimientoRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -187,7 +176,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
             return new Pagina<>(items, total);
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
-            return new Pagina<>(new ArrayList<>(), 0);
+            return new Pagina<>(new ArrayList<>(), 0L);
         }
     }
 
@@ -242,16 +231,14 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     public TipoBoletinDTO findTipoBoletinById(Long id) {
 
         JTipoBoletin TipoBoletin = tipoBoletinRepository.findById(id);
-        TipoBoletinDTO TipoBoletinDTO = tipoBoletinConverter.createDTO(TipoBoletin);
-        return TipoBoletinDTO;
+        return tipoBoletinConverter.createDTO(TipoBoletin);
     }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoBoletinDTO> findBoletines() {
         try {
-            List<TipoBoletinDTO> items = tipoBoletinRepository.findAll();
-            return items;
+            return tipoBoletinRepository.findAll();
         } catch (Exception e) {
             LOG.error("Error: ", e);
             return new ArrayList<>();
@@ -268,8 +255,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoBoletinDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -283,8 +269,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoAfectacionDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -298,8 +283,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoFormaInicioDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -313,8 +297,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoNormativaDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -328,8 +311,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoSilencioAdministrativoDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -343,8 +325,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoUnidadAdministrativaDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -358,8 +339,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoBoletinGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -367,8 +347,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoBoletinDTO> findAll() {
         try {
-            List<TipoBoletinDTO> items = tipoBoletinRepository.findAll();
-            return items;
+            return tipoBoletinRepository.findAll();
         } catch (Exception e) {
             LOG.error("Error", e);
             return new ArrayList<>();
@@ -427,8 +406,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoFormaInicioDTO> findAllTipoFormaInicio() {
         try {
-            List<TipoFormaInicioDTO> items = tipoFormaInicioRepository.findAllTipoFormaInicio();
-            return items;
+            return tipoFormaInicioRepository.findAllTipoFormaInicio();
         } catch (Exception e) {
             LOG.error("Error: ", e);
             return new ArrayList<>();
@@ -482,8 +460,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoLegitimacionDTO findTipoLegitimacionById(Long id) {
         JTipoLegitimacion jTipoLegitimacion = tipoLegitimacionRepository.getReference(id);
-        TipoLegitimacionDTO tipoLegitimacionDTO = tipoLegitimacionConverter.createDTO(jTipoLegitimacion);
-        return tipoLegitimacionDTO;
+        return tipoLegitimacionConverter.createDTO(jTipoLegitimacion);
     }
 
     @Override
@@ -496,8 +473,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoLegitimacionGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -511,8 +487,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoLegitimacionDTO> findAllTipoLegitimacion() {
         try {
-            List<TipoLegitimacionDTO> items = tipoLegitimacionRepository.findAllTipoLegitimacion();
-            return items;
+            return tipoLegitimacionRepository.findAllTipoLegitimacion();
         } catch (Exception e) {
             LOG.error("Error: ", e);
             return new ArrayList<>();
@@ -609,8 +584,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoNormativaDTO findTipoNormativaById(Long id) {
         JTipoNormativa jTipoNormativa = tipoNormativaRepository.getReference(id);
-        TipoNormativaDTO tipoNormativaDTO = tipoNormativaConverter.createDTO(jTipoNormativa);
-        return tipoNormativaDTO;
+        return tipoNormativaConverter.createDTO(jTipoNormativa);
     }
 
     @Override
@@ -624,8 +598,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoNormativaGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -645,8 +618,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoNormativaDTO> findTipoNormativa() {
         try {
-            List<TipoNormativaDTO> items = tipoNormativaRepository.findAll();
-            return items;
+            return tipoNormativaRepository.findAll();
         } catch (Exception e) {
             LOG.error("Error: ", e);
             return new ArrayList<>();
@@ -707,8 +679,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoPublicoObjetivoGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -773,8 +744,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoSexoDTO findTipoSexoById(Long id) {
         JTipoSexo jTipoSexo = tipoSexoRepository.getReference(id);
-        TipoSexoDTO tipoSexoDTO = tipoSexoConverter.createDTO(jTipoSexo);
-        return tipoSexoDTO;
+        return tipoSexoConverter.createDTO(jTipoSexo);
     }
 
     @Override
@@ -787,8 +757,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoSexoGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -838,8 +807,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoProcedimientoDTO findTipoProcedimientoById(Long id) {
         JTipoProcedimiento jTipoProcedimiento = tipoProcedimientoRepository.getReference(id);
-        TipoProcedimientoDTO tipoProcedimientoDTO = tipoProcedimientoConverter.createDTO(jTipoProcedimiento);
-        return tipoProcedimientoDTO;
+        return tipoProcedimientoConverter.createDTO(jTipoProcedimiento);
     }
 
     @Override
@@ -852,16 +820,15 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoProcedimientoGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
     /**
      * Devuelve todos los procedimientos de una entidad.
      *
-     * @param codigoEntidad
-     * @return
+     * @param codigoEntidad Código de la entidad
+     * @return Lista de procedimientos
      */
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -911,8 +878,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoSilencioAdministrativoDTO findTipoSilencioAdministrativoById(Long id) {
         JTipoSilencioAdministrativo jTipoSilencioAdministrativo = tipoSilencioAdministrativoRepository.getReference(id);
-        TipoSilencioAdministrativoDTO tipoSilencioAdministrativoDTO = tipoSilencioAdministrativoConverter.createDTO(jTipoSilencioAdministrativo);
-        return tipoSilencioAdministrativoDTO;
+        return tipoSilencioAdministrativoConverter.createDTO(jTipoSilencioAdministrativo);
     }
 
     @Override
@@ -926,8 +892,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoSilencioAdministrativoGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -947,8 +912,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoSilencioAdministrativoDTO> findAllTipoSilencio() {
         try {
-            List<TipoSilencioAdministrativoDTO> items = tipoSilencioAdministrativoRepository.findAllTipoSilencio();
-            return items;
+            return tipoSilencioAdministrativoRepository.findAllTipoSilencio();
         } catch (Exception e) {
             LOG.error("Error", e);
             return new ArrayList<>();
@@ -996,8 +960,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoTramitacionDTO findTipoTramitacionById(Long id) {
         JTipoTramitacion jTipoTramitacion = tipoTramitacionRepository.findById(id);
-        TipoTramitacionDTO tipoTramitacionDTO = tipoTramitacionConverter.createDTO(jTipoTramitacion);
-        return tipoTramitacionDTO;
+        return tipoTramitacionConverter.createDTO(jTipoTramitacion);
     }
 
     @Override
@@ -1019,8 +982,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoTramitacionGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1078,8 +1040,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoViaDTO findTipoViaById(Long id) {
         JTipoVia jTipoVia = tipoViaRepository.getReference(id);
-        TipoViaDTO tipoViaDTO = tipoViaConverter.createDTO(jTipoVia);
-        return tipoViaDTO;
+        return tipoViaConverter.createDTO(jTipoVia);
     }
 
     @Override
@@ -1092,8 +1053,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoViaGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1149,7 +1109,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<TipoPublicoObjetivoEntidadDTO> findTipoPublicoObjetivoEntidadByEntidadId(Long idEntidad) {
-        List<JTipoPublicoObjetivoEntidad> jTipo =  tipoPublicoObjetivoEntidadRepository.findPageByEntidad(idEntidad);
+        List<JTipoPublicoObjetivoEntidad> jTipo = tipoPublicoObjetivoEntidadRepository.findPageByEntidad(idEntidad);
         List<TipoPublicoObjetivoEntidadDTO> tipos = new ArrayList<>();
         for (JTipoPublicoObjetivoEntidad jT : jTipo) {
             tipos.add(tipoPublicoObjetivoEntidadConverter.createDTO(jT));
@@ -1234,8 +1194,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoViaDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1249,8 +1208,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoSexoDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1264,8 +1222,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoPublicoObjetivoDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1279,8 +1236,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoMateriaSIADTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1294,8 +1250,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoLegitimacionDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1309,8 +1264,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoMediaFichaDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1324,8 +1278,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoProcedimientoDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1339,8 +1292,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoMediaUADTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1354,8 +1306,7 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoMediaEdificioDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -1369,55 +1320,29 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoTramitacionDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
-    }
-
-    public PlatTramitElectronicaConverter getPlatTramitElectronicaConverter() {
-        return platTramitElectronicaConverter;
-    }
-
-    public void setPlatTramitElectronicaConverter(PlatTramitElectronicaConverter platTramitElectronicaConverter) {
-        this.platTramitElectronicaConverter = platTramitElectronicaConverter;
-    }
-
-    public TipoMediaFichaConverter getTipoMediaFichaConverter() {
-        return tipoMediaFichaConverter;
-    }
-
-    public void setTipoMediaFichaConverter(TipoMediaFichaConverter tipoMediaFichaConverter) {
-        this.tipoMediaFichaConverter = tipoMediaFichaConverter;
-    }
-
-    public TipoMediaUAConverter getTipoMediaUAConverter() {
-        return tipoMediaUAConverter;
-    }
-
-    public void setTipoMediaUAConverter(TipoMediaUAConverter tipoMediaUAConverter) {
-        this.tipoMediaUAConverter = tipoMediaUAConverter;
     }
 
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
-	public Pagina<TipoPublicoObjetivoEntidadDTO> findByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro) {
-    	try {
+    public Pagina<TipoPublicoObjetivoEntidadDTO> findByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro) {
+        try {
             List<TipoPublicoObjetivoEntidadDTO> items = tipoPublicoObjetivoEntidadRepository.findPagedByFiltroRest(filtro);
             long total = tipoPublicoObjetivoEntidadRepository.countByFiltro(filtro);
             return new Pagina<>(items, total);
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoPublicoObjetivoEntidadDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
-	}
+    }
 
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
-	public String getEnlaceTelematico(TipoTramitacionFiltro fg) {
-		return tipoTramitacionRepository.getEnlaceTelematico(fg);
-	}
+    public String getEnlaceTelematico(TipoTramitacionFiltro fg) {
+        return tipoTramitacionRepository.getEnlaceTelematico(fg);
+    }
 
 
 }

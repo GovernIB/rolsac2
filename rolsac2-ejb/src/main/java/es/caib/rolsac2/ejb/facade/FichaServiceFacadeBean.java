@@ -42,6 +42,7 @@ public class FichaServiceFacadeBean implements FichaServiceFacade {
 
     @Resource
     private SessionContext context;
+
     @Inject
     private FichaRepository fichaRepository;
 

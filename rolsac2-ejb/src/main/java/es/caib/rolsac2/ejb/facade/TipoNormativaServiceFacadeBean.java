@@ -8,8 +8,6 @@ import es.caib.rolsac2.persistence.repository.TipoNormativaRepository;
 import es.caib.rolsac2.service.facade.TipoNormativaServiceFacade;
 import es.caib.rolsac2.service.model.TipoNormativaDTO;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -24,24 +22,18 @@ import javax.inject.Inject;
 @Stateless
 @Local(TipoNormativaServiceFacade.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-public class TipoNormativaServiceFacadeBean implements TipoNormativaServiceFacade{
-
-    private static final String ERROR_LITERAL = "Error";
-
-    private static final Logger LOG = LoggerFactory.getLogger(TipoNormativaServiceFacadeBean.class);
+public class TipoNormativaServiceFacadeBean implements TipoNormativaServiceFacade {
 
     @Inject
-    private TipoNormativaRepository tipoNormativaRepository;
+    TipoNormativaRepository tipoNormativaRepository;
 
     @Inject
-    private TipoNormativaConverter tipoNormativaConverter;
+    TipoNormativaConverter tipoNormativaConverter;
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public TipoNormativaDTO findTipoNormativaByCodigo(Long codigo) {
         JTipoNormativa jTipoNormativa = tipoNormativaRepository.getReference(codigo);
-        TipoNormativaDTO tipoNormativaDTO = tipoNormativaConverter.createDTO(jTipoNormativa);
-        return tipoNormativaDTO;
+        return tipoNormativaConverter.createDTO(jTipoNormativa);
     }
 }

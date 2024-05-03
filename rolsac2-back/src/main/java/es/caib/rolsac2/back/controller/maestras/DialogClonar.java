@@ -4,10 +4,12 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.ProcedimientoBaseDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +70,9 @@ public class DialogClonar extends AbstractController implements Serializable {
     @Inject
     ProcedimientoServiceFacade procedimentoService;
 
+    @Inject
+    SystemServiceFacade systemService;
+
     public void load() {
 
         LOG.debug("init");
@@ -106,7 +111,8 @@ public class DialogClonar extends AbstractController implements Serializable {
 
     public void clonar(boolean iEstadoWF) {
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-        Long idProcedimientoClonado = procedimentoService.clonarProcedimiento(idLong, iEstadoWF, usuario);
+        String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+        Long idProcedimientoClonado = procedimentoService.clonarProcedimiento(idLong, iEstadoWF, usuario, ruta);
 
         final DialogResult result = new DialogResult();
         result.setModoAcceso(TypeModoAcceso.CONSULTA);

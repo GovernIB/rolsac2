@@ -22,9 +22,11 @@ import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.*;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,20 +41,17 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(TemaServiceFacadeBean.class);
     private static final String ERROR_LITERAL = "Error";
 
-    @Resource
-    private SessionContext context;
+    @Inject
+    TemaRepository temaRepository;
 
     @Inject
-    private TemaRepository temaRepository;
+    TipoMateriaSIARepository tipoMateriaSIARepository;
 
     @Inject
-    private TipoMateriaSIARepository tipoMateriaSIARepository;
+    TemaConverter converter;
 
     @Inject
-    private TemaConverter converter;
-
-    @Inject
-    private EntidadRepository entidadRepository;
+    EntidadRepository entidadRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -147,8 +146,7 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
         } catch (Exception e) {
             LOG.error("Error", e);
             List<TemaGridDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 
@@ -173,7 +171,7 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
 
     private void verificarModificacionTemaPadre(TemaDTO temaActualizado, JTema jTema, String idioma) {
         if (temaActualizado.getTemaPadre() != null && jTema.getTemaPadre() != null) {
-            if (jTema.getTemaPadre().getCodigo() != temaActualizado.getTemaPadre().getCodigo()) {
+            if (jTema.getTemaPadre().getCodigo().compareTo(temaActualizado.getTemaPadre().getCodigo()) != 0) {
                 String mathPathAntiguo = jTema.getMathPath();
                 String mathPathNuevo = temaActualizado.getMathPath();
                 List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(mathPathAntiguo + jTema.getCodigo().toString(), idioma);
@@ -205,7 +203,7 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
             jTema.setTemaPadre(null);
             jTema.setMathPath(null);
         } else if (temaActualizado.getTemaPadre() != null && jTema.getTemaPadre() == null) {
-            String mathPathActualizado = temaActualizado.getMathPath();
+
             List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(temaActualizado.getCodigo().toString(), idioma);
             for (JTema tema : hijosAll) {
                 String mathPath = temaActualizado.getMathPath() + tema.getMathPath();
@@ -228,8 +226,7 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TemaDTO> items = new ArrayList<>();
-            long total = items.size();
-            return new Pagina<>(items, total);
+            return new Pagina<>(items, 0L);
         }
     }
 

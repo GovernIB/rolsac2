@@ -63,6 +63,9 @@ public class JProcedimientoWorkflow {
     @Column(name = "PRWF_RSEMA", length = 100)
     private String responsableEmail;
 
+    @Column(name = "PRWF_INEMA", length = 100)
+    private String incidenciasEmail;
+
     @Column(name = "PRWF_RSTFNO", length = 25)
     private String responsableTelefono;
 
@@ -186,6 +189,7 @@ public class JProcedimientoWorkflow {
             retorno.setInterno(wf.getInterno());
             retorno.setResponsableNombre(wf.getResponsableNombre());
             retorno.setResponsableEmail(wf.getResponsableEmail());
+            retorno.setIncidenciasEmail(wf.getIncidenciasEmail());
             retorno.setResponsableTelefono(wf.getResponsableTelefono());
             retorno.setActivoLOPD(wf.getActivoLOPD());
             retorno.setLopdResponsable(wf.getLopdResponsable());
@@ -290,6 +294,14 @@ public class JProcedimientoWorkflow {
 
     public void setResponsableEmail(String prwfRsema) {
         this.responsableEmail = prwfRsema;
+    }
+
+    public String getIncidenciasEmail() {
+        return incidenciasEmail;
+    }
+
+    public void setIncidenciasEmail(String incidenciasEmail) {
+        this.incidenciasEmail = incidenciasEmail;
     }
 
     public String getResponsableTelefono() {

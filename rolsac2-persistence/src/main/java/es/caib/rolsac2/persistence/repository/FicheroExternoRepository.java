@@ -6,6 +6,7 @@ import es.caib.rolsac2.service.model.migracion.FicheroRolsac1;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Interface de las operaciones básicas sobre ficheros.
@@ -65,6 +66,8 @@ public interface FicheroExternoRepository extends CrudRepository<JFicheroExterno
      */
     void deleteFicheroExterno(Long codigoFichero);
 
+    void purgeFicheroExterno(String pathAlmacenamientoFicheros, JFicheroExterno jFicheroExterno);
+
     /**
      * Purga ficheros externos (marcados para borrar y temporales > 24h).
      */
@@ -78,4 +81,34 @@ public interface FicheroExternoRepository extends CrudRepository<JFicheroExterno
      * @return
      */
     FicheroRolsac1 getFicheroRolsac(long idArchivo, String rutaRolsac1) throws IOException;
+
+    /**
+     * Devuelve los ficheros que han sido temporales y que no se han consolidado.
+     *
+     * @return Lista de códigos de ficheros temporales.
+     */
+    List<Long> getFicherosTemporales();
+
+    /**
+     * Marca a borrar un fichero que es temporal.
+     *
+     * @return idFichero
+     */
+    List<Long> getFicherosMarcadosParaBorrar();
+
+    /**
+     * Devuelve el fichero temporal por id
+     *
+     * @param idFichero id del fichero
+     * @return fichero temporal
+     */
+    JFicheroExterno findTemporalById(Long idFichero);
+
+    /**
+     * Devuelve el fichero marcado para borrar
+     *
+     * @param idFichero id del fichero
+     * @return fichero marcado para borrar
+     */
+    JFicheroExterno findBorradoById(Long idFichero);
 }

@@ -68,6 +68,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         nombreProcedimiento = (Literal) UtilJSF.getValorMochilaByKey("nombreProcedimiento");
         fechaPublicacion = (Date) UtilJSF.getValorMochilaByKey("fechaPublicacion");
         canalesSeleccionados = new ArrayList<>();
+        uasInstructor = (List<Long>) UtilJSF.getValorMochilaByKey("uasInstructor");
         if (ocultarIniciacion != null && "S".equals(ocultarIniciacion)) {
             this.mostrarIniciacion = false;
         }
@@ -190,6 +191,41 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         }
 
         return true;
+    }
+
+
+    private List<Long> uasInstructor = new ArrayList<>();
+
+    /**
+     * Devuelve el css para el boton de la UA Instructor.
+     * Si no está en la lista de UA del instructor, se pone en rojo y se muestra el ojo
+     *
+     * @return
+     */
+    public String getCssUA() {
+        return uasInstructor.contains(data.getUnidadAdministrativa().getCodigo()) ? "" : "pi-eye botonRojoRequired";
+    }
+
+    public void returnDialogoUA(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        // Verificamos si se ha modificado
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
+            if (uaSeleccionada != null) {
+                this.data.setUnidadAdministrativa(uaSeleccionada);
+            }
+        }
+    }
+
+    public void abrirVentanaUA() {
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.MODO_ACCESO.toString(), this.getModoAcceso());
+        String direccion = "/comun/dialogSeleccionarUA";
+
+        UtilJSF.anyadirMochila("ua", data.getUnidadAdministrativa());
+        //params.put("esCabecera", null);
+        UtilJSF.openDialog(direccion, TypeModoAcceso.valueOf(this.getModoAcceso()), params, true, 850, 575);
     }
 
     public void guardar() {

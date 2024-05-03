@@ -190,7 +190,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
                 TypeFicheroExterno tipoFicheroExterno = TypeFicheroExterno.fromString(jFicheroExterno.getTipo());
                 String referenciaAntigua = jFicheroExterno.getReferencia();
                 String referenciaNueva;
-                referenciaNueva = tipoFicheroExterno.getRuta() + codigoFichero + "/" + GeneradorId.generarId() + "." + FilenameUtils.getExtension(jFicheroExterno.getFilename());
+                referenciaNueva = tipoFicheroExterno.getRuta() + idElemento + "/" + GeneradorId.generarId() + "." + FilenameUtils.getExtension(jFicheroExterno.getFilename());
 
                 //La movemos
                 try {
@@ -217,6 +217,51 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
     }
 
     @Override
+    public void purgeFicheroExterno(String pathAlmacenamientoFicheros, JFicheroExterno jFicheroExterno) {
+
+        // Borramos fichero en BD (por si hay relaciones aun)
+        entityManager.remove(jFicheroExterno);
+
+        // Borramos fichero en disco
+        final String pathAbsoluteFichero = pathAlmacenamientoFicheros + "/" + jFicheroExterno.getReferencia();
+        final File file = new File(pathAbsoluteFichero);
+        final boolean deleted = FileUtils.deleteQuietly(file);
+        if (!deleted) {
+            LOG.error("No se ha podido borrar fichero " + pathAbsoluteFichero);
+            throw new FicheroExternoException("No se ha podido borrar el fichero : " + jFicheroExterno.getCodigo() + " con url : " + pathAbsoluteFichero);
+        }
+    }
+
+
+    @Override
+    public List<Long> getFicherosTemporales() {
+        Query query = entityManager.createQuery("select f.codigo from JFicheroExterno f where f.temporal = TRUE and f.fecha <= TO_DATE('" + getFechaAyer() + " 23:59','DD/MM/YYYY HH24:MI')");
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Long> getFicherosMarcadosParaBorrar() {
+        final Query query = entityManager.createQuery("select f.codigo from JFicheroExterno f where f.borrar = TRUE");
+        return query.getResultList();
+    }
+
+    @Override
+    public JFicheroExterno findTemporalById(Long idFichero) {
+        Query query = entityManager.createQuery("select f from JFicheroExterno f where f.temporal = TRUE and f.codigo = " + idFichero);
+        return (JFicheroExterno) query.getSingleResult();
+    }
+
+    @Override
+    public JFicheroExterno findBorradoById(Long idFichero) {
+        Query query = entityManager.createQuery("select f from JFicheroExterno f where f.borrar = TRUE and f.codigo = " + idFichero);
+        List<JFicheroExterno> ficheros = query.getResultList();
+        if (ficheros != null && !ficheros.isEmpty()) {
+            return ficheros.get(0);
+        }
+        return null;
+    }
+
+    @Override
     public void purgeFicherosExternos(String pathAlmacenamientoFicheros) {
 
         //Primero borramos los marcados como pendientes para borrar
@@ -229,7 +274,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
                 entityManager.remove(jFicheroExterno);
 
                 // Borramos fichero en disco
-                final String pathAbsoluteFichero = pathAlmacenamientoFicheros + jFicheroExterno.getReferencia();
+                final String pathAbsoluteFichero = pathAlmacenamientoFicheros + "/" + jFicheroExterno.getReferencia();
                 final File file = new File(pathAbsoluteFichero);
                 final boolean deleted = FileUtils.deleteQuietly(file);
                 if (!deleted) {
@@ -249,7 +294,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
                 entityManager.remove(jFicheroExterno);
 
                 // Borramos fichero en disco
-                final String pathAbsoluteFichero = pathAlmacenamientoFicheros + jFicheroExterno.getReferencia();
+                final String pathAbsoluteFichero = pathAlmacenamientoFicheros + "/" + jFicheroExterno.getReferencia();
                 final File file = new File(pathAbsoluteFichero);
                 final boolean deleted = FileUtils.deleteQuietly(file);
                 if (!deleted) {
@@ -289,6 +334,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         return ficheroRolsac1;
     }
 
+
     private byte[] obtenerContenidoRolsac1(long idArchivo, String rutaRolsac1) throws IOException {
         byte[] contenido = null;
         /*try (InputStream in = new FileInputStream(obtenerRutaArchivoExportadoEnFilesystem(idArchivo, rutaRolsac1))) {
@@ -319,7 +365,7 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
 
         diaAYER.append("/");
 
-        int mes = calendar.get(Calendar.MONTH);
+        int mes = calendar.get(Calendar.MONTH) + 1;
         diaAYER.append(mes < 10 ? "0" + mes : mes);
 
         diaAYER.append("/");

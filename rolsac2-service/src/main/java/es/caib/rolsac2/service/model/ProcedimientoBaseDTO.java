@@ -60,6 +60,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private boolean tramitPresencial = false;
     private boolean tramitTelefonica = false;
     private String responsableEmail;
+    private String incidenciasEmail;
     private String responsableTelefono;
 
     // Nombre
@@ -594,6 +595,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setResponsableEmail(String responsableEmail) {
         this.responsableEmail = responsableEmail;
+    }
+
+    public String getIncidenciasEmail() {
+        return incidenciasEmail;
+    }
+
+    public void setIncidenciasEmail(String incidenciasEmail) {
+        this.incidenciasEmail = incidenciasEmail;
     }
 
     public String getResponsableTelefono() {
