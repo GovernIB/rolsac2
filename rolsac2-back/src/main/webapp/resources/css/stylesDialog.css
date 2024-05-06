@@ -35,6 +35,9 @@ body {
 .botonRojoRequired {
 	color: #ee2327 !important;
 }
+.botonNaranjaRequired {
+	color: #FF8C00 !important;
+}
 .botoneraRed.ui-selectonebutton .ui-button {
 	background-color: #cc073c !important;
 	color: black;
@@ -957,4 +960,13 @@ legend {
 }
 .labelGrande {
 	font-size: 1.1em;
+}
+.labelWarningUAPadre {
+	position: relative;
+}
+.labelWarningUA{
+	position: absolute;
+	font-size: 30px;
+	top: -10px;
+	left: -10px;
 }

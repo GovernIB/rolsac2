@@ -438,7 +438,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         if (data.getUaResponsable() == null) {
             return "";
         }
-        return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-eye botonRojoRequired";
+        return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
     }
 
     public void returnDialogoUAResp(final SelectEvent event) {

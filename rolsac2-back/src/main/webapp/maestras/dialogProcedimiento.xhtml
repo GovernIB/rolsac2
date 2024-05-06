@@ -416,7 +416,7 @@
             <p:panel id="panelOrganos" header="#{labels['dialogProcedimientoTramite.organos']}" styleClass="panel">
 
                 <div class="form-row">
-                    <div class="form-group col-md-9">
+                    <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.organoCompetente']}:"
                                        for="txtOrgComp"/>
@@ -452,22 +452,20 @@
                                                         oncomplete="checkUAraiz()"/>
                                             </p:commandButton>
 
-                                            <h:outputLink id="lblUAiconoResp" value="#" styleClass="w20px">
-                                                <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 pi #{dialogProcedimiento.getCssUAResponsable()}" />
+
+                                            <h:outputLink id="lblUAiconoResp" value="#" styleClass="w20px labelWarningUAPadre">
+                                                <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUAResponsable()}" />
                                             </h:outputLink>
-                                           <p:tooltip id="toolTipFadeResp" for="lblUAiconoResp" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
+                                            <p:tooltip id="toolTipFadeResp" for="lblUAiconoResp" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
 
                                     </span>
                             </h:panelGroup>
 
                         </p>
                     </div>
-                    <div class="form-group col-md-3">
-
-                    </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-9">
+                    <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.organoInstructor']}:"
                                        for="txtOrgInstr"/>
@@ -511,9 +509,6 @@
 
                         </p>
                     </div>
-                    <div class="form-group col-md-3">
-
-                    </div>
                 </div>
             </p:panel>
             <p:panel header="#{labels['dialogProcedimiento.datos.contacto']}" styleClass="panel" id="formDatosContacto">
@@ -525,7 +520,7 @@
                             <p:inputText id="txtOrgResp"
                                          rendered="#{!dialogProcedimiento.data.esComun()}"
                                          value="#{dialogProcedimiento.data.uaCompetente.nombre.getTraduccion(dialogProcedimiento.idioma)}"
-                                         styleClass="w85 mr-1"
+                                         styleClass="w90 mr-1"
                                          disabled="true"/>
                             <p:commandButton
                                     action="#{dialogProcedimiento.abrirVentanaUACompetente()}"
@@ -543,8 +538,8 @@
                                         update="formDialog:txtOrgResp lblUAiconoCompetente lblUAiconoCompetente2 toolTipFadeCompetente"
                                         oncomplete="checkUAraiz()"/>
                             </p:commandButton>
-                            <h:outputLink id="lblUAiconoCompetente" value="#" styleClass="w20px">
-                                <h:outputText id="lblUAiconoCompetente2" value=" "  styleClass="ml-3 pt-1 pi #{dialogProcedimiento.getCssUACompetente()}" />
+                            <h:outputLink id="lblUAiconoCompetente" value="#" styleClass="w20px labelWarningUAPadre">
+                                <h:outputText id="lblUAiconoCompetente2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUACompetente()}" />
                             </h:outputLink>
                             <p:tooltip id="toolTipFadeCompetente" for="lblUAiconoCompetente" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
 

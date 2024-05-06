@@ -203,7 +203,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
      * @return
      */
     public String getCssUA() {
-        return uasInstructor.contains(data.getUnidadAdministrativa().getCodigo()) ? "" : "pi-eye botonRojoRequired";
+        return uasInstructor.contains(data.getUnidadAdministrativa().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
     }
 
     public void returnDialogoUA(final SelectEvent event) {

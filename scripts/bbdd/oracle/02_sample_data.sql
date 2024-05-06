@@ -61,6 +61,7 @@ insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DES
 Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS)
 values (RS2_PROCES_SEQ.NEXTVAL,1,'DIR3','Proceso automático para la sincronización del organigrama DIR3','0 0 23 */7 * *','1',
         '[{"codigo":"codigoDir3","valor":"A04003003","orden":null},{"codigo":"denominacionCooficial","valor":"false","orden":null}]');
+Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.nextval,'1','BORRAR_FIC','Borra el sistema de ficheros del dia anterior ejecutandose a la 1 de la madrugada','0 0 1 * * *','1','[]');
 
 /** Los 3 tipos de publico objetivo basico y entidad que son 1.Ciudadano 2.Empresa 3.Administración . **/
 INSERT INTO RS2_TIPOPUB(TPPO_CODIGO, TPPO_IDENTI, TPPO_EMPPUB)

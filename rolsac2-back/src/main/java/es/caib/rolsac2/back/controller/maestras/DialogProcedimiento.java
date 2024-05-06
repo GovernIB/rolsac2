@@ -307,14 +307,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (data.getUaResponsable() == null) {
             return "";
         }
-        return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-eye botonRojoRequired";
+        return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
     }
 
     public String getCssUACompetente() {
         if (data.getUaCompetente() == null) {
             return "";
         }
-        return uasInstructor.contains(data.getUaCompetente().getCodigo()) ? "" : "pi-eye botonRojoRequired";
+        return uasInstructor.contains(data.getUaCompetente().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
     }
 
     public boolean mostrarAlertaUAResponsable() {
@@ -353,7 +353,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         abrirVentanaUA(this.data.getUaResponsable());
     }
 
-    public void abrirVentanaUA() {
+    public void abrirVentanaUAInstr() {
         abrirVentanaUA(this.data.getUaInstructor());
     }
 
