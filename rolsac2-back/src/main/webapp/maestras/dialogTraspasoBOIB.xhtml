@@ -89,12 +89,6 @@
                             <f:facet name="header"/>
                             <h:outputText value="#{edicto.titulo.getTraduccion(dialogTraspasoBOIB.idioma)}"/>
                         </p:column>
-                        <p:column sortBy="#{edicto.numeroRegistro}"
-                                  headerText="#{labels['dialogTraspasoBOIB.numRegistro']}">
-                            <f:facet name="header"/>
-                            <h:outputText
-                                    value="#{edicto.numeroRegistro}"/>
-                        </p:column>
                         <p:column sortBy="#{edicto.numeroBoletin}" headerText="#{labels['dialogTraspasoBOIB.numBoletin']}">
                             <f:facet name="header"/>
                             <h:outputText value="#{edicto.numeroBoletin}"/>
@@ -104,6 +98,12 @@
                             <h:outputText value="#{edicto.fechaBoletin}">
                                     <f:convertDateTime type="localDate" pattern="dd/MM/yyyy"></f:convertDateTime>
                             </h:outputText>
+                        </p:column>
+                        <p:column sortBy="#{edicto.numeroRegistro}"
+                                  headerText="#{labels['dialogTraspasoBOIB.numRegistro']}">
+                            <f:facet name="header"/>
+                            <h:outputText
+                                    value="#{edicto.numeroRegistro}"/>
                         </p:column>
                     </p:dataTable>
                 </h:panelGroup>
