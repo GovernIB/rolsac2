@@ -75,7 +75,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                  styleClass="w96" onblur="this.value = this.value.toUpperCase();"
                                  required="#{empty param['formDialog:closeButton']}" disabled="#{dialogTipoMediaUA.isModoConsulta()}" maxlength="50">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
-                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
+                        <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,50}$"/>
                         <f:validateBean disabled="true"/>
                     </p:inputText>
                 </div>
