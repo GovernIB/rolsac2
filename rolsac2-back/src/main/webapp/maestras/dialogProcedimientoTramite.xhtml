@@ -487,7 +487,7 @@
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
                         <p:ajax event="rowDblselect"
-                                oncomplete="rcEditarPropiedad();"
+                                oncomplete="triggerDblClickModelo();"
                         />
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
@@ -509,7 +509,8 @@
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      action="#{dialogProcedimientoTramite.borrarModelo}"
                                      process="@this" update="dataDocumentosModelo messagesDialog"/>
-                    <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-pencil"
+                    <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
+                                     id="btnEditarModelo"
                                      action="#{dialogProcedimientoTramite.editarModelo}"
                                      process="@this" update="dataDocumentosModelo messagesDialog"/>
                     <p:commandButton id="btnSubirModelo" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
@@ -537,9 +538,8 @@
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect" oncomplete="rcEditarPropiedad();"/>
-
-                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
+                        <p:ajax event="rowDblselect" oncomplete="triggerDblClickDocumento();"/>
+                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
                             <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
                         </p:column>
@@ -557,7 +557,8 @@
                                      title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      action="#{dialogProcedimientoTramite.borrarDocumento}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
-                    <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-pencil"
+                    <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
+                                     id="btnEditarDocumento"
                                      action="#{dialogProcedimientoTramite.editarDocumento}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                     <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
@@ -571,6 +572,16 @@
             </div>
         </div>
 
+        <h:outputScript>
+            function triggerDblClickModelo() {
+                document.getElementById("formDialog:btnEditarModelo").click();
+            }
+
+            function triggerDblClickDocumento() {
+                document.getElementById("formDialog:btnEditarDocumento").click();
+            }
+
+        </h:outputScript>
         <!--<h:outputScript>
             /** Funcion que almacena el valor almacenado. **/
             function refrescarValorInterfaz(valor) {
