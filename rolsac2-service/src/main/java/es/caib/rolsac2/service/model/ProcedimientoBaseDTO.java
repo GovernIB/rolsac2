@@ -407,6 +407,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
         return estadoSIA;
     }
 
+    public String getLiteralEstadoSIA() {
+        if (this.getEstadoSIA() == null || this.getEstadoSIA().isEmpty()) {
+            return "dict.vacio  ";
+        }
+
+        return "dialogProcedimiento.estadoSIA." + this.getEstadoSIA();
+    }
+
     public List<TemaGridDTO> getTemas() {
         return temas;
     }

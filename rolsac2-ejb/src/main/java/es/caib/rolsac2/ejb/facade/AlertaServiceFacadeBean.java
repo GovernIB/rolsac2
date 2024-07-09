@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.*;
 import javax.inject.Inject;
@@ -109,7 +110,8 @@ public class AlertaServiceFacadeBean implements AlertaServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @PermitAll
+    //@RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<AlertaDTO> getAlertas(String usuario, List<TypePerfiles> iperfiles, String lang) {
         List<String> perfiles = new ArrayList<>();
         for (TypePerfiles perfil : iperfiles) {

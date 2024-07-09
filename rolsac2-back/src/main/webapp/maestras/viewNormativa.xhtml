@@ -6,12 +6,11 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:t="http://back.rolsac2.caib.es/tags">
 <!--
-Pàgina amb el llistat de personal d'una unitat administrativa.
+Pàgina amb el llistat de normativas
 -->
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
         <f:metadata>
-            <!--<f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />-->
             <f:viewAction action="#{viewNormativa.load}"/>
         </f:metadata>
     </ui:define>
@@ -23,11 +22,123 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:ajax event="eventoUpdate" oncomplete="rc()" listener="#{viewNormativa.buscarEvt()}" update="form:dataTable"/>
     </ui:define>
     <ui:define name="breadcrumb">
+        <p:menuitem value="xx" styleClass="estiloGrande"
+                    action="#{viewNormativa.cambiarUAbuscarEvt(ua)}" update="migaPan @form form:dataTable">
+        </p:menuitem>
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
             <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{viewNormativa.cambiarUAbuscarEvt(ua)}" update="migaPan @form form:dataTable">
             </p:menuitem>
         </c:forEach>
+    </ui:define>
+    <ui:define name="mollaPaGestor">
+        <h:panelGroup id="panelMolla" rendered="#{viewNormativa.mostrarUAs}">
+            <ul class="mollaPa">
+                <li>
+                    <div class="btn-group">
+                        <p:commandButton styleClass="btn btn-danger btn-molla" process="@this @form"
+                                         actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
+                                         value="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}"
+                                         update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                        </p:commandButton>
+                        <button type="button"
+                                class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        </button>
+                        <div class="dropdown-menu">
+                            <c:forEach
+                                    items="#{sessionBean.obtenerUasEntidad()}"
+                                    var="ua">
+                                <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
+                                                 actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
+                                                 value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
+                                                 update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                    <f:actionListener binding="#{sessionBean.cambiarUaActivaAux(ua)}"/>
+                                </p:commandButton>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </li>
+                <c:if test="#{sessionBean.isUnidadesActivasGestor()}">
+                    <c:forEach var="ua" items="#{sessionBean.getUnidadesActivasGestor()}">
+                        <li>
+                            <div class="btn-group">
+                                <p:commandButton styleClass="btn btn-danger btn-molla" process="@this"
+                                                 actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
+                                                 value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
+                                                 update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                </p:commandButton>
+                                <button type="button"
+                                        class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                </button>
+
+                                <div class="dropdown-menu">
+                                    <c:forEach
+                                            items="#{sessionBean.getUnidadesHijasUA(ua.padre.codigo)}"
+                                            var="ua">
+                                        <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
+                                                         actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
+                                                         value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
+                                                         update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                        </p:commandButton>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </li>
+                    </c:forEach>
+                </c:if>
+                <c:if test="#{sessionBean.tieneHijosUaActiva()}">
+                    <li>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger btn-molla"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    onclick="hijosUa()">
+                                #{labels['msg.seleccion.uas']}
+                            </button>
+                            <button type="button"
+                                    class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    onclick="hijosUa()">
+                            </button>
+                            <p:remoteCommand name="hijosUa"
+                                             action="#{sessionBean.renderPanelHijas()}"
+                                             update="panelHijas"></p:remoteCommand>
+                            <div class="dropdown-menu">
+                                <h:panelGroup id="panelHijas">
+                                    <!--<ui:repeat rendered="#{sessionBean.renderPanelHijas}" value="#{sessionBean.getUnidadesHijasActiva()}" var="ua">
+                                        <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
+                                                         actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
+                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}" >
+                                        </p:commandButton>
+                                    </ui:repeat>-->
+                                    <c:choose>
+                                        <c:when test="#{sessionBean.renderPanelHijas}">
+                                            <c:forEach
+                                                    items="#{sessionBean.getUnidadesHijasActiva()}"
+                                                    var="ua">
+                                                <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
+                                                                 actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
+                                                                 value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
+                                                                 update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                </p:commandButton>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="d-flex justify-content-center">
+                                                <div class="spinner-border spinner-border-sm text-dark" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </h:panelGroup>
+                            </div>
+                        </div>
+                    </li>
+                </c:if>
+            </ul>
+        </h:panelGroup>
     </ui:define>
     <ui:define name="content">
         <h:form id="form">
@@ -101,7 +212,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                              process="@form" update="messages" rendered="#{viewNormativa.isModoConsulta()}">
                             </p:commandButton>
                             <p:commandButton id="btnBorrar" value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
-                                             action="#{viewNormativa.borrarNormativa}"
+                                             action="#{viewNormativa.borrarNormativa}" styleClass="mr-2"
                                              process="@form" update="messages dataTable"
                                              disabled="#{viewNormativa.datoSeleccionado == null}">
                                 <p:confirm message="#{labels['msg.eliminarRegistro']}"/>

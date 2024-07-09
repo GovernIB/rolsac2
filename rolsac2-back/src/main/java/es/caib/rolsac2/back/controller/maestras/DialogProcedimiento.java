@@ -132,7 +132,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
         }
 
-
         uaRaiz = Boolean.valueOf(this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz()).toString();
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
@@ -940,7 +939,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void abrirDialogDocumento(TypeModoAcceso modoAcceso) {
         final Map<String, String> params = new HashMap<>();
-        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigoWF().toString());
+        params.put(TypeParametroVentana.ID.toString(), data.getCodigoWF() == null ? "" : data.getCodigoWF().toString());
         if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
             UtilJSF.anyadirMochila("documento", this.documentoSeleccionado.clone());
         }

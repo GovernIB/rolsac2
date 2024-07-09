@@ -13,7 +13,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
         <f:metadata>
-            <!--<f:viewParam id="unitatId" name="unitatId" value="#{unitatModel.value.id}" />-->
             <f:viewAction action="#{viewConfiguracionEntidad.load}" />
         </f:metadata>
     </ui:define>
@@ -122,7 +121,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <p:inputText id="txtIdentificador" value="#{viewConfiguracionEntidad.data.identificador}"
                                          styleClass="w95" disabled="true" maxlength="50">
                                 <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
-                                <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,20}$"/>
+                                <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,50}$"/>
                             </p:inputText>
                         </div>
                     </div>
