@@ -3,6 +3,7 @@ package es.caib.rolsac2.back.controller.maestras;
 //import es.caib.rolsac2.api.externa.v1.model.Servicios;
 
 import es.caib.rolsac2.back.controller.AbstractController;
+import es.caib.rolsac2.back.controller.comun.UtilsArbolTemas;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilExport;
@@ -15,6 +16,7 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.*;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,8 +55,12 @@ public class ViewServicios extends AbstractController implements Serializable {
     private TemaServiceFacade temaServiceFacade;
 
     private ServicioGridDTO datoSeleccionado;
+    private ServicioDTO servicioSeleccionado;
+    private String uaRaiz;
+    private String idioma;
     private ProcedimientoFiltro filtro;
     private LazyDataModel<ServicioGridDTO> lazyModel;
+    private String[] canalesSeleccionados;
 
     private List<TipoProcedimientoDTO> listTipoProcedimiento;
     private List<TipoSilencioAdministrativoDTO> listTipoSilencio;
@@ -65,12 +71,30 @@ public class ViewServicios extends AbstractController implements Serializable {
     private List<PlatTramitElectronicaDTO> listPlataformas;
     private List<TipoViaDTO> listFinVias;
     private List<TemaGridDTO> temasPadre;
+    private List<String> canalesSeleccionadosDetalle = new ArrayList<>();
+    private Integer opcionTelematica = null;
 
-    private String[] canalesSeleccionados;
 
     public LazyDataModel<ServicioGridDTO> getLazyModel() {
         return lazyModel;
     }
+
+    /**
+     * Pagina detalle
+     */
+    private String wfProcedimiento;
+    private ServicioDTO wfPublicado;
+    private ServicioDTO wfModificado;
+    private NormativaGridDTO normativaSeleccionada;
+    private ProcedimientoDocumentoDTO documentoSeleccionado;
+    private ProcedimientoDocumentoDTO documentoLOPDSeleccionado;
+    private TreeNode temaSeleccionado;
+    private ProcedimientoTramiteDTO tramiteSeleccionado;
+    private List<TreeNode> temasTabla;
+    private List<TreeNode> roots;
+    private List<TemaGridDTO> temasPadreAnyadidos = new ArrayList<>();
+    private Literal lopdResponsable;
+    private Literal comunUA;
 
     /**
      * Cuando se exporta los datos
@@ -83,7 +107,156 @@ public class ViewServicios extends AbstractController implements Serializable {
         this.limpiarFiltro();
         cargarFiltros();
         buscar();
+        idioma = sessionBean.getLang();
+        roots = new ArrayList<>();//construirArbol();
+        comunUA = sessionBean.getEntidad().getUaComun();
+        temasTabla = new ArrayList<>();
+        for (TemaGridDTO tema : temasPadre) {
+            temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
+        }
+
     }
+
+
+    String wfProcedimientoPrevio = null;
+
+    public void cambiarProcedimientoSeleccionadoWF() {
+        /** Nos guardamos el ultimo click **/
+        if (wfProcedimiento != null) {
+            wfProcedimientoPrevio = wfProcedimiento;
+        }
+
+        if (wfProcedimiento == null) {
+            if (wfProcedimientoPrevio == null) {
+                servicioSeleccionado = ServicioDTO.createInstance(this.sessionBean.getIdiomasObligatoriosList());
+                return;
+            } else {
+                wfProcedimiento = wfProcedimientoPrevio;
+            }
+        }
+
+        if (wfProcedimiento.equals("P") && wfPublicado != null) {
+            servicioSeleccionado = wfPublicado;
+        } else if (wfProcedimiento.equals("M") && wfModificado != null) {
+            servicioSeleccionado = wfModificado;
+        }
+
+        actualizarResponsable();
+        actualizarCanalesOpciones();
+    }
+
+
+    public void onTabChange(TabChangeEvent event) {
+        String tabId = event.getTab().getId();
+        if ("tabDef".equals(tabId)) {
+            servicioSeleccionado = wfPublicado;
+        } else if ("tabMod".equals(tabId)) {
+            servicioSeleccionado = wfModificado;
+        } else {
+            servicioSeleccionado = ServicioDTO.createInstance(this.sessionBean.getIdiomasObligatoriosList());
+        }
+        actualizarResponsable();
+        actualizarCanalesOpciones();
+    }
+
+    public void calcularServ() {
+        wfPublicado = null;
+        wfModificado = null;
+        wfProcedimiento = "";
+
+        if (datoSeleccionado == null) {
+            servicioSeleccionado = ServicioDTO.createInstance(this.sessionBean.getIdiomasObligatoriosList());
+        } else {
+            if (datoSeleccionado.getCodigoWFPub() != null) {
+                servicioSeleccionado = procedimientoService.findServicioById(datoSeleccionado.getCodigoWFPub());
+                uaRaiz = Boolean.valueOf(this.servicioSeleccionado.getUaResponsable() != null && this.servicioSeleccionado.getUaResponsable().esRaiz()).toString();
+                wfProcedimiento = "P";
+                wfProcedimientoPrevio = "P";
+                wfPublicado = servicioSeleccionado;
+                if (datoSeleccionado.getCodigoWFMod() != null) {
+                    wfModificado = procedimientoService.findServicioById(datoSeleccionado.getCodigoWFMod());
+                }
+            } else if (datoSeleccionado.getCodigoWFMod() != null) {
+                servicioSeleccionado = procedimientoService.findServicioById(datoSeleccionado.getCodigoWFMod());
+                uaRaiz = Boolean.valueOf(this.servicioSeleccionado.getUaResponsable() != null && this.servicioSeleccionado.getUaResponsable().esRaiz()).toString();
+                wfProcedimiento = "M";
+                wfProcedimientoPrevio = "M";
+                wfModificado = servicioSeleccionado;
+            } else {
+                servicioSeleccionado = ServicioDTO.createInstance(this.sessionBean.getIdiomasObligatoriosList());
+                uaRaiz = "";
+            }
+
+            temasTabla = new ArrayList<>();
+            if (servicioSeleccionado.getCodigo() != null) {
+                for (TemaGridDTO tema : temasPadre) {
+                    temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
+                }
+                construirArbol();
+            }
+
+            actualizarResponsable();
+            actualizarCanalesOpciones();
+
+        }
+    }
+
+    private void actualizarCanalesOpciones() {
+        canalesSeleccionadosDetalle = new ArrayList<>();
+        if (servicioSeleccionado != null && servicioSeleccionado.isTramitPresencial()) {
+            canalesSeleccionadosDetalle.add("PRE");
+        }
+        if (servicioSeleccionado != null && servicioSeleccionado.isTramitElectronica()) {
+            canalesSeleccionadosDetalle.add("TEL");
+        }
+        if (servicioSeleccionado != null && servicioSeleccionado.isTramitTelefonica()) {
+            canalesSeleccionadosDetalle.add("TFN");
+        }
+
+        if (servicioSeleccionado.isTramitElectronica()) {
+            if (servicioSeleccionado.getPlantillaSel() != null && servicioSeleccionado.getPlantillaSel().getCodigo() != null) {
+                opcionTelematica = 1;
+            } else if (servicioSeleccionado.getTipoTramitacion() != null && servicioSeleccionado.getTipoTramitacion().getTramiteId() != null && !servicioSeleccionado.getTipoTramitacion().getTramiteId().isEmpty()) {
+                opcionTelematica = 2;
+            } else if (servicioSeleccionado.getTipoTramitacion() != null) {// && data.getTipoTramitacion().getUrl() != null && data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList())) {
+                opcionTelematica = 3;
+            }
+        }
+    }
+
+    public boolean isOpcionTelematicaPlantilla() {
+        return canalesSeleccionadosDetalle.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(1) == 0;
+    }
+
+    public boolean isOpcionTelematicaDatos() {
+        return canalesSeleccionadosDetalle.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(2) == 0;
+    }
+
+    public boolean isOpcionTelematicaUrl() {
+        return canalesSeleccionadosDetalle.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(3) == 0;
+    }
+
+
+    /**
+     * Actualiza el literal de resonsable
+     */
+    public void actualizarResponsable() {
+        if (servicioSeleccionado.getComun() == 0) {
+            if (servicioSeleccionado.getUaResponsable() == null) {
+                lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
+            } else {
+                lopdResponsable = servicioSeleccionado.getUaResponsable().getNombre();
+            }
+        } else {
+            lopdResponsable = comunUA;
+        }
+    }
+
+    private void construirArbol() {
+        roots = new ArrayList<>();
+        UtilsArbolTemas.construirArbol(roots, temasPadre, temasPadreAnyadidos, servicioSeleccionado.getTemas(), temaServiceFacade);
+    }
+
 
     public void filtroHijasActivasChange() {
         if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
@@ -637,9 +810,48 @@ public class ViewServicios extends AbstractController implements Serializable {
         // Verificamos si se ha modificado
         if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             ServicioGridDTO proc = this.datoSeleccionado;
+            String recordamos = wfProcedimiento;
+            calcularServ();
             this.buscar();
             this.seleccionarPorId(proc);
+            if (recordamos != null) {
+                wfProcedimiento = recordamos;
+                cambiarProcedimientoSeleccionadoWF();
+            }
+        }
+    }
 
+    public void consultarNormativa() {
+        if (normativaSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", normativaSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("dialogNormativa", TypeModoAcceso.CONSULTA, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+        }
+    }
+
+    public void consultarDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put(TypeParametroVentana.ID.toString(), servicioSeleccionado.getCodigo() == null ? "" : servicioSeleccionado.getCodigoWF().toString());
+            UtilJSF.anyadirMochila("documento", this.documentoSeleccionado.clone());
+            params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
+            UtilJSF.openDialog("dialogDocumentoProcedimiento", TypeModoAcceso.CONSULTA, params, true, 800, 380);
+        }
+    }
+
+    public void consultarDocumentoLOPD() {
+        if (documentoLOPDSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", servicioSeleccionado.getCodigo() == null ? "" : servicioSeleccionado.getCodigo().toString());
+            UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado.clone());
+            params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
+            UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", TypeModoAcceso.CONSULTA, params, true, 800, 350);
         }
     }
 
@@ -809,5 +1021,183 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void setCanalesSeleccionados(String[] canalesSeleccionados) {
         this.canalesSeleccionados = canalesSeleccionados;
+    }
+
+    public ServicioDTO getServicioSeleccionado() {
+        return servicioSeleccionado;
+    }
+
+    public void setServicioSeleccionado(ServicioDTO servicioSeleccionado) {
+        this.servicioSeleccionado = servicioSeleccionado;
+    }
+
+    public String getUaRaiz() {
+        return uaRaiz;
+    }
+
+    public void setUaRaiz(String uaRaiz) {
+        this.uaRaiz = uaRaiz;
+    }
+
+    @Override
+    public String getIdioma() {
+        return idioma;
+    }
+
+    @Override
+    public void setIdioma(String idioma) {
+        this.idioma = idioma;
+    }
+
+    public String getWfProcedimiento() {
+        return wfProcedimiento;
+    }
+
+    public void setWfProcedimiento(String wfProcedimiento) {
+        this.wfProcedimiento = wfProcedimiento;
+    }
+
+    public ServicioDTO getWfPublicado() {
+        return wfPublicado;
+    }
+
+    public void setWfPublicado(ServicioDTO wfPublicado) {
+        this.wfPublicado = wfPublicado;
+    }
+
+    public ServicioDTO getWfModificado() {
+        return wfModificado;
+    }
+
+    public void setWfModificado(ServicioDTO wfModificado) {
+        this.wfModificado = wfModificado;
+    }
+
+    public List<TipoViaDTO> getListFinVias() {
+        return listFinVias;
+    }
+
+    public void setListFinVias(List<TipoViaDTO> listFinVias) {
+        this.listFinVias = listFinVias;
+    }
+
+    public List<TemaGridDTO> getTemasPadre() {
+        return temasPadre;
+    }
+
+    public void setTemasPadre(List<TemaGridDTO> temasPadre) {
+        this.temasPadre = temasPadre;
+    }
+
+    public NormativaGridDTO getNormativaSeleccionada() {
+        return normativaSeleccionada;
+    }
+
+    public void setNormativaSeleccionada(NormativaGridDTO normativaSeleccionada) {
+        this.normativaSeleccionada = normativaSeleccionada;
+    }
+
+    public ProcedimientoDocumentoDTO getDocumentoSeleccionado() {
+        return documentoSeleccionado;
+    }
+
+    public void setDocumentoSeleccionado(ProcedimientoDocumentoDTO documentoSeleccionado) {
+        this.documentoSeleccionado = documentoSeleccionado;
+    }
+
+    public ProcedimientoDocumentoDTO getDocumentoLOPDSeleccionado() {
+        return documentoLOPDSeleccionado;
+    }
+
+    public void setDocumentoLOPDSeleccionado(ProcedimientoDocumentoDTO documentoLOPDSeleccionado) {
+        this.documentoLOPDSeleccionado = documentoLOPDSeleccionado;
+    }
+
+    public TreeNode getTemaSeleccionado() {
+        return temaSeleccionado;
+    }
+
+    public void setTemaSeleccionado(TreeNode temaSeleccionado) {
+        this.temaSeleccionado = temaSeleccionado;
+    }
+
+    public ProcedimientoTramiteDTO getTramiteSeleccionado() {
+        return tramiteSeleccionado;
+    }
+
+    public void setTramiteSeleccionado(ProcedimientoTramiteDTO tramiteSeleccionado) {
+        this.tramiteSeleccionado = tramiteSeleccionado;
+    }
+
+    public List<TreeNode> getTemasTabla() {
+        return temasTabla;
+    }
+
+    public void setTemasTabla(List<TreeNode> temasTabla) {
+        this.temasTabla = temasTabla;
+    }
+
+    public List<TreeNode> getRoots() {
+        return roots;
+    }
+
+    public void setRoots(List<TreeNode> roots) {
+        this.roots = roots;
+    }
+
+    public List<TemaGridDTO> getTemasPadreAnyadidos() {
+        return temasPadreAnyadidos;
+    }
+
+    public void setTemasPadreAnyadidos(List<TemaGridDTO> temasPadreAnyadidos) {
+        this.temasPadreAnyadidos = temasPadreAnyadidos;
+    }
+
+    public Literal getLopdResponsable() {
+        return lopdResponsable;
+    }
+
+    public void setLopdResponsable(Literal lopdResponsable) {
+        this.lopdResponsable = lopdResponsable;
+    }
+
+    public Literal getComunUA() {
+        return comunUA;
+    }
+
+    public void setComunUA(Literal comunUA) {
+        this.comunUA = comunUA;
+    }
+
+    public ExportarDatos getExportarDatos() {
+        return exportarDatos;
+    }
+
+    public void setExportarDatos(ExportarDatos exportarDatos) {
+        this.exportarDatos = exportarDatos;
+    }
+
+    public String getWfProcedimientoPrevio() {
+        return wfProcedimientoPrevio;
+    }
+
+    public void setWfProcedimientoPrevio(String wfProcedimientoPrevio) {
+        this.wfProcedimientoPrevio = wfProcedimientoPrevio;
+    }
+
+    public List<String> getCanalesSeleccionadosDetalle() {
+        return canalesSeleccionadosDetalle;
+    }
+
+    public void setCanalesSeleccionadosDetalle(List<String> canalesSeleccionadosDetalle) {
+        this.canalesSeleccionadosDetalle = canalesSeleccionadosDetalle;
+    }
+
+    public Integer getOpcionTelematica() {
+        return opcionTelematica;
+    }
+
+    public void setOpcionTelematica(Integer opcionTelematica) {
+        this.opcionTelematica = opcionTelematica;
     }
 }

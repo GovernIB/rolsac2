@@ -1,0 +1,450 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:body>
+        <h:outputStylesheet>
+            tr.ui-state-highlight td div div.ui-chkbox-box {
+            background: #22F !important;
+            }
+        </h:outputStylesheet>
+    <div class="ui-g-12 ui-md-9 ui-lg-9">
+        <p:panel header="#{labels['dialogProcedimiento.datos']}" styleClass="panel">
+
+            <div class="form-row">
+                <div class="form-group col-md-9 col-xs-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.nombre.procedimiento']}:" />
+                    <p:outputLabel styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.nombreProcedimientoWorkFlow.getTraduccion(viewProcedimientos.idioma)}" />
+
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.objeto']}:" />
+                    <p:outputLabel styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.objeto.getTraduccion(viewProcedimientos.idioma)}" />
+
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.destinatarios']}:" />
+                    <p:outputLabel styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.destinatarios.getTraduccion(viewProcedimientos.idioma)}" />
+
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.terminios']}:" />
+                    <p:outputLabel styleClass="w99"  value="#{viewProcedimientos.procedimientoSeleccionado.terminoResolucion.getTraduccion(viewProcedimientos.idioma)}" />
+
+                    <p:outputLabel styleClass="mr-2 mt-1 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.observaciones']}:" />
+                    <p:outputLabel  styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.observaciones.getTraduccion(viewProcedimientos.idioma)}" />
+
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.keywords']}:" />
+                    <p:outputLabel  styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.keywords.getTraduccion(viewProcedimientos.idioma)}" />
+                </div>
+                <div class="form-group col-md-3  col-xs-12">
+                    <div class="col-md-12 mr-2 mb-1 pt-0 ">
+                            <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.tipoProcedimiento']}:&#160;" />
+                            <p:outputLabel value=" #{viewProcedimientos.procedimientoSeleccionado.tipoProcedimiento.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                    </div>
+                    <div class="col-md-12 mr-2 mb-1 pt-0 ">
+                        <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.formaInicio']}:&#160;" />
+                        <p:outputLabel value=" #{viewProcedimientos.procedimientoSeleccionado.iniciacion.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                    </div>
+
+                    <div class="col-md-12 mr-2 mb-1 pt-0 ">
+                        <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.silencioAdministrativo']}:&#160;" />
+                        <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.silencio.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                    </div>
+
+                    <div class="col-md-12 mr-2 mb-1 pt-0 ">
+                        <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.tipoVia']}:&#160;" />
+                        <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.tipoVia.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                    </div>
+
+                    <div class="col-md-12 mr-2 mb-1 pt-0 ">
+                        <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.habilitadoApoderado']}:&#160;" />
+                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoApoderado == null}">
+                            <p:outputLabel value=" " />
+                        </c:if>
+                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoApoderado == true}">
+                            <p:outputLabel value=" #{labels['dict.si']}" />
+                        </c:if>
+                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoApoderado == false}">
+                            <p:outputLabel value=" #{labels['dict.no']}" />
+                        </c:if>
+                    </div>
+
+                    <div class="col-md-12 mr-2 mb-1 pt-0 ">
+                        <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.habilitadoFuncionario']}:&#160;" />
+                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoFuncionario == null}">
+                            <p:outputLabel value=" " />
+                        </c:if>
+                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoFuncionario == true}">
+                            <p:outputLabel value=" #{labels['dict.si']}" />
+                        </c:if>
+                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoFuncionario == false}">
+                            <p:outputLabel value="#{labels['dict.no']}" />
+                        </c:if>
+                    </div>
+
+                    <div class="col-md-12 mr-2 mb-1 pt-0 ">
+                        <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.tasa']}:&#160;" />
+                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.tieneTasa == true}">
+                            <p:outputLabel value=" #{labels['dict.si']}" />
+                        </c:if>
+                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.tieneTasa == false}">
+                            <p:outputLabel value=" #{labels['dict.no']}" />
+                        </c:if>
+                    </div>
+                </div>
+            </div>
+        </p:panel>
+
+        <p:panel header="#{labels['dialogProcedimientoTramite.organos']}" styleClass="panel mt-3">
+
+            <div class="form-row">
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.organoCompetente']}:" />
+                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.comunUA.getTraduccion(viewProcedimientos.idioma)}"
+                                   rendered="#{viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
+                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.uaResponsable.nombre.getTraduccion(viewProcedimientos.idioma)}"
+                                   rendered="#{!viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
+                </div>
+                <div class="form-group  col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.organoInstructor']}:" />
+                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.comunUA.getTraduccion(viewProcedimientos.idioma)}"
+                                   rendered="#{viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
+                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.uaInstructor.nombre.getTraduccion(viewProcedimientos.idioma)}"
+                                   rendered="#{!viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
+                </div>
+            </div>
+        </p:panel>
+    </div>
+    <div class="ui-g-12 ui-md-3 ui-lg-3">
+        <p:panel header="#{labels['dialogProcedimiento.datosSIA']}">
+            <div class="form-row">
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel value="#{labels['dialogProcedimiento.estado.sia']}:"  styleClass="mb-1 pt-0 negrita" />
+                    <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.getEstadoSIA()}" />
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel value="#{labels['dialogProcedimiento.codigo.sia']}:"   styleClass="mb-1 pt-0 negrita" />
+                    <p:outputLabel  value="#{viewProcedimientos.procedimientoSeleccionado.codigoSIA}" />
+
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p>
+                        <p:outputLabel value="#{labels['dialogProcedimiento.fecha.sia']}:" styleClass="mb-1 pt-0 negrita" />
+                        <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.fechaSIA}">
+                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                        </p:outputLabel>
+                    </p>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p>
+                        <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" styleClass="mb-1 pt-0 negrita"/>
+                        <p:outputLabel id="txtErrorSIA_#{paramName}" value="#{viewProcedimientos.procedimientoSeleccionado.errorSIA}"  />
+                        <p:tooltip id="toolTipFadeSIA_#{paramName}" for="txtErrorSIA_#{paramName}" value="#{viewProcedimientos.procedimientoSeleccionado.errorSIA}"  position="top"/>
+                    </p>
+                </div>
+            </div>
+        </p:panel>
+        <p:panel header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}" styleClass="panel mt-3">
+            <div class="form-row">
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.codigo']}:" />
+                    <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.codigo}" />
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel value="#{labels['dialogProcedimiento.fecha.publicacion']}:" styleClass="mb-1 pt-0 negrita" />
+                    <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.fechaPublicacion}">
+                        <f:convertDateTime pattern="dd-MM-yyyy"/>
+                    </p:outputLabel>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel value="#{labels['dialogProcedimiento.fecha.caducidad']}:" styleClass="mb-1 pt-0 negrita" />
+                    <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.fechaCaducidad}">
+                        <f:convertDateTime pattern="dd-MM-yyyy"/>
+                    </p:outputLabel>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita" />
+                    <c:if test="#{viewProcedimientos.procedimientoSeleccionado.comun == 0}">
+                        <p:outputLabel value="#{labels['dict.especifico']}" />
+                    </c:if>
+                    <c:if test="#{viewProcedimientos.procedimientoSeleccionado.comun == 1}">
+                        <p:outputLabel value="#{labels['dict.comun']}" />
+                    </c:if>
+                </div>
+            </div>
+        </p:panel>
+
+        <p:panel header="#{labels['dialogProcedimiento.datos.contacto']}" styleClass="panel mt-3" >
+            <div class="form-row">
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.servicio']}:" />
+                    <p:outputLabel rendered="#{!dialogProcedimiento.data.esComun()}"
+                                        value="#{viewProcedimientos.procedimientoSeleccionado.uaCompetente.nombre.getTraduccion(viewProcedimientos.idioma)}" />
+
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.nombreResponsable.sinSede']}:" />
+                    <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.responsable}" />
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.correoElectronico']}:" />
+                    <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.responsableEmail}" />
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.correoIncidencias.sinSede']}:" />
+                    <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.incidenciasEmail}" />
+                </div>
+            </div>
+        </p:panel>
+
+    </div>
+    <div class="ui-g-12 ui-md-12 panel-container">
+        <p:panel header="#{labels['dialogProcedimiento.informacionProteccion']}" styleClass="panel">
+            <div class="form-row">
+                <div class="form-group col-xl-2 col-lg-3 col-md-6">
+                    <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogProcedimiento.responsableTratamiento']}:" />
+                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.lopdResponsable.getTraduccion(viewProcedimientos.idioma)}" />
+                </div>
+                <div class="form-group col-xl-2 col-lg-3 col-md-6">
+                    <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.legitimacion']}:" />
+                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.datosPersonalesLegitimacion.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                </div>
+                <div class="form-group col-xl-2 col-lg-3 col-md-6">
+                    <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.finalidad']}:" />
+                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.lopdFinalidad.getTraduccion(viewProcedimientos.idioma)}" />
+                </div>
+                <div class="form-group col-xl-2 col-lg-3 col-md-6">
+                    <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.destinatario']}:" />
+                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.lopdDestinatario.getTraduccion(viewProcedimientos.idioma)}" />
+                </div>
+                <div class="form-group col-xl-2 col-lg-3 col-md-6">
+                    <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.derechos']}:" />
+                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.lopdDerechos.getTraduccion(viewProcedimientos.idioma)}" />
+                </div>
+            </div>
+        </p:panel>
+    </div>
+    <h:outputScript>
+        function triggerDblClickPublico() {
+            document.getElementById("form:btnConsultarPublico").click();
+        }
+        function triggerDblClickMateria() {
+            document.getElementById("form:btnConsultarMateria").click();
+        }
+        function triggerDblClickNormativa() {
+            document.getElementById("form:btnConsultarNormativa").click();
+        }
+        function triggerDblClickTramite() {
+            document.getElementById("form:btnConsultarTramite").click();
+        }
+        function triggerDblClickDoc() {
+            document.getElementById("form:btnConsultarDocumento").click();
+        }
+        function triggerDblClickDocLopd() {
+            document.getElementById("form:btnConsultarDocumentoLOPD").click();
+        }
+    </h:outputScript>
+    <div class="ui-g-12 ui-md-12 p-0">
+        <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 p-1 ">
+            <div class="row left-container mx-0 mb-2">
+               <!-- <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-12 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.publicoObjetivo']}</p>
+                    </div>
+                </div>-->
+                <div class="col-12 p-1">
+                    <p:dataTable var="td"
+                                 value="#{viewProcedimientos.procedimientoSeleccionado.publicosObjetivo}"
+                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
+                                 paginator="false" selectionMode="single"
+                                 rowKey="#{td.codigo}" styleClass="noHeader">
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickPublico();"
+                                global="false"/>
+
+                     <!--   <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">-->
+                        <p:column headerText="#{labels['dialogServicio.publicoObjetivo']}" styleClass="text-center">
+                            <h:outputText value="#{td.descripcion.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+            </div>
+        </div>
+        <!-- Temas -->
+        <h:panelGroup id="panelTemas" styleClass="p-0 m-0">
+            <c:forEach items="#{viewProcedimientos.roots}" var="tema" varStatus="status">
+                <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 pt-0">
+                    <div class="row left-container mx-0 mb-2 mt-2">
+                   <!--     <div class="left-container-header ml-0 col-12 row" >
+                            <div class="col-12 text-center">
+                                <p:outputLabel styleClass="left-container-tit mt-2 mb-1"
+                                               value="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                            </div>
+                        </div>-->
+                        <div id="divTema#{tema.data.codigo}" class="col-12 p-0" >
+                            <p:treeTable
+                                    value="#{tema}"
+                                    var="td"
+                                    emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+                                    paginator="false" selectionMode="single"
+                                    selection="#{viewProcedimientos.temasTabla[status.index]}"
+                                    rowKey="#{td.codigo}"
+                                    styleClass="noHeader">
+
+                                 <!--<p:column headerText="#{tema.data.descripcion.getTraduccion(viewProcedimientos.idioma).toUpperCase()}" styleClass="w75">-->
+                                 <p:column headerText="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccion(viewProcedimientos.idioma).toUpperCase()}" styleClass="w75">
+                                    <div class="ui-chkbox ui-widget ui-selection">
+                                        <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
+                                            <p:outputLabel
+                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"/>
+                                        </div>
+                                    </div>
+                                    <i class="#{viewProcedimientos.getIcono(td)}"></i>
+                                    <h:outputText id="texto"
+                                                  value="#{td.descripcion.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
+                                    <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
+                                               value="#{viewProcedimientos.getTooltip(td)}" position="right"/>
+                                </p:column>
+
+                            </p:treeTable>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+        </h:panelGroup>
+        <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 pt-0">
+            <div class="row left-container mx-0 mb-2 mt-2 pt-0">
+              <!--  <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-12 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.normativaProc']}</p>
+                    </div>
+                </div>-->
+                <div class="col-10 p-0">
+                    <p:dataTable var="td"
+                                 value="#{viewProcedimientos.procedimientoSeleccionado.normativas}"
+                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{viewProcedimientos.normativaSeleccionada}"
+                                 rowKey="#{td.codigo}" styleClass="noHeader">
+                        <p:ajax event="rowSelect" global="false" update="@form:btnConsultarNormativa"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickNormativa();"
+                                global="false"/>
+
+                     <!--   <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w99">-->
+                        <p:column headerText="#{labels['dialogProcedimiento.normativaProc']}" styleClass="text-center w99">
+                            <h:outputText value="#{td.titulo.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-0 pl-2">
+                    <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     disabled="#{empty viewProcedimientos.normativaSeleccionada}"
+                                     action="#{viewProcedimientos.consultarNormativa}" />
+                </div>
+            </div>
+        </div>
+        <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 ">
+            <div class="row left-container mx-0 mb-2">
+               <!-- <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-12 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.docRelacionados']}</p>
+                    </div>
+                </div>-->
+                <div class="col-10 p-0">
+                    <p:dataTable var="td" value="#{viewProcedimientos.procedimientoSeleccionado.documentos}"
+                                 emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{viewProcedimientos.documentoSeleccionado}"
+                                 rowKey="#{td.codigoString}" styleClass="noHeader">
+
+                        <p:ajax event="rowSelect" global="false" update="@form:btnConsultarDocumento" />
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickDoc();"
+                                global="false"/>
+
+                      <!--  <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">-->
+                        <p:column headerText="#{labels['dialogProcedimiento.docRelacionados']}" styleClass="text-center w75">
+                            <h:outputText value="#{td.titulo.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-0 pl-2">
+                    <p:commandButton id="btnConsultarDocumento" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     disabled="#{empty viewProcedimientos.documentoSeleccionado}"
+                                     action="#{viewProcedimientos.consultarDocumento}" />
+                </div>
+            </div>
+        </div>
+        <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 ">
+            <div class="row left-container mx-0 mb-2">
+              <!--  <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-12 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.docInformacion']}</p>
+                    </div>
+                </div>-->
+                <div class="col-10 p-0">
+                    <p:dataTable var="td" value="#{viewProcedimientos.procedimientoSeleccionado.documentosLOPD}"
+                                 emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{viewProcedimientos.documentoLOPDSeleccionado}"
+                                 rowKey="#{td.codigoString}" styleClass="noHeader">
+
+                        <p:ajax event="rowSelect" global="false" update="@form:btnConsultarDocumentoLOPD"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickDocLopd();"
+                                global="false"/>
+
+                       <!-- <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">-->
+                        <p:column headerText="#{labels['dialogProcedimiento.docInformacion']}" styleClass="text-center w75">
+                            <h:outputText value="LOPD" class="labelGrande" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-0 pl-2">
+                    <p:commandButton id="btnConsultarDocumentoLOPD" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     disabled="#{empty viewProcedimientos.documentoLOPDSeleccionado}"
+                                     action="#{viewProcedimientos.consultarDocumentoLOPD}" />
+                </div>
+            </div>
+        </div>
+        <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 ">
+            <div class="row left-container mx-0 mb-2">
+              <!--  <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-12 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.tramites']}</p>
+                    </div>
+                </div>-->
+                <div class="col-10 p-0">
+                    <p:dataTable var="td" value="#{viewProcedimientos.procedimientoSeleccionado.tramites}"
+                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{viewProcedimientos.tramiteSeleccionado}"
+                                 rowKey="#{td.codigoString}" styleClass="noHeader">
+
+                        <p:ajax event="rowSelect" global="false" update="@form:btnConsultarTramite" />
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickTramite();"
+                                global="false"/>
+
+                      <!--  <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">-->
+                        <p:column headerText="#{labels['dialogProcedimiento.tramites']}" styleClass="text-center">
+                            <h:outputText value="#{td.nombre.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-0 pl-2">
+                    <p:commandButton id="btnConsultarTramite" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     disabled="#{empty viewProcedimientos.tramiteSeleccionado}"
+                                     action="#{viewProcedimientos.consultarTramite}" />
+                </div>
+            </div>
+        </div>
+    </div>
+</h:body>
+</html>
