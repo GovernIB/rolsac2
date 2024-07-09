@@ -778,7 +778,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
     }
 
     .imatgeGovern {
-        width: 45px !important;
+        width: 60px !important;
     }
 
     .navbar-toggler {
@@ -922,7 +922,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 }
 
 .imatgeGovern {
-    width: 50px;
+    width: 70px;
 }
 
 .iconoCapsalera {
@@ -1754,4 +1754,9 @@ a.iconoXarxes {
     width: 40px;
     height: 30px;
     margin-right: 10px;
+}
+
+.negrita {
+    font-weight: bold;
+    color: #444;
 }
