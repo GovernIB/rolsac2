@@ -6,6 +6,7 @@ import es.caib.rolsac2.back.utils.UtilExport;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
@@ -57,6 +58,9 @@ public class ViewNormativa extends AbstractController implements Serializable {
     @EJB
     private UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
+    @EJB
+    private SystemServiceFacade systemServiceFacade;
+
     private LazyDataModel<NormativaGridDTO> lazyModel;
 
     private NormativaGridDTO datoSeleccionado;
@@ -69,6 +73,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
 
     private Boolean isTraspaso = false;
     private boolean mostrarOcultas = false;
+    private boolean mostrarUAs = false;
 
     /**
      * Cuando se exporta los datos
@@ -85,6 +90,12 @@ public class ViewNormativa extends AbstractController implements Serializable {
     public void load() {
         LOG.debug("load");
         this.setearIdioma();
+
+        mostrarUAs = false;
+        String propiedad = systemServiceFacade.obtenerPropiedadConfiguracion("normativa.mostrar.uasRelacionadas");
+        if (propiedad != null && (propiedad.toLowerCase().equals("true") || propiedad.toLowerCase().equals("false"))) {
+            mostrarUAs = Boolean.valueOf(propiedad.toLowerCase());
+        }
 
         permisoAccesoVentana(ViewNormativa.class);
         limpiarFiltro();
@@ -109,55 +120,6 @@ public class ViewNormativa extends AbstractController implements Serializable {
         sessionBean.cambiarUnidadAdministrativa(ua);
         buscarEvt();
     }
-
-    /**
-     * Cambia el filtro de unidades orgánicas hijas.
-     public void filtroHijasActivasChange() {
-     if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-     filtro.setIdUAsHijas(unidadAdministrativaServiceFacade.listarHijos(sessionBean.getUnidadActiva().getCodigo()));
-     } else if (filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
-     List<Long> ids = new ArrayList<>();
-
-     for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-     List<Long> idsUa = unidadAdministrativaServiceFacade.listarHijos(ua.getCodigo());
-     ids.addAll(idsUa);
-     }
-     filtro.setIdUAsHijas(ids);
-     } else if (!filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
-     List<Long> idsUa = new ArrayList<>();
-     for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-     idsUa.add(ua.getCodigo());
-     }
-     idsUa.add(sessionBean.getUnidadActiva().getCodigo());
-     filtro.setIdUAsHijas(idsUa);
-     }
-     }
-
-     /**
-     * Cambia el filtro de unidades orgánicas.
-     public void filtroUnidadOrganicasChange() {
-     if (filtro.isTodasUnidadesOrganicas()) {
-     if (filtro.isHijasActivas()) {
-     List<Long> ids = new ArrayList<>();
-
-     for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-     List<Long> idsUa = unidadAdministrativaServiceFacade.listarHijos(ua.getCodigo());
-     ids.addAll(idsUa);
-     }
-     filtro.setIdUAsHijas(ids);
-     } else {
-     List<Long> idsUa = new ArrayList<>();
-     for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-     idsUa.add(ua.getCodigo());
-     }
-     idsUa.add(sessionBean.getUnidadActiva().getCodigo());
-     filtro.setIdUAsHijas(idsUa);
-     }
-     } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-     filtro.setIdUAsHijas(unidadAdministrativaServiceFacade.listarHijos(sessionBean.getUnidadActiva().getCodigo()));
-     }
-     } */
-
 
     /**
      * Limpia el filtro.
@@ -200,7 +162,9 @@ public class ViewNormativa extends AbstractController implements Serializable {
             @Override
             public List<NormativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
-                    //filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+                    if (mostrarUAs) {
+                        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+                    }
                     filtro.setIdioma(sessionBean.getLang());
                     if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
@@ -702,5 +666,13 @@ public class ViewNormativa extends AbstractController implements Serializable {
 
     public void setMostrarOcultas(boolean mostrarOcultas) {
         this.mostrarOcultas = mostrarOcultas;
+    }
+
+    public boolean isMostrarUAs() {
+        return mostrarUAs;
+    }
+
+    public void setMostrarUAs(boolean mostrarUAs) {
+        this.mostrarUAs = mostrarUAs;
     }
 }

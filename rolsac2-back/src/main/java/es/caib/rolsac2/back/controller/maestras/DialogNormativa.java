@@ -62,17 +62,34 @@ public class DialogNormativa extends AbstractController implements Serializable 
     @EJB
     private SystemServiceFacade systemServiceFacade;
 
+    /**
+     * Documento seleccionado
+     */
     private DocumentoNormativaDTO documentoRelacionadoSeleccionado;
 
+    /**
+     * Unidad administrativa seleccionada
+     */
     private UnidadAdministrativaGridDTO uaSeleccionada;
 
+    /**
+     * Procedimiento seleccionado
+     */
     private ProcedimientoNormativaDTO procSeleccionado;
 
+    /**
+     * Servicio seleccionado
+     */
     private ProcedimientoNormativaDTO servicioSeleccionado;
 
+    /**
+     * Afectacion seleccionada
+     */
     private AfectacionDTO afectacionSeleccionada;
 
-
+    /**
+     * Inicialización del bean
+     */
     public void load() {
         LOG.debug("init");
         this.setearIdioma();
@@ -99,8 +116,6 @@ public class DialogNormativa extends AbstractController implements Serializable 
                 data.setTitulo(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
                 data.setUrlBoletin(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
                 List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
-                //UnidadAdministrativaGridDTO uaActiva = unidadAdministrativaServiceFacade.findById(sessionBean.getUnidadActiva().getCodigo()).convertDTOtoGridDTO();
-                //unidadesAdministrativas.add(uaActiva);
                 UnidadAdministrativaGridDTO uaRaiz = unidadAdministrativaServiceFacade.getUaRaizEntidad(sessionBean.getUnidadActiva().getCodigo());
                 unidadesAdministrativas.add(uaRaiz);
                 data.setUnidadesAdministrativas(new ArrayList<>(unidadesAdministrativas));

@@ -1,0 +1,524 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:body>
+    <div class="ui-g-12 ui-md-9 ui-lg-9">
+        <p:panel header="#{labels['dialogServicio.datos']}" styleClass="panel">
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.nombre.procedimiento']}:"/>
+                    <p:outputLabel styleClass="w99"
+                                   value="#{viewServicios.servicioSeleccionado.nombreProcedimientoWorkFlow.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.objeto']}:"/>
+                    <p:outputLabel styleClass="w99"
+                                   value="#{viewServicios.servicioSeleccionado.objeto.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.destinatarios']}:"/>
+                    <p:outputLabel styleClass="w99"
+                                   value="#{viewServicios.servicioSeleccionado.destinatarios.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.terminios']}:"/>
+                    <p:outputLabel styleClass="w99"
+                                   value="#{viewServicios.servicioSeleccionado.terminoResolucion.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <p:outputLabel styleClass="mr-2 mt-1 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.observaciones']}:"/>
+                    <p:outputLabel styleClass="w99"
+                                   value="#{viewServicios.servicioSeleccionado.observaciones.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.keywords']}:"/>
+                    <p:outputLabel styleClass="w99"
+                                   value="#{viewServicios.servicioSeleccionado.keywords.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.tasa']}:"/>
+                    <c:if test="#{viewServicios.servicioSeleccionado.tieneTasa == true}">
+                        <p:outputLabel value=" #{labels['dict.si']}"/>
+                    </c:if>
+                    <c:if test="#{viewServicios.servicioSeleccionado.tieneTasa == false}">
+                        <p:outputLabel value=" #{labels['dict.no']}"/>
+                    </c:if>
+
+                </div>
+            </div>
+        </p:panel>
+        <p:panel id="panelOrganos" header="#{labels['dialogProcedimientoTramite.organos']}" styleClass="panel mt-3">
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.organoInstructor']}:"/>
+                    <p:outputLabel
+                            value="#{viewServicios.servicioSeleccionado.uaInstructor.nombre.getTraduccion(viewServicios.idioma)}"
+                            rendered="#{!viewServicios.servicioSeleccionado.esComun()}"/>
+                    <p:outputLabel value="#{viewServicios.comunUA.getTraduccion(viewServicios.idioma)}"
+                                   rendered="#{viewServicios.servicioSeleccionado.esComun()}"/>
+                </div>
+            </div>
+        </p:panel>
+        <p:panel id="panelCanales" header="#{labels['dialogServicio.canales']}" styleClass="panel mt-3">
+                <div class="form-row align-items-center">
+                    <div class="form-group col-xs-12 col-lg-12">
+                        <!--Aquí es mapear luego con los bools que tiene tipoTramitacion para ello-->
+                        <p:selectManyCheckbox value="#{viewServicios.canalesSeleccionadosDetalle}" disabled="true">
+                            <f:selectItem itemLabel="#{labels['dict.telematico']}" itemValue="TEL"/>
+                            <f:selectItem itemLabel="#{labels['dict.presencial']}" itemValue="PRE"/>
+                            <f:selectItem itemLabel="#{labels['dict.telefonico']}" itemValue="TFN"/>
+                        </p:selectManyCheckbox>
+                    </div>
+                </div>
+
+                <h:panelGroup id="panelFormCanales">
+                    <h:panelGroup id="panelPlantilla"
+                                  rendered="#{viewServicios.isOpcionTelematicaPlantilla() and viewServicios.canalesSeleccionadosDetalle.contains('TEL')}">
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.plantilla']}:"/>
+                                <p:outputLabel
+                                        value="#{viewServicios.servicioSeleccionado.plantillaSel.descripcion.getTraduccion(viewServicios.idioma)}"/>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup id="panelDatosTelematico"
+                                  rendered="#{viewServicios.isOpcionTelematicaDatos() and viewServicios.canalesSeleccionadosDetalle.contains('TEL')}">
+                        <div class="form-row">
+                            <div class="form-grup col-md-3 col-xs-12">
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                               value="#{labels['dict.identificador']}:"/>
+                                <p:outputLabel value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteId}"/>
+                            </div>
+                            <div class="form-grup col-md-3 col-xs-12">
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                               value="#{labels['dialogServicio.version']}:"/>
+                                <p:outputLabel
+                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteVersion}"/>
+
+                            </div>
+                            <div class="form-group col-md-3 col-xs-12">
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                               value="#{labels['dialogServicio.plataforma']}:"/>
+                                <p:outputLabel
+                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.codPlatTramitacion.identificador}"/>
+                            </div>
+                            <div class="form-grup col-md-3 col-xs-12">
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                               value="#{labels['dialogServicio.parametros']}:"/>
+                                <p:outputLabel
+                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteParametros}"/>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup
+                            rendered="#{viewServicios.isOpcionTelematicaUrl() and viewServicios.canalesSeleccionadosDetalle.contains('TEL')}">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                               value="#{labels['dialogServicio.url']}:"/>
+                                <p:outputLabel
+                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.url.getTraduccion(viewServicios.idioma)}"/>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </p:panel>
+    </div>
+    <div class="ui-g-12 ui-md-3 ui-lg-3">
+        <p:panel header="#{labels['dialogProcedimiento.datosSIA']}">
+            <div class="form-row">
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel value="#{labels['dialogProcedimiento.estado.sia']}:" styleClass="mb-1 pt-0 negrita"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.getEstadoSIA()}"/>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel value="#{labels['dialogProcedimiento.codigo.sia']}:" styleClass="mb-1 pt-0 negrita"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.codigoSIA}"/>
+
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p>
+                        <p:outputLabel value="#{labels['dialogProcedimiento.fecha.sia']}:"
+                                       styleClass="mb-1 pt-0 negrita"/>
+                        <p:outputLabel value="#{viewServicios.servicioSeleccionado.fechaSIA}">
+                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                        </p:outputLabel>
+                    </p>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p>
+                        <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:"
+                                       styleClass="mb-1 pt-0 negrita"/>
+                        <p:outputLabel id="txtErrorSIA_#{paramName}"
+                                       value="#{viewServicios.servicioSeleccionado.errorSIA}"/>
+                        <p:tooltip id="toolTipFadeSIA_#{paramName}" for="txtErrorSIA_#{paramName}"
+                                   value="#{viewServicios.servicioSeleccionado.errorSIA}" position="top"/>
+                    </p>
+                </div>
+            </div>
+        </p:panel>
+        <p:panel header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}" styleClass="mt-3">
+            <div class="form-row">
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.codigo']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.codigo}"/>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel value="#{labels['dialogProcedimiento.fecha.publicacion']}:"
+                                   styleClass="mb-1 pt-0 negrita"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.fechaPublicacion}">
+                        <f:convertDateTime pattern="dd-MM-yyyy"/>
+                    </p:outputLabel>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel value="#{labels['dialogProcedimiento.fecha.caducidad']}:"
+                                   styleClass="mb-1 pt-0 negrita"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.fechaCaducidad}">
+                        <f:convertDateTime pattern="dd-MM-yyyy"/>
+                    </p:outputLabel>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita"/>
+                    <c:if test="#{viewServicios.servicioSeleccionado.comun == 0}">
+                        <p:outputLabel value="#{labels['dict.especifico']}"/>
+                    </c:if>
+                    <c:if test="#{viewServicios.servicioSeleccionado.comun == 1}">
+                        <p:outputLabel value="#{labels['dict.comun']}"/>
+                    </c:if>
+                </div>
+            </div>
+        </p:panel>
+        <p:panel header="#{labels['dialogServicio.datos.contacto']}" styleClass="panel mt-3" id="formDatosContacto">
+            <div class="form-row">
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.servicio']}:"/>
+                    <p:outputLabel
+                            value="#{viewServicios.servicioSeleccionado.uaResponsable.nombre.getTraduccion(viewServicios.idioma)}"
+                            styleClass="w99 mr-1"/>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.nombreResponsable.sinSede']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.responsable}" styleClass="w99 mr-1"/>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogServicio.correoElectronico']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.responsableEmail}"
+                                   styleClass="w99 mr-1"/>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogServicio.responsableTelefono']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.responsableTelefono}"
+                                   styleClass="w99 mr-1"/>
+                </div>
+                <div class="form-group col-lg-6 col-md-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.correoIncidencias.sinSede']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.incidenciasEmail}"
+                                   styleClass="w99 mr-1"/>
+                </div>
+
+
+            </div>
+        </p:panel>
+
+    </div>
+ <!--   <div class="ui-g-12 ui-md-12 panel-container">
+        <p:panel id="panelCanales" header="#{labels['dialogServicio.canales']}" styleClass="panel">
+            <div class="form-row align-items-center">
+                <div class="form-group col-xs-12 col-lg-12">
+                    &lt;!&ndash;Aquí es mapear luego con los bools que tiene tipoTramitacion para ello&ndash;&gt;
+                    <p:selectManyCheckbox value="#{viewServicios.canalesSeleccionadosDetalle}" disabled="true">
+                        <f:selectItem itemLabel="#{labels['dict.telematico']}" itemValue="TEL"/>
+                        <f:selectItem itemLabel="#{labels['dict.presencial']}" itemValue="PRE"/>
+                        <f:selectItem itemLabel="#{labels['dict.telefonico']}" itemValue="TFN"/>
+                    </p:selectManyCheckbox>
+                </div>
+            </div>
+
+            <h:panelGroup id="panelFormCanales">
+                <h:panelGroup id="panelPlantilla"
+                              rendered="#{viewServicios.isOpcionTelematicaPlantilla() and viewServicios.canalesSeleccionadosDetalle.contains('TEL')}">
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.plantilla']}:"/>
+                            <p:outputLabel
+                                    value="#{viewServicios.servicioSeleccionado.plantillaSel.descripcion.getTraduccion(viewServicios.idioma)}"/>
+                        </div>
+                    </div>
+                </h:panelGroup>
+                <h:panelGroup id="panelDatosTelematico"
+                              rendered="#{viewServicios.isOpcionTelematicaDatos() and viewServicios.canalesSeleccionadosDetalle.contains('TEL')}">
+                    <div class="form-row">
+                        <div class="form-grup col-md-3 col-xs-12">
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                           value="#{labels['dict.identificador']}:"/>
+                            <p:outputLabel value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteId}"/>
+                        </div>
+                        <div class="form-grup col-md-3 col-xs-12">
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                           value="#{labels['dialogServicio.version']}:"/>
+                            <p:outputLabel
+                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteVersion}"/>
+
+                        </div>
+                        <div class="form-group col-md-3 col-xs-12">
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                           value="#{labels['dialogServicio.plataforma']}:"/>
+                            <p:outputLabel
+                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.codPlatTramitacion.identificador}"/>
+                        </div>
+                        <div class="form-grup col-md-3 col-xs-12">
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                           value="#{labels['dialogServicio.parametros']}:"/>
+                            <p:outputLabel
+                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteParametros}"/>
+                        </div>
+                    </div>
+                </h:panelGroup>
+                <h:panelGroup
+                        rendered="#{viewServicios.isOpcionTelematicaUrl() and viewServicios.canalesSeleccionadosDetalle.contains('TEL')}">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                           value="#{labels['dialogServicio.url']}:"/>
+                            <p:outputLabel
+                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.url.getTraduccion(viewServicios.idioma)}"/>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+        </p:panel>
+    </div>-->
+    <div class="ui-g-12 ui-md-12 panel-container">
+        <p:panel header="#{labels['dialogProcedimiento.informacionProteccion']}" styleClass="panel">
+            <div class="form-row">
+                <div class="form-group col-xs-12 col-lg-12 col-xl-12">
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogServicio.lopd.activo']}:"/>
+                    <c:if test="#{viewServicios.servicioSeleccionado.activoLOPD == true}">
+                        <p:outputLabel value=" #{labels['dict.si']}"/>
+                    </c:if>
+                    <c:if test="#{viewServicios.servicioSeleccionado.activoLOPD == false}">
+                        <p:outputLabel value=" #{labels['dict.no']}"/>
+                    </c:if>
+                </div>
+                <div class="form-group col-xl-2 col-lg-3 col-md-6">
+                    <p:outputLabel styleClass="mb-1 negrita"
+                                   value="#{labels['dialogProcedimiento.responsableTratamiento']}:"/>
+                    <p:outputLabel styleClass="mb-1"
+                                   value="#{viewServicios.lopdResponsable.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+                <div class="form-group col-xl-2 col-lg-3 col-md-6">
+                    <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.legitimacion']}:"/>
+                    <p:outputLabel styleClass="mb-1"
+                                   value="#{viewServicios.servicioSeleccionado.datosPersonalesLegitimacion.descripcion.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+                <div class="form-group col-xl-2 col-lg-3 col-md-6">
+                    <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.finalidad']}:"/>
+                    <p:outputLabel styleClass="mb-1"
+                                   value="#{viewServicios.servicioSeleccionado.lopdFinalidad.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+                <div class="form-group col-xl-2 col-lg-3 col-md-6">
+                    <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.destinatario']}:"/>
+                    <p:outputLabel styleClass="mb-1"
+                                   value="#{viewServicios.servicioSeleccionado.lopdDestinatario.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+                <div class="form-group col-xl-2 col-lg-3 col-md-6">
+                    <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
+                                   value="#{labels['dialogProcedimiento.derechos']}:"/>
+                    <p:outputLabel styleClass="mb-1"
+                                   value="#{viewServicios.servicioSeleccionado.lopdDerechos.getTraduccion(viewServicios.idioma)}"/>
+                </div>
+            </div>
+        </p:panel>
+    </div>
+
+
+    <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 ">
+        <div class="row left-container mx-0 mb-2">
+            <!--                <div class="left-container-header ml-0 col-12 row">-->
+            <!--                    <div class="col-12 text-center">-->
+            <!--                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.publicoObjetivo']}</p>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <div class="col-12 p-0">
+                <p:dataTable var="td"
+                             value="#{viewServicios.servicioSeleccionado.publicosObjetivo}"
+                             emptyMessage="#{labels['dialogServicio.tablaVacia']}" scrollable="true"
+                             paginator="false" selectionMode="single"
+                             selection="#{dialogServicio.tipoPubObjEntGridSeleccionado}"
+                             rowKey="#{td.codigo}" styleClass="noHeader">
+                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
+
+                    <!-- <p:column headerText="#{labels['dialogServicio.descripcion']}" styleClass="text-center">-->
+                    <p:column headerText="#{labels['dialogServicio.publicoObjetivo']}" styleClass="text-center">
+                        <h:outputText value="#{td.identificador}" class="labelGrande"/>
+                    </p:column>
+
+                    <!--
+                    <f:attribute name="paramMsgError" value="#{labels['dialogServicio.error.algunPublicoObjetivo']}" />
+                    <f:event type="postValidate" listener="#{dialogServicio.validacionListaNoVacia}"/>
+                    -->
+                </p:dataTable>
+            </div>
+        </div>
+    </div>
+    <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 ">
+        <div class="row left-container mx-0 mb-2">
+            <!--                <div class="col-12 left-container-header text-center">-->
+            <!--                    <div class="left-container-header ml-0 col-12 row">-->
+            <!--                        <div class="col-12 text-center">-->
+            <!--                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.normativaProc']}</p>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <div class="col-10 p-0">
+                <p:dataTable var="td"
+                             value="#{viewServicios.servicioSeleccionado.normativas}"
+                             emptyMessage="#{labels['dialogServicio.tablaVacia']}" scrollable="true"
+                             paginator="false" selectionMode="single"
+                             selection="#{viewServicios.normativaSeleccionada}"
+                             rowKey="#{td.codigo}" styleClass="noHeader">
+                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                    <p:ajax event="rowSelect" global="false" update="@form:btnConsultarNormativa"/>
+                    <p:ajax event="rowUnselect"/>
+                    <p:ajax event="rowDblselect"
+                            oncomplete="triggerDblClickNormativa();"
+                            global="false"/>
+
+                    <!-- <p:column headerText="#{labels['dialogServicio.descripcion']}"-->
+                    <p:column headerText="#{labels['dialogServicio.normativaProc']}"
+                              styleClass="text-center w75">
+                        <h:outputText value="#{td.titulo.getTraduccion(viewServicios.idioma)}" class="labelGrande"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <div class="col-2 p-0 pl-2">
+                <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                 disabled="#{empty viewServicios.normativaSeleccionada}"
+                                 action="#{viewServicios.consultarNormativa}"/>
+            </div>
+        </div>
+    </div>
+    <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 ">
+        <div class="row left-container mx-0 mb-2">
+            <!--   <div class="col-12 left-container-header text-center">
+                   <div class="left-container-header ml-0 col-12 row">
+                       <div class="col-12 text-center">
+                           <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.docRelacionados']}</p>
+                       </div>
+                   </div>
+               </div>-->
+            <div class="col-10 p-0">
+                <p:dataTable var="td" value="#{viewServicios.servicioSeleccionado.documentos}"
+                             emptyMessage="#{labels['dialogServicio.noDocumentos']}" scrollable="true"
+                             paginator="false" selectionMode="single"
+                             selection="#{viewServicios.documentoSeleccionado}"
+                             rowKey="#{td.codigoString}" styleClass="noHeader">
+
+                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                    <p:ajax event="rowSelect" global="false" update="@form:btnConsultarDocumento"/>
+                    <p:ajax event="rowUnselect"/>
+                    <p:ajax event="rowDblselect"
+                            oncomplete="triggerDblClickDoc();"
+                            global="false"/>
+
+                    <!-- <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">-->
+                    <p:column headerText="#{labels['dialogServicio.docRelacionados']}" styleClass="text-center w75">
+                        <h:outputText value="#{td.titulo.getTraduccion(viewServicios.idioma)}" class="labelGrande"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <div class="col-2 p-0 pl-2">
+                <p:commandButton id="btnConsultarDocumento" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                 disabled="#{empty viewServicios.documentoSeleccionado}"
+                                 action="#{viewServicios.consultarDocumento}"/>
+            </div>
+        </div>
+    </div>
+    <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 ">
+        <h:panelGroup class="row left-container mx-0 mb-2">
+            <!--  <div class="col-12 left-container-header text-center">
+                  <div class="left-container-header ml-0 col-12 row">
+                      <div class="col-12 text-center">
+                          <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.docInformacion']}</p>
+                      </div>
+                  </div>
+              </div>-->
+            <div class="col-10 p-0">
+                <h:panelGroup>
+                    <p:dataTable var="td" value="#{viewServicios.servicioSeleccionado.documentosLOPD}"
+                                 emptyMessage="#{labels['dialogServicio.noDocumentos']}" scrollable="true"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{viewServicios.documentoLOPDSeleccionado}"
+                                 rowKey="#{td.codigoString}" styleClass="noHeader"
+                                 rendered="#{!data.isActivoLOPD()}">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false" update="@form:btnConsultarDocumentoLOPD"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickDocLopd();"
+                                global="false"/>
+
+                        <!--  <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">-->
+                        <p:column headerText="#{labels['dialogServicio.docInformacion']}" styleClass="text-center w75">
+                            <h:outputText value="LOPD" class="labelGrande"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:panelGroup>
+            </div>
+            <div class="col-2 p-0 pl-2">
+                <p:commandButton id="btnConsultarDocumentoLOPD" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                 disabled="#{empty viewServicios.documentoLOPDSeleccionado}"
+                                 action="#{viewServicios.consultarDocumentoLOPD}"/>
+            </div>
+        </h:panelGroup>
+
+        <h:outputScript>
+            function triggerDblClickPublico() {
+                document.getElementById("form:btnConsultarPublico").click();
+            }
+
+            function triggerDblClickMateria() {
+                document.getElementById("form:btnConsultarMateria").click();
+            }
+
+            function triggerDblClickNormativa() {
+                document.getElementById("form:btnConsultarNormativa").click();
+            }
+
+            function triggerDblClickTramite() {
+                document.getElementById("form:btnConsultarTramite").click();
+            }
+
+            function triggerDblClickDoc() {
+                document.getElementById("form:btnConsultarDocumento").click();
+            }
+
+            function triggerDblClickDocLopd() {
+                document.getElementById("form:btnConsultarDocumentoLOPD").click();
+            }
+        </h:outputScript>
+    </div>
+</h:body>
+</html>

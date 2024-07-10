@@ -3,6 +3,7 @@ package es.caib.rolsac2.back.controller.maestras;
 //import es.caib.rolsac2.api.externa.v1.model.Procedimientos;
 
 import es.caib.rolsac2.back.controller.AbstractController;
+import es.caib.rolsac2.back.controller.comun.UtilsArbolTemas;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilExport;
@@ -15,6 +16,7 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.*;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +57,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     @EJB
     private PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;
     private ProcedimientoGridDTO datoSeleccionado;
+    private ProcedimientoDTO procedimientoSeleccionado;
+    private String uaRaiz;
     private ProcedimientoFiltro filtro;
     private LazyDataModel<ProcedimientoGridDTO> lazyModel;
 
@@ -76,6 +80,24 @@ public class ViewProcedimientos extends AbstractController implements Serializab
      * Cuando se exporta los datos
      **/
     private ExportarDatos exportarDatos;
+    private String idioma;
+
+    /**
+     * Pagina detalle
+     */
+    private String wfProcedimiento;
+    private ProcedimientoDTO wfPublicado;
+    private ProcedimientoDTO wfModificado;
+    private NormativaGridDTO normativaSeleccionada;
+    private ProcedimientoDocumentoDTO documentoSeleccionado;
+    private ProcedimientoDocumentoDTO documentoLOPDSeleccionado;
+    private TreeNode temaSeleccionado;
+    private ProcedimientoTramiteDTO tramiteSeleccionado;
+    private List<TreeNode> temasTabla;
+    private List<TreeNode> roots;
+    private List<TemaGridDTO> temasPadreAnyadidos = new ArrayList<>();
+    private Literal lopdResponsable;
+    private Literal comunUA;
 
     public void load() {
         LOG.debug("load View Procedimientos");
@@ -83,7 +105,113 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         this.limpiarFiltro();
         cargarFiltros();
         buscar();
+        idioma = sessionBean.getLang();
+        roots = new ArrayList<>();//construirArbol();
+        comunUA = sessionBean.getEntidad().getUaComun();
+        temasTabla = new ArrayList<>();
+        for (TemaGridDTO tema : temasPadre) {
+            temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
+        }
+
     }
+
+
+    String wfProcedimientoPrevio = null;
+
+    public void cambiarProcedimientoSeleccionadoWF() {
+        /** Nos guardamos el ultimo click **/
+        if (wfProcedimiento != null) {
+            wfProcedimientoPrevio = wfProcedimiento;
+        }
+
+        if (wfProcedimiento == null) {
+            if (wfProcedimientoPrevio == null) {
+                procedimientoSeleccionado = ProcedimientoDTO.createInstance(this.sessionBean.getIdiomasObligatoriosList());
+                return;
+            } else {
+                wfProcedimiento = wfProcedimientoPrevio;
+            }
+        }
+
+        if (wfProcedimiento.equals("P") && wfPublicado != null) {
+            procedimientoSeleccionado = wfPublicado;
+        } else if (wfProcedimiento.equals("M") && wfModificado != null) {
+            procedimientoSeleccionado = wfModificado;
+        }
+    }
+
+
+    public void onTabChange(TabChangeEvent event) {
+        String tabId = event.getTab().getId();
+        if ("tabDef".equals(tabId)) {
+            procedimientoSeleccionado = wfPublicado;
+        } else if ("tabMod".equals(tabId)) {
+            procedimientoSeleccionado = wfModificado;
+        } else {
+            procedimientoSeleccionado = ProcedimientoDTO.createInstance(this.sessionBean.getIdiomasObligatoriosList());
+        }
+    }
+
+    public void calcularProc() {
+        wfPublicado = null;
+        wfModificado = null;
+        wfProcedimiento = "";
+
+        if (datoSeleccionado == null) {
+            procedimientoSeleccionado = ProcedimientoDTO.createInstance(this.sessionBean.getIdiomasObligatoriosList());
+        } else {
+            if (datoSeleccionado.getCodigoWFPub() != null) {
+                procedimientoSeleccionado = procedimientoService.findProcedimientoById(datoSeleccionado.getCodigoWFPub());
+                uaRaiz = Boolean.valueOf(this.procedimientoSeleccionado.getUaResponsable() != null && this.procedimientoSeleccionado.getUaResponsable().esRaiz()).toString();
+                wfProcedimiento = "P";
+                wfProcedimientoPrevio = "P";
+                wfPublicado = procedimientoSeleccionado;
+                if (datoSeleccionado.getCodigoWFMod() != null) {
+                    wfModificado = procedimientoService.findProcedimientoById(datoSeleccionado.getCodigoWFMod());
+                }
+            } else if (datoSeleccionado.getCodigoWFMod() != null) {
+                procedimientoSeleccionado = procedimientoService.findProcedimientoById(datoSeleccionado.getCodigoWFMod());
+                uaRaiz = Boolean.valueOf(this.procedimientoSeleccionado.getUaResponsable() != null && this.procedimientoSeleccionado.getUaResponsable().esRaiz()).toString();
+                wfProcedimiento = "M";
+                wfProcedimientoPrevio = "M";
+                wfModificado = procedimientoSeleccionado;
+            } else {
+                procedimientoSeleccionado = ProcedimientoDTO.createInstance(this.sessionBean.getIdiomasObligatoriosList());
+                uaRaiz = "";
+            }
+
+            temasTabla = new ArrayList<>();
+            if (procedimientoSeleccionado.getCodigo() != null) {
+                for (TemaGridDTO tema : temasPadre) {
+                    temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
+                }
+                construirArbol();
+            }
+
+            actualizarResponsable();
+        }
+    }
+
+    /**
+     * Actualiza el literal de resonsable
+     */
+    public void actualizarResponsable() {
+        if (procedimientoSeleccionado.getComun() == 0) {
+            if (procedimientoSeleccionado.getUaResponsable() == null) {
+                lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
+            } else {
+                lopdResponsable = procedimientoSeleccionado.getUaResponsable().getNombre();
+            }
+        } else {
+            lopdResponsable = comunUA;
+        }
+    }
+
+    private void construirArbol() {
+        roots = new ArrayList<>();
+        UtilsArbolTemas.construirArbol(roots, temasPadre, temasPadreAnyadidos, procedimientoSeleccionado.getTemas(), temaServiceFacade);
+    }
+
 
     public void filtroHijasActivasChange() {
         if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
@@ -631,9 +759,14 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         // Verificamos si se ha modificado
         if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             ProcedimientoGridDTO proc = this.datoSeleccionado;
+            String recordamos = wfProcedimiento;
+            calcularProc();
             this.buscar();
             this.seleccionarPorId(proc);
-
+            if (recordamos != null) {
+                wfProcedimiento = recordamos;
+                cambiarProcedimientoSeleccionadoWF();
+            }
         }
     }
 
@@ -744,6 +877,67 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         }
     }
 
+    public void consultarNormativa() {
+        if (normativaSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", normativaSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("dialogNormativa", TypeModoAcceso.CONSULTA, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+        }
+    }
+
+    public void consultarDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put(TypeParametroVentana.ID.toString(), procedimientoSeleccionado.getCodigo() == null ? "" : procedimientoSeleccionado.getCodigoWF().toString());
+            UtilJSF.anyadirMochila("documento", this.documentoSeleccionado.clone());
+            params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
+            UtilJSF.openDialog("dialogDocumentoProcedimiento", TypeModoAcceso.CONSULTA, params, true, 800, 380);
+        }
+    }
+
+    public void consultarDocumentoLOPD() {
+        if (documentoLOPDSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", procedimientoSeleccionado.getCodigo() == null ? "" : procedimientoSeleccionado.getCodigo().toString());
+            UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado.clone());
+            params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
+            UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", TypeModoAcceso.CONSULTA, params, true, 800, 350);
+        }
+    }
+
+    public void consultarTema(Integer index) {
+        if (temasTabla == null || temasTabla.get(index) == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            TemaGridDTO tema = (TemaGridDTO) temasTabla.get(index).getData();
+            params.put("ID", tema.getCodigo().toString());
+            UtilJSF.openDialog("/entidades/dialogTema", TypeModoAcceso.CONSULTA, params, true, 700, 300);
+        }
+    }
+
+    private final Integer FASE_INICIACION = 1;
+
+    public void consultarTramite() {
+        if (tramiteSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            UtilJSF.anyadirMochila("fechaPublicacion", procedimientoSeleccionado.getFechaPublicacion());
+            UtilJSF.anyadirMochila("tramiteSel", tramiteSeleccionado.clone());
+            UtilJSF.anyadirMochila("uasInstructor", new ArrayList<>()); //uasInstructor);
+            UtilJSF.anyadirMochila("nombreProcedimiento", procedimientoSeleccionado.getNombreProcedimientoWorkFlow());
+            UtilJSF.openDialog("dialogProcedimientoTramite", TypeModoAcceso.CONSULTA, params, true, 950, 600);
+        }
+    }
+
+
     public void setFiltro(ProcedimientoFiltro filtro) {
         this.filtro = filtro;
     }
@@ -824,5 +1018,145 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         this.listPlataformas = listPlataformas;
     }
 
+    public ProcedimientoDTO getProcedimientoSeleccionado() {
+        return procedimientoSeleccionado;
+    }
 
+    public void setProcedimientoSeleccionado(ProcedimientoDTO procedimientoSeleccionado) {
+        this.procedimientoSeleccionado = procedimientoSeleccionado;
+    }
+
+    public String getUaRaiz() {
+        return uaRaiz;
+    }
+
+    public void setUaRaiz(String uaRaiz) {
+        this.uaRaiz = uaRaiz;
+    }
+
+    @Override
+    public String getIdioma() {
+        return idioma;
+    }
+
+    @Override
+    public void setIdioma(String idioma) {
+        this.idioma = idioma;
+    }
+
+    public String getWfProcedimiento() {
+        return wfProcedimiento;
+    }
+
+    public void setWfProcedimiento(String wfProcedimiento) {
+        this.wfProcedimiento = wfProcedimiento;
+    }
+
+    public ProcedimientoDTO getWfPublicado() {
+        return wfPublicado;
+    }
+
+    public void setWfPublicado(ProcedimientoDTO wfPublicado) {
+        this.wfPublicado = wfPublicado;
+    }
+
+    public ProcedimientoDTO getWfModificado() {
+        return wfModificado;
+    }
+
+    public void setWfModificado(ProcedimientoDTO wfModificado) {
+        this.wfModificado = wfModificado;
+    }
+
+    public NormativaGridDTO getNormativaSeleccionada() {
+        return normativaSeleccionada;
+    }
+
+    public void setNormativaSeleccionada(NormativaGridDTO normativaSeleccionada) {
+        this.normativaSeleccionada = normativaSeleccionada;
+    }
+
+    public ProcedimientoDocumentoDTO getDocumentoSeleccionado() {
+        return documentoSeleccionado;
+    }
+
+    public void setDocumentoSeleccionado(ProcedimientoDocumentoDTO documentoSeleccionado) {
+        this.documentoSeleccionado = documentoSeleccionado;
+    }
+
+    public ProcedimientoDocumentoDTO getDocumentoLOPDSeleccionado() {
+        return documentoLOPDSeleccionado;
+    }
+
+    public void setDocumentoLOPDSeleccionado(ProcedimientoDocumentoDTO documentoLOPDSeleccionado) {
+        this.documentoLOPDSeleccionado = documentoLOPDSeleccionado;
+    }
+
+    public TreeNode getTemaSeleccionado() {
+        return temaSeleccionado;
+    }
+
+    public void setTemaSeleccionado(TreeNode temaSeleccionado) {
+        this.temaSeleccionado = temaSeleccionado;
+    }
+
+    public ProcedimientoTramiteDTO getTramiteSeleccionado() {
+        return tramiteSeleccionado;
+    }
+
+    public void setTramiteSeleccionado(ProcedimientoTramiteDTO tramiteSeleccionado) {
+        this.tramiteSeleccionado = tramiteSeleccionado;
+    }
+
+    public List<TreeNode> getTemasTabla() {
+        return temasTabla;
+    }
+
+    public void setTemasTabla(List<TreeNode> temasTabla) {
+        this.temasTabla = temasTabla;
+    }
+
+    public List<TreeNode> getRoots() {
+        return roots;
+    }
+
+    public void setRoots(List<TreeNode> roots) {
+        this.roots = roots;
+    }
+
+    public List<TemaGridDTO> getTemasPadreAnyadidos() {
+        return temasPadreAnyadidos;
+    }
+
+    public void setTemasPadreAnyadidos(List<TemaGridDTO> temasPadreAnyadidos) {
+        this.temasPadreAnyadidos = temasPadreAnyadidos;
+    }
+
+    public String getIcono(TemaGridDTO valor) {
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return Constantes.INDEXAR_SIA_ICONO;
+        }
+    }
+
+    public String getTooltip(TemaGridDTO valor) {
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return "SIA: " + valor.getTipoMateriaSIA().getDescripcion().getTraduccion(this.getIdioma()) + " - " + valor.getTipoMateriaSIA().getCodigoSIA();
+        }
+    }
+
+    public String getIconoSIA() {
+        return Constantes.INDEXAR_SIA_ICONO;
+    }
+
+    public Literal getLopdResponsable() {
+        return lopdResponsable;
+    }
+
+    public void setLopdResponsable(Literal lopdResponsable) {
+        this.lopdResponsable = lopdResponsable;
+    }
 }

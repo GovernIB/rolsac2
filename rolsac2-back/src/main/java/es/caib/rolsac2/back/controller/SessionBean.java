@@ -162,6 +162,7 @@ public class SessionBean implements Serializable {
 
     public void cargarAlertas() {
         alertasAvisos = alertaService.getAlertas(seguridad.getIdentificadorUsuario(), perfiles, lang);
+
     }
 
     /************************************************************************************************************************************************
