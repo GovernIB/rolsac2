@@ -98,14 +98,14 @@
             <div class="form-row">
                 <div class="form-group col-lg-6 col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.organoCompetente']}:" />
-                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.comunUA.getTraduccion(viewProcedimientos.idioma)}"
+                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.comunUA.getTraduccion(viewProcedimientos.idioma)}"
                                    rendered="#{viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
                     <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.uaResponsable.nombre.getTraduccion(viewProcedimientos.idioma)}"
                                    rendered="#{!viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
                 </div>
                 <div class="form-group  col-lg-6 col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.organoInstructor']}:" />
-                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.comunUA.getTraduccion(viewProcedimientos.idioma)}"
+                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.comunUA.getTraduccion(viewProcedimientos.idioma)}"
                                    rendered="#{viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
                     <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.uaInstructor.nombre.getTraduccion(viewProcedimientos.idioma)}"
                                    rendered="#{!viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
@@ -258,11 +258,7 @@
                                  rowKey="#{td.codigo}" styleClass="noHeader">
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect"
-                                oncomplete="triggerDblClickPublico();"
-                                global="false"/>
 
-                     <!--   <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">-->
                         <p:column headerText="#{labels['dialogServicio.publicoObjetivo']}" styleClass="text-center">
                             <h:outputText value="#{td.descripcion.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
                         </p:column>

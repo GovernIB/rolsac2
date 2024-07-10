@@ -1159,4 +1159,12 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     public void setLopdResponsable(Literal lopdResponsable) {
         this.lopdResponsable = lopdResponsable;
     }
+	
+	public Literal getComunUA() {
+        return comunUA;
+    }
+
+    public void setComunUA(Literal comunUA) {
+        this.comunUA = comunUA;
+    }
 }

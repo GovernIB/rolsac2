@@ -712,10 +712,7 @@
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect"
-                                oncomplete="triggerDblClickPublico();"
-                                global="false"/>
-
+                        
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
                             <h:outputText value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                         </p:column>
