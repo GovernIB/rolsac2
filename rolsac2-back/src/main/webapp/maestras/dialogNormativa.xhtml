@@ -116,6 +116,8 @@
                         </p>
                         <p:inputText id="txtNumero" value="#{dialogNormativa.data.numero}"
                                      placeholder="NNNNN/YYYY"
+                                     required="#{empty param['formDialog:closeButton']}"
+                                     requiredMessage="#{labels['dict.obligatorio.numero']}"
                                      styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"
                         />
                     </div>
