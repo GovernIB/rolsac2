@@ -153,7 +153,7 @@ public class UtilJSF {
                     break;
                 //TO DO SUSTITUIR AL CREAR SU RESPECTIVA PÁGINA
                 case GESTOR:
-                    url = PATH_VIEWS_ENTIDAD + UtilJSF.getViewNameFromClass(ViewUnidadAdministrativa.class) + EXTENSION_XHTML;
+                    url = PATH_VIEWS_MAESTRAS + UtilJSF.getViewNameFromClass(ViewProcedimientos.class) + EXTENSION_XHTML;
                     break;
                 //TO DO SUSTITUIR AL CREAR SU RESPECTIVA PÁGINA
                 case INFORMADOR:

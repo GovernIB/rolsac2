@@ -496,14 +496,6 @@
                                 <c:when
                                         test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR}">
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewUnidadAdministrativaCont"
-                                                style=""
-                                                outcome="/entidades/viewUnidadAdministrativa.xhtml"
-                                                title="#{labels['viewUnidadAdministrativa.titulo']}">
-									<span class="mb-0 float-right #{view.viewId eq '/entidades/viewUnidadAdministrativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
-										#{labels['viewUnidadAdministrativa.titulo']}</span>
-                                        </p:link></li>
-                                    <li class="nav-item mt-3 mb-1 opcion-menu">
                                         <p:link id="viewProcedimientos"
                                                 outcome="/maestras/viewProcedimientos.xhtml"
                                                 title="#{labels['viewProcedimientos.titulo']}">
@@ -511,7 +503,6 @@
                                                 #{labels['viewProcedimientos.titulo']}
                                             </span>
                                         </p:link></li>
-
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
                                         <p:link id="viewServicios"
                                                 outcome="/maestras/viewServicios.xhtml"
