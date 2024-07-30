@@ -121,6 +121,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
                 data.setUnidadesAdministrativas(new ArrayList<>(unidadesAdministrativas));
                 data.setDocumentosNormativa(new ArrayList<>());
                 data.setAfectaciones(new ArrayList<>());
+                data.setVigente(true);
                 dataOriginal = data.clone();
                 dataOriginal.setUnidadesAdministrativas(new ArrayList<>(data.getUnidadesAdministrativas()));
                 dataOriginal.setAfectaciones(new ArrayList<>());
