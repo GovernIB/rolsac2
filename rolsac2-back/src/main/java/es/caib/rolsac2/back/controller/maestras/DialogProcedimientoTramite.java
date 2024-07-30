@@ -60,6 +60,9 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     private String ocultarIniciacion;
     private Date fechaPublicacion;
 
+    private boolean mostrarSoloIniciacion;
+    private List<ProcedimientoTramiteDTO> listaTramites;
+
     private Integer opcionTelematica = null;
 
     public void load() {
@@ -71,6 +74,13 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         uasInstructor = (List<Long>) UtilJSF.getValorMochilaByKey("uasInstructor");
         if (ocultarIniciacion != null && "S".equals(ocultarIniciacion)) {
             this.mostrarIniciacion = false;
+            this.mostrarSoloIniciacion = false;
+        }
+
+        listaTramites = (List<ProcedimientoTramiteDTO>) UtilJSF.getValorMochilaByKey("listaTramites");
+
+        if (listaTramites.isEmpty()) {
+            this.mostrarSoloIniciacion = true;
         }
 
         if (this.isModoEdicion() || this.isModoConsulta()) {
@@ -605,6 +615,22 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
     public void setMostrarIniciacion(boolean mostrarIniciacion) {
         this.mostrarIniciacion = mostrarIniciacion;
+    }
+
+    public boolean isMostrarSoloIniciacion() {
+        return mostrarSoloIniciacion;
+    }
+
+    public void setMostrarSoloIniciacion(boolean mostrarSoloIniciacion) {
+        this.mostrarSoloIniciacion = mostrarSoloIniciacion;
+    }
+
+    public List<ProcedimientoTramiteDTO> getListaTramites() {
+        return listaTramites;
+    }
+
+    public void setListaTramites(List<ProcedimientoTramiteDTO> listaTramites) {
+        this.listaTramites = listaTramites;
     }
 
     public String getOcultarIniciacion() {

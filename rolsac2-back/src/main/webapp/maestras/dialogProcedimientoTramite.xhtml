@@ -110,10 +110,13 @@
                                                   itemValue="1"
                                                   disabled="#{!dialogProcedimientoTramite.mostrarIniciacion}"/>
                                 </c:if>
+                            <c:if test="#{!dialogProcedimientoTramite.mostrarSoloIniciacion}">
                                 <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.instruccion']}"
                                               itemValue="2"/>
                                 <f:selectItem itemLabel="#{labels['viewTipoTramitacion.fasePro.finalizacion']}"
                                               itemValue="3"/>
+                            </c:if>
+
                                 <p:ajax update="txtTraPlantilla" listener="#{dialogProcedimientoTramite.cambiaFase}"
                                         event="change"/>
                             </p:selectOneMenu>
