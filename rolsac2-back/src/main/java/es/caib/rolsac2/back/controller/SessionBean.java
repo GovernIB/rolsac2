@@ -828,7 +828,7 @@ public class SessionBean implements Serializable {
                 opcion = "viewProcedimientos.titulo";
                 break;
             case INFORMADOR:
-                opcion = "viewUnidadAdministrativa.titulo";
+                opcion = "viewProcedimientos.titulo";
                 break;
             case SUPER_ADMINISTRADOR:
                 opcion = "viewTipoEntidades.titulo";
