@@ -93,9 +93,9 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         if (filtro.isRellenoVigente()) {
             if (filtro.getVigente()) {
                 sql.append(" and j.vigente is true ");
-            } else {
+            } /* Sólo se tiene en cuenta si vigente es true: else {
                 sql.append(" and j.vigente is false");
-            }
+            } */
         }
 
         if (filtro.isRellenoSoloValidas()) {
