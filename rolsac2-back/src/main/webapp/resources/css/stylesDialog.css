@@ -970,3 +970,7 @@ legend {
 	top: -10px;
 	left: -10px;
 }
+.pi-info-circle {
+	height: 30px;
+	width: 20px;
+}

@@ -1568,6 +1568,17 @@ a.iconoXarxes {
     margin: auto !important;
 }
 
+.p1  { padding:1px; }
+.p2  { padding:2px; }
+.p3  { padding:3px; }
+.p4  { padding:4px; }
+.p5  { padding:5px; }
+.p6  { padding:6px; }
+.p7  { padding:7px; }
+.p8  { padding:8px; }
+.p9  { padding:9px; }
+.p10 { padding:10px; }
+
 .pt1  { padding-top:1px; }
 .pt2  { padding-top:2px; }
 .pt3  { padding-top:3px; }

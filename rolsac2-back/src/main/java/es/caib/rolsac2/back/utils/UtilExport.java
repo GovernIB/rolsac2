@@ -1402,8 +1402,8 @@ public class UtilExport {
             pdf.close();
 
             InputStream stream = new ByteArrayInputStream(baos.toByteArray());
-            StreamedContent fileDownload = new DefaultStreamedContent(stream, "application/pdf", "Llistat" + tipo + "_" + getDia() + ".pdf");
-            return fileDownload;
+            //StreamedContent fileDownload = new DefaultStreamedContent(stream, "application/pdf", "Llistat" + tipo + "_" + getDia() + ".pdf");
+            return DefaultStreamedContent.builder().contentType("application/pdf").name("Llistat" + tipo + "_" + getDia() + ".pdf").stream(() -> stream).build();
 
         } catch (Exception e) {
             LOG.error("Error al generar el PDF", e);
@@ -1486,8 +1486,8 @@ public class UtilExport {
             document.save(outputStream);
 
             InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/pdf", tipo + ".pdf");
-            return streamedContent;
+            //StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/pdf", tipo + ".pdf");
+            return DefaultStreamedContent.builder().contentType("application/pdf").name(tipo + ".pdf").stream(() -> inputStream).build();
 
         } catch (Exception e) {
             LOG.error("Error al generar el PDF", e);
@@ -1541,8 +1541,8 @@ public class UtilExport {
             workbook.write(outputStream);
 
             InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/xls", "Llistat" + tipo + "_" + getDia() + ".xls");
-            return streamedContent;
+            //StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/xls", "Llistat" + tipo + "_" + getDia() + ".xls");
+            return DefaultStreamedContent.builder().contentType("application/xls").name("Llistat" + tipo + "_" + getDia() + ".xls").stream(() -> inputStream).build();
 
 
         } catch (Exception e) {

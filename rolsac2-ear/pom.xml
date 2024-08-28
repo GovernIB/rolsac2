@@ -141,15 +141,7 @@
                             <bundleFileName>rolsac2-api-interna.war</bundleFileName>
                         </webModule>
                         <!-- API INTERNA END -->
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
+
                     </modules>
                 </configuration>
             </plugin>
