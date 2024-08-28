@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <name>rolsac2</name>
     <description>rolsac2 Java EE 8 i JBOSS 7.2</description>
-    <!-- Referència al sistema de control de versions, ja sigui GIT, SVN, CVS .. -->
+    <!-- Referència al sistema de control de versions, ja sigui GIT, SVN, CVS... -->
     <!-- permetrà al plugin buildnumber-maven-plugin agafar la revisió/versió    -->
     <scm>
         <connection>scm:git:https://github.com/GovernIB/rolsac2.git</connection>
@@ -27,8 +27,8 @@
         <mp-openapi.version>1.1.2</mp-openapi.version>
         <mp-config.version>1.3</mp-config.version>
         <keycloak.version>6.0.1</keycloak.version>
-        <primefaces.version>8.0</primefaces.version>
-        <primefaces.theme.version>1.0.10</primefaces.theme.version>
+        <primefaces.version>14.0.2</primefaces.version>
+        <primefaces.theme.version>1.0.11</primefaces.theme.version>
         <mapstruct.version>1.4.1.Final</mapstruct.version>
         <junit.version>4.13.1</junit.version>
         <arquillian.version>1.6.0.Final</arquillian.version>
@@ -50,7 +50,7 @@
         <!--Versión de Jena para RDF-->
         <jena.version>2.6.4</jena.version>
         <rome.version>1.18.0</rome.version>
-		<solrapi.version>1.1.0</solrapi.version>
+		<solrapi.version>1.1.4</solrapi.version>
         <jaxws.maven.plugin.version>2.6</jaxws.maven.plugin.version>
     </properties>
     <dependencyManagement>
@@ -479,6 +479,20 @@
         </plugins>
     </build>
     <profiles>
+        <profile>
+            <id>dev</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-ear-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <configuration>
+                            <unpackTypes>war,jar</unpackTypes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <!-- Profile per fixar valors de producció als descriptors -->
             <id>produccio</id>
