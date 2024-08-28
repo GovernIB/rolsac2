@@ -13,6 +13,7 @@ import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,11 +93,40 @@ public class ViewTipoMediaFicha extends AbstractController implements Serializab
             }
 
             @Override
-            public Object getRowKey(TipoMediaFichaGridDTO pers) {
-                return pers.getCodigo().toString();
+            public String getRowKey(TipoMediaFichaGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
+            public List<TipoMediaFichaGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                try {
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
+                    }
+                    Pagina<TipoMediaFichaGridDTO> pagina = pagina = tipoMediaFichaService.findByFiltro(filtro);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<TipoMediaFichaGridDTO> pagina = pagina = new Pagina(new ArrayList(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
+            }
+
+
+
+            /*@Override
             public List<TipoMediaFichaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     if (!sortField.equals("filtro.orderBy")) {
@@ -112,7 +142,7 @@ public class ViewTipoMediaFicha extends AbstractController implements Serializab
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
-            }
+            }*/
         };
     }
 

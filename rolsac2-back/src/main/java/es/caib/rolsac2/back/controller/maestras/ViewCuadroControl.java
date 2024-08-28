@@ -225,7 +225,7 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         List<Number> valoresProcs = new ArrayList<>();
         valoresProcs.addAll(statsProcedimientos.getValores());
 
-        dataSetProcedimientos.setData(valoresProcs);
+        dataSetProcedimientos.setData(new ArrayList<>(valoresProcs));
         data.addChartDataSet(dataSetProcedimientos);
 
         //Añadimos los datos de altas para servicios
@@ -240,7 +240,7 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         List<Number> valoresServicios = new ArrayList<>();
         valoresServicios.addAll(statsServicios.getValores());
 
-        dataSetServicios.setData(valoresServicios);
+        dataSetServicios.setData(new ArrayList<>(valoresServicios));
         data.addChartDataSet(dataSetServicios);
 
         List<String> labels = new ArrayList<>();
@@ -254,8 +254,8 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         CartesianLinearAxes linearAxes = new CartesianLinearAxes();
         CartesianLinearTicks ticks = new CartesianLinearTicks();
         Long valorMax = Math.max(Collections.max(statsProcedimientos.getValores()), Collections.max(statsServicios.getValores()));
-        ticks.setMax(valorMax);
-        ticks.setBeginAtZero(true);
+        ticks.setMaxTicksLimit(valorMax);
+        //ticks.setBeginAtZero(true);
         linearAxes.setTicks(ticks);
         cScales.addYAxesData(linearAxes);
         options.setScales(cScales);
@@ -291,7 +291,7 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         List<Number> valoresProcs = new ArrayList<>();
         valoresProcs.addAll(statsProcedimientos.getValores());
 
-        dataSetProcedimientos.setData(valoresProcs);
+        dataSetProcedimientos.setData(new ArrayList<>(valoresProcs));
         data.addChartDataSet(dataSetProcedimientos);
 
         //Añadimos los datos de altas para servicios
@@ -306,7 +306,7 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         List<Number> valoresServicios = new ArrayList<>();
         valoresServicios.addAll(statsServicios.getValores());
 
-        dataSetServicios.setData(valoresServicios);
+        dataSetServicios.setData(new ArrayList<>(valoresServicios));
         data.addChartDataSet(dataSetServicios);
 
         List<String> labels = new ArrayList<>();
@@ -320,8 +320,8 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         CartesianLinearAxes linearAxes = new CartesianLinearAxes();
         CartesianLinearTicks ticks = new CartesianLinearTicks();
         Long valorMax = Math.max(Collections.max(statsProcedimientos.getValores()), Collections.max(statsServicios.getValores()));
-        ticks.setMax(valorMax);
-        ticks.setBeginAtZero(true);
+        ticks.setMaxTicksLimit(valorMax);
+        //ticks.setBeginAtZero(true);
         linearAxes.setTicks(ticks);
         cScales.addYAxesData(linearAxes);
 
@@ -359,7 +359,7 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         List<Number> valoresProcs = new ArrayList<>();
         valoresProcs.addAll(statsProcedimientos.getValores());
 
-        dataSetProcedimientos.setData(valoresProcs);
+        dataSetProcedimientos.setData(new ArrayList<>(valoresProcs));
         data.addChartDataSet(dataSetProcedimientos);
 
         //Añadimos los datos de altas para servicios
@@ -374,7 +374,7 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         List<Number> valoresServicios = new ArrayList<>();
         valoresServicios.addAll(statsServicios.getValores());
 
-        dataSetServicios.setData(valoresServicios);
+        dataSetServicios.setData(new ArrayList<>(valoresServicios));
         data.addChartDataSet(dataSetServicios);
 
         List<String> labels = new ArrayList<>();
@@ -388,8 +388,8 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
         CartesianLinearAxes linearAxes = new CartesianLinearAxes();
         CartesianLinearTicks ticks = new CartesianLinearTicks();
         Long valorMax = Math.max(Collections.max(statsProcedimientos.getValores()), Collections.max(statsServicios.getValores()));
-        ticks.setMax(valorMax);
-        ticks.setBeginAtZero(true);
+        ticks.setMaxTicksLimit(valorMax);
+        //ticks.setBeginAtZero(true);
         linearAxes.setTicks(ticks);
         cScales.addYAxesData(linearAxes);
 
@@ -442,7 +442,7 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
             List<Number> valoresProcs = new ArrayList<>();
             valoresProcs.addAll(estadisticaProcedimientos.getValores());
 
-            dataSetProcedimientos.setData(valoresProcs);
+            dataSetProcedimientos.setData(new ArrayList<>(valoresProcs));
             data.addChartDataSet(dataSetProcedimientos);
 
             //Añadimos los datos para servicios
@@ -456,7 +456,7 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
             List<Number> valoresServicios = new ArrayList<>();
             valoresServicios.addAll(estadisticaServicios.getValores());
 
-            dataSetServicios.setData(valoresServicios);
+            dataSetServicios.setData(new ArrayList<>(valoresServicios));
             data.addChartDataSet(dataSetServicios);
 
             //Añadimos los datos para Uas
@@ -470,7 +470,7 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
             List<Number> valoresUa = new ArrayList<>();
             valoresUa.addAll(estadisticaUas.getValores());
 
-            dataSetUas.setData(valoresUa);
+            dataSetUas.setData(new ArrayList<>(valoresUa));
             data.addChartDataSet(dataSetUas);
 
             List<String> labels = new ArrayList<>();
@@ -485,8 +485,7 @@ public class ViewCuadroControl extends AbstractController implements Serializabl
             CartesianLinearTicks ticks = new CartesianLinearTicks();
             Long valorMax = Math.max(Collections.max(estadisticaProcedimientos.getValores()), Collections.max(estadisticaServicios.getValores()));
             valorMax = Math.max(valorMax, Collections.max(estadisticaUas.getValores()));
-            ticks.setMax(valorMax);
-            ticks.setBeginAtZero(true);
+            ticks.setMaxTicksLimit(valorMax);
             linearAxes.setTicks(ticks);
             cScales.addYAxesData(linearAxes);
             options.setScales(cScales);

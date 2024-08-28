@@ -77,10 +77,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoLegitimacion.datoSeleccionado}"
-                         rowKey="#{tipoLegitimacion.codigo}"
                          reflow="true"
-                         sortBy="#{viewTipoLegitimacion.filtro.orderBy}"
-                         sortOrder="#{viewTipoLegitimacion.filtro.order}"
                          style="min-height: 300px;"
             >
                 <!--<p:ajax event="rowDblselect" listener="#{viewPersonal.consultarPersonal}"
@@ -100,11 +97,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <f:facet name="header">#{labels['dict.identificador']}</f:facet>
                     <h:outputText value="#{tipoLegitimacion.identificador}"/>
                 </p:column>
-                <p:column sortBy="#{tipoLegitimacion.descripcion}" styleClass="overflow-datagrid-cell">
+                <p:column styleClass="overflow-datagrid-cell">
                     <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
                     <h:outputText value="#{tipoLegitimacion.descripcion.getTraduccion(sessionBean.lang)}"/>
                 </p:column>
-                <p:column sortBy="#{tipoLegitimacion.descripcion}" styleClass="overflow-datagrid-cell">
+                <p:column styleClass="overflow-datagrid-cell">
                     <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
                     <h:outputText value="#{tipoLegitimacion.descripcion.getTraduccion(sessionBean.lang)}"/>
                 </p:column>

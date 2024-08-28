@@ -81,10 +81,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewPublicoObjetivoEntidad.datoSeleccionado}"
-                         rowKey="#{pubobjent.codigo}"
                          reflow="true"
-                         sortBy="#{viewPublicoObjetivoEntidad.filtro.orderBy}"
-                         sortOrder="#{viewPublicoObjetivoEntidad.filtro.order}"
                          style="min-height: 300px;"
             >
                 <!--<p:ajax event="rowDblselect" listener="#{viewPublicoObjetivoEntidad.consultarprocedimiento}"

@@ -16,6 +16,7 @@ import org.primefaces.component.export.Exporter;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +75,11 @@ public class ViewUsuario extends AbstractController implements Serializable {
             private static final long serialVersionUID = 1L;
 
             @Override
+            public String getRowKey(UsuarioGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+            @Override
             public UsuarioGridDTO getRowData(String rowKey) {
                 for (UsuarioGridDTO pers : (List<UsuarioGridDTO>) getWrappedData()) {
                     if (pers.getCodigo().toString().equals(rowKey)) {
@@ -84,11 +90,39 @@ public class ViewUsuario extends AbstractController implements Serializable {
             }
 
             @Override
-            public Object getRowKey(UsuarioGridDTO pers) {
-                return pers.getCodigo().toString();
+            public List<UsuarioGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                try {
+                    filtro.setIdioma(sessionBean.getLang());
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
+                    }
+                    Pagina<UsuarioGridDTO> pagina = null;
+                    if (sessionBean.getPerfil() != TypePerfiles.SUPER_ADMINISTRADOR) {
+                        pagina = administracionEntService.findByFiltro(filtro);
+                    } else {
+                        pagina = administracionEntService.findAllUsuariosByFiltro(filtro);
+                    }
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<UsuarioGridDTO> pagina = new Pagina(new ArrayList(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
             }
 
-            @Override
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
+            }
+
+
+            /*@Override
             public List<UsuarioGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
@@ -111,7 +145,7 @@ public class ViewUsuario extends AbstractController implements Serializable {
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
-            }
+            }*/
         };
     }
 
@@ -148,7 +182,7 @@ public class ViewUsuario extends AbstractController implements Serializable {
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogUsuario", modoAcceso, params, true, 935, 445);
+        UtilJSF.openDialog("dialogUsuario", modoAcceso, params, true, 935, 610);
     }
 
     public void borrarUsuario() {

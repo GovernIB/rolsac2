@@ -152,7 +152,7 @@
 
                     </p:dataTable>
                     <div class="w5 ml-2 d-flex flex-column align-items-center g-5">
-                        <p:commandButton id="btnNuevaPropiedad" icon="fa fa-plus"
+                        <p:commandButton id="btnNuevaPropiedad" icon="pi pi-plus"
                                          title="#{msg['botones.nuevo']}"
                                          actionListener="#{dialogPlugins.nuevaPropiedad()}" process="@this"
                                          update="messagesDialog"
@@ -161,7 +161,7 @@
                             <p:ajax event="dialogReturn" listener="#{dialogPlugins.returnDialogo}"
                                     update="messagesDialog dataTablePropiedades"/>
                         </p:commandButton>
-                        <p:commandButton id="btnEditarPropiedad" icon="fa fa-edit"
+                        <p:commandButton id="btnEditarPropiedad" icon="pi pi-pencil"
                                          title="#{msg['botones.editar']}"
                                          actionListener="#{dialogPlugins.editarPropiedad()}" process="@this"
                                          update="messagesDialog"
@@ -170,18 +170,18 @@
                             <p:ajax event="dialogReturn" listener="#{dialogPlugins.returnDialogo}"
                                     update="messagesDialog dataTablePropiedades"/>
                         </p:commandButton>
-                        <p:commandButton id="btnEliminarPropiedad" icon="fa fa-minus"
+                        <p:commandButton id="btnEliminarPropiedad" icon="pi pi-minus"
                                          title="#{msg['botones.eliminar']}"
                                          actionListener="#{dialogPlugins.quitarPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogPlugins.modoAcceso!='TypeModoAcceso.CONSULTA'}"
                                          styleClass="p-2"/>
-                        <p:commandButton icon="fa fa-arrow-up" title="#{msg['botones.subir']}"
+                        <p:commandButton icon="pi pi-arrow-up" title="#{msg['botones.subir']}"
                                          actionListener="#{dialogPlugins.subirPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogPlugins.modoAcceso!='TypeModoAcceso.CONSULTA'}"
                                          styleClass="p-2"/>
-                        <p:commandButton icon="fa fa-arrow-down" title="#{msg['botones.bajar']}"
+                        <p:commandButton icon="pi pi-arrow-down" title="#{msg['botones.bajar']}"
                                          actionListener="#{dialogPlugins.bajarPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogPlugins.modoAcceso!='TypeModoAcceso.CONSULTA'}"
@@ -191,6 +191,24 @@
                 </div>
             </div>
         </p:panel>
+        <h:outputScript>
+            /*
+            window.onload = function() {
+            alert('ini3');
+            var classes = document.getElementsByClassName('ui-icon-extlink');
+            if (document.getElementsByClassName('ui-icon-extlink').length > 0) {
+            alert(classes);
+            var elspan = classes[0];
+            alert(elspan);
+            elspan.classList.remove('ui-icon-extlink');
+            elspan.classList.add('pi pi-window-maximize');
+            alert('fi');
+            } else {
+            alert('no hi ha');
+            }
+            };
+                */
+        </h:outputScript>
         <h:outputScript rendered="#{dialogPlugins.modoAcceso!='TypeModoAcceso.CONSULTA'}">
             function rcEditarPropiedad() {
                 document.getElementById("formDialog:btnEditarPropiedad").click();

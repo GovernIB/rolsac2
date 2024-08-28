@@ -670,6 +670,13 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         }
     }
 
+    public void test1() {
+        // Muestra dialogo
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.openDialog("test", TypeModoAcceso.CONSULTA, params, true, 400, 400);
+    }
+
+
     private void abrirVentana(TypeModoAcceso modoAcceso, ProcedimientoDTO proc) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
@@ -708,30 +715,43 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void buscar() {
         filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
-        lazyModel = new LazyDataModel<>() {
+        lazyModel = new LazyDataModel<ProcedimientoGridDTO>() {
             private static final long serialVersionUID = 1L;
 
             @Override
+            public String getRowKey(ProcedimientoGridDTO procedimiento) {
+                return procedimiento.getCodigo().toString();
+            }
+
+            @Override
             public ProcedimientoGridDTO getRowData(String rowKey) {
-                if (getWrappedData() != null) {
-                    for (ProcedimientoGridDTO proc : (List<ProcedimientoGridDTO>) getWrappedData()) {
-                        if (proc.getCodigo().toString().equals(rowKey)) return proc;
+                for (Object o : this.getWrappedData()) {
+                    ProcedimientoGridDTO proc = (ProcedimientoGridDTO) o;
+                    if (proc.getCodigo() == Integer.parseInt(rowKey)) {
+                        return proc;
                     }
                 }
+
                 return null;
             }
 
+
             @Override
-            public Object getRowKey(ProcedimientoGridDTO proc) {
-                return proc.getCodigo().toString();
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
-            public List<ProcedimientoGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<ProcedimientoGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
                     if (filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
                         List<Long> unidadesHijasAux = new ArrayList<>(filtro.getIdUAsHijas());
@@ -757,7 +777,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
-        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             ProcedimientoGridDTO proc = this.datoSeleccionado;
             String recordamos = wfProcedimiento;
             calcularProc();
@@ -1159,8 +1179,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     public void setLopdResponsable(Literal lopdResponsable) {
         this.lopdResponsable = lopdResponsable;
     }
-	
-	public Literal getComunUA() {
+
+    public Literal getComunUA() {
         return comunUA;
     }
 

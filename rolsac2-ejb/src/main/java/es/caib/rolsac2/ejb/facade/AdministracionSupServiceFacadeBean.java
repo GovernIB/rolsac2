@@ -195,6 +195,29 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<EntidadGridDTO> listEntidadByFiltro(EntidadFiltro filtro) {
+        try {
+            return entidadRepository.findPagedByFiltro(filtro);
+        } catch (Exception e) {
+            LOG.error(ERROR_LITERAL, e);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public long countEntidadByFiltro(EntidadFiltro filtro) {
+        try {
+            return entidadRepository.countByFiltro(filtro);
+
+        } catch (Exception e) {
+            LOG.error(ERROR_LITERAL, e);
+            return 0;
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<EntidadDTO> findEntidadActivas() {
         try {
             List<EntidadDTO> entidadesActivas = new ArrayList<>();
@@ -232,16 +255,24 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
     }
 
     @Override
-    // @RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Pagina<ConfiguracionGlobalGridDTO> findConfGlobalByFiltro(ConfiguracionGlobalFiltro filtro) {
+    @RolesAllowed({TypePerfiles.SUPER_ADMINISTRADOR_VALOR})
+    public List<ConfiguracionGlobalGridDTO> listConfGlobalByFiltro(ConfiguracionGlobalFiltro filtro) {
         try {
-            List<ConfiguracionGlobalGridDTO> items = configuracionGlobalRepository.findPagedByFiltro(filtro);
-            long total = configuracionGlobalRepository.countByFiltro(filtro);
-            return new Pagina<>(items, total);
+            return configuracionGlobalRepository.findPagedByFiltro(filtro);
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
-            return new Pagina<>(new ArrayList<>(), 0);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.SUPER_ADMINISTRADOR_VALOR})
+    public int countConfGlobalByFiltro(ConfiguracionGlobalFiltro filtro) {
+        try {
+            return (int) configuracionGlobalRepository.countByFiltro(filtro);
+        } catch (Exception e) {
+            LOG.error(ERROR_LITERAL, e);
+            return 0;
         }
     }
 

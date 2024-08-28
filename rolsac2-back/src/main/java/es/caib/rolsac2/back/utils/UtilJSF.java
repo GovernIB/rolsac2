@@ -3,7 +3,6 @@ package es.caib.rolsac2.back.utils;
 import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.controller.maestras.ViewEntidades;
 import es.caib.rolsac2.back.controller.maestras.ViewProcedimientos;
-import es.caib.rolsac2.back.controller.maestras.ViewUnidadAdministrativa;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;

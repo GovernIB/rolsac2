@@ -399,4 +399,6 @@ public interface UnidadAdministrativaServiceFacade {
      * @return
      */
     UnidadAdministrativaDTO findUaRaizByEntidad(Long idEntidad);
+
+    List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro);
 }

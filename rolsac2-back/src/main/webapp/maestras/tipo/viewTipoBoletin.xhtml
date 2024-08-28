@@ -76,10 +76,7 @@ Pàgina amb el llistat de TipoBoletin
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoBoletin.datoSeleccionado}"
-                         rowKey="#{TipoBoletin.codigo}"
                          reflow="true"
-                         sortBy="#{viewTipoBoletin.filtro.orderBy}"
-                         sortOrder="#{viewTipoBoletin.filtro.order}"
                          style="min-height: 300px;"
             >
                 <!--<p:ajax event="rowDblselect" listener="#{viewTipoBoletin.consultarTipoBoletin}"

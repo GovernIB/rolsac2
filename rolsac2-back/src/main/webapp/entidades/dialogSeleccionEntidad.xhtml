@@ -49,10 +49,7 @@
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{dialogSeleccionEntidad.datoSeleccionado}"
-                         rowKey="#{enti.codigo}"
                          reflow="true"
-                         sortBy="#{dialogSeleccionEntidad.filtro.orderBy}"
-                         sortOrder="#{dialogSeleccionEntidad.filtro.order}"
                          style="min-height: 300px;">
                 <p:ajax event="rowUnselect" global="false"  update="@form:btnAnyadir"  process="@form" />
                 <p:ajax event="rowSelect" global="false"  update="@form:btnAnyadir"  process="@form" />

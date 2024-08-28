@@ -16,10 +16,7 @@ import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.primefaces.model.StreamedContent;
+import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,10 +109,11 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
             }
 
             @Override
-            public Object getRowKey(UnidadAdministrativaGridDTO pers) {
+            public String getRowKey(UnidadAdministrativaGridDTO pers) {
                 return pers.getCodigo().toString();
             }
 
+            /*
             @Override
             public List<UnidadAdministrativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
@@ -128,6 +126,31 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
                     setRowCount((int) pagina.getTotal());
 
                     return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<UnidadAdministrativaGridDTO> pagina = new Pagina(new ArrayList(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
+            }*/
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return unidadAdministrativaService.countByFiltro(filtro);
+            }
+
+            @Override
+            public List<UnidadAdministrativaGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                try {
+                    filtro.setIdioma(sessionBean.getLang());
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
+                    }
+                    return unidadAdministrativaService.findPagedByFiltro(filtro);
                 } catch (Exception e) {
                     LOG.error("Error llamando", e);
                     Pagina<UnidadAdministrativaGridDTO> pagina = new Pagina(new ArrayList(), 0);

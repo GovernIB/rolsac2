@@ -10,6 +10,7 @@ import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class DialogSeleccionUsuario extends AbstractController implements Serial
         return lazyModel;
     }
 
-    public void load(){
+    public void load() {
         this.setearIdioma();
         LOG.debug("load");
         filtro = new UsuarioFiltro();
@@ -64,26 +65,32 @@ public class DialogSeleccionUsuario extends AbstractController implements Serial
             @Override
             public UsuarioGridDTO getRowData(String rowKey) {
                 for (UsuarioGridDTO pers : (List<UsuarioGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
 
             @Override
-            public Object getRowKey(UsuarioGridDTO pers) {
-                return pers.getCodigo().toString();
+            public String getRowKey(UsuarioGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
-            public List<UsuarioGridDTO> load(int first, int pageSize, String sortField,
-                                             SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<UsuarioGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<UsuarioGridDTO> pagina = AdministracionEntServiceFacade.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
@@ -141,6 +148,7 @@ public class DialogSeleccionUsuario extends AbstractController implements Serial
     public void setFiltro(UsuarioFiltro filtro) {
         this.filtro = filtro;
     }
+
     public void setFiltroTexto(String texto) {
         if (Objects.nonNull(this.filtro)) {
             this.filtro.setTexto(texto);

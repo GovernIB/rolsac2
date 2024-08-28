@@ -244,13 +244,16 @@
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewUnidadAdministrativa.datoSeleccionado}"
-                         rowKey="#{unidadAdministrativa.codigo}"
                          reflow="true"
-                         sortBy="#{viewUnidadAdministrativa.filtro.orderBy}"
-                         sortOrder="#{viewUnidadAdministrativa.filtro.order}"
+                         selectionMode="single" selection="#{viewUnidadAdministrativa.datoSeleccionado}"
                          style="min-height: 300px;"
             >
+                <!--
+
+                         rowKey="#{unidadAdministrativa.codigo}"
+                         sortBy="#{viewUnidadAdministrativa.filtro.orderBy}"
+                         sortOrder="#{viewUnidadAdministrativa.filtro.order}"
+                         -->
                 <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar @form:btnEvolucionar" process="@form"/>
                 <p:ajax
                         event="rowDblselect"

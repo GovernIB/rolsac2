@@ -58,7 +58,6 @@
                         <p:remoteCommand name="commandSetearOpcion"
                                          action="#{sessionBean.setearOpcion}" process="@all"/>
 
-                        <p:panelGrid id="opcionesMenu">
                             <c:choose>
                                 <c:when
                                         test="#{sessionBean.getPerfil() == TypePerfiles.SUPER_ADMINISTRADOR}">
@@ -167,28 +166,25 @@
                                         </div>
                                     </div>
                                 </c:when>
-                                <c:when
-                                        test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD }">
+                                <c:when test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD }">
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewConfiguracionEntidad"
-                                                outcome="/entidades/viewConfiguracionEntidad.xhtml"
-                                                title="#{labels['viewCuadroControl.titulo']}">
+                                        <a href="#{request.contextPath}/entidades/viewConfiguracionEntidad.xhtml" class="ui-link ui-widget">
                                             <span class="mb-0 float-right #{view.viewId eq '/entidades/viewConfiguracionEntidad.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
                                                 #{labels['viewConfiguracionEntidad.titulo']}
                                             </span>
-                                        </p:link>
+                                        </a>
                                     </li>
-                                    <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewPlugins"
-                                                outcome="/entidades/viewPlugins.xhtml"
-                                                title="#{labels['viewPlugins.titulo']}">
+                                    <li class="menuD nav-item mt-3 mb-1 opcion-menu">
+                                        <a href="#{request.contextPath}/entidades/viewPlugins.xhtml" class="ui-link ui-widget">
                                             <span class="mb-0 float-right #{view.viewId eq '/entidades/viewPlugins.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
                                                 #{labels['viewPlugins.titulo']}
                                             </span>
-                                        </p:link></li>
-                                    <li class="menuD nav-item mt-3 mb-1 opcion-menu" onclick="showMenuUsuarios()">
+                                        </a>
+                                    </li>
+                                    <li class="menuD nav-item mt-3 mb-1 opcion-menu"
+                                        onclick="showMenuUsuarios()">
                                         <a href="#">
-                                        <span class="mb-0 float-right dropdown-toggle rosa spanClick #{sessionBean.isAdminUsuariosActivo() ? 'font-weight-bold' : 'font-weight-light'}"
+                                            <span class="mb-0 float-right dropdown-toggle rosa spanClick #{sessionBean.isAdminUsuariosActivo() ? 'font-weight-bold' : 'font-weight-light'}"
                                               data-bs-toggle="dropdown">#{labels['menu.label.adm.usuarios']}</span>
                                         </a>
                                         <div class="menuTipos mt-4" id="menuUsuarios">
@@ -407,133 +403,72 @@
                                         </div>
                                     </li>
 
-
-                                    <!-- SIA , SOLR e indexacion, ver rolsac1 -->
-                                    <!--
-                                        <p:link styleClass="pb-4 dropdown-item mobil" outcome="entidades/viewMantenimientoProcesos.xhtml"
-                                                title="#{labels.configuracio_link}">
-                                            <span class="mb-0 float-right ">Manten. procesos</span>
-                                        </p:link>
-                                        <p:link styleClass="pb-4 dropdown-item mobil" outcome="entidades/viewRolesPermisos.xhtml"
-                                                title="#{labels.configuracio_link}">
-                                            <span class="mb-0 float-right ">Gestión permisos</span>
-                                        </p:link>
-                                        <p:link styleClass="pb-4 dropdown-item mobil" outcome="entidades/viewPlugins.xhtml"
-                                                title="#{labels.configuracio_link}">
-                                            <span class="mb-0 float-right ">Plugins</span>
-                                        </p:link>
-                                        <p:link styleClass="pb-4 dropdown-item mobil" outcome="/monitorizacion/viewAvisos.xhtml"
-                                                title="#{labels.configuracio_link}">
-                                            <span class="mb-0 float-right ">Avisos y alertas</span>
-                                        </p:link>
-                                        <p:link styleClass="pb-4 dropdown-item mobil" outcome="/monitorizacion/viewEstadisticas.xhtml"
-                                                title="#{labels.configuracio_link}">
-                                            <span class="mb-0 float-right ">Estadísticas</span>
-                                        </p:link>
-                                        <p:link styleClass="pb-4 dropdown-item mobil" outcome="/monitorizacion/viewAcontecimientos.xhtml"
-                                                title="#{labels.configuracio_link}">
-                                            <span class="mb-0 float-right ">Acontecimientos</span>
-                                        </p:link> -->
                                 </c:when>
-                                <c:when
-                                        test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS}">
+                                <c:when test="#{sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS}">
+
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewUnidadAdministrativaCont"
-                                                style=""
-                                                outcome="/entidades/viewUnidadAdministrativa.xhtml"
-                                                title="#{labels['viewUnidadAdministrativa.titulo']}">
-									<span class="mb-0 float-right #{view.viewId eq '/entidades/viewUnidadAdministrativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
-										#{labels['viewUnidadAdministrativa.titulo']}</span>
-                                        </p:link></li>
-                                    <!--<li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link styleClass="#{sessionBean.isActive('viewSeccion.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
-                                                outcome="/superadministrador/viewSeccion.xhtml"
-                                                title="#{labels['viewSeccion.titulo']}"
-                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewSeccion.titulo'}]); return true;">
-                                        <span class="mb-0 float-right ">
-                                            #{labels['viewSeccion.titulo']}</span>
-                                        </p:link></li>
+                                        <a href="#{request.contextPath}/entidades/viewUnidadAdministrativa.xhtml" class="ui-link ui-widget">
+                                            <span class="mb-0 float-right #{view.viewId eq '/entidades/viewUnidadAdministrativa' ? 'font-weight-bold' : 'font-weight-light'}">
+                                                #{labels['viewUnidadAdministrativa.titulo']}
+                                            </span>
+                                        </a>
+                                    </li>
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link styleClass="#{sessionBean.isActive('viewPersonal.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
-                                                outcome="/maestras/viewPersonal.xhtml"
-                                                title="#{labels['viewPersonal.titulo']}"
-                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewPersonal.titulo'}]); return true;">
-                                            <span class="mb-0 float-right">#{labels['viewPersonal.titulo']}</span>
-                                        </p:link></li>
-                                    <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link styleClass="#{sessionBean.isActive('viewFichas.titulo') ? 'font-weight-bold' : 'font-weight-light'}"
-                                                outcome="/maestras/viewFichas.xhtml"
-                                                title="#{labels['viewFichas.titulo']}"
-                                                onclick="commandSetearOpcion([{name: 'opcion', value: 'viewFichas.titulo'}]); return true;">
-                                            <span class="mb-0 float-right">#{labels['viewFichas.titulo']}</span>
-                                        </p:link></li>-->
-                                    <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewNormativas"
-                                                outcome="/maestras/viewNormativa.xhtml"
-                                                title="#{labels['viewNormativas.titulo.pagina']}">
+                                        <a href="#{request.contextPath}/maestras/viewNormativa.xhtml" class="ui-link ui-widget">
                                             <span class="mb-0 float-right #{view.viewId eq '/maestras/viewNormativa.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
                                                 #{labels['viewNormativas.titulo.pagina']}
                                             </span>
-                                        </p:link></li>
+                                        </a>
+                                    </li>
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewProcedimientos"
-                                                outcome="/maestras/viewProcedimientos.xhtml"
-                                                title="#{labels['viewProcedimientos.titulo']}">
+                                        <a href="#{request.contextPath}/maestras/viewProcedimientos.xhtml" class="ui-link ui-widget">
                                             <span class="mb-0 float-right #{view.viewId eq '/maestras/viewProcedimientos.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
                                                 #{labels['viewProcedimientos.titulo']}
                                             </span>
-                                        </p:link></li>
+                                        </a>
+                                    </li>
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewServicios"
-                                                outcome="/maestras/viewServicios.xhtml"
-                                                title="#{labels['viewServicios.titulo']}">
+                                        <a href="#{request.contextPath}/maestras/viewServicios.xhtml" class="ui-link ui-widget">
                                             <span class="mb-0 float-right #{view.viewId eq '/maestras/viewServicios.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
                                                 #{labels['viewServicios.titulo']}
                                             </span>
-                                        </p:link></li>
+                                        </a>
+                                    </li>
 
                                 </c:when>
-                                <c:when
-                                        test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR}">
+                                <c:when test="#{sessionBean.getPerfil() == TypePerfiles.GESTOR}">
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewProcedimientos"
-                                                outcome="/maestras/viewProcedimientos.xhtml"
-                                                title="#{labels['viewProcedimientos.titulo']}">
+                                        <a href="#{request.contextPath}/maestras/viewProcedimientos.xhtml" class="ui-link ui-widget">
                                             <span class="mb-0 float-right #{view.viewId eq '/maestras/viewProcedimientos.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
                                                 #{labels['viewProcedimientos.titulo']}
                                             </span>
-                                        </p:link></li>
+                                        </a>
+                                    </li>
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewServicios"
-                                                outcome="/maestras/viewServicios.xhtml"
-                                                title="#{labels['viewServicios.titulo']}">
+                                        <a href="#{request.contextPath}/maestras/viewServicios.xhtml" class="ui-link ui-widget">
                                             <span class="mb-0 float-right #{view.viewId eq '/maestras/viewServicios.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
                                                 #{labels['viewServicios.titulo']}
                                             </span>
-                                        </p:link></li>
+                                        </a>
+                                    </li>
                                 </c:when>
-                                <c:when
-                                        test="#{sessionBean.getPerfil() == TypePerfiles.INFORMADOR}">
+                                <c:when test="#{sessionBean.getPerfil() == TypePerfiles.INFORMADOR}">
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewProcedimientos"
-                                                outcome="/maestras/viewProcedimientos.xhtml"
-                                                title="#{labels['viewProcedimientos.titulo']}">
+                                        <a href="#{request.contextPath}/maestras/viewProcedimientos.xhtml" class="ui-link ui-widget">
                                             <span class="mb-0 float-right #{view.viewId eq '/maestras/viewProcedimientos.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
                                                 #{labels['viewProcedimientos.titulo']}
                                             </span>
-                                        </p:link></li>
+                                        </a>
+                                    </li>
                                     <li class="nav-item mt-3 mb-1 opcion-menu">
-                                        <p:link id="viewServicios"
-                                                outcome="/maestras/viewServicios.xhtml"
-                                                title="#{labels['viewServicios.titulo']}">
+                                        <a href="#{request.contextPath}/maestras/viewServicios.xhtml" class="ui-link ui-widget">
                                             <span class="mb-0 float-right #{view.viewId eq '/maestras/viewServicios.xhtml' ? 'font-weight-bold' : 'font-weight-light'}">
                                                 #{labels['viewServicios.titulo']}
                                             </span>
-                                        </p:link></li>
-
+                                        </a>
+                                    </li>
                                 </c:when>
                             </c:choose>
-                        </p:panelGrid>
 
                     </ul>
 

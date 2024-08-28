@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
 >
-<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+<ui:composition template="/WEB-INF/templates/layoutDialog2.xhtml">
     <ui:define name="metadata">
         <f:metadata>
             <f:viewAction action="#{dialogSeleccionTipoPublicoObjetivoEntidad.load}"/>
@@ -14,11 +14,13 @@
         <h:outputFormat value="#{labels['viewTipoPublicoObjetivoEntidad.titulo']}"/>
     </ui:define>
     <ui:define name="contentDialog">
+        XX2
         <p:growl id="messagesDialog"
                  globalOnly="false"
                  showDetail="false"
                  life="5000"
                  escape="false"/>
+        <div class="row" style="margin-right: 0px;">
         <div class="ui-g-12 ui-md-8 pl-4 panel-container">
             <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{dialogSeleccionTipoPublicoObjetivoEntidad.buscar}"
@@ -49,10 +51,7 @@
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{dialogSeleccionTipoPublicoObjetivoEntidad.datoSeleccionado}"
-                         rowKey="#{pubobjent.codigo}"
                          reflow="true"
-                         sortBy="#{dialogSeleccionTipoPublicoObjetivoEntidad.filtro.orderBy}"
-                         sortOrder="#{dialogSeleccionTipoPublicoObjetivoEntidad.filtro.order}"
                          style="min-height: 250px;">
                 <p:ajax event="rowUnselect" global="false"  update="@form:btnAnyadir"  process="@form" />
                 <p:ajax event="rowSelect" global="false"  update="@form:btnAnyadir"  process="@form" />
@@ -112,6 +111,7 @@
                                  process="@this" update="dataTablePubObjEnt messagesDialog"/>
             </div>
             <label style="color:red;margin:5px">#{labels['dialogSeleccionTipoPublicoObjetivoEntidad.mensaje.empleadoPublico']}</label>
+        </div>
         </div>
     </ui:define>
     <ui:define name="contentFooterDialogRight">

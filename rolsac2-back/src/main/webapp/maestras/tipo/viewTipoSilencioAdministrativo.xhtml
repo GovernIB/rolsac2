@@ -82,10 +82,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoSilencioAdministrativo.datoSeleccionado}"
-                         rowKey="#{tipoSilencioAdministrativo.codigo}"
                          reflow="true"
-                         sortBy="#{viewTipoSilencioAdministrativo.filtro.orderBy}"
-                         sortOrder="#{viewTipoSilencioAdministrativo.filtro.order}"
                          style="min-height: 300px;"
             >
                 <!--<p:ajax event="rowDblselect" listener="#{viewTipoSilencioAdministrativo.consultarPersonal}"

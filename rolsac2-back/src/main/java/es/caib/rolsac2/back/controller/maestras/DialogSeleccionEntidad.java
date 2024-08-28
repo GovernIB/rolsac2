@@ -11,6 +11,7 @@ import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +81,41 @@ public class DialogSeleccionEntidad extends AbstractController implements Serial
             }
 
             @Override
+            public String getRowKey(EntidadGridDTO procedimiento) {
+                return procedimiento.getCodigo().toString();
+            }
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
+            }
+
+            @Override
+            public List<EntidadGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+
+                try {
+                    filtro.setIdioma(sessionBean.getLang());
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
+                    }
+                    Pagina<EntidadGridDTO> pagina = administracionSupServiceFacade.findEntidadByFiltro(filtro);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<EntidadGridDTO> pagina = new Pagina<>(new ArrayList<>(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
+
+            }
+
+/*
+                @Override
             public List<EntidadGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
                                              Map<String, FilterMeta> filterBy) {
                 try {
@@ -97,7 +133,7 @@ public class DialogSeleccionEntidad extends AbstractController implements Serial
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
-            }
+            }*/
         };
     }
 

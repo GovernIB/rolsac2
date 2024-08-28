@@ -58,6 +58,22 @@ public interface AdministracionSupServiceFacade {
     Pagina<EntidadGridDTO> findEntidadByFiltro(EntidadFiltro filtro);
 
     /**
+     * Devuelve una lista con entidades relacionados con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return una lista de entidades.
+     */
+    List<EntidadGridDTO> listEntidadByFiltro(EntidadFiltro filtro);
+
+    /**
+     * Devuelve el número de entidades relacionados con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return el número de entidades.
+     */
+    long countEntidadByFiltro(EntidadFiltro filtro);
+
+    /**
      * Devuelve las Entidades Activas
      *
      * @return la lista de entidades activas
@@ -90,12 +106,20 @@ public interface AdministracionSupServiceFacade {
     ConfiguracionGlobalDTO findConfGlobalById(Long id);
 
     /**
-     * Devuelve una página con el Entidad relacionado con los parámetros del filtro
+     * Devuelve una lista con configuraciones relacionados con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
-     * @return una pàgina amb el nombre total de Entidad i la llista de Entidad pel rang indicat.
+     * @return una lista de configuraciones.
      */
-    Pagina<ConfiguracionGlobalGridDTO> findConfGlobalByFiltro(ConfiguracionGlobalFiltro filtro);
+    List<ConfiguracionGlobalGridDTO> listConfGlobalByFiltro(ConfiguracionGlobalFiltro filtro);
+
+    /**
+     * Devuelve el número de configuraciones relacionados con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return el número de configuraciones.
+     */
+    int countConfGlobalByFiltro(ConfiguracionGlobalFiltro filtro);
 
     /**
      * Existe identificador de entidad

@@ -58,7 +58,7 @@
 									value="#{labels['dialogEvolucionUnidadAdministrativa.fechaBaja']}:"
 									for="txtFechaBaja" />
 							</p>
-							<p:calendar id="txtFechaBaja"
+							<p:datePicker showIcon="true"  id="txtFechaBaja"
 								requiredMessage="#{labels['dict.obligatorio.fechaBaja']}"
 								required="true" showOn="button"
 								value="#{dialogEvolucionFusionUnidadAdministrativa.fechaBaja}"
@@ -190,7 +190,7 @@
 									value="#{labels['dialogEvolucionUnidadAdministrativa.fechaBaja']}:*"
 									for="txtFechaBaja2" />
 							</p>
-							<p:calendar id="txtFechaBaja2" showOn="button" disabled="true"
+							<p:datePicker showIcon="true"  id="txtFechaBaja2" showOn="button" disabled="true"
 								value="#{dialogEvolucionFusionUnidadAdministrativa.fechaBaja}"
 								pattern="dd/MM/yyyy" />
 						</div>

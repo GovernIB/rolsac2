@@ -4,13 +4,13 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoMateriaSIAFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,34 +72,41 @@ public class DialogSeleccionMateriaSIA extends AbstractController implements Ser
             @Override
             public TipoMateriaSIAGridDTO getRowData(String rowKey) {
                 for (TipoMateriaSIAGridDTO tipoMateriaSIA : (List<TipoMateriaSIAGridDTO>) getWrappedData()) {
-                    if (tipoMateriaSIA.getCodigo().toString().equals(rowKey))
-                        return tipoMateriaSIA;
+                    if (tipoMateriaSIA.getCodigo().toString().equals(rowKey)) return tipoMateriaSIA;
                 }
                 return null;
             }
 
             @Override
-            public Object getRowKey(TipoMateriaSIAGridDTO tipoMateriaSIA) {
-                return tipoMateriaSIA.getCodigo().toString();
+            public String getRowKey(TipoMateriaSIAGridDTO procedimiento) {
+                return procedimiento.getCodigo().toString();
+            }
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                try {
+                    return maestrasSupService.countTipoMateriaSIAByFiltro(filtro);
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    return 0;
+                }
             }
 
             @Override
-            public List<TipoMateriaSIAGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-                                                    Map<String, FilterMeta> filterBy) {
+            public List<TipoMateriaSIAGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    Pagina<TipoMateriaSIAGridDTO> pagina = maestrasSupService.findByFiltro(filtro);
-                    setRowCount((int) pagina.getTotal());
-                    return pagina.getItems();
+                    return maestrasSupService.listTipoMateriaSIAByFiltro(filtro);
                 } catch (Exception e) {
                     LOG.error("Error llamando", e);
-                    Pagina<TipoMateriaSIAGridDTO> pagina = new Pagina(new ArrayList(), 0);
-                    setRowCount((int) pagina.getTotal());
-                    return pagina.getItems();
+                    return new ArrayList<>();
                 }
             }
         };

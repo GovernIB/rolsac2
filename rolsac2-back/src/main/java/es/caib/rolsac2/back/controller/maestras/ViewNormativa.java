@@ -146,6 +146,12 @@ public class ViewNormativa extends AbstractController implements Serializable {
     public void buscar() {
 
         lazyModel = new LazyDataModel<NormativaGridDTO>() {
+
+            @Override
+            public String getRowKey(NormativaGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
             @Override
             public NormativaGridDTO getRowData(String rowKey) {
                 for (NormativaGridDTO pers : (List<NormativaGridDTO>) getWrappedData()) {
@@ -154,27 +160,56 @@ public class ViewNormativa extends AbstractController implements Serializable {
                 return null;
             }
 
-            @Override
-            public Object getRowKey(NormativaGridDTO pers) {
-                return pers.getCodigo().toString();
+            /* @Override
+             public Object getRowKey(NormativaGridDTO pers) {
+                 return pers.getCodigo().toString();
+             }
+
+             @Override
+             public List<NormativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+                 try {
+                     if (mostrarUAs) {
+                         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+                     }
+                     filtro.setIdioma(sessionBean.getLang());
+                     if (!sortField.equals("filtro.orderBy")) {
+                         filtro.setOrderBy(sortField);
+                     }
+                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                     Pagina<NormativaGridDTO> pagina = normativaServiceFacade.findByFiltro(filtro);
+                     setRowCount((int) pagina.getTotal());
+                     return pagina.getItems();
+                 } catch (Exception e) {
+                     LOG.error("Error llamando", e);
+                     Pagina<NormativaGridDTO> pagina = new Pagina(new ArrayList(), 0);
+                     setRowCount((int) pagina.getTotal());
+                     return pagina.getItems();
+                 }
+             }*/
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return 200;
             }
 
             @Override
-            public List<NormativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<NormativaGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     if (mostrarUAs) {
                         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
                     }
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
+                    /*if (!sortField.equals("filtro.orderBy")) {
                         filtro.setOrderBy(sortField);
-                    }/*
-                    if (filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
-                        List<Long> unidadesHijasAux = new ArrayList<>(filtro.getIdUAsHijas());
-                        filtro.setIdUAsHijas(unidadesHijasAux.subList(0, 999));
-                        filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));
-                    }*/
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                    }
+                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));*/
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
+                    }
                     Pagina<NormativaGridDTO> pagina = normativaServiceFacade.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
@@ -185,7 +220,6 @@ public class ViewNormativa extends AbstractController implements Serializable {
                     return pagina.getItems();
                 }
             }
-
         };
     }
 
@@ -421,8 +455,9 @@ public class ViewNormativa extends AbstractController implements Serializable {
             document.save(outputStream);
 
             InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/pdf", "normativas.pdf");
-            return streamedContent;
+            //StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/pdf", "normativas.pdf");
+            return DefaultStreamedContent.builder().contentType("application/pdf").name("normativas.pdf").stream(() -> inputStream).build();
+
 
         } catch (Exception e) {
             return null;
@@ -586,8 +621,9 @@ public class ViewNormativa extends AbstractController implements Serializable {
                 workbook.write(outputStream);
 
                 InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-                StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/xls", filename);
-                return streamedContent;
+                //StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/xls", filename);
+                return DefaultStreamedContent.builder().contentType("application/xls").name(filename).stream(() -> inputStream).build();
+
 
 
             } catch (Exception e) {

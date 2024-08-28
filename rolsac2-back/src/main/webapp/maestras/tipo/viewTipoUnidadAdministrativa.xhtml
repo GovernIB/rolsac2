@@ -78,10 +78,7 @@ Pàgina amb el llistat de Tipo de Normativa.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoUnidadAdministrativa.datoSeleccionado}"
-                         rowKey="#{tipoUnidadAdministrativa.codigo}"
                          reflow="true"
-                         sortBy="#{viewTipoUnidadAdministrativa.filtro.orderBy}"
-                         sortOrder="#{viewTipoUnidadAdministrativa.filtro.order}"
                          style="min-height: 300px;"
             >
                 <!--<p:ajax event="rowDblselect" listener="#{viewTipoUnidadAdministrativa.consultarPersonal}"

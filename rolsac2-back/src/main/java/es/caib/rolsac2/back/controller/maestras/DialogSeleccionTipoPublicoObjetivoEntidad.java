@@ -11,6 +11,7 @@ import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,26 +80,32 @@ public class DialogSeleccionTipoPublicoObjetivoEntidad extends AbstractControlle
             @Override
             public TipoPublicoObjetivoEntidadGridDTO getRowData(String rowKey) {
                 for (TipoPublicoObjetivoEntidadGridDTO tipoPubObjEnt : (List<TipoPublicoObjetivoEntidadGridDTO>) getWrappedData()) {
-                    if (tipoPubObjEnt.getCodigo().toString().equals(rowKey))
-                        return tipoPubObjEnt;
+                    if (tipoPubObjEnt.getCodigo().toString().equals(rowKey)) return tipoPubObjEnt;
                 }
                 return null;
             }
 
             @Override
-            public Object getRowKey(TipoPublicoObjetivoEntidadGridDTO tipoMateriaSIA) {
-                return tipoMateriaSIA.getCodigo().toString();
+            public String getRowKey(TipoPublicoObjetivoEntidadGridDTO procedimiento) {
+                return procedimiento.getCodigo().toString();
+            }
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
-            public List<TipoPublicoObjetivoEntidadGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-                                                                Map<String, FilterMeta> filterBy) {
+            public List<TipoPublicoObjetivoEntidadGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<TipoPublicoObjetivoEntidadGridDTO> pagina = maestrasSupService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();

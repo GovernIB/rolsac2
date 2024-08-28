@@ -45,10 +45,7 @@ Pàgina amb el llistat de processos automàtics
                              {NextPageLink} {LastPageLink}"
                              currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                              emptyMessage="#{labels['dict.noHayDatos']}"
-                             rowKey="#{proceso.codigo}"
                              reflow="true"
-                             sortBy="#{viewProcesosSIA.filtroLog.orderBy}"
-                             sortOrder="#{viewProcesosSIA.filtroLog.order}"
                              style="min-height: 300px;"
                 >
                     <p:ajax
@@ -113,10 +110,7 @@ Pàgina amb el llistat de processos automàtics
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewProcesosSIA.datoSeleccionado}"
-                         rowKey="#{proceso.codigo}"
                          reflow="true"
-                         sortBy="#{viewProcesosSIA.filtro.orderBy}"
-                         sortOrder="#{viewProcesosSIA.filtro.order}"
                          style="min-height: 200px;"
 >
                 <p:ajax

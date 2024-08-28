@@ -117,7 +117,7 @@ public interface MaestrasSupServiceFacade {
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de TipoBoletin i la llista de TipoBoletin pel rang indicat.
      */
-	Pagina<TipoBoletinGridDTO> findByFiltro(TipoBoletinFiltro filtro);
+    Pagina<TipoBoletinGridDTO> findByFiltro(TipoBoletinFiltro filtro);
 
     /**
      * Devuelve una lista de todos los tipoBoletin
@@ -286,12 +286,20 @@ public interface MaestrasSupServiceFacade {
     TipoMateriaSIADTO findTipoMateriaSIAById(Long id);
 
     /**
-     * Devuelve una página con el tipo de materia SIA relacionado con los parámetros del filtro
+     * Devuelve la lista tipo de materia SIA segun el filtro
      *
      * @param filtro filtro de la búsqueda
-     * @return una página con el número total de tipo de materia SIA y la lista tipo de materia SIA con el rango indicado
+     * @return la lista de tipo materia SIA
      */
-    Pagina<TipoMateriaSIAGridDTO> findByFiltro(TipoMateriaSIAFiltro filtro);
+    List<TipoMateriaSIAGridDTO> listTipoMateriaSIAByFiltro(TipoMateriaSIAFiltro filtro);
+
+    /**
+     * Devuelve el número de tipo de materia SIA relacionado con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return el número total de tipo de materia SIA
+     */
+    int countTipoMateriaSIAByFiltro(TipoMateriaSIAFiltro filtro);
 
     /**
      * Devuelve si existe un tipo de materia SIA con el identificador indicado
@@ -840,136 +848,136 @@ public interface MaestrasSupServiceFacade {
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de TipoBoletin i la llista de TipoBoletin pel rang indicat.
      */
-	Pagina<TipoBoletinDTO> findByFiltroRest(TipoBoletinFiltro filtro);
+    Pagina<TipoBoletinDTO> findByFiltroRest(TipoBoletinFiltro filtro);
 
-	/**
+    /**
      * Devuelve una página con el tipo de afectación relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una página con el número total de tipo de afectación y la lista tipo de afectación con el rango indicado
      */
-	Pagina<TipoAfectacionDTO> findByFiltroRest(TipoAfectacionFiltro fg);
+    Pagina<TipoAfectacionDTO> findByFiltroRest(TipoAfectacionFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el tipo de forma de inicio relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una página con el número total de tipo de forma de inicio y la lista tipo de forma de inicio con el rango indicado
      */
-	Pagina<TipoFormaInicioDTO> findByFiltroRest(TipoFormaInicioFiltro fg);
+    Pagina<TipoFormaInicioDTO> findByFiltroRest(TipoFormaInicioFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el TipoNormativa relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de TipoNormativa i la llista de TipoNormativa pel rang indicat.
      */
-	Pagina<TipoNormativaDTO> findByFiltroRest(TipoNormativaFiltro fg);
+    Pagina<TipoNormativaDTO> findByFiltroRest(TipoNormativaFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el  TipoSilencioAdministrativo relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de  TipoSilencioAdministrativo i la llista de  TipoSilencioAdministrativo pel rang indicat.
      */
-	Pagina<TipoSilencioAdministrativoDTO> findByFiltroRest(TipoSilencioAdministrativoFiltro fg);
+    Pagina<TipoSilencioAdministrativoDTO> findByFiltroRest(TipoSilencioAdministrativoFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el TipoUnidadAdministrativa relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de TipoUnidadAdministrativa i la llista de TipoUnidadAdministrativa pel rang indicat.
      */
-	Pagina<TipoUnidadAdministrativaDTO> findByFiltroRest(TipoUnidadAdministrativaFiltro fg);
+    Pagina<TipoUnidadAdministrativaDTO> findByFiltroRest(TipoUnidadAdministrativaFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el TipoVia relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de TipoVia i la llista de TipoVia pel rang indicat.
      */
-	Pagina<TipoViaDTO> findByFiltroRest(TipoViaFiltro fg);
+    Pagina<TipoViaDTO> findByFiltroRest(TipoViaFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el tipoSexo relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de tipoSexo i la llista de tipoSexo pel rang indicat.
      */
-	Pagina<TipoSexoDTO> findByFiltroRest(TipoSexoFiltro fg);
+    Pagina<TipoSexoDTO> findByFiltroRest(TipoSexoFiltro fg);
 
-	 /**
+    /**
      * Devuelve una página con el TipoPublicoObjetivo relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de TipoPublicoObjetivo i la llista de TipoPublicoObjetivo pel rang indicat.
      */
-	Pagina<TipoPublicoObjetivoDTO> findByFiltroRest(TipoPublicoObjetivoFiltro fg);
+    Pagina<TipoPublicoObjetivoDTO> findByFiltroRest(TipoPublicoObjetivoFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el tipo de materia SIA relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una página con el número total de tipo de materia SIA y la lista tipo de materia SIA con el rango indicado
      */
-	Pagina<TipoMateriaSIADTO> findByFiltroRest(TipoMateriaSIAFiltro fg);
+    Pagina<TipoMateriaSIADTO> findByFiltroRest(TipoMateriaSIAFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el tipoLegitimacion relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de tipoLegitimacion i la llista de tipoLegitimacion pel rang indicat.
      */
-	Pagina<TipoLegitimacionDTO> findByFiltroRest(TipoLegitimacionFiltro fg);
+    Pagina<TipoLegitimacionDTO> findByFiltroRest(TipoLegitimacionFiltro fg);
 
-	Pagina<TipoMediaFichaDTO> findByFiltroRest(TipoMediaFichaFiltro fg);
+    Pagina<TipoMediaFichaDTO> findByFiltroRest(TipoMediaFichaFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el tipoProcedimiento relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una pàgina amb el nombre total de tipoProcedimiento i la llista de tipoProcedimiento pel rang indicat.
      */
-	Pagina<TipoProcedimientoDTO> findByFiltroRest(TipoProcedimientoFiltro fg);
+    Pagina<TipoProcedimientoDTO> findByFiltroRest(TipoProcedimientoFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el TipoMediaUA relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una página con el número total de TipoMediaUA y la lista TipoMediaUA con el rango indicado
      */
-	Pagina<TipoMediaUADTO> findByFiltroRest(TipoMediaUAFiltro fg);
+    Pagina<TipoMediaUADTO> findByFiltroRest(TipoMediaUAFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el TipoMediaEdificio relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una página con el número total de TipoMediaEdificio y la lista TipoMediaEdificio con el rango indicado
      */
-	Pagina<TipoMediaEdificioDTO> findByFiltroRest(TipoMediaEdificioFiltro fg);
+    Pagina<TipoMediaEdificioDTO> findByFiltroRest(TipoMediaEdificioFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el tipo de tramitación relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una página con el número total de tipo de tramitación y la lista tipo de tramitación con el rango indicado
      */
-	Pagina<TipoTramitacionDTO> findByFiltroRest(TipoTramitacionFiltro fg);
+    Pagina<TipoTramitacionDTO> findByFiltroRest(TipoTramitacionFiltro fg);
 
-	/**
+    /**
      * Devuelve una página con el tipo de público objetivo entidad relacionado con los parámetros del filtro
      *
      * @param filtro filtro de la búsqueda
      * @return una página con el número total de tipo de público objetivo entidad y la lista tipo de público objetivo entidad con el rango indicado
      */
-	Pagina<TipoPublicoObjetivoEntidadDTO> findByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro);
+    Pagina<TipoPublicoObjetivoEntidadDTO> findByFiltroRest(TipoPublicoObjetivoEntidadFiltro filtro);
 
-	/**
+    /**
      * Devuelve el enlace telemático
      *
      * @param filtro filtro de la búsqueda
      * @return enlace telemático
      */
-	String getEnlaceTelematico(TipoTramitacionFiltro fg);
+    String getEnlaceTelematico(TipoTramitacionFiltro fg);
 
 }

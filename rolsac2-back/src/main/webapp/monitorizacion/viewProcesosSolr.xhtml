@@ -46,11 +46,7 @@ Pàgina amb el llistat de processos automàtics
                              {NextPageLink} {LastPageLink}"
                              currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                              emptyMessage="#{labels['dict.noHayDatos']}"
-
-                             rowKey="#{proceso.codigo}"
                              reflow="true"
-                             sortBy="#{viewProcesosSolr.filtroLog.orderBy}"
-                             sortOrder="#{viewProcesosSolr.filtroLog.order}"
                              style="min-height: 300px;"
                 >
                     <p:ajax
@@ -114,10 +110,7 @@ Pàgina amb el llistat de processos automàtics
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewProcesosSolr.datoSeleccionado}"
-                         rowKey="#{proceso.codigo}"
                          reflow="true"
-                         sortBy="#{viewProcesosSolr.filtro.orderBy}"
-                         sortOrder="#{viewProcesosSolr.filtro.order}"
                          style="min-height: 200px;"
 >
                 <p:ajax

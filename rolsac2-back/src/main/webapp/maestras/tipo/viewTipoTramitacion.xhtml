@@ -78,14 +78,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoTramitacion.datoSeleccionado}"
-                         rowKey="#{tipoTramitacion.codigo}"
                          reflow="true"
-                         sortBy="#{viewTipoTramitacion.filtro.orderBy}"
-                         sortOrder="#{viewTipoTramitacion.filtro.order}"
                          style="min-height: 300px;"
             >
-                <!--<p:ajax event="rowDblselect" listener="#{viewPersonal.consultarPersonal}"
-                        update="dataTable" /> -->
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"

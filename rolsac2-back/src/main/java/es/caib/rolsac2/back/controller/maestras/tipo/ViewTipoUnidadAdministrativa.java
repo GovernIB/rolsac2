@@ -13,6 +13,7 @@ import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Controlador per obtenir la vista dels procediments d'una unitat orgànica. El definim a l'scope de view perquè a
+ * Controlador per obtenir la vista de las tipo unidad administrativa. El definim a l'scope de view perquè a
  * nivell de request es reconstruiria per cada petició AJAX, com ara amb els errors de validació. Amb view es manté
  * mentre no es canvii de vista.
  *
@@ -98,18 +99,26 @@ public class ViewTipoUnidadAdministrativa extends AbstractController implements 
             }
 
             @Override
-            public Object getRowKey(TipoUnidadAdministrativaGridDTO pers) {
-                return pers.getCodigo().toString();
+            public String getRowKey(TipoUnidadAdministrativaGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
-            public List<TipoUnidadAdministrativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<TipoUnidadAdministrativaGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<TipoUnidadAdministrativaGridDTO> pagina = tipoUnidadAdministrativaService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();

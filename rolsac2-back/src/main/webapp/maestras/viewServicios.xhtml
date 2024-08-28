@@ -289,7 +289,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewServicios.estadoCodigoSIA']}:" for="txtVolcadoSIA"/>
+                            <h:outputText value="#{labels['dict.estadoCodigoSIA']}:" for="txtVolcadoSIA"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtVolcadoSIA" value="#{viewServicios.filtro.volcadoSIA}"
@@ -497,10 +497,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewServicios.datoSeleccionado}"
-                         rowKey="#{procedimiento.codigo}"
                          reflow="true"
-                         sortBy="#{viewServicios.filtro.orderBy}"
-                         sortOrder="#{viewServicios.filtro.order}"
                          style="min-height: 300px;"
             >
                 <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar @form:btnClonar @form:includeDetalle  @form:selectorDetalle" process="@form"
@@ -644,7 +641,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
                         <p:outputLabel value="#{labels['dict.cargando']}...." />
                     </div>
-                    <div id="divDetalle">
+                    <div id="divDetalle"  class="row">
                         <ui:include src="/maestras/detalleServicio.xhtml">
                             <ui:param name="paramName" value="X" />
                             <!-- <ui:param name="procedimiento" value="#{viewProcedimientos.wfModificado}" />-->

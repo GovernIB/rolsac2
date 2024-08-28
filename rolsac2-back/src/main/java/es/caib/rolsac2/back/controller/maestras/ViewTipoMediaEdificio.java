@@ -1,22 +1,5 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
@@ -27,6 +10,22 @@ import es.caib.rolsac2.service.model.filtro.TipoMediaEdificioFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
+import org.primefaces.model.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Named
 @ViewScoped
@@ -94,11 +93,36 @@ public class ViewTipoMediaEdificio extends AbstractController implements Seriali
             }
 
             @Override
-            public Object getRowKey(TipoMediaEdificioGridDTO pers) {
+            public String getRowKey(TipoMediaEdificioGridDTO pers) {
                 return pers.getCodigo().toString();
             }
 
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
+            }
+
             @Override
+            public List<TipoMediaEdificioGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                try {
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
+                    }
+                    Pagina<TipoMediaEdificioGridDTO> pagina = pagina = tipoMediaEdificioService.findByFiltro(filtro);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<TipoMediaEdificioGridDTO> pagina = pagina = new Pagina(new ArrayList(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
+            }
+            /*@Override
             public List<TipoMediaEdificioGridDTO> load(
                     int first, int pageSize, String sortField, SortOrder sortOrder,
                     Map<String, FilterMeta> filterBy
@@ -114,7 +138,7 @@ public class ViewTipoMediaEdificio extends AbstractController implements Seriali
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
-            }
+            }*/
         };
     }
 
@@ -124,8 +148,7 @@ public class ViewTipoMediaEdificio extends AbstractController implements Seriali
 
     public void editarTipoMediaEdificio() {
         if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
             abrirVentana(TypeModoAcceso.EDICION);
         }

@@ -77,14 +77,9 @@ Pàgina amb el llistat de Tipo de Normativa.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoNormativa.datoSeleccionado}"
-                         rowKey="#{tipoNormativa.codigo}"
                          reflow="true"
-                         sortBy="#{viewTipoNormativa.filtro.orderBy}"
-                         sortOrder="#{viewTipoNormativa.filtro.order}"
                          style="min-height: 300px;"
             >
-                <!--<p:ajax event="rowDblselect" listener="#{viewTipoNormativa.consultarPersonal}"
-                        update="dataTable" /> -->
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"

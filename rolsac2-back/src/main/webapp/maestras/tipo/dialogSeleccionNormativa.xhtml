@@ -24,6 +24,7 @@
                 display: none;
             }
         </h:outputStylesheet>
+        <div class="row" style="margin-right: 0px;">
         <div class="ui-g-12 ui-md-9 pl-3 panel-container">
                         <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{dialogSeleccionNormativa.buscar}"
@@ -76,7 +77,7 @@
                                      <p:outputLabel value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
-                                     <p:calendar id="txtFechaAprobacion" showOn="button" widgetVar="fechaAprobacionWidget"
+                                     <p:datePicker showIcon="true"  id="txtFechaAprobacion" showOn="button" widgetVar="fechaAprobacionWidget"
                                                  styleClass="w95"  size="18"
                                                  value="#{dialogSeleccionNormativa.filtro.fechaAprobacion}" pattern="dd/MM/yyyy"/>
                                  </div>
@@ -84,7 +85,7 @@
                                      <p:outputLabel value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
-                                     <p:calendar id="txtFechaBoletin" showOn="button" widgetVar="fechaAprobacionWidget" size="18"
+                                     <p:datePicker showIcon="true"  id="txtFechaBoletin" showOn="button" widgetVar="fechaAprobacionWidget" size="18"
                                                  styleClass="w95"
                                                  value="#{dialogSeleccionNormativa.filtro.fechaBoletin}" pattern="dd/MM/yyyy"/>
                                  </div>
@@ -154,10 +155,7 @@
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{dialogSeleccionNormativa.datoSeleccionado}"
-                         rowKey="#{normativa.codigo}"
                          reflow="true"
-                         sortBy="#{dialogSeleccionNormativa.filtro.orderBy}"
-                         sortOrder="#{dialogSeleccionNormativa.filtro.order}"
                          style="min-height: 300px;"
             >
                 <p:ajax event="rowUnselect" global="false"  update="@form:btnAnyadir"  process="@form" />
@@ -210,11 +208,12 @@
 
         </div>
 
-        <div class="ui-g-12 ui-md-3 row p-0 mt-2 pl-3">
-            <div class="col-12 left-container-header text-center">
+        <div class="ui-g-12 ui-md-3 p-0 mt-2 pl-3">
+            <div class="col-12 left-container-header text-center"  style="height:30px">
                 <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em;">#{labels['viewNormativas.titulo.pagina']}</p>
             </div>
-            <div class="col-10 p-1 left-container">
+            <div class="row pl-3" style="margin-right: 0px;">
+                <div class="col-10 p-1 left-container">
                 <p:dataTable id="dataTableNormativa" var="td" value="#{dialogSeleccionNormativa.normativasSeleccionadas}"
                              emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
                              paginator="false" selectionMode="single"
@@ -234,6 +233,8 @@
                                  action="#{dialogSeleccionNormativa.borrarNormativa}"
                                  process="@this" update="dataTableNormativa messagesDialog"/>
             </div>
+            </div>
+        </div>
         </div>
     </ui:define>
     <ui:define name="contentFooterDialogRight">

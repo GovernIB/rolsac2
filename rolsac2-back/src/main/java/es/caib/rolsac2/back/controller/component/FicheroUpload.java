@@ -72,4 +72,14 @@ public class FicheroUpload implements UploadedFile {
             fos.write(data);
         }
     }
+
+    @Override
+    public void delete() {
+        data = null;
+    }
+
+    //  @Override
+    public String getWebkitRelativePath() {
+        return "";
+    }
 }

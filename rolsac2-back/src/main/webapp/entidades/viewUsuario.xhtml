@@ -65,10 +65,8 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewUsuario.datoSeleccionado}" rowKey="#{usuario.codigo}"
+                         selectionMode="single" selection="#{viewUsuario.datoSeleccionado}"
                          reflow="true"
-                         sortBy="#{viewUsuario.filtro.orderBy}"
-                         sortOrder="#{viewUsuario.filtro.order}"
                          style="min-height: 300px;"
             >
                 <p:ajax

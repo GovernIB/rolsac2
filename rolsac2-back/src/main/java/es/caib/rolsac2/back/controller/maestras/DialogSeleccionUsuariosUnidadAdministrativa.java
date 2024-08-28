@@ -5,7 +5,6 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.UsuarioGridDTO;
 import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
@@ -13,6 +12,7 @@ import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,26 +81,33 @@ public class DialogSeleccionUsuariosUnidadAdministrativa extends AbstractControl
             @Override
             public UsuarioGridDTO getRowData(String rowKey) {
                 for (UsuarioGridDTO usuario : (List<UsuarioGridDTO>) getWrappedData()) {
-                    if (usuario.getCodigo().toString().equals(rowKey))
-                        return usuario;
+                    if (usuario.getCodigo().toString().equals(rowKey)) return usuario;
                 }
                 return null;
             }
 
             @Override
-            public Object getRowKey(UsuarioGridDTO usuario) {
-                return usuario.getCodigo().toString();
+            public String getRowKey(UsuarioGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
-            public List<UsuarioGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-                                             Map<String, FilterMeta> filterBy) {
+            public List<UsuarioGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<UsuarioGridDTO> pagina = administracionEntService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();

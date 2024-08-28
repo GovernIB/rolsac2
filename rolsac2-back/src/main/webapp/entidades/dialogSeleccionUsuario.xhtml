@@ -41,10 +41,8 @@
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{dialogSeleccionUsuario.datoSeleccionado}" rowKey="#{usuario.codigo}"
+                         selectionMode="single" selection="#{dialogSeleccionUsuario.datoSeleccionado}"
                          reflow="true"
-                         sortBy="#{dialogSeleccionUsuario.filtro.orderBy}"
-                         sortOrder="#{dialogSeleccionUsuario.filtro.order}"
                          style="min-height: 300px;"
             >
                 <p:ajax

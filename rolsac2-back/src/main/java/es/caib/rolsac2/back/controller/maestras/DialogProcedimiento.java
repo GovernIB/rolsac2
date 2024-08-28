@@ -670,7 +670,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void returnDialogPubObjEnt(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
-        if (!respuesta.isCanceled()) {
+        if (respuesta != null && !respuesta.isCanceled()) {
             List<TipoPublicoObjetivoEntidadGridDTO> tipPubObjEntSeleccionadas = (List<TipoPublicoObjetivoEntidadGridDTO>) respuesta.getResult();
             if (tipPubObjEntSeleccionadas == null) {
                 data.setPublicosObjetivo(new ArrayList<>());

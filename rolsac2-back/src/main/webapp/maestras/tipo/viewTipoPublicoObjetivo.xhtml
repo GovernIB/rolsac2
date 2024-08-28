@@ -80,10 +80,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoPublicoObjetivo.datoSeleccionado}"
-                         rowKey="#{tipoPublicoObjetivo.codigo}"
                          reflow="true"
-                         sortBy="#{viewTipoPublicoObjetivo.filtro.orderBy}"
-                         sortOrder="#{viewTipoPublicoObjetivo.filtro.order}"
                          style="min-height: 300px;"
             >
                 <!--<p:ajax event="rowDblselect" listener="#{viewTipoPublicoObjetivo.consultarPersonal}"

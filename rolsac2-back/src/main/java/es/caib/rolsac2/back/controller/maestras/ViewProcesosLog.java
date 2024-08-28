@@ -1,22 +1,5 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.ProcesoLogServiceFacade;
@@ -25,6 +8,18 @@ import es.caib.rolsac2.service.model.ProcesoLogGridDTO;
 import es.caib.rolsac2.service.model.filtro.ProcesoLogFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
+import org.primefaces.model.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -66,26 +61,32 @@ public class ViewProcesosLog extends AbstractController implements Serializable 
             @Override
             public ProcesoLogGridDTO getRowData(String rowKey) {
                 for (ProcesoLogGridDTO pers : (List<ProcesoLogGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
 
             @Override
-            public Object getRowKey(ProcesoLogGridDTO pers) {
-                return pers.getCodigo().toString();
+            public String getRowKey(ProcesoLogGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
-            public List<ProcesoLogGridDTO> load(int first, int pageSize, String sortField,
-                                               SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<ProcesoLogGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
                     Pagina<ProcesoLogGridDTO> pagina = procesoLogServiceFacade.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
@@ -97,7 +98,6 @@ public class ViewProcesosLog extends AbstractController implements Serializable 
                     return pagina.getItems();
                 }
             }
-
         };
     }
 
@@ -111,12 +111,11 @@ public class ViewProcesosLog extends AbstractController implements Serializable 
     private void abrirVentana(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.datoSeleccionado != null
-                && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
+        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
             params.put("ESTADO", this.datoSeleccionado.getEstadoTexto());
         }
-        UtilJSF.openDialog("dialogDetalleLogProceso", modoAcceso, params, true, 800 , 600);
+        UtilJSF.openDialog("dialogDetalleLogProceso", modoAcceso, params, true, 800, 600);
     }
 
     public ProcesoLogGridDTO getDatoSeleccionado() {

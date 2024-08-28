@@ -5,7 +5,6 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.model.ConfiguracionGlobalGridDTO;
-import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.filtro.ConfiguracionGlobalFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
@@ -13,6 +12,7 @@ import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,6 +93,11 @@ public class ViewConfiguracionesGlobales extends AbstractController implements S
             private static final long serialVersionUID = 1L;
 
             @Override
+            public String getRowKey(ConfiguracionGlobalGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+            @Override
             public ConfiguracionGlobalGridDTO getRowData(String rowKey) {
                 for (ConfiguracionGlobalGridDTO pers : getWrappedData()) {
                     if (pers.getCodigo().toString().equals(rowKey)) return pers;
@@ -100,27 +105,32 @@ public class ViewConfiguracionesGlobales extends AbstractController implements S
                 return null;
             }
 
-            @Override
-            public Object getRowKey(ConfiguracionGlobalGridDTO pers) {
-                return pers.getCodigo().toString();
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                try {
+                    return administracionSupService.countConfGlobalByFiltro(filtro);
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    return 0;
+                }
             }
 
             @Override
-            public List<ConfiguracionGlobalGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<ConfiguracionGlobalGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    Pagina<ConfiguracionGlobalGridDTO> pagina = administracionSupService.findConfGlobalByFiltro(filtro);
-                    setRowCount((int) pagina.getTotal());
-                    return pagina.getItems();
+                    return administracionSupService.listConfGlobalByFiltro(filtro);
                 } catch (Exception e) {
                     LOG.error("Error llamando", e);
-                    Pagina<ConfiguracionGlobalGridDTO> pagina = new Pagina(new ArrayList(), 0);
-                    setRowCount((int) pagina.getTotal());
-                    return pagina.getItems();
+                    return new ArrayList<>();
                 }
             }
         };

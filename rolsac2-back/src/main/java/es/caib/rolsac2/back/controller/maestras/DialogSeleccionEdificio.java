@@ -4,14 +4,13 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
-import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.EdificioGridDTO;
-import es.caib.rolsac2.service.model.TemaDTO;
-
+import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.filtro.EdificioFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +42,7 @@ public class DialogSeleccionEdificio extends AbstractController implements Seria
         return lazyModel;
     }
 
-    public void load(){
+    public void load() {
         this.setearIdioma();
         LOG.debug("load");
         filtro = new EdificioFiltro();
@@ -66,26 +65,32 @@ public class DialogSeleccionEdificio extends AbstractController implements Seria
             @Override
             public EdificioGridDTO getRowData(String rowKey) {
                 for (EdificioGridDTO pers : (List<EdificioGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
 
             @Override
-            public Object getRowKey(EdificioGridDTO pers) {
-                return pers.getCodigo().toString();
+            public String getRowKey(EdificioGridDTO dato) {
+                return dato.getCodigo().toString();
+            }
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
-            public List<EdificioGridDTO> load(int first, int pageSize, String sortField,
-                                             SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<EdificioGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<EdificioGridDTO> pagina = seccionServiceFacade.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
@@ -143,6 +148,7 @@ public class DialogSeleccionEdificio extends AbstractController implements Seria
     public void setFiltro(EdificioFiltro filtro) {
         this.filtro = filtro;
     }
+
     public void setFiltroTexto(String texto) {
         if (Objects.nonNull(this.filtro)) {
             this.filtro.setTexto(texto);

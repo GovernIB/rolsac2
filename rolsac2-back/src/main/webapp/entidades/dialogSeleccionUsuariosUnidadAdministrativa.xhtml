@@ -20,6 +20,7 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
+        <div class="row" style="margin-right: 0px;">
         <div class="ui-g-12 ui-md-8 pl-1 pl-md-4 panel-container">
             <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false"
@@ -54,10 +55,7 @@
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single"
                          selection="#{dialogSeleccionUsuariosUnidadAdministrativa.datoSeleccionado}"
-                         rowKey="#{usuario.codigo}"
-                         reflow="true"
-                         sortBy="#{dialogSeleccionUsuariosUnidadAdministrativa.filtro.orderBy}"
-                         sortOrder="#{dialogSeleccionUsuariosUnidadAdministrativa.filtro.order}">
+                         reflow="true">
                 <p:ajax event="rowUnselect" global="false"  update="@form:btnAnyadir"  process="@form" />
                 <p:ajax event="rowSelect" global="false"  update="@form:btnAnyadir"  process="@form" />
                 <p:ajax event="rowDblselect"
@@ -123,6 +121,7 @@
                                  action="#{dialogSeleccionUsuariosUnidadAdministrativa.borrarUsuario()}"
                                  process="@this" update="dataTableUsuarios messagesDialog"/>
             </div>
+        </div>
         </div>
 <!--
         <div class="ui-g-12 px-4">

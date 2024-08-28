@@ -531,16 +531,27 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Pagina<TipoMateriaSIAGridDTO> findByFiltro(TipoMateriaSIAFiltro filtro) {
+    public List<TipoMateriaSIAGridDTO> listTipoMateriaSIAByFiltro(TipoMateriaSIAFiltro filtro) {
         try {
-            List<TipoMateriaSIAGridDTO> items = tipoMateriaSIARepository.findPagedByFiltro(filtro);
-            long total = tipoMateriaSIARepository.countByFiltro(filtro);
-            return new Pagina<>(items, total);
+            return tipoMateriaSIARepository.findPagedByFiltro(filtro);
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
-            return new Pagina<>(new ArrayList<>(), 0);
+            return new ArrayList<>();
         }
     }
+
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public int countTipoMateriaSIAByFiltro(TipoMateriaSIAFiltro filtro) {
+        try {
+            return (int) tipoMateriaSIARepository.countByFiltro(filtro);
+        } catch (Exception e) {
+            LOG.error(ERROR_LITERAL, e);
+            return 0;
+        }
+    }
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})

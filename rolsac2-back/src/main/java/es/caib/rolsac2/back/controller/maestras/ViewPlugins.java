@@ -13,6 +13,7 @@ import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,11 @@ public class ViewPlugins extends AbstractController implements Serializable {
             private static final long serialVersionUID = 1L;
 
             @Override
+            public String getRowKey(PluginGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+            @Override
             public PluginGridDTO getRowData(String rowKey) {
                 for (PluginGridDTO pers : (List<PluginGridDTO>) getWrappedData()) {
                     if (pers.getCodigo().toString().equals(rowKey)) {
@@ -75,15 +81,22 @@ public class ViewPlugins extends AbstractController implements Serializable {
                 return null;
             }
 
-            @Override
-            public Object getRowKey(PluginGridDTO pers) {
-                return pers.getCodigo().toString();
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
-            public List<PluginGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<PluginGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
+                    }
                     Pagina<PluginGridDTO> pagina = administracionEntService.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();

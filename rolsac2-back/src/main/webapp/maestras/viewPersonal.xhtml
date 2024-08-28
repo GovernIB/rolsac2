@@ -134,10 +134,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewPersonal.datoSeleccionado}" rowKey="#{personal.codigo}"
+                         selectionMode="single" selection="#{viewPersonal.datoSeleccionado}"
                          reflow="true"
-                         sortBy="#{viewPersonal.filtro.orderBy}"
-                         sortOrder="#{viewPersonal.filtro.order}"
                          style="min-height: 300px;"
                 >
                 <!--<p:ajax event="rowDblselect" listener="#{viewPersonal.consultarPersonal}"

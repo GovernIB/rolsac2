@@ -54,10 +54,8 @@
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewPlatTramitElectronica.datoSeleccionado}" rowKey="#{tramite.codigo}"
+                         selectionMode="single" selection="#{viewPlatTramitElectronica.datoSeleccionado}"
                          reflow="true"
-                         sortBy="#{viewPlatTramitElectronica.filtro.orderBy}"
-                         sortOrder="#{viewPlatTramitElectronica.filtro.order}"
                          style="min-height: 300px;">
                 <p:ajax
                         event="rowDblselect"

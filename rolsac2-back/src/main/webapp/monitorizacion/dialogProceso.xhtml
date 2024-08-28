@@ -106,7 +106,7 @@
 
                     </p:dataTable>
                     <div class="w5 ml-2 d-flex flex-column align-items-center g-5">
-                        <p:commandButton id="btnNuevaPropiedad" icon="fa fa-plus"
+                        <p:commandButton id="btnNuevaPropiedad" icon="pi pi-plus"
                                          title="#{msg['botones.nuevo']}"
                                          actionListener="#{dialogProceso.nuevaPropiedad()}" process="@this"
                                          update="messagesDialog"
@@ -115,7 +115,7 @@
                             <p:ajax event="dialogReturn" listener="#{dialogProceso.returnDialogo}"
                                     update="messagesDialog dataTablePropiedades"/>
                         </p:commandButton>
-                        <p:commandButton id="btnEditarPropiedad" icon="fa fa-edit"
+                        <p:commandButton id="btnEditarPropiedad" icon="pi pi-pencil"
                                          title="#{msg['botones.editar']}"
                                          actionListener="#{dialogProceso.editarPropiedad()}" process="@this"
                                          update="messagesDialog"
@@ -124,18 +124,18 @@
                             <p:ajax event="dialogReturn" listener="#{dialogProceso.returnDialogo}"
                                     update="messagesDialog dataTablePropiedades"/>
                         </p:commandButton>
-                        <p:commandButton id="btnEliminarPropiedad" icon="fa fa-minus"
+                        <p:commandButton id="btnEliminarPropiedad" icon="pi pi-minus"
                                          title="#{msg['botones.eliminar']}"
                                          actionListener="#{dialogProceso.quitarPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
                                          styleClass="p-2"/>
-                        <p:commandButton icon="fa fa-arrow-up" title="#{msg['botones.subir']}"
+                        <p:commandButton icon="pi pi-arrow-up" title="#{msg['botones.subir']}"
                                          actionListener="#{dialogProceso.subirPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
                                          styleClass="p-2"/>
-                        <p:commandButton icon="fa fa-arrow-down" title="#{msg['botones.bajar']}"
+                        <p:commandButton icon="pi pi-arrow-down" title="#{msg['botones.bajar']}"
                                          actionListener="#{dialogProceso.bajarPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"

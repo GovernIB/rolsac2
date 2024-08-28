@@ -27,12 +27,12 @@
                             <span class="oi oi-globe" title="#{labels['idioma_link']}" aria-hidden="true"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="entidades">
-                            <p:repeat value="#{sessionBean.entidades}" var="entidad">
+                            <ui:repeat value="#{sessionBean.entidades}" var="entidad" rendered="true">
                                 <p:commandLink styleClass="dropdown-item mobil" hreflang="#{entidad}"
                                                value="#{entidad.descripcion.getTraduccion(sessionBean.getLang())}">
                                     <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}" oncomplete="window.location.replace(window.location)"/>
                                 </p:commandLink>
-                            </p:repeat>
+                            </ui:repeat>
                         </div>
                     </li>
                 </c:if>
@@ -45,14 +45,14 @@
                         <span class="oi oi-people" title="#{labels['idioma_link']}" aria-hidden="true"></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="perfiles">
-                        <p:repeat value="#{sessionBean.perfilesBack}" var="perfil">
-                                <p:commandLink styleClass="dropdown-item mobil" hreflang="#{perfil}"
-                                               action="#{sessionBean.reloadPerfil()}"
-                                               value="#{labels['TypePerfiles.' += perfil.toString()]}"
-                                >
-                                    <p:ajax update=":imgLogo" listener="#{sessionBean.cambioPerfil(perfil)}" />
-                                </p:commandLink>
-                        </p:repeat>
+                        <ui:repeat value="#{sessionBean.perfilesBack}" var="perfil" rendered="true">
+                            <p:commandLink styleClass="dropdown-item mobil" hreflang="#{perfil}"
+                                           action="#{sessionBean.reloadPerfil()}"
+                                           value="#{labels['TypePerfiles.' += perfil.toString()]}"
+                            >
+                                <p:ajax update=":imgLogo" listener="#{sessionBean.cambioPerfil(perfil)}" />
+                            </p:commandLink>
+                        </ui:repeat>
                     </div>
                 </li>
                 <li class="nav-item dropdown colorRojo">
@@ -69,17 +69,17 @@
                             <span class="mb-0 float-right">#{labels['dict.configuracion']}</span>
                         </p:link>
                         <c:if test="${sessionBean.perfil eq TypePerfiles.SUPER_ADMINISTRADOR || sessionBean.perfil eq TypePerfiles.ADMINISTRADOR_ENTIDAD || sessionBean.entidad.admContenidoSeleccionIdioma == null}">
-                            <p:repeat value="#{applicationLocales.available}" var="locale">
+                            <ui:repeat value="#{applicationLocales.available}" var="locale" rendered="true">
                                 <h:commandLink styleClass="dropdown-item mobil" hreflang="#{locale.toLanguageTag()}"
                                                action="#{sessionBean.reload()}"
                                                title="#{labels['dict.' += locale.toLanguageTag()]}"
                                                rendered="#{sessionBean.lang != locale.toLanguageTag()}"
                                                update="@form" execute="@form" render="@form"
-                                               >
+                                >
                                     <span class="mb-0 float-right">#{labels['dict.' += locale.toLanguageTag()]}</span>
                                     <f:ajax listener="#{sessionBean.setCurrent(locale)}" update="@form" execute="@form" render="@form"  />
                                 </h:commandLink>
-                            </p:repeat>
+                            </ui:repeat>
                         </c:if>
                         <p:commandLink action="#{logout.logout}"
                                        ajax="false" immediate="true" styleClass="dropdown-item mobil"

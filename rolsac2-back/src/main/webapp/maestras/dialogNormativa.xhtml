@@ -58,6 +58,8 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
+        <div class="row" style="margin-right: 0px;">
+
         <div class="ui-g-12 ui-md-8 pl-4 panel-container">
             <p:panel id="formVigente" header="#{labels['dialogNormativa.estado']}">
                 <div class="form-row align-content-center align-items-center">
@@ -127,7 +129,7 @@
                                            value="#{labels['dialogNormativa.fechaAprobacion']}:"
                                            for="txtFechaAprobacion"/>
                         </p>
-                        <p:calendar id="txtFechaAprobacion" disabled="#{dialogNormativa.isModoConsulta()}"
+                        <p:datePicker showIcon="true"  id="txtFechaAprobacion" disabled="#{dialogNormativa.isModoConsulta()}"
                                     requiredMessage="#{labels['dict.obligatorio.fechaAprobacion']}"
                                     required="#{empty param['formDialog:closeButton']}" showOn="button"
                                     value="#{dialogNormativa.data.fechaAprobacion}" pattern="dd/MM/yyyy"/>
@@ -163,7 +165,7 @@
                             <p:outputLabel  value="#{labels['dialogNormativa.fechaBoletin']}:" styleClass="mb-1 pt-0 mt-0"
                                           for="txtFechaBoletin"/>
                         <p>
-                            <p:calendar id="txtFechaBoletin" disabled="#{dialogNormativa.isModoConsulta()}"
+                            <p:datePicker showIcon="true"  id="txtFechaBoletin" disabled="#{dialogNormativa.isModoConsulta()}"
                                     value="#{dialogNormativa.data.fechaBoletin}" pattern="dd/MM/yyyy" showOn="button"/>
                         </p>
                     </div>
@@ -456,6 +458,7 @@
                                      process="@this" update="dataAfectacionesRelacionadas messagesDialog"/>
                 </div>
             </div>
+        </div>
         </div>
 
         <h:outputScript>

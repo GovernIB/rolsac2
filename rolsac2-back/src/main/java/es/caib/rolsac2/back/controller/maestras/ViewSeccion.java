@@ -1,23 +1,5 @@
 package es.caib.rolsac2.back.controller.maestras;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
@@ -29,6 +11,18 @@ import es.caib.rolsac2.service.model.filtro.SeccionFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -50,7 +44,7 @@ public class ViewSeccion extends AbstractController implements Serializable {
         return lazyModel;
     }
 
-    public void load(){
+    public void load() {
         this.setearIdioma();
         permisoAccesoVentana(ViewSeccion.class);
         LOG.debug("load");
@@ -74,13 +68,12 @@ public class ViewSeccion extends AbstractController implements Serializable {
             @Override
             public SeccionGridDTO getRowData(String rowKey) {
                 for (SeccionGridDTO pers : (List<SeccionGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
 
-            @Override
+            /*@Override
             public Object getRowKey(SeccionGridDTO pers) {
                 return pers.getCodigo().toString();
             }
@@ -103,8 +96,30 @@ public class ViewSeccion extends AbstractController implements Serializable {
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
+            }*/
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return 200;
             }
 
+            @Override
+            public List<SeccionGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                try {
+                    filtro.setIdioma(sessionBean.getLang());
+                    /*if (!sortField.equals("filtro.orderBy")) {
+                        filtro.setOrderBy(sortField);
+                    }
+                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));*/
+                    Pagina<SeccionGridDTO> pagina = seccionServiceFacade.findByFiltro(filtro);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<SeccionGridDTO> pagina = new Pagina(new ArrayList(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
+            }
         };
     }
 
@@ -133,7 +148,7 @@ public class ViewSeccion extends AbstractController implements Serializable {
             } else {
                 seccionServiceFacade.delete(datoSeleccionado.getCodigo());
             }
-        } catch(ServiceException e){
+        } catch (ServiceException e) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.hijos.relacionados"));
         }
 
@@ -151,8 +166,7 @@ public class ViewSeccion extends AbstractController implements Serializable {
     private void abrirVentana(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
-        if (this.datoSeleccionado != null
-                && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
+        if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
         UtilJSF.openDialog("dialogSeccion", modoAcceso, params, true, 850, 435);

@@ -19,7 +19,8 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
-            <div class="ui-g-12 ui-md-8 pl-4 panel-container">
+        <div class="row" style="margin-right: 0px;">
+        <div class="ui-g-12 ui-md-8 pl-4 panel-container">
                 <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                                  style="display:none" ajax="false" action="#{dialogSeleccionMateriaSIA.buscar}"
                                  update="dataTable messagesDialog"/>
@@ -49,10 +50,7 @@
                              currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                              emptyMessage="#{labels['dict.noHayDatos']}"
                              selectionMode="single" selection="#{dialogSeleccionMateriaSIA.datoSeleccionado}"
-                             rowKey="#{materiaSIA.codigo}"
                              reflow="true"
-                             sortBy="#{dialogSeleccionMateriaSIA.filtro.orderBy}"
-                             sortOrder="#{dialogSeleccionMateriaSIA.filtro.order}"
                              style="min-height: 300px;">
                     <p:ajax event="rowUnselect" global="false"  update="@form:btnAnyadir"  process="@form" />
                     <p:ajax event="rowSelect" global="false"  update="@form:btnAnyadir"  process="@form" />
@@ -86,11 +84,12 @@
 
             </div>
 
-        <div class="ui-g-10 ui-md-3 left-container row p-0 mt-2 mx-3 ml-5 mb-2">
-            <div class="col-12 left-container-header text-center">
+        <div class="ui-g-10 ui-md-3 left-container p-0 mt-2 mx-3 ml-5 mb-2">
+            <div class="col-12 left-container-header text-center" style="height:30px">
                 <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.materiasRelacionadas']}</p>
             </div>
-            <div class="col-10 p-1">
+            <div class="row ml-5" style="margin-right: 0px;">
+                <div class="col-10 p-1">
                 <p:dataTable id="dataTableMaterias" var="td" value="#{dialogSeleccionMateriaSIA.materiasSeleccionadas}"
                              emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
                              paginator="false" selectionMode="single"
@@ -110,6 +109,8 @@
                                  action="#{dialogSeleccionMateriaSIA.borrarMateriaSIA}"
                                  process="@this" update="dataTableMaterias messagesDialog"/>
             </div>
+            </div>
+        </div>
         </div>
     </ui:define>
     <ui:define name="contentFooterDialogRight">

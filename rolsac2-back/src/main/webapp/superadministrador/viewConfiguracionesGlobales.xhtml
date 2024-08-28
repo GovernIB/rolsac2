@@ -66,12 +66,14 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewConfiguracionesGlobales.datoSeleccionado}"
-                         rowKey="#{configuracionGlobal.codigo}"
                          reflow="true"
-                         sortBy="#{viewConfiguracionesGlobales.filtro.orderBy}"
-                         sortOrder="#{viewConfiguracionesGlobales.filtro.order}"
                          style="min-height: 300px;"
             >
+                <!--
+                rowKey="#{configuracionGlobal.codigo}"
+                sortBy="#{viewConfiguracionesGlobales.filtro.orderBy}"
+                sortOrder="#{viewConfiguracionesGlobales.filtro.order}"
+                         -->
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"

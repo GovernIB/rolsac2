@@ -335,11 +335,8 @@ Pàgina amb el llistat de normativas
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewNormativa.datoSeleccionado}"
-                         rowKey="#{normativa.codigo}"
                          reflow="true"
-                         sortBy="#{viewNormativa.filtro.orderBy}"
-                         sortOrder="#{viewNormativa.filtro.order}"
+                         selection="#{viewNormativa.datoSeleccionado}"
                          style="min-height: 300px;"
             >
                 <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar" process="@form"/>

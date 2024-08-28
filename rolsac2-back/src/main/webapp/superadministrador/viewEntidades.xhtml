@@ -78,12 +78,15 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewEntidades.datoSeleccionado}" rowKey="#{entidad.codigo}"
+                         selectionMode="single" selection="#{viewEntidades.datoSeleccionado}"
                          reflow="true"
-                         sortBy="#{viewEntidades.filtro.orderBy}"
-                         sortOrder="#{viewEntidades.filtro.order}"
                          style="min-height: 300px;"
             >
+                <!--
+                rowKey="#{entidad.codigo}"
+                         sortBy="#{viewEntidades.filtro.orderBy}"
+                         sortOrder="#{viewEntidades.filtro.order}"
+                         -->
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"

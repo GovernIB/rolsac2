@@ -10,7 +10,7 @@ import es.caib.rolsac2.service.model.filtro.SeccionFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
+import org.primefaces.model.SortMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ public class DialogSelectSeccion extends AbstractController implements Serializa
         return lazyModel;
     }
 
-    public void load(){
+    public void load() {
         this.setearIdioma();
         LOG.debug("load");
         filtro = new SeccionFiltro();
@@ -64,12 +64,11 @@ public class DialogSelectSeccion extends AbstractController implements Serializa
             @Override
             public SeccionGridDTO getRowData(String rowKey) {
                 for (SeccionGridDTO pers : (List<SeccionGridDTO>) getWrappedData()) {
-                    if (pers.getCodigo().toString().equals(rowKey))
-                        return pers;
+                    if (pers.getCodigo().toString().equals(rowKey)) return pers;
                 }
                 return null;
             }
-
+/*
             @Override
             public Object getRowKey(SeccionGridDTO pers) {
                 return pers.getCodigo().toString();
@@ -93,8 +92,30 @@ public class DialogSelectSeccion extends AbstractController implements Serializa
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
+            }*/
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return 200;
             }
 
+            @Override
+            public List<SeccionGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                try {
+                    filtro.setIdioma(sessionBean.getLang());
+                    /*if (!sortField.equals("filtro.orderBy")) {
+                        filtro.setOrderBy(sortField);
+                    }
+                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));*/
+                    Pagina<SeccionGridDTO> pagina = seccionServiceFacade.findByFiltro(filtro);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<SeccionGridDTO> pagina = new Pagina(new ArrayList(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
+            }
         };
     }
 
@@ -141,6 +162,7 @@ public class DialogSelectSeccion extends AbstractController implements Serializa
     public void setFiltro(SeccionFiltro filtro) {
         this.filtro = filtro;
     }
+
     public void setFiltroTexto(String texto) {
         if (Objects.nonNull(this.filtro)) {
             this.filtro.setTexto(texto);

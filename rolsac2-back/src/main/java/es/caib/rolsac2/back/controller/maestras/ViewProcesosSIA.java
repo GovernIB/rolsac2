@@ -13,6 +13,7 @@ import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +97,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
      */
     public void buscar() {
         lazyModel = new LazyDataModel<IndexacionSIADTO>() {
+            
             @Override
             public IndexacionSIADTO getRowData(String rowKey) {
                 for (IndexacionSIADTO pers : (List<IndexacionSIADTO>) getWrappedData()) {
@@ -105,18 +107,26 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
             }
 
             @Override
-            public Object getRowKey(IndexacionSIADTO pers) {
-                return pers.getCodigo().toString();
+            public String getRowKey(IndexacionSIADTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
-            public List<IndexacionSIADTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<IndexacionSIADTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
                     Pagina<IndexacionSIADTO> pagina = procesoServiceFacade.findSIAByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
@@ -140,6 +150,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
                 return null;
             }
 
+            /*
             @Override
             public Object getRowKey(ProcesoLogGridDTO pers) {
                 return pers.getCodigo().toString();
@@ -164,8 +175,32 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
+            }*/
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return 200;
             }
 
+            @Override
+            public List<ProcesoLogGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                try {
+                    filtroLog.setIdioma(sessionBean.getLang());
+                    /*if (sortField != null && !sortField.equals("filtroLog.orderBy") && !sortField.equals("filtro.orderBy")) {
+                        filtroLog.setOrderBy(sortField);
+                    }*/
+                    filtroLog.setTipo("SIA_PUNT");
+                    filtroLog.setAscendente(false);
+                    filtroLog.setIdEntidad(sessionBean.getEntidad().getCodigo());
+                    Pagina<ProcesoLogGridDTO> pagina = procesoLogServiceFacade.findByFiltro(filtroLog);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<ProcesoLogGridDTO> pagina = new Pagina(new ArrayList(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
+            }
         };
     }
 

@@ -63,7 +63,9 @@
             background: #22F !important;
             }
         </h:outputStylesheet>
-        <div class="ui-g-12 ui-md-9 pl-4 panel-container">
+
+        <div class="row" style="margin-right: 0px;">
+            <div class="ui-g-12 ui-md-9 pl-4 panel-container">
             <p:panel header="#{labels['dialogProcedimiento.datosSIA']}" id="formDatosSIA">
 
                 <div class="form-row">
@@ -139,21 +141,21 @@
                                        for="txtFechaPublicacion"
                                        styleClass="mb-1 pt-0"/>
                         <p>
-                            <p:calendar id="txtFechaPublicacion" styleClass="fecha"
+                            <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
                                         disabled="#{dialogProcedimiento.isModoConsulta()}"
                                         value="#{dialogProcedimiento.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
                                         requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
                                         required="#{empty param['formDialog:closeButton']}"
                                         showOn="button">
                                 <p:ajax event="change"/>
-                            </p:calendar>
+                            </p:datePicker>
                         </p>
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimiento.fecha.caducidad']}:" for="txtFechaCaducidad"
                                        styleClass="mb-1 pt-0"/>
                         <p>
-                            <p:calendar id="txtFechaCaducidad" styleClass="fecha"
+                            <p:datePicker showIcon="true"  id="txtFechaCaducidad" styleClass="fecha"
                                         disabled="#{dialogProcedimiento.isModoConsulta()}"
                                         value="#{dialogProcedimiento.data.fechaCaducidad}" pattern="dd/MM/yyyy HH:mm"
                                         showOn="button"/>
@@ -570,7 +572,7 @@
                                      disabled="#{dialogProcedimiento.isModoConsulta()}" styleClass="w90">
                             <f:validateRegex
                                     pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
-                                    update="messagesDialog"/>
+                                     />
                             <p:ajax partialSubmit="@this" update="messagesDialog"/>
                         </p:inputText>
                     </div>
@@ -588,7 +590,7 @@
                                      disabled="#{dialogProcedimiento.isModoConsulta()}" styleClass="w96">
                             <f:validateRegex
                                     pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
-                                    update="messagesDialog"/>
+                                    />
                             <p:ajax partialSubmit="@this" update="messagesDialog"/>
                         </p:inputText>
                     </div>
@@ -687,6 +689,7 @@
             </p:panel>
         </div>
 
+
         <div class="ui-g-12 ui-md-3 pr-1 ">
             <div class="row left-container mx-0 mb-2">
                 <div class="left-container-header ml-0 col-12 row">
@@ -712,7 +715,7 @@
                         <!-- Necesario para actualizar en controlador la fila seleccionada -->
                         <p:ajax event="rowSelect" global="false"/>
                         <p:ajax event="rowUnselect"/>
-                        
+
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
                             <h:outputText value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                         </p:column>
@@ -1041,6 +1044,7 @@
                                      process="@this" update="dataTableTramite messagesDialog"/>
                 </div>
             </div>
+        </div>
         </div>
         <h:outputScript>
             function triggerDblClickPublico() {

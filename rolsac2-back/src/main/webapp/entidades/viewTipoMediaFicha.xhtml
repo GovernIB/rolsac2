@@ -79,10 +79,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewTipoMediaFicha.datoSeleccionado}"
-                         rowKey="#{tipoMediaFicha.codigo}"
                          reflow="true"
-                         sortBy="#{viewTipoMediaFicha.filtro.orderBy}"
-                         sortOrder="#{viewTipoMediaFicha.filtro.order}"
                          style="min-height: 300px;"
             >
                 <!--<p:ajax event="rowDblselect" listener="#{viewPersonal.consultarPersonal}"

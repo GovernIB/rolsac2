@@ -304,7 +304,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.estadoCodigoSIA']}:" for="txtVolcadoSIA"/>
+                            <h:outputText value="#{labels['dict.estadoCodigoSIA']}:" for="txtVolcadoSIA"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtVolcadoSIA" value="#{viewProcedimientos.filtro.volcadoSIA}"
@@ -565,18 +565,22 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                          paginator="true" lazy="true" filterDelay="300" widgetVar="procedimientoTable"
                          rows="#{viewProcedimientos.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
                          first="#{viewProcedimientos.filtro.paginaFirst}"
-                         paginatorPosition="bottom" paginatorAlwaysVisible="true"
+                         paginatorAlwaysVisible="true"
                          paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewProcedimientos.datoSeleccionado}"
+                         paginatorPosition="bottom"
+                         selectionMode="single"
+                         selection="#{viewProcedimientos.datoSeleccionado}"
+            >
+                <!--
+                        selectionMode="single"
                          rowKey="#{procedimiento.codigo}"
-                         reflow="true"
                          sortBy="#{viewProcedimientos.filtro.orderBy}"
                          sortOrder="#{viewProcedimientos.filtro.order}"
-                         style="min-height: 300px;"
-            >
+
+                          -->
                 <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar @form:btnClonar @form:includeDetalle @form:selectorDetalle "
                         process="@form" listener="#{viewProcedimientos.calcularProc()}" onstart="onClickDatableStart();" oncomplete="onClickDatableFin();"  />
                 <p:ajax event="rowDblselect" global="false" oncomplete="triggerDblClick();" process="@form"/>
@@ -728,7 +732,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
                         <p:outputLabel value="#{labels['dict.cargando']}...." />
                     </div>
-                    <div id="divDetalle">
+                    <div id="divDetalle" class="row" style="padding-left:5px; padding-right:5px;">
                     <ui:include src="/maestras/detalleProcedimiento.xhtml">
                         <ui:param name="paramName" value="X" />
                         <!-- <ui:param name="procedimiento" value="#{viewProcedimientos.wfModificado}" />-->

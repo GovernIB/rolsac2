@@ -69,8 +69,7 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
             if (ua.getPadre() != null) {
                 construirArbolDesdeHoja(ua, (LazyLoadingTreeNode) root);
             } else {
-                UnidadAdministrativaDTO uaRoot =
-                        uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+                UnidadAdministrativaDTO uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
                 LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
                 rootChildNode.setSelected(true);
                 addTreeNodeCargando(rootChildNode);
@@ -160,8 +159,7 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
     public void onNodeExpand(NodeExpandEvent event) {
         final TreeNode expandedTreeNode = event.getTreeNode();
 
-        List<UnidadAdministrativaDTO> childs = uaService.getHijosSimple(
-                ((UnidadAdministrativaDTO) expandedTreeNode.getData()).getCodigo(), sessionBean.getLang(), ((UnidadAdministrativaDTO) expandedTreeNode.getData()));
+        List<UnidadAdministrativaDTO> childs = uaService.getHijosSimple(((UnidadAdministrativaDTO) expandedTreeNode.getData()).getCodigo(), sessionBean.getLang(), ((UnidadAdministrativaDTO) expandedTreeNode.getData()));
 
         if (!childs.isEmpty()) {
             expandedTreeNode.getChildren().clear();
@@ -172,7 +170,8 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
             });
 
             expandedTreeNode.setExpanded(true);
-            for (TreeNode nodo : expandedTreeNode.getChildren()) {
+            for (Object o : expandedTreeNode.getChildren()) {
+                TreeNode nodo = (TreeNode) o;
                 if (!tieneHijos((UnidadAdministrativaDTO) nodo.getData())) {
                     nodo.getChildren().clear();
                 }
@@ -189,8 +188,7 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
     }
 
     public Boolean tieneHijos(UnidadAdministrativaDTO ua) {
-        List<UnidadAdministrativaDTO> childs = uaService.getHijosSimple(
-                ua.getCodigo(), sessionBean.getLang(), ua);
+        List<UnidadAdministrativaDTO> childs = uaService.getHijosSimple(ua.getCodigo(), sessionBean.getLang(), ua);
         return (childs.size() >= 1);
     }
 
@@ -202,12 +200,10 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
          */
 
         if (selectedNode == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"),
-                    getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
             return;
         } else {
-            if (Boolean.TRUE.equals(esCabecera) && !sessionBean.getUnidadActiva().getCodigo()
-                    .equals(((UnidadAdministrativaDTO) selectedNode.getData()).getCodigo())) {
+            if (Boolean.TRUE.equals(esCabecera) && !sessionBean.getUnidadActiva().getCodigo().equals(((UnidadAdministrativaDTO) selectedNode.getData()).getCodigo())) {
                 sessionBean.cambiarUnidadAdministrativa((UnidadAdministrativaDTO) selectedNode.getData());
             }
         }

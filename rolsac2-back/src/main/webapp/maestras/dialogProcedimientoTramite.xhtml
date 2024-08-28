@@ -64,7 +64,7 @@
                  showDetail="false"
                  life="5000"
                  escape="false"/>
-        <div class="ui-g-12 ui-md-9 pl-4 panel-container">
+        <div class="row" style="margin-right: 0px;"><div class="ui-g-12 ui-md-9 pl-4 panel-container">
             <p:panel id="panelNombre" header="#{labels['dialogProcedimientoTramite.edicion']}"
                      rendered="#{!empty dialogProcedimientoTramite.nombreProcedimiento.getTraduccionConValor(sessionBean.lang, 'ca')}">
                 <div class="form-row">
@@ -86,7 +86,7 @@
                                        for="txtFechaPublicacion"
                                        styleClass="mb-1 pt-0"/>
                         <p>
-                            <p:calendar id="txtFechaPublicacion" styleClass="fecha"
+                            <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
                                         disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaPublicacion}"
                                         pattern="dd/MM/yyyy HH:mm"
@@ -129,7 +129,7 @@
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaInicio']}:" for="txtFechaInicio"
                                        styleClass="mb-1 pt-0"/>
                         <p>
-                            <p:calendar id="txtFechaInicio" styleClass="fecha"
+                            <p:datePicker showIcon="true"  id="txtFechaInicio" styleClass="fecha"
                                         disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaInicio}"
                                         required="#{empty param['formDialog:closeButton']}"
@@ -141,7 +141,7 @@
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaCierre']}:" for="txtFechaCierre"
                                        styleClass="mb-1 pt-0"/>
                         <p>
-                            <p:calendar id="txtFechaCierre" styleClass="fecha"
+                            <p:datePicker showIcon="true"  id="txtFechaCierre" styleClass="fecha"
                                         disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaCierre}"
                                         pattern="dd/MM/yyyy HH:mm" showOn="button"/>
@@ -574,7 +574,7 @@
                 </div>
             </div>
         </div>
-
+        </div>
         <h:outputScript>
             function triggerDblClickModelo() {
                 document.getElementById("formDialog:btnEditarModelo").click();

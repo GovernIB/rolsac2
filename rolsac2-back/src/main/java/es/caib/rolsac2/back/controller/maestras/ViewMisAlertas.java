@@ -14,7 +14,7 @@ import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
+import org.primefaces.model.SortMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,6 +99,7 @@ public class ViewMisAlertas extends AbstractController implements Serializable {
                 return null;
             }
 
+            /*
             @Override
             public Object getRowKey(AlertaGridDTO pers) {
                 return pers.getCodigo().toString();
@@ -108,6 +109,25 @@ public class ViewMisAlertas extends AbstractController implements Serializable {
             public List<AlertaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                    Pagina<AlertaGridDTO> pagina = alertaService.findAlertaUsuarioDTOByFiltro(filtro);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                } catch (Exception e) {
+                    LOG.error("Error llamando", e);
+                    Pagina<AlertaGridDTO> pagina = new Pagina(new ArrayList(), 0);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+                }
+            }*/
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return 200;
+            }
+
+            @Override
+            public List<AlertaGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                try {
+                    // filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                     Pagina<AlertaGridDTO> pagina = alertaService.findAlertaUsuarioDTOByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();

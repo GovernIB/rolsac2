@@ -769,16 +769,24 @@ public class ViewServicios extends AbstractController implements Serializable {
             }
 
             @Override
-            public Object getRowKey(ServicioGridDTO proc) {
-                return proc.getCodigo().toString();
+            public String getRowKey(ServicioGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+            public int count(Map<String, FilterMeta> filterBy) {
+                return getRowCount();
             }
 
             @Override
-            public List<ServicioGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
+            public List<ServicioGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
                     if (filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
                         List<Long> unidadesHijasAux = new ArrayList<>(filtro.getIdUAsHijas());
