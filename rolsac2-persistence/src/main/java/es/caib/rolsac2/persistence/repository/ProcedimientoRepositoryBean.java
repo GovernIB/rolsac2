@@ -1867,7 +1867,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         StringBuilder sql;
         boolean ambosWf = false;
         if (isTotal) {
-            sql = new StringBuilder("SELECT count(j) FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = true LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT count(j) FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + "  LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
             ambosWf = true;
         } else if (isRest) {
             if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("D")) {
@@ -1925,6 +1925,16 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND (WF.fechaPublicacion <= :fechaPublicacionHasta or WF2.fechaPublicacion <= :fechaPublicacionHasta) ");
         } else if (filtro.isRellenoFechaPublicacionHasta()) {
             sql.append(" AND (WF.fechaPublicacion <= :fechaPublicacionHasta) ");
+        }
+
+        if (filtro.isRellenoVisibleSEDE()) {
+            if ("S".equalsIgnoreCase(filtro.getVisibleSEDE())) {
+                //sql.append(" AND (WF2.estado LIKE '" + TypeProcedimientoEstado.PUBLICADO.toString() + "' AND (WF2.fechaCaducidad > current_date OR WF2.fechaCaducidad IS NULL) AND (WF2.fechaPublicacion < current_date OR WF2.fechaPublicacion IS NULL)  ) ");
+                String texto = " AND ( WF.estado LIKE '" + TypeProcedimientoEstado.PUBLICADO.toString() + "'  AND  (WF.fechaPublicacion < current_date OR WF.fechaPublicacion IS NULL) ) ";
+                sql.append(texto);
+            } else {
+                sql.append(" AND (WF IS NULL OR WF.estado NOT LIKE '" + TypeProcedimientoEstado.PUBLICADO.toString() + "' OR (WF.fechaCaducidad IS NOT NULL AND WF.fechaCaducidad < SYSDATE ) OR (WF.fechaPublicacion IS NOT NULL AND WF.fechaPublicacion > SYSDATE )  ) ");
+            }
         }
 
         if (filtro.isRellenoTipoProcedimiento() && ambosWf) {

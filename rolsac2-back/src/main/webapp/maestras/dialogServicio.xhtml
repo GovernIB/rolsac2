@@ -443,9 +443,7 @@
                                      requiredMessage="#{labels['dict.obligatorio.incidenciasEmail']}"
                                      required="#{empty param['formDialog:closeButton']}"
                                      disabled="#{dialogServicio.isModoConsulta()}" styleClass="w95">
-                            <f:validateRegex
-                                    pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
-                                    update="messagesDialog"/>
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
                             <p:ajax partialSubmit="@this" update="messagesDialog"/>
                         </p:inputText>
                     </div>

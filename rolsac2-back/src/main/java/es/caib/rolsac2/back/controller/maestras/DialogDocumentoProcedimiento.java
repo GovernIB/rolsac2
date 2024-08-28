@@ -77,9 +77,13 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
             }
             UtilJSF.vaciarMochila();
         }
-        if (tipo != null && "TRAM_MOD".equals(tipo)) {
-            documentoObligatorio = true;
-        }
+
+        documentoObligatorio = true;
+        
+    }
+
+    public boolean isDocumentoObligatorio() {
+        return documentoObligatorio;
     }
 
     public boolean isTipoProcedimientoDocumento() {
