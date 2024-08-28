@@ -207,7 +207,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                      widgetVar="panel" collapsed="true">
                 <f:facet name="header">
                     <div class="row">
-                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6" >
                             <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
                             <p:inputText id="filtroBusqueda"  value="#{viewProcedimientos.filtro.texto}" styleClass="estiloGrande ml-2 mr-2"  />
                             <p:commandButton id="btnBuscarEvt" value="#{labels['dict.busqueda']}"
@@ -222,14 +222,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              process="@form"/>
                             <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus"
                                              onclick="PF('panel').toggle();cambiarBoton()"/>
-                            <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
-                                             actionListener="#{viewProcedimientos.exportar()}" process="@form">
-                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />
-                            </p:commandButton>
-
-                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none">
-                                <p:fileDownload value="#{viewProcedimientos.file}" />
-                            </p:commandButton>
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                             <p:commandButton id="btnClonar" value="#{labels['dict.clonar']}" styleClass="mr-2" icon="pi pi-file-o"
@@ -279,34 +271,43 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
                 <p class="p-m-0">
                     <div class="row">
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.codigoProc']}:" for="txtCodigoProc"/>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1 bloque">
+                            <p>
+                                <h:outputText value="#{labels['viewProcedimientos.uaHijas']}:" for="txtUAHijas"/>
+                            </p>
+                            <p:selectBooleanCheckbox id="txtUAHijas" value="#{viewProcedimientos.filtro.hijasActivas}">
+                                <p:ajax process="@this" event="change" partialSubmit="true"
+                                        listener="#{viewProcedimientos.filtroHijasActivasChange}"/>
+                            </p:selectBooleanCheckbox>
                         </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:inputText id="txtCodigoProc" value="#{viewProcedimientos.filtro.codigoProc}"
-                                         styleClass="w95"
-                                         onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1 bloque">
+                            <p>
+                            <h:outputText value="#{labels['viewProcedimientos.ubidadesOrganicas']}:"
+                                          for="txtUbidadesOrganicas"/>
+                            </p>
+                            <p:selectBooleanCheckbox id="txtUbidadesOrganicas"
+                                                     value="#{viewProcedimientos.filtro.todasUnidadesOrganicas}">
+                                <p:ajax process="@this" event="change" partialSubmit="true"
+                                        listener="#{viewProcedimientos.filtroUnidadOrganicasChange}"/>
+                            </p:selectBooleanCheckbox>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.codigoTram']}:" for="txtCodigoTram"/>
+                        <div class="ui-g-12 ui-md-2 ui-lg-2 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.visibleASede']}:"  for="txtVisibleSede"/>
+                            <p:selectOneMenu id="txtVisibleSede" value="#{viewProcedimientos.filtro.visibleSEDE}"
+                                             styleClass="w95">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
+                                <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
+                            </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:inputText id="txtCodigoTram" value="#{viewProcedimientos.filtro.codigoTram}"
-                                         styleClass="w95"
-                                         onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.codigoSIA']}:" for="txtCodigoSIA"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:inputText id="txtCodigoSIA" value="#{viewProcedimientos.filtro.codigoSIA}"
                                          styleClass="w95"
                                          onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
                             <h:outputText value="#{labels['dict.estadoCodigoSIA']}:" for="txtVolcadoSIA"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtVolcadoSIA" value="#{viewProcedimientos.filtro.volcadoSIA}"
                                              styleClass="w95">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
@@ -316,38 +317,38 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:selectOneMenu>
                         </div>
 
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.formaInicio']}:" for="txtFormaInicio"/>
+
+
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.codigoProc']}:" for="txtCodigoProc"/>
+                            <p:inputText id="txtCodigoProc" value="#{viewProcedimientos.filtro.codigoProc}"
+                                         styleClass="w95"
+                                         onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
                         </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:selectOneMenu id="txtFormaInicio" value="#{viewProcedimientos.filtro.formaInicio}"
-                                             styleClass="w95" converter="#{tipoFormaInicioConverter}" autoWidth="false">
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.codigoTram']}:" for="txtCodigoTram"/>
+                            <p:inputText id="txtCodigoTram" value="#{viewProcedimientos.filtro.codigoTram}"
+                                         styleClass="w95"
+                                         onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.estado']}:" for="txtTipoEstado"/>
+                            <p:selectOneMenu id="txtTipoEstado" value="#{viewProcedimientos.filtro.estado}"
+                                             styleClass="w95" autoWidth="false">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{viewProcedimientos.listTipoFormaInicio}" var="tipoFormaInicio"
-                                               itemLabel="#{tipoFormaInicio.descripcion.getTraduccion(sessionBean.lang)}"
-                                               itemValue="#{tipoFormaInicio}"/>
+                                <f:selectItems value="#{typeEstados.values()}" var="estado"
+                                               itemValue="#{estado.toString()}"
+                                               itemLabel="#{labels['TypeProcedimientoEstado.' += estado]}"/>
+
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.silencioAdministrativo']}:"
-                                          for="txtSilencioAdministrativo"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:selectOneMenu id="txtSilencioAdministrativo"
-                                             value="#{viewProcedimientos.filtro.silencioAdministrativo}"
-                                             styleClass="w95" converter="#{tipoSilencioAdministrativoConverter}"
-                                             autoWidth="false">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{viewProcedimientos.listTipoSilencio}" var="tipoSilencio"
-                                               itemLabel="#{tipoSilencio.descripcion.getTraduccion(sessionBean.lang)}"
-                                               itemValue="#{tipoSilencio}"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+
+
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.tipoProcedimiento']}:"
                                           for="txtTipoProcedimiento"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtTipoProcedimiento"
                                              value="#{viewProcedimientos.filtro.tipoProcedimiento}"
                                              styleClass="w95" converter="#{tipoProcedimientoConverter}"
@@ -359,26 +360,48 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                itemValue="#{tipoProcedimiento}"/>
 
                             </p:selectOneMenu>
-
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.estado']}:" for="txtTipoEstado"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:selectOneMenu id="txtTipoEstado" value="#{viewProcedimientos.filtro.estado}"
-                                             styleClass="w95" autoWidth="false">
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.formaInicio']}:" for="txtFormaInicio"/>
+                            <p:selectOneMenu id="txtFormaInicio" value="#{viewProcedimientos.filtro.formaInicio}"
+                                             styleClass="w95" converter="#{tipoFormaInicioConverter}" autoWidth="false">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{typeEstados.values()}" var="estado"
-                                               itemValue="#{estado.toString()}"
-                                               itemLabel="#{labels['TypeProcedimientoEstado.' += estado]}"/>
-
+                                <f:selectItems value="#{viewProcedimientos.listTipoFormaInicio}" var="tipoFormaInicio"
+                                               itemLabel="#{tipoFormaInicio.descripcion.getTraduccion(sessionBean.lang)}"
+                                               itemValue="#{tipoFormaInicio}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.publicoObjetivo']}:"
-                                          for="txtPublicoObjetivo"/>
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.silencioAdministrativo']}:"
+                                          for="txtSilencioAdministrativo"/>
+                            <p:selectOneMenu id="txtSilencioAdministrativo"
+                                             value="#{viewProcedimientos.filtro.silencioAdministrativo}"
+                                             styleClass="w95" converter="#{tipoSilencioAdministrativoConverter}"
+                                             autoWidth="false">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItems value="#{viewProcedimientos.listTipoSilencio}" var="tipoSilencio"
+                                               itemLabel="#{tipoSilencio.descripcion.getTraduccion(sessionBean.lang)}"
+                                               itemValue="#{tipoSilencio}"/>
+                            </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+
+
+
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.finVia']}:" for="txtFinVia"/>
+                            <p:selectOneMenu id="txtFinVia" value="#{viewProcedimientos.filtro.finVia}"
+                                             styleClass="w95" converter="#{tipoViaConverter}" autoWidth="false">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItems value="#{viewProcedimientos.listFinVias}" var="estado"
+                                               itemValue="#{estado}"
+                                               itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <div>
+                                <h:outputText value="#{labels['viewProcedimientos.publicoObjetivo']}:" for="txtPublicoObjetivo"/>
+                            </div>
                             <p:inputText id="txtPublicoObjetivo"
                                          value="#{viewProcedimientos.filtro.getPublicoObjetivos(sessionBean.lang)}"
                                          styleClass="w70" disabled="true"/>
@@ -390,40 +413,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         process="@this" update="txtPublicoObjetivo"/>
                             </p:commandButton>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.materias']}:" for="txtMaterias"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:inputText id="txtMaterias"
-                                         value="#{viewProcedimientos.filtro.getMaterias(sessionBean.lang)}"
-                                         styleClass="w70" disabled="true"/>
-                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
-                                             styleClass="text-success"
-                                             process="@this"
-                                             actionListener="#{viewProcedimientos.seleccionarMaterias()}">
-                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogMateria}"
-                                        process="@this" update="txtMaterias"/>
-                            </p:commandButton>
-                        </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.normativas']}:" for="txtNormativa"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:inputText id="txtNormativa"
-                                         value="#{viewProcedimientos.filtro.getNormativas(sessionBean.lang)}"
-                                         styleClass="w70" disabled="true"/>
-                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
-                                             styleClass="text-success"
-                                             process="@this"
-                                             actionListener="#{viewProcedimientos.seleccionarNormativas()}">
-                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogNormativa}"
-                                        process="@this" update="txtNormativa"/>
-                            </p:commandButton>
-                        </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.temas']}:" for="txtTemas"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <div>
+                                <h:outputText value="#{labels['viewProcedimientos.temas']}:" for="txtTemas"/>
+                            </div>
                             <p:inputText id="txtTemas"
                                          value="#{viewProcedimientos.filtro.getTemas(sessionBean.lang)}"
                                          styleClass="w70" disabled="true"/>
@@ -435,43 +428,40 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         process="@this" update="txtTemas"/>
                             </p:commandButton>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <h:outputText value="#{labels['viewProcedimientos.uaHijas']}:" for="txtUAHijas"/>
+
+
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <div>
+                                <h:outputText value="#{labels['viewProcedimientos.materias']}:" for="txtMaterias"/>
+                            </div>
+                            <p:inputText id="txtMaterias"
+                                         value="#{viewProcedimientos.filtro.getMaterias(sessionBean.lang)}"
+                                         styleClass="w70" disabled="true"/>
+                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
+                                             styleClass="text-success"
+                                             process="@this"
+                                             actionListener="#{viewProcedimientos.seleccionarMaterias()}">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogMateria}"
+                                        process="@this" update="txtMaterias"/>
+                            </p:commandButton>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:selectBooleanCheckbox id="txtUAHijas" value="#{viewProcedimientos.filtro.hijasActivas}">
-                                <p:ajax process="@this" event="change" partialSubmit="true"
-                                        listener="#{viewProcedimientos.filtroHijasActivasChange}"/>
-                            </p:selectBooleanCheckbox>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
-                            <h:outputText value="#{labels['viewProcedimientos.ubidadesOrganicas']}:"
-                                          for="txtUbidadesOrganicas"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
-                            <p:selectBooleanCheckbox id="txtUbidadesOrganicas"
-                                                     value="#{viewProcedimientos.filtro.todasUnidadesOrganicas}">
-                                <p:ajax process="@this" event="change" partialSubmit="true"
-                                        listener="#{viewProcedimientos.filtroUnidadOrganicasChange}"/>
-                            </p:selectBooleanCheckbox>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.finVia']}:" for="txtFinVia"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
-                            <p:selectOneMenu id="txtFinVia" value="#{viewProcedimientos.filtro.finVia}"
-                                             styleClass="w95" converter="#{tipoViaConverter}" autoWidth="false">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{viewProcedimientos.listFinVias}" var="estado"
-                                               itemValue="#{estado}"
-                                               itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
+                        <!-- <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.normativas']}:" for="txtNormativa"/>
+                            <p:inputText id="txtNormativa"
+                                         value="#{viewProcedimientos.filtro.getNormativas(sessionBean.lang)}"
+                                         styleClass="w70" disabled="true"/>
+                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
+                                             styleClass="text-success"
+                                             process="@this"
+                                             actionListener="#{viewProcedimientos.seleccionarNormativas()}">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogNormativa}"
+                                        process="@this" update="txtNormativa"/>
+                            </p:commandButton>
+                        </div> -->
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.tramiteVigente']}:"
                                           for="txtTtramiteVige"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
                             <p:selectOneMenu id="txtTtramiteVige" value="#{viewProcedimientos.filtro.tramiteVigente}"
                                              styleClass="w95" autoWidth="false">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
@@ -479,11 +469,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.canalPresentacion']}:"
                                           for="txtTtramiteTelem"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
                             <p:selectOneMenu id="txtTtramiteTelem"
                                              value="#{viewProcedimientos.filtro.tramiteTelematico}"
                                              styleClass="w95" autoWidth="false">
@@ -493,23 +481,14 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <f:selectItem itemLabel="#{labels['viewProcedimientos.ambos']}" itemValue="A"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.plantillaTramite']}:" for="txtPlantilla"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
-                            <p:selectOneMenu id="txtPlantilla" value="#{viewProcedimientos.filtro.plantilla}"
-                                             styleClass="w95" autoWidth="false" converter="#{tipoTramitacionConverter}">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{viewProcedimientos.listPlantillas}" var="estado"
-                                               itemValue="#{estado}"
-                                               itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
+
+
+
+
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.plataformaTramitacion']}:"
                                           for="txtPlataforma"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
                             <p:selectOneMenu id="txtPlataforma" value="#{viewProcedimientos.filtro.plataforma}"
                                              styleClass="w95" autoWidth="false"
                                              converter="#{platTramitElectronicaConverter}">
@@ -519,11 +498,19 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.plantillaTramite']}:" for="txtPlantilla"/>
+                            <p:selectOneMenu id="txtPlantilla" value="#{viewProcedimientos.filtro.plantilla}"
+                                             styleClass="w95" autoWidth="false" converter="#{tipoTramitacionConverter}">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItems value="#{viewProcedimientos.listPlantillas}" var="estado"
+                                               itemValue="#{estado}"
+                                               itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.mensajesPorLeer']}:"
                                           for="txtMensajesPorLeer"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
                             <p:selectOneMenu id="txtMensajesPorLeer"
                                              value="#{viewProcedimientos.filtro.mensajesPendiente}"
                                              styleClass="w95" autoWidth="false">
@@ -537,10 +524,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                               itemValue="PG"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
+
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.esComun']}:" for="txtEsComun" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
                             <p:selectOneMenu id="txtEsComun" value="#{viewProcedimientos.filtro.comun}"
                                              styleClass="w95" autoWidth="false" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
@@ -555,7 +542,15 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              process="@form" update="panel"/>
                             <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                              actionListener="#{viewProcedimientos.buscar()}" update="messages dataTable"
-                                             process="@form" /> <!-- oncomplete="PF('panel').toggle()" -->
+                                             process="@form" />
+                            <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
+                                             actionListener="#{viewProcedimientos.exportar()}" process="@form">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />
+                            </p:commandButton>
+
+                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none">
+                                <p:fileDownload value="#{viewProcedimientos.file}" />
+                            </p:commandButton>
                         </div>
                     </div>
                 </p>

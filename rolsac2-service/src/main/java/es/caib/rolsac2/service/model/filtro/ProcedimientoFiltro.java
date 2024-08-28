@@ -82,6 +82,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     private Integer version;
 
+    private String visibleSEDE;
+
     /**
      * Constructor vacio
      */
@@ -151,6 +153,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.setOperadoresString(otro.isOperadoresString());
         this.setPaginacionActiva(otro.isPaginacionActiva());
         this.setTotal(otro.getTotal());
+        this.setVisibleSEDE(otro.getVisibleSEDE());
     }
 
     public Long getCodigoProc() {
@@ -448,6 +451,15 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public void setPlantilla(TipoTramitacionDTO plantilla) {
         this.plantilla = plantilla;
+    }
+
+
+    public String getVisibleSEDE() {
+        return visibleSEDE;
+    }
+
+    public void setVisibleSEDE(String visibleSEDE) {
+        this.visibleSEDE = visibleSEDE;
     }
 
     public PlatTramitElectronicaDTO getPlataforma() {
@@ -794,6 +806,11 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public boolean isRellenoVersion() {
         return version != null;
     }
+
+    public boolean isRellenoVisibleSEDE() {
+        return visibleSEDE != null;
+    }
+
 
     /**
      * Se hace a este nivel manualmente el clonar.

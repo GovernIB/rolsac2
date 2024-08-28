@@ -37,16 +37,16 @@ public enum TypeProcedimientoEstado {
      */
     RESERVA("R");
 
-    String perfil;
+    String valor;
 
-    TypeProcedimientoEstado(String iPerfil) {
-        perfil = iPerfil;
+    TypeProcedimientoEstado(String iValor) {
+        valor = iValor;
     }
 
-    public static TypeProcedimientoEstado fromString(String iPerfil) {
+    public static TypeProcedimientoEstado fromString(String iValor) {
         TypeProcedimientoEstado tipo = null;
         for (TypeProcedimientoEstado typeRol : TypeProcedimientoEstado.values()) {
-            if (typeRol.toString().equals(iPerfil)) {
+            if (typeRol.toString().equals(iValor)) {
                 tipo = typeRol;
                 break;
             }
@@ -113,19 +113,17 @@ public enum TypeProcedimientoEstado {
     }
 
     public String toString() {
-        return perfil;
+        return valor;
     }
 
     /**
      * Es estado pendiente
      **/
     public boolean isEstadoPendiente() {
-        return this == TypeProcedimientoEstado.PENDIENTE_BORRAR ||
-                this == TypeProcedimientoEstado.PENDIENTE_PUBLICAR ||
-                this == TypeProcedimientoEstado.PENDIENTE_RESERVAR;
+        return this == TypeProcedimientoEstado.PENDIENTE_BORRAR || this == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || this == TypeProcedimientoEstado.PENDIENTE_RESERVAR;
     }
 
     public String getLiteralMensajePendiente(String idioma) {
-        return "es.caib.rolsac2.procServ.accion." + perfil + "." + idioma;
+        return "es.caib.rolsac2.procServ.accion." + valor + "." + idioma;
     }
 }

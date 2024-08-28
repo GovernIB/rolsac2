@@ -222,14 +222,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              update="messages dataTable"
                                              process="@form"/>
                             <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" onclick="PF('panel').toggle();cambiarBoton()" />
-                            <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
-                                             actionListener="#{viewServicios.exportar()}" process="@form">
-                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />
-                            </p:commandButton>
-
-                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none">
-                                <p:fileDownload value="#{viewServicios.file}" />
-                            </p:commandButton>
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                             <p:commandButton id="btnClonar" value="#{labels['dict.clonar']}" styleClass="mr-2" icon="pi pi-file-o"
@@ -275,23 +267,41 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
                 <p class="p-m-0">
                     <div class="row">
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewServicios.codigoServ']}:" for="txtCodigoProc" />
+                        <div class="ui-g-12 ui-md-2 ui-lg-1 bloque">
+                            <p>
+                                <h:outputText value="#{labels['viewServicios.uaHijas']}:" for="txtUAHijas"/>
+                            </p>
+                            <p:selectBooleanCheckbox id="txtUAHijas" value="#{viewServicios.filtro.hijasActivas}">
+                                <p:ajax process="@this" event="change" partialSubmit="true"
+                                        listener="#{viewServicios.filtroHijasActivasChange}"/>
+                            </p:selectBooleanCheckbox>
                         </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:inputText id="txtCodigoProc" value="#{viewServicios.filtro.codigoProc}" styleClass="w95" onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"  />
+                        <div class="ui-g-12 ui-md-2 ui-lg-1 bloque">
+                            <p>
+                                <h:outputText value="#{labels['viewServicios.ubidadesOrganicas']}:" for="txtUbidadesOrganicas"/>
+                            </p>
+                            <p:selectBooleanCheckbox id="txtUbidadesOrganicas"
+                                                     value="#{viewServicios.filtro.todasUnidadesOrganicas}">
+                                <p:ajax process="@this" event="change" partialSubmit="true"
+                                        listener="#{viewServicios.filtroUnidadOrganicasChange}"/>
+                            </p:selectBooleanCheckbox>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                        <div class="ui-g-12 ui-md-2 ui-lg-2 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.visibleASede']}:"  for="txtVisibleSede"/>
+                            <p:selectOneMenu id="txtVisibleSede" value="#{viewServicios.filtro.visibleSEDE}"
+                                             styleClass="w95">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
+                                <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewServicios.codigoSIA']}:" for="txtCodigoSIA"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:inputText id="txtCodigoSIA" value="#{viewServicios.filtro.codigoSIA}" styleClass="w95"
                                          onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <h:outputText value="#{labels['dict.estadoCodigoSIA']}:" for="txtVolcadoSIA"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtVolcadoSIA" value="#{viewServicios.filtro.volcadoSIA}"
                                              styleClass="w95">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
@@ -300,26 +310,12 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <f:selectItem itemLabel="#{labels['dict.noActivo']}" itemValue="B"/>
                             </p:selectOneMenu>
                         </div>
-
-                        <!--
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewServicios.tipoProcedimiento']}:"
-                                          for="txtTipoProcedimiento"/>
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
+                            <h:outputText value="#{labels['viewServicios.codigoServ']}:" for="txtCodigoProc" />
+                            <p:inputText id="txtCodigoProc" value="#{viewServicios.filtro.codigoProc}" styleClass="w95" onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"  />
                         </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:selectOneMenu id="txtTipoProcedimiento" value="#{viewServicios.filtro.tipoProcedimiento}"
-                                             styleClass="w95" converter="#{tipoProcedimientoConverter}">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{viewServicios.listTipoProcedimiento}" var="tipoProcedimiento"
-                                               itemLabel="#{tipoProcedimiento.identificador}"
-                                               itemValue="#{tipoProcedimiento}"/>
-
-                            </p:selectOneMenu>
-                        </div>-->
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewServicios.estado']}:" for="txtTipoEstado"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtTipoEstado" value="#{viewServicios.filtro.estado}"
                                              styleClass="w95">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
@@ -329,11 +325,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewServicios.publicoObjetivo']}:"
-                                          for="txtPublicoObjetivo"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
+                            <div>
+                                <h:outputText value="#{labels['viewServicios.publicoObjetivo']}:" for="txtPublicoObjetivo"/>
+                            </div>
                             <p:inputText id="txtPublicoObjetivo"
                                          value="#{viewServicios.filtro.getPublicoObjetivos(sessionBean.lang)}"
                                          styleClass="w70" disabled="true"/>
@@ -345,10 +340,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         process="@this" update="txtPublicoObjetivo"/>
                             </p:commandButton>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewServicios.materias']}:" for="txtMaterias"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
+                            <div>
+                                <h:outputText value="#{labels['viewServicios.materias']}:" for="txtMaterias"/>
+                            </div>
                             <p:inputText id="txtMaterias" value="#{viewServicios.filtro.getMaterias(sessionBean.lang)}"
                                          styleClass="w70" disabled="true"/>
                             <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
@@ -358,10 +353,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         process="@this" update="txtMaterias"/>
                             </p:commandButton>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewServicios.normativas']}:" for="txtNormativa"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
+                            <div>
+                                <h:outputText value="#{labels['viewServicios.normativas']}:" for="txtNormativa"/>
+                            </div>
                             <p:inputText id="txtNormativa"
                                          value="#{viewServicios.filtro.getNormativas(sessionBean.lang)}"
                                          styleClass="w70" disabled="true"/>
@@ -372,10 +367,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         process="@this" update="txtNormativa"/>
                             </p:commandButton>
                         </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.temas']}:" for="txtTemas"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
+                            <div>
+                                <h:outputText value="#{labels['viewProcedimientos.temas']}:" for="txtTemas"/>
+                            </div>
                             <p:inputText id="txtTemas"
                                          value="#{viewServicios.filtro.getTemas(sessionBean.lang)}"
                                          styleClass="w70" disabled="true"/>
@@ -387,30 +382,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         process="@this" update="txtTemas"/>
                             </p:commandButton>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <h:outputText value="#{labels['viewServicios.uaHijas']}:" for="txtUAHijas"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:selectBooleanCheckbox id="txtUAHijas" value="#{viewServicios.filtro.hijasActivas}">
-                                <p:ajax process="@this" event="change" partialSubmit="true"
-                                        listener="#{viewServicios.filtroHijasActivasChange}"/>
-                            </p:selectBooleanCheckbox>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <h:outputText value="#{labels['viewServicios.ubidadesOrganicas']}:"
-                                          for="txtUbidadesOrganicas"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-2">
-                            <p:selectBooleanCheckbox id="txtUbidadesOrganicas"
-                                                     value="#{viewServicios.filtro.todasUnidadesOrganicas}">
-                                <p:ajax process="@this" event="change" partialSubmit="true"
-                                        listener="#{viewServicios.filtroUnidadOrganicasChange}"/>
-                            </p:selectBooleanCheckbox>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.esComun']}:" for="txtEsComun" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
                             <p:selectOneMenu id="txtEsComun" value="#{viewServicios.filtro.comun}"
                                              styleClass="w95" autoWidth="false" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
@@ -418,11 +391,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <f:selectItem itemLabel="#{labels['viewProcedimientos.especifico']}" itemValue="N"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
-                            <h:outputText value="#{labels['viewProcedimientos.canalPresentacion']}:"
-                                          for="txtTtramiteTelem"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
+                            <div>
+                                <h:outputText value="#{labels['viewProcedimientos.canalPresentacion']}:" for="txtTtramiteTelem"/>
+                            </div>
                             <p:selectCheckboxMenu id="txtTtramiteTelem" value="#{viewServicios.canalesSeleccionados}" style="min-width: 15rem"
                                                   multiple="true" scrollHeight="250"
                                                   label="#{labels['viewServicios.seleccioneCanales']}" >
@@ -431,10 +403,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <f:selectItem itemLabel="#{labels['viewProcedimientos.telefonico']}" itemValue="F"/>
                             </p:selectCheckboxMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.plantillaTramite']}:" for="txtPlantilla"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
                             <p:selectOneMenu id="txtPlantilla" value="#{viewServicios.filtro.plantilla}"
                                              styleClass="w95" autoWidth="false" converter="#{tipoTramitacionConverter}">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
@@ -443,11 +413,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.plataformaTramitacion']}:"
                                           for="txtPlataforma"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
                             <p:selectOneMenu id="txtPlataforma" value="#{viewServicios.filtro.plataforma}"
                                              styleClass="w95" autoWidth="false"
                                              converter="#{platTramitElectronicaConverter}">
@@ -457,11 +425,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-1">
+                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.mensajesPorLeer']}:"
                                           for="txtMensajesPorLeer"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3">
                             <p:selectOneMenu id="txtMensajesPorLeer"
                                              value="#{viewServicios.filtro.mensajesPendiente}"
                                              styleClass="w95" autoWidth="false">
@@ -482,6 +448,13 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                              actionListener="#{viewServicios.buscar()}" update="messages dataTable"
                                              process="@form" oncomplete="PF('panel').toggle()"/>
+                            <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
+                                             actionListener="#{viewServicios.exportar()}" process="@form">
+                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />
+                            </p:commandButton>
+                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none">
+                                <p:fileDownload value="#{viewServicios.file}" />
+                            </p:commandButton>
                         </div>
                     </div>
                 </p>

@@ -1771,3 +1771,6 @@ a.iconoXarxes {
     font-weight: bold;
     color: #444;
 }
+.bloque {
+    display: block;
+}
