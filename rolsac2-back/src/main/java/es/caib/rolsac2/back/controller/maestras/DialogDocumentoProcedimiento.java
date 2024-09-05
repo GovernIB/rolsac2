@@ -79,7 +79,7 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         }
 
         documentoObligatorio = true;
-        
+
     }
 
     public boolean isDocumentoObligatorio() {
@@ -129,13 +129,13 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
 
         if (documentoObligatorio) {
             if (data.getDocumentos() == null || data.getDocumentos().getTraducciones().isEmpty()) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "Debe añadir un documento", true);
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, this.getLiteral("dict.obligatorio.documentos"), true);
                 return false;
             }
 
             for (DocumentoTraduccion doc : data.getDocumentos().getTraducciones()) {
                 if (esIdiomaObligatorio(doc.getIdioma()) && (doc.getFicheroDTO() == null || doc.getFicheroDTO().getCodigo() == null)) {
-                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "Debe añadir un documento", true);
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, this.getLiteral("dict.obligatorio.documentos"), true);
                     return false;
                 }
             }
