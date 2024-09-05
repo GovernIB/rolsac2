@@ -974,3 +974,11 @@ legend {
 	height: 30px;
 	width: 20px;
 }
+.pi-compass{
+	width: 25px;
+	height: 25px;
+}
+div.cabeceraIdiomas  .pi-tag{
+	margin-right: 5px;
+	margin-left: 10px;
+}

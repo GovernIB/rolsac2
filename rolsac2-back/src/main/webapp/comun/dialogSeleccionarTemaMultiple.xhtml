@@ -118,7 +118,7 @@
                     >
                 <p:treeNode type="default" >
                     <!--<i id="icono#{node.codigo}" class="#{dialogSeleccionarTemaMultiple.getIcono(node)}"></i> -->
-                    <p:outputLabel class="#{dialogSeleccionarTemaMultiple.getIcono(node)}" />
+                    <i class="#{dialogSeleccionarTemaMultiple.getIcono(node)}" />
                     <p:tooltip id="toolTipFade#{node.codigo}" for="texto" value="#{dialogSeleccionarTemaMultiple.getTooltip(node)}" position="right"/>
                     <h:outputText id="texto" value="#{node.descripcion.getTraduccion(dialogSeleccionarTemaMultiple.idioma)}" />
                 </p:treeNode>

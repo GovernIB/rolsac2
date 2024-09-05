@@ -97,7 +97,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
      */
     public void buscar() {
         lazyModel = new LazyDataModel<IndexacionSIADTO>() {
-            
+
             @Override
             public IndexacionSIADTO getRowData(String rowKey) {
                 for (IndexacionSIADTO pers : (List<IndexacionSIADTO>) getWrappedData()) {
@@ -178,16 +178,21 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
             }*/
 
             public int count(Map<String, FilterMeta> filterBy) {
-                return 200;
+                return getRowCount();
             }
 
             @Override
             public List<ProcesoLogGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtroLog.setIdioma(sessionBean.getLang());
-                    /*if (sortField != null && !sortField.equals("filtroLog.orderBy") && !sortField.equals("filtro.orderBy")) {
-                        filtroLog.setOrderBy(sortField);
-                    }*/
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
+                    }
                     filtroLog.setTipo("SIA_PUNT");
                     filtroLog.setAscendente(false);
                     filtroLog.setIdEntidad(sessionBean.getEntidad().getCodigo());

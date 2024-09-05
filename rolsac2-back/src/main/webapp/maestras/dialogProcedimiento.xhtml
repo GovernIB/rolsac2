@@ -441,7 +441,7 @@
                                                     action="#{dialogProcedimiento.abrirVentanaUAResp()}"
                                                     icon="pi pi-sitemap"
                                                     value=" "
-                                                    styleClass="w45px h25px iconoUAselector"
+                                                    styleClass="w35px h30px iconoUAselector"
                                                     process="@this"
                                                     rendered="#{!dialogProcedimiento.data.esComun()}"
                                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
@@ -492,7 +492,7 @@
                                                 action="#{dialogProcedimiento.abrirVentanaUAInstr()}"
                                                 icon="pi pi-sitemap"
                                                 value=" "
-                                                styleClass="w45px h25px iconoUAselector"
+                                                styleClass="w35px h30px iconoUAselector"
                                                 process="@this"
                                                 rendered="#{!dialogProcedimiento.data.esComun()}"
                                                 disabled="#{dialogProcedimiento.isModoConsulta()}"
@@ -528,7 +528,7 @@
                                     action="#{dialogProcedimiento.abrirVentanaUACompetente()}"
                                     icon="pi pi-sitemap"
                                     value=" "
-                                    styleClass="w40px h25px iconoUAselector"
+                                    styleClass="w35px h30px iconoUAselector"
                                     process="@this"
                                     rendered="#{!dialogProcedimiento.data.esComun()}"
                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
@@ -769,8 +769,7 @@
                                 <p:column headerText="" styleClass="w75">
                                     <div class="ui-chkbox ui-widget ui-selection">
                                         <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
-                                            <p:outputLabel
-                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"/>
+                                            <p:outputLabel styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"/>
                                         </div>
                                     </div>
                                     <i class="#{dialogProcedimiento.getIcono(td)}"></i>

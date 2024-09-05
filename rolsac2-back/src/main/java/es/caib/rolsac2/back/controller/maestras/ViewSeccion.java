@@ -15,6 +15,7 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,43 +74,27 @@ public class ViewSeccion extends AbstractController implements Serializable {
                 return null;
             }
 
-            /*@Override
-            public Object getRowKey(SeccionGridDTO pers) {
+            @Override
+            public String getRowKey(SeccionGridDTO pers) {
                 return pers.getCodigo().toString();
             }
 
-            @Override
-            public List<SeccionGridDTO> load(int first, int pageSize, String sortField,
-                                                          SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
-                try {
-                    filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
-                    }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    Pagina<SeccionGridDTO> pagina = seccionServiceFacade.findByFiltro(filtro);
-                    setRowCount((int) pagina.getTotal());
-                    return pagina.getItems();
-                } catch (Exception e) {
-                    LOG.error("Error llamando", e);
-                    Pagina<SeccionGridDTO> pagina = new Pagina(new ArrayList(), 0);
-                    setRowCount((int) pagina.getTotal());
-                    return pagina.getItems();
-                }
-            }*/
-
             public int count(Map<String, FilterMeta> filterBy) {
-                return 200;
+                return getRowCount();
             }
 
             @Override
             public List<SeccionGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
-                    /*if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
+                    if (sortBy != null && !sortBy.isEmpty()) {
+                        SortMeta sortMeta = sortBy.values().iterator().next();
+                        SortOrder sortOrder = sortMeta.getOrder();
+                        if (sortOrder != null) {
+                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                        }
+                        filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));*/
                     Pagina<SeccionGridDTO> pagina = seccionServiceFacade.findByFiltro(filtro);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();

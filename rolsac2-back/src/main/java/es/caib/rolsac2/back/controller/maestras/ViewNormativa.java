@@ -188,7 +188,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
              }*/
 
             public int count(Map<String, FilterMeta> filterBy) {
-                return 200;
+                return getRowCount();
             }
 
             @Override
@@ -198,10 +198,6 @@ public class ViewNormativa extends AbstractController implements Serializable {
                         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
                     }
                     filtro.setIdioma(sessionBean.getLang());
-                    /*if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
-                    }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));*/
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

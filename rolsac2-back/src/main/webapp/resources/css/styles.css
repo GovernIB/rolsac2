@@ -1774,3 +1774,14 @@ a.iconoXarxes {
 .bloque {
     display: block;
 }
+.pi-info-circle{
+    width: 20px;
+}
+.pi-compass{
+    width: 25px;
+    height: 25px;
+}
+.pi-tag{
+    margin-right: 5px;
+    margin-left: 10px;
+}
