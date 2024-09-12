@@ -19,7 +19,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Named
@@ -61,7 +61,7 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
                 UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraspasoBOIB.rellenarUnElemento"), true);
             } else {
                 try {
-                    data = boletinServiceFacade.listar(getFiltroNumBoletin(), getFiltroFechaBoletin() == null ? "" : getFiltroFechaBoletin().toString(), getFiltroNumRegistro(), sessionBean.getEntidad().getCodigo());
+                    data = boletinServiceFacade.listar(getFiltroNumBoletin(), getFiltroFechaBoletin() == null ? "" : getFecha(getFiltroFechaBoletin()), getFiltroNumRegistro(), sessionBean.getEntidad().getCodigo());
                     this.mostrarResultados = true;
                 } catch (RuntimeException e) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraspasoBOIB.erroresBusqueda"), true);
@@ -69,6 +69,19 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
 
             }
         }
+    }
+
+    private String getFecha(Date filtroFechaBoletin) {
+
+        // Crear un formato para la fecha
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        // Convertir Date a String con el formato especificado
+        String dateString = formatter.format(filtroFechaBoletin);
+
+        return dateString;
+
+
     }
 
     public void cerrar() {
@@ -167,13 +180,13 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
         return "";
     }
 
-    public void setFiltroFechaBoletin(LocalDate fechaBoletin) {
+    public void setFiltroFechaBoletin(Date fechaBoletin) {
         if (Objects.nonNull(this.filtro)) {
             this.filtro.setFechaBoletin(fechaBoletin);
         }
     }
 
-    public LocalDate getFiltroFechaBoletin() {
+    public Date getFiltroFechaBoletin() {
         if (Objects.nonNull(this.filtro)) {
             return this.filtro.getFechaBoletin();
         }

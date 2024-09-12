@@ -1,14 +1,14 @@
 package es.caib.rolsac2.service.model.filtro;
 
-import java.time.LocalDate;
+import java.util.Date;
 
-public class EdictoFiltro extends AbstractFiltro{
+public class EdictoFiltro extends AbstractFiltro {
 
     private String numeroBoletin;
 
     private String numeroRegistro;
 
-    private LocalDate fechaBoletin;
+    private Date fechaBoletin;
 
     public String getNumeroBoletin() {
         return numeroBoletin;
@@ -26,11 +26,11 @@ public class EdictoFiltro extends AbstractFiltro{
         this.numeroRegistro = numeroRegistro;
     }
 
-    public LocalDate getFechaBoletin() {
+    public Date getFechaBoletin() {
         return fechaBoletin;
     }
 
-    public void setFechaBoletin(LocalDate fechaBoletin) {
+    public void setFechaBoletin(Date fechaBoletin) {
         this.fechaBoletin = fechaBoletin;
     }
 
