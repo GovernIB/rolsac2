@@ -29,7 +29,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Dialogo de documento de procedimiento (procedimiento, tramites y servicios)
+ *
+ * @Author Indra
+ */
 @Named
 @ViewScoped
 public class DialogDocumentoProcedimiento extends AbstractController implements Serializable {
@@ -55,7 +59,9 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
 
     private boolean documentoObligatorio = false;
 
-
+    /**
+     * Carga la ventana.
+     */
     public void load() {
         this.setearIdioma();
 
@@ -82,38 +88,56 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
 
     }
 
+    /**
+     * Comprueba si el documento es obligatorio
+     *
+     * @return true si es obligatorio
+     */
     public boolean isDocumentoObligatorio() {
         return documentoObligatorio;
     }
 
+    /**
+     * Comprueba si es de tipo procedimiento documento
+     *
+     * @return true si es de tipo procedimiento documento
+     */
     public boolean isTipoProcedimientoDocumento() {
         return tipo != null && "PROC_DOC".equals(tipo);
     }
 
+    /**
+     * Comprueba si es de tipo servicio documento
+     *
+     * @return true si es de tipo servicio documento
+     */
     public boolean isTipoServicioDocumento() {
         return tipo != null && "SERV_DOC".equals(tipo);
     }
 
+    /**
+     * Comprueba si es de tipo tramite documento
+     *
+     * @return true si es de tipo tramite documento
+     */
     public boolean isTipoTramiteDocumento() {
         return tipo != null && "TRAM_DOC".equals(tipo);
     }
 
+    /**
+     * Comprueba si es de tipo tramite modelo
+     *
+     * @return true si es de tipo tramite modelo
+     */
     public boolean isTipoTramiteModelo() {
         return tipo != null && "TRAM_MOD".equals(tipo);
     }
 
     public void guardar() {
+
         if (!verificarGuardar()) {
             return;
         }
-
-/*
-        if (this.data.getCodigo() == null) {
-            procedimientoService.createDocumentoNormativa(data);
-        } else {
-            procedimientoService.updateDocumentoNormativa(data);
-        }*/
-
         // Retornamos resultados
         final DialogResult result = new DialogResult();
         if (this.getModoAcceso() != null) {
@@ -125,28 +149,56 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         UtilJSF.closeDialog(result);
     }
 
+    /**
+     * Verifica si se puede guardar el documento
+     *
+     * @return true si se puede guardar
+     */
     public boolean verificarGuardar() {
 
         if (documentoObligatorio) {
-            if (data.getDocumentos() == null || data.getDocumentos().getTraducciones().isEmpty()) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, this.getLiteral("dict.obligatorio.documentos"), true);
-                return false;
-            }
 
-            for (DocumentoTraduccion doc : data.getDocumentos().getTraducciones()) {
-                if (esIdiomaObligatorio(doc.getIdioma()) && (doc.getFicheroDTO() == null || doc.getFicheroDTO().getCodigo() == null)) {
-                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, this.getLiteral("dict.obligatorio.documentos"), true);
-                    return false;
+            if (tieneAlgunDocumentoRelleno()) {
+                for (DocumentoTraduccion doc : data.getDocumentos().getTraducciones()) {
+                    if (esIdiomaObligatorio(doc.getIdioma()) && (doc.getFicheroDTO() == null || doc.getFicheroDTO().getCodigo() == null)) {
+                        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, this.getLiteral("dict.obligatorio.documentos"), true);
+                        return false;
+                    }
                 }
             }
         }
         return true;
     }
 
+    /**
+     * Comprueba si tiene algún documento relleno
+     *
+     * @return true si tiene algún documento relleno
+     */
+    private boolean tieneAlgunDocumentoRelleno() {
+        boolean tieneAlgunDocumentoRelleno = false;
+        for (DocumentoTraduccion doc : data.getDocumentos().getTraducciones()) {
+            if (doc.getFicheroDTO() != null && doc.getFicheroDTO().getCodigo() != null) {
+                tieneAlgunDocumentoRelleno = true;
+                break;
+            }
+        }
+        return tieneAlgunDocumentoRelleno;
+    }
+
+    /**
+     * Comprueba si el idioma es obligatorio
+     *
+     * @param idioma idioma
+     * @return true si es obligatorio
+     */
     private boolean esIdiomaObligatorio(String idioma) {
         return TypeIdiomaFijo.CATALAN.toString().equals(idioma) || TypeIdiomaFijo.CASTELLANO.toString().equals(idioma);
     }
 
+    /**
+     * Cierra el dialogo
+     */
     public void cerrar() {
         final DialogResult result = new DialogResult();
         if (this.getModoAcceso() != null) {
@@ -158,13 +210,20 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         UtilJSF.closeDialog(result);
     }
 
+    /**
+     * Traduce el documento
+     */
     public void traducir() {
-        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
         final Map<String, String> params = new HashMap<>();
         UtilJSF.anyadirMochila("dataTraduccion", data);
         UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
     }
 
+    /**
+     * Retorna el dialogo de traducción
+     *
+     * @param event evento
+     */
     public void returnDialogTraducir(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
         ProcedimientoDocumentoDTO datoDTO = (ProcedimientoDocumentoDTO) respuesta.getResult();
@@ -174,7 +233,12 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         }
     }
 
-
+    /**
+     * Comprueba si tiene documento
+     *
+     * @param idioma idioma
+     * @return true si tiene documento
+     */
     public boolean hasDocument(String idioma) {
         if (this.data.getDocumentos().getTraduccion(idioma) != null && this.data.getDocumentos().getTraduccion(idioma).getCodigo() != null) {
             return true;
@@ -182,6 +246,11 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         return false;
     }
 
+    /**
+     * Maneja la subida de documentos
+     *
+     * @param event evento
+     */
     public void handleDocUpload(FileUploadEvent event) {
         try {
             InputStream is = event.getFile().getInputStream();
@@ -204,6 +273,12 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         }
     }
 
+    /**
+     * Obtiene el fichero
+     *
+     * @param idioma idioma
+     * @return fichero
+     */
     public UploadedFile getFichero(String idioma) {
         FicheroDTO trad = this.data.getDocumentos().getTraduccion(idioma);
         FicheroUpload uploadedFile = null;
@@ -221,10 +296,22 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         return uploadedFile;
     }
 
+    /**
+     * Obtiene el nombre del fichero
+     *
+     * @param idioma idioma
+     * @return nombre del fichero
+     */
     public String getFileName(String idioma) {
         return this.data.getDocumentos().getTraduccion(idioma).getFilename();
     }
 
+    /**
+     * Obtiene el documento
+     *
+     * @param idioma idioma
+     * @return documento
+     */
     public StreamedContent obtenerDocumento(String idioma) {
 
         if (this.data.getDocumentos() == null || (this.data.getDocumentos().getTraduccion(idioma) == null && this.data.getDocumentos().getTraduccion(idioma).getCodigo() == null)) {
@@ -244,6 +331,11 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         return file;
     }
 
+    /**
+     * Elimina el documento
+     *
+     * @param idioma idioma
+     */
     public void eliminarDocumento(String idioma) {
         DocumentoTraduccion docTrad = new DocumentoTraduccion();
         docTrad.setFicheroDTO(null);
@@ -251,43 +343,92 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
         this.data.getDocumentos().add(docTrad);
     }
 
+    /**
+     * Obtiene el id
+     *
+     * @return id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Establece el id
+     *
+     * @param id id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Obtiene los datos
+     *
+     * @return datos
+     */
     public ProcedimientoDocumentoDTO getData() {
         return data;
     }
 
+    /**
+     * Establece los datos
+     *
+     * @param data datos
+     */
     public void setData(ProcedimientoDocumentoDTO data) {
         this.data = data;
     }
 
+    /**
+     * Obtiene el tipo de fichero
+     *
+     * @return tipo de fichero
+     */
     public TypeFicheroExterno getTipoFichero() {
         return tipoFichero;
     }
 
+    /**
+     * Establece el tipo de fichero
+     *
+     * @param tipoFichero tipo de fichero
+     */
     public void setTipoFichero(TypeFicheroExterno tipoFichero) {
         this.tipoFichero = tipoFichero;
     }
 
+    /**
+     * Obtiene el id del procedimiento
+     *
+     * @return id del procedimiento
+     */
     public Long getIdProcedimento() {
         return idProcedimento;
     }
 
+    /**
+     * Establece el id del procedimiento
+     *
+     * @param idProcedimento id del procedimiento
+     */
     public void setIdProcedimento(Long idProcedimento) {
         this.idProcedimento = idProcedimento;
     }
 
-
+    /**
+     * Obtiene el tipo
+     *
+     * @return tipo
+     */
     public String getTipo() {
         return tipo;
     }
 
+    /**
+     * Establece el tipo
+     *
+     * @param tipo tipo
+     */
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
