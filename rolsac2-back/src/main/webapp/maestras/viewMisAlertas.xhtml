@@ -31,6 +31,9 @@
                 .iconoMarcarAlertaComoLeido {
                     background: red;
                 }
+                .pi-times-circle{
+                    width: 20px !important;
+                }
             </h:outputStylesheet>
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
                      widgetVar="panel" collapsed="true">
@@ -52,8 +55,8 @@
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single"
                          reflow="true"
+                         rowKey="#{alerta.codigo}"
                          style="min-height: 200px;"
             >
                 <f:facet name="{RowsPerPageLabel}">
@@ -82,7 +85,7 @@
                 <p:column headerText=" "
                           renderer="#{viewMisAlertas.renderMarcarLeido}" styleClass="w100px">
                     <f:facet name="header"/>
-                    <p:commandButton value=" " styleClass="w45px h25px iconoMarcarAlertaComoLeido"
+                    <p:commandButton value=" " styleClass="w40px h25px iconoMarcarAlertaComoLeido"
                                      icon="pi pi-times-circle"
                                      action="#{sessionBean.marcarAlertaLeida(alerta.codigo)}"
                                      process="@form" update="messages dataTablePendientes">
@@ -124,7 +127,6 @@
                          {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
-                         selectionMode="single" selection="#{viewMisAlertas.datoSeleccionado}"
                          reflow="true"
                          style="min-height: 300px;"
             >
