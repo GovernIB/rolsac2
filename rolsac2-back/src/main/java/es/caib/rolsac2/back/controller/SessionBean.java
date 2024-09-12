@@ -140,6 +140,8 @@ public class SessionBean implements Serializable {
      */
     private UsuarioDTO usuario;
 
+    boolean forzarRefresh = false;
+
     /**
      * Inicializacion de los datos de usuario
      */
@@ -158,6 +160,9 @@ public class SessionBean implements Serializable {
         cargarDatos();
         cargarAlertas();
 
+        if (forzarRefresh) {
+            redirectDefaultUrl();
+        }
     }
 
     public void cargarAlertas() {
@@ -196,6 +201,16 @@ public class SessionBean implements Serializable {
             roles = seguridad.getRoles(idEntidades);
             if (systemServiceBean.checkSesion(usuario.getCodigo())) {
                 SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
+                if (!perfiles.contains(sesion.getPerfil()) && !perfiles.isEmpty()) {
+                    if (perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR)) {
+                        sesion.setPerfil(TypePerfiles.SUPER_ADMINISTRADOR.toString());
+                    } else {
+                        sesion.setPerfil(perfiles.get(0).toString());
+                    }
+                    //Actualizamos la sesion para evitar que vuelva a entrar
+                    systemServiceBean.updateSesion(sesion);
+                    forzarRefresh = true;
+                }
                 //if (!TypePerfiles.SUPER_ADMINISTRADOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                 if (TypePerfiles.ADMINISTRADOR_ENTIDAD.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
