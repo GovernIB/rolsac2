@@ -201,7 +201,7 @@ public class SessionBean implements Serializable {
             roles = seguridad.getRoles(idEntidades);
             if (systemServiceBean.checkSesion(usuario.getCodigo())) {
                 SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
-                if (!perfiles.contains(sesion.getPerfil()) && !perfiles.isEmpty()) {
+                if (sesion.getPerfil() != null && !perfiles.contains(TypePerfiles.fromString(sesion.getPerfil())) && !perfiles.isEmpty()) {
                     if (perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR)) {
                         sesion.setPerfil(TypePerfiles.SUPER_ADMINISTRADOR.toString());
                     } else {
