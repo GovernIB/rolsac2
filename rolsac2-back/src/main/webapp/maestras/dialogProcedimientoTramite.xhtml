@@ -151,13 +151,13 @@
             </p:panel>
             <p:panel id="panelDatos" header="#{labels['dialogProcedimientoTramite.datos']}">
 
-                <div class="form-row">
+                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimientoTramite.nombreTramite']}:"
                                        for="txtNombre"/>
                         <p>
-                            <my:literalComponent id="txtNombre" styleClass="w95"
+                            <my:literalAreaComponent id="txtNombre" styleClass="w95"
                                                  value="#{dialogProcedimientoTramite.data.nombre}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
@@ -168,17 +168,17 @@
                                                  maxlength="255"
                                                  nombreLiteral="#{labels['dialogProcedimientoTramite.nombreTramite']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
-                            </my:literalComponent>
+                            </my:literalAreaComponent>
                         </p>
                     </div>
                 </div>
-                <div class="form-row">
+                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimientoTramite.requisitos']}:"
                                        for="txtRequisitos"/>
                         <p>
-                            <my:literalComponent id="txtRequisitos" styleClass="w95"
+                            <my:literalAreaComponent id="txtRequisitos" styleClass="w95"
                                                  value="#{dialogProcedimientoTramite.data.requisitos}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
@@ -188,18 +188,18 @@
                                                  literal="#{dialogProcedimientoTramite.data.requisitos}"
                                                  nombreLiteral="#{labels['dialogProcedimientoTramite.requisitos']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
-                            </my:literalComponent>
+                            </my:literalAreaComponent>
                         </p>
 
                     </div>
                 </div>
-                <div class="form-row">
+                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimientoTramite.documentacion']}:"
                                        for="txtDocum"/>
                         <p>
-                            <my:literalComponent id="txtDocum" styleClass="w95"
+                            <my:literalAreaComponent id="txtDocum" styleClass="w95"
                                                  value="#{dialogProcedimientoTramite.data.documentacion}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
@@ -209,19 +209,19 @@
                                                  literal="#{dialogProcedimientoTramite.data.documentacion}"
                                                  nombreLiteral="#{labels['dialogProcedimientoTramite.documentacion']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
-                            </my:literalComponent>
+                            </my:literalAreaComponent>
 
                         </p>
 
                     </div>
                 </div>
-                <div class="form-row">
+                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimientoTramite.terminoMaximo']}:"
                                        for="txtTermMax"/>
                         <p>
-                            <my:literalComponent id="txtTermMax" styleClass="w95"
+                            <my:literalAreaComponent id="txtTermMax" styleClass="w95"
                                                  value="#{dialogProcedimientoTramite.data.terminoMaximo}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
@@ -232,18 +232,18 @@
                                                  maxlength="512"
                                                  nombreLiteral="#{labels['dialogProcedimientoTramite.terminoMaximo']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
-                            </my:literalComponent>
+                            </my:literalAreaComponent>
                         </p>
 
                     </div>
                 </div>
-                <div class="form-row">
+                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimientoTramite.observaciones']}:"
                                        for="txtObservaciones"/>
                         <p>
-                            <my:literalComponent id="txtObservaciones" styleClass="w95"
+                            <my:literalAreaComponent id="txtObservaciones" styleClass="w95"
                                                  value="#{dialogProcedimientoTramite.data.observacion}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
@@ -251,7 +251,7 @@
                                                  idioma="#{dialogProcedimientoTramite.idioma}"
                                                  literal="#{dialogProcedimientoTramite.data.observacion}"
                                                  nombreLiteral="#{labels['dialogProcedimientoTramite.observaciones']}">
-                            </my:literalComponent>
+                            </my:literalAreaComponent>
                         </p>
 
                     </div>

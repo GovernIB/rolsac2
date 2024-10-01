@@ -73,11 +73,11 @@
                 </div>
             </p:panel>
             <p:panel id="formDatos" header="#{labels['dialogNormativa.datos']}">
-                <div class="form-row">
+                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-10">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.titulo']}:"
                                        for="txtNombre"/>
-                        <my:literalComponent id="txtNombre"
+                        <my:literalAreaComponent id="txtNombre"
                                              literal="#{dialogNormativa.data.titulo}"
                                              soloLecture="#{dialogNormativa.isModoConsulta()}"
                                              required="#{empty param['formDialog:closeButton']}"
@@ -87,7 +87,7 @@
                                              maxlength="2000"
                                              nombreLiteral="#{labels['dict.titulo']}">
                             <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
-                        </my:literalComponent>
+                        </my:literalAreaComponent>
                     </div>
                     <div class="form-group col-md-2">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
@@ -170,13 +170,13 @@
                         </p>
                     </div>
                 </div>
-                <div class="form-row">
+                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-12">
 
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.urlBoletin']}:"
                                        for="txtUrlBoletin"/>
 
-                        <my:literalComponent id="txtUrlBoletin"
+                        <my:literalAreaComponent id="txtUrlBoletin"
                                              literal="#{dialogNormativa.data.urlBoletin}"
                                              soloLecture="#{dialogNormativa.isModoConsulta()}"
                                              required="#{empty param['formDialog:closeButton']}"
@@ -186,7 +186,7 @@
                                              maxlength="500"
                                              nombreLiteral="#{labels['dialogNormativa.urlBoletin']}">
                             <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
-                        </my:literalComponent>
+                        </my:literalAreaComponent>
                     </div>
                 </div>
                 <div class="form-row">
