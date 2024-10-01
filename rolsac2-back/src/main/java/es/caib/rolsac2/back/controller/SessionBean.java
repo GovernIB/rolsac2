@@ -166,7 +166,7 @@ public class SessionBean implements Serializable {
     }
 
     public void cargarAlertas() {
-        alertasAvisos = alertaService.getAlertas(seguridad.getIdentificadorUsuario(), perfiles, lang);
+        alertasAvisos = alertaService.getAlertas(seguridad.getIdentificadorUsuario(), seguridad.getPerfiles(), lang);
 
     }
 
@@ -201,16 +201,21 @@ public class SessionBean implements Serializable {
             roles = seguridad.getRoles(idEntidades);
             if (systemServiceBean.checkSesion(usuario.getCodigo())) {
                 SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
-                if (sesion.getPerfil() != null && !perfiles.contains(TypePerfiles.fromString(sesion.getPerfil())) && !perfiles.isEmpty()) {
-                    if (perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR)) {
-                        sesion.setPerfil(TypePerfiles.SUPER_ADMINISTRADOR.toString());
-                    } else {
-                        sesion.setPerfil(perfiles.get(0).toString());
-                    }
+
+                //Si el perfil de la sesión no está en los perfiles del usuario, o es RS2_API, lo cambiamos por uno válido
+                if ( /** Comprueba si el perfil guardado en bbdd está ahora en sus perfiles **/(sesion.getPerfil() != null && !perfiles.contains(TypePerfiles.fromString(sesion.getPerfil())) && !perfiles.isEmpty())
+                        /** Comprueba si el perfil guardado es RS2_API **/ || sesion.getPerfil() != null && sesion.getPerfil().equals(TypePerfiles.RESTAPI.toString())) {
+                    perfil = getPerfilAptoBack(perfiles);
+                    sesion.setPerfil(perfil.toString());
                     //Actualizamos la sesion para evitar que vuelva a entrar
+                    if (sesion.getIdEntidad() == null && usuario.getEntidades() != null && !usuario.getEntidades().isEmpty()) {
+                        //Actualizamos e introducimos una entidad si es necesario
+                        sesion.setIdEntidad(usuario.getEntidades().get(0).getCodigo());
+                    }
                     systemServiceBean.updateSesion(sesion);
                     forzarRefresh = true;
                 }
+
                 //if (!TypePerfiles.SUPER_ADMINISTRADOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                 if (TypePerfiles.ADMINISTRADOR_ENTIDAD.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
@@ -272,6 +277,28 @@ public class SessionBean implements Serializable {
             context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/error/usuarioAltaException.xhtml')");
         }
 
+    }
+
+    /**
+     * Por si tiene activo un rol que no tiene permisos (por ejemplo, el RS2_API es un rol existente en rolsac2 pero que da problemas si intentas acceder al back)
+     *
+     * @param perfiles perfiles del usuario
+     * @return perfil apto
+     */
+    private TypePerfiles getPerfilAptoBack(List<TypePerfiles> perfiles) {
+        if (perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR)) {
+            return TypePerfiles.SUPER_ADMINISTRADOR;
+        } else if (perfiles.contains(TypePerfiles.ADMINISTRADOR_ENTIDAD)) {
+            return TypePerfiles.ADMINISTRADOR_ENTIDAD;
+        } else if (perfiles.contains(TypePerfiles.ADMINISTRADOR_CONTENIDOS)) {
+            return TypePerfiles.ADMINISTRADOR_CONTENIDOS;
+        } else if (perfiles.contains(TypePerfiles.GESTOR)) {
+            return TypePerfiles.GESTOR;
+        } else if (perfiles.contains(TypePerfiles.INFORMADOR)) {
+            return TypePerfiles.INFORMADOR;
+        } else {
+            return perfiles.get(0);
+        }
     }
 
     /**
