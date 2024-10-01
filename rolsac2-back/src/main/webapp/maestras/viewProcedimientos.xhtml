@@ -612,7 +612,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     </h:outputText>
                 </p:column>
                 <p:column sortBy="#{procedimiento.comun}" headerText="#{labels['viewProcedimientos.comun']}"
-                          styleClass="w90px">
+                          styleClass="w90px" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR) and !sessionBean.perfil.equals(TypePerfiles.INFORMADOR)}">
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.getLiteralComun()}"/>
                 </p:column>
