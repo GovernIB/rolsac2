@@ -41,7 +41,7 @@
                          process="@this"
                          rendered="#{!dialogNormativa.isModoConsulta() and dialogNormativa.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogTraducir}" process="@this"
-                    update="formDialog:txtNombre formDialog:txtUrlBoletin"/>
+                    update="formDialog:txtNombre formDialog:txtUrlBoletin formDialog:txtNombreResponsable" />
         </p:commandButton>
     </ui:define>
     <ui:define name="contentDialog">
