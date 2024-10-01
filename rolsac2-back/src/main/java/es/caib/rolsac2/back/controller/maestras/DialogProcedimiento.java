@@ -817,7 +817,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             UtilJSF.anyadirMochila("uasInstructor", uasInstructor);
             UtilJSF.anyadirMochila("nombreProcedimiento", data.getNombreProcedimientoWorkFlow());
             UtilJSF.anyadirMochila("listaTramites", data.getTramites());
-            UtilJSF.openDialog("dialogProcedimientoTramite", modoAcceso, params, true, 950, 600);
+            UtilJSF.openDialog("dialogProcedimientoTramite", modoAcceso, params, true, 1000, 600);
         }
     }
 

@@ -837,16 +837,20 @@ a.iconoXarxes{
 	border-radius: 5px;
 }
 
-.form-row {
-	height: 50px;
-}
-
 .left-container-header {
 	background-color: #cc073c;
 	border-radius: 5px 5px 0px 0px;
 
 }
-
+.sinMarginBottom{
+	margin-bottom:0px !important;
+}
+.sinPaddingBottom{
+	padding-bottom:0px !important;
+}
+.height50{
+	height: 50px !important;
+}
 .left-container-tit {
 	font-weight: bold;
 	color: #fff;

@@ -69,7 +69,7 @@
         <div class="row" style="margin-right: 0px;">
         <div class="ui-g-12 ui-md-9 pl-4 panel-container">
             <p:panel header="#{labels['dialogServicio.datosSIA']}" id="formDatosSIA">
-            <div class="form-row">
+            <div class="form-row height50">
                 <div class="form-group col-md-2">
                     <p:outputLabel value="#{labels['dialogServicio.estado.sia']}:" for="txtEstadoSIA"
                                    styleClass="mb-1 pt-0"/>
@@ -131,7 +131,7 @@
 
             <p:panel id="panelDatosPublicacion" header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}"
                      styleClass="panel">
-                <div class="form-row">
+                <div class="form-row height50">
                     <div class="form-group col-md-2">
                         <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.codigo']}:"
                                           for="txtCodigo"/>
@@ -177,12 +177,11 @@
                 </div>
             </p:panel>
             <p:panel header="#{labels['dialogServicio.datos']}" id="formDatos" styleClass="panel">
-                <div class="form-row" style="margin-bottom: 50px;">
+                <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogServicio.nombre.procedimiento']}:"
                                        for="txtNombre"/>
-                        <p>
                             <my:literalAreaComponent id="txtNombre" styleClass="w95"
                                                  value="#{dialogServicio.data.nombreProcedimientoWorkFlow}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -195,15 +194,11 @@
                                                  nombreLiteral="#{labels['dialogServicio.nombre.procedimiento']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
-                        </p>
 
                     </div>
-                </div>
-                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.objeto']}:"
                                        for="txtObjeto"/>
-                        <p>
                             <my:literalAreaComponent id="txtObjeto" styleClass="w95"
                                                  value="#{dialogServicio.data.objeto}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -215,15 +210,10 @@
                                                  nombreLiteral="#{labels['dialogServicio.objeto']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
-                        </p>
-
                     </div>
-                </div>
-                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.destinatarios']}:"
                                        for="txtDestinatarios"/>
-                        <p>
                             <my:literalAreaComponent id="txtDestinatarios" styleClass="w95"
                                                  value="#{dialogServicio.data.destinatarios}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -235,15 +225,10 @@
                                                  nombreLiteral="#{labels['dialogServicio.destinatarios']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
-                        </p>
-
                     </div>
-                </div>
-                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.requisitos']}:"
                                        for="txtrequisitos"/>
-                        <p>
                             <my:literalAreaComponent id="txtrequisitos" styleClass="w95"
                                                  value="#{dialogServicio.data.requisitos}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -255,11 +240,7 @@
                                                  nombreLiteral="#{labels['dict.requisitos']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
-                        </p>
-
                     </div>
-                </div>
-                <div class="form-row">
 
                     <div class="form-group col-md-1 d-flex flex-column ">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.tasa']}:"
@@ -267,12 +248,9 @@
                         <p:selectBooleanCheckbox id="txtTasa"
                                                  value="#{dialogServicio.data.tieneTasa}"/>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.keywords']}:"
                                        for="txtKeywords"/>
-                        <p>
                             <my:literalComponent id="txtKeywords" styleClass="w95"
                                                  value="#{dialogServicio.data.keywords}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -282,14 +260,10 @@
                                                  literal="#{dialogServicio.data.keywords}"
                                                  nombreLiteral="#{labels['dialogProcedimiento.keywords']}"
                                                  maxlength="500"/>
-                        </p>
                     </div>
-                </div>
-                <div class="form-row" style="margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.observaciones']}:"
                                        for="txtObservaciones"/>
-                        <p>
                             <my:literalAreaComponent id="txtObservaciones" styleClass="w95"
                                                  value="#{dialogServicio.data.observaciones}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -298,13 +272,11 @@
                                                  idioma="#{dialogServicio.idioma}"
                                                  literal="#{dialogServicio.data.observaciones}"
                                                  nombreLiteral="#{labels['dialogServicio.observaciones']}"/>
-                        </p>
-
                     </div>
                 </div>
             </p:panel>
             <p:panel id="panelOrganos" header="#{labels['dialogProcedimientoTramite.organos']}" styleClass="panel" >
-                <div class="form-row">
+                <div class="form-row height50">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.organoInstructor']}:"
@@ -330,6 +302,7 @@
                                                                          icon="pi pi-sitemap"
                                                                          value=" "
                                                                          styleClass="w35px h30px iconoUAselector"
+                                                                         style="position:relative; top:10px;"
                                                                          process="@this"
                                                                          rendered="#{!dialogServicio.data.esComun()}"
                                                                          disabled="#{dialogServicio.isModoConsulta()}"
@@ -356,16 +329,6 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.servicio']}:"
                                        for="txtServResp"/>
-                        <p>
-                            <!--
-                            <my:unidadAdministrativaComponent id="txtServResp"
-                                                              value="#{dialogServicio.data.uaResponsable}"
-                                                              idioma="#{dialogServicio.idioma}"
-                                                              ocultarTexto="false" esCabecera="false"
-                            />
-                            -->
-
-
                             <p:inputText id="txtServResp"
                                          value="#{dialogServicio.data.uaResponsable.nombre.getTraduccion(dialogServicio.idioma)}"
                                          styleClass="w89 mr-1" disabled="true"/>
@@ -375,6 +338,7 @@
                                     icon="pi pi-sitemap"
                                     value=" "
                                     styleClass="w35px h30px iconoUAselector"
+                                    style="position:relative; top:10px;"
                                     process="@this"
                                     rendered="#{!dialogProcedimiento.data.esComun()}"
                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
@@ -391,25 +355,19 @@
                                 <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogServicio.getCssUAResponsable()}" />
                             </h:outputLink>
                             <p:tooltip id="toolTipFadeResp" for="lblUAiconoResp" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
-                        </p>
+
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogServicio.nombreResponsable']}:"
                                        for="txtNombreResp"/>
-                        <p>
                             <p:inputText id="txtNombreResp" value="#{dialogServicio.data.responsable}"
                                          disabled="#{dialogServicio.isModoConsulta()}"
                                          required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.responsable']}"
                                          maxlength="255"
                                          styleClass="w95"/>
-                        </p>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-6">
                           <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.correoElectronico']}:"
                                           for="txtEmailResp"/>
@@ -431,8 +389,6 @@
                                      disabled="#{dialogServicio.isModoConsulta()}" styleClass="w90" maxlength="25"/>
                     </div>
 
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mb-1 pt-0" value="#{labels['dialogProcedimiento.correoIncidencias']}:"
                                        for="txtEmailIncidencias"/>
@@ -663,12 +619,11 @@
                         </p:selectOneMenu>
                     </div>
                 </div>
-                <div id="filaLOPDFinalidad" class="form-row" style="margin-bottom: 50px;">
+                <div id="filaLOPDFinalidad" class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2  pt-0"
                                        value="#{labels['dialogServicio.finalidad']}:"
                                        for="txtLopdFinalidad"/>
-                        <p>
                             <my:literalAreaComponent id="txtLopdFinalidad"
                                                  literal="#{dialogServicio.data.lopdFinalidad}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -678,15 +633,13 @@
                                                  nombreLiteral="#{labels['dialogServicio.finalidad']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
-                        </p>
                     </div>
                 </div>
-                <div id="filaLOPDDestinatario" class="form-row" style="margin-bottom: 50px;">
+                <div id="filaLOPDDestinatario" class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2  pt-0"
                                        value="#{labels['dialogServicio.destinatario']}:"
                                        for="txtLopdDestinatario"/>
-                        <p>
                             <my:literalAreaComponent id="txtLopdDestinatario" styleClass="w95"
                                                  literal="#{dialogServicio.data.lopdDestinatario}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -696,15 +649,13 @@
                                                  nombreLiteral="#{labels['dialogServicio.finalidad']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
-                        </p>
                     </div>
                 </div>
-                <div id="filaLOPDDerechos" class="form-row" style="margin-bottom: 50px;">
+                <div id="filaLOPDDerechos" class="form-row" >
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogServicio.derechos']}:"
                                        for="txtLopdDerechos"/>
-                        <p>
                             <my:literalAreaComponent id="txtLopdDerechos" styleClass="w95"
                                                  literal="#{dialogServicio.lopdDerechos}"
                                                  soloLecture="#{true}"
@@ -714,7 +665,6 @@
                                                  nombreLiteral="#{labels['dialogServicio.derechos']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
-                        </p>
                     </div>
                 </div>
             </p:panel>

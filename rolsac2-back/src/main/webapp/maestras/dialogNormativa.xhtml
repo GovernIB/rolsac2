@@ -73,7 +73,7 @@
                 </div>
             </p:panel>
             <p:panel id="formDatos" header="#{labels['dialogNormativa.datos']}">
-                <div class="form-row" style="margin-bottom: 50px;">
+                <div class="form-row">
                     <div class="form-group col-md-10">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.titulo']}:"
                                        for="txtNombre"/>
@@ -94,8 +94,6 @@
                         <p:inputText id="txtCodigo" value="#{dialogNormativa.data.codigo}"
                                      styleClass="w95" disabled="true" maxlength="50"/>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.tipoNormativa']}:"
                                        for="selectTipoNormativa"/>
@@ -170,7 +168,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="form-row" style="margin-bottom: 50px;">
+                <div class="form-row">
                     <div class="form-group col-md-12">
 
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.urlBoletin']}:"
@@ -188,8 +186,6 @@
                             <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                         </my:literalAreaComponent>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-12">
                         <p class="mb-1">
                             <p:outputLabel value="#{labels['dialogNormativa.nombreResponsable']}:"

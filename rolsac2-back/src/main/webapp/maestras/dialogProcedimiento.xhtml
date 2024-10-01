@@ -66,9 +66,9 @@
 
         <div class="row" style="margin-right: 0px;">
             <div class="ui-g-12 ui-md-9 pl-4 panel-container">
-            <p:panel header="#{labels['dialogProcedimiento.datosSIA']}" id="formDatosSIA">
+            <p:panel header="#{labels['dialogProcedimiento.datosSIA']}" id="formDatosSIA" >
 
-                <div class="form-row">
+                <div class="form-row height50">
                     <div class="form-group col-md-2">
                         <p:outputLabel value="#{labels['dialogProcedimiento.estado.sia']}:" for="txtEstadoSIA"
                                        styleClass="mb-1 pt-0"/>
@@ -129,7 +129,7 @@
             </p:panel>
             <p:panel id="panelDatosPublicacion" header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}"
                      styleClass="panel">
-                <div class="form-row">
+                <div class="form-row height50">
                     <div class="form-group col-md-2" style="margin-top: -7px;">
                         <p:outputLabel styleClass="mb-1" value="#{labels['dialogProcedimiento.codigo']}:"
                                        for="txtCodigo"/>
@@ -177,10 +177,9 @@
                     </div>
                 </div>
             </p:panel>
-            <p:panel header="#{labels['dialogProcedimiento.datos']}" id="formDatos" styleClass="panel">
-
-                <div class="form-row" style=" margin-bottom: 50px;">
-                    <div class="form-group col-md-12">
+            <p:panel header="#{labels['dialogProcedimiento.datos']}" id="formDatos" styleClass="panel sinMarginBottom sinPaddingBottom">
+                <div class="form-row">
+                    <div class="form-group col-md-12 sinMarginBottom sinPaddingBottom">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.nombre.procedimiento']}:"
                                        for="txtNombre"/>
@@ -198,10 +197,7 @@
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
                         </p>
-
                     </div>
-                </div>
-                <div class="form-row" style=" margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.objeto']}:"
                                        for="txtObjeto"/>
@@ -220,8 +216,6 @@
                         </p>
 
                     </div>
-                </div>
-                <div class="form-row" style=" margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.destinatarios']}:"
@@ -241,8 +235,6 @@
                         </p>
 
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.tipoProcedimiento']}:"
@@ -294,9 +286,6 @@
                         </p>
 
                     </div>
-
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.silencioAdministrativo']}:"
@@ -330,10 +319,6 @@
                             <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
                     </div>
-
-                </div>
-                <div class="form-row">
-
                     <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.habilitadoApoderado']}:"
@@ -351,10 +336,7 @@
                             <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="false"/>
                             <f:converter converterId="javax.faces.Boolean"/>
                         </p:selectOneMenu>
-
-
                     </div>
-
                     <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.habilitadoFuncionario']}:"
@@ -377,8 +359,6 @@
                         <p:selectBooleanCheckbox id="txtTasa" styleClass="mt-1"
                                                  value="#{dialogProcedimiento.data.tieneTasa}"/>
                     </div>
-                </div>
-                <div class="form-row" style=" margin-bottom: 50px; margin-top: 20px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mt-1 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.observaciones']}:"
@@ -395,8 +375,6 @@
                         </p>
 
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.keywords']}:"
                                        for="txtKeywords"/>
@@ -417,9 +395,9 @@
             </p:panel>
             <p:panel id="panelOrganos" header="#{labels['dialogProcedimientoTramite.organos']}" styleClass="panel">
 
-                <div class="form-row" style=" margin-bottom: 30px;">
+                <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 pt-0"
                                        value="#{labels['dialogProcedimiento.organoCompetente']}:"
                                        for="txtOrgComp"/>
                         <p>
@@ -442,6 +420,7 @@
                                                     icon="pi pi-sitemap"
                                                     value=" "
                                                     styleClass="w35px h30px iconoUAselector"
+                                                    style="position:relative; top:10px;"
                                                     process="@this"
                                                     rendered="#{!dialogProcedimiento.data.esComun()}"
                                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
@@ -465,10 +444,8 @@
 
                         </p>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 pt-0"
                                        value="#{labels['dialogProcedimiento.organoInstructor']}:"
                                        for="txtOrgInstr"/>
                         <p>
@@ -493,6 +470,7 @@
                                                 icon="pi pi-sitemap"
                                                 value=" "
                                                 styleClass="w35px h30px iconoUAselector"
+                                                style="position:relative; top:10px;"
                                                 process="@this"
                                                 rendered="#{!dialogProcedimiento.data.esComun()}"
                                                 disabled="#{dialogProcedimiento.isModoConsulta()}"
@@ -514,9 +492,9 @@
                 </div>
             </p:panel>
             <p:panel header="#{labels['dialogProcedimiento.datos.contacto']}" styleClass="panel" id="formDatosContacto">
-                <div class="form-row" style="margin-bottom: 20px;">
+                <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.servicio']}:"
+                        <p:outputLabel styleClass="mr-2 pt-0" value="#{labels['dialogProcedimiento.servicio']}:"
                                        for="txtOrgResp"/>
                         <p>
                             <p:inputText id="txtOrgResp"
@@ -529,6 +507,7 @@
                                     icon="pi pi-sitemap"
                                     value=" "
                                     styleClass="w35px h30px iconoUAselector"
+                                    style="position:relative; top:10px;"
                                     process="@this"
                                     rendered="#{!dialogProcedimiento.data.esComun()}"
                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
@@ -547,10 +526,8 @@
 
                         </p>
                     </div>
-                </div>
-                <div class="form-row" style="margin-bottom: 20px;">
                     <div class="form-group col-md-7">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 pt-0"
                                        value="#{labels['dialogProcedimiento.nombreResponsable']}:"
                                        for="txtNombreResp"/>
                         <p>
@@ -576,8 +553,6 @@
                             <p:ajax partialSubmit="@this" update="messagesDialog"/>
                         </p:inputText>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mb-1 pt-0" value="#{labels['dialogProcedimiento.correoIncidencias']}:"
                                        for="txtEmailIncidencias"/>
@@ -614,8 +589,6 @@
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                         />
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.legitimacion']}:"
@@ -631,13 +604,10 @@
                                            itemValue="#{tipoLegitimacion}"/>
                         </p:selectOneMenu>
                     </div>
-                </div>
-                <div class="form-row" style=" margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.finalidad']}:"
                                        for="txtLopdFinalidad"/>
-                        <p>
                             <my:literalAreaComponent id="txtLopdFinalidad"
                                                  literal="#{dialogProcedimiento.data.lopdFinalidad}"
                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
@@ -647,16 +617,12 @@
                                                  nombreLiteral="#{labels['dialogProcedimiento.finalidad']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
-                        </p>
                     </div>
-                </div>
-                <div class="form-row" style=" margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.destinatario']}:"
                                        for="txtLopdDestinatario"/>
-                        <p>
-                            <my:literalAreaComponent id="txtLopdDestinatario" styleClass="w95"
+                             <my:literalAreaComponent id="txtLopdDestinatario" styleClass="w95"
                                                  literal="#{dialogProcedimiento.data.lopdDestinatario}"
                                                  soloLecture="#{dialogProcedimiento.isModoConsulta()}"
                                                  idioma="#{dialogProcedimiento.idioma}"
@@ -665,15 +631,11 @@
                                                  nombreLiteral="#{labels['dialogProcedimiento.finalidad']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
-                        </p>
                     </div>
-                </div>
-                <div class="form-row" style=" margin-bottom: 50px;">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0"
                                        value="#{labels['dialogProcedimiento.derechos']}:"
                                        for="txtLopdDerechos"/>
-                        <p>
                             <my:literalAreaComponent id="txtLopdDerechos" styleClass="w95"
                                                  literal="#{dialogProcedimiento.lopdDerechos}"
                                                  soloLecture="true"
@@ -683,7 +645,7 @@
                                                  nombreLiteral="#{labels['dialogProcedimiento.derechos']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
-                        </p>
+
                     </div>
                 </div>
             </p:panel>
