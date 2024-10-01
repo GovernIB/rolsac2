@@ -115,6 +115,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
                 data.setEntidad(sessionBean.getEntidad());
                 data.setTitulo(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
                 data.setUrlBoletin(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+                data.setNombreResponsable(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
                 List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
                 UnidadAdministrativaGridDTO uaRaiz = unidadAdministrativaServiceFacade.getUaRaizEntidad(sessionBean.getUnidadActiva().getCodigo());
                 unidadesAdministrativas.add(uaRaiz);
