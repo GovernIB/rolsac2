@@ -242,7 +242,7 @@
             document.getElementById("form:btnConsultarDocumentoLOPD").click();
         }
     </h:outputScript>
-    <div class="ui-g-12 ui-md-12 p-0">
+    <div class="form-row ui-g-12 ui-md-12 p-0">
         <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 p-1 ">
             <div class="row left-container mx-0 mb-2">
                <!-- <div class="left-container-header ml-0 col-12 row">
@@ -268,47 +268,49 @@
             </div>
         </div>
         <!-- Temas -->
-        <h:panelGroup id="panelTemas" styleClass="p-0 m-0">
-            <c:forEach items="#{viewProcedimientos.roots}" var="tema" varStatus="status">
-                <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 pt-0">
-                    <div class="row left-container mx-0 mb-2 mt-2">
-                   <!--     <div class="left-container-header ml-0 col-12 row" >
-                            <div class="col-12 text-center">
-                                <p:outputLabel styleClass="left-container-tit mt-2 mb-1"
-                                               value="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
-                            </div>
-                        </div>-->
-                        <div id="divTema#{tema.data.codigo}" class="col-12 p-0" >
-                            <p:treeTable
-                                    value="#{tema}"
-                                    var="td"
-                                    emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
-                                    paginator="false" selectionMode="single"
-                                    selection="#{viewProcedimientos.temasTabla[status.index]}"
-                                    rowKey="#{td.codigo}"
-                                    styleClass="noHeader">
+        <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 p-1 ">
+            <h:panelGroup id="panelTemas" styleClass="p-0 m-0">
+                <c:forEach items="#{viewProcedimientos.roots}" var="tema" varStatus="status">
+                    <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 pt-0 w100">
+                        <div class="row left-container mx-0 mb-2 mt-2">
+                       <!--     <div class="left-container-header ml-0 col-12 row" >
+                                <div class="col-12 text-center">
+                                    <p:outputLabel styleClass="left-container-tit mt-2 mb-1"
+                                                   value="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                                </div>
+                            </div>-->
+                            <div id="divTema#{tema.data.codigo}" class="col-12 p-0" >
+                                <p:treeTable
+                                        value="#{tema}"
+                                        var="td"
+                                        emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true"
+                                        paginator="false" selectionMode="single"
+                                        selection="#{viewProcedimientos.temasTabla[status.index]}"
+                                        rowKey="#{td.codigo}"
+                                        styleClass="noHeader">
 
-                                 <!--<p:column headerText="#{tema.data.descripcion.getTraduccion(viewProcedimientos.idioma).toUpperCase()}" styleClass="w75">-->
-                                 <p:column headerText="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccion(viewProcedimientos.idioma).toUpperCase()}" styleClass="w75">
-                                    <div class="ui-chkbox ui-widget ui-selection">
-                                        <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
-                                            <p:outputLabel
-                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"/>
+                                     <!--<p:column headerText="#{tema.data.descripcion.getTraduccion(viewProcedimientos.idioma).toUpperCase()}" styleClass="w75">-->
+                                     <p:column headerText="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccion(viewProcedimientos.idioma).toUpperCase()}" styleClass="w75">
+                                        <div class="ui-chkbox ui-widget ui-selection">
+                                            <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
+                                                <p:outputLabel
+                                                        styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"/>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <i class="#{viewProcedimientos.getIcono(td)}"></i>
-                                    <h:outputText id="texto"
-                                                  value="#{td.descripcion.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
-                                    <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
-                                               value="#{viewProcedimientos.getTooltip(td)}" position="right"/>
-                                </p:column>
+                                        <i class="#{viewProcedimientos.getIcono(td)}"></i>
+                                        <h:outputText id="texto"
+                                                      value="#{td.descripcion.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
+                                        <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
+                                                   value="#{viewProcedimientos.getTooltip(td)}" position="right"/>
+                                    </p:column>
 
-                            </p:treeTable>
+                                </p:treeTable>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </c:forEach>
-        </h:panelGroup>
+                </c:forEach>
+            </h:panelGroup>
+        </div>
         <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 pt-0">
             <div class="row left-container mx-0 mb-2 mt-2 pt-0">
               <!--  <div class="left-container-header ml-0 col-12 row">

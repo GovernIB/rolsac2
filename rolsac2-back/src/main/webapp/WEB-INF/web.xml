@@ -127,7 +127,7 @@
     </error-page>
     <error-page>
         <exception-type>es.caib.rolsac2.back.exception.PerfilException</exception-type>
-        <location>/error/perfilException.xhtml.xhtml</location>
+        <location>/error/perfilException.xhtml</location>
     </error-page>
     <error-page>
         <exception-type>javax.ejb.EJBAccessException</exception-type>
