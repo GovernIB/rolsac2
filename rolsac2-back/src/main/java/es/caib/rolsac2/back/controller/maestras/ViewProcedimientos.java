@@ -265,6 +265,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         filtro.setEsProcedimiento(Boolean.TRUE);
         filtro.setOrder("DESCENDING");
         filtro.setTipo("P");
+        if (this.isGestor() || this.isInformador()) {
+            filtro.setComun("N");
+        }
     }
 
     private void cargarFiltros() {

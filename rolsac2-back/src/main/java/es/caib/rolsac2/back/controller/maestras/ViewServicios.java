@@ -311,6 +311,9 @@ public class ViewServicios extends AbstractController implements Serializable {
         filtro.setEsProcedimiento(Boolean.FALSE);
         filtro.setOrder("DESCENDING");
         canalesSeleccionados = new String[0];
+        if (this.isGestor() || this.isInformador()) {
+            filtro.setComun("N");
+        }
     }
 
     private void cargarFiltros() {
