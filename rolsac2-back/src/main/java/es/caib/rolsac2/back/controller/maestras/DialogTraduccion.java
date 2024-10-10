@@ -106,6 +106,10 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
             imprimirProcedimientoTramite();
 
+        } else if (data instanceof NormativaDTO) {
+
+            imprimirNormativa();
+
         } else {
 
             imprimirLiterales();
@@ -170,6 +174,12 @@ public class DialogTraduccion extends AbstractController implements Serializable
                 ((ProcedimientoTramiteDTO) data).setTerminoMaximo(literales.get(3));
                 ((ProcedimientoTramiteDTO) data).setObservacion(literales.get(4));
             }
+        } else if (data instanceof NormativaDTO) {
+            if (literales != null) {
+                ((NormativaDTO) data).setTitulo(literales.get(0));
+                ((NormativaDTO) data).setUrlBoletin(literales.get(1));
+                ((NormativaDTO) data).setNombreResponsable(literales.get(2));
+            }
         } else {
 
             if (literales != null) {
@@ -231,6 +241,16 @@ public class DialogTraduccion extends AbstractController implements Serializable
         literalesHTML.add((Literal) ((UnidadAdministrativaDTO) data).getResponsable().clone());
         listaFieldsHTML.add("presentacion");
         listaFieldsHTML.add("responsable");
+    }
+
+    private void imprimirNormativa() {
+        literales.add((Literal) ((NormativaDTO) data).getTitulo().clone());
+        literales.add((Literal) ((NormativaDTO) data).getUrlBoletin().clone());
+        literales.add((Literal) ((NormativaDTO) data).getNombreResponsable().clone());
+
+        listaFields.add("tituloNormativa");
+        listaFields.add("urlBoletin");
+        listaFields.add("responsable");
     }
 
     private void imprimirProcedimientoTramite() {

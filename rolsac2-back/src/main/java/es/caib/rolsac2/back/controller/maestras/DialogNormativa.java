@@ -225,10 +225,21 @@ public class DialogNormativa extends AbstractController implements Serializable 
         UtilJSF.closeDialog(result);
     }
 
+    /**
+     * Traducir.
+     */
     public void traducir() {
-        //UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
-        final Map<String, String> params = new HashMap<>();
 
+        final Map<String, String> params = new HashMap<>();
+        if (this.data.getNombreResponsable() == null) {
+            this.data.setNombreResponsable(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+        }
+        if (this.data.getTitulo() == null) {
+            this.data.setTitulo(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+        }
+        if (this.data.getUrlBoletin() == null) {
+            this.data.setUrlBoletin(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+        }
         UtilJSF.anyadirMochila("dataTraduccion", data);
         UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
     }
