@@ -63,6 +63,7 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
         filtro = new NormativaFiltro();
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        filtro.setVigente(Boolean.TRUE);
         cargarFiltros();
 
         // Generamos una búsqueda
@@ -81,6 +82,7 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setOrder("DESCENDING");
+        filtro.setVigente(Boolean.TRUE);
     }
 
     public void update() {
