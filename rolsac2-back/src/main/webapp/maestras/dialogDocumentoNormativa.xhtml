@@ -74,29 +74,35 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <my:literalComponent id="inputDescripcion"
-                                         literal="#{dialogDocumentoNormativa.data.descripcion}"
-                                         soloLecture="#{dialogDocumentoNormativa.isModoConsulta()}"
-                                         idioma="#{dialogDocumentoNormativa.idioma}"
-                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.descripcion']}"
-                                         maxlength="4000"
-                    />
+                    <my:literalAreaComponent id="inputDescripcion" styleClass="w95"
+                                             value="#{dialogDocumentoNormativa.data.descripcion}"
+                                             soloLecture="#{dialogDocumentoNormativa.isModoConsulta()}"
+                                             required="#{empty param['formDialog:closeButton']}"
+                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             idioma="#{dialogDocumentoNormativa.idioma}"
+                                             literal="#{dialogDocumentoNormativa.data.descripcion}"
+                                             maxlength="4000"
+                                             nombreLiteral="#{labels['dict.descripcion']}">
+                    </my:literalAreaComponent>
+
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['dict.url']}:" for="txtUrl"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <my:literalComponent id="txtUrl"
-                                         literal="#{dialogDocumentoNormativa.data.url}"
-                                         soloLecture="#{dialogDocumentoNormativa.isModoConsulta()}"
-                                         idioma="#{dialogDocumentoNormativa.idioma}"
-                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.url']}"
-                                         maxlength="512"
-                    />
+                    <my:literalComponent id="txtUrl" styleClass="w95"
+                                             value="#{dialogDocumentoNormativa.data.url}"
+                                             soloLecture="#{dialogDocumentoNormativa.isModoConsulta()}"
+                                             required="#{empty param['formDialog:closeButton']}"
+                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             idioma="#{dialogDocumentoNormativa.idioma}"
+                                             literal="#{dialogDocumentoNormativa.data.url}"
+                                             maxlength="512"
+                                             nombreLiteral="#{labels['dict.url']}">
+                    </my:literalComponent>
+
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
                     <p:outputLabel value="#{labels['dialogDocumentoNormativa.documento']}:"/>
