@@ -319,7 +319,7 @@ public class SessionBean implements Serializable {
             sesionDTO.setIdioma(lang); //Forzamos el idioma de sesion
             current = Locale.forLanguageTag(lang); //Forzamos el idioma/locale de la aplicación
         }
-
+         
         if (!perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
             Boolean permiso = checkPermisosPerfil(perfil);
             if (permiso) {

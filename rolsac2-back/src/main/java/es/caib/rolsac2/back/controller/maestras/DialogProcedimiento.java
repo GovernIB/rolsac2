@@ -19,10 +19,8 @@ import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import java.awt.*;
 import java.io.Serializable;
 import java.util.*;
-import java.util.List;
 
 @Named
 @ViewScoped
@@ -42,8 +40,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private String validacion;
 
     private String tipoProcedimientoSeleccionado;
-
-    private String tituloResponsable;
 
     private TipoMateriaSIAGridDTO materiaSIAGridSeleccionada;
 
@@ -159,12 +155,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 }
             }
         }
-        if (this.data.getComun() == 0) {
-            tituloResponsable = getLiteral("dialogProcedimiento.responsableTratamiento");
-        } else {
-            tituloResponsable = getLiteral("dialogProcedimiento.responsableorganocomun");
-        }
-
 
         actualizarResponsable();
         dataOriginal = (ProcedimientoDTO) data.clone();
@@ -1493,12 +1483,5 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         return Constantes.INDEXAR_SIA_ICONO;
     }
 
-    public String getTituloResponsable() {
-        return tituloResponsable;
-    }
-
-    public void setTituloResponsable(String tituloResponsable) {
-        this.tituloResponsable = tituloResponsable;
-    }
 }
 

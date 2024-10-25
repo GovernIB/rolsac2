@@ -577,13 +577,12 @@
                     <div class="form-group col-md-12">
                         <p class="mb-1">
                             <p:outputLabel styleClass="mb-1"
-                                          value="#{dialogProcedimiento.tituloResponsable}:"
-                                          for="txtRespTrat"/>
+                                           value="#{labels['dialogProcedimiento.responsableTratamiento']}:"
+                                           for="txtRespTrat" />
                         </p>
                         <my:literalComponent id="txtRespTrat"
                                              literal="#{dialogProcedimiento.lopdResponsable}"
                                              soloLecture="#{true}"
-                                             styleClass="w95"
                                              idioma="#{dialogProcedimiento.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
