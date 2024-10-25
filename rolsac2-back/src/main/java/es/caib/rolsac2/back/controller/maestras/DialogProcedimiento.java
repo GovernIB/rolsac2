@@ -153,7 +153,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         /** Si es alta y hay un tipo legitimacion por defecto, lo setea **/
         if (this.isModoAlta() && listTipoLegitimacion != null && !listTipoLegitimacion.isEmpty()) {
             for (TipoLegitimacionDTO tipoLegitimacion : listTipoLegitimacion) {
-                 if (tipoLegitimacion.isPorDefecto()) {
+                if (tipoLegitimacion.getIdentificador().equals("CUMPLIMIENTO_MISION")) {
                     this.data.setDatosPersonalesLegitimacion(tipoLegitimacion);
                     break;
                 }

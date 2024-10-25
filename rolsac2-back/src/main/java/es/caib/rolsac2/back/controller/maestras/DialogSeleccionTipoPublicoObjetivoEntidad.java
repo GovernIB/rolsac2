@@ -63,9 +63,13 @@ public class DialogSeleccionTipoPublicoObjetivoEntidad extends AbstractControlle
        /* tipoPublicoObjEntSeleccionadas = new ArrayList<>(
                 (List<TipoPublicoObjetivoEntidadGridDTO>) UtilJSF.getValorMochilaByKey("tipoPubObjEntSeleccionadas"));
 */
-        tipoPublicoObjEntSeleccionadas = ((List<TipoPublicoObjetivoEntidadGridDTO>) UtilJSF.getValorMochilaByKey("tipoPubObjEntSeleccionadas"));
-        if (tipoPublicoObjEntSeleccionadas == null) {
+        List<TipoPublicoObjetivoEntidadGridDTO> tiposObjetivoSesion =
+                ( (List<TipoPublicoObjetivoEntidadGridDTO>) UtilJSF.getValorMochilaByKey("tipoPubObjEntSeleccionadas"));
+
+        if (tiposObjetivoSesion == null) {
             tipoPublicoObjEntSeleccionadas = new ArrayList<>();
+        }else{
+            tipoPublicoObjEntSeleccionadas = new ArrayList<>(tiposObjetivoSesion);
         }
     }
 
