@@ -325,15 +325,6 @@ public class ViewServicios extends AbstractController implements Serializable {
         listTipoPublicoObjetivo = maestrasSupService.findAllTiposPublicoObjetivo();
         listPlantillas = new ArrayList<>();
         listFinVias = maestrasSupService.findAllTipoVia();
-        TipoTramitacionDTO plantillaFake = new TipoTramitacionDTO();
-        Literal literal = Literal.createInstance();
-        List<Traduccion> traduccions = new ArrayList<>();
-        traduccions.add(new Traduccion("es", "Ninguna"));
-        traduccions.add(new Traduccion("es", "Cap"));
-        literal.setTraducciones(traduccions);
-        plantillaFake.setCodigo(-1l);
-        plantillaFake.setDescripcion(literal);
-        listPlantillas.add(plantillaFake);
         listPlantillas.addAll(maestrasSupService.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), null));
         listPlataformas = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
         temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());

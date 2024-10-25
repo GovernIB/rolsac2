@@ -280,15 +280,6 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         listFinVias = maestrasSupService.findAllTipoVia();
         temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
         listPlantillas = new ArrayList<>();
-        TipoTramitacionDTO plantillaFake = new TipoTramitacionDTO();
-        Literal literal = Literal.createInstance();
-        List<Traduccion> traduccions = new ArrayList<>();
-        traduccions.add(new Traduccion("es", "Ninguna"));
-        traduccions.add(new Traduccion("es", "Cap"));
-        literal.setTraducciones(traduccions);
-        plantillaFake.setCodigo(-1l);
-        plantillaFake.setDescripcion(literal);
-        listPlantillas.add(plantillaFake);
         listPlantillas.addAll(maestrasSupService.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), null));
 
         listPlataformas = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
