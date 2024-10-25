@@ -61,6 +61,8 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
 
     private List<String> idiomasObligatorios = new ArrayList<>();
 
+    private Literal uaDataComun;
+
     private StreamedContent file;
 
     public void load() {
@@ -69,6 +71,8 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
         this.setearIdioma();
 
         data = UtilJSF.getSessionBean().getEntidad();
+
+        uaDataComun = (Literal)data.getUaComun().clone();
 
         setIdiomas();
     }
@@ -79,6 +83,8 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
             return;
         }
         adaptIdiomas();
+
+        this.data.setUaComun(uaDataComun);
 
         administracionSupServiceFacade.updateEntidad(this.data);
 
@@ -333,5 +339,13 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
 
     public void setFile(StreamedContent file) {
         this.file = file;
+    }
+
+    public Literal getUaDataComun() {
+        return uaDataComun;
+    }
+
+    public void setUaDataComun(Literal uaDataComun) {
+        this.uaDataComun = uaDataComun;
     }
 }

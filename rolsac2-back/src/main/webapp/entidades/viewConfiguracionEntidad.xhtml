@@ -132,13 +132,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <my:literalComponent id="txtUAComun" styleClass="w95"
-                                                 value="#{viewConfiguracionEntidad.data.uaComun}"
+
                                                  soloLecture="#{viewLOPD.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
                                                  idiomasObligatorios="#{viewConfiguracionEntidad.data.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
                                                  idioma="#{viewConfiguracionEntidad.idioma}"
-                                                 literal="#{viewConfiguracionEntidad.data.uaComun}"
+                                                 literal="#{viewConfiguracionEntidad.uaDataComun}"
                                                  nombreLiteral="#{labels['dict.comunUA']}">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                             </my:literalComponent>
