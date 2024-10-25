@@ -1,5 +1,6 @@
 package es.caib.rolsac2.back.validators;
 
+import es.caib.rolsac2.back.controller.component.LiteralAreaComponent;
 import es.caib.rolsac2.back.controller.component.LiteralComponent;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
@@ -19,51 +20,102 @@ public class ValidadorLiteral implements Validator {
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
         if (component instanceof LiteralComponent && component != null) {
-            LiteralComponent literalComponent = (LiteralComponent) component;
+            comprobacionLiteralComponent(context, (LiteralComponent) component, value);
+        }
+        if (component instanceof LiteralAreaComponent && component != null) {
+            comprobacionLiteralAreaComponent(context, (LiteralAreaComponent) component, value);
+        }
+    }
 
-            String estado = literalComponent.comprobarEstado();
+    private void comprobacionLiteralAreaComponent(FacesContext context, LiteralAreaComponent literalComponent, Object value) {
 
-            if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
+        String estado = literalComponent.comprobarEstado();
 
-                literalComponent.setEstiloInput("bordeRojoRequired");
+        if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
 
-                String mensajeError = "";
-                if (literalComponent.getAttributes().get("mensajeError") != null) {
-                    mensajeError = literalComponent.getAttributes().get("mensajeError").toString();
-                } else if (literalComponent.getAttributes().get("nombreLiteral") != null) {
-                    String campo = literalComponent.getAttributes().get("nombreLiteral").toString();
-                    mensajeError = getLiteral(context, "dict.obligatorio.generico", new Object[]{campo});
+            literalComponent.setEstiloInput("bordeRojoRequired");
 
-                } else {
-                    mensajeError = "El literal és obligatori.";
-                }
-                FacesMessage msg = new FacesMessage(mensajeError, mensajeError);
-                msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-                throw new ValidatorException(msg);
+            String mensajeError = "";
+            if (literalComponent.getAttributes().get("mensajeError") != null) {
+                mensajeError = literalComponent.getAttributes().get("mensajeError").toString();
+            } else if (literalComponent.getAttributes().get("nombreLiteral") != null) {
+                String campo = literalComponent.getAttributes().get("nombreLiteral").toString();
+                mensajeError = getLiteral(context, "dict.obligatorio.generico", new Object[]{campo});
 
-            } else if (literalComponent.getAttributes().get("maxlength") != null) {
-                Integer length = (Integer) literalComponent.getAttributes().get("maxlength");
-                //Si no es el largo por defecto, revisamos si se pasan
-                if (length != 9999) {
-                    Literal literal = (Literal) literalComponent.getAttributes().get("literal");
-                    for (Traduccion trad : literal.getTraducciones()) {
-                        if (trad.getLiteral() != null && trad.getLiteral().length() > length) {
-                            literalComponent.setEstiloInput("bordeRojoRequired");
-                            Object[] param = new Object[3];
-                            param[0] = literalComponent.getAttributes().get("nombreLiteral").toString();
-                            param[1] = trad.getIdioma();
-                            param[2] = length.toString();
-                            String mensajeError = getLiteral(context, "dict.maxlength", param);
-                            FacesMessage msg = new FacesMessage(mensajeError, mensajeError);
-                            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-                            throw new ValidatorException(msg);
-                        }
+            } else {
+                mensajeError = "El literal és obligatori.";
+            }
+            FacesMessage msg = new FacesMessage(mensajeError, mensajeError);
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(msg);
+
+        } else if (literalComponent.getAttributes().get("maxlength") != null) {
+            Integer length = (Integer) literalComponent.getAttributes().get("maxlength");
+            //Si no es el largo por defecto, revisamos si se pasan
+            if (length != 9999) {
+                Literal literal = (Literal) literalComponent.getAttributes().get("literal");
+                for (Traduccion trad : literal.getTraducciones()) {
+                    if (trad.getLiteral() != null && trad.getLiteral().length() > length) {
+                        literalComponent.setEstiloInput("bordeRojoRequired");
+                        Object[] param = new Object[3];
+                        param[0] = literalComponent.getAttributes().get("nombreLiteral").toString();
+                        param[1] = trad.getIdioma();
+                        param[2] = length.toString();
+                        String mensajeError = getLiteral(context, "dict.maxlength", param);
+                        FacesMessage msg = new FacesMessage(mensajeError, mensajeError);
+                        msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+                        throw new ValidatorException(msg);
                     }
                 }
-            } else {
-
-                literalComponent.setEstiloInput("");
             }
+        } else {
+            literalComponent.setEstiloInput("");
+        }
+    }
+
+    private void comprobacionLiteralComponent(FacesContext context, LiteralComponent literalComponent, Object value) {
+
+        String estado = literalComponent.comprobarEstado();
+
+        if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
+
+            literalComponent.setEstiloInput("bordeRojoRequired");
+
+            String mensajeError = "";
+            if (literalComponent.getAttributes().get("mensajeError") != null) {
+                mensajeError = literalComponent.getAttributes().get("mensajeError").toString();
+            } else if (literalComponent.getAttributes().get("nombreLiteral") != null) {
+                String campo = literalComponent.getAttributes().get("nombreLiteral").toString();
+                mensajeError = getLiteral(context, "dict.obligatorio.generico", new Object[]{campo});
+
+            } else {
+                mensajeError = "El literal és obligatori.";
+            }
+            FacesMessage msg = new FacesMessage(mensajeError, mensajeError);
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(msg);
+
+        } else if (literalComponent.getAttributes().get("maxlength") != null) {
+            Integer length = (Integer) literalComponent.getAttributes().get("maxlength");
+            //Si no es el largo por defecto, revisamos si se pasan
+            if (length != 9999) {
+                Literal literal = (Literal) literalComponent.getAttributes().get("literal");
+                for (Traduccion trad : literal.getTraducciones()) {
+                    if (trad.getLiteral() != null && trad.getLiteral().length() > length) {
+                        literalComponent.setEstiloInput("bordeRojoRequired");
+                        Object[] param = new Object[3];
+                        param[0] = literalComponent.getAttributes().get("nombreLiteral").toString();
+                        param[1] = trad.getIdioma();
+                        param[2] = length.toString();
+                        String mensajeError = getLiteral(context, "dict.maxlength", param);
+                        FacesMessage msg = new FacesMessage(mensajeError, mensajeError);
+                        msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+                        throw new ValidatorException(msg);
+                    }
+                }
+            }
+        } else {
+            literalComponent.setEstiloInput("");
         }
     }
 

@@ -1,7 +1,7 @@
 -- De momento, no hay datos iniciales
 /* Entidad por defecto */
 set escape on;
-Insert into RS2_ENTIDA (ENTI_CODIGO,ENTI_IDENTI,ENTI_ACTIVA,ENTI_ROLADE,ENTI_ROLADC,ENTI_ROLGES,ENTI_ROLINF,ENTI_LOGO, ENTI_IDIPER, ENTI_IDIDEF, ENTI_IDIOBL) values (1 ,'GOIB','1','ROLADE','ROLADC','ROLGES','ROLINF',null, 'es;ca;', 'ca', 'es;ca;');
+Insert into RS2_ENTIDA (ENTI_CODIGO,ENTI_IDENTI,ENTI_ACTIVA,ENTI_ROLADE,ENTI_ROLADC,ENTI_ROLGES,ENTI_ROLINF,ENTI_LOGO, ENTI_IDIPER, ENTI_IDIDEF, ENTI_IDIOBL) values (1 ,'GOIB','1','RS2_ADE','RS2_ADC','RS2_GES','RS2_INF',null, 'es;ca;', 'ca', 'es;ca;');
 
 Insert into RS2_TRAENT (TREN_CODIGO,TREN_CODENT,TREN_IDIOMA,TREN_DESCRI, TREN_LOPDFI, TREN_LOPDDS, TREN_LOPDDR, TREN_LOPDCB, TREN_LOPDPL, TREN_UACOMU) values (RS2_TRAENT_SEQ.NEXTVAL,1,'ca','GOIB descenti ca','Tramitació del procediment','El destinatari de la lopd','El dret de la lopd', 'De conformitat amb el reglament (UE) 2016/679 i la legistació vigente en matèria de protecció de dades, s''informa del tractament de les dades personales que contè aquest tràmit', 'http://www.caib.es/plantillaCAT.pdf' ,'Responsable lopd comú');
 Insert into RS2_TRAENT (TREN_CODIGO,TREN_CODENT,TREN_IDIOMA,TREN_DESCRI, TREN_LOPDFI, TREN_LOPDDS, TREN_LOPDDR, TREN_LOPDCB, TREN_LOPDPL, TREN_UACOMU) values (RS2_TRAENT_SEQ.NEXTVAL,1,'es','GOIB descenti es','Tramitación del procedimiento','El destinatario de la lopd','El derecho de la lopd','De conformidad con el reglamento (UE) 2016/679 y la legistación vigente en materia de protección de datos, se informa del tratamiento de los datos personales que contiene este trámite', 'http://www.caib.es/plantillaESP.pdf' ,'Responsable lopd común');
@@ -820,6 +820,6 @@ Insert into RS2_TRATPAN (TRTA_CODIGO,TRTA_CODTPAN,TRTA_IDIOMA,TRTA_DESCRI) value
 /** CONFIGURACION GLOBAL **/
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'ua.mostrar.procsNormativas', 'S','Para mostrar en la ventana de UAs los procedimientos y normativas (hace más lenta la ventana)',1);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'idiomaDefecto', 'ca','En el caso de los tipos que no cuelgan de entidad, en caso de no pasarse el idioma en el restapi, para saber que idioma coger.',0);
-
+INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'deshabilitar.certificado', 'false', 'Para deshabilitar la comprobación de certificado en la conexión con el servicio de notificaciones, sólo necesario para desarrollo', 0);
 /** UNIDAD ORGANIZATIVA DIR3 **/
 /*insert into rs2_uniorg (ORG_CODIGO,ORG_CODDIR3,ORG_CODPADRE,ORG_CODENTI,ORG_DENOM,ORG_VERSION) values (RS2_UNIORG_SEQ.nextval, 'A04003003', null, 1, 'GOIB',0);*/
