@@ -2432,6 +2432,22 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
 
         }
+
+        if( "tipoProcedimiento".equals(order)){
+            if(ambosWf) {
+                return "CASE WHEN tipoPro1 is null THEN tipoPro2.descripcion ELSE tipoPro1.descripcion END";
+            }else {
+                return "tipoPro1.descripcion";
+            }
+        }
+
+        if("comun".equals(order)){
+            if(ambosWf){
+                return "CASE WHEN WF.comun is null THEN WF2.comun ELSE WF.comun END";
+            }else{
+                return "WF.comun";
+            }
+        }
         return "j." + order;
     }
 
