@@ -171,13 +171,26 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JTipoPublicoObjetivoEntidad{" +
-                "codigo=" + codigo +
-                ", entidad=" + entidad +
-                ", tipo=" + tipo +
-                ", identificador='" + identificador + '\'' +
-                ", traducciones=" + traducciones +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("JTipoPublicoObjetivoEntidad{");
+        if (codigo != null) {
+            sb.append("codigo=").append(codigo);
+        }
+        /*if (entidad != null) {
+            sb.append(", entidad=").append(entidad);
+        }*/
+        if (tipo != null) {
+            sb.append(", tipo=").append(tipo);
+        }
+
+        if (identificador != null) {
+            sb.append(", identificador='").append(identificador).append('\'');
+        }
+        if (traducciones != null) {
+            sb.append(", traducciones=").append(traducciones);
+        }
+        sb.append('}');
+        return sb.toString();
     }
 
     /**
@@ -196,6 +209,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
             }
         }
         tipo.setDescripcion(literal);
+        tipo.setEmpleadoPublico(this.getTipo().isEmpleadoPublico());
         return tipo;
     }
 

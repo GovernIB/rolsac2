@@ -241,9 +241,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                                           validateContentType="true" accept=".gif,.jpg,.jpeg,.png"
                                                           onupload=""
                                                           label="#{labels['dict.anyadir']}"
-                                                          uploadLabel="#{labels['dict.subir']}"
                                                           cancelLabel="#{labels['dict.cancelar']}"
                                                           styleClass=""
+                                                          auto="true"
                                             />
                                         </c:when>
                                         <c:otherwise>
@@ -276,15 +276,15 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                         <c:when test="#{viewConfiguracionEntidad.data.cssPersonalizado == null}">
                                             <p:fileUpload listener="#{viewConfiguracionEntidad.handleCssUpload}"
                                                           mode="advanced"
-                                                          dragDropSupport="false"
+                                                          dragDropSupport="true"
                                                           update="form:css messages"
                                                           allowTypes="/(\.|\/)(css)$/"
                                                           validateContentType="true" accept=".css"
                                                           onupload=""
                                                           label="#{labels['dict.anyadir']}"
-                                                          uploadLabel="#{labels['dict.subir']}"
                                                           cancelLabel="#{labels['dict.cancelar']}"
                                                           styleClass=""
+                                                          auto="true"
                                             />
                                         </c:when>
                                         <c:otherwise>

@@ -9,6 +9,13 @@
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
 -->
+<style>
+    body .ui-inputfield.ui-state-drag {
+        background: #ffffd6;
+    }
+</style>
+
+
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
         <f:metadata>
@@ -102,15 +109,15 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                     <c:when test="#{!dialogDocumentoProcedimiento.hasDocument(idioma)}">
                                         <p:fileUpload listener="#{dialogDocumentoProcedimiento.handleDocUpload}"
                                                       mode="advanced"
-                                                      dragDropSupport="false"
+                                                      dragDropSupport="true"
                                                       fileLimit="3"
                                                       allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pdf|odt)$/"
                                                       onupload=""
                                                       label="#{labels['dict.anyadir']}"
-                                                      uploadLabel="#{labels['dict.subir']}"
                                                       cancelLabel="#{labels['dict.cancelar']}"
                                                       styleClass=""
                                                       update="formDialog:#{labels['dialog.doc.txt.' += idioma]}"
+                                                      auto="true"
                                         />
                                         <!-- value="#{dialogDocumentoProcedimiento.getFichero(idioma)}"-->
                                     </c:when>

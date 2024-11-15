@@ -152,8 +152,8 @@ public class JTipoPublicoObjetivo extends BaseEntity {
     public String toString() {
         return "JTipoPublicoObjetivo{" +
                 "id=" + codigo +
-                "identificador=" + identificador +
-                "descripcion=" + descripcion +
+                ", identificador=" + identificador +
+                ", empleadoPublico=" + empleadoPublico +
                 '}';
     }
 

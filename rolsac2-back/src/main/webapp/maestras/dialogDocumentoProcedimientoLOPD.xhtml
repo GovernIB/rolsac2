@@ -81,14 +81,14 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                     <c:when test="#{!dialogDocumentoProcedimientoLOPD.hasDocument(idioma)}">
                                         <p:fileUpload listener="#{dialogDocumentoProcedimientoLOPD.handleDocUpload}"
                                                       mode="advanced"
-                                                      dragDropSupport="false"
+                                                      dragDropSupport="true"
                                                       fileLimit="3"
                                                       allowTypes="/(\.|\/)(pdf)$/"
                                                       onupload=""
                                                       label="#{labels['dict.anyadir']}"
-                                                      uploadLabel="#{labels['dict.subir']}"
                                                       cancelLabel="#{labels['dict.cancelar']}"
                                                       styleClass=""
+                                                      auto="true"
                                                       update="formDialog:#{labels['dialog.doc.txt.' += idioma]}"
                                         />
                                     </c:when>

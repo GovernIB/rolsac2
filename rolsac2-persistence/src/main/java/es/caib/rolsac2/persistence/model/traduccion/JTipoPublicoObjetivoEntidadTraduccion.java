@@ -92,7 +92,7 @@ public class JTipoPublicoObjetivoEntidadTraduccion extends BaseEntity {
     public String toString() {
         return "JTipoPublicoObjetivo{" +
                 "id=" + codigo +
-                "tipoPublicoObjetivoEntidad=" + tipoPublicoObjetivoEntidad +
+                /* "tipoPublicoObjetivoEntidad=" + tipoPublicoObjetivoEntidad +*/
                 "idioma=" + idioma +
                 "descripcion=" + descripcion +
                 '}';
