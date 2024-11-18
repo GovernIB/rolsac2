@@ -334,7 +334,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             }
 
 
-
                         }
 
                     }
@@ -1945,7 +1944,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         if (filtro.isRellenoSilencioAdministrativo() && ambosWf) {
             sql.append(" AND (WF.silencioAdministrativo.codigo = :tipoSilencio or WF2.silencioAdministrativo.codigo = :tipoSilencio) ");
-        } else if (filtro.isRellenoTipoProcedimiento()) {
+        } else if (filtro.isRellenoSilencioAdministrativo()) {
             sql.append(" AND (WF.silencioAdministrativo.codigo = :tipoSilencio) ");
         }
 
@@ -2405,7 +2404,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             query.setParameter("plantilla", filtro.getPlantilla().getCodigo());
         }
         if (filtro.isRellenoComun()) {
-            query.setParameter("comun", "1".equals(filtro.getComun()) ? 1 : 0);
+            query.setParameter("comun", "S".equals(filtro.getComun()) ? 1 : 0);
         }
         if (filtro.isRellenoIdTramite()) {
             query.setParameter("idTramite", filtro.getIdTramite());
@@ -2433,18 +2432,18 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         }
 
-        if( "tipoProcedimiento".equals(order)){
-            if(ambosWf) {
+        if ("tipoProcedimiento".equals(order)) {
+            if (ambosWf) {
                 return "CASE WHEN tipoPro1 is null THEN tipoPro2.descripcion ELSE tipoPro1.descripcion END";
-            }else {
+            } else {
                 return "tipoPro1.descripcion";
             }
         }
 
-        if("comun".equals(order)){
-            if(ambosWf){
+        if ("comun".equals(order)) {
+            if (ambosWf) {
                 return "CASE WHEN WF.comun is null THEN WF2.comun ELSE WF.comun END";
-            }else{
+            } else {
                 return "WF.comun";
             }
         }
