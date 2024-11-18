@@ -170,6 +170,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentosLOPD() == null ? null : jProcWF.getListaDocumentosLOPD().getCodigo(), true, dto.getDocumentosLOPD(), ruta);
         if (dto instanceof ProcedimientoDTO) {
             List<ProcedimientoTramiteDTO> tramites = ((ProcedimientoDTO) dto).getTramites();
+			// Si procedimiento es comun el organo competente para la tramitacion tiene que ser el organo intructor
+            if( dto.esComun()){
+                tramites.forEach(t->t.setUnidadAdministrativa(dto.getUaInstructor()));
+            }
             procedimientoRepository.mergeTramitesProcWF(jProcWF.getCodigo(), tramites, ruta);
         }
         dto.setCodigoWF(jProcWF.getCodigo());
