@@ -210,7 +210,6 @@ public interface ProcedimientoServiceFacade {
 
     ProcedimientoBaseDTO convertirDTO(Object obj);
 
-    String getNombreProcedimientoServicio(Long codigo);
 
     String getEnlaceTelematicoByServicio(ProcedimientoFiltro filtro);
 
