@@ -4,14 +4,16 @@ import es.caib.rolsac2.commons.plugins.boletin.api.BoletinErrorException;
 import es.caib.rolsac2.commons.plugins.boletin.api.IPluginBoletin;
 import es.caib.rolsac2.commons.plugins.boletin.api.model.Edicto;
 import es.caib.rolsac2.persistence.converter.EdictoConverter;
+import es.caib.rolsac2.persistence.repository.ConfiguracionGlobalRepository;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.facade.integracion.BoletinServiceFacade;
+import es.caib.rolsac2.service.model.ConfiguracionGlobalGridDTO;
 import es.caib.rolsac2.service.model.EdictoGridDTO;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypePluginEntidad;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Asynchronous;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,18 +28,25 @@ public class BoletinServiceFacadeBean implements BoletinServiceFacade {
     SystemServiceFacade systemServiceFacade;
 
     @Inject
+    ConfiguracionGlobalRepository configuracionGlobalRepository;
+
+    @Inject
     EdictoConverter edictoConverter;
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<EdictoGridDTO> listar(final String numeroBoletin, final String fechaBoletin, final String numeroEdicto, final Long idEntidad) {
         final IPluginBoletin pluginBoletin = (IPluginBoletin) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.BOLETIN, idEntidad);
         List<Edicto> edictos;
         List<EdictoGridDTO> edictosGrid = new ArrayList<>();
-        try{
-            edictos = pluginBoletin.listar(numeroBoletin, fechaBoletin, numeroEdicto);
-            for(Edicto edicto : edictos) {
+        try {
+            ConfiguracionGlobalGridDTO propiedad = configuracionGlobalRepository.findByPropiedad(TypePropiedadConfiguracion.DESAHABILITAR_CERTIFICADO.toString());
+            boolean deshabilitarCertificado = false;
+            if (propiedad != null) {
+                deshabilitarCertificado = Boolean.parseBoolean(propiedad.getValor());
+            }
+            edictos = pluginBoletin.listar(numeroBoletin, fechaBoletin, numeroEdicto, deshabilitarCertificado);
+            for (Edicto edicto : edictos) {
                 EdictoGridDTO edictoGridDTO = new EdictoGridDTO();
                 edictoGridDTO = edictoConverter.edictoToEdictoGridDTO(edicto);
                 edictosGrid.add(edictoGridDTO);
@@ -50,8 +59,7 @@ public class BoletinServiceFacadeBean implements BoletinServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
-            TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long obtenerBoletinPlugin(final Long idEntidad) {
         final IPluginBoletin pluginBoletin = (IPluginBoletin) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.BOLETIN, idEntidad);
         return pluginBoletin.obtenerBoletinPlugin();

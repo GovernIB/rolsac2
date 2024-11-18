@@ -18,8 +18,7 @@ public class TestEboibPlugin {
         Properties prop = new Properties();
         prop.put("es.caib.rolsac2.pluginsib.boletin.eboib.eboibUrl", "https://www.caib.es/eboibfront/");
         prop.put("es.caib.rolsac2.pluginsib.boletin.eboib.eboibUrlHack", "true");
-        IPlugin plg = (IPlugin) PluginsManager.instancePluginByClassName("es.caib.rolsac2.commons.plugins.boletin.eboib.EboibPlugin",
-                "es.caib.rolsac2.pluginsib.boletin.eboib.", prop);
+        IPlugin plg = (IPlugin) PluginsManager.instancePluginByClassName("es.caib.rolsac2.commons.plugins.boletin.eboib.EboibPlugin", "es.caib.rolsac2.pluginsib.boletin.eboib.", prop);
         if (plg == null) {
             System.out.println("No se ha instanciado el plugin correctamente");
         } else {
@@ -27,7 +26,7 @@ public class TestEboibPlugin {
 
             try {
                 IPluginBoletin plgBoletin = (IPluginBoletin) plg;
-                List<Edicto> edictosObtenidos = plgBoletin.listar("042/2022", "", "");
+                List<Edicto> edictosObtenidos = plgBoletin.listar("042/2022", "", "", false);
                 System.out.println("Se obtiene listado de edictos correctamente");
                 for (Edicto edicto : edictosObtenidos) {
                     System.out.println(edicto.toString());

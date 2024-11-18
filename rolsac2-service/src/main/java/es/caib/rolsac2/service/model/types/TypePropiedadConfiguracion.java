@@ -20,7 +20,6 @@ public enum TypePropiedadConfiguracion {
      * Propiedad para indicar el intérvalo de tiempo de los procesos
      */
     PROCESOS_AUTOMATICOS_CRON("procesos.automaticos.cron"),
-
     /**
      * Propiedad para indicar el tiempo máximo que el maestro puede estar inactivo
      */
@@ -37,9 +36,14 @@ public enum TypePropiedadConfiguracion {
      * Propiedad para obtener el idioma de la aplicacion por defecto
      */
     IDIOMA_DEFECTO("idiomaDefecto"),
-
-    URL_BASE("url.base");
-
+    /**
+     * Url base
+     */
+    URL_BASE("url.base"),
+    /**
+     * Deshabilitar certificado
+     */
+    DESAHABILITAR_CERTIFICADO("deshabilitar.certificado");
 
     /**
      * Valor

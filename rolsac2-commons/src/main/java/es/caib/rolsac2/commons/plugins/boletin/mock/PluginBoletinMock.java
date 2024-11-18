@@ -28,7 +28,7 @@ public class PluginBoletinMock extends AbstractPluginProperties implements IPlug
     }
 
     @Override
-    public List<Edicto> listar(String numeroboletin, String numeroregistro, String fecha) {
+    public List<Edicto> listar(String numeroboletin, String numeroregistro, String fecha, Boolean saltarseCertificado) {
         List<Edicto> lista = new ArrayList<>();
         return lista;
     }

@@ -12,10 +12,12 @@ import es.caib.rolsac2.commons.plugins.boletin.api.IPluginBoletin;
 import es.caib.rolsac2.commons.plugins.boletin.api.model.*;
 import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
 
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.*;
 
@@ -41,8 +43,8 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
     }
 
     @Override
-    public List<Edicto> listar(String numeroBoletin, String fechaBoletin, String numeroEdicto) throws BoletinErrorException {
-        return this.makeSearch(numeroBoletin, fechaBoletin, numeroEdicto);
+    public List<Edicto> listar(String numeroBoletin, String fechaBoletin, String numeroEdicto, Boolean saltarseCertificado) throws BoletinErrorException {
+        return this.makeSearch(numeroBoletin, fechaBoletin, numeroEdicto, saltarseCertificado);
     }
 
     public Long obtenerBoletinPlugin() {
@@ -62,7 +64,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
      * @param numeroEdicto
      */
 
-    private List<Edicto> makeSearch(String numeroBoletin, String fechaBoletin, String numeroEdicto) throws BoletinErrorException {
+    private List<Edicto> makeSearch(String numeroBoletin, String fechaBoletin, String numeroEdicto, Boolean saltarseCertificado) throws BoletinErrorException {
         /*
          * 1.- buscar el BOIB por fecha o número en RSS - buscar por número:
          * /filtrerss.do?lang=ca&resultados=20&num_ini=1&num_fin=1&any_ini=2009&any_fin=
@@ -72,7 +74,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
          * filtrar por él.
          */
 
-        final List<ResultadoBoib> boibRdfUrls = this.getBoibRdfUrls(numeroBoletin, fechaBoletin);
+        final List<ResultadoBoib> boibRdfUrls = this.getBoibRdfUrls(numeroBoletin, fechaBoletin, saltarseCertificado);
         final String numRegBoib = numeroEdicto.isEmpty() ? "" : numeroEdicto;
         List<Edicto> listadoEdictos = new ArrayList<>();
         Normativa normativa = new Normativa();
@@ -227,7 +229,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
      * @return
      */
     @SuppressWarnings("rawtypes")
-    private List<ResultadoBoib> getBoibRdfUrls(String numeroBoletin, String fechaBoletin) {
+    private List<ResultadoBoib> getBoibRdfUrls(String numeroBoletin, String fechaBoletin, Boolean saltarseCertificado) {
         final List<ResultadoBoib> boibRdfUrls = new ArrayList<ResultadoBoib>();
         final StringBuilder feedUrl = new StringBuilder(getProperty(EBOIB_URL));
         feedUrl.append("/filtrerss.do?lang=ca&resultados=10");
@@ -249,6 +251,37 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
         }
 
         try {
+            // Ignorar todos los certificados SSL
+            boolean trustAll = false;
+            if (saltarseCertificado != null && saltarseCertificado) {
+                trustAll = true;
+            }
+            if (trustAll) {
+                TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        String parar = "";
+                    }
+
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        String parar = "";
+                    }
+                }};
+
+                // Crear un contexto SSL que use los trust managers anteriores
+                SSLContext sc = SSLContext.getInstance("SSL");
+                sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+                // Omitir la verificación del nombre de host
+                HostnameVerifier allHostsValid = (hostname, session) -> true;
+                HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+            }
+
+
             final SyndFeedInput input = new SyndFeedInput();
             final XmlReader reader = new XmlReader(new URL(feedUrl.toString()));
             final SyndFeed feed = input.build(reader);
@@ -266,6 +299,10 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
         } catch (final FeedException e) {
             e.printStackTrace();
         } catch (final IOException e) {
+            e.printStackTrace();
+        } catch (final java.security.NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (final java.security.KeyManagementException e) {
             e.printStackTrace();
         }
         return boibRdfUrls;

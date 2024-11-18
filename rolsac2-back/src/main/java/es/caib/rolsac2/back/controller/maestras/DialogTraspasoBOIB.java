@@ -7,6 +7,7 @@ import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.facade.integracion.BoletinServiceFacade;
 import es.caib.rolsac2.service.model.EdictoGridDTO;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.NormativaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.EdictoFiltro;
@@ -21,6 +22,8 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Named
 @ViewScoped
@@ -129,13 +132,43 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
         normativaDTO.setUrlBoletin(dto.getUrl());
         normativaDTO.setFechaBoletin(dto.getFechaBoletin());
         normativaDTO.setNumeroBoletin(dto.getNumeroBoletin());
-        normativaDTO.setNumero(dto.getNumeroRegistro());
+        //normativaDTO.setNumero(obtenerNumero(dto));
+        normativaDTO.setNumero(null);
         List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
         UnidadAdministrativaGridDTO uaActiva = unidadAdministrativaServiceFacade.findById(sessionBean.getUnidadActiva().getCodigo()).convertDTOtoGridDTO();
         unidadesAdministrativas.add(uaActiva);
         normativaDTO.setUnidadesAdministrativas(unidadesAdministrativas);
 
         return normativaDTO;
+    }
+
+    private String obtenerNumero(EdictoGridDTO dto) {
+
+        // Expresión regular para encontrar el patrón de 1 a 3 dígitos seguido de una barra y cuatro dígitos
+        Pattern pattern = Pattern.compile("\\b\\d{1,3}/\\d{4}\\b");
+        Matcher matcher = pattern.matcher(getTituloCaEs(dto.getTitulo()));
+
+        if (matcher.find()) {
+            // Extrae el valor que coincide con el patrón
+            return matcher.group();
+        } else {
+            return dto.getNumeroRegistro();
+        }
+    }
+
+    private String getTituloCaEs(Literal titulo) {
+        if (titulo.getTraduccion("ca") != null && !titulo.getTraduccion("ca").isEmpty()) {
+            return titulo.getTraduccion("ca");
+        } else if (titulo.getTraduccion("es") != null && !titulo.getTraduccion("es").isEmpty()) {
+            return titulo.getTraduccion("es");
+        } else {
+            String titulox = titulo.getTraduccion();
+            if (titulox == null || titulox.isEmpty()) {
+                return "";
+            } else {
+                return titulox;
+            }
+        }
     }
 
     public List<EdictoGridDTO> getData() {
