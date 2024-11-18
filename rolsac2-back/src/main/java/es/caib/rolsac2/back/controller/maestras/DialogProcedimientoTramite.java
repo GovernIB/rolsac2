@@ -311,13 +311,22 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     public void returnDialogDocumento(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
-            // Verificamos si se ha modificado
-            ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
-            if (doc != null) {
-                if (data.getListaDocumentos() == null) {
-                    data.setListaDocumentos(new ArrayList<>());
+            if(respuesta.isAlta()) {
+                // Verificamos si se ha modificado
+                ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
+                if (doc != null) {
+                    if (data.getListaDocumentos() == null) {
+                        data.setListaDocumentos(new ArrayList<>());
+                    }
+                    data.agregarDocumento(doc);
                 }
-                data.agregarDocumento(doc);
+            }else if(respuesta.isEdicion()){
+                ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
+                if (doc != null) {
+                    data.getListaDocumentos().remove(documentoSeleccionado);
+                    data.agregarDocumento(doc);
+                    documentoSeleccionado = null;
+                }
             }
         }
     }
@@ -402,13 +411,23 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     public void returnDialogModelo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
-            // Verificamos si se ha modificado
-            ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
-            if (doc != null) {
-                if (data.getListaModelos() == null) {
-                    data.setListaModelos(new ArrayList<>());
+            if( respuesta.isAlta()) {
+                // Verificamos si se ha modificado
+                ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
+                if (doc != null) {
+                    if (data.getListaModelos() == null) {
+                        data.setListaModelos(new ArrayList<>());
+                    }
+                    data.agregarModelo(doc);
                 }
-                data.agregarModelo(doc);
+            }else if( respuesta.isEdicion()){
+                ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
+                if (doc != null) {
+                    data.getListaModelos().remove(modeloSeleccionado);
+                    data.agregarModelo(doc);
+
+                    modeloSeleccionado = null;
+                }
             }
         }
     }

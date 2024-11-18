@@ -235,7 +235,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                         <c:when test="#{viewConfiguracionEntidad.data.logo == null}">
                                             <p:fileUpload listener="#{viewConfiguracionEntidad.handleLogoUpload}"
                                                           mode="advanced"
-                                                          dragDropSupport="true"
+                                                          dragDropSupport="false"
                                                           update="form:logo messages"
                                                           allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
                                                           validateContentType="true" accept=".gif,.jpg,.jpeg,.png"

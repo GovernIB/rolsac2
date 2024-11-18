@@ -72,7 +72,8 @@ public class DialogDocumentoProcedimiento extends AbstractController implements 
             data.setDocumentos(DocumentoMultiIdioma.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setCodigoString(String.valueOf(Calendar.getInstance().getTimeInMillis()));
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
-            data = (ProcedimientoDocumentoDTO) UtilJSF.getValorMochilaByKey("documento");
+            ProcedimientoDocumentoDTO documentoMod = (ProcedimientoDocumentoDTO) UtilJSF.getValorMochilaByKey("documento");
+            data = documentoMod.clone();
             //Si los ficheros no tienen el filename, hay que recuperarlo, igual que tipo
             if (data.getDocumentos() != null) {
                 for (DocumentoTraduccion documento : data.getDocumentos().getTraducciones()) {

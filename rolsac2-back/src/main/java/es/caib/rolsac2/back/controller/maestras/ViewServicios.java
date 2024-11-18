@@ -381,6 +381,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         final Map<String, String> params = new HashMap<>();
         String mensajes = procedimientoService.getMensajesByCodigo(codigo);
         UtilJSF.anyadirMochila("mensajes", mensajes);
+        UtilJSF.anyadirMochila("tipo", "S");
         params.put("SOLO_MENSAJES", "S");
         params.put("ID", codigo.toString());
         //params.put("ESTADO", data.getEstado().toString());

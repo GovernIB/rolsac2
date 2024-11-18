@@ -191,7 +191,7 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable, Co
         this.codigoString = codigoString;
     }
 
-    public Object clone() {
+    public ProcedimientoDocumentoDTO clone() {
         ProcedimientoDocumentoDTO obj = null;
         try {
             obj = (ProcedimientoDocumentoDTO) super.clone();

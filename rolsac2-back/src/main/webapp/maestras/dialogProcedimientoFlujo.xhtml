@@ -4,6 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -148,12 +149,20 @@
             </div>
         </p:panel>
     </ui:define>
+    <ui:define name="contentFooterDialogLeft">
+        <p:selectBooleanCheckbox id="checkMail" value="#{dialogProcedimientoFlujo.checkMail}"
+                                 itemLabel="Enviar correo"/>
+        <p:commandButton id="btnCopy"  icon="pi pi-clipboard" value="Copiar chat"/>
+        <pe:clipboard id="clipboard" text="#{dialogProcedimientoFlujo.estructurarCopiaChat()}" action="copy"
+                      trigger="btnCopy" successMessage="Copiado" errorMessage="Error al copiar"/>
+    </ui:define>
     <ui:define name="contentFooterDialogRight">
+
         <p:commandButton action="#{dialogProcedimientoFlujo.ayuda}"
                          icon="pi pi-info-circle" iconPos="top"
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>
-        <p:commandButton action="#{dialogProcedimientoFlujo.guardar}"
+        <p:commandButton action="#{dialogProcedimientoFlujo.guardarOEnviarMail}"
                          value="#{labels['dict.guardar']}" update="messagesDialog formDatos"
                          process="@all"/>
         <p:commandButton action="#{dialogProcedimientoFlujo.cerrar}"

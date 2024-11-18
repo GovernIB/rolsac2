@@ -9,11 +9,6 @@
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
 -->
-<style>
-    body .ui-inputfield.ui-state-drag {
-        background: #ffffd6;
-    }
-</style>
 
 
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
@@ -82,13 +77,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </my:literalComponent>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}: " for="inputDescripcion"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalAreaComponent id="inputDescripcion"
                                          literal="#{dialogDocumentoProcedimiento.data.descripcion}"
                                          soloLecture="#{dialogDocumentoProcedimiento.isModoConsulta()}"
-                                         required="#{empty param['formDialog:closeButton']}"
+
                                          idioma="#{dialogDocumentoProcedimiento.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -158,6 +153,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          process="@this"/>
 
     </ui:define>
+    <style>
+        body .ui-inputfield.ui-state-drag {
+            background: #ffffd6;
+        }
+    </style>
 
 </ui:composition>
 </html>

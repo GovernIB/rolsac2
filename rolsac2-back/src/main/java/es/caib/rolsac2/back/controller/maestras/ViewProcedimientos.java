@@ -826,6 +826,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         final Map<String, String> params = new HashMap<>();
         String mensajes = procedimientoService.getMensajesByCodigo(codigo);
         UtilJSF.anyadirMochila("mensajes", mensajes);
+        UtilJSF.anyadirMochila("tipo", "P");
         params.put("SOLO_MENSAJES", "S");
         params.put("ID", codigo.toString());
         //params.put("ESTADO", data.getEstado().toString());

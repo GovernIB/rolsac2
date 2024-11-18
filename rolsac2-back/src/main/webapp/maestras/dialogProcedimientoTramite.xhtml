@@ -490,7 +490,11 @@
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      id="btnEditarModelo"
                                      action="#{dialogProcedimientoTramite.editarModelo}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog"/>
+                                     process="@this" update="dataDocumentosModelo messagesDialog">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}"
+                                process="@this"
+                                update="dataDocumentosModelo"/>
+                    </p:commandButton>
                     <p:commandButton id="btnSubirModelo" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogProcedimientoTramite.subirModelo}"
                                      process="@this" update="dataDocumentosModelo messagesDialog"/>
@@ -538,7 +542,12 @@
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      id="btnEditarDocumento"
                                      action="#{dialogProcedimientoTramite.editarDocumento}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                                     process="@this" update="messagesDialog"
+                                        >
+                    <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogDocumento}"
+                            process="@this"
+                            update="dataDocumentosRelacionados"/>
+                    </p:commandButton>
                     <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogProcedimientoTramite.subirDocumento}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>

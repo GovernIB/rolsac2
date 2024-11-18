@@ -493,6 +493,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
 
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
+        UtilJSF.anyadirMochila("tipo", "S");
         params.put("ID", this.data.getCodigo().toString());
         params.put("ESTADO", data.getEstado().toString());
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
@@ -501,6 +502,7 @@ public class DialogServicio extends AbstractController implements Serializable {
     public void verMensajes() {
         final Map<String, String> params = new HashMap<>();
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
+        UtilJSF.anyadirMochila("tipo", "S");
         params.put("SOLO_MENSAJES", "S");
         params.put("ESTADO", data.getEstado().toString());
         params.put("ID", this.data.getCodigo().toString());
