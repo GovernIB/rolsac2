@@ -772,14 +772,29 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
         // Verificamos si se ha modificado
         if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
-            ProcedimientoGridDTO proc = this.datoSeleccionado;
-            String recordamos = wfProcedimiento;
-            calcularProc();
-            this.buscar();
-            this.seleccionarPorId(proc);
-            if (recordamos != null) {
-                wfProcedimiento = recordamos;
-                cambiarProcedimientoSeleccionadoWF();
+            ProcedimientoGridDTO proc = null;
+            String recordamos = null;
+            try {
+                proc = this.datoSeleccionado;
+                recordamos = wfProcedimiento;
+                calcularProc();
+                this.buscar();
+                this.seleccionarPorId(proc);
+                if (recordamos != null) {
+                    wfProcedimiento = recordamos;
+                    cambiarProcedimientoSeleccionadoWF();
+                }
+            } catch (Exception e) {
+                LOG.error("Error al refrescar la lista de procedimientos", e);
+                if (recordamos != null) {
+                    LOG.error("Recordamos : " + recordamos);
+                }
+                if (proc != null) {
+                    LOG.error("PROC : " + proc);
+                }
+                if (proc != null) {
+                    LOG.error("PROC : " + proc);
+                }
             }
         }
     }
