@@ -45,8 +45,9 @@ public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPl
 
 		try {
 			final InitialContext jndiContext = new InitialContext();
-			final Session mailSession = (Session) jndiContext.lookup("java:/" + getProperty(EMAIL_JNDI));
-
+//			final Session mailSession = (Session) jndiContext.lookup("java:/" + getProperty(EMAIL_JNDI));
+//			final Session mailSession = (Session) jndiContext.lookup("java:/es.caib.rolsac2.pluginsib.mail");
+			final Session mailSession = (Session) jndiContext.lookup("java:/es.caib.rolsac2.mail");
 			final MimeMessage msg = new MimeMessage(mailSession);
 
 			final InternetAddress[] direcciones = new InternetAddress[destinatarios.size()];
