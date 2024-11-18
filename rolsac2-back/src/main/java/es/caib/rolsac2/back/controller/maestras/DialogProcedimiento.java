@@ -404,7 +404,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         boolean tiene = false;
         if (data.getTramites() != null) {
             for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
-                if (tramite.getFase() == FASE_INICIACION) {
+                if (tramite.getFase() == FASE_INICIACION.intValue()) {
                     tiene = true;
                     break;
                 }

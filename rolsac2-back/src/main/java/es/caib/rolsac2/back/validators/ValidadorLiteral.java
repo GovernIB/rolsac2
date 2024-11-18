@@ -19,10 +19,10 @@ public class ValidadorLiteral implements Validator {
 
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
-        if (component instanceof LiteralComponent && component != null) {
+        if (component != null && component instanceof LiteralComponent) {
             comprobacionLiteralComponent(context, (LiteralComponent) component, value);
         }
-        if (component instanceof LiteralAreaComponent && component != null) {
+        if (component != null && component instanceof LiteralAreaComponent) {
             comprobacionLiteralAreaComponent(context, (LiteralAreaComponent) component, value);
         }
     }

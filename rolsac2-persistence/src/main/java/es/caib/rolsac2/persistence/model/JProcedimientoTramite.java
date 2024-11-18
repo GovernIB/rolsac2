@@ -471,7 +471,12 @@ public class JProcedimientoTramite {
         this.setFase(elemento.getFase());
         if (this.getTraducciones() == null || this.getTraducciones().isEmpty()) {
             List<JProcedimientoTramiteTraduccion> traduccionesNew = new ArrayList<>();
-            List<String> idiomasPermitidos = List.of(elemento.getUnidadAdministrativa().getEntidad().getIdiomasPermitidos().split(";"));
+            List<String> idiomasPermitidos;
+            if (elemento.getUnidadAdministrativa() != null && elemento.getUnidadAdministrativa().getEntidad() != null && elemento.getUnidadAdministrativa().getEntidad().getIdiomasPermitidos() != null) {
+                idiomasPermitidos = List.of(elemento.getUnidadAdministrativa().getEntidad().getIdiomasPermitidos().split(";"));
+            } else {
+                idiomasPermitidos = elemento.getNombre().getIdiomas();
+            }
             for (String idioma : idiomasPermitidos) {
                 JProcedimientoTramiteTraduccion trad = new JProcedimientoTramiteTraduccion();
                 trad.setIdioma(idioma);

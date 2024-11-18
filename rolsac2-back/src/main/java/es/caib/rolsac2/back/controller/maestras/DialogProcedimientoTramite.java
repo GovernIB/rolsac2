@@ -87,8 +87,8 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             this.mostrarSoloIniciacion = true;
         }
 
+        procedimientoComun = (boolean) UtilJSF.getValorMochilaByKey("comun");
         if (this.isModoEdicion() || this.isModoConsulta()) {
-            procedimientoComun = (boolean) UtilJSF.getValorMochilaByKey("comun");
 
             data = (ProcedimientoTramiteDTO) UtilJSF.getValorMochilaByKey("tramiteSel");
 
@@ -317,7 +317,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     public void returnDialogDocumento(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
-            if(respuesta.isAlta()) {
+            if (respuesta.isAlta()) {
                 // Verificamos si se ha modificado
                 ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
                 if (doc != null) {
@@ -326,7 +326,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
                     }
                     data.agregarDocumento(doc);
                 }
-            }else if(respuesta.isEdicion()){
+            } else if (respuesta.isEdicion()) {
                 ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
                 if (doc != null) {
                     data.getListaDocumentos().remove(documentoSeleccionado);
@@ -417,7 +417,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     public void returnDialogModelo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
-            if( respuesta.isAlta()) {
+            if (respuesta.isAlta()) {
                 // Verificamos si se ha modificado
                 ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
                 if (doc != null) {
@@ -426,7 +426,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
                     }
                     data.agregarModelo(doc);
                 }
-            }else if( respuesta.isEdicion()){
+            } else if (respuesta.isEdicion()) {
                 ProcedimientoDocumentoDTO doc = (ProcedimientoDocumentoDTO) respuesta.getResult();
                 if (doc != null) {
                     data.getListaModelos().remove(modeloSeleccionado);
