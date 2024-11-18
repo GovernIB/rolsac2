@@ -244,8 +244,16 @@
                                        value="#{labels['dialogProcedimientoTramite.organoCompetente']}:"
                                        for="txtOrgInstr"/>
                         <p>
+
+                            <p:inputText id="labelComun"
+                                         value="#{dialogProcedimientoTramite.comunUA.getTraduccion(dialogProcedimientoTramite.idioma)}"
+                                         rendered="#{dialogProcedimientoTramite.isProcedimientoComun()}"
+                                         styleClass="w95"
+                                         disabled="true"/>
+
                             <p:inputText id="txtOrgInstr"
                                          value="#{dialogProcedimientoTramite.data.unidadAdministrativa.nombre.getTraduccion(dialogProcedimientoTramite.idioma)}"
+                                         rendered="#{!dialogProcedimientoTramite.isProcedimientoComun()}"
                                          styleClass="w85 mr-1"
                                          disabled="true"/>
                             <p:commandButton
@@ -255,6 +263,7 @@
                                     styleClass="w35px h30px iconoUAselector"
                                     process="@this"
                                     style="position:relative; top:10px;"
+                                    rendered="#{!dialogProcedimientoTramite.isProcedimientoComun()}"
                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                     id="btnAbrirUAInstr"
                             >

@@ -65,6 +65,10 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
     private Integer opcionTelematica = null;
 
+    private Literal comunUA;
+
+    boolean procedimientoComun;
+
     public void load() {
         this.setearIdioma();
 
@@ -84,6 +88,8 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         }
 
         if (this.isModoEdicion() || this.isModoConsulta()) {
+            procedimientoComun = (boolean) UtilJSF.getValorMochilaByKey("comun");
+
             data = (ProcedimientoTramiteDTO) UtilJSF.getValorMochilaByKey("tramiteSel");
 
             if (data != null && data.isTramitPresencial()) {
@@ -127,7 +133,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
             this.data.getTipoTramitacion().setEntidad(UtilJSF.getSessionBean().getEntidad());
         }
 
-
+        comunUA = sessionBean.getEntidad().getUaComun();
     }
 
     public boolean isOpcionTelematicaPlantilla() {
@@ -666,5 +672,21 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
     public void setOpcionTelematica(Integer opcionTelematica) {
         this.opcionTelematica = opcionTelematica;
+    }
+
+    public Literal getComunUA() {
+        return comunUA;
+    }
+
+    public void setComunUA(Literal comunUA) {
+        this.comunUA = comunUA;
+    }
+
+    public void setProcedimientoComun(boolean procedimientoComun) {
+        this.procedimientoComun = procedimientoComun;
+    }
+
+    public boolean isProcedimientoComun() {
+        return procedimientoComun;
     }
 }
