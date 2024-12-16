@@ -246,13 +246,13 @@
                         <p>
 
                             <p:inputText id="labelComun"
-                                         value="#{dialogProcedimientoTramite.comunUA.getTraduccion(dialogProcedimientoTramite.idioma)}"
+                                         value="#{dialogProcedimientoTramite.comunUA.getTraduccionConValor(dialogProcedimientoTramite.idioma)}"
                                          rendered="#{dialogProcedimientoTramite.isProcedimientoComun()}"
                                          styleClass="w95"
                                          disabled="true"/>
 
                             <p:inputText id="txtOrgInstr"
-                                         value="#{dialogProcedimientoTramite.data.unidadAdministrativa.nombre.getTraduccion(dialogProcedimientoTramite.idioma)}"
+                                         value="#{dialogProcedimientoTramite.data.unidadAdministrativa.nombre.getTraduccionConValor(dialogProcedimientoTramite.idioma)}"
                                          rendered="#{!dialogProcedimientoTramite.isProcedimientoComun()}"
                                          styleClass="w85 mr-1"
                                          disabled="true"/>
@@ -346,7 +346,7 @@
                                                   itemValue="#{null}" id="seleccione3"/>
                                     <f:selectItems value="#{dialogProcedimientoTramite.plantillasTipoTramitacion}"
                                                    var="plantilla"
-                                                   itemLabel="#{plantilla.descripcion.getTraduccion(dialogProcedimientoTramite.idioma)}"
+                                                   itemLabel="#{plantilla.descripcion.getTraduccionConValor(dialogProcedimientoTramite.idioma)}"
                                                    itemValue="#{plantilla}"/>
                                     <p:ajax update="txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam" event="change"/>
 
@@ -407,7 +407,7 @@
                                                   itemValue="#{null}"/>
                                     <f:selectItems value="#{dialogProcedimientoTramite.platTramitElectronica}"
                                                    var="plataforma"
-                                                   itemLabel="#{plataforma.descripcion.getTraduccion(sessionBean.lang)}"
+                                                   itemLabel="#{plataforma.descripcion.getTraduccionConValor(sessionBean.lang)}"
                                                    itemValue="#{plataforma}"/>
                                 </p:selectOneMenu>
                             </div>
@@ -479,7 +479,7 @@
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
                         </p:column>
 
                     </p:dataTable>
@@ -532,7 +532,7 @@
                         <p:ajax event="rowDblselect" oncomplete="triggerDblClickDocumento();"/>
                          <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>

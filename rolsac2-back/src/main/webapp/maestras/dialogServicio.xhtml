@@ -143,7 +143,7 @@
                         <p:outputLabel value="#{labels['dialogServicio.fecha.publicacion']}:" for="txtFechaPublicacion"
                                        styleClass="mb-1 pt-0"/>
                         <p>
-                            <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
+                             <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
                                         disabled="#{dialogServicio.isModoConsulta()}"
                                         value="#{dialogServicio.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
                                         showOn="button" required="#{empty param['formDialog:closeButton']}"/>
@@ -153,7 +153,7 @@
                         <p:outputLabel value="#{labels['dialogServicio.fecha.despublicacion']}:" for="txtFechaCaducidad"
                                        styleClass="mb-1 pt-0"/>
                         <p>
-                            <p:datePicker showIcon="true"  id="txtFechaCaducidad" styleClass="fecha"
+                             <p:datePicker showIcon="true"  id="txtFechaCaducidad" styleClass="fecha"
                                         disabled="#{dialogServicio.isModoConsulta()}"
                                         value="#{dialogServicio.data.fechaCaducidad}" pattern="dd/MM/yyyy HH:mm"
                                         showOn="button"/>
@@ -287,13 +287,13 @@
 
                                                  <span style="white-space:nowrap">
                                                         <p:inputText id="labelComun"
-                                                                     value="#{dialogServicio.comunUA.getTraduccion(dialogServicio.idioma)}"
+                                                                     value="#{dialogServicio.comunUA.getTraduccionConValor(dialogServicio.idioma)}"
                                                                      rendered="#{dialogServicio.data.esComun()}"
                                                                      styleClass="w89"
                                                                      disabled="true"/>
                                                         <p:inputText id="txtOrgComp"
                                                                      rendered="#{!dialogServicio.data.esComun()}"
-                                                                     value="#{dialogServicio.data.uaInstructor.nombre.getTraduccion(dialogServicio.idioma)}"
+                                                                     value="#{dialogServicio.data.uaInstructor.nombre.getTraduccionConValor(dialogServicio.idioma)}"
                                                                      styleClass="w89 mr-1" disabled="true"/>
                                                         <p:inputText id="txtOrgCompRaiz" styleClass="ocultar"
                                                                      value="#{dialogServicio.uaRaiz}"
@@ -330,7 +330,7 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.servicio']}:"
                                        for="txtServResp"/>
                             <p:inputText id="txtServResp"
-                                         value="#{dialogServicio.data.uaResponsable.nombre.getTraduccion(dialogServicio.idioma)}"
+                                         value="#{dialogServicio.data.uaResponsable.nombre.getTraduccionConValor(dialogServicio.idioma)}"
                                          styleClass="w89 mr-1" disabled="true"/>
 
                             <p:commandButton
@@ -469,7 +469,7 @@
                                             itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}"
                                             itemValue="#{null}" id="seleccione3"/>
                                     <f:selectItems value="#{dialogServicio.plantillasTipoTramitacion}" var="plantilla"
-                                                   itemLabel="#{plantilla.descripcion.getTraduccion(dialogServicio.idioma)}"
+                                                   itemLabel="#{plantilla.descripcion.getTraduccionConValor(dialogServicio.idioma)}"
                                                    itemValue="#{plantilla}"/>
                                     <p:ajax update="txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam"
                                             event="change"/>
@@ -614,7 +614,7 @@
                                          converter="#{tipoLegitimacionConverter}">
                             <f:selectItem itemLabel="#{labels['dialogServicio.selecciona']}" itemValue="#{null}"/>
                             <f:selectItems value="#{dialogServicio.listTipoLegitimacion}" var="tipoLegitimacion"
-                                           itemLabel="#{tipoLegitimacion.descripcion.getTraduccion(dialogServicio.idioma)}"
+                                           itemLabel="#{tipoLegitimacion.descripcion.getTraduccionConValor(dialogServicio.idioma)}"
                                            itemValue="#{tipoLegitimacion}"/>
                         </p:selectOneMenu>
                     </div>
@@ -729,7 +729,7 @@
                         <div class="left-container-header ml-0 col-12 row">
                             <div class="col-10 text-center">
                                 <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                    #{tema.data.descripcion.getTraduccion(dialogServicio.idioma)}</p>
+                                    #{tema.data.descripcion.getTraduccionConValor(dialogServicio.idioma)}</p>
                             </div>
                             <div class="col-2">
                                 <p:commandButton id="btnTema#{tema.data.codigo}Col"
@@ -766,7 +766,7 @@
                                         </div>
                                     </div>
                                     <i class="#{dialogServicio.getIcono(td)}"></i>
-                                    <h:outputText id="texto" value="#{td.descripcion.getTraduccion(dialogServicio.idioma)}" class="labelGrande" />
+                                    <h:outputText id="texto" value="#{td.descripcion.getTraduccionConValor(dialogServicio.idioma)}" class="labelGrande" />
                                     <p:tooltip id="toolTipFade#{td.codigo}" for="texto" value="#{dialogServicio.getTooltip(td)}" position="right"/>
                                 </p:column>
 
@@ -822,7 +822,7 @@
 
                         <p:column headerText="#{labels['dialogServicio.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(dialogServicio.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogServicio.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -881,7 +881,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccion(dialogServicio.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogServicio.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
