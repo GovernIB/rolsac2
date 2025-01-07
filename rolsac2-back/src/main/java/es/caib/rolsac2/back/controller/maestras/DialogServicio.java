@@ -194,6 +194,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         for (TemaGridDTO tema : temasPadre) {
             temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
         }
+        this.construirArbol();
 
         if (this.data.getTipoTramitacion() == null) {
             this.data.setTipoTramitacion(TipoTramitacionDTO.createInstance(sessionBean.getIdiomasPermitidosList()));

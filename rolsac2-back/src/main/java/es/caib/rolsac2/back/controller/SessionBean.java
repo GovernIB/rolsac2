@@ -198,6 +198,13 @@ public class SessionBean implements Serializable {
                 }
             }
             perfiles = seguridad.getPerfiles();
+            if (idEntidades == null || idEntidades.isEmpty()) {
+                //Lanzar excepción y mostrar
+                String rolsac2back = context.getExternalContext().getRequestContextPath();
+                String uaErrorRelacionada = "/error/uaRelacionadaException.xhtml')";
+                context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + uaErrorRelacionada);
+                return;
+            }
             roles = seguridad.getRoles(idEntidades);
             if (systemServiceBean.checkSesion(usuario.getCodigo())) {
                 SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
@@ -319,7 +326,7 @@ public class SessionBean implements Serializable {
             sesionDTO.setIdioma(lang); //Forzamos el idioma de sesion
             current = Locale.forLanguageTag(lang); //Forzamos el idioma/locale de la aplicación
         }
-         
+
         if (!perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
             Boolean permiso = checkPermisosPerfil(perfil);
             if (permiso) {

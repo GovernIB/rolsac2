@@ -64,7 +64,6 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     @EJB
     AdministracionEntServiceFacade administracionEntService;
 
-
     @EJB
     private SystemServiceFacade systemServiceFacade;
 
@@ -210,7 +209,16 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
 
         String mensajeEnviar = "";
         if (mensajeNuevo != null && !mensajeNuevo.isEmpty()) {
-            mensajeEnviar = getLiteral("dialogProcedimientoFlujo.supervisor") + mensajes.get(0).getUsuario() + getLiteral("dialogProcedimientoFlujo.comenta") + "\n " + mensajeNuevo;
+            Object[] parametros = {UtilJSF.getSessionBean().getUsuario().getNombre()};
+
+            String enlaceProp;
+
+            if ("P".equals(tipo)) {
+                enlaceProp = systemServiceFacade.obtenerPropiedadConfiguracion("email.proc.enlace") + idProcedimiento;
+            } else {
+                enlaceProp = systemServiceFacade.obtenerPropiedadConfiguracion("email.serv.enlace") + idProcedimiento;
+            }
+            mensajeEnviar = getLiteral("dialogProcedimientoFlujo.mensajeUsuario", parametros) + "\n<br /><br />\n" + mensajeNuevo + "\n<br /><br />\n" + enlaceProp;
         } else {
             cerrar();
             return;

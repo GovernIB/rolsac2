@@ -33,7 +33,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
     <ui:define name="breadcrumb">
         <c:forEach var="ua" items="#{sessionBean.getUnidadesAdministrativasActivas()}">
 
-            <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
+            <p:menuitem value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}"
                         update="migaPan"
                         oncomplete="$('#form\\:btnBuscarEvt').click();"

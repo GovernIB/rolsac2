@@ -283,6 +283,12 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         listPlantillas.addAll(maestrasSupService.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), null));
 
         listPlataformas = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
+
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String paramCodigo = params.get("codigoProc");
+        if (paramCodigo != null) {
+            filtro.setCodigoProc(Long.valueOf(paramCodigo));
+        }
     }
 
     public void nuevoProcedimiento() {

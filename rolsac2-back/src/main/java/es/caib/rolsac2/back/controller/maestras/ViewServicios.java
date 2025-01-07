@@ -329,6 +329,11 @@ public class ViewServicios extends AbstractController implements Serializable {
         listPlataformas = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
         temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
 
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String paramCodigo = params.get("codigoServ");
+        if (paramCodigo != null) {
+            filtro.setCodigoProc(Long.valueOf(paramCodigo));
+        }
     }
 
     public void nuevoProcedimiento() {
