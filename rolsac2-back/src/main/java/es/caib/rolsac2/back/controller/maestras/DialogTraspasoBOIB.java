@@ -132,7 +132,7 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
         normativaDTO.setUrlBoletin(dto.getUrl());
         normativaDTO.setFechaBoletin(dto.getFechaBoletin());
         normativaDTO.setNumeroBoletin(dto.getNumeroBoletin());
-        //normativaDTO.setNumero(obtenerNumero(dto));
+        normativaDTO.setVigente(true);
         normativaDTO.setNumero(null);
         List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
         UnidadAdministrativaGridDTO uaActiva = unidadAdministrativaServiceFacade.findById(sessionBean.getUnidadActiva().getCodigo()).convertDTOtoGridDTO();

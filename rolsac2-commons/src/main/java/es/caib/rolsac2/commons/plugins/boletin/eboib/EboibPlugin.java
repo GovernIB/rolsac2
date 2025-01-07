@@ -252,10 +252,7 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
 
         try {
             // Ignorar todos los certificados SSL
-            boolean trustAll = false;
-            if (saltarseCertificado != null && saltarseCertificado) {
-                trustAll = true;
-            }
+            boolean trustAll = saltarseCertificado != null && saltarseCertificado;
             if (trustAll) {
                 TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
                     public X509Certificate[] getAcceptedIssuers() {
