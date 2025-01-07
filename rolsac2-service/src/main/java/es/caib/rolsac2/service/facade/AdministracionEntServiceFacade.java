@@ -264,4 +264,12 @@ public interface AdministracionEntServiceFacade {
      * @return una página con el número total de EntidadRaiz y la lista EntidadRaiz con el rango indicado
      */
     Pagina<EntidadRaizGridDTO> findByFiltro(EntidadRaizFiltro filtro);
+
+    /**
+     * Obtener la lista de los emails de los usuarios.
+     *
+     * @param listaDestinatarios Lista de emails de destinatarios.
+     * @return Devuelve una lista de emails de los usuarios.
+     */
+    List<String> getEmailUsuarios(List<String> listaDestinatarios);
 }

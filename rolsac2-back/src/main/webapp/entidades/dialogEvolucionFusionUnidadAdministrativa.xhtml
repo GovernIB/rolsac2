@@ -59,7 +59,7 @@
 									for="txtFechaBaja" />
 							</p>
 							<p:datePicker showIcon="true"  id="txtFechaBaja"
-								requiredMessage="#{labels['dict.obligatorio.fechaBaja']}"
+										  locale="#{sessionBean.lang}" requiredMessage="#{labels['dict.obligatorio.fechaBaja']}"
 								required="true" showOn="button"
 								value="#{dialogEvolucionFusionUnidadAdministrativa.fechaBaja}"
 								pattern="dd/MM/yyyy" />
@@ -191,7 +191,7 @@
 									for="txtFechaBaja2" />
 							</p>
 							<p:datePicker showIcon="true"  id="txtFechaBaja2" showOn="button" disabled="true"
-								value="#{dialogEvolucionFusionUnidadAdministrativa.fechaBaja}"
+										  locale="#{sessionBean.lang}" value="#{dialogEvolucionFusionUnidadAdministrativa.fechaBaja}"
 								pattern="dd/MM/yyyy" />
 						</div>
 					</div>

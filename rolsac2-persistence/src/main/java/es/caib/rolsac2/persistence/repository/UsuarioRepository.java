@@ -45,4 +45,6 @@ public interface UsuarioRepository extends CrudRepository<JUsuario, Long> {
     void anyadirNuevoUsuarioUA(JUsuario jUsuario, JUnidadAdministrativa jUnidadAdministrativa);
 
     List<UsuarioGridDTO> getUsuariosByUas(List<Long> uas);
+
+    List<String> getEmailUsuarios(java.util.List<java.lang.String> listaDestinatarios);
 }

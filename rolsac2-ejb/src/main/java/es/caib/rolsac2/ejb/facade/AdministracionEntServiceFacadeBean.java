@@ -446,5 +446,11 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
         }
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<String> getEmailUsuarios(List<String> listaDestinatarios) {
+        return usuarioRepository.getEmailUsuarios(listaDestinatarios);
+    }
+
 
 }

@@ -87,7 +87,7 @@
                                        styleClass="mb-1 pt-0"/>
                         <p>
                             <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
-                                        disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                        locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaPublicacion}"
                                         pattern="dd/MM/yyyy HH:mm"
                                         required="#{empty param['formDialog:closeButton']}"
@@ -130,7 +130,7 @@
                                        styleClass="mb-1 pt-0"/>
                         <p>
                             <p:datePicker showIcon="true"  id="txtFechaInicio" styleClass="fecha"
-                                        disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                          locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaInicio}"
                                         required="#{empty param['formDialog:closeButton']}"
                                         requiredMessage="#{labels['dict.obligatorio.fechaInicio']}"
@@ -142,7 +142,7 @@
                                        styleClass="mb-1 pt-0"/>
                         <p>
                             <p:datePicker showIcon="true"  id="txtFechaCierre" styleClass="fecha"
-                                        disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                          locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaCierre}"
                                         pattern="dd/MM/yyyy HH:mm" showOn="button"/>
                         </p>
@@ -246,13 +246,13 @@
                         <p>
 
                             <p:inputText id="labelComun"
-                                         value="#{dialogProcedimientoTramite.comunUA.getTraduccionConValor(dialogProcedimientoTramite.idioma)}"
+                                         value="#{dialogProcedimientoTramite.comunUA.getTraduccion(dialogProcedimientoTramite.idioma)}"
                                          rendered="#{dialogProcedimientoTramite.isProcedimientoComun()}"
                                          styleClass="w95"
                                          disabled="true"/>
 
                             <p:inputText id="txtOrgInstr"
-                                         value="#{dialogProcedimientoTramite.data.unidadAdministrativa.nombre.getTraduccionConValor(dialogProcedimientoTramite.idioma)}"
+                                         value="#{dialogProcedimientoTramite.data.unidadAdministrativa.nombre.getTraduccion(dialogProcedimientoTramite.idioma)}"
                                          rendered="#{!dialogProcedimientoTramite.isProcedimientoComun()}"
                                          styleClass="w85 mr-1"
                                          disabled="true"/>
@@ -346,7 +346,7 @@
                                                   itemValue="#{null}" id="seleccione3"/>
                                     <f:selectItems value="#{dialogProcedimientoTramite.plantillasTipoTramitacion}"
                                                    var="plantilla"
-                                                   itemLabel="#{plantilla.descripcion.getTraduccionConValor(dialogProcedimientoTramite.idioma)}"
+                                                   itemLabel="#{plantilla.descripcion.getTraduccion(dialogProcedimientoTramite.idioma)}"
                                                    itemValue="#{plantilla}"/>
                                     <p:ajax update="txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam" event="change"/>
 
@@ -407,7 +407,7 @@
                                                   itemValue="#{null}"/>
                                     <f:selectItems value="#{dialogProcedimientoTramite.platTramitElectronica}"
                                                    var="plataforma"
-                                                   itemLabel="#{plataforma.descripcion.getTraduccionConValor(sessionBean.lang)}"
+                                                   itemLabel="#{plataforma.descripcion.getTraduccion(sessionBean.lang)}"
                                                    itemValue="#{plataforma}"/>
                                 </p:selectOneMenu>
                             </div>
@@ -479,7 +479,7 @@
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
                         </p:column>
 
                     </p:dataTable>
@@ -532,7 +532,7 @@
                         <p:ajax event="rowDblselect" oncomplete="triggerDblClickDocumento();"/>
                          <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -578,55 +578,14 @@
             }
 
         </h:outputScript>
-        <!--<h:outputScript>
-            /** Funcion que almacena el valor almacenado. **/
-            function refrescarValorInterfaz(valor) {
-                valorActual = valor;
-                refrescarInterfaz(valor);
-            }
 
-            /** Refresca la interfaz **/
-            function refrescarInterfaz(valor) {
-                var visibilidad0 = "none";
-                var visibilidad1 = "none";
-                var visibilidad2 = "none";
-                var visibilidad3 = "none";
-                if (valor == 1) {
-                    visibilidad1 = "";
-                } else if (valor == 2) {
-                    visibilidad2 = "";
-                } else if (valor == 3) {
-                    visibilidad3 = "";
-                } else {
-                    visibilidad0 = "";
-                }
-
-
-                document.getElementById("divVacio").style.display = visibilidad0;
-                document.getElementById("divPlantilla").style.display = visibilidad1;
-                document.getElementById("divDatosTelematico1").style.display = visibilidad2;
-                document.getElementById("divDatosTelematico2").style.display = visibilidad2;
-                document.getElementById("divUrlTelematico").style.display = visibilidad3;
-
-                /* alert('sale.v0' + visibilidad0 + ' v1' + visibilidad1 + ' v2' + visibilidad2 + ' v3' + visibilidad3);*/
-
-            }
-
-            /** Cuando está preparado el documento, llama al evento **/
-            $(document).ready(function () {
-                refrescarInterfaz(document.getElementById("formDialog:txtOpcion").value);
-            });
-
-            var valorActual;
-
-            /** Al guardar, con un delay, llama a arefrescar **/
-            function refrescarInterfazGuardar() {
-                if (valorActual == undefined) {
-                    valorActual = document.getElementById("formDialog:txtOpcion").value;
-                }
-                refrescarInterfaz(valorActual);
-            }
-        </h:outputScript>-->
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
+                         widgetVar="cdSalirSinGuardar">
+            <p:commandButton value="#{labels['dict.si']}" action="#{dialogProcedimientoTramite.cerrarSinCheck()}"
+                             process="@this" update="messagesDialog" oncomplete="PF('cdSalirSinGuardar').hide();"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();"/>
+        </p:confirmDialog>
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">

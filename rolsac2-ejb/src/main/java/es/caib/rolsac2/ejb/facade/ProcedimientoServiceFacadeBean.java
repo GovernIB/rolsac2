@@ -170,7 +170,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentosLOPD() == null ? null : jProcWF.getListaDocumentosLOPD().getCodigo(), true, dto.getDocumentosLOPD(), ruta);
         if (dto instanceof ProcedimientoDTO) {
             List<ProcedimientoTramiteDTO> tramites = ((ProcedimientoDTO) dto).getTramites();
-			// Si procedimiento es comun el organo competente para la tramitacion tiene que ser el organo intructor
+
+            // Si procedimiento es común el organo competente para la tramitación tiene que ser el organo intructor
             if( dto.esComun()){
                 tramites.forEach(t->t.setUnidadAdministrativa(dto.getUaInstructor()));
             }
@@ -319,6 +320,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         procedimientoRepository.mergeNormativaProcWF(jProcWF.getCodigo(), dto.getNormativas());
         if (dto instanceof ProcedimientoDTO) {
             List<ProcedimientoTramiteDTO> tramites = ((ProcedimientoDTO) dto).getTramites();
+            if( dto.esComun()){
+                tramites.forEach(t->t.setUnidadAdministrativa(dto.getUaInstructor()));
+            }
             procedimientoRepository.mergeTramitesProcWF(jProcWF.getCodigo(), tramites, ruta);
         }
         procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentos() == null ? null : jProcWF.getListaDocumentos().getCodigo(), false, dto.getDocumentos(), ruta);
@@ -838,6 +842,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     private ProcedimientoBaseDTO getProcedimientoDTOByCodigoWF(Long codigoWF) {
         JProcedimientoWorkflow jprocWF = procedimientoRepository.getWFByCodigoWF(codigoWF);
         return procedimientoRepository.convertDTO(jprocWF);
+    }
+
+    public String getNombreProcedimientoServicio(Long codigo) {
+        return procedimientoRepository.getNombreProcedimientoServicio(codigo);
     }
 
     /**

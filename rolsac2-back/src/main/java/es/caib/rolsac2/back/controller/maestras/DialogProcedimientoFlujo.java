@@ -6,15 +6,17 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
+import es.caib.rolsac2.commons.plugins.email.api.AnexoEmail;
+import es.caib.rolsac2.commons.plugins.email.api.EmailPlugin;
+import es.caib.rolsac2.commons.plugins.email.api.EmailPluginException;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Mensaje;
+import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.Propiedad;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypePerfiles;
-import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import es.caib.rolsac2.service.model.ServicioDTO;
+import es.caib.rolsac2.service.model.types.*;
 import es.caib.rolsac2.service.utils.UtilJSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +44,8 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
 
     private RespuestaFlujo data;
 
+    private Boolean checkMail;
+
     /**
      * Propiedad seleccionada.
      */
@@ -66,6 +70,12 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
 
     private boolean mostrarEstados;
 
+    private String tipo;
+
+    private ProcedimientoDTO procedimientoDTO;
+
+    private ServicioDTO servicioDTO;
+
 
     List<TypeProcedimientoEstado> estados;
     TypeProcedimientoEstado estadoSeleccionado;
@@ -79,6 +89,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         this.setearIdioma();
         data = new RespuestaFlujo();
         mostrarEstados = true;
+        checkMail = false;
         mensaje = (String) UtilJSF.getValorMochilaByKey("mensajes");
         if (id != null) {
             idProcedimiento = Long.valueOf(id);
@@ -151,6 +162,99 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             Collections.sort(mensajes);
             ValidacionTipoUtils.normalizarMensajes(mensajes);
         }
+
+        tipo = (String) UtilJSF.getValorMochilaByKey("tipo");
+    }
+
+    public void guardarOEnviarMail() {
+        if (checkMail) {
+            enviarMail();
+        } else {
+            guardar();
+        }
+    }
+
+    /**
+     * Enviar email.
+     */
+    public void enviarMail() {
+        Properties prop = new Properties();
+
+        List<AnexoEmail> lista = new ArrayList<>();
+        List<String> listaDestinatarios = new ArrayList<>();
+        List<String> listaUsuariosDestinatarios = new ArrayList<>();
+        boolean buscoAdministradorContenidos;
+        if (this.isAdministradorContenidos()) {
+            buscoAdministradorContenidos = false;
+        } else {
+            buscoAdministradorContenidos = true;
+        }
+        for (Mensaje mensaje : mensajes) {
+            if (mensaje.isAdmContenido() == buscoAdministradorContenidos) {
+                if (!listaUsuariosDestinatarios.contains(mensaje.getUsuario()) && !mensaje.getUsuario().equals(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser())) {
+                    listaUsuariosDestinatarios.add(mensaje.getUsuario());
+                }
+            }
+        }
+        //listaUsuariosDestinatarios.add("usuario1");
+        if (listaUsuariosDestinatarios.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimientoFlujo.errormail"), true);
+            return;
+        }
+        //listaDestinatarios.add("slromero@minsait.com");
+        listaDestinatarios = administracionEntService.getEmailUsuarios(listaUsuariosDestinatarios);
+        if (listaDestinatarios == null || listaDestinatarios.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimientoFlujo.errormail"), true);
+            return;
+        }
+
+        String mensajeEnviar = "";
+        if (mensajeNuevo != null && !mensajeNuevo.isEmpty()) {
+            mensajeEnviar = getLiteral("dialogProcedimientoFlujo.supervisor") + mensajes.get(0).getUsuario() + getLiteral("dialogProcedimientoFlujo.comenta") + "\n " + mensajeNuevo;
+        } else {
+            cerrar();
+            return;
+        }
+
+        String asunto = "";
+        String nombre = procedimientoService.getNombreProcedimientoServicio(idProcedimiento);
+
+        if (tipo.equals("S")) {
+            asunto = getLiteral("dialogProcedimientoFlujo.actualizacions") + nombre;
+        } else {
+            asunto = getLiteral("dialogProcedimientoFlujo.actualizacionp") + nombre;
+        }
+
+        final EmailPlugin pluginEmail = (EmailPlugin) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.EMAIL, UtilJSF.getSessionBean().getEntidad().getCodigo());
+
+        try {
+            //EmailPlugin pluginEmail = (EmailPlugin) plg;
+            boolean respuesta = pluginEmail.envioEmail(listaDestinatarios, asunto, mensajeEnviar, null);
+            LOG.debug("Resultado Email: ");
+            LOG.debug(Boolean.toString(respuesta));
+
+        } catch (EmailPluginException e) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimientoFlujo.errorenvio"), true);
+            LOG.error("Error enviando el email", e);
+            return;
+        }
+
+        guardar();
+    }
+
+    public String estructurarCopiaChat() {
+        StringBuilder sb = new StringBuilder();
+        for (Mensaje mensaje : mensajes) {
+            sb.append(mensaje.getMensaje());
+            sb.append("\n");
+            sb.append("(");
+            sb.append(mensaje.getUsuario());
+            sb.append(" - " + (mensaje.isAdmContenido() ? getLiteral("TypePerfiles.RS2_ADC") : getLiteral("TypePerfiles.RS2_GES")));
+            sb.append("):");
+            sb.append(mensaje.getFecha());
+            sb.append("\n\n");
+        }
+        return sb.toString();
     }
 
     public void guardar() {
@@ -408,5 +512,11 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         this.mensajeNuevo = mensajeNuevo;
     }
 
+    public Boolean getCheckMail() {
+        return checkMail;
+    }
 
+    public void setCheckMail(Boolean checkMail) {
+        this.checkMail = checkMail;
+    }
 }

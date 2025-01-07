@@ -569,6 +569,27 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
+    public String getNombreProcedimientoServicio(Long codigoWF) {
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimiento j where j.codigo = :codigoWF ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoWF", codigoWF);
+        JProcedimientoWorkflow jproc = null;
+
+        List<JProcedimiento> jprocs = query.getResultList();
+        if (jprocs != null && !jprocs.isEmpty()) {
+            jproc = jprocs.get(0).getProcedimientoWF().get(0);
+        }
+
+        if (jproc != null) {
+            List<JProcedimientoWorkflowTraduccion> traducciones = jproc.getTraducciones();
+            if (traducciones != null && !traducciones.isEmpty()) {
+                return traducciones.get(0).getNombre();
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Long obtenerCountPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro) {
         StringBuilder sql;
         Query query = getQuerySolr(true, pendientesIndexar, tipo, filtro);

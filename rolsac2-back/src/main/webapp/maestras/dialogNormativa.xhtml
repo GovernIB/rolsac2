@@ -128,7 +128,7 @@
                                            for="txtFechaAprobacion"/>
                         </p>
                         <p:datePicker showIcon="true"  id="txtFechaAprobacion" disabled="#{dialogNormativa.isModoConsulta()}"
-                                    requiredMessage="#{labels['dict.obligatorio.fechaAprobacion']}"
+                                      locale="#{sessionBean.lang}" requiredMessage="#{labels['dict.obligatorio.fechaAprobacion']}"
                                     required="#{empty param['formDialog:closeButton']}" showOn="button"
                                     value="#{dialogNormativa.data.fechaAprobacion}" pattern="dd/MM/yyyy"/>
                     </div>
@@ -164,7 +164,7 @@
                                           for="txtFechaBoletin"/>
                         <p>
                             <p:datePicker showIcon="true"  id="txtFechaBoletin" disabled="#{dialogNormativa.isModoConsulta()}"
-                                    value="#{dialogNormativa.data.fechaBoletin}" pattern="dd/MM/yyyy" showOn="button"/>
+                                          locale="#{sessionBean.lang}" value="#{dialogNormativa.data.fechaBoletin}" pattern="dd/MM/yyyy" showOn="button"/>
                         </p>
                     </div>
                 </div>

@@ -116,7 +116,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             data = ProcedimientoDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUaInstructor(sessionBean.getUnidadActiva());
             data.setUaResponsable(sessionBean.getUnidadActiva());
-            data.setUaCompetente(sessionBean.getUnidadActiva());
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
@@ -458,7 +457,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             if (this.getModoAcceso() != null) {
                 result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
             } else {
-                result.setModoAcceso(TypeModoAcceso.CONSULTA);
+                result.setModoAcceso(TypeModoAcceso.EDICION);
             }
             data.setEstado(respuestaFlujo.getEstadoDestino());
             data.setMensajes(respuestaFlujo.getMensajes());
@@ -818,9 +817,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
             UtilJSF.anyadirMochila("uasInstructor", uasInstructor);
             UtilJSF.anyadirMochila("nombreProcedimiento", data.getNombreProcedimientoWorkFlow());
-            if (data.getTramites() == null) {
-                data.setTramites(new ArrayList<>());
-            }
             UtilJSF.anyadirMochila("listaTramites", data.getTramites());
             UtilJSF.anyadirMochila("comun", data.esComun());
             UtilJSF.openDialog("dialogProcedimientoTramite", modoAcceso, params, true, 1000, 600);

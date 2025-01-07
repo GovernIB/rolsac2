@@ -113,6 +113,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     JProcedimientoWorkflow getWFByCodigoWF(Long codigoWF);
 
+    String getNombreProcedimientoServicio(Long codigoWF);
+
     Long obtenerCountPendientesIndexar(boolean pendientesIndexar, String tipo, ProcesoSolrFiltro filtro);
 
     /**

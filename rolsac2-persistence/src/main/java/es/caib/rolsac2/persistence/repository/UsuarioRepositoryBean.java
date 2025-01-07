@@ -266,6 +266,13 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
     }
 
     @Override
+    public List<String> getEmailUsuarios(List<String> listaDestinatarios) {
+        Query query = entityManager.createQuery("SELECT j.email FROM JUsuario j WHERE j.identificador IN (:listaDestinatarios) ");
+        query.setParameter("listaDestinatarios", listaDestinatarios);
+        return query.getResultList();
+    }
+
+    @Override
     public void mergeUsuarioEntidad(JUsuario usuario, List<Long> entidades) {
 
         List<Long> entidadesAsociadas = findEntidadesAsociadas(usuario.getCodigo());

@@ -141,13 +141,14 @@
                                        for="txtFechaPublicacion"
                                        styleClass="mb-1 pt-0"/>
                         <p>
-                              <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
-                                        disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                        value="#{dialogProcedimiento.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
-                                        requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
-                                        required="#{empty param['formDialog:closeButton']}"
-                                        showOn="button">
-                                <p:ajax event="change"/>
+                            <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
+                                          locale="#{sessionBean.lang}"
+                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                          value="#{dialogProcedimiento.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
+                                          requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
+                                          required="#{empty param['formDialog:closeButton']}"
+                                          showOn="button">
+                                <p:ajax event="change" />
                             </p:datePicker>
                         </p>
                     </div>
@@ -156,7 +157,7 @@
                                        styleClass="mb-1 pt-0"/>
                         <p>
                             <p:datePicker showIcon="true"  id="txtFechaCaducidad" styleClass="fecha"
-                                        disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                          locale="#{sessionBean.lang}" disabled="#{dialogProcedimiento.isModoConsulta()}"
                                         value="#{dialogProcedimiento.data.fechaCaducidad}" pattern="dd/MM/yyyy HH:mm"
                                         showOn="button"/>
                         </p>
@@ -247,7 +248,7 @@
                                          converter="#{tipoProcedimientoConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
                             <f:selectItems value="#{dialogProcedimiento.listTipoProcedimiento}" var="tipoProcedimiento"
-                                           itemLabel="#{tipoProcedimiento.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                           itemLabel="#{tipoProcedimiento.descripcion.getTraduccion(dialogProcedimiento.idioma)}"
                                            itemValue="#{tipoProcedimiento}"/>
                             <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
@@ -263,7 +264,7 @@
                                          converter="#{tipoFormaInicioConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
                             <f:selectItems value="#{dialogProcedimiento.listTipoFormaInicio}" var="tipoFormaInicio"
-                                           itemLabel="#{tipoFormaInicio.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                           itemLabel="#{tipoFormaInicio.descripcion.getTraduccion(dialogProcedimiento.idioma)}"
                                            itemValue="#{tipoFormaInicio}"/>
                             <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
@@ -298,7 +299,7 @@
                                          converter="#{tipoSilencioAdministrativoConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
                             <f:selectItems value="#{dialogProcedimiento.listTipoSilencio}" var="tipoSilencio"
-                                           itemLabel="#{tipoSilencio.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                           itemLabel="#{tipoSilencio.descripcion.getTraduccion(dialogProcedimiento.idioma)}"
                                            itemValue="#{tipoSilencio}"/>
                             <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
@@ -314,7 +315,7 @@
                                          converter="#{tipoViaConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
                             <f:selectItems value="#{dialogProcedimiento.listTipoVia}" var="tipoVia"
-                                           itemLabel="#{tipoVia.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                           itemLabel="#{tipoVia.descripcion.getTraduccion(dialogProcedimiento.idioma)}"
                                            itemValue="#{tipoVia}"/>
                             <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
@@ -378,15 +379,17 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.keywords']}:"
                                        for="txtKeywords"/>
-                        <my:literalComponent id="txtKeywords" styleClass="w95"
-                                             value="#{dialogProcedimiento.data.keywords}"
-                                             soloLecture="#{dialogProcedimiento.isModoConsulta()}"
-                                             idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                             idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                             idioma="#{dialogProcedimiento.idioma}"
-                                             literal="#{dialogProcedimiento.data.keywords}"
-                                             nombreLiteral="#{labels['dialogProcedimiento.keywords']}"
-                                             maxlength="500"/>
+                        <p>
+                            <my:literalComponent id="txtKeywords" styleClass="w95"
+                                                 value="#{dialogProcedimiento.data.keywords}"
+                                                 soloLecture="#{dialogProcedimiento.isModoConsulta()}"
+                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                 idioma="#{dialogProcedimiento.idioma}"
+                                                 literal="#{dialogProcedimiento.data.keywords}"
+                                                 nombreLiteral="#{labels['dialogProcedimiento.keywords']}"
+                                                 maxlength="500"/>
+                        </p>
                     </div>
                 </div>
 
@@ -402,13 +405,13 @@
                             <h:panelGroup id="panelComun">
                                      <span style="white-space:nowrap">
                                             <p:inputText id="labelComun"
-                                                         value="#{dialogProcedimiento.comunUA.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                                         value="#{dialogProcedimiento.comunUA.getTraduccion(dialogProcedimiento.idioma)}"
                                                          rendered="#{dialogProcedimiento.data.esComun()}"
                                                          styleClass="w95"
                                                          disabled="true"/>
                                             <p:inputText id="txtOrgComp"
                                                          rendered="#{!dialogProcedimiento.data.esComun()}"
-                                                         value="#{dialogProcedimiento.data.uaResponsable.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                                         value="#{dialogProcedimiento.data.uaResponsable.nombre.getTraduccion(dialogProcedimiento.idioma)}"
                                                          styleClass="w90 mr-1" disabled="true"/>
                                             <p:inputText id="txtOrgCompRaiz" styleClass="ocultar"
                                                          value="#{dialogProcedimiento.uaRaiz}"
@@ -450,13 +453,13 @@
                             <h:panelGroup id="panelComunInstr">
                                  <span style="white-space:nowrap">
                                         <p:inputText id="labelComunInstr"
-                                                     value="#{dialogProcedimiento.comunUA.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                                     value="#{dialogProcedimiento.comunUA.getTraduccion(dialogProcedimiento.idioma)}"
                                                      rendered="#{dialogProcedimiento.data.esComun()}"
                                                      styleClass="w95"
                                                      disabled="true"/>
                                         <p:inputText id="txtOrgInstr"
                                                      rendered="#{!dialogProcedimiento.data.esComun()}"
-                                                     value="#{dialogProcedimiento.data.uaInstructor.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                                     value="#{dialogProcedimiento.data.uaInstructor.nombre.getTraduccion(dialogProcedimiento.idioma)}"
                                                      styleClass="w90 mr-1"
                                                      disabled="true"/>
                                         <p:inputText id="txtOrgCompRaizInstr"
@@ -497,7 +500,7 @@
                         <p>
                             <p:inputText id="txtOrgResp"
                                          rendered="#{!dialogProcedimiento.data.esComun()}"
-                                         value="#{dialogProcedimiento.data.uaCompetente.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                         value="#{dialogProcedimiento.data.uaCompetente.nombre.getTraduccion(dialogProcedimiento.idioma)}"
                                          styleClass="w90 mr-1"
                                          disabled="true"/>
                             <p:commandButton
@@ -597,7 +600,7 @@
                                          converter="#{tipoLegitimacionConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
                             <f:selectItems value="#{dialogProcedimiento.listTipoLegitimacion}" var="tipoLegitimacion"
-                                           itemLabel="#{tipoLegitimacion.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                           itemLabel="#{tipoLegitimacion.descripcion.getTraduccion(dialogProcedimiento.idioma)}"
                                            itemValue="#{tipoLegitimacion}"/>
                         </p:selectOneMenu>
                     </div>
@@ -676,7 +679,7 @@
                         <p:ajax event="rowUnselect"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                         </p:column>
 
                     </p:dataTable>
@@ -701,7 +704,7 @@
                         <div class="left-container-header ml-0 col-12 row">
                             <div class="col-10 text-center">
                                 <p:outputLabel styleClass="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                    #{tema.data.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}</p:outputLabel>
+                                    #{tema.data.descripcion.getTraduccion(dialogProcedimiento.idioma)}</p:outputLabel>
                             </div>
                             <div class="col-2">
                                 <p:commandButton id="btnTema#{tema.data.codigo}Col"
@@ -733,7 +736,7 @@
                                     </div>
                                     <i class="#{dialogProcedimiento.getIcono(td)}"></i>
                                     <h:outputText id="texto"
-                                                  value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                                                  value="#{td.descripcion.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                                     <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
                                                value="#{dialogProcedimiento.getTooltip(td)}" position="right"/>
                                 </p:column>
@@ -789,7 +792,7 @@
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -848,7 +851,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -971,7 +974,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.nombre.getTraduccion(dialogProcedimiento.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>

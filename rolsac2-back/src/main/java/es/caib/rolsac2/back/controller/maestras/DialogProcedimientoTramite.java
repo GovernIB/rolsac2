@@ -10,6 +10,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,8 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     private MaestrasSupServiceFacade maestrasSupServiceFacade;
 
     private ProcedimientoTramiteDTO data;
+    private ProcedimientoTramiteDTO dataOriginal;
+
 
     private String id = "";
 
@@ -134,6 +137,8 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         }
 
         comunUA = sessionBean.getEntidad().getUaComun();
+        dataOriginal = (ProcedimientoTramiteDTO) data.clone();
+
     }
 
     public boolean isOpcionTelematicaPlantilla() {
@@ -303,6 +308,15 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     }
 
     public void cerrar() {
+        if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
+            PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
+            return;
+        }
+
+        cerrarSinCheck();
+    }
+
+    public void cerrarSinCheck() {
         final DialogResult result = new DialogResult();
         if (this.getModoAcceso() != null) {
             result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));

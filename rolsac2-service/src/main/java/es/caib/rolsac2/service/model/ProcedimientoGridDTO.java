@@ -497,7 +497,7 @@ public class ProcedimientoGridDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "ProcedimientoDTO{" + "codigo=" + codigo + ", nombre='" + nombre + '\'' + ", codigoSIA='" + codigoSIA + '\'' + '}';
+        return "ProcedimientoDTO{" + "codigo=" + codigo + ", codigoWFPub:" + codigoWFPub + ", codigoWFMod:" + codigoWFMod + " nombre='" + nombre + '\'' + ", codigoSIA='" + codigoSIA + '\'' + '}';
     }
 
     public Integer getNumero() {
