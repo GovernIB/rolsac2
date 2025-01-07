@@ -1,0 +1,10 @@
+<subsystem xmlns="urn:jboss:domain:mail:3.0">
+            <mail-session name="rolsac2Mail" debug="true" jndi-name="java:/es.caib.rolsac2.mail" from="X@X.com">
+                <custom-server name="smtp" username="X@X.com" password="X">
+                    <property name="host" value="smtp.X.com"/>
+                    <property name="port" value="25"/>
+                    <property name="mail.smtp.starttls.enable" value="true"/>
+                    <property name="mail.smtp.auth" value="true"/>
+                </custom-server>
+            </mail-session>
+</subsystem>
