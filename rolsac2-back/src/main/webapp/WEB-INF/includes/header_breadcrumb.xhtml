@@ -25,8 +25,9 @@
                     }
                 </h:outputStylesheet>
                 <div style="flex-grow:100;margin-left:20px;">
-                    <ui:repeat value="#{sessionBean.alertas}" var="alerta">
-                        <div class="w-full row" >
+                    <c:forEach items="#{sessionBean.alertas}" var="alerta" varStatus="status">
+                        <!-- ID dinámico basado en el índice -->
+                        <div id="alerta-#{status.index}" class="w-full row">
                             <div class="ui-g-12 claseAlerta mt-2 mr-3">
                                 <p:commandButton
                                         action="#{sessionBean.marcarAlertaLeida(alerta.codigo)}"
@@ -34,18 +35,18 @@
                                         value=" "
                                         styleClass="w45px h25px iconoAlertaLeido botonBordeado"
                                         process="@this"
+                                        update="@parent"
                                 />
-                                <!--<i class="pi pi-times-circle" style="font-size: 2rem; margin-right:5px;top:8px;position:relative;"></i>-->
-                                <p:outputLabel value="#{alerta.fechaIni}" >
+                                <p:outputLabel value="#{alerta.fechaIni}">
                                     <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                 </p:outputLabel>
                                 <p:outputLabel value="- #{alerta.fechaFin}" rendered=" #{!empty alerta.fechaFin}">
                                     <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                 </p:outputLabel>
-                                <p:outputLabel value=" : #{alerta.descripcion.getTraduccion(sessionBean.lang)}" styleClass="ml-2" />
+                                <p:outputLabel value=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" styleClass="ml-2" />
                             </div>
                         </div>
-                    </ui:repeat>
+                    </c:forEach>
                 </div>
             </c:if>
             <button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target="#collapsingNavbar2">
