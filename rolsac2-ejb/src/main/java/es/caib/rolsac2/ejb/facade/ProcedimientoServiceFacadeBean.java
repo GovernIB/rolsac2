@@ -844,6 +844,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         return procedimientoRepository.convertDTO(jprocWF);
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public String getNombreProcedimientoServicio(Long codigo) {
         return procedimientoRepository.getNombreProcedimientoServicio(codigo);
     }
