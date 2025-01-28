@@ -499,6 +499,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.getLiteralComun()}"/>
                 </p:column>
+                <p:column sortBy="#{procedimiento.codigoSIA}" headerText="#{labels['viewProcedimientos.sia.codigo']}" styleClass="w110px">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{procedimiento.codigoSIA}"/>
+                </p:column>
                 <p:column  headerText=" " styleClass="w70px">
                     <f:facet name="header"/>
                     <p:commandLink action="#{viewServicios.abrirMensajes(procedimiento.getCodigo())}" rendered="#{procedimiento.tieneMensajesPendientes()}">
