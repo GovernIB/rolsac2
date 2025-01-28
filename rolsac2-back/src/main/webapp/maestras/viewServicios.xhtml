@@ -340,6 +340,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         process="@this" update="txtPublicoObjetivo"/>
                             </p:commandButton>
                         </div>
+
                         <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <div>
                                 <h:outputText value="#{labels['viewServicios.materias']}:" for="txtMaterias"/>
@@ -353,20 +354,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         process="@this" update="txtMaterias"/>
                             </p:commandButton>
                         </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <div>
-                                <h:outputText value="#{labels['viewServicios.normativas']}:" for="txtNormativa"/>
-                            </div>
-                            <p:inputText id="txtNormativa"
-                                         value="#{viewServicios.filtro.getNormativas(sessionBean.lang)}"
-                                         styleClass="w70" disabled="true"/>
-                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
-                                             styleClass="text-success"
-                                             process="@this" actionListener="#{viewServicios.seleccionarNormativas()}">
-                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogNormativa}"
-                                        process="@this" update="txtNormativa"/>
-                            </p:commandButton>
-                        </div>
+
                         <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <div>
                                 <h:outputText value="#{labels['viewProcedimientos.temas']}:" for="txtTemas"/>
