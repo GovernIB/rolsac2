@@ -1,5 +1,4 @@
 name: Set Start Date in GitHub Project
-
 on:
   issues:
     types: [opened]
@@ -14,49 +13,53 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
-            const issueNumber = context.payload.issue.number;
-            const projectNumber = 55; // ⚠️ Cambia esto al número de tu proyecto
+            const issueId = context.payload.issue.node_id;
+            const projectNumber = 55;  
             const fieldName = "Start date";
 
             // Obtener la fecha actual en formato YYYY-MM-DD
             const startDate = new Date().toISOString().split("T")[0];
 
-            async function findProjectId() {
-              const { data: projects } = await github.rest.projects.listForRepo({ owner, repo });
-              const project = projects.find(p => p.number === projectNumber);
-              return project ? project.id : null;
+            const query = `
+              query($owner: String!, $repo: String!, $projectNumber: Int!) {
+                repository(owner: $owner, name: $repo) {
+                  projectV2(number: $projectNumber) {
+                    id
+                    fields(first: 20) {
+                      nodes {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              }`;
+
+            const variables = { owner, repo, projectNumber };
+            const result = await github.graphql(query, variables);
+
+            if (!result.repository.projectV2) {
+              throw new Error(`❌ No se encontró el proyecto con número ${projectNumber}`);
             }
 
-            async function findIssueId() {
-              const { data: issue } = await github.rest.issues.get({ owner, repo, issue_number: issueNumber });
-              return issue.node_id;
+            const projectId = result.repository.projectV2.id;
+            const field = result.repository.projectV2.fields.nodes.find(f => f.name === fieldName);
+
+            if (!field) {
+              throw new Error(`❌ No se encontró el campo personalizado: ${fieldName}`);
             }
 
-            async function findFieldId(projectId) {
-              const { data: fields } = await github.request(`GET /projects/${projectId}/fields`, { owner, repo });
-              const field = fields.find(f => f.name === fieldName);
-              return field ? field.id : null;
-            }
+            const fieldId = field.id;
 
-            async function updateProjectField(issueId, fieldId) {
-              await github.request(`PATCH /projects/${projectId}/items/${issueId}/fields/${fieldId}`, {
-                owner,
-                repo,
-                value: startDate
-              });
-            }
+            const mutation = `
+              mutation($projectId: ID!, $issueId: ID!, $fieldId: ID!, $startDate: String!) {
+                updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $issueId, fieldId: $fieldId, value: {text: $startDate}}) {
+                  projectV2Item {
+                    id
+                  }
+                }
+              }`;
 
-            // Ejecutar la lógica
-            (async () => {
-              const projectId = await findProjectId();
-              if (!projectId) throw new Error("❌ No se encontró el proyecto.");
+            await github.graphql(mutation, { projectId, issueId, fieldId, startDate });
 
-              const issueId = await findIssueId();
-              if (!issueId) throw new Error("❌ No se encontró la issue.");
-
-              const fieldId = await findFieldId(projectId);
-              if (!fieldId) throw new Error(`❌ No se encontró el campo personalizado: ${fieldName}`);
-
-              await updateProjectField(issueId, fieldId);
-              console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${startDate}`);
-            })();
+            console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${startDate}`);
