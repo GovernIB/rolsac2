@@ -1,0 +1,61 @@
+name: Set Start Date in GitHub Project
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  update-project-field:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Start Date in GitHub Project
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const issueNumber = context.payload.issue.number;
+            const projectNumber = 55; // ⚠️ Cambia esto al número de tu proyecto
+            const fieldName = "startDate";
+
+            // Obtener la fecha actual en formato YYYY-MM-DD
+            const startDate = new Date().toISOString().split("T")[0];
+
+            async function findProjectId() {
+              const { data: projects } = await github.rest.projects.listForRepo({ owner, repo });
+              const project = projects.find(p => p.number === projectNumber);
+              return project ? project.id : null;
+            }
+
+            async function findIssueId() {
+              const { data: issue } = await github.rest.issues.get({ owner, repo, issue_number: issueNumber });
+              return issue.node_id;
+            }
+
+            async function findFieldId(projectId) {
+              const { data: fields } = await github.request(`GET /projects/${projectId}/fields`, { owner, repo });
+              const field = fields.find(f => f.name === fieldName);
+              return field ? field.id : null;
+            }
+
+            async function updateProjectField(issueId, fieldId) {
+              await github.request(`PATCH /projects/${projectId}/items/${issueId}/fields/${fieldId}`, {
+                owner,
+                repo,
+                value: startDate
+              });
+            }
+
+            // Ejecutar la lógica
+            (async () => {
+              const projectId = await findProjectId();
+              if (!projectId) throw new Error("❌ No se encontró el proyecto.");
+
+              const issueId = await findIssueId();
+              if (!issueId) throw new Error("❌ No se encontró la issue.");
+
+              const fieldId = await findFieldId(projectId);
+              if (!fieldId) throw new Error(`❌ No se encontró el campo personalizado: ${fieldName}`);
+
+              await updateProjectField(issueId, fieldId);
+              console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${startDate}`);
+            })();
