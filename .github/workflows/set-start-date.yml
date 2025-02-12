@@ -4,11 +4,6 @@ on:
   issues:
     types: [opened]
 
-permissions:
-  contents: read
-  issues: write
-  projects: write  # Necesario para modificar GitHub Projects
-
 jobs:
   update-project-field:
     runs-on: ubuntu-latest
