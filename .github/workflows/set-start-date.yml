@@ -1,13 +1,13 @@
 name: Set Start Date in GitHub Project
 
+on:
+  issues:
+    types: [opened]
+
 permissions:
   contents: read
   issues: write
   projects: write  # Necesario para modificar GitHub Projects
-
-on:
-  issues:
-    types: [opened]
 
 jobs:
   update-project-field:
