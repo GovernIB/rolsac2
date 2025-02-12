@@ -22,8 +22,8 @@ jobs:
 
             // 1️⃣ Obtener el ID del proyecto y los campos personalizados
             const query = `
-              query($owner: String!, $repo: String!, $projectNumber: Int!) {
-                repository(owner: $owner, name: $repo) {
+              query($org: String!, $projectNumber: Int!) {
+                organization(login: $org) {
                   projectV2(number: $projectNumber) {
                     id
                     fields(first: 20) {
@@ -37,12 +37,12 @@ jobs:
                   }
                 }
               }`;
-
-            const variables = { owner, repo, projectNumber };
+            
+            const variables = { org: "GovernIB", projectNumber };
             const result = await github.graphql(query, variables);
-
-            if (!result.repository.projectV2) {
-              throw new Error(`❌ No se encontró el proyecto con número ${projectNumber}`);
+            
+            if (!result.organization.projectV2) {
+              throw new Error(`❌ No se encontró el proyecto con número ${projectNumber} en la organización`);
             }
 
             const projectId = result.repository.projectV2.id;
