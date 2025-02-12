@@ -21,7 +21,7 @@ jobs:
             const { owner, repo } = context.repo;
             const issueNumber = context.payload.issue.number;
             const projectNumber = 55; // ⚠️ Cambia esto al número de tu proyecto
-            const fieldName = "startDate";
+            const fieldName = "Start date";
 
             // Obtener la fecha actual en formato YYYY-MM-DD
             const startDate = new Date().toISOString().split("T")[0];
