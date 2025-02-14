@@ -21,8 +21,8 @@ jobs:
             const startDate = new Date().toISOString().split("T")[0];
 
             const query = `
-              query($owner: String!, $repo: String!) {
-                repository(owner: $owner, name: $repo) {
+              query($org: String!) {
+                organization(login: $org) {
                   projectsV2(first: 10) {
                     nodes {
                       id
@@ -32,8 +32,8 @@ jobs:
                   }
                 }
               }`;
-            
-            const variables = { owner: "GovernIB", repo: "rolsac2" };
+                        
+            const variables = { org: "GovernIB" };
             const result = await github.graphql(query, variables);
             
-            console.log("🔍 Proyectos encontrados en el repositorio:", JSON.stringify(result, null, 2));
+            console.log("🔍 Proyectos encontrados en la organización:", JSON.stringify(result, null, 2));
