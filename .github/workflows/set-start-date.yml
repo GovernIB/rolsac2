@@ -10,7 +10,7 @@ jobs:
       - name: Set Start Date in GitHub Project
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.ORG_PAT }}
           script: |
             const { owner, repo } = context.repo;
             const issueId = context.payload.issue.node_id;
@@ -39,12 +39,14 @@ jobs:
             
             const variables = { org: "GovernIB", projectNumber: 55 };
             const result = await github.graphql(query, variables);
+
+            console.log("🔍 Resultado de la consulta GraphQL:", JSON.stringify(result, null, 2));
             
             if (!result.organization || !result.organization.projectV2) {
               throw new Error(`❌ No se encontró el proyecto con número ${projectNumber} en la organización 'GovernIB'`);
             }
             
-            const projectId = result.organization.projectV2.id;
+            const projectId = result.organization.projectV2.id;            
             const field = result.organization.projectV2.fields.nodes.find(f => f.name === fieldName);
 
             if (!field) {
