@@ -21,32 +21,24 @@ jobs:
             const startDate = new Date().toISOString().split("T")[0];
 
             const query = `
-              query($org: String!, $projectNumber: Int!) {
-                organization(login: $org) {
+              query($owner: String!, $repo: String!, $projectNumber: Int!) {
+                repository(owner: $owner, name: $repo) {
                   projectV2(number: $projectNumber) {
                     id
-                    fields(first: 20) {
-                      nodes {
-                        ... on ProjectV2Field {
-                          id
-                          name
-                        }
-                      }
-                    }
                   }
                 }
               }`;
             
-            const variables = { org: "GovernIB", projectNumber: 55 };
+            const variables = { owner: "GovernIB", repo: "rolsac2", projectNumber: 55 };
             const result = await github.graphql(query, variables);
 
             console.log("🔍 Resultado de la consulta GraphQL:", JSON.stringify(result, null, 2));
             
-            if (!result.organization || !result.organization.projectV2) {
-              throw new Error(`❌ No se encontró el proyecto con número ${projectNumber} en la organización 'GovernIB'`);
+            if (!result.repository || !result.repository.projectV2) {
+              throw new Error(`❌ No se encontró el proyecto con número ${projectNumber} en el repositorio ${repo}`);
             }
             
-            const projectId = result.organization.projectV2.id;            
+            const projectId = result.repository.projectV2.id;           
             const field = result.organization.projectV2.fields.nodes.find(f => f.name === fieldName);
 
             if (!field) {
