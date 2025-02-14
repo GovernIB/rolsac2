@@ -36,8 +36,4 @@ jobs:
             const variables = { org: "GovernIB" };
             const result = await github.graphql(query, variables);
             
-            console.log("🔍 Proyectos encontrados en la organización:", JSON.stringify(result, null, 2));                       
-
-            await github.graphql(updateFieldMutation, { projectId, itemId, fieldId, startDate });
-
-            console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${startDate}`);
+            console.log("🔍 Proyectos encontrados en la organización:", JSON.stringify(result, null, 2));
