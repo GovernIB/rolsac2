@@ -1,7 +1,7 @@
 name: Set End Date in GitHub Project
 on:
   issues:
-    types: [labeled]  # Se ejecuta cuando se añade una etiqueta a una issue
+    types: [edited]  # Se ejecuta cuando la issue es editada (cambio de estado)
 
 jobs:
   update-project-end-date:
@@ -16,13 +16,14 @@ jobs:
             const issueId = context.payload.issue.node_id;
             const projectNumber = 55;  
             const fieldName = "End date";  
-            const doneLabel = "Done";  
             const org = "GovernIB";  
 
-            // Comprobar si la issue ha sido marcada como "Done"
-            const labels = context.payload.issue.labels.map(label => label.name);
-            if (!labels.includes(doneLabel)) {
-              console.log(`⏭️ La issue no tiene la etiqueta '${doneLabel}', no se actualiza la fecha de cierre.`);
+            // Comprobar si el estado ha cambiado a "Done"
+            const prevState = context.payload.changes?.state?.from;
+            const newState = context.payload.issue.state;
+
+            if (prevState === newState || newState !== "closed") {
+              console.log(`⏭️ La issue no ha cambiado a 'Done' (closed), no se actualiza la fecha de cierre.`);
               return;
             }
 
@@ -37,7 +38,7 @@ jobs:
                 organization(login: $org) {
                   projectV2(number: $projectNumber) {
                     id
-                    fields(first: 20) {
+                    fields(first: 50) {
                       nodes {
                         ... on ProjectV2Field {
                           id
@@ -75,7 +76,7 @@ jobs:
               query($projectId: ID!, $issueId: ID!) {
                 node(id: $issueId) {
                   ... on Issue {
-                    projectItems(first: 10) {
+                    projectItems(first: 50) {
                       nodes {
                         id
                       }
