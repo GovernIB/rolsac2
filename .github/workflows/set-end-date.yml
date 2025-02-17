@@ -1,7 +1,7 @@
 name: Set End Date in GitHub Project
 on:
   issues:
-    types: [edited]  # Se ejecuta cuando la issue es editada (cambio de estado)
+    types: [closed]  # Se ejecuta cuando la issue se cierra (estado Done)
 
 jobs:
   update-project-end-date:
@@ -17,15 +17,6 @@ jobs:
             const projectNumber = 55;  
             const fieldName = "End date";  
             const org = "GovernIB";  
-
-            // Comprobar si el estado ha cambiado a "Done"
-            const prevState = context.payload.changes?.state?.from;
-            const newState = context.payload.issue.state;
-
-            if (prevState === newState || newState !== "closed") {
-              console.log(`⏭️ La issue no ha cambiado a 'Done' (closed), no se actualiza la fecha de cierre.`);
-              return;
-            }
 
             // Obtener la fecha actual en formato YYYY-MM-DD
             const endDate = new Date().toISOString().split("T")[0];
