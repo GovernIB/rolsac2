@@ -64,7 +64,7 @@ jobs:
             console.log(`🔍 Buscando el item de la issue en el proyecto...`);
 
             const getItemQuery = `
-              query($projectId: ID!, $issueId: ID!) {
+              query($issueId: ID!) {
                 node(id: $issueId) {
                   ... on Issue {
                     projectItems(first: 50) {
@@ -76,7 +76,7 @@ jobs:
                 }
               }`;
 
-            const getItemResult = await github.graphql(getItemQuery, { projectId, issueId });
+            const getItemResult = await github.graphql(getItemQuery, { issueId });
 
             const item = getItemResult.node.projectItems.nodes[0]; // Se asume que la issue solo está en un proyecto
             if (!item) {
