@@ -1,7 +1,7 @@
 name: Set or Remove End Date in GitHub Project
 on:
   issues:
-    types: [closed, edited]  # Se ejecuta cuando la issue se cierra o se edita
+    types: [opened, edited, reopened]
 
 jobs:
   update-project-end-date:
@@ -14,11 +14,9 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const issueId = context.payload.issue.node_id;
-            const projectNumber = 55;  
+            const projectNumber = 55;
             const fieldName = "End date";  
             const org = "GovernIB";  
-
-            // Obtener la fecha actual en formato YYYY-MM-DD
             const endDate = new Date().toISOString().split("T")[0];
 
             console.log(`🔍 Buscando el proyecto #${projectNumber} en la organización '${org}'...`);
@@ -86,8 +84,12 @@ jobs:
             const itemId = item.id;
             console.log(`✅ Item encontrado en el proyecto: ID ${itemId}`);
 
-            // 4️⃣ Verificar si la issue se cerró (estatus Done)
-            if (context.payload.issue.state === "closed") {
+            // 4️⃣ Verificar si la issue está en estado "closed" (Done) o si se ha movido a otro estado
+            const isDone = context.payload.issue.state === "closed";
+            const wasDone = context.payload.changes?.state?.from === "closed";
+
+            if (isDone) {
+              // Si la issue está en "Done", actualizamos el campo End date
               console.log(`📝 Actualizando el campo '${fieldName}' con la fecha ${endDate}...`);
 
               const updateFieldMutation = `
@@ -107,8 +109,8 @@ jobs:
               await github.graphql(updateFieldMutation, { projectId, itemId, fieldId, endDate: new Date(endDate) });
 
               console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${endDate}`);
-            } else if (context.payload.issue.state !== "closed" && context.payload.changes?.state?.from === "closed") {
-              // Si se pasa de "closed" (Done) a otro estado, borrar el valor
+            } else if (wasDone) {
+              // Si se pasó de "Done" a otro estado, borrar el valor
               console.log(`❌ La issue ya no está en estado 'Done'. Borrando el campo '${fieldName}'...`);
 
               const updateFieldMutation = `
