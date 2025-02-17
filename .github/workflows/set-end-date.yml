@@ -109,7 +109,7 @@ jobs:
               await github.graphql(updateFieldMutation, { projectId, itemId, fieldId, endDate: new Date(endDate) });
 
               console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${endDate}`);
-            } else if (wasDone) {
+            } else {
               // Si se pasó de "Done" a otro estado, borrar el valor
               console.log(`❌ La issue ya no está en estado 'Done'. Borrando el campo '${fieldName}'...`);
 
