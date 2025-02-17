@@ -1,13 +1,13 @@
-name: Set End Date in GitHub Project
+name: Set or Remove End Date in GitHub Project
 on:
   issues:
-    types: [closed]  # Se ejecuta cuando la issue se cierra (estado Done)
+    types: [closed, edited]  # Se ejecuta cuando la issue se cierra o se edita
 
 jobs:
   update-project-end-date:
     runs-on: ubuntu-latest
     steps:
-      - name: Set End Date in GitHub Project
+      - name: Set or Remove End Date in GitHub Project
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ORG_PAT }}
@@ -86,23 +86,46 @@ jobs:
             const itemId = item.id;
             console.log(`✅ Item encontrado en el proyecto: ID ${itemId}`);
 
-            // 4️⃣ Actualizar el campo `End date`
-            console.log(`📝 Actualizando el campo '${fieldName}' con la fecha ${endDate}...`);
+            // 4️⃣ Verificar si la issue se cerró (estatus Done)
+            if (context.payload.issue.state === "closed") {
+              console.log(`📝 Actualizando el campo '${fieldName}' con la fecha ${endDate}...`);
 
-            const updateFieldMutation = `
-              mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $endDate: Date!) {
-                updateProjectV2ItemFieldValue(input: {
-                  projectId: $projectId,
-                  itemId: $itemId,
-                  fieldId: $fieldId,
-                  value: { date: $endDate }
-                }) {
-                  projectV2Item {
-                    id
+              const updateFieldMutation = `
+                mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $endDate: Date!) {
+                  updateProjectV2ItemFieldValue(input: {
+                    projectId: $projectId,
+                    itemId: $itemId,
+                    fieldId: $fieldId,
+                    value: { date: $endDate }
+                  }) {
+                    projectV2Item {
+                      id
+                    }
                   }
-                }
-              }`;
+                }`;
 
-            await github.graphql(updateFieldMutation, { projectId, itemId, fieldId, endDate: new Date(endDate) });
+              await github.graphql(updateFieldMutation, { projectId, itemId, fieldId, endDate: new Date(endDate) });
 
-            console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${endDate}`);
+              console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${endDate}`);
+            } else if (context.payload.issue.state !== "closed" && context.payload.changes?.state?.from === "closed") {
+              // Si se pasa de "closed" (Done) a otro estado, borrar el valor
+              console.log(`❌ La issue ya no está en estado 'Done'. Borrando el campo '${fieldName}'...`);
+
+              const updateFieldMutation = `
+                mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!) {
+                  updateProjectV2ItemFieldValue(input: {
+                    projectId: $projectId,
+                    itemId: $itemId,
+                    fieldId: $fieldId,
+                    value: { date: null }
+                  }) {
+                    projectV2Item {
+                      id
+                    }
+                  }
+                }`;
+
+              await github.graphql(updateFieldMutation, { projectId, itemId, fieldId });
+
+              console.log(`✅ Campo '${fieldName}' borrado.`);
+            }
