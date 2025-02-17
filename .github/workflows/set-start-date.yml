@@ -86,7 +86,7 @@ jobs:
                   projectId: $projectId,
                   itemId: $itemId,
                   fieldId: $fieldId,
-                  value: { text: $startDate }
+                  value: { date: $startDate }
                 }) {
                   projectV2Item {
                     id
