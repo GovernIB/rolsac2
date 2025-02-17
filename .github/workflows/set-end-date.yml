@@ -119,7 +119,7 @@ jobs:
                     projectId: $projectId,
                     itemId: $itemId,
                     fieldId: $fieldId,
-                    value: {}  // Borrar el valor del campo
+                    value: { date: null }  // Establecer valor nulo para borrar el campo
                   }) {
                     projectV2Item {
                       id
