@@ -25,7 +25,7 @@ jobs:
                 organization(login: $org) {
                   projectV2(number: $projectNumber) {
                     id
-                    fields(first: 20) {
+                    fields(first: 50) {
                       nodes {
                         ... on ProjectV2Field {
                           id
@@ -54,17 +54,19 @@ jobs:
             const fieldId = field.id;
 
             // 2️⃣ Agregar la issue al proyecto si no está ya en él
-            const addItemMutation = 
-              mutation($projectId: ID!, $issueId: ID!) {
-                addProjectV2ItemById(input: {projectId: $projectId, contentId: $issueId}) {
-                  item {
-                    id
-                  }
+            const addItemMutation = `
+            mutation($projectId: ID!, $issueId: ID!) {
+              addProjectV2ItemById(input: {projectId: $projectId, contentId: $issueId}) {
+                item {
+                  id
                 }
-              };
-
+              }
+            }`;
+          
             const addItemResult = await github.graphql(addItemMutation, { projectId, issueId });
             const itemId = addItemResult.addProjectV2ItemById.item.id;
+  
+            console.log(`✅ Issue añadida al proyecto con ID: ${itemId}`);
 
             // 3️⃣ Actualizar el campo startDate
             const updateFieldMutation = 
