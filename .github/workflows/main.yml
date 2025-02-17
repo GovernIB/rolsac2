@@ -1,0 +1,116 @@
+name: Set End Date in GitHub Project
+on:
+  issues:
+    types: [labeled]  # Se ejecuta cuando se añade una etiqueta a una issue
+
+jobs:
+  update-project-end-date:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set End Date in GitHub Project
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ORG_PAT }}
+          script: |
+            const { owner, repo } = context.repo;
+            const issueId = context.payload.issue.node_id;
+            const projectNumber = 55;  
+            const fieldName = "End date";  
+            const doneLabel = "Done";  
+            const org = "GovernIB";  
+
+            // Comprobar si la issue ha sido marcada como "Done"
+            const labels = context.payload.issue.labels.map(label => label.name);
+            if (!labels.includes(doneLabel)) {
+              console.log(`⏭️ La issue no tiene la etiqueta '${doneLabel}', no se actualiza la fecha de cierre.`);
+              return;
+            }
+
+            // Obtener la fecha actual en formato YYYY-MM-DD
+            const endDate = new Date().toISOString().split("T")[0];
+
+            console.log(`🔍 Buscando el proyecto #${projectNumber} en la organización '${org}'...`);
+
+            // 1️⃣ Obtener el ID del proyecto y sus campos
+            const query = `
+              query($org: String!, $projectNumber: Int!) {
+                organization(login: $org) {
+                  projectV2(number: $projectNumber) {
+                    id
+                    fields(first: 20) {
+                      nodes {
+                        ... on ProjectV2Field {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }`;
+
+            const variables = { org, projectNumber };
+            const result = await github.graphql(query, variables);
+
+            if (!result.organization || !result.organization.projectV2) {
+              throw new Error(`❌ No se encontró el proyecto con número ${projectNumber} en la organización '${org}'`);
+            }
+
+            const projectId = result.organization.projectV2.id;
+            console.log(`✅ Proyecto encontrado: ID ${projectId}`);
+
+            // 2️⃣ Buscar el campo "End date"
+            const field = result.organization.projectV2.fields.nodes.find(f => f.name === fieldName);
+            if (!field) {
+              throw new Error(`❌ No se encontró el campo personalizado: ${fieldName}`);
+            }
+
+            const fieldId = field.id;
+            console.log(`✅ Campo '${fieldName}' encontrado: ID ${fieldId}`);
+
+            // 3️⃣ Buscar el item de la issue en el proyecto
+            console.log(`🔍 Buscando el item de la issue en el proyecto...`);
+
+            const getItemQuery = `
+              query($projectId: ID!, $issueId: ID!) {
+                node(id: $issueId) {
+                  ... on Issue {
+                    projectItems(first: 10) {
+                      nodes {
+                        id
+                      }
+                    }
+                  }
+                }
+              }`;
+
+            const getItemResult = await github.graphql(getItemQuery, { projectId, issueId });
+
+            const item = getItemResult.node.projectItems.nodes[0]; // Se asume que la issue solo está en un proyecto
+            if (!item) {
+              throw new Error(`❌ No se encontró la issue en el proyecto.`);
+            }
+
+            const itemId = item.id;
+            console.log(`✅ Item encontrado en el proyecto: ID ${itemId}`);
+
+            // 4️⃣ Actualizar el campo `End date`
+            console.log(`📝 Actualizando el campo '${fieldName}' con la fecha ${endDate}...`);
+
+            const updateFieldMutation = `
+              mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $endDate: Date!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $projectId,
+                  itemId: $itemId,
+                  fieldId: $fieldId,
+                  value: { date: $endDate }
+                }) {
+                  projectV2Item {
+                    id
+                  }
+                }
+              }`;
+
+            await github.graphql(updateFieldMutation, { projectId, itemId, fieldId, endDate: new Date(endDate) });
+
+            console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${endDate}`);
