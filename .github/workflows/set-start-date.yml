@@ -81,7 +81,7 @@ jobs:
             console.log(`📝 Actualizando el campo '${fieldName}' con la fecha ${startDate}...`);
 
             const updateFieldMutation = `
-              mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $startDate: String!) {
+              mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $startDate: Date!) {
                 updateProjectV2ItemFieldValue(input: {
                   projectId: $projectId,
                   itemId: $itemId,
@@ -94,6 +94,6 @@ jobs:
                 }
               }`;
 
-            await github.graphql(updateFieldMutation, { projectId, itemId, fieldId, startDate });
+            await github.graphql(updateFieldMutation, { projectId, itemId, fieldId, startDate: new Date(startDate) });
 
             console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${startDate}`);
