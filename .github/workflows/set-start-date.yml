@@ -14,13 +14,17 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const issueId = context.payload.issue.node_id;
-            const projectNumber = 55;  
-            const fieldName = "Start date";
+            const projectNumber = 55;  // Número del proyecto en la organización
+            const fieldName = "Start date"; // Nombre del campo a actualizar
+            const org = "GovernIB"; // Nombre de la organización
 
             // Obtener la fecha actual en formato YYYY-MM-DD
             const startDate = new Date().toISOString().split("T")[0];
 
-            const query = 
+            console.log(`🔍 Buscando el proyecto #${projectNumber} en la organización '${org}'...`);
+
+            // 1️⃣ Obtener el ID del proyecto y sus campos
+            const query = `
               query($org: String!, $projectNumber: Int!) {
                 organization(login: $org) {
                   projectV2(number: $projectNumber) {
@@ -35,49 +39,61 @@ jobs:
                     }
                   }
                 }
-              };
-                        
-            const variables = { org: "GovernIB", projectNumber: 55 };
-            const result = await github.graphql(query, variables);
-            
-            if (!result.organization || !result.organization.projectV2) {
-              throw new Error(❌ No se encontró el proyecto con número ${projectNumber} en la organización 'GovernIB');
-            }
-            
-            const projectId = result.organization.projectV2.id;
-            const field = result.organization.projectV2.fields.nodes.find(f => f.name === fieldName);
+              }`;
 
+            const variables = { org, projectNumber };
+            const result = await github.graphql(query, variables);
+
+            if (!result.organization || !result.organization.projectV2) {
+              throw new Error(`❌ No se encontró el proyecto con número ${projectNumber} en la organización '${org}'`);
+            }
+
+            const projectId = result.organization.projectV2.id;
+            console.log(`✅ Proyecto encontrado: ID ${projectId}`);
+
+            // 2️⃣ Buscar el campo "Start date"
+            const field = result.organization.projectV2.fields.nodes.find(f => f.name === fieldName);
             if (!field) {
-              throw new Error(❌ No se encontró el campo personalizado: ${fieldName});
+              throw new Error(`❌ No se encontró el campo personalizado: ${fieldName}`);
             }
 
             const fieldId = field.id;
+            console.log(`✅ Campo '${fieldName}' encontrado: ID ${fieldId}`);
 
-            // 2️⃣ Agregar la issue al proyecto si no está ya en él
+            // 3️⃣ Agregar la issue al proyecto si no está ya en él
+            console.log(`🔄 Añadiendo la issue ${issueId} al proyecto...`);
+
             const addItemMutation = `
-            mutation($projectId: ID!, $issueId: ID!) {
-              addProjectV2ItemById(input: {projectId: $projectId, contentId: $issueId}) {
-                item {
-                  id
+              mutation($projectId: ID!, $issueId: ID!) {
+                addProjectV2ItemById(input: {projectId: $projectId, contentId: $issueId}) {
+                  item {
+                    id
+                  }
                 }
-              }
-            }`;
-          
+              }`;
+
             const addItemResult = await github.graphql(addItemMutation, { projectId, issueId });
             const itemId = addItemResult.addProjectV2ItemById.item.id;
-  
-            console.log(`✅ Issue añadida al proyecto con ID: ${itemId}`);
 
-            // 3️⃣ Actualizar el campo startDate
-            const updateFieldMutation = 
+            console.log(`✅ Issue añadida al proyecto: Item ID ${itemId}`);
+
+            // 4️⃣ Actualizar el campo `startDate`
+            console.log(`📝 Actualizando el campo '${fieldName}' con la fecha ${startDate}...`);
+
+            const updateFieldMutation = `
               mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $startDate: String!) {
-                updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {text: $startDate}}) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $projectId,
+                  itemId: $itemId,
+                  fieldId: $fieldId,
+                  value: { text: $startDate }
+                }) {
                   projectV2Item {
                     id
                   }
                 }
-              };
+              }`;
 
             await github.graphql(updateFieldMutation, { projectId, itemId, fieldId, startDate });
 
-            console.log(✅ Campo '${fieldName}' actualizado con fecha: ${startDate});
+            console.log(`✅ Campo '${fieldName}' actualizado con fecha: ${startDate}`);
