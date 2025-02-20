@@ -1,7 +1,7 @@
 name: Set or Remove End Date in GitHub Project
 on:
   issues:
-    types: [opened, edited, reopened, closed]
+    types: [edited, reopened, closed]
 
 jobs:
   update-project-end-date:
