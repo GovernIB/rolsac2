@@ -815,10 +815,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF) {
-        List<TipoPublicoObjetivoEntidadDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
+    	List<TipoPublicoObjetivoEntidadDTO> lista = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoWF ");
         Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("codigoProcWF", codigoWF);
+        query.setParameter("codigoWF", codigoWF);
         List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
         if (jlista != null && !jlista.isEmpty()) {
             for (JProcedimientoPublicoObjectivo elemento : jlista) {

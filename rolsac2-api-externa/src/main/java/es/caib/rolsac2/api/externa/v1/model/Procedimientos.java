@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Calendar;
+import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 
 /**
  * Procediments.
@@ -285,9 +286,51 @@ public class Procedimientos extends EntidadBase {
                 Long codigoDoc = nodo.getDocumentosLOPD().get(0).getCodigo();
                 linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
             }
+            if (nodo.getUaResponsable() != null) {
+                this.uaResponsable = nodo.getUaResponsable().getCodigo();
+                linkUnidadAdministrativaResponsable = this.generaLink(this.uaResponsable, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, calcularDescripcion(nodo.getUaResponsable(), idioma, idiomaPorDefecto));
+            }
+            if (nodo.getUaInstructor() != null) {
+                this.uaInstructor = nodo.getUaInstructor().getCodigo();
+                linkUnidadAdministrativaInstructora = this.generaLink(this.uaInstructor, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, calcularDescripcion(nodo.getUaInstructor(), idioma, idiomaPorDefecto));
+            }
+            if (nodo.getUaCompetente() != null) {
+                this.uaCompetente = nodo.getUaCompetente().getCodigo();
+                linkUnidadAdministrativaCompetente = this.generaLink(this.uaCompetente, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, calcularDescripcion(nodo.getUaCompetente(), idioma, idiomaPorDefecto));
+            }
         } catch (final Exception e) {
             LOG.error("Error generando procedimiento " + this.codigo, e);
         }
+    }
+
+    /**
+     * Calcula el nombre de la Unidad Administrativa.
+     * - Si el idioma no es nulo, busca si está ese idioma.
+     * - Si no hay valor, entonces mira por idiomaPorDefecto.
+     * - Sino, devuelve cualquier nombre si tiene valor.
+     *
+     * @param ua               Unidad Administrativa
+     * @param idioma           Idioma
+     * @param idiomaPorDefecto Idioma por defecto
+     * @return Nombre
+     */
+
+    private String calcularDescripcion(UnidadAdministrativaDTO ua, String idioma, String idiomaPorDefecto) {
+        String descripcion = null;
+        if (ua.getNombre() != null) {
+            descripcion = ua.getNombre().getTraduccionConValor(idioma, idiomaPorDefecto);
+        }
+        if (ua.getNombre() != null && descripcion == null) {
+            descripcion = ua.getNombre().getTraduccion();
+        }
+        return descripcion;
+    }
+
+    @Override
+    public void generaLinks(final String urlBase) {
+      //  linkUnidadAdministrativaResponsable = this.generaLink(this.uaResponsable, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
+      //  linkUnidadAdministrativaInstructora = this.generaLink(this.uaInstructor, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
+      //  linkUnidadAdministrativaCompetente = this.generaLink(this.uaCompetente, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
     }
 
     private String getDescripcion(ProcedimientoDocumentoDTO documentoLOPD, String idioma, String idiomaPorDefecto) {
@@ -301,15 +344,6 @@ public class Procedimientos extends EntidadBase {
         return descripcion;
     }
 
-
-    @Override
-    public void generaLinks(final String urlBase) {
-        linkUnidadAdministrativaResponsable = this.generaLink(this.uaResponsable, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
-        linkUnidadAdministrativaInstructora = this.generaLink(this.uaInstructor, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
-        linkUnidadAdministrativaCompetente = this.generaLink(this.uaCompetente, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
-
-
-    }
 
     @Override
     protected void addSetersInvalidos() {
