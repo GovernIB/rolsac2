@@ -86,13 +86,21 @@
                                        for="txtFechaPublicacion"
                                        styleClass="mb-1 pt-0"/>
                         <p>
-                            <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
+                           <!-- <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
                                         locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaPublicacion}"
                                         pattern="dd/MM/yyyy HH:mm"
                                         required="#{empty param['formDialog:closeButton']}"
                                         requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
-                                        showOn="button"/>
+                                        showOn="button">
+                                <p:ajax event="change" />
+                            </p:datePicker>-->
+                            <p:datePicker showIcon="true" id="txtFechaPublicacion" styleClass="fecha"
+                                          value="#{dialogProcedimientoTramite.data.fechaPublicacion}"
+                                          required="#{empty param['formDialog:closeButton']}"
+                                          requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
+                                          pattern="dd/MM/yyyy HH:mm"
+                                />
                         </p>
                     </div>
                     <div class="form-group col-md-4">
@@ -270,7 +278,7 @@
                                 <p:ajax event="dialogReturn"
                                         listener="#{dialogProcedimientoTramite.returnDialogoUA}"
                                         process="@this"
-                                        update="lblUAiconoResp lblUAiconoResp2" />
+                                        update="lblUAiconoResp lblUAiconoResp2 labelComun txtOrgInstr" />
                             </p:commandButton>
                             <h:outputLink id="lblUAiconoResp" value="#" styleClass="w20px labelWarningUAPadre">
                                 <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimientoTramite.getCssUA()}" />
@@ -337,7 +345,7 @@
                                                  value="#{dialogProcedimientoTramite.data.plantillaSel}"
                                                  styleClass="w100px" style="width: 300px !important;"
                                                  requiredMessage="La plantilla es obligatoria"
-                                                 required="#{dialogProcedimientoTramite.isOpcionTelematicaPlantilla()}"
+                                                 required="#{dialogProcedimientoTramite.isOpcionTelematicaPlantilla() and empty param['formDialog:closeButton']}"
                                                  disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
                                                         !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                                  converter="#{tipoTramitacionConverter}"
@@ -399,7 +407,7 @@
                                                  styleClass="w95"
                                                  autoWidth="false"
                                                  required="#{empty param['formDialog:closeButton'] and dialogProcedimientoTramite.isOpcionTelematicaDatos()}"
-                                                 requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
+                                                 requiredMessage="#{labels['dict.obligatorio.plataformaTramitacion']}"
                                                  disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
                                                      !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                                  converter="#{platTramitElectronicaConverter}">
@@ -597,10 +605,10 @@
                          value="#{labels['dict.aceptar']}" update="messagesDialog panelDatos panelDatosPublicacion panelOrganos panelCanales "
                          rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
                          process="@all"/>
-        <p:commandButton action="#{dialogProcedimientoTramite.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
 
+        <p:commandButton id="closeButton" action="#{dialogProcedimientoTramite.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all"/>
     </ui:define>
 </ui:composition>
 </html>

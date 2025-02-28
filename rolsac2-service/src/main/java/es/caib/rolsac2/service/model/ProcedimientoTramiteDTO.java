@@ -673,7 +673,6 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         if (UtilComparador.compareTo(this.getFechaPublicacion(), data2.getFechaPublicacion()) != 0) {
             return UtilComparador.compareTo(this.getFechaPublicacion(), data2.getFechaPublicacion());
         }
-
         if (ProcedimientoDocumentoDTO.compareTo(this.getListaModelos(), data2.getListaModelos()) != 0) {
             return ProcedimientoDocumentoDTO.compareTo(this.getListaModelos(), data2.getListaModelos());
         }
@@ -697,6 +696,15 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         }
         if (UtilComparador.compareTo(this.getPlantillaSel(), data2.getPlantillaSel()) != 0) {
             return UtilComparador.compareTo(this.getPlantillaSel(), data2.getPlantillaSel());
+        }
+        if (UtilComparador.compareTo(this.getUnidadAdministrativa(), data2.getUnidadAdministrativa()) != 0) {
+            return UtilComparador.compareTo(this.getUnidadAdministrativa(), data2.getUnidadAdministrativa());
+        }
+        if (UtilComparador.compareTo(this.isTramitPresencial(), data2.isTramitPresencial()) != 0) {
+            return UtilComparador.compareTo(this.isTramitPresencial(), data2.isTramitPresencial());
+        }
+        if (UtilComparador.compareTo(this.isTramitElectronica(), data2.isTramitElectronica()) != 0) {
+            return UtilComparador.compareTo(this.isTramitElectronica(), data2.isTramitElectronica());
         }
         return 0;
     }

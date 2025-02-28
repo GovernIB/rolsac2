@@ -171,7 +171,7 @@ public class DialogDocumentoProcedimientoLOPD extends AbstractController impleme
      * @return
      */
     public String getPlantilla(String idioma) {
-        return systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.LOPD_PLANTILLA, idioma);
+        return UtilJSF.getSessionBean().getEntidad().getLopdPlantilla().getTraduccion(idioma);
     }
 
     /**

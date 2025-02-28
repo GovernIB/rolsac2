@@ -200,9 +200,9 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable, Co
                 obj.titulo = (Literal) this.titulo.clone();
             }
 
-//            if (this.url != null) {
-//                obj.url = (Literal) this.url.clone();
-//            }
+            //            if (this.url != null) {
+            //                obj.url = (Literal) this.url.clone();
+            //            }
 
             if (this.descripcion != null) {
                 obj.descripcion = (Literal) this.descripcion.clone();
@@ -219,9 +219,7 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable, Co
 
     @Override
     public String toString() {
-        return "ProcedimientoDocumentoDTO{" +
-                "id=" + codigo +
-                '}';
+        return "ProcedimientoDocumentoDTO{" + "id=" + codigo + '}';
     }
 
     /**
@@ -299,9 +297,21 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable, Co
             for (ProcedimientoDocumentoDTO tipo : dato) {
                 boolean existe = false;
                 for (ProcedimientoDocumentoDTO tipo2 : dato2) {
-                    if (tipo.getCodigo().compareTo(tipo2.getCodigo()) == 0) {
+                    if (tipo.getCodigo() != null && tipo2.getCodigo() != null && tipo.getCodigo().compareTo(tipo2.getCodigo()) == 0) {
                         if (tipo.getOrden().compareTo(tipo2.getOrden()) != 0) {
                             return tipo.getOrden().compareTo(tipo2.getOrden());
+                        }
+                        if (UtilComparador.compareTo(tipo.getTitulo(), tipo2.getTitulo()) != 0) {
+                            return UtilComparador.compareTo(tipo.getTitulo(), tipo2.getTitulo());
+                        }
+                        if (UtilComparador.compareTo(tipo.getDescripcion(), tipo2.getDescripcion()) != 0) {
+                            return UtilComparador.compareTo(tipo.getDescripcion(), tipo2.getDescripcion());
+                        }
+                        if (UtilComparador.compareTo(tipo.getUrl(), tipo2.getUrl()) != 0) {
+                            return UtilComparador.compareTo(tipo.getUrl(), tipo2.getUrl());
+                        }
+                        if (UtilComparador.compareTo(tipo.getDocumentos(), tipo2.getDocumentos()) != 0) {
+                            return UtilComparador.compareTo(tipo.getDocumentos(), tipo2.getDocumentos());
                         }
                         existe = true;
                     }
