@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 @Stateless(name = "procesoProgramadoSolrComponent")
 @Local(ProcesoProgramadoFacade.class)
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 // En funcion del proceso, sera o no tx por si se tiene que dividir en transacciones
 public class ProcesoProgramadoSolrComponentBean extends ProcesoProgramadoBaseSolrComponentBean implements ProcesoProgramadoFacade {
 

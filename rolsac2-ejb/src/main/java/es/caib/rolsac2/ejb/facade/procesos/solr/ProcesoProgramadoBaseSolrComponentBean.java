@@ -47,6 +47,9 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
     @Inject
     private UnidadAdministrativaServiceFacade uaService;
 
+    /**
+     * Totales
+     **/
     private int totalProcedimientos = 0;
     private int totalProcedimientosOK = 0;
     private int totalProcedimientosERROR = 0;
@@ -68,17 +71,27 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
     private int totalUas = 0;
     private int totalUasOK = 0;
     private int totalUasERROR = 0;
+    private int totalIndexadosSolr = 0;
+    private int totalIndexadosElastic = 0;
     private String ruta;
 
     /**
-     * log.
-     */
-    private static Logger log = LoggerFactory.getLogger(ProcesoProgramadoBaseSolrComponentBean.class);
+     * LOG
+     **/
+    private final static Logger log = LoggerFactory.getLogger(ProcesoProgramadoBaseSolrComponentBean.class);
 
     @Inject
     ProcesosExecComponentFacade procesosExecComponent;
 
-
+    /**
+     * Ejecuta el proceso padre
+     *
+     * @param instanciaProceso instancia del proceso
+     * @param params           parametros
+     * @param pendiente        si es pendiente
+     * @param idEntidad        id de la entidad
+     * @return resultado del proceso
+     */
     public ResultadoProcesoProgramado ejecutarPadre(final Long instanciaProceso, final ListaPropiedades params, boolean pendiente, Long idEntidad) {
         log.info("Ejecución proceso solr");
         final ListaPropiedades detalles = new ListaPropiedades();
@@ -180,6 +193,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                                 //Si es distinto null, significa que es un dato pendiente
                                 procedimientoService.actualizarSolr(dato, resultadoPro);
                             }
+                            tratarTotales(resultadoPro);
                             break;
                         case SERVICIO:
                             totalServicios++;
@@ -195,6 +209,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                             } else {
                                 totalServiciosERROR++;
                             }
+                            tratarTotales(resultadoSrv);
                             if (dato.getCodigo() != null) {
                                 //Si es distinto null, significa que es un dato pendiente
                                 procedimientoService.actualizarSolr(dato, resultadoSrv);
@@ -217,6 +232,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                                 //Si es distinto null, significa que es un dato pendiente
                                 uaService.actualizarSolr(dato, resultadoUA);
                             }
+                            tratarTotales(resultadoUA);
                             break;
                         case NORMATIVA:
                             totalNormativas++;
@@ -231,6 +247,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                             } else {
                                 totalNormativasERROR++;
                             }
+                            tratarTotales(resultadoNormativa);
                             if (dato.getCodigo() != null) {
                                 //Si es distinto null, significa que es un dato pendiente
                                 normativaService.actualizarSolr(dato, resultadoNormativa);
@@ -247,6 +264,9 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 res.setFinalizadoOk(true);
                 if (totalProcedimientos > 0) {
                     detalles.addPropiedad("Procediments", "S'ha indexat " + totalProcedimientos + " (correctes:" + totalProcedimientosOK + " , error:" + totalProcedimientosERROR + ")");
+                    detalles.addPropiedad(" - Procediments DOC", "S'ha indexat " + totalProcedimientosDOC + " (correctes:" + totalProcedimientosDOCOK + " , error:" + totalProcedimientosDOCERROR + ")");
+                    detalles.addPropiedad(" - Tramites", "S'ha indexat " + totalTramites + " (correctes:" + totalTramitesOK + " , error:" + totalTramitesERROR + ")");
+                    detalles.addPropiedad(" - Tramites DOC", "S'ha indexat " + totalTramitesDOC + " (correctes:" + totalTramitesDOCOK + " , error:" + totalTramitesDOCERROR + ")");
                 }
                 if (totalServicios > 0) {
                     detalles.addPropiedad("Serveis", "S'ha indexat " + totalServicios + " (correctes:" + totalServiciosOK + " , error:" + totalServiciosERROR + ")");
@@ -259,7 +279,8 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 }
                 detalles.addPropiedad("Fin del procés", fechaFin);
 
-
+                detalles.addPropiedad("totalSolr", "Dades correctament indexades solr:" + totalIndexadosSolr);
+                detalles.addPropiedad("totalElastic", "Dades correctament indexades elastic:" + totalIndexadosElastic);
                 res.setDetalles(detalles);
             } else if (accion.equals(Constantes.INDEXAR_SOLR_BORRAR_TODO)) {
                 try {
@@ -310,6 +331,25 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
         return res;
     }
 
+    /**
+     * Trata los totales de indexacion
+     *
+     * @param resultado resultado de la accion
+     */
+    private void tratarTotales(ResultadoAccion resultado) {
+        if (resultado.isElasticActivo() && resultado.isResultadoElastic()) {
+            totalIndexadosElastic++;
+        }
+        if (resultado.isSolrActivo() && resultado.isResultadoSolr()) {
+            totalIndexadosSolr++;
+        }
+    }
+
+    /**
+     * Comitea una indexación
+     *
+     * @param plugin plugin de indexacion
+     */
     private void comitearIndexacion(IPluginIndexacion plugin) {
         try {
             plugin.commit();
@@ -319,7 +359,14 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
 
     }
 
-
+    /**
+     * Desindexa una UA
+     *
+     * @param dato    dato a desindexar
+     * @param plugin  plugin de indexacion
+     * @param mensaje mensaje de traza
+     * @return resultado de la accion
+     */
     private ResultadoAccion desindexarUA(IndexacionDTO dato, IPluginIndexacion plugin, StringBuilder mensaje) {
         // Si la accion es 2, es desindexar
         try {
@@ -327,26 +374,46 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             ResultadoAccion resultado = plugin.desindexar(dato.getCodElemento().toString(), EnumCategoria.ROLSAC_UNIDAD_ADMINISTRATIVA);
             if (resultado != null && resultado.isCorrecto()) {
                 totalUasOK++;
-                mensaje.append("La UA " + dato.getCodElemento() + " s'ha desindexat correctament. \n");
-                return new ResultadoAccion(true, "La UA s'ha desindexat correctament");
+                mensaje.append("La UA ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" s'ha desindexat correctament. \n");
+                return new ResultadoAccion(true, "La UA s'ha desindexat correctament", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
             } else {
                 totalUasERROR++;
-                mensaje.append("La UA " + dato.getCodElemento() + " NO s'ha desindexat correctament, error:" + resultado.getMensaje() + " \n");
+                mensaje.append("La UA ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" NO s'ha desindexat correctament, error:");
+                if (resultado != null && resultado.getMensaje() != null) {
+                    mensaje.append(resultado.getMensaje());
+                }
+                mensaje.append(" \n");
                 return resultado;
             }
         } catch (IPluginIndexacionExcepcion e) {
             totalUasERROR++;
-            mensaje.append("La UA " + dato.getCodElemento() + " NO s'ha desindexat correctament, error:" + e.getLocalizedMessage() + " \n");
-            return new ResultadoAccion(false, e.getMessage());
+            mensaje.append("La UA ");
+            mensaje.append(dato.getCodElemento());
+            mensaje.append(" NO s'ha desindexat correctament, error:");
+            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(" \n");
+            return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
     }
 
+    /**
+     * Indexa una UA.
+     *
+     * @param dato    dato a indexar
+     * @param plugin  plugin de indexacion
+     * @param mensaje mensaje de traza
+     * @return resultado de la accion
+     */
     private ResultadoAccion indexarUA(IndexacionDTO dato, IPluginIndexacion plugin, StringBuilder mensaje) {
         try {
             ProcedimientoSolrDTO procedimientoSolrDTO = uaService.findDataIndexacionUAById(dato.getCodElemento());
 
             if (procedimientoSolrDTO.getUnidadAdministrativaDTO() == null) {
-                return new ResultadoAccion(false, "No existeix la ua " + dato.getCodElemento());
+                return new ResultadoAccion(false, "No existeix la ua " + dato.getCodElemento(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
             }
 
             //Primero desindexamos por raiz
@@ -354,19 +421,41 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
 
             ResultadoAccion resultado = plugin.indexarContenido(procedimientoSolrDTO.getDataIndexacion());
             if (resultado != null && resultado.isCorrecto()) {
-                mensaje.append("La UA " + dato.getCodElemento() + " s'ha indexat correctament. \n");
-                return new ResultadoAccion(true, "La UA s'ha indexat correctament");
+                mensaje.append("La UA ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" s'ha indexat correctament. \n");
+                return new ResultadoAccion(true, "La UA s'ha indexat correctament", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
             } else {
-                mensaje.append("La UA " + dato.getCodElemento() + " NO s'ha indexat correctament, error:" + resultado.getMensaje() + " \n");
+                mensaje.append("La UA ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" NO s'ha indexat correctament, error: ");
+                if (resultado != null) {
+                    mensaje.append(resultado.getMensaje());
+                } else {
+                    mensaje.append("null");
+                }
+                mensaje.append(" \n");
                 return resultado;
             }
 
         } catch (Exception e) {
-            mensaje.append("La UA " + dato.getCodElemento() + " NO s'ha indexat correctament, error:" + e.getLocalizedMessage() + " \n");
-            return new ResultadoAccion(false, e.getMessage());
+            mensaje.append("La UA ");
+            mensaje.append(dato.getCodElemento());
+            mensaje.append(" NO s'ha indexat correctament, error:");
+            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(" \n");
+            return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
     }
 
+    /**
+     * Desindexa una normativa
+     *
+     * @param dato    dato a desindexar
+     * @param plugin  plugin de indexacion
+     * @param mensaje mensaje de traza
+     * @return resultado de la accion
+     */
     private ResultadoAccion desindexarNormativa(IndexacionDTO dato, IPluginIndexacion plugin, StringBuilder mensaje) {
         // Si la accion es 2, es desindexar
         try {
@@ -374,27 +463,49 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             ResultadoAccion resultado = plugin.desindexar(dato.getCodElemento().toString(), EnumCategoria.ROLSAC_NORMATIVA);
             if (resultado != null && resultado.isCorrecto()) {
                 totalNormativasOK++;
-                mensaje.append("La normativa " + dato.getCodElemento() + " s'ha desindexat correctament. \n");
-                return new ResultadoAccion(true, "La normativa s'ha desindexat correctament");
+                mensaje.append("La normativa ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" s'ha desindexat correctament. \n");
+                return new ResultadoAccion(true, "La normativa s'ha desindexat correctament", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
             } else {
                 totalNormativasERROR++;
-                mensaje.append("La normativa " + dato.getCodElemento() + " NO s'ha desindexat correctament, error:" + resultado.getMensaje() + " \n");
+                mensaje.append("La normativa ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" NO s'ha desindexat correctament, error:");
+                if (resultado != null && resultado.getMensaje() != null) {
+                    mensaje.append(resultado.getMensaje());
+                } else {
+                    mensaje.append("null");
+                }
+                mensaje.append(" \n");
                 return resultado;
             }
         } catch (IPluginIndexacionExcepcion e) {
             totalNormativasERROR++;
-            mensaje.append("La normativa " + dato.getCodElemento() + " NO s'ha desindexat correctament, error:" + e.getLocalizedMessage() + " \n");
-            return new ResultadoAccion(false, e.getMessage());
+            mensaje.append("La normativa ");
+            mensaje.append(dato.getCodElemento());
+            mensaje.append(" NO s'ha desindexat correctament, error:");
+            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(" \n");
+            return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
     }
 
+    /**
+     * Indexa un procedimiento.
+     *
+     * @param dato    dato a indexar
+     * @param plugin  plugin de indexacion
+     * @param mensaje mensaje de traza
+     * @return resultado de la accion
+     */
     private ResultadoAccion indexarNormativa(IndexacionDTO dato, IPluginIndexacion plugin, StringBuilder mensaje, String path) {
 
         try {
             ProcedimientoSolrDTO procedimientoSolrDTO = normativaService.findDataIndexacionNormById(dato.getCodElemento());
 
             if (procedimientoSolrDTO.getNormativaDTO() == null) {
-                return new ResultadoAccion(false, "No existeix la normativa " + dato.getCodElemento());
+                return new ResultadoAccion(false, "No existeix la normativa " + dato.getCodElemento(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
             }
 
             //Primero desindexamos por raiz
@@ -411,29 +522,56 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                                     IndexFile indexFile = normativaService.findDataIndexacionDocNormById(procedimientoSolrDTO.getNormativaDTO(), doc, docTraduccion, procedimientoSolrDTO.getPathUAs(), path);
                                     ResultadoAccion resultadoDoc = plugin.indexarFichero(indexFile);
                                     if (resultadoDoc != null && !resultadoDoc.isCorrecto()) {
-                                        mensaje.append("La normativa " + dato.getCodElemento() + " s'ha indexat correctament però algún document ha dado problemas \n");
-                                        mensaje.append("El fitxer document " + docTraduccion.getFicheroDTO().getCodigo() + " no s'ha indexat, error:" + resultadoDoc.getMensaje() + " \n");
-                                        return new ResultadoAccion(false, resultadoDoc.getMensaje());
+                                        mensaje.append("La normativa ");
+                                        mensaje.append(dato.getCodElemento());
+                                        mensaje.append(" s'ha indexat correctament, però el fitxer document ");
+                                        mensaje.append("El fitxer document ");
+                                        mensaje.append(docTraduccion.getCodigo());
+                                        mensaje.append(" NO s'ha indexat correctament, error:");
+                                        mensaje.append(resultadoDoc.getMensaje());
+                                        mensaje.append(" \n");
+                                        return new ResultadoAccion(false, resultadoDoc.getMensaje(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
                                     }
                                 }
                             }
                         }
                     }
                 }
-                mensaje.append("La normativa " + dato.getCodElemento() + " s'ha indexat correctament. \n");
-                return new ResultadoAccion(true, "La normativa s'ha indexat correctament");
+                mensaje.append("La normativa ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" s'ha indexat correctament. \n");
+                return new ResultadoAccion(true, "La normativa s'ha indexat correctament", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
             } else {
-                mensaje.append("La normativa " + dato.getCodElemento() + " NO s'ha indexat. Error:" + resultado.getMensaje() + " \n");
+                mensaje.append("La normativa ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" NO s'ha indexat correctament, error:");
+                if (resultado != null) {
+                    mensaje.append(resultado.getMensaje());
+                } else {
+                    mensaje.append("null");
+                }
+                mensaje.append(" \n");
                 return resultado;
             }
 
         } catch (Exception e) {
-            mensaje.append("La normativa " + dato.getCodElemento() + " NO s'ha indexat. Error:" + e.getLocalizedMessage() + " \n");
-            return new ResultadoAccion(false, e.getMessage());
+            mensaje.append("La normativa ");
+            mensaje.append(dato.getCodElemento());
+            mensaje.append(" NO s'ha indexat correctament, error:");
+            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(" \n");
+            return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
     }
 
-
+    /**
+     * Desindexa un procedimiento
+     *
+     * @param dato    procedimiento a desindexar
+     * @param plugin  plugin de indexacion
+     * @param mensaje mensaje de traza
+     * @return resultado de la accion
+     */
     private ResultadoAccion desindexarProcedimiento(IndexacionDTO dato, IPluginIndexacion plugin, StringBuilder mensaje) {
         // Si la accion es 2, es desindexar
         try {
@@ -441,21 +579,43 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             ResultadoAccion resultado = plugin.desindexar(dato.getCodElemento().toString(), EnumCategoria.ROLSAC_PROCEDIMIENTO);
             if (resultado != null && resultado.isCorrecto()) {
                 totalProcedimientosOK++;
-                mensaje.append("El procedimiento " + dato.getCodElemento() + "  s'ha desindexat correctament. \n");
-                return new ResultadoAccion(true, "El procediment s'ha desindexat correctament");
+                mensaje.append("El procedimiento ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" s'ha desindexat correctament. \n");
+                return new ResultadoAccion(true, "El procediment s'ha desindexat correctament", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
             } else {
                 totalProcedimientosERROR++;
-                mensaje.append("El procedimiento " + dato.getCodElemento() + " NO s'ha desindexat correctament. Error:" + resultado.getMensaje() + " \n");
+                mensaje.append("El procedimiento ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" NO s'ha desindexat correctament, error:");
+                if (resultado != null && resultado.getMensaje() != null) {
+                    mensaje.append(resultado.getMensaje());
+                } else {
+                    mensaje.append("null");
+                }
+                mensaje.append(" \n");
                 return resultado;
             }
         } catch (IPluginIndexacionExcepcion e) {
             totalProcedimientosERROR++;
-            mensaje.append("El procedimiento " + dato.getCodElemento() + " NO s'ha desindexat correctament. Error:" + e.getLocalizedMessage() + " \n");
-            return new ResultadoAccion(false, e.getMessage());
+            mensaje.append("El procedimiento ");
+            mensaje.append(dato.getCodElemento());
+            mensaje.append(" NO s'ha desindexat correctament, error:");
+            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(" \n");
+            return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
 
     }
 
+    /**
+     * Indexa un procedimiento.
+     *
+     * @param indexacionDTO dato a indexar
+     * @param plugin        plugin de indexacion
+     * @param mensaje       mensaje de traza
+     * @return resultado de la accion
+     */
     private ResultadoAccion indexarProcedimiento(IndexacionDTO indexacionDTO, IPluginIndexacion plugin, StringBuilder mensaje) {
         Long codigoWF = procedimientoService.getCodigoPublicado(indexacionDTO.getCodElemento());
         boolean publicado = codigoWF != null;
@@ -472,8 +632,10 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 //Si es común, no se indexa
                 if (procedimiento.getProcedimientoDTO().esComun()) {
                     totalProcedimientosOK++;
-                    mensaje.append("El procediment " + indexacionDTO.getCodElemento() + " es comú i no s'indexa \n");
-                    return new ResultadoAccion(true, "El procediment es comú i no s'indexa");
+                    mensaje.append("El procediment ");
+                    mensaje.append(indexacionDTO.getCodElemento());
+                    mensaje.append(" es comú i no s'indexa \n");
+                    return new ResultadoAccion(true, "El procediment es comú i no s'indexa", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
                 } else {
                     ResultadoAccion resultado = plugin.indexarContenido(procedimiento.getDataIndexacion());
                     if (resultado != null && resultado.isCorrecto()) {
@@ -495,7 +657,15 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                                             } else {
                                                 totalProcedimientosDOCERROR++;
                                                 todoCorrecto = false;
-                                                mensajesIncorrectos.append(" ProcedimientoDoc: " + doc.getCodigo() + " . ERROR:" + resultadoDoc.getMensaje() + "\n");
+                                                mensajesIncorrectos.append(" ProcedimientoDoc: ");
+                                                mensajesIncorrectos.append(doc.getCodigo());
+                                                mensajesIncorrectos.append(" . ERROR:");
+                                                if (resultadoDoc != null) {
+                                                    mensajesIncorrectos.append(resultadoDoc.getMensaje());
+                                                } else {
+                                                    mensajesIncorrectos.append("null");
+                                                }
+                                                mensajesIncorrectos.append(" \n");
                                             }
                                         }
                                     }
@@ -525,7 +695,15 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                                                         } else {
                                                             totalTramitesDOCERROR++;
                                                             todoCorrecto = false;
-                                                            mensajesIncorrectos.append(" TramiteDoc: " + doc.getCodigo() + " . ERROR:" + resultadoDoc.getMensaje() + "\n");
+                                                            mensajesIncorrectos.append(" TramiteDoc: ");
+                                                            mensajesIncorrectos.append(doc.getCodigo());
+                                                            mensajesIncorrectos.append(" . ERROR:");
+                                                            if (resultadoDoc != null) {
+                                                                mensajesIncorrectos.append(resultadoDoc.getMensaje());
+                                                            } else {
+                                                                mensajesIncorrectos.append("null");
+                                                            }
+                                                            mensajesIncorrectos.append("\n");
                                                         }
                                                     }
                                                 }
@@ -548,7 +726,15 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                                                         } else {
                                                             totalTramitesDOCERROR++;
                                                             todoCorrecto = false;
-                                                            mensajesIncorrectos.append(" TramiteModelo: " + doc.getCodigo() + " . ERROR:" + resultadoDoc.getMensaje() + "\n");
+                                                            mensajesIncorrectos.append(" TramiteModelo: ");
+                                                            mensajesIncorrectos.append(doc.getCodigo());
+                                                            mensajesIncorrectos.append(" . ERROR:");
+                                                            if (resultadoDoc != null) {
+                                                                mensajesIncorrectos.append(resultadoDoc.getMensaje());
+                                                            } else {
+                                                                mensajesIncorrectos.append("null");
+                                                            }
+                                                            mensajesIncorrectos.append("\n");
                                                         }
                                                     }
                                                 }
@@ -560,40 +746,73 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                                 } else {
                                     totalTramitesERROR++;
                                     todoCorrecto = false;
-                                    mensajesIncorrectos.append(" Tramite: " + tramite.getCodigo() + " . ERROR:" + resultadoTramite.getMensaje());
+                                    mensajesIncorrectos.append(" Tramite: ");
+                                    mensajesIncorrectos.append(tramite.getCodigo());
+                                    mensajesIncorrectos.append(" . ERROR:");
+                                    if (resultadoTramite != null) {
+                                        mensajesIncorrectos.append(resultadoTramite.getMensaje());
+                                    } else {
+                                        mensajesIncorrectos.append("null");
+                                    }
                                 }
                             }
                         }
 
                         if (todoCorrecto) {
                             totalProcedimientosOK++;
-                            mensaje.append("El procediment " + indexacionDTO.getCodElemento() + " i relacionats s'ha indexat correctament \n");
-                            return new ResultadoAccion(true, "El procediment s'ha indexat correctament");
+                            mensaje.append("El procediment ");
+                            mensaje.append(indexacionDTO.getCodElemento());
+                            mensaje.append(" s'ha indexat correctament \n");
+                            return new ResultadoAccion(true, "El procediment s'ha indexat correctament", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
                         } else {
                             totalProcedimientosERROR++;
-                            mensaje.append("El procediment " + indexacionDTO.getCodElemento() + " s'ha indexat però \n");
-                            mensaje.append(mensajesIncorrectos.toString() + "\n");
-                            return new ResultadoAccion(false, "Un tràmit o document de doc/tram s'ha indexat incorrectament" + mensajesIncorrectos.toString());
+                            mensaje.append("El procediment ");
+                            mensaje.append(indexacionDTO.getCodElemento());
+                            mensaje.append(" no s'ha indexat correctament. Error:");
+                            mensaje.append(mensajesIncorrectos.toString());
+                            mensaje.append(" \n");
+                            return new ResultadoAccion(false, "Un tràmit o document de doc/tram s'ha indexat incorrectament" + mensajesIncorrectos.toString(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
                         }
                     } else {
                         totalProcedimientosERROR++;
-                        mensaje.append("El procediment " + indexacionDTO.getCodElemento() + " no s'ha indexat. Error:" + resultado.getMensaje() + " \n");
+                        mensaje.append("El procediment ");
+                        mensaje.append(indexacionDTO.getCodElemento());
+                        mensaje.append(" no s'ha indexat. Error:");
+                        if (resultado != null) {
+                            mensaje.append(resultado.getMensaje());
+                        } else {
+                            mensaje.append("null");
+                        }
+                        mensaje.append(" \n");
                         return resultado;
                     }
                 }
             } catch (Exception e) {
                 totalProcedimientosERROR++;
-                mensaje.append("El procediment " + indexacionDTO.getCodElemento() + " no s'ha indexat. Error:" + e.getLocalizedMessage() + " \n");
-                return new ResultadoAccion(false, e.getMessage());
+                mensaje.append("El procediment ");
+                mensaje.append(indexacionDTO.getCodElemento());
+                mensaje.append(" no s'ha indexat. Error:");
+                mensaje.append(e.getLocalizedMessage());
+                mensaje.append(" \n");
+                return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
             }
         } else {
             totalProcedimientosOK++;
-            mensaje.append("El procediment " + indexacionDTO.getCodElemento() + " no s'ha indexat perque no està publicat.\n");
-            return new ResultadoAccion(true, "El procediment no està publicat");
+            mensaje.append("El procediment ");
+            mensaje.append(indexacionDTO.getCodElemento());
+            mensaje.append(" no s'ha indexat perque no està publicat.\n");
+            return new ResultadoAccion(true, "El procediment no està publicat", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
     }
 
-
+    /**
+     * Desindexa un servicio.
+     *
+     * @param dato    dato a desindexar
+     * @param plugin  plugin de indexacion
+     * @param mensaje mensaje de traza
+     * @return resultado de la accion
+     */
     private ResultadoAccion desindexarServicio(IndexacionDTO dato, IPluginIndexacion plugin, StringBuilder mensaje) {
         // Si la accion es 2, es desindexar
         try {
@@ -601,20 +820,42 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             ResultadoAccion resultado = plugin.desindexar(dato.getCodElemento().toString(), EnumCategoria.ROLSAC_SERVICIO);
             if (resultado != null && resultado.isCorrecto()) {
                 totalServiciosOK++;
-                mensaje.append("El servei " + dato.getCodElemento() + " s'ha desindexat correctament \n");
-                return new ResultadoAccion(true, "El servei s'ha desindexat correctament");
+                mensaje.append("El servei ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" s'ha desindexat correctament. \n");
+                return new ResultadoAccion(true, "El servei s'ha desindexat correctament", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
             } else {
                 totalServiciosERROR++;
-                mensaje.append("El servei " + dato.getCodElemento() + " no s'ha desindexat. Error: " + resultado.getMensaje() + " \n");
+                mensaje.append("El servei ");
+                mensaje.append(dato.getCodElemento());
+                mensaje.append(" NO s'ha desindexat correctament, error:");
+                if (resultado != null && resultado.getMensaje() != null) {
+                    mensaje.append(resultado.getMensaje());
+                } else {
+                    mensaje.append("null");
+                }
+                mensaje.append(" \n");
                 return resultado;
             }
         } catch (IPluginIndexacionExcepcion e) {
             totalServiciosERROR++;
-            mensaje.append("El servei " + dato.getCodElemento() + " no s'ha desindexat. Error: " + e.getLocalizedMessage() + " \n");
-            return new ResultadoAccion(false, e.getMessage());
+            mensaje.append("El servei ");
+            mensaje.append(dato.getCodElemento());
+            mensaje.append(" no s'ha desindexat. Error: ");
+            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(" \n");
+            return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
     }
 
+    /**
+     * Indexa un servicio.
+     *
+     * @param indexacionDTO dato a indexar
+     * @param plugin        plugin de indexacion
+     * @param mensaje       mensaje de traza
+     * @return resultado de la accion
+     */
     private ResultadoAccion indexarServicio(IndexacionDTO indexacionDTO, IPluginIndexacion plugin, StringBuilder mensaje) {
         Long codigoWF = procedimientoService.getCodigoPublicado(indexacionDTO.getCodElemento());
         boolean publicado = codigoWF != null;
@@ -627,21 +868,37 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 ProcedimientoSolrDTO servicio = procedimientoService.findDataIndexacionServById(codigoWF);
                 ResultadoAccion resultado = plugin.indexarContenido(servicio.getDataIndexacion());
                 if (resultado.isCorrecto()) {
-                    mensaje.append("El servei " + indexacionDTO.getCodElemento() + " s'ha desindexat correctament \n");
+                    mensaje.append("El servei ");
+                    mensaje.append(indexacionDTO.getCodElemento());
+                    mensaje.append(" s'ha indexat correctament \n");
+
                 } else {
-                    mensaje.append("El servei " + indexacionDTO.getCodElemento() + " NO s'ha desindexat correctament. Error:" + resultado.getMensaje() + " \n");
+                    mensaje.append("El servei ");
+                    mensaje.append(indexacionDTO.getCodElemento());
+                    mensaje.append(" no s'ha indexat. Error: ");
+                    mensaje.append(resultado.getMensaje());
+                    mensaje.append(" \n");
                 }
                 return resultado;
             } catch (Exception e) {
-                mensaje.append("El servei " + indexacionDTO.getCodElemento() + " NO s'ha desindexat correctament. Error:" + e.getLocalizedMessage() + " \n");
-                return new ResultadoAccion(false, e.getMessage());
+                mensaje.append("El servei ");
+                mensaje.append(indexacionDTO.getCodElemento());
+                mensaje.append(" no s'ha indexat. Error: ");
+                mensaje.append(e.getLocalizedMessage());
+                mensaje.append(" \n");
+                return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
             }
         } else {
-            mensaje.append("El servei " + indexacionDTO.getCodElemento() + " NO s'ha desindexat, no està publicat. \n");
-            return new ResultadoAccion(true, "El servei no està publicat");
+            mensaje.append("El servei ");
+            mensaje.append(indexacionDTO.getCodElemento());
+            mensaje.append(" no s'ha indexat perque no està publicat.\n");
+            return new ResultadoAccion(true, "El servei no està publicat", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
         }
     }
 
+    /**
+     * Inicializa los totales a cero.
+     */
     private void inicializarTotalesACero() {
         totalProcedimientos = 0;
         totalProcedimientosOK = 0;
@@ -664,6 +921,9 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
         totalUas = 0;
         totalUasOK = 0;
         totalUasERROR = 0;
+        totalIndexadosElastic = 0;
+        totalIndexadosSolr = 0;
     }
+
 
 }

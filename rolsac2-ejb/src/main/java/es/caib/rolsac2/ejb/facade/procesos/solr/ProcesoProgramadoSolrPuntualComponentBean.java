@@ -24,7 +24,7 @@ import javax.inject.Inject;
  */
 @Stateless(name = "procesoProgramadoSolrPuntualComponent")
 @Local(ProcesoProgramadoFacade.class)
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 // En funcion del proceso, sera o no tx por si se tiene que dividir en transacciones
 public class ProcesoProgramadoSolrPuntualComponentBean extends ProcesoProgramadoBaseSolrComponentBean implements ProcesoProgramadoFacade {
 
@@ -59,7 +59,6 @@ public class ProcesoProgramadoSolrPuntualComponentBean extends ProcesoProgramado
     public ResultadoProcesoProgramado ejecutar(final Long instanciaProceso, final ListaPropiedades params, Long idEntidad) {
         return super.ejecutarPadre(instanciaProceso, params, false, idEntidad);
     }
-
 
 
 }
