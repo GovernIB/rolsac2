@@ -31,7 +31,7 @@ public class PluginIndexacionMock extends AbstractPluginProperties implements IP
     }
 
     private ResultadoAccion getResultadoCorrecto() {
-        ResultadoAccion resultado = new ResultadoAccion(true, null);
+        ResultadoAccion resultado = new ResultadoAccion(true, null, true, true, true, true);
         return resultado;
     }
 

@@ -12,9 +12,25 @@ public class ResultadoAccion {
      */
     private String mensaje;
 
-    public ResultadoAccion(boolean correcto, String mensaje) {
+    /**
+     * Indica que indexador esta activo
+     **/
+    private boolean solrActivo;
+    private boolean elasticActivo;
+
+    /**
+     * Indica el resultado de la indexacion solr y elastic
+     **/
+    private boolean resultadoSolr;
+    private boolean resultadoElastic;
+
+    public ResultadoAccion(boolean correcto, String mensaje, boolean solrActivo, boolean elasticActivo, boolean resultadoSolr, boolean resultadoElastic) {
         this.correcto = correcto;
         this.mensaje = mensaje;
+        this.solrActivo = solrActivo;
+        this.elasticActivo = elasticActivo;
+        this.resultadoSolr = resultadoSolr;
+        this.resultadoElastic = resultadoElastic;
     }
 
     public boolean isCorrecto() {
@@ -31,5 +47,42 @@ public class ResultadoAccion {
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+
+    public boolean isSolrActivo() {
+        return solrActivo;
+    }
+
+    public void setSolrActivo(boolean solrActivo) {
+        this.solrActivo = solrActivo;
+    }
+
+    public boolean isElasticActivo() {
+        return elasticActivo;
+    }
+
+    public void setElasticActivo(boolean elasticActivo) {
+        this.elasticActivo = elasticActivo;
+    }
+
+    public boolean isResultadoSolr() {
+        return resultadoSolr;
+    }
+
+    public void setResultadoSolr(boolean resultadoSolr) {
+        this.resultadoSolr = resultadoSolr;
+    }
+
+    public boolean isResultadoElastic() {
+        return resultadoElastic;
+    }
+
+    public void setResultadoElastic(boolean resultadoElastic) {
+        this.resultadoElastic = resultadoElastic;
+    }
+
+    @Override
+    public String toString() {
+        return "ResultadoAccion [correcto=" + correcto + ", mensaje=" + mensaje + ", solrActivo=" + solrActivo + ", elasticActivo=" + elasticActivo + ", resultadoSolr=" + resultadoSolr + ", resultadoElastic=" + resultadoElastic + "]";
     }
 }

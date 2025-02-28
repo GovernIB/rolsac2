@@ -394,7 +394,7 @@ public class CastUtil {
                 //textoOptional.append(IndexacionUtil.calcularPathTextUO(UA, keyIdioma));
 
                 searchTextOptional.addIdioma(enumIdioma, textoOptional.toString());
-                if (norm.getUrlBoletin() != null && !norm.getUrlBoletin().getTraduccion(keyIdioma).isEmpty()) {
+                if (norm.getUrlBoletin() != null && norm.getUrlBoletin().getTraduccion(keyIdioma) != null && !norm.getUrlBoletin().getTraduccion(keyIdioma).isEmpty()) {
                     urls.addIdioma(enumIdioma, norm.getUrlBoletin().getTraduccion(keyIdioma));
                 } else {
                     //En caso de url vacio, cogemos la de catalan.

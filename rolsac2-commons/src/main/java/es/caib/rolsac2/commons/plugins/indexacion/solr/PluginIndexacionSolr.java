@@ -93,16 +93,16 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
 
         try {
             solrIndexer.indexarContenido(dataIndexacion.cast());
-            resultadoAccion = new ResultadoAccion(true, "");
+            resultadoAccion = new ResultadoAccion(true, "", solrActivo, elasticActivo, true, true);
         } catch (Exception e) {
             LOG.error("Error indexando contenido", e);
             //throw new IPluginIndexacionExcepcion(e);
             if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage(), solrActivo, elasticActivo, false, true);
             } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage(), solrActivo, elasticActivo, true, false);
             } else {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage(), solrActivo, elasticActivo, false, false);
             }
         }
 
@@ -167,16 +167,16 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.indexarFichero(ficheroIndexacion.cast());
-            resultadoAccion = new ResultadoAccion(true, "");
+            resultadoAccion = new ResultadoAccion(true, "", solrActivo, elasticActivo, true, true);
         } catch (Exception e) {
             LOG.error("Error indexando contenido", e);
             //throw new IPluginIndexacionExcepcion(e);
             if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage(), solrActivo, elasticActivo, false, true);
             } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage(), solrActivo, elasticActivo, true, false);
             } else {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage(), solrActivo, elasticActivo, false, false);
             }
         }
 
@@ -202,16 +202,16 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.desindexarCaducados();
-            resultadoAccion = new ResultadoAccion(true, "");
+            resultadoAccion = new ResultadoAccion(true, "", solrActivo, elasticActivo, true, true);
         } catch (Exception e) {
             LOG.error("Error indexando contenido", e);
             //throw new IPluginIndexacionExcepcion(e);
             if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage() + " " + e.getCause(), solrActivo, elasticActivo, false, true);
             } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage() + " " + e.getCause(), solrActivo, elasticActivo, true, false);
             } else {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage() + " " + e.getCause(), solrActivo, elasticActivo, false, false);
             }
         }
 
@@ -236,16 +236,16 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.desindexar(id, es.caib.solr.api.model.types.EnumCategoria.fromString(categoria.toString()));
-            resultadoAccion = new ResultadoAccion(true, "");
+            resultadoAccion = new ResultadoAccion(true, "", solrActivo, elasticActivo, true, true);
         } catch (Exception e) {
             LOG.error("Error indexando contenido", e);
             //throw new IPluginIndexacionExcepcion(e);
             if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage(), solrActivo, elasticActivo, false, true);
             } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage(), solrActivo, elasticActivo, true, false);
             } else {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage(), solrActivo, elasticActivo, false, false);
             }
         }
 
@@ -270,16 +270,16 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.desindexarAplicacion();
-            resultadoAccion = new ResultadoAccion(true, "");
+            resultadoAccion = new ResultadoAccion(true, "", solrActivo, elasticActivo, true, true);
         } catch (Exception e) {
             LOG.error("Error indexando contenido", e);
             //throw new IPluginIndexacionExcepcion(e);
             if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage(), solrActivo, elasticActivo, false, true);
             } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage(), solrActivo, elasticActivo, true, false);
             } else {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage(), solrActivo, elasticActivo, false, false);
             }
         }
 
@@ -304,16 +304,16 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.desindexarCategoria(es.caib.solr.api.model.types.EnumCategoria.fromString(categoria.toString()));
-            resultadoAccion = new ResultadoAccion(true, "");
+            resultadoAccion = new ResultadoAccion(true, "", solrActivo, elasticActivo, true, true);
         } catch (Exception e) {
             LOG.error("Error indexando contenido", e);
             //throw new IPluginIndexacionExcepcion(e);
             if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage(), solrActivo, elasticActivo, false, true);
             } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage(), solrActivo, elasticActivo, true, false);
             } else {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage(), solrActivo, elasticActivo, false, false);
             }
         }
 
@@ -338,16 +338,16 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.desindexarRaiz(idRaiz, es.caib.solr.api.model.types.EnumCategoria.fromString(categoriaRaiz.toString()));
-            resultadoAccion = new ResultadoAccion(true, "");
+            resultadoAccion = new ResultadoAccion(true, "", solrActivo, elasticActivo, true, true);
         } catch (Exception e) {
             LOG.error("Error indexando contenido", e);
             //throw new IPluginIndexacionExcepcion(e);
             if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage(), solrActivo, elasticActivo, false, true);
             } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage(), solrActivo, elasticActivo, true, false);
             } else {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage(), solrActivo, elasticActivo, false, false);
             }
         }
 
@@ -372,16 +372,16 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         final SolrIndexer solrIndexer = SolrFactory.getIndexer(urlSolr, index, es.caib.solr.api.model.types.EnumAplicacionId.ROLSAC, userSolr, passSolr, urlElastic, userElastic, passElastic, solrActivo, elasticActivo);
         try {
             solrIndexer.commit();
-            resultadoAccion = new ResultadoAccion(true, "");
+            resultadoAccion = new ResultadoAccion(true, "", solrActivo, elasticActivo, true, true);
         } catch (Exception e) {
             LOG.error("Error indexando contenido", e);
             //throw new IPluginIndexacionExcepcion(e);
             if (e instanceof es.caib.solr.api.exception.ExcepcionSolrApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr." + e.getMessage(), solrActivo, elasticActivo, false, true);
             } else if (e instanceof es.caib.solr.api.exception.ExcepcionElasticApi) {
-                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en elastic." + e.getMessage(), solrActivo, elasticActivo, true, false);
             } else {
-                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage());
+                resultadoAccion = new ResultadoAccion(false, "Error en solr y elastic." + e.getMessage(), solrActivo, elasticActivo, false, false);
             }
         }
 

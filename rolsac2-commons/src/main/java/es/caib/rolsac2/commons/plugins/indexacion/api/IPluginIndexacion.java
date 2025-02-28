@@ -94,7 +94,7 @@ public interface IPluginIndexacion extends IPlugin {
      * que esta opción sólo debe usarse cuando se requiere que se hagan
      * efectivos los cambios de forma inmediata.
      *
-     * @throws IPluginIndexacionExcepcion
+     * @throws IPluginIndexacionExcepcion Excepción
      */
     ResultadoAccion commit() throws IPluginIndexacionExcepcion;
 
