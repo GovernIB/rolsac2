@@ -103,6 +103,7 @@ public class AdministracionSupServiceFacadeBean implements AdministracionSupServ
         unidadAdministrativaDTO.setIdentificador(dto.getIdentificador());
         unidadAdministrativaDTO.setOrden(0);
         unidadAdministrativaDTO.setVersion(1);
+        unidadAdministrativaDTO.setEstado("V");
         JUnidadAdministrativa jUnidadAdministrativa = unidadAdministrativaConverter.createEntity(unidadAdministrativaDTO);
         jUnidadAdministrativa.setEntidad(jEntidad);
         if (jUnidadAdministrativa.getTraducciones() != null) {
