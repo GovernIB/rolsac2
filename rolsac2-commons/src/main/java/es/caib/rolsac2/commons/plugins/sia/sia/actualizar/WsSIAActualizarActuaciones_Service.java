@@ -2,7 +2,6 @@ package es.caib.rolsac2.commons.plugins.sia.sia.actualizar;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 
@@ -11,7 +10,7 @@ import java.net.URL;
  * JAX-WS RI 2.3.2
  * Generated source version: 2.2
  */
-@WebServiceClient(name = "wsSIAActualizarActuaciones", targetNamespace = "http://www.map.es/sgca/actualizar", wsdlLocation = "file:/R:/fuentes/rolsac2/rolsac2-commons/src/main/resources/wsdl/wsSIAActualizarActuaciones.wsdl")
+@WebServiceClient(name = "wsSIAActualizarActuaciones", targetNamespace = "http://www.map.es/sgca/actualizar", wsdlLocation = "/wsdl/wsSIAActualizarActuaciones.wsdl")
 public class WsSIAActualizarActuaciones_Service
         extends Service {
 
@@ -20,12 +19,11 @@ public class WsSIAActualizarActuaciones_Service
     private final static QName WSSIAACTUALIZARACTUACIONES_QNAME = new QName("http://www.map.es/sgca/actualizar", "wsSIAActualizarActuaciones");
 
     static {
-        URL url = null;
+        URL url = WsSIAActualizarActuaciones_Service.class.getResource("/wsdl/wsSIAActualizarActuaciones.wsdl");
+        ;
         WebServiceException e = null;
-        try {
-            url = new URL("file:/R:/fuentes/rolsac2/rolsac2-commons/src/main/resources/wsdl/wsSIAActualizarActuaciones.wsdl");
-        } catch (MalformedURLException ex) {
-            e = new WebServiceException(ex);
+        if (url == null) {
+            e = new WebServiceException("No se ha encontrado el archivo WSDL en /wsdl/wsSIAActualizarActuaciones.wsdl");
         }
         WSSIAACTUALIZARACTUACIONES_WSDL_LOCATION = url;
         WSSIAACTUALIZARACTUACIONES_EXCEPTION = e;
