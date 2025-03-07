@@ -23,13 +23,13 @@
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
                                                   aria-hidden="true"></span>
-                            <span class="mb-0 float-right botoCurt">#{sessionBean.entidad.descripcion.getTraduccion(sessionBean.getLang())}</span>
+                            <span class="mb-0 float-right botoCurt">#{sessionBean.entidad.descripcion.getTraduccionConValor(sessionBean.getLang())}</span>
                             <span class="oi oi-globe" title="#{labels['idioma_link']}" aria-hidden="true"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="entidades">
                             <ui:repeat value="#{sessionBean.entidades}" var="entidad" rendered="true">
                                 <p:commandLink styleClass="dropdown-item mobil" hreflang="#{entidad}"
-                                               value="#{entidad.descripcion.getTraduccion(sessionBean.getLang())}">
+                                               value="#{entidad.descripcion.getTraduccionConValor(sessionBean.getLang())}">
                                     <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}" oncomplete="window.location.replace(window.location)"/>
                                 </p:commandLink>
                             </ui:repeat>

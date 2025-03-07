@@ -78,20 +78,26 @@ public class DialogEntidad extends AbstractController implements Serializable {
 
         data = new EntidadDTO();
         if (this.isModoAlta()) {
-            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+        	data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             final Literal lopdDerechos = new Literal();
             final Literal lopdDestinatario = new Literal();
             final Literal lopdFinalidad = new Literal();
+            final Literal lopdCabezera = new Literal();
+            final Literal lopdPlantilla = new Literal();
             final Literal uaComun = new Literal();
             for (String idioma : sessionBean.getIdiomasPermitidosList()) {
                 lopdDerechos.add(new Traduccion(idioma, "CONSULTI AMB EL SEU DPO"));
                 lopdDestinatario.add(new Traduccion(idioma, "CONSULTI AMB EL SEU DPO"));
                 lopdFinalidad.add(new Traduccion(idioma, "CONSULTI AMB EL SEU DPO"));
+                lopdCabezera.add(new Traduccion(idioma, "CONSULTI AMB EL SEU DPO"));
+                lopdPlantilla.add(new Traduccion(idioma, "CONSULTI AMB EL SEU DPO"));
                 uaComun.add(new Traduccion(idioma, "CONSULTI AMB EL SEU DPO"));
             }
             data.setLopdDerechos(lopdDerechos);
             data.setLopdDestinatario(lopdDestinatario);
             data.setLopdFinalidad(lopdFinalidad);
+            data.setLopdCabecera(lopdCabezera);
+            data.setLopdPlantilla(lopdPlantilla);
             data.setUaComun(uaComun);
             data.setActiva(false);
             dataOriginal = data.clone();
