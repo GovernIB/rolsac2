@@ -5,12 +5,16 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumAplicacion
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumCategoria;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumIdiomas;
 import es.caib.rolsac2.service.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CastUtil {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CastUtil.class);
 
     public static DataIndexacion getDataIndexacion(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimiento, PathUA pathUO) {
 
@@ -66,7 +70,7 @@ public class CastUtil {
                     String nombrePubObjetivox = "persones";
                     String idPublicoObjetivo = "200";
 
-                    if (procedimiento.getPublicosObjetivo() != null && !procedimiento.getPublicosObjetivo().isEmpty()) {
+                    if (procedimiento.getPublicosObjetivo() != null && !procedimiento.getPublicosObjetivo().isEmpty() && procedimiento.getPublicosObjetivo().get(0).getIdentificador() != null && procedimiento.getPublicosObjetivo().get(0).getCodigo() != null) {
                         final TipoPublicoObjetivoEntidadGridDTO publicoObjectivo = procedimiento.getPublicosObjetivo().get(0);
                         nombrePubObjetivox = publicoObjectivo.getIdentificador().toLowerCase();
                         idPublicoObjetivo = publicoObjectivo.getCodigo().toString();
@@ -92,14 +96,18 @@ public class CastUtil {
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
         for (TemaGridDTO tema : procedimiento.getTemas()) {
-            materiasId.add(tema.getTipoMateriaSIA().toString());
+            if (tema.getTipoMateriaSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().toString())) {
+                materiasId.add(tema.getTipoMateriaSIA().toString());
+            }
         }
         indexData.setMateriaId(materiasId);
 
         // Datos IDs publico Objetivos.
         final List<String> publicoObjetivoId = new ArrayList<String>();
         for (final TipoPublicoObjetivoEntidadGridDTO publicoObjectivo : procedimiento.getPublicosObjetivo()) {
-            publicoObjetivoId.add(publicoObjectivo.getCodigo().toString());
+            if (publicoObjectivo.getCodigo() != null) {
+                publicoObjetivoId.add(publicoObjectivo.getCodigo().toString());
+            }
         }
         indexData.setPublicoId(publicoObjetivoId);
 
@@ -189,7 +197,9 @@ public class CastUtil {
                     textoOptional.append(" ");
                     textoOptional.append(tema.getIdentificador());
                     textoOptional.append(" ");
-                    textoOptional.append(tema.getDescripcion().getTraduccion(keyIdioma));
+                    if (tema.getDescripcion() != null) {
+                        textoOptional.append(tema.getDescripcion().getTraduccion(keyIdioma));
+                    }
                 }
 
                 // Servicio Responsable
@@ -203,22 +213,23 @@ public class CastUtil {
                 String nombrePubObjetivo = "persones";
                 String idPubObjetivo = "200";
                 for (final TipoPublicoObjetivoEntidadGridDTO publicoObjetivo : servicio.getPublicosObjetivo()) {
-                    nombrePubObjetivo = publicoObjetivo.getDescripcion().getTraduccion(keyIdioma).toLowerCase();
+                    nombrePubObjetivo = publicoObjetivo.getDescripcion().getTraduccionConValor(keyIdioma, null).toLowerCase();
                     idPubObjetivo = publicoObjetivo.getCodigo().toString();
+                    break;
                 }
 
                 // UO
-                if (servicio.getUaInstructor() != null && servicio.getUaInstructor().getNombre().getTraduccion(keyIdioma) != null) {
+                if (servicio.getUaInstructor() != null && servicio.getUaInstructor().getNombre() != null && servicio.getUaInstructor().getNombre().getTraduccion(keyIdioma) != null) {
                     textoOptional.append(" ");
                     textoOptional.append(servicio.getUaInstructor().getNombre().getTraduccion(keyIdioma));
-
                 }
 
                 // Normativa asociadas
                 for (final NormativaGridDTO normativa : servicio.getNormativas()) {
-                    textoOptional.append(normativa.getTitulo().getTraduccion(keyIdioma));
-                    textoOptional.append(" ");
-
+                    if (normativa.getTitulo() != null) {
+                        textoOptional.append(normativa.getTitulo().getTraduccion(keyIdioma));
+                        textoOptional.append(" ");
+                    }
                 }
 
                 searchTextOptional.addIdioma(enumIdioma, servicio.getObjeto().getTraduccion(keyIdioma) + " " + servicio.getObservaciones().getTraduccion(keyIdioma) + " " + textoOptional.toString());
@@ -248,14 +259,18 @@ public class CastUtil {
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
         for (final TemaGridDTO tema : servicio.getTemas()) {
-            materiasId.add(tema.getTipoMateriaSIA().toString());
+            if (tema.getTipoMateriaSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().toString())) {
+                materiasId.add(tema.getTipoMateriaSIA().toString());
+            }
         }
         indexData.setMateriaId(materiasId);
 
         // Datos IDs publico Objetivos.
         final List<String> publicoObjetivoId = new ArrayList<String>();
         for (final TipoPublicoObjetivoEntidadGridDTO publicoObjectivo : servicio.getPublicosObjetivo()) {
-            publicoObjetivoId.add(publicoObjectivo.getCodigo().toString());
+            if (publicoObjectivo.getCodigo() != null) {
+                publicoObjetivoId.add(publicoObjectivo.getCodigo().toString());
+            }
         }
         indexData.setPublicoId(publicoObjetivoId);
 
@@ -462,7 +477,10 @@ public class CastUtil {
                 textoOptional.append(" ");
                 textoOptional.append(temaGridDTO.getIdentificador());
                 textoOptional.append(" ");
-                textoOptional.append(temaGridDTO.getDescripcion().getTraduccion(idioma));
+                if (temaGridDTO.getDescripcion() != null) {
+                    textoOptional.append(temaGridDTO.getDescripcion().getTraduccion(idioma));
+                    textoOptional.append(" ");
+                }
             }
 
             // Servicio Responsable
@@ -484,7 +502,7 @@ public class CastUtil {
             String nombrePubObjetivo = "persones";
             String idPublicoObjetivo = "200";
 
-            if (proc.getPublicosObjetivo() != null && !proc.getPublicosObjetivo().isEmpty()) {
+            if (proc.getPublicosObjetivo() != null && !proc.getPublicosObjetivo().isEmpty() && proc.getPublicosObjetivo().get(0).getIdentificador() != null && proc.getPublicosObjetivo().get(0).getCodigo() != null) {
                 final TipoPublicoObjetivoEntidadGridDTO publicoObjectivo = proc.getPublicosObjetivo().get(0);
                 nombrePubObjetivo = publicoObjectivo.getIdentificador().toLowerCase();
                 idPublicoObjetivo = publicoObjectivo.getCodigo().toString();
@@ -566,7 +584,10 @@ public class CastUtil {
                 textoOptional.append(" ");
                 textoOptional.append(tema.getIdentificador());
                 textoOptional.append(" ");
-                textoOptional.append(tema.getDescripcion().getTraduccion(idioma));
+                if (tema.getDescripcion() != null) {
+                    textoOptional.append(tema.getDescripcion().getTraduccion(idioma));
+                    textoOptional.append(" ");
+                }
             }
 
             // Servicio Responsable
@@ -588,7 +609,7 @@ public class CastUtil {
             String nombrePubObjetivo = "persones";
             String idPublicoObjetivo = "200";
 
-            if (proc.getPublicosObjetivo() != null && !proc.getPublicosObjetivo().isEmpty()) {
+            if (proc.getPublicosObjetivo() != null && !proc.getPublicosObjetivo().isEmpty() && proc.getPublicosObjetivo().get(0).getIdentificador() != null && proc.getPublicosObjetivo().get(0).getCodigo() != null) {
                 final TipoPublicoObjetivoEntidadGridDTO publicoObjectivo = proc.getPublicosObjetivo().get(0);
                 nombrePubObjetivo = publicoObjectivo.getIdentificador().toLowerCase();
                 idPublicoObjetivo = publicoObjectivo.getCodigo().toString();
@@ -752,7 +773,10 @@ public class CastUtil {
                     textoOptional.append(" ");
                     textoOptional.append(tema.getIdentificador());
                     textoOptional.append(" ");
-                    textoOptional.append(tema.getDescripcion().getTraduccion(keyIdioma));
+                    if (tema.getDescripcion() != null) {
+                        textoOptional.append(tema.getDescripcion().getTraduccion(keyIdioma));
+                        textoOptional.append(" ");
+                    }
                 }
 
                 // Servicio Responsable
@@ -765,7 +789,7 @@ public class CastUtil {
                 String nombrePubObjetivo = "persones";
                 String idPublicoObjetivo = "200";
 
-                if (proc.getPublicosObjetivo() != null && !proc.getPublicosObjetivo().isEmpty()) {
+                if (proc.getPublicosObjetivo() != null && !proc.getPublicosObjetivo().isEmpty() && proc.getPublicosObjetivo().get(0).getIdentificador() != null && proc.getPublicosObjetivo().get(0).getCodigo() != null) {
                     final TipoPublicoObjetivoEntidadGridDTO publicoObjectivo = proc.getPublicosObjetivo().get(0);
                     nombrePubObjetivo = publicoObjectivo.getIdentificador().toLowerCase();
                     idPublicoObjetivo = publicoObjectivo.getCodigo().toString();
@@ -783,8 +807,10 @@ public class CastUtil {
 
                 // Normativa asociadas
                 for (final NormativaGridDTO normativa : proc.getNormativas()) {
-                    textoOptional.append(normativa.getTitulo().getTraduccion(keyIdioma));
-                    textoOptional.append(" ");
+                    if (normativa.getTitulo() != null) {
+                        textoOptional.append(normativa.getTitulo().getTraduccion(keyIdioma));
+                        textoOptional.append(" ");
+                    }
                 }
 
                 searchTextOptional.addIdioma(enumIdioma, /*traduccion.getResultat() + " " */
@@ -814,14 +840,18 @@ public class CastUtil {
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
         for (final TemaGridDTO tema : proc.getTemas()) {
-            materiasId.add(tema.getTipoMateriaSIA().toString());
+            if (tema.getTipoMateriaSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().toString())) {
+                materiasId.add(tema.getTipoMateriaSIA().toString());
+            }
         }
         indexData.setMateriaId(materiasId);
 
         // Datos IDs publico Objetivos.
         final List<String> publicoObjetivoId = new ArrayList<String>();
         for (final TipoPublicoObjetivoEntidadGridDTO publicoObjectivo : proc.getPublicosObjetivo()) {
-            publicoObjetivoId.add(publicoObjectivo.getCodigo().toString());
+            if (publicoObjectivo.getCodigo() != null) {
+                publicoObjetivoId.add(publicoObjectivo.getCodigo().toString());
+            }
         }
         indexData.setPublicoId(publicoObjetivoId);
 

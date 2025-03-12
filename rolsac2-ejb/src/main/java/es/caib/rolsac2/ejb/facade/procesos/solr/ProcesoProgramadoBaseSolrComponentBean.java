@@ -390,6 +390,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 return resultado;
             }
         } catch (IPluginIndexacionExcepcion e) {
+            log.error("Error en desindexarUA", e);
             totalUasERROR++;
             mensaje.append("La UA ");
             mensaje.append(dato.getCodElemento());
@@ -439,6 +440,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             }
 
         } catch (Exception e) {
+            log.error("Error en indexarUA", e);
             mensaje.append("La UA ");
             mensaje.append(dato.getCodElemento());
             mensaje.append(" NO s'ha indexat correctament, error:");
@@ -481,6 +483,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 return resultado;
             }
         } catch (IPluginIndexacionExcepcion e) {
+            log.error("Error en desindexarNormativa", e);
             totalNormativasERROR++;
             mensaje.append("La normativa ");
             mensaje.append(dato.getCodElemento());
@@ -555,6 +558,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             }
 
         } catch (Exception e) {
+            log.error("Error en indexarNormativa", e);
             mensaje.append("La normativa ");
             mensaje.append(dato.getCodElemento());
             mensaje.append(" NO s'ha indexat correctament, error:");
@@ -597,6 +601,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 return resultado;
             }
         } catch (IPluginIndexacionExcepcion e) {
+            log.error("Error en desindexarProcedimiento", e);
             totalProcedimientosERROR++;
             mensaje.append("El procedimiento ");
             mensaje.append(dato.getCodElemento());
@@ -788,6 +793,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                     }
                 }
             } catch (Exception e) {
+                log.error("Error en indexarProcedimiento", e);
                 totalProcedimientosERROR++;
                 mensaje.append("El procediment ");
                 mensaje.append(indexacionDTO.getCodElemento());
@@ -838,6 +844,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 return resultado;
             }
         } catch (IPluginIndexacionExcepcion e) {
+            log.error("Error en desindexarServicio", e);
             totalServiciosERROR++;
             mensaje.append("El servei ");
             mensaje.append(dato.getCodElemento());
@@ -881,6 +888,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 }
                 return resultado;
             } catch (Exception e) {
+                log.error("Error en indexarServicio", e);
                 mensaje.append("El servei ");
                 mensaje.append(indexacionDTO.getCodElemento());
                 mensaje.append(" no s'ha indexat. Error: ");
@@ -924,6 +932,4 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
         totalIndexadosElastic = 0;
         totalIndexadosSolr = 0;
     }
-
-
 }
