@@ -330,7 +330,7 @@ public class SiaUtils {
         final List<String> materias = new ArrayList<String>();
         if (procedimiento.getTemas() != null) {
             for (TemaGridDTO tema : procedimiento.getTemas()) {
-                if (tema.getTipoMateriaSIA() != null && tema.getTipoMateriaSIA().getCodigoSIA() != null) {
+            	if (tema.getTipoMateriaSIA() != null && tema.getTipoMateriaSIA().getCodigoSIA() != null && !materias.contains(tema.getTipoMateriaSIA().getCodigoSIA().toString())) {
                     materias.add(tema.getTipoMateriaSIA().getCodigoSIA().toString());
                 }
             }
