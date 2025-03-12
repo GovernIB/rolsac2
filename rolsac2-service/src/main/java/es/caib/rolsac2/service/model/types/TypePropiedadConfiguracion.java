@@ -23,6 +23,7 @@ public enum TypePropiedadConfiguracion {
     /**
      * Propiedad para indicar el tiempo máximo que el maestro puede estar inactivo
      */
+
     PROCESOS_MIN_MAX_MAESTRO_ACTIVO("procesos.minMaxMaestroInactivo"),
     /**
      * UA COMUN
