@@ -21,6 +21,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.*;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 
 @Named
 @ViewScoped
@@ -650,7 +651,22 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void cerrar() {
         if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
-            PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
+        	List<AuditoriaCambio> cambios = ProcedimientoDTO.auditar(this.data, this.dataOriginal);
+        	LOG.error("INI CERRAR SIN GUARDAR");
+            if (cambios != null) {
+                LOG.error("Cambios: " + cambios.size());
+                for (AuditoriaCambio cambio : cambios) {
+                    LOG.error("Cambio: " + cambio.toString());
+                }
+                try {
+                    LOG.error("Procedimiento: " + this.data.toString());
+                    LOG.error("ProcedimientoOriginal: " + this.dataOriginal.toString());
+                } catch (Exception e) {
+                    LOG.error("Error al toString procedimiento");
+                }
+                LOG.error("--------------------");
+            }
+        	PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;
         }
 
