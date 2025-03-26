@@ -14,12 +14,13 @@ import java.util.Properties;
  * Plugin mock email.
  *
  * @author Indra
- *
  */
 public class EmailPluginMock extends AbstractPluginProperties
         implements EmailPlugin {
 
-    /** Log. */
+    /**
+     * Log.
+     */
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public EmailPluginMock() {
@@ -31,7 +32,7 @@ public class EmailPluginMock extends AbstractPluginProperties
 
     @Override
     public boolean envioEmail(List<String> destinatarios, String asunto,
-            String mensaje, List<AnexoEmail> anexos)
+                              String mensaje, List<AnexoEmail> anexos, String lang)
             throws EmailPluginException {
         String dest = "";
         for (final String d : destinatarios) {

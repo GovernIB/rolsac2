@@ -9,6 +9,7 @@ public interface EmailServiceFacade {
 
     /**
      * Envio de correo
+     *
      * @param destinatarios
      * @param asunto
      * @param mensaje
@@ -16,5 +17,5 @@ public interface EmailServiceFacade {
      * @return
      */
 
-    boolean envioEmail(List<String> destinatarios, String asunto, String mensaje, List<AnexoEmail> anexos, Long idEntidad) throws EmailPluginException;
+    boolean envioEmail(List<String> destinatarios, String asunto, String mensaje, List<AnexoEmail> anexos, Long idEntidad, String idioma) throws EmailPluginException;
 }

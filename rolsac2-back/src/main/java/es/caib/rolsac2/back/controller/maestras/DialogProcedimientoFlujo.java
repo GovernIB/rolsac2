@@ -149,7 +149,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                         estados.add(TypeProcedimientoEstado.PENDIENTE_BORRAR);
                     }
                     if (typeEstadoActual != null && (typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_RESERVAR || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_BORRAR)) {
-                        //Se puede tirar para atrás para poderlo volver a editar
+                        //Se puede tirar para atrÃ¡s para poderlo volver a editar
                         estados.add(TypeProcedimientoEstado.MODIFICACION);
                         this.estadoSeleccionado = estados.get(0);
                     }
@@ -187,6 +187,11 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             buscoAdministradorContenidos = false;
         } else {
             buscoAdministradorContenidos = true;
+        }
+
+        if (!mostrarEstados && (mensajeNuevo == null || mensaje.isEmpty())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimientoFlujo.errorTextomail"), true);
+            return;
         }
         for (Mensaje mensaje : mensajes) {
             if (mensaje.isAdmContenido() == buscoAdministradorContenidos) {
@@ -237,12 +242,12 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
 
         try {
             //EmailPlugin pluginEmail = (EmailPlugin) plg;
-            boolean respuesta = pluginEmail.envioEmail(listaDestinatarios, asunto, mensajeEnviar, null);
+            boolean respuesta = pluginEmail.envioEmail(listaDestinatarios, asunto, mensajeEnviar, null, sessionBean.getLang());
             LOG.debug("Resultado Email: ");
             LOG.debug(Boolean.toString(respuesta));
 
         } catch (EmailPluginException e) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimientoFlujo.errorenvio"), true);
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimientoFlujo.errorenvio") + ". " + e.getMessage(), true);
             LOG.error("Error enviando el email", e);
             return;
         }
@@ -273,9 +278,8 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             return;
         }
 
-        if (!mostrarEstados && (mensajeNuevo == null || mensajeNuevo.isEmpty())) {
-            //Si no es un flujo y no hay mensaje escrito, simplemente cerrar
-            cerrar();
+        if (!mostrarEstados && (mensajeNuevo == null || mensaje.isEmpty())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimientoFlujo.errorTextovacio"), true);
             return;
         }
 
@@ -348,7 +352,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             this.mensajes.get(posicion).setPendienteMensajesSupervisor(false);
         }
 
-        //Sanitizamos mensajes por si hubiera el carácter de apóstrofe (')
+        //Sanitizamos mensajes por si hubiera el carÃ¡cter de apÃ³strofe (')
         ValidacionTipoUtils.sanitizarMensajes(mensajes);
         String mensajesJSON = UtilJSON.toJSON(mensajes);
         procedimientoService.actualizarMensajes(idProcedimiento, mensajesJSON, getLeidoSupervisor(), getLeidoGestor());
@@ -528,3 +532,4 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         this.checkMail = checkMail;
     }
 }
+

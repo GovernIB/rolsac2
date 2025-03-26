@@ -24,10 +24,10 @@ public class EmailServiceFacadeBean implements EmailServiceFacade {
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR,
             TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public boolean envioEmail(List<String> destinatarios, String asunto, String mensaje, List<AnexoEmail> anexos, Long idEntidad) throws EmailPluginException {
+    public boolean envioEmail(List<String> destinatarios, String asunto, String mensaje, List<AnexoEmail> anexos, Long idEntidad, String idioma) throws EmailPluginException {
         final EmailSmtpPlugin emailSmtpPlugin = (EmailSmtpPlugin) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.EMAIL, idEntidad);
         boolean resultado = false;
-        resultado = emailSmtpPlugin.envioEmail(destinatarios, asunto, mensaje, anexos);
+        resultado = emailSmtpPlugin.envioEmail(destinatarios, asunto, mensaje, anexos, idioma);
         return resultado;
     }
 }

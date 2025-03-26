@@ -8,28 +8,25 @@ import java.util.List;
  * Interface email plugin.
  *
  * @author Indra
- *
  */
 public interface EmailPlugin extends IPlugin {
 
-    /** Prefix. */
+    /**
+     * Prefix.
+     */
     public static final String EMAIL_BASE_PROPERTY = IPLUGIN_BASE_PROPERTIES;
 
     /**
      * Realiza envio email.
      *
-     * @param destinatarios
-     *            Destinatarios
-     * @param asunto
-     *            Asunto
-     * @param mensaje
-     *            Mensaje
-     * @param anexos
-     *            anexos
+     * @param destinatarios Destinatarios
+     * @param asunto        Asunto
+     * @param mensaje       Mensaje
+     * @param anexos        anexos
      * @return boolean
      */
     boolean envioEmail(List<String> destinatarios, String asunto,
-            String mensaje, List<AnexoEmail> anexos)
+                       String mensaje, List<AnexoEmail> anexos, String idioma)
             throws EmailPluginException;
 
 }

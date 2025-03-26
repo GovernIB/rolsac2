@@ -6,9 +6,12 @@ import es.caib.rolsac2.commons.plugins.email.api.EmailPluginException;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -26,9 +29,10 @@ import java.util.regex.Pattern;
 public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPlugin {
 
     /**
-     * Encoding utilizado en la generación de XML
+     * Encoding utilizado en la generaciÃ³n de XML
      */
     public static final String ENCODING = "UTF-8";
+    private static final Logger LOG = LoggerFactory.getLogger(EmailSmtpPlugin.class);
 
     /**
      * Prefix.
@@ -49,15 +53,15 @@ public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPl
     }
 
     public boolean envioEmail(final List<String> destinatarios, final String asunto, final String mensaje,
-                              final List<AnexoEmail> anexos) throws EmailPluginException {
+                              final List<AnexoEmail> anexos, String idioma) throws EmailPluginException {
 
         try {
             final InitialContext jndiContext = new InitialContext();
             final Session mailSession;
             if (getProperty(EMAIL_JNDI) == null) {
 
-                /** para configurarlo a través de parámetros de entrada */
-                // Configuración de propiedades
+                /** para configurarlo a travÃ©s de parÃ¡metros de entrada */
+                // ConfiguraciÃ³n de propiedades
                 Properties props = new Properties();
                 props.put("mail.smtp.auth", "true");
                 props.put("mail.smtp.starttls.enable", "true");
@@ -65,7 +69,7 @@ public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPl
                 props.put("mail.smtp.port", getPropiedad(PORT_EMAIL));
                 String user = getPropiedad(USUARIO_EMAIL);
                 String pwd = getPropiedad(PWD_EMAIL);
-                // Creación de la sesión
+                // CreaciÃ³n de la sesiÃ³n
                 mailSession = Session.getInstance(props, new javax.mail.Authenticator() {
                     protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
                         return new javax.mail.PasswordAuthentication(user, pwd);
@@ -129,13 +133,75 @@ public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPl
 
             Transport.send(msg);
 
+        } catch (final MessagingException e) {
+            LOG.error("Error enviando. MSG:" + ExceptionUtils.getMessage(e), e);
+            String error = interpretarError(idioma, e);
+            throw new EmailPluginException(error, e);
         } catch (final Exception e) {
-            //LOG.error("Error enviando. MSG:" + ExceptionUtils.getMessage(e), e);
+            LOG.error("Error enviando. MSG:" + ExceptionUtils.getMessage(e), e);
             throw new EmailPluginException("Error enviando. MSG:" + ExceptionUtils.getMessage(e), e);
         }
         return true;
 
     }
+
+    public String interpretarError(String idioma, MessagingException e) {
+        // Primero, obtenemos el mensaje principal
+        String mensaje = e.getMessage();
+        // Si no contiene información, buscamos en la excepción encadenada
+        if (mensaje == null || mensaje.isEmpty()) {
+            Exception next = e.getNextException();
+            if (next != null) {
+                mensaje = next.getMessage();
+            }
+        }
+
+        if (mensaje == null || mensaje.isEmpty()) {
+            return idioma.equals("ca") ? "Error desconegut a l’enviar el correu."
+                    : "Error desconocido al enviar el correo.";
+        }
+
+        // Convertir a minúsculas para simplificar las comparaciones
+        mensaje = mensaje.toLowerCase();
+
+        // Interpretamos el mensaje para obtener una descripción más clara
+        if (mensaje.contains("connection timed out")) {
+            return idioma.equals("ca") ? "No es pot connectar amb el servidor SMTP: s'ha esgotat el temps de connexió."
+                    : "No se puede conectar con el servidor SMTP: se agotó el tiempo de conexión.";
+        } else if (mensaje.contains("authentication failed")) {
+            return idioma.equals("ca") ? "Error d'autenticació: verifiqueu que l'usuari i la contrasenya siguin correctes."
+                    : "Error de autenticación: verifique el usuario y la contraseña.";
+        } else if (mensaje.contains("unknown smtp host")) {
+            return idioma.equals("ca") ? "El servidor SMTP no es coneix o no es pot resoldre."
+                    : "El servidor SMTP no es conocido o no se puede resolver.";
+        } else if (mensaje.contains("could not convert socket")) {
+            return idioma.equals("ca") ? "Error en establir la connexió: problema amb el protocol de xarxa."
+                    : "Error al establecer la conexión: problema con el protocolo de red.";
+        } else if (mensaje.contains("could not connect to smtp host")) {
+            return idioma.equals("ca") ? "No es pot connectar amb el servidor SMTP: verifiqueu l'adreça i el port."
+                    : "No se puede conectar con el servidor SMTP: verifique la dirección y el puerto.";
+        } else if (mensaje.contains("invalid addresses")) {
+            return idioma.equals("ca") ? "Error en les adreces de correu: verifiqueu els destinataris."
+                    : "Error en las direcciones de correo: verifique los destinatarios.";
+        } else if (mensaje.contains("connect to host")) {
+            return idioma.equals("ca") ? "Error en la configuració del servidor SMTP."
+                    : "Error en la configuración del servidor SMTP.";
+        } else if (mensaje.contains("connection refused")) {
+            return idioma.equals("ca") ? "La connexió ha estat rebutjada pel servidor."
+                    : "La conexión fue rechazada por el servidor.";
+        } else if (mensaje.contains("starttls")) {
+            return idioma.equals("ca") ? "Error amb el protocol STARTTLS: verifiqueu la configuració de seguretat."
+                    : "Error con el protocolo STARTTLS: verifique la configuración de seguridad.";
+        } else if (mensaje.contains("could not open connection")) {
+            return idioma.equals("ca") ? "No s'ha pogut obrir la connexió amb el servidor."
+                    : "No se pudo abrir la conexión con el servidor.";
+        }
+
+        // Si no se reconoce el mensaje, se devuelve el mensaje original
+        return idioma.equals("ca") ? "Error en enviar el correu: " + mensaje
+                : "Error al enviar el correo: " + mensaje;
+    }
+
 
     private static final String HTML_PATTERN = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
     private final Pattern pattern = Pattern.compile(HTML_PATTERN);
@@ -161,3 +227,4 @@ public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPl
     }
 
 }
+
