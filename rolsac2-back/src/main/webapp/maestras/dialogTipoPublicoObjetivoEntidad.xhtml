@@ -113,10 +113,6 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this"/>
         <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogTipoPublicoObjetivoEntidad.isModoConsulta()}"

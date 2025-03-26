@@ -115,11 +115,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogExportar.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this"
-                         update="messagesDialog"/>
         <p:commandButton action="#{dialogExportar.guardar}"
                          value="#{labels['dict.exportar']}" update="messagesDialog form"
                          process="@all"/>

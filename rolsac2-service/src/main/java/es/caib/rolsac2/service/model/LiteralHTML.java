@@ -33,6 +33,11 @@ public class LiteralHTML {
         super();
     }
 
+    /**
+     * Create instance.
+     *
+     * @return the literal html
+     */
     public static LiteralHTML createInstance() {
         LiteralHTML literal = new LiteralHTML();
         List<Traduccion> trads = new ArrayList<>();
@@ -42,6 +47,24 @@ public class LiteralHTML {
         literal.setTraducciones(trads);
         return literal;
     }
+
+    /**
+     * Create instance.
+     *
+     * @param idiomas idiomas
+     * @return the literal html
+     */
+    public static LiteralHTML createInstance(List<String> idiomas) {
+        LiteralHTML literal = new LiteralHTML();
+        List<Traduccion> trads = new ArrayList<>();
+
+        for (String idioma : idiomas) {
+            trads.add(new Traduccion(idioma, ""));
+        }
+        literal.setTraducciones(trads);
+        return literal;
+    }
+
 
     /**
      * Para obtener una traducción
@@ -233,5 +256,43 @@ public class LiteralHTML {
             }
         }
         return true;
+    }
+
+    /**
+     * Se hace a este nivel manualmente el clonar.
+     *
+     * @return
+     */
+    public Object clone() {
+        LiteralHTML literal = new LiteralHTML();
+        literal.setCodigo(this.codigo);
+        List<Traduccion> traducciones = new ArrayList<>();
+        if (trads != null) {
+            for (Traduccion trad : trads) {
+                traducciones.add((Traduccion) trad.clone());
+            }
+        }
+        literal.setTraducciones(traducciones);
+        return literal;
+    }
+
+    /**
+     * Comprueba si al menos tiene una traducción con contenido.
+     *
+     * @return
+     */
+    public boolean estaVacio() {
+
+        if (this.getTraducciones() == null || this.getTraducciones().isEmpty()) {
+            return true;
+        }
+        boolean vacio = true;
+        for (Traduccion trad : this.getTraducciones()) {
+            if (trad.getLiteral() != null && !trad.getLiteral().isEmpty()) {
+                vacio = false;
+                break;
+            }
+        }
+        return vacio;
     }
 }

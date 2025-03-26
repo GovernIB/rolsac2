@@ -3,23 +3,23 @@ package es.caib.rolsac2.commons.plugins.traduccion.translatorib;
 import es.caib.rolsac2.commons.plugins.traduccion.api.*;
 import es.caib.rolsac2.commons.rest.client.BasicAuthenticator;
 import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 public class TranslatorIBPlugin extends AbstractPluginProperties implements IPluginTraduccion {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TranslatorIBPlugin.class);
+
     private static final String BASE_URL = "url";
-    private static final String USER= "usr";
+    private static final String USER = "usr";
     private static final String PASSWORD = "pwd";
     private static Client client;
 
@@ -80,13 +80,13 @@ public class TranslatorIBPlugin extends AbstractPluginProperties implements IPlu
                 res = texto;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error en translatoribplugin en traducirHTML", e);
             throw new IPluginTraduccionException("Ha habido un error en la comunicación con el plugin de traducción. " + e.getMessage());
         }
         return res;
     }
 
-    public String traducirString(String texto, Idioma entrada, Idioma salida, TipoEntrada te) throws IPluginTraduccionException{
+    public String traducirString(String texto, Idioma entrada, Idioma salida, TipoEntrada te) throws IPluginTraduccionException {
         String res = "";
         ParametrosTraduccionTexto parametros = new ParametrosTraduccionTexto();
         parametros.setTextoEntrada(texto);
@@ -94,8 +94,7 @@ public class TranslatorIBPlugin extends AbstractPluginProperties implements IPlu
 
         parametros.setIdiomaEntrada(entrada);
         parametros.setIdiomaSalida(salida);
-        //parametros.setOpciones(new Opciones());
-        try{
+        try {
             final Response response = client.target(getProperty(BASE_URL) + "/texto").request().post(Entity.json(parametros));
 
             final ResultadoTraduccionTexto respuesta = response.readEntity(ResultadoTraduccionTexto.class);
@@ -107,7 +106,7 @@ public class TranslatorIBPlugin extends AbstractPluginProperties implements IPlu
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error en translatoribplugin en traducirString", e);
             throw new IPluginTraduccionException("Ha habido un error en la comunicación con el plugin de traducción. " + e.getMessage());
         }
 
@@ -117,22 +116,6 @@ public class TranslatorIBPlugin extends AbstractPluginProperties implements IPlu
     public void test() {
         final ResultadoTraduccionTexto respuesta = client.target(getProperty(BASE_URL) + "/test").request(MediaType.APPLICATION_JSON)
                 .get(ResultadoTraduccionTexto.class);
-
-
-    }
-
-    public void testTraduccion() {
-
-        final ParametrosTraduccionTexto parametros = new ParametrosTraduccionTexto();
-        parametros.setTextoEntrada("Texto a traducir");
-        parametros.setTipoEntrada(TipoEntrada.TEXTO_PLANO);
-        parametros.setIdiomaEntrada(Idioma.CASTELLANO);
-        parametros.setIdiomaSalida(Idioma.CATALAN);
-
-        final Response response = client.target(getProperty(BASE_URL) + "/texto").request().post(Entity.json(parametros));
-
-        final ResultadoTraduccionTexto respuesta = response.readEntity(ResultadoTraduccionTexto.class);
-
-
+        LOG.debug("Test {}", respuesta);
     }
 }

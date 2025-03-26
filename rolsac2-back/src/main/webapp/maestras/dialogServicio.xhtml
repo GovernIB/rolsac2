@@ -522,7 +522,7 @@
                                                  styleClass="w95"
                                                  autoWidth="false"
                                                  required="#{empty param['formDialog:closeButton'] and dialogServicio.isOpcionTelematicaDatos()}"
-                                                 requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
+                                                 requiredMessage="#{labels['dict.obligatorio.plataformaTramitacion']}"
                                                  disabled="#{dialogServicio.isModoConsulta() ||
                                                         !dialogServicio.canalesSeleccionados.contains('TEL')}"
                                                  converter="#{platTramitElectronicaConverter}">
@@ -1110,7 +1110,7 @@
 
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogServicio.ayuda}"
+        <p:commandButton action="#{dialogServicio.ayuda('dialogServicio')}"
                          icon="pi pi-info-circle" iconPos="top"
                          value="#{labels['dict.ayuda']}"
                          process="@this"/>

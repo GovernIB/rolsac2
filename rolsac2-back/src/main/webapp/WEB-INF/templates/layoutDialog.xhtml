@@ -89,8 +89,13 @@ Plantilla.
         <h:form id="formDialog" enctype="multipart/form-data" >
             <div class="wrapper">
                 <div class="contenido">
-                    <div class="cabeceraIdiomas d-flex">
-                        <ui:insert name="contentIdioma"/>
+                    <div class="cabeceraIdiomas d-flex justify-content-between">
+                        <div class="contentIdiomaIzquierda">
+                            <ui:insert name="contentIdioma"/>
+                        </div>
+                        <div class="contentIdiomaDerecha">
+                            <ui:insert name="contentIdiomaDerecha"/>
+                        </div>
                     </div>
                     <ui:insert name="contentDialog"/>
                 </div>

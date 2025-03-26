@@ -94,10 +94,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
   <ui:define name="contentFooterDialogRight">
-    <p:commandButton action="#{dialogTipoMediaEdificio.ayuda}"
-                     icon="pi pi-info-circle" iconPos="top"
-                     value="#{labels['dict.ayuda']}"
-                     process="@this"/>
     <p:commandButton action="#{dialogTipoMediaEdificio.guardar}" validateClient="true"
                      value="#{labels['dict.guardar']}" update="messagesDialog"
                      process="@all"/>

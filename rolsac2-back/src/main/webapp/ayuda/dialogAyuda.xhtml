@@ -1,0 +1,53 @@
+<html lang="#{sessionBean.lang}"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:my="http://java.sun.com/jsf/composite/components" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        	<!-- Parametros dialogo -->
+			<f:metadata>
+				<f:viewParam id="ID" name="ID" value="#{dialogAyuda.id}"/>
+				<f:viewAction action="#{dialogAyuda.load}" />
+			</f:metadata>
+    </ui:define>
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogAyuda.titulo']}"/>
+    </ui:define>
+    <ui:define name="contentDialog">
+        <h:form id="dialogAyuda" styleClass="margin-top-10">
+  			<p:outputPanel>
+				<!-- Contenido dialogo -->
+				<!-- Growl mensajes -->
+				<p:growl id="growlDialog" widgetVar="growlDialog"/>
+				<p:focus />
+
+				<my:literalComponentAyuda id="txtDescripcion"
+									 literal="#{dialogAyuda.data.descripcion}"
+									 soloLecture="false"
+									 idioma="#{dialogAyuda.idioma}"
+									 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+									 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+									 tipo="html"
+									 height="#{sessionBean.screenHeight}"
+									 width="#{sessionBean.screenWidthInt}"
+									 toolbar="true"
+									 idCompuesto="formDialog\:dialogAyuda\:txtDescripcion"
+									 maxlength="4000" />
+			</p:outputPanel>
+	</h:form>
+    </ui:define>
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton value="#{labels['dict.editar']}" actionListener="#{dialogAyuda.editar()}" process="@form" update="@form dialogAyuda:growlDialog" rendered="#{sessionBean.tienePermisoSuperAdmin()}">
+			<p:ajax event="dialogReturn"
+					listener="#{dialogAyuda.returnDialogo}"
+					process="@this"
+					update="formDialog:dialogAyuda:txtDescripcion" />
+		</p:commandButton>
+		<p:commandButton value="#{labels['dict.cerrar']}" actionListener="#{dialogAyuda.cerrar()}" process="@this" oncomplete="stopCargando()" onstart="startCargando()"/>
+    </ui:define>
+</ui:composition>
+</html>

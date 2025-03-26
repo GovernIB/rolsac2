@@ -149,10 +149,7 @@ Página con el detalle de un edificio
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogEdificio.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this"/>
+
         <p:commandButton action="#{dialogEdificio.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          process="@all"/>

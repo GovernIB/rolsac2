@@ -381,19 +381,13 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
 
     @Override
     public String toString() {
-        return "TipoTramitacionDTO{" + "id=" + codigo + ", tramitPresencial="
-                + tramitPresencial + ", plantilla=" + plantilla + ", tramitElectronica=" + tramitElectronica
-                + ", urlTramitacion='" + urlTramitacion + '\'' + ", codPlatTramitacion=" + codPlatTramitacion
-                + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion + ", tramiteParametros='"
-                + tramiteParametros + '\'' + '}';
+        return "TipoTramitacionDTO{" + "id=" + codigo + ", tramitPresencial=" + tramitPresencial + ", plantilla=" + plantilla + ", tramitElectronica=" + tramitElectronica + ", urlTramitacion='" + urlTramitacion + '\'' + ", codPlatTramitacion=" + codPlatTramitacion + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion + ", tramiteParametros='" + tramiteParametros + '\'' + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         TipoTramitacionDTO that = (TipoTramitacionDTO) o;
         if (codigo != null && that.codigo != null) {
             return codigo.equals(that.codigo);
@@ -450,6 +444,9 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
         }
         if (UtilComparador.compareTo(this.getUrlTramitacion(), data2.getUrlTramitacion()) != 0) {
             return UtilComparador.compareTo(this.getUrlTramitacion(), data2.getUrlTramitacion());
+        }
+        if (UtilComparador.compareTo(this.getUrl(), data2.getUrl()) != 0) {
+            return UtilComparador.compareTo(this.getUrl(), data2.getUrl());
         }
         if (UtilComparador.compareTo(this.getTramiteParametros(), data2.getTramiteParametros()) != 0) {
             return UtilComparador.compareTo(this.getTramiteParametros(), data2.getTramiteParametros());

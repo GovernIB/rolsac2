@@ -116,10 +116,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogDocumentoProcedimientoLOPD.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this"/>
         <p:commandButton action="#{dialogDocumentoProcedimientoLOPD.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog form"
                          process="@all"

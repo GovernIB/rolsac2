@@ -133,6 +133,9 @@
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <h:panelGroup id="panelCrear">
+           <!-- <p:commandButton action="#{dialogTraspasoBOIB.crearNormativa2}"
+                             value="#{labels['dialogTraspasoBOIB.crearNormativa']}2" update="messagesDialog"
+                             process="@this"  />-->
             <p:commandButton action="#{dialogTraspasoBOIB.crearNormativa}"
                              value="#{labels['dialogTraspasoBOIB.crearNormativa']}" update="messagesDialog"
                              process="@this" rendered="#{dialogTraspasoBOIB.mostrarResultados}"/>

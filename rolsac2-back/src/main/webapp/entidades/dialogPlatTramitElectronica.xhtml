@@ -110,10 +110,6 @@
         </p:panel>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogPlatTramitElectronica.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this"/>
         <p:commandButton action="#{dialogPlatTramitElectronica.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>

@@ -76,6 +76,26 @@ public class FicheroServiceFacadeBean implements FicheroServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public String createFicheroAyuda(byte[] content, String fileName, TypeFicheroExterno tipoFicheroExterno, String path) {
+        Long idFichero = ficheroExternoRepository.createFicheroExterno(content, fileName, tipoFicheroExterno, null, path);
+        ficheroExternoRepository.persistFicheroExterno(idFichero, null, path);
+        FicheroDTO ficheroDTO = ficheroExternoRepository.getContentById(idFichero, path);
+        return extraerFinalReferencia(ficheroDTO);
+    }
+
+    /**
+     * Extraer de la referencia, la parte final que es el id del fichero
+     *
+     * @param ficheroDTO FicheroDTO
+     * @return La parte final de la referencia
+     */
+    private String extraerFinalReferencia(FicheroDTO ficheroDTO) {
+        String[] split = ficheroDTO.getReferencia().split("/");
+        return split[split.length - 1];
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void persistFicheroExterno(Long codigoFichero, Long id, String path) {
         ficheroExternoRepository.persistFicheroExterno(codigoFichero, id, path);
     }
@@ -111,6 +131,34 @@ public class FicheroServiceFacadeBean implements FicheroServiceFacade {
         if (jFicheroExterno != null) {
             ficheroExternoRepository.purgeFicheroExterno(path, jFicheroExterno);
         }
+    }
+
+    @Override
+    @PermitAll
+    public byte[] getContentByRuta(String ruta) {
+        return ficheroExternoRepository.getContentByRuta(ruta);
+    }
+
+    @Override
+    @PermitAll
+    public void borrarFicheroPerdido(String path) {
+        ficheroExternoRepository.deleteFicheroRuta(path);
+    }
+
+    @Override
+    @PermitAll
+    public void borrarFicheroAyuda(String path, TypeFicheroExterno typeFicheroExterno, Long codigo) {
+        ficheroExternoRepository.deleteFicheroExterno(codigo);
+        JFicheroExterno jFicheroExterno = ficheroExternoRepository.findBorradoById(codigo);
+        if (jFicheroExterno != null) {
+            ficheroExternoRepository.purgeFicheroExterno(path, jFicheroExterno);
+        }
+    }
+
+    @Override
+    @PermitAll
+    public FicheroDTO getContentAyudaByReferencia(String id, String path) {
+        return ficheroExternoRepository.getContentAyudaByReferencia(id, path);
     }
 
 }

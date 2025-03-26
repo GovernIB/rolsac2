@@ -57,20 +57,5 @@ public class AuditoriaCambio {
         this.valoresModificados = valoresModificados;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("AuditoriaCambio{");
-        sb.append("idCampo='").append(idCampo).append('\'');
-        sb.append(", valoresModificados=");
-        if (valoresModificados == null) {
-            sb.append("NULO");
-        } else {
-            for (AuditoriaValorCampo valor : valoresModificados) {
-                sb.append(valor.toString());
-            }
-        }
-        sb.append('}');
-        return sb.toString();
-    }
+
 }

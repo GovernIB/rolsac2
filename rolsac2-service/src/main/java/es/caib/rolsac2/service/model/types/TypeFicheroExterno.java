@@ -31,7 +31,11 @@ public enum TypeFicheroExterno {
     /**
      * Procedimientos documento (RS2_TRADOPR).
      */
-    PROCEDIMIENTO_DOCUMENTOS("proced/", "TRADOPR");
+    PROCEDIMIENTO_DOCUMENTOS("proced/", "TRADOPR"),
+    /**
+     * Ayudas imagen
+     */
+    AYUDAS_IMAGEN("ayudas/", "AYUDASIMG");
 
     private String ruta;
     private String tipo;

@@ -42,8 +42,6 @@ Pàgina amb el llistat de processos automàtics
                         <p:ajax event="dialogReturn" listener="#{viewProcesosLog.buscar()}"
                                 update="messages dataTable"/>
                     </p:commandButton>
-                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                     action="#{viewProcesosLog.ayuda}" process="@this" update="messages"/>
                 </f:facet>
             </p:toolbar>
             <p:dataTable id="dataTable" value="#{viewProcesosLog.lazyModel}" var="procesoLog"

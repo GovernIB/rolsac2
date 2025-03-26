@@ -111,4 +111,37 @@ public interface FicheroExternoRepository extends CrudRepository<JFicheroExterno
      * @return fichero marcado para borrar
      */
     JFicheroExterno findBorradoById(Long idFichero);
+
+    /**
+     * Obtiene la lista de ficheros en la carpeta
+     *
+     * @param path               ruta de la carpeta
+     * @param typeFicheroExterno tipo de fichero
+     * @return lista de ficheros
+     */
+    List<String> getListadoFicheros(String path, TypeFicheroExterno typeFicheroExterno);
+
+    /**
+     * Obtiene el contenido de un fichero a partir de su ruta
+     *
+     * @param ruta la ruta
+     * @return el contenido del fichero
+     */
+    byte[] getContentByRuta(String ruta);
+
+    /**
+     * Borra fichero de una ruta
+     *
+     * @param path Ruta del fichero
+     */
+    void deleteFicheroRuta(String path);
+
+    /**
+     * Obtiene el fichero de ayuda a partir de su referencia
+     *
+     * @param id   Código fichero, mas concretamente el final de su referencia
+     * @param path Ruta del fichero
+     * @return FicheroDTO
+     */
+    FicheroDTO getContentAyudaByReferencia(String id, String path);
 }

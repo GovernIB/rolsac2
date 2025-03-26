@@ -1,196 +1,304 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	  xmlns:t="http://back.rolsac2.caib.es/tags">
 <!--
-Pàgina amb el llistat de personal d'una unitat administrativa.
+PÃ gina amb el llistat de personal d'una unitat administrativa.
 -->
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
 
-    <ui:define name="metadata">
-        <!-- Parametros dialogo -->
+	<ui:define name="metadata">
+		<!-- Parametros dialogo -->
 		<f:metadata>
 			<f:viewParam name="MODO_ACCESO" value="#{dialogLiteralHTML.modoAcceso}" />
 			<f:viewParam id="ID" name="ID" value="#{dialogLiteralHTML.id}" />
 			<f:viewParam name="idioma" value="#{dialogLiteralHTML.idiomaInicial}" />
+			<f:viewParam name="deshabilitarBorrar" value="#{dialogLiteralHTML.deshabilitarBorrar}" />
 			<f:viewAction action="#{dialogLiteralHTML.load}" />
 			<f:event type="preRenderView" listener="#{dialogLiteralHTML.onload}" />
 		</f:metadata>
-    </ui:define>
+	</ui:define>
 
-	 <ui:define name="icerik">
-    	<script src="../tinymce/js/tinymce/tinymce.min.js" type="text/javascript"></script>
-    	<script type="text/javascript">
+	<ui:define name="icerik">
+		<script src="../tinymce/js/tinymce/tinymce.min.js" type="text/javascript"></script>
 
-
-    	tinyMCE.init({
- 		   // General options
- 		    mode : "textareas",
- 		    height: 559,
- 		    plugins: "code image link lists paste textcolor",
- 		    toolbar: "bold italic | forecolor backcolor | link image | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat #{dialogLiteralHTML.sourceCode}" ,
- 		    menubar: "",
- 		    paste_as_text : false,
- 		   	readonly: #{dialogLiteralHTML.isConsulta()},
- 		 });
-
-	var idioma = 'es';
-    /** Organiza los tabs. **/
-    function mostrar(idioma) {
-    	mostrarTab(idioma);
-    	mostrarButton(idioma);
-    }
-
-   /** Funcion que muestra el tab con la traducción de cada idioma ***/
-   function mostrarButton(idioma) {
-	    ocultarButton("formDialog:btnCa");
-	    ocultarButton("formDialog:btnEs");
+		<script type="text/javascript">
 
 
-	   	if (idioma == 'ca') {
-	   		document.getElementById("formDialog:btnCa").classList.add("marcado");
-	   		return;
-	   	}
-	   	if (idioma == 'es') {
-	   		document.getElementById("formDialog:btnEs").classList.add("marcado");
-	   		return;
-	   	}
-   }
+			tinyMCE.init({
+				// General options
+				mode : "textareas",
+				height: 559,
+				plugins: "code image link lists paste textcolor",
+				toolbar: "bold italic | forecolor backcolor | link image | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat #{dialogLiteralHTML.sourceCode}" ,
+				menubar: "",
+				paste_as_text : false,
+				readonly: #{dialogLiteralHTML.isConsulta()},
+				file_picker_types: 'image',
+				images_upload_url: '#{facesContext.externalContext.requestContextPath}/api/upload', // Ruta de tu controlador Spring para subir imÃ¡genes
+				images_upload_handler: function (blobInfo, success, failure) {
+					debugger;
+					const xhr = new XMLHttpRequest();
+					const formData = new FormData();
+					xhr.open('POST', '#{facesContext.externalContext.requestContextPath}/api/upload', true);
 
-   /** Ocultar button. **/
-   function ocultarButton(elId) {
-	   	if (document.getElementById(elId) != null) {
-	   		document.getElementById(elId).classList.remove("marcado");
-	   	}
-   }
+					xhr.onload = function () {
+						if (xhr.status === 200) {
+							const json = JSON.parse(xhr.responseText);
+							success(json.location); // TinyMCE inserta la URL de la imagen
+						} else {
+							failure('Error al subir la imagen');
+						}
+					};
 
-    /** Funcion que muestra el tab con la traducción de cada idioma ***/
-    function mostrarTab(idioma) {
-    	if(idioma!=null &amp;&amp; idioma!="null"){
-	    	let listaIdiomas = "#{dialogLiteralHTML.idiomasPermitidos}";
-	    	listaIdiomas = listaIdiomas.slice(1, -1);
-	    	listaIdiomas = listaIdiomas.split(", ");
-	    	listaIdiomas.forEach(element => {
-	    		ocultarTab("formDialog:txt"+element.toUpperCase());
-	    		document.getElementById("formDialog:btn"+element.charAt(0).toUpperCase()+element.slice(1)).firstChild.style.background = "#f5f5f5";
-	    	});
+					const blob = blobInfo.blob(); // ObtÃ©n el archivo de imagen
+					formData.append('file', blob, blobInfo.filename());
+					formData.append('idAyuda', '#{dialogLiteralHTML.id}');
+					xhr.send(formData);
+				},
+			});
 
-	    	document.getElementById("formDialog:txt"+idioma.toUpperCase()).parentNode.style.display="";
-			document.getElementById("formDialog:btn"+idioma.charAt(0).toUpperCase()+idioma.slice(1)).firstChild.style.background = "#e0d7da";
-    	}
+			var idioma = 'es';
+			/** Organiza los tabs. **/
+			function mostrar(idioma) {
+				mostrarTab(idioma);
+				mostrarButton(idioma);
+			}
 
-    }
-
-    /** Ocultar tab. **/
-    function ocultarTab(elId) {
-    	if (document.getElementById(elId) != null) {
-    		document.getElementById(elId).parentNode.style.display="none";
-    	}
-    }
-
-    function guardar() {
-    	let idiomas = #{sessionBean.getIdiomasPermitidosList()};
-    	idiomas.foreach(guardarLoop)
-
-    }
-
-    function guardarLoop(item){
-    	if (#{dialogLiteralHTML.visible(item)}) {
-    		if (!checkTiny("formDialog:txt"+item.toUpperCase())) {
-				document.getElementById("formDialog:btn"+item.charAt(0).toUpperCase() + item.slice(1)).click();
-    			return;
-    		}
-    	}
-
-    	document.getElementById("formDialog:btnGuardar").click();
-
-    }
-
-    /** Comprueba si esta vacio, En caso de no estarlo, rellena el campo. **/
-    function checkTiny(id) {
-    	var correcto = false;
-    	var contenido = tinyMCE.get(id).getContent();
-    	if (isVacio(contenido)) {
-    		correcto = false;
-    	} else {
-    		correcto = true;
-    		document.getElementById(id).value = contenido;
-    	}
-    	return correcto;
-    }
-
-  //<![CDATA[
-    function isVacio(texto)  {
-    	while (texto.indexOf('&nbsp;') >= 0) {
-    		texto = texto.replace('&nbsp;',"");
-    	}
-    	while (texto.indexOf('</p>') >= 0) {
-    		texto = texto.replace('</p>',"");
-    	}
-    	while (texto.indexOf('<p>') >= 0) {
-    		texto = texto.replace('<p>',"");
-    	}
-    	while (texto.indexOf('\n') >= 0) {
-    		texto = texto.replace('\n',"");
-    	}
-    	texto = texto.trim();
-    	if (texto == '') {
-    		return true;
-   		}
-    	return false;
-    }
-  //]]>
-    </script>
-  </ui:define>
-
-    <ui:define name="pageTitleDialog">
-        Gestión de literales HTML
-    </ui:define>
+			/** Funcion que muestra el tab con la traducciÃ³n de cada idioma ***/
+			function mostrarButton(idioma) {
+				ocultarButton("formDialog:btnCa");
+				ocultarButton("formDialog:btnEs");
 
 
-    <ui:define name="contentDialog" >
-        <p:panel onload="mostrar('#{dialogLiteralHTML.idiomaInicial}')" id="panelIdiomas">
-				<p:growl id="growlDialogTraduccion"  globalOnly="false"
-								                     showDetail="true"
-								                     life="5000"
-								                     process="@all"
-								                     escape="false"/>
+				if (idioma == 'ca') {
+					document.getElementById("formDialog:btnCa").classList.add("marcado");
+					return;
+				}
+				if (idioma == 'es') {
+					document.getElementById("formDialog:btnEs").classList.add("marcado");
+					return;
+				}
+			}
 
-						<div class="ui-inputgroup" align="center" style="margin-top:5px;margin-bottom:5px">
-							<c:forEach items="#{dialogLiteralHTML.idiomasPermitidos}" var="idioma">
-            					<p:commandButton id="btn#{idioma.substring(0, 1).toUpperCase().concat(idioma.substring(1))}" value="#{labels['idiomas.' += idioma]}"  oncomplete="mostrar('#{idioma}')" process="@this" style="outline:none !important;" actionListener="dialogLiteralHTML.setIdioma(idioma)"/>
-							</c:forEach>
-        				</div>
-						<c:forEach items="#{dialogLiteralHTML.idiomasPermitidos}" var="idioma">
-            				<div style="margin:10px" rendered="#{dialogLiteralHTML.visible(idioma)}" >
-								<p:inputTextarea id="txt#{idioma.toUpperCase()}" value="#{dialogLiteralHTML.texto[idioma.substring(0, 1).toUpperCase().concat(idioma.substring(1))]}" disabled="#{dialogLiteralHTML.isConsulta()}" rows="14" cols="140" autoResize="false" maxlength="4000" style="height:559px"  />
-							</div>
-            			</c:forEach>
+			/** Ocultar button. **/
+			function ocultarButton(elId) {
+				if (document.getElementById(elId) != null) {
+					document.getElementById(elId).classList.remove("marcado");
+				}
+			}
 
-				</p:panel>
+			/** Funcion que muestra el tab con la traducciÃ³n de cada idioma ***/
+			function mostrarTab(idioma) {
+				if(idioma!=null &amp;&amp; idioma!="null"){
+					let listaIdiomas = "#{dialogLiteralHTML.idiomasPermitidos}";
+					listaIdiomas = listaIdiomas.slice(1, -1);
+					listaIdiomas = listaIdiomas.split(", ");
+					listaIdiomas.forEach(element => {
+						ocultarTab("formDialog:txt"+element.toUpperCase());
+						document.getElementById("formDialog:btn"+element.charAt(0).toUpperCase()+element.slice(1)).firstChild.style.background = "#f5f5f5";
+					});
+
+					//document.getElementById("formDialog:txt"+idioma.toUpperCase()).parentNode.style.display="";
+					//document.getElementById("formDialog:btn"+idioma.charAt(0).toUpperCase()+idioma.slice(1)).firstChild.style.background = "#e0d7da";
+
+					let editorId = "formDialog:txt" + idioma.toUpperCase();
+					let editorElement = document.getElementById(editorId);
+
+					if (editorElement) {
+						editorElement.parentNode.style.display = "";
+						document.getElementById("formDialog:btn" + idioma.charAt(0).toUpperCase() + idioma.slice(1)).firstChild.style.background = "#e0d7da";
+
+						// 💡 Forzar el foco en el TinyMCE correcto
+						setTimeout(() => {
+							if (tinymce.get(editorId)) {
+								tinymce.get(editorId).focus();
+							}
+						}, 300);
+					}
+				}
+
+			}
+
+			/** Ocultar tab. **/
+			function ocultarTab(elId) {
+				if (document.getElementById(elId) != null) {
+					document.getElementById(elId).parentNode.style.display="none";
+				}
+			}
+
+			function guardar() {
+				let idiomas = #{sessionBean.getIdiomasPermitidosList()};
+				idiomas.foreach(guardarLoop)
+
+			}
+
+			function guardarLoop(item){
+				if (#{dialogLiteralHTML.visible(item)}) {
+					if (!checkTiny("formDialog:txt"+item.toUpperCase())) {
+						document.getElementById("formDialog:btn"+item.charAt(0).toUpperCase() + item.slice(1)).click();
+						return;
+					}
+				}
+
+				document.getElementById("formDialog:btnGuardar").click();
+
+			}
+
+			/** Comprueba si esta vacio, En caso de no estarlo, rellena el campo. **/
+			function checkTiny(id) {
+				var correcto = false;
+				var contenido = tinyMCE.get(id).getContent();
+				if (isVacio(contenido)) {
+					correcto = false;
+				} else {
+					correcto = true;
+					document.getElementById(id).value = contenido;
+				}
+				return correcto;
+			}
+
+			//<![CDATA[
+			function isVacio(texto)  {
+				while (texto.indexOf('&nbsp;') >= 0) {
+					texto = texto.replace('&nbsp;',"");
+				}
+				while (texto.indexOf('</p>') >= 0) {
+					texto = texto.replace('</p>',"");
+				}
+				while (texto.indexOf('<p>') >= 0) {
+					texto = texto.replace('<p>',"");
+				}
+				while (texto.indexOf('\n') >= 0) {
+					texto = texto.replace('\n',"");
+				}
+				texto = texto.trim();
+				if (texto == '') {
+					return true;
+				}
+				return false;
+			}
+			//]]>
+		</script>
+
 	</ui:define>
 
 
 
-    <ui:define name="contentFooterDialogLeft">
-        <p:commandButton  action="#{dialogLiteralHTML.ayuda}"
-                          icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this" />
-    </ui:define>
-    <ui:define name="contentFooterDialogRight">
+	<ui:define name="pageTitleDialog">
+		GestiÃ³n de literales HTML
+	</ui:define>
 
-						<p:commandButton id="btnGuardar" value="#{labels['dict.aceptar']}" onclick="tinyMCE.triggerSave(true,true);" rendered="#{!dialogLiteralHTML.isConsulta()}" process="@all" update="formDialog:growlDialogTraduccion" action="#{dialogLiteralHTML.guardar()}" styleClass="boton-azul"/>
-						<p:commandButton value="#{labels['dict.borrar']}" actionListener="#{dialogLiteralHTML.borrar()}" process="@this"  rendered="#{!dialogLiteralHTML.isConsulta()}" tyleClass="boton-rojo"/>
-						<p:commandButton value="#{labels['dict.cancelar']}" actionListener="#{dialogLiteralHTML.cancelar()}" process="@this"/>
 
-			<p:commandButton id="btnErrorCa" actionListener="#{dialogLiteralHTML.errorCa()}" update="formDialog:growlDialogTraduccion" style="display:none" process="@this"/>
-			<p:commandButton id="btnErrorEs" actionListener="#{dialogLiteralHTML.errorEs()}" update="formDialog:growlDialogTraduccion" style="display:none" process="@this"/>
+	<ui:define name="contentDialog" >
+		<p:panel onload="mostrar('#{dialogLiteralHTML.idiomaInicial}')" id="panelIdiomas">
+			<p:growl id="growlDialogTraduccion"  globalOnly="false"
+					 showDetail="true"
+					 life="5000"
+					 process="@all"
+					 escape="false"/>
 
-    </ui:define>
+			<div class="ui-inputgroup" align="center" style="margin-top:5px;margin-bottom:5px">
+				<c:forEach items="#{dialogLiteralHTML.idiomasPermitidos}" var="idioma">
+					<p:commandButton id="btn#{idioma.substring(0, 1).toUpperCase().concat(idioma.substring(1))}" value="#{labels['idiomas.' += idioma]}"  oncomplete="mostrar('#{idioma}')" process="@this" style="outline:none !important;" actionListener="dialogLiteralHTML.setIdioma(idioma)"/>
+				</c:forEach>
+			</div>
+			<c:forEach items="#{dialogLiteralHTML.idiomasPermitidos}" var="idioma">
+				<ui:fragment rendered="#{dialogLiteralHTML.visible(idioma)}">
+					<div style="margin:10px">
+						<p:inputTextarea id="txt#{idioma.toUpperCase()}"
+										 value="#{dialogLiteralHTML.texto[idioma.substring(0, 1).toUpperCase().concat(idioma.substring(1))]}"
+										 disabled="#{dialogLiteralHTML.isConsulta()}"
+										 rows="14" cols="140" autoResize="false" maxlength="4000"
+										 style="height:559px" />
+					</div>
+				</ui:fragment>
+			</c:forEach>
 
+		</p:panel>
+
+		<p:dialog widgetVar="dlgImage" header="Seleccionar imagen" modal="true">
+			<!-- Growl dentro del diálogo -->
+			<p:growl id="growlAyudaImg" widgetVar="growlAyudaImg" showDetail="true" life="3000" />
+
+			 	<p:outputPanel id="panel">
+					<p:tabView id="tabView" widgetVar="tabViewWidget">
+						<!-- Pestaña General -->
+						<p:tab id="general" title="General">
+							<h:panelGrid columns="2" style="width:100%">
+								<p:outputLabel for="imgSrc" value="Fuente (URL):*" />
+								<h:panelGroup style="display: flex; align-items: center; width: 100%;">
+									<p:inputText id="imgSrc" value="#{dialogLiteralHTML.imageUrl}" style="flex: 1;" placeholder="URL de la imagen" />
+									<p:commandButton icon="pi pi-folder-open"  actionListener="#{dialogLiteralHTML.seleccionarImagen()}" process="@this" >
+										<p:ajax event="dialogReturn" listener="#{dialogLiteralHTML.returnDialogo}"
+												update="imgSrc"/>
+									</p:commandButton>
+
+								</h:panelGroup>
+
+								<p:outputLabel for="imgDesc" value="Descripción:" />
+								<p:inputText id="imgDesc" value="#{dialogLiteralHTML.imageDescription}" style="width:100%" />
+
+								<p:outputLabel for="imgWidth" value="Ancho:" />
+								<p:inputText id="imgWidth" value="#{dialogLiteralHTML.imageWidth}" style="width:80px" />
+
+								<p:outputLabel for="imgHeight" value="Alto:" />
+								<p:inputText id="imgHeight" value="#{dialogLiteralHTML.imageHeight}" style="width:80px" />
+							</h:panelGrid>
+						</p:tab>
+
+						<!-- Pestaña Subir Imagen -->
+						<p:tab title="Subir">
+							<p:fileUpload listener="#{dialogLiteralHTML.handleLogoUpload}"
+										  mode="advanced"
+										  dragDropSupport="false"
+										  update="imgSrc"
+										  sizeLimit="100000"
+										  fileLimit="3"
+										  validateContentType="true"
+										  accept=".jpg,.png,.gif, .jpeg"
+										  onupload="PF('tabViewWidget').select(0);"
+										  label="Seleccionar imagen"
+										  uploadLabel="#{labels['dict.subir']}"
+										  cancelLabel="#{labels['dict.cancelar']}" />
+						</p:tab>
+					</p:tabView>
+				</p:outputPanel>
+			<p:commandButton value="Aceptar" icon="pi pi-check" oncomplete="insertImageIntoTinyMCE(); return false;" styleClass="boton-azul" />
+			<p:commandButton value="Cerrar" icon="pi pi-check" oncomplete="PF('dlgImage').hide();" />
+ 		</p:dialog>
+	</ui:define>
+
+
+
+	<ui:define name="contentFooterDialogLeft">
+	</ui:define>
+	<ui:define name="contentFooterDialogRight">
+
+		<p:commandButton id="btnGuardar" value="#{labels['dict.aceptar']}" onclick="tinyMCE.triggerSave(true,true);" rendered="#{!dialogLiteralHTML.isConsulta()}" process="@all" update="formDialog:growlDialogTraduccion" action="#{dialogLiteralHTML.guardar()}" styleClass="boton-azul"/>
+		<p:commandButton value="#{labels['dict.borrar']}" actionListener="#{dialogLiteralHTML.borrar()}" process="@this"  rendered="#{!dialogLiteralHTML.isConsulta() and dialogLiteralHTML.botonBorrarActivo()}" tyleClass="boton-rojo"/>
+		<p:commandButton value="#{labels['dict.cancelar']}" actionListener="#{dialogLiteralHTML.cancelar()}" process="@this"/>
+
+		<p:commandButton id="btnErrorCa" actionListener="#{dialogLiteralHTML.errorCa()}" update="formDialog:growlDialogTraduccion" style="display:none" process="@this"/>
+		<p:commandButton id="btnErrorEs" actionListener="#{dialogLiteralHTML.errorEs()}" update="formDialog:growlDialogTraduccion" style="display:none" process="@this"/>
+
+	</ui:define>
+
+
+
+
+	<p:dialog widgetVar="dlgDoc" header="Seleccionar documento" modal="true">
+		<p:outputPanel rendered="#{dialogAyuda}">
+			<!-- AquÃ­ irÃ­a la lÃ³gica para seleccionar el documento -->
+			<p:inputText id="docUrl" value="#{bean.docPath}" placeholder="URL del documento" />
+			<p:inputText id="docText" value="#{bean.docText}" placeholder="Texto del botÃ³n" />
+		</p:outputPanel>
+
+		<p:commandButton value="Aceptar" icon="pi pi-check"
+						 oncomplete="insertDocIntoTinyMCE('#{bean.docPath}', '#{bean.docText}'); PF('dlgDoc').hide();" />
+	</p:dialog>
 </ui:composition>
 </html>

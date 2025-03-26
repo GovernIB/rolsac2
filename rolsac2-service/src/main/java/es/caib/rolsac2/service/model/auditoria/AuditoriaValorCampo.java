@@ -124,10 +124,4 @@ public class AuditoriaValorCampo {
     public void setElemento(String elemento) {
         this.elemento = elemento;
     }
-
-
-    @Override
-    public String toString() {
-        return "AuditoriaValorCampo{" + "idioma=" + idioma + ", valorAnterior=" + valorAnterior + ", valorNuevo=" + valorNuevo + ", elemento=" + elemento + '}';
-    }
 }

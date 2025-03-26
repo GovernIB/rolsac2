@@ -500,10 +500,6 @@
                          process="@this"/>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogNormativa.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this"/>
         <p:commandButton action="#{dialogNormativa.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog formPublicacion formDatos"
                          rendered="#{!dialogNormativa.isModoConsulta()}"

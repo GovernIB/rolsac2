@@ -118,7 +118,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-4">
                     <p:selectOneMenu id="txtCodPlatTramitacion"
-                                     requiredMessage="#{labels['dict.obligatorio.plataformaTramitación']}"
+                                     requiredMessage="#{labels['dict.obligatorio.plataformaTramitacion']}"
                                      value="#{dialogTipoTramitacion.data.codPlatTramitacion}"
                                      converter="#{platTramitElectronicaConverter}"
                                      styleClass="w90" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
@@ -178,10 +178,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogTipoTramitacion.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this"/>
         <p:commandButton action="#{dialogTipoTramitacion.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>

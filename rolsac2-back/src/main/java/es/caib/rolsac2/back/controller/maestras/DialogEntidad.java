@@ -78,7 +78,7 @@ public class DialogEntidad extends AbstractController implements Serializable {
 
         data = new EntidadDTO();
         if (this.isModoAlta()) {
-        	data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            data.setDescripcion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             final Literal lopdDerechos = new Literal();
             final Literal lopdDestinatario = new Literal();
             final Literal lopdFinalidad = new Literal();

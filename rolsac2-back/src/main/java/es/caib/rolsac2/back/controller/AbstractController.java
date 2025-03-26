@@ -15,7 +15,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public abstract class AbstractController {
@@ -28,9 +30,6 @@ public abstract class AbstractController {
     private AdministracionEntServiceFacade administracionEntServiceFacade;
 
     private String idioma;
-
-    //@Inject
-    //protected SecurityBean securityBean;
 
     /**
      * Modo de acceso
@@ -178,6 +177,12 @@ public abstract class AbstractController {
 
     public void ayuda() {
         UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "La sección de ayuda no está implementada");// UtilJSF.getLiteral("info.borrado.ok"));
+    }
+
+    public void ayuda(String url) {
+        final Map<String, String> params = new HashMap<>();
+        params.put("ID", url);
+        UtilJSF.openDialog("/ayuda/dialogAyuda", TypeModoAcceso.CONSULTA, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
     }
 
     /**

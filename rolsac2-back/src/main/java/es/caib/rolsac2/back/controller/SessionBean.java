@@ -1382,4 +1382,8 @@ public class SessionBean implements Serializable {
     public UsuarioDTO obtenerUsuarioAutenticado() {
         return usuario;
     }
+
+    public Boolean tienePermisoSuperAdmin() {
+        return perfiles != null && perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR);
+    }
 }

@@ -111,10 +111,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogTipoMateriaSIA.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this" update="messagesDialog"/>
         <p:commandButton action="#{dialogTipoMateriaSIA.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogTipoMateriaSIA.isModoConsulta()}"

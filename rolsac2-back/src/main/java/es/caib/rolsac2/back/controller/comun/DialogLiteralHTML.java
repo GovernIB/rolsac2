@@ -4,17 +4,28 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.service.facade.FicheroServiceFacade;
+import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.file.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +60,11 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
     private String idiomaInicial;
 
     /**
+     * Indica si hay que deshabilitar el botón de borrar.
+     */
+    private String deshabilitarBorrar;
+
+    /**
      * Idiomas permitidos.
      **/
     private List<String> idiomasPermitidos;
@@ -58,6 +74,12 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
 
     @Inject
     private SessionBean sessionBean;
+
+    @Inject
+    private SystemServiceFacade systemServiceFacade;
+
+    @Inject
+    private FicheroServiceFacade ficheroServiceFacade;
 
     Map<String, String> texto = new HashMap<String, String>();
     private Literal literal;
@@ -78,6 +100,25 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
         UtilJSF.vaciarMochila();// sessionBean.vaciarMochila();
         LOG.debug("Modo acceso " + this.getModoAcceso());
 
+    }
+
+    public void seleccionarImagen() {
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.MODO_ACCESO.toString(), TypeModoAcceso.EDICION.toString());
+        params.put("idioma", sessionBean.getLang());
+        UtilJSF.openDialog("/comun/dialogTinyMCEIMG", TypeModoAcceso.EDICION, params, true, 1050, 750);
+    }
+
+    /**
+     * Devuelve el resultado del dialogo de traspaso.
+     *
+     * @param event
+     */
+    public void returnDialogo(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            this.imageUrl = respuesta.getResult().toString();
+        }
     }
 
     public void onload() {
@@ -169,6 +210,7 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
         return texto;
     }
 
+
     /**
      * Indica si el dialogo se abre en modo alta.
      *
@@ -229,27 +271,6 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
         UtilJSF.closeDialog(result);
     }
 
-    /**
-     * Aceptar.
-     */
-    /*
-     * public void aceptar() {
-     *
-     * if (visibleCa) { if (textoCA == null || textoCA.isEmpty()) { //error falta
-     * literal return; } if (excedeLongitud(textoCA)) { //error longitud return; }
-     * textoCA = replaceComillas(textoCA); literal.add(new Traduccion("ca",
-     * textoCA)); } if (visibleEs) { if (textoES == null || textoES.isEmpty()) {
-     * //error falta literal return; } if (excedeLongitud(textoES)) { //error
-     * longitud return; } textoES = replaceComillas(textoES); literal.add(new
-     * Traduccion("es", textoES)); }
-     *
-     *
-     * // Retornamos resultado final DialogResult result = new DialogResult();
-     * result.setModoAcceso(TypeModoAcceso.valueOf(modoAcceso));
-     * result.setResult(literal); UtilJSF.closeDialog(result);
-     *
-     * }
-     */
     public String getId() {
         return id;
     }
@@ -324,4 +345,86 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
         return !idioma.isEmpty() ? this.visible.get(idioma.substring(0, 1).toUpperCase() + idioma.substring(1)) : false;
     }
 
+    public String getDeshabilitarBorrar() {
+        return deshabilitarBorrar;
+    }
+
+    public void setDeshabilitarBorrar(String deshabilitarBorrar) {
+        this.deshabilitarBorrar = deshabilitarBorrar;
+    }
+
+    public Boolean botonBorrarActivo() {
+        return deshabilitarBorrar == null || deshabilitarBorrar.isEmpty() || !deshabilitarBorrar.equals("true");
+    }
+
+
+    public void handleLogoUpload(FileUploadEvent event) {
+        try {
+            UploadedFile file = event.getFile();
+            InputStream is = file.getInputStream();
+            String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            String idFichero = ficheroServiceFacade.createFicheroAyuda(is.readAllBytes(), file.getFileName(), TypeFicheroExterno.AYUDAS_IMAGEN, path);
+
+            String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+            imageUrl = contextPath + "/api/uploads/" + idFichero;
+
+        } catch (IOException e) {
+            LOG.error("Error subiendo el fichero", e);
+        }
+    }
+
+    private String imageUrl;
+    private String imageDescription;
+    private String imageWidth;
+    private String imageHeight;
+    private String imagenTinymce;
+
+    public void cargarDatos() {
+        System.out.println("Cargando datos...");
+        List<String> datos = new ArrayList<>();
+        datos.clear();
+        datos.add("Dato 1");
+        datos.add("Dato 2");
+        datos.add("Dato 3");
+    }
+
+    public String getImagenTinymce() {
+        return imagenTinymce;
+    }
+
+    public void setImagenTinymce(String imagenTinymce) {
+        this.imagenTinymce = imagenTinymce;
+    }
+
+    public String getImageHeight() {
+        return imageHeight;
+    }
+
+    public void setImageHeight(String imageHeight) {
+        this.imageHeight = imageHeight;
+    }
+
+    public String getImageWidth() {
+        return imageWidth;
+    }
+
+    public void setImageWidth(String imageWidth) {
+        this.imageWidth = imageWidth;
+    }
+
+    public String getImageDescription() {
+        return imageDescription;
+    }
+
+    public void setImageDescription(String imageDescription) {
+        this.imageDescription = imageDescription;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

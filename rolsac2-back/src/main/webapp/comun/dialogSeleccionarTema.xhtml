@@ -129,17 +129,13 @@
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogSeleccionarTema.guardar}"
+         <p:commandButton action="#{dialogSeleccionarTema.guardar}"
                          value="#{labels['dict.seleccionar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionarTema.isModoConsulta()}"
                          process="@all" id="seleccionar"/>
         <p:commandButton action="#{dialogSeleccionarTema.cerrar}"
                          value="#{labels['dict.cerrar']}"
                          process="@this" />
-        <p:commandButton  action="#{dialogSeleccionarTema.ayuda}"
-                          icon="pi pi-info-circle" iconPos="top"
-                          value="#{labels['dict.ayuda']}"
-                          process="@this" />
     </ui:define>
 
 </ui:composition>

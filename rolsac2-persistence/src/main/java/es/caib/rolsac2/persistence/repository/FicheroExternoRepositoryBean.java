@@ -16,14 +16,15 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.imageio.ImageIO;
 import javax.persistence.Query;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -109,7 +110,11 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         jFicheroExterno.setTemporal(true);
         jFicheroExterno.setTipo(tipoFicheroExterno.getTipo());
         if (elementoFicheroExterno == null) {
-            jFicheroExterno.setReferencia("temp/" + GeneradorId.generarId() + "." + FilenameUtils.getExtension(fileName));
+            if (tipoFicheroExterno == TypeFicheroExterno.AYUDAS_IMAGEN) {
+                jFicheroExterno.setReferencia("ayudas/" + fileName);
+            } else {
+                jFicheroExterno.setReferencia("temp/" + GeneradorId.generarId() + "." + FilenameUtils.getExtension(fileName));
+            }
         } else {
             jFicheroExterno.setReferencia(tipoFicheroExterno.getRuta() + elementoFicheroExterno + "/" + GeneradorId.generarId() + "." + FilenameUtils.getExtension(fileName));
         }
@@ -373,5 +378,124 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         diaAYER.append(calendar.get(Calendar.YEAR));
 
         return diaAYER.toString();
+    }
+
+    @Override
+    public List<String> getListadoFicheros(String path, TypeFicheroExterno typeFicheroExterno) {
+        List<String> archivosLista = new ArrayList<>();
+        File carpeta = new File(path + "/" + typeFicheroExterno.getRuta());
+
+        if (carpeta.exists() && carpeta.isDirectory()) {
+            File[] archivos = carpeta.listFiles(); // Obtiene la lista de archivos
+
+            if (archivos != null) {
+                for (File archivo : archivos) {
+                    if (archivo.isFile()) { // Solo añadir archivos, no carpetas
+                        archivosLista.add(typeFicheroExterno.getRuta() + getFilenameByRuta(archivo.getName()));
+                    }
+                }
+            }
+        }
+        return archivosLista;
+    }
+
+    @Override
+    public byte[] getContentByRuta(String ruta) {
+        try {
+            final FileInputStream fis = new FileInputStream(ruta);
+            final byte[] content = IOUtils.toByteArray(fis);
+            fis.close();
+            return content;
+        } catch (final IOException e) {
+            throw new FicheroExternoException("Error al acceder al fichero con path " + ruta, e);
+        }
+    }
+
+    @Override
+    public void deleteFicheroRuta(String path) {
+        final File file = new File(path);
+        final boolean deleted = FileUtils.deleteQuietly(file);
+        if (!deleted) {
+            LOG.error("No se ha podido borrar fichero " + path);
+            throw new FicheroExternoException("No se ha podido borrar el fichero : " + path);
+        }
+    }
+
+    @Override
+    public FicheroDTO getContentAyudaByReferencia(String id, String path) {
+        //Busca el JFichero cuya parte final de la referencia coincide con el id
+        Query query = entityManager.createQuery("select f from JFicheroExterno f where f.referencia like '%" + id + "'");
+        if (query.getResultList() == null || query.getResultList().isEmpty()) {
+            LOG.error("No existe el jfichero que tiene en la referencia el id: {}", id);
+            FicheroDTO ficheroDTO = new FicheroDTO();
+            ficheroDTO.setCodigo(null);
+            ficheroDTO.setTipo(TypeFicheroExterno.AYUDAS_IMAGEN);
+            ficheroDTO.setFilename("JFicheroInexistente.png");
+            ficheroDTO.setContenido(createImageBytes("Fichero BBDD no existente"));
+            return ficheroDTO;
+        } else {
+            JFicheroExterno jFicheroExterno = (JFicheroExterno) query.getSingleResult();
+            if (jFicheroExterno == null) {
+                throw new FicheroExternoException("No existe fichero con id: " + id);
+            }
+            FicheroDTO ficheroDTO = new FicheroDTO();
+            ficheroDTO.setCodigo(jFicheroExterno.getCodigo());
+            ficheroDTO.setTipo(TypeFicheroExterno.fromString(jFicheroExterno.getTipo()));
+            ficheroDTO.setFilename(jFicheroExterno.getFilename());
+            try {
+                ficheroDTO.setContenido(getContentByRuta(path + "/" + jFicheroExterno.getReferencia()));
+            } catch (FicheroExternoException e) {
+                ficheroDTO.setContenido(createImageBytes("Contenido no existente"));
+            }
+            return ficheroDTO;
+        }
+    }
+
+    public byte[] createImageBytes(String text) {
+        int width = 400;
+        int height = 200;
+
+        // Crear una imagen en formato ARGB con fondo blanco
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = image.createGraphics();
+
+        // Configurar renderizado para texto más suave
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        // Rellenar el fondo con color blanco
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, width, height);
+
+        // Configurar la fuente y el color del texto
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 20));
+        g2d.setColor(Color.BLACK);
+
+        // Calcular la posición para centrar el texto
+        FontMetrics fm = g2d.getFontMetrics();
+        int textWidth = fm.stringWidth(text);
+        int textHeight = fm.getHeight();
+        int x = (width - textWidth) / 2;
+        int y = (height - textHeight) / 2 + fm.getAscent();
+
+        // Dibujar el texto en la imagen
+        g2d.drawString(text, x, y);
+        g2d.dispose();
+
+        // Convertir la imagen a un array de bytes en formato PNG
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(image, "png", baos);
+            baos.flush();
+        } catch (Exception ex) {
+            LOG.error("Error al convertir la imagen a bytes", ex);
+        }
+        return baos.toByteArray();
+    }
+
+
+    private String getFilenameByRuta(String id) {
+        //Extrae el nombre del fichero de la ruta sabiendo que la ruta suele tener varias /XXX/XXX/filename
+        String[] split = id.split("/");
+        return split[split.length - 1];
     }
 }

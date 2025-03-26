@@ -263,7 +263,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                             action="#{viewProcedimientos.ayuda}" process="@this"
+                                             action="#{viewProcedimientos.ayuda('viewProcedimientos')}" process="@this"
                                              update="messages dataTable"/>
                         </div>
                     </div>

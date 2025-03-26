@@ -43,8 +43,6 @@
                                      process="@form" update="messages dataTable">
                         <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                     </p:commandButton>
-                    <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                     action="#{viewSeccion.ayuda}" process="@this" update="messages"/>
                 </f:facet>
             </p:toolbar>
             <p:dataTable id="dataTable" value="#{viewSeccion.lazyModel}" var="seccion"

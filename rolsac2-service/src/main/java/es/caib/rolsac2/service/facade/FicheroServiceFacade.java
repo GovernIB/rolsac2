@@ -53,6 +53,17 @@ public interface FicheroServiceFacade {
     Long createFicheroExterno(byte[] content, String fileName, TypeFicheroExterno tipoFicheroExterno, Long elementoFicheroExterno, String path);
 
     /**
+     * Crea fichero de ayuda.
+     *
+     * @param bytes              Contenido fichero
+     * @param fileName           Nombre fichero
+     * @param typeFicheroExterno Tipo fichero ayuda (imagen o documento)
+     * @param path               Ruta del fichero
+     * @return Código fichero.
+     */
+    String createFicheroAyuda(byte[] bytes, String fileName, TypeFicheroExterno typeFicheroExterno, String path);
+
+    /**
      * Persiste fichero externo (pasa de borrador a consolidado). Solo se puede persistir un fichero que está en borrador.
      *
      * @param codigoFichero Código fichero.
@@ -93,4 +104,37 @@ public interface FicheroServiceFacade {
      * @param idFichero Código fichero
      */
     void borrarFicheroDefinitivamente(String path, Long idFichero);
+
+    /**
+     * Devuelve el contenido de un fichero a partir de una ruta.
+     *
+     * @param ruta La ruta
+     * @return El contenido del fichero
+     */
+    byte[] getContentByRuta(String ruta);
+
+    /**
+     * Borra un fichero definitivamente.
+     *
+     * @param path Path
+     */
+    void borrarFicheroPerdido(String path);
+
+    /**
+     * Borra el fichero de ayuda.
+     *
+     * @param path               Path
+     * @param typeFicheroExterno TypeFicheroExterno
+     * @param codigo             Código
+     */
+    void borrarFicheroAyuda(String path, TypeFicheroExterno typeFicheroExterno, Long codigo);
+
+    /**
+     * Obtener el contenido de un fichero de ayuda por referencia.
+     *
+     * @param id   Código fichero
+     * @param path Ruta del fichero
+     * @return FicheroDTO
+     */
+    FicheroDTO getContentAyudaByReferencia(String id, String path);
 }

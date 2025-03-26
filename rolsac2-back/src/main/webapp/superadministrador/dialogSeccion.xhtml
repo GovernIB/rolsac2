@@ -99,10 +99,6 @@
         </p:panel>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogSeccion.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this"/>
         <p:commandButton action="#{dialogSeccion.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          rendered="#{!dialogSeccion.isModoConsulta()}"

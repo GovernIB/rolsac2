@@ -54,7 +54,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <p:commandButton value="#{labels['dict.borrar']}" styleClass="mr-2"  icon="pi pi-trash" iconPos="top"  action="#{viewPersonal.borrarPersonal}" process="@form" update="messages dataTable">
                                 <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.ayuda']}"  icon="pi pi-info-circle" iconPos="top"  action="#{viewPersonal.ayuda}" process="@this" update="messages" />
                         </div>
                     </div>
                 </f:facet>

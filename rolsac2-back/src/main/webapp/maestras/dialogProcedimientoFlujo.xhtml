@@ -31,7 +31,16 @@
                 display:none;
             }
         </h:outputStylesheet>
-        <p:panel header="#{labels['dialogProcedimientoFlujo.datos']}" id="formDatos">
+        <p:panel id="formDatos" style="padding:0px 4px !important;">
+            <f:facet name="header">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin: 0; padding: 0;">
+                    <span style="margin: 0; padding: 0;">#{labels['dialogProcedimientoFlujo.datos']}</span>
+                    <p:commandButton action="#{dialogProcedimientoFlujo.ayuda('dialogProcedimientoFlujo')}"
+                                     icon="pi pi-info-circle" iconPos="top"
+                                     value="#{labels['dict.ayuda']}"
+                                     process="@this"/>
+                </div>
+            </f:facet>
             <div class="row">
                 <c:if test="#{!empty dialogProcedimientoFlujo.estados}">
                     <div class="ui-g-12 ui-md-1 ui-lg-1">
@@ -157,11 +166,6 @@
                       trigger="btnCopy" successMessage="Copiado" errorMessage="Error al copiar"/>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-
-        <p:commandButton action="#{dialogProcedimientoFlujo.ayuda}"
-                         icon="pi pi-info-circle" iconPos="top"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this"/>
         <p:commandButton action="#{dialogProcedimientoFlujo.guardarOEnviarMail}"
                          value="#{labels['dict.guardar']}" update="messagesDialog formDatos"
                          process="@all"/>

@@ -100,10 +100,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </p:panel>
   </ui:define>
   <ui:define name="contentFooterDialogRight">
-    <p:commandButton action="#{dialogTipoVia.ayuda}"
-                     icon="pi pi-info-circle" iconPos="top"
-                     value="Ayuda"
-                     process="@this" update="messagesDialog"/>
     <p:commandButton action="#{dialogTipoVia.guardar}"
                      value="Guardar" update="messagesDialog form"
                      process="@all"/>
