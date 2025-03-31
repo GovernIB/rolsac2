@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * ImplementaciÃ³n del repositorio de tipo de materia SIA.
+ * Implementación del repositorio de tipo de materia SIA.
  *
  * @author Indra
  */
@@ -121,7 +121,9 @@ public class IndexacionRepositoryBean extends AbstractCrudRepository<JIndexacion
 
     @Override
     public boolean existeIndexacion(Long idElemento, String tipo, Long idEntidad) {
-        Query query = entityManager.createQuery("SELECT count(j) FROM JIndexacion j where j.entidad.codigo = :idEntidad and j.tipo like :tipo and j.codElemento =: idElemento ");
+        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JIndexacion j where j.entidad.codigo = :idEntidad and j.tipo like :tipo and j.codElemento =: idElemento ");
+
+        Query query = entityManager.createQuery(sql.toString());
         query.setParameter("idElemento", idElemento);
         query.setParameter("tipo", tipo);
         query.setParameter("idEntidad", idEntidad);
@@ -131,25 +133,16 @@ public class IndexacionRepositoryBean extends AbstractCrudRepository<JIndexacion
 
     @Override
     public void guardarIndexar(Long codElemento, TypeIndexacion tipo, Long idEntidad, int accion) {
-        if (existeIndexacion(codElemento, tipo.toString(), idEntidad)) {
-            //Si existe una indexacion con el mismo tipo y el mismo elemento, se borra
-            Query query = entityManager.createQuery("DELETE FROM JIndexacion j where j.entidad.codigo = :entidad and j.tipo like :tipo and j.codElemento =: codElemento ");
-            query.setParameter("codElemento", codElemento);
-            query.setParameter("tipo", tipo.toString());
-            query.setParameter("entidad", idEntidad);
-            query.executeUpdate();
+        if (!existeIndexacion(codElemento, tipo.toString(), idEntidad)) {
+            JIndexacion jIndexacion = new JIndexacion();
+            jIndexacion.setTipo(tipo.toString());
+            jIndexacion.setCodElemento(codElemento);
+            JEntidad jEntidad = entityManager.find(JEntidad.class, idEntidad);
+            jIndexacion.setEntidad(jEntidad);
+            jIndexacion.setFechaCreacion(new Date());
+            jIndexacion.setAccion(accion);
+            this.create(jIndexacion);
         }
-
-        //Generamos la indexacion
-        JIndexacion jIndexacion = new JIndexacion();
-        jIndexacion.setTipo(tipo.toString());
-        jIndexacion.setCodElemento(codElemento);
-        JEntidad jEntidad = entityManager.find(JEntidad.class, idEntidad);
-        jIndexacion.setEntidad(jEntidad);
-        jIndexacion.setFechaCreacion(new Date());
-        jIndexacion.setAccion(accion);
-        this.create(jIndexacion);
-
     }
 
     @Override
@@ -170,7 +163,8 @@ public class IndexacionRepositoryBean extends AbstractCrudRepository<JIndexacion
         String sql = "DELETE FROM JIndexacion j where j.entidad.codigo = :entidad ";
         Query query = entityManager.createQuery(sql);
         query.setParameter("entidad", idEntidad);
-        query.executeUpdate();
+        int resultado = query.executeUpdate();
         entityManager.flush();
     }
+
 }
