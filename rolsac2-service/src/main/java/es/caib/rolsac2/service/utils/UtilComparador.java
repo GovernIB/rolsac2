@@ -31,7 +31,7 @@ public class UtilComparador {
         if (dato != null && dato2 == null) {
             return 1;
         }
-        return dato.compareTo(dato2);
+        return Long.compare(dato.getTime(), dato2.getTime());
     }
 
     public static int compareTo(Boolean dato, Boolean dato2) {
@@ -313,6 +313,44 @@ public class UtilComparador {
 
 
     public static int compareTo(Literal dato, Literal dato2) {
+        if ((dato == null || dato.estaVacio()) && (dato2 == null || dato2.estaVacio())) {
+            return 0;
+        }
+        if ((dato == null || dato.estaVacio()) && (dato2 != null && !dato2.estaVacio())) {
+            return -1;
+        }
+        if ((dato != null && dato.getTraducciones() != null) && (dato2 == null || dato2.getTraducciones() == null)) {
+            return 1;
+        }
+
+        if (dato.getTraducciones().size() > dato2.getTraducciones().size()) {
+            return 1;
+        } else if (dato2.getTraducciones().size() > dato.getTraducciones().size()) {
+            return -1;
+        } else {
+            for (Traduccion traduccion : dato.getTraducciones()) {
+                String trad = traduccion.getLiteral();
+                String trad2 = dato2.getTraduccion(traduccion.getIdioma());
+                if (trad == null && trad2 == null) {
+                    continue;
+                }
+                if (trad == null && trad2 != null) {
+                    return -1;
+                }
+                if (trad != null && trad2 == null) {
+                    return 1;
+                }
+                int resultado = trad.compareTo(trad2);
+                if (resultado != 0) {
+                    return resultado;
+                }
+            }
+        }
+        return 0;
+    }
+
+
+    public static int compareTo(LiteralHTML dato, LiteralHTML dato2) {
         if ((dato == null || dato.estaVacio()) && (dato2 == null || dato2.estaVacio())) {
             return 0;
         }
