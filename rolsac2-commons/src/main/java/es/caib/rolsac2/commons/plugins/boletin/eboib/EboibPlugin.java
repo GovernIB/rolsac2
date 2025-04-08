@@ -11,6 +11,8 @@ import es.caib.rolsac2.commons.plugins.boletin.api.BoletinErrorException;
 import es.caib.rolsac2.commons.plugins.boletin.api.IPluginBoletin;
 import es.caib.rolsac2.commons.plugins.boletin.api.model.*;
 import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -23,6 +25,8 @@ import java.util.*;
 
 public class EboibPlugin extends AbstractPluginProperties implements IPluginBoletin {
 
+    private static final Logger LOG = LoggerFactory.getLogger(EboibPlugin.class);
+
     public static final String EBOIB_URL_HACK = "eboibUrlHack";
 
     public static final String EBOIB_URL = "eboibUrl";
@@ -34,8 +38,8 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
     /**
      * Constructor del plugin de Eboib
      *
-     * @param prefijoPropiedades
-     * @param properties
+     * @param prefijoPropiedades prefijo de las propiedades
+     * @param properties         propiedades
      */
     public EboibPlugin(final String prefijoPropiedades, final Properties properties) {
         super(prefijoPropiedades, properties);
@@ -59,9 +63,9 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
     /**
      * Método utilizado para realizar una búsqueda RDF dados los siguientes parámetros.
      *
-     * @param numeroBoletin
-     * @param fechaBoletin
-     * @param numeroEdicto
+     * @param numeroBoletin Número de boletín
+     * @param fechaBoletin  Fecha de boletín
+     * @param numeroEdicto  Número de edicto
      */
 
     private List<Edicto> makeSearch(String numeroBoletin, String fechaBoletin, String numeroEdicto, Boolean saltarseCertificado) throws BoletinErrorException {
@@ -142,8 +146,8 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
     /**
      * Método que crea un objeto de Normativa ja partir de un RDF y de un nombre de fichero.
      *
-     * @param rdf
-     * @param inputFileName
+     * @param rdf           Archivo rdf
+     * @param inputFileName Filename
      * @return
      */
     private Normativa getEnviament(final ResultadoBoib rdf, final String inputFileName) throws BoletinErrorException {
@@ -199,8 +203,8 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
     /**
      * A partir de un nombre de fichero creamos un Modelo RDF
      *
-     * @param inputFileName
-     * @return
+     * @param inputFileName Nombre del fichero
+     * @return Devuelve el modelo
      */
     @SuppressWarnings("unchecked")
     private Model loadRdf(final String inputFileName) {
@@ -208,6 +212,8 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
         String url = inputFileName;
         if (isUrlHack()) {
             url = url.replace("intranet.caib.es", "www.caib.es");
+            url = url.replace("eboib.in.at4.net:8080", "www.caib.es");
+            url = url.replace("http://", "https://");
         }
 
         final InputStream in = FileManager.get().open(url);
@@ -312,11 +318,13 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
      */
     private void populateResultadoBoib(final ResultadoBoib rdf2) {
         rdf2.setEnviaments(new ArrayList<String>());
-        final Model m = loadRdf(rdf2.getRdfUrl());
 
+        // test();
+        final Model m = loadRdf(rdf2.getRdfUrl());
         // Obtenemos los datos de num butlletí
-        final Resource but = m.getResource(rdf2.getUrl());
-        rdf2.setNum(but.getProperty(RdfProperties.NUMERO).getString());
+        final Resource but = m.getResource(filtrarUrl(rdf2.getUrl()));
+        Property propertiesNumero = RdfProperties.NUMERO;
+        rdf2.setNum(but.getProperty(propertiesNumero).getString());
         final String dataPublicacio = but.getProperty(RdfProperties.DATA_PUBLICACIO).getString();
         rdf2.setAnyo(dataPublicacio.substring(0, 4));
         rdf2.setNumBoib(rdf2.getAnyo() + rdf2.getNum());
@@ -330,11 +338,38 @@ public class EboibPlugin extends AbstractPluginProperties implements IPluginBole
         final ResIterator iter = m.listResourcesWithProperty(RdfProperties.ACCES_RDF);
         while (iter.hasNext()) {
             final Resource rdf = iter.nextResource();
-            // System.out.println(" " + rdf.getProperty(ACCES_RDF).getObject().toString() );
-            // System.out.println(rdf.getProperty(ACCES_RDF).getResource().getURI());
             rdf2.getEnviaments().add(rdf.getProperty(RdfProperties.ACCES_RDF).getResource().getURI());
         }
 
+    }
+
+    private String filtrarUrl(String url) {
+        return url.replace("http://eboib.in.at4.net:8080/eboibfront", "https://intranet.caib.es/eboibfront/");
+    }
+
+    public static void test() {
+        // Carga el modelo RDF desde la URL
+        Model model = ModelFactory.createDefaultModel();
+        // Especifica el formato (por ejemplo, "RDFXML")
+        model.read("https://www.caib.es/eboibfront/ca/2024/12015/rdf");
+
+        // Obtener el recurso cuyo URI es el principal
+        //String resourceURI = "https://www.caib.es/eboibfront/ca/2024/12015";
+        String resourceURI = "https://intranet.caib.es/eboibfront//ca/2024/12015";
+        Resource resource = model.getResource(resourceURI);
+
+        // Definir la propiedad "numero" usando el namespace correcto
+        String butNamespace = "https://intranet.caib.es/eboibfront//rdf/schema/butlleti/1.0/";
+        Property numeroProp = model.getProperty(butNamespace + "numero");
+
+        // Extraer el valor de la propiedad
+        Statement stmt = resource.getProperty(numeroProp);
+        if (stmt != null) {
+            Literal numeroLiteral = stmt.getLiteral();
+            System.out.println("Número: " + numeroLiteral.getString());
+        } else {
+            System.out.println("No se encontró la propiedad 'numero'.");
+        }
     }
 
     /**
