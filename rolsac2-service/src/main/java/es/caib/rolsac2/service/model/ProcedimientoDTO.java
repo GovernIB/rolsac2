@@ -309,13 +309,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             return UtilComparador.compareTo(this.getFechaPublicacion(), dataOriginal.getFechaPublicacion());
         }
 
-        if (UtilComparador.compareTo(this.isIntegrarPdu(), dataOriginal.isIntegrarPdu()) != 0) {
-            if (mostrarLog) {
-                LOG.error("ProcedimientoDTO.compareTo: this.isIntegrarPdu() != dataOriginal.isIntegrarPdu(). this.isIntegrarPdu()=" + this.isIntegrarPdu() + " dataOriginal.isIntegrarPdu()=" + dataOriginal.isIntegrarPdu());
-            }
-            return UtilComparador.compareTo(this.isIntegrarPdu(), dataOriginal.isIntegrarPdu());
-        }
-
         if (UtilComparador.compareTo(this.getResponsable(), dataOriginal.getResponsable()) != 0) {
             if (mostrarLog) {
                 LOG.error("ProcedimientoDTO.compareTo: this.getResponsable() != dataOriginal.getResponsable(). this.getResponsable()=" + this.getResponsable() + " dataOriginal.getResponsable()=" + dataOriginal.getResponsable());

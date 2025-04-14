@@ -40,7 +40,11 @@ public enum TypePropiedadConfiguracion {
     /**
      * Deshabilitar certificado
      */
-    DESAHABILITAR_CERTIFICADO("deshabilitar.certificado");
+    DESAHABILITAR_CERTIFICADO("deshabilitar.certificado"),
+    /**
+     * BACKEND IDIOMAS
+     */
+    BACKEND_IDIOMAS("back.idiomas");
 
     /**
      * Valor
