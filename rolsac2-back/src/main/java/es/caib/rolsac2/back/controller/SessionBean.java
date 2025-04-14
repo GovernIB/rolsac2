@@ -1385,6 +1385,9 @@ public class SessionBean implements Serializable {
     }
 
     public Boolean tienePermisoSuperAdmin() {
-        return perfiles != null && perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR);
+    	  return perfiles != null &&
+                  (perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR)
+                          || perfiles.contains(TypePerfiles.ADMINISTRADOR_ENTIDAD)
+                          || perfiles.contains(TypePerfiles.ADMINISTRADOR_CONTENIDOS));
     }
 }
