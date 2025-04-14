@@ -649,7 +649,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void cerrar() {
-        if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
+    	if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal, true) != 0) {
             PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;
         }
