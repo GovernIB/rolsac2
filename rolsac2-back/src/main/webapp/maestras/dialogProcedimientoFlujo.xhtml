@@ -17,7 +17,12 @@
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogProcedimientoFlujo.detalle']}" />
+       <c:if test="#{dialogProcedimientoFlujo.consultarSoloMensajes == 'S'}">
+            <h:outputFormat value="#{labels['dialogProcedimientoMsg.detalle']}" />
+        </c:if>
+        <c:if test="#{dialogProcedimientoFlujo.consultarSoloMensajes != 'S'}">
+            <h:outputFormat value="#{labels['dialogProcedimientoFlujo.detalle']}" />
+        </c:if>
     </ui:define>
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
