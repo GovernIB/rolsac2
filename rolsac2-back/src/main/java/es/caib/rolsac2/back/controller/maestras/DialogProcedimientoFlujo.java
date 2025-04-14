@@ -533,10 +533,10 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     }
 
     public void abrirAyuda() {
-        if (consultarSoloMensajes != null && "S".equals(consultarSoloMensajes)) {
-            this.ayuda("dialogProcedimientoMsg");
-        } else {
+        if (mostrarEstados) {
             this.ayuda("dialogProcedimientoFlujo");
+        } else {
+            this.ayuda("dialogProcedimientoMsg");
         }
     }
 
