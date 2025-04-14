@@ -133,16 +133,24 @@ public class IndexacionRepositoryBean extends AbstractCrudRepository<JIndexacion
 
     @Override
     public void guardarIndexar(Long codElemento, TypeIndexacion tipo, Long idEntidad, int accion) {
-        if (!existeIndexacion(codElemento, tipo.toString(), idEntidad)) {
-            JIndexacion jIndexacion = new JIndexacion();
-            jIndexacion.setTipo(tipo.toString());
-            jIndexacion.setCodElemento(codElemento);
-            JEntidad jEntidad = entityManager.find(JEntidad.class, idEntidad);
-            jIndexacion.setEntidad(jEntidad);
-            jIndexacion.setFechaCreacion(new Date());
-            jIndexacion.setAccion(accion);
-            this.create(jIndexacion);
-        }
+    	  if (existeIndexacion(codElemento, tipo.toString(), idEntidad)) {
+              //Si existe una indexacion con el mismo tipo y el mismo elemento, se borra
+              Query query = entityManager.createQuery("DELETE FROM JIndexacion j where j.entidad.codigo = :entidad and j.tipo like :tipo and j.codElemento =: codElemento ");
+              query.setParameter("codElemento", codElemento);
+              query.setParameter("tipo", tipo.toString());
+              query.setParameter("entidad", idEntidad);
+              query.executeUpdate();
+          }
+
+          //Generamos la indexacion
+          JIndexacion jIndexacion = new JIndexacion();
+          jIndexacion.setTipo(tipo.toString());
+          jIndexacion.setCodElemento(codElemento);
+          JEntidad jEntidad = entityManager.find(JEntidad.class, idEntidad);
+          jIndexacion.setEntidad(jEntidad);
+          jIndexacion.setFechaCreacion(new Date());
+          jIndexacion.setAccion(accion);
+          this.create(jIndexacion);
     }
 
     @Override
