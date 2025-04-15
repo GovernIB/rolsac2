@@ -815,6 +815,7 @@ INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUE
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'deshabilitar.certificado', 'false', 'Para deshabilitar la comprobación de certificado en la conexión con el servicio de notificaciones, sólo necesario para desarrollo', 0);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'email.proc.enlace', 'http://www.caib.es/rolsac2back/maestras/viewProcedimientos.xhtml?codigoProc=', 'Al enviar un email, es el enlace al procedimiento con su código', 1);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'email.serv.enlace', 'http://www.caib.es/rolsac2back/maestras/viewServicios.xhtml?codigoServ=', 'Al enviar un email, es el enlace al servicio con su código', 1);
+INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'back.idiomas', 'ca,es','Especifica los idiomas del back.',0);
 
 /** UNIDAD ORGANIZATIVA DIR3 **/
 /*insert into rs2_uniorg (ORG_CODIGO,ORG_CODDIR3,ORG_CODPADRE,ORG_CODENTI,ORG_DENOM,ORG_VERSION) values (RS2_UNIORG_SEQ.nextval, 'A04003003', null, 1, 'GOIB',0);*/
