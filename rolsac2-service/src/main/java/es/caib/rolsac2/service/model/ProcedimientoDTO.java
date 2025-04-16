@@ -6,13 +6,13 @@ import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 import es.caib.rolsac2.service.utils.AuditoriaUtil;
 import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Dades d'un Procedimiento.
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 @Schema(name = "ProcedimientoDTO")
 public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoDTO.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoDTO.class);
 
     private List<ProcedimientoTramiteDTO> tramites;
 
@@ -75,7 +75,92 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
     @Override
     public String toString() {
-        return "ProcedimientoDTO{" + " codigo=" + getCodigo() + ", codigoWF='" + getCodigoWF() + '\'' + '}';
+        StringBuilder texto = new StringBuilder("ProcedimientoDTO{");
+        texto.append(" codigo=").append(getCodigo());
+        texto.append(", codigoWF=").append(getCodigoWF());
+        texto.append(", workflow=").append(getWorkflow());
+        texto.append(", estado=").append(getEstado());
+        texto.append(", tieneTasa=").append(isTieneTasa());
+        texto.append(", codigoSIA=").append(getCodigoSIA());
+        texto.append(", estadoSIA=").append(getEstadoSIA());
+        texto.append(", tipo=").append(getTipo());
+        texto.append(", publicado=").append(isPublicado());
+        texto.append(", fechaCaducidad=").append(getFechaCaducidad());
+        texto.append(", fechaPublicacion=").append(getFechaPublicacion());
+        texto.append(", fechaActualizacion=").append(getFechaActualizacion());
+        texto.append(", responsable=").append(getResponsable());
+        texto.append(", fechaSIA=").append(getFechaSIA());
+        texto.append(", comun=").append(getComun());
+        texto.append(", lopdResponsable=").append(getLopdResponsable());
+        texto.append(", interno=").append(isInterno());
+        texto.append(", mensajes=").append(getMensajes());
+        texto.append(", habilitadoApoderado=").append(isHabilitadoApoderado());
+        texto.append(", habilitadoFuncionario=").append(getHabilitadoFuncionario());
+        texto.append(", usuarioAuditoria=").append(getUsuarioAuditoria());
+        texto.append(", responsable=").append(getResponsable());
+        texto.append(", responsableEmail=").append(getResponsableEmail());
+        texto.append(", incidenciasEmail=").append(getIncidenciasEmail());
+        texto.append(", habilitadoApoderado=").append(isHabilitadoApoderado());
+        texto.append(", habilitadoFuncionario=").append(getHabilitadoFuncionario());
+        texto.append(", silencio=").append(getSilencio());
+        texto.append(", datosPersonalesLegitimacion=").append(getDatosPersonalesLegitimacion());
+        texto.append(", iniciacion=").append(getIniciacion());
+        texto.append(", uaResponsable=").append(getUaResponsable());
+        texto.append(", uaInstructor=").append(getUaInstructor());
+        texto.append(", tipoProcedimiento=").append(getTipoProcedimiento());
+        texto.append(", tipoVia=").append(getTipoVia());
+        texto.append(", uaCompetente=").append(getUaCompetente());
+        texto.append(", nombreProcedimientoWorkFlow=").append(getNombreProcedimientoWorkFlow());
+        texto.append(", objeto=").append(getObjeto());
+        texto.append(", destinatarios=").append(getDestinatarios());
+        texto.append(", terminoResolucion=").append(getTerminoResolucion());
+        texto.append(", observaciones=").append(getObservaciones());
+        texto.append(", requisitos=").append(getRequisitos());
+        texto.append(", keywords=").append(getKeywords());
+        if (getPublicosObjetivo() != null) {
+            texto.append(", publicosObjetivo=[");
+            for (TipoPublicoObjetivoEntidadGridDTO publico : getPublicosObjetivo()) {
+                texto.append(publico.toString());
+            }
+            texto.append("]");
+        }
+        if (getDocumentos() != null) {
+            texto.append(", documentos=[");
+            for (ProcedimientoDocumentoDTO documento : getDocumentos()) {
+                texto.append(documento.toString());
+            }
+            texto.append("]");
+        }
+        if (getDocumentosLOPD() != null) {
+            texto.append(", documentosLOPD=[");
+            for (ProcedimientoDocumentoDTO documento : getDocumentosLOPD()) {
+                texto.append(documento.toString());
+            }
+            texto.append("]");
+        }
+        if (getNormativas() != null) {
+            texto.append(", normativas=[");
+            for (NormativaGridDTO normativa : getNormativas()) {
+                texto.append(normativa.toString());
+            }
+            texto.append("]");
+        }
+        if (getTemas() != null) {
+            texto.append(", temas=[");
+            for (TemaGridDTO tema : getTemas()) {
+                texto.append(tema.toString());
+            }
+            texto.append("]");
+        }
+        if (tramites != null) {
+            texto.append(", tramites=[");
+            for (ProcedimientoTramiteDTO tramite : tramites) {
+                texto.append(tramite.toString());
+            }
+            texto.append("]");
+        }
+        texto.append('}');
+        return texto.toString();
     }
 
     @Override
@@ -96,7 +181,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
      *
      * @return
      */
-    public Object clone() {
+    public ProcedimientoDTO clone() {
         ProcedimientoDTO procClonado = new ProcedimientoDTO();
         procClonado.setCodigo(this.getCodigo());
         procClonado.setCodigoWF(this.getCodigoWF());
@@ -136,10 +221,8 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getIniciacion() != null) {
             procClonado.setIniciacion((TipoFormaInicioDTO) this.getIniciacion().clone());
         }
-        LOG.error("Clone. UACompetente" + this.getUaCompetente());
-        if (this.getUaCompetente() != null) {
-            procClonado.setUaCompetente((UnidadAdministrativaDTO) this.getUaCompetente().clone());
-            LOG.error("Clonado. UACompetente" + procClonado.getUaCompetente());
+        if (this.getUaResponsable() != null) {
+            procClonado.setUaResponsable((UnidadAdministrativaDTO) this.getUaResponsable().clone());
         }
         if (this.getUaInstructor() != null) {
             procClonado.setUaInstructor((UnidadAdministrativaDTO) this.getUaInstructor().clone());
@@ -149,6 +232,11 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         }
         if (this.getTipoVia() != null) {
             procClonado.setTipoVia((TipoViaDTO) this.getTipoVia().clone());
+        }
+        LOG.error("Clone. UACompetente" + this.getUaCompetente());
+        if (this.getUaCompetente() != null) {
+            procClonado.setUaCompetente((UnidadAdministrativaDTO) this.getUaCompetente().clone());
+            LOG.error("Clonado. UACompetente" + procClonado.getUaCompetente());
         }
 
         //Literal
@@ -161,6 +249,14 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getLopdInfoAdicional() != null) {
             procClonado.setLopdInfoAdicional((Literal) this.getLopdInfoAdicional().clone());
         }
+        if (this.getLopdDestinatario() != null) {
+            procClonado.setLopdDestinatario((Literal) this.getLopdDestinatario().clone());
+        }
+
+        if (this.getLopdDerechos() != null) {
+            procClonado.setLopdDerechos((Literal) this.getLopdDerechos().clone());
+        }
+
         if (this.getObjeto() != null) {
             procClonado.setObjeto((Literal) this.getObjeto().clone());
         }
@@ -175,6 +271,10 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         }
         if (this.getRequisitos() != null) {
             procClonado.setRequisitos((Literal) this.getRequisitos().clone());
+        }
+
+        if (this.getKeywords() != null) {
+            procClonado.setKeywords((Literal) this.getKeywords().clone());
         }
 
         //Relaciones
@@ -225,12 +325,10 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
                 tramits.add((ProcedimientoTramiteDTO) tramite.clone());
             }
             procClonado.setTramites(tramits);
-
         }
+
         return procClonado;
     }
-
-
 
 
     public int compareTo(ProcedimientoDTO dataOriginal) {
@@ -390,7 +488,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
 
         // Datos contacto
-
         if (UtilComparador.compareTo(this.getUaCompetente(), dataOriginal.getUaCompetente()) != 0) {
             if (mostrarLog) {
                 LOG.error("ProcedimientoDTO.compareTo: this.getUaCompetente() != dataOriginal.getUaCompetente(). this.getUaCompetente()=" + this.getUaCompetente() + " dataOriginal.getUaCompetente()=" + dataOriginal.getUaCompetente());
@@ -571,7 +668,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
     }
 
 
-
     public static List<AuditoriaCambio> auditar(ProcedimientoBaseDTO data, ProcedimientoBaseDTO dataOriginal) {
 
         List<AuditoriaCambio> cambios = new ArrayList<>();
@@ -632,6 +728,69 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (data instanceof ProcedimientoDTO) {
             AuditoriaUtil.auditarTramites(((ProcedimientoDTO) data).getTramites(), ((ProcedimientoDTO) dataOriginal).getTramites(), cambios, "auditoria.procedimiento.tramites");
         }
+
+
+        return cambios;
+    }
+
+    public static List<AuditoriaCambio> auditar(ProcedimientoBaseDTO data) {
+
+        List<AuditoriaCambio> cambios = new ArrayList<>();
+        // TODO
+        //Estado
+//        AuditoriaUtil.auditar(data.getEstado(), dataOriginal.getEstado(), cambios);
+//
+//        //Seccion Datos
+//        AuditoriaUtil.auditar(data.getFechaPublicacion(), dataOriginal.getFechaPublicacion(), cambios, "auditoria.procedimiento.fechaPublicacion");
+//        AuditoriaUtil.auditar(data.getFechaCaducidad(), dataOriginal.getFechaCaducidad(), cambios, "auditoria.procedimiento.fechaCaducidad");
+//        AuditoriaUtil.auditar(data.isTieneTasa(), dataOriginal.isTieneTasa(), cambios, "auditoria.procedimiento.tieneTasa");
+//        AuditoriaUtil.auditar(data.getNombreProcedimientoWorkFlow(), dataOriginal.getNombreProcedimientoWorkFlow(), cambios, "auditoria.procedimiento.nombre");
+//        AuditoriaUtil.auditar(data.getObjeto(), dataOriginal.getObjeto(), cambios, "auditoria.procedimiento.objeto");
+//        AuditoriaUtil.auditar(data.getDestinatarios(), dataOriginal.getDestinatarios(), cambios, "auditoria.procedimiento.destinatarios");
+//        AuditoriaUtil.auditar(data.getRequisitos(), dataOriginal.getRequisitos(), cambios, "auditoria.procedimiento.requisitos");
+//        AuditoriaUtil.auditar(data.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional(), cambios, "auditoria.procedimiento.datosPersonalesDestinatario");
+//        AuditoriaUtil.auditar(data.getIniciacion(), dataOriginal.getIniciacion(), cambios, "auditoria.procedimiento.iniciacion");
+//        AuditoriaUtil.auditar(data.getSilencio(), dataOriginal.getSilencio(), cambios, "auditoria.procedimiento.silencio");
+//        AuditoriaUtil.auditar(data.getTipoProcedimiento(), dataOriginal.getTipoProcedimiento(), cambios, "auditoria.procedimiento.tipoProcedimiento");
+//        AuditoriaUtil.auditar(data.getTipoVia(), dataOriginal.getTipoVia(), cambios, "auditoria.procedimiento.tipoVia");
+//        AuditoriaUtil.auditar(data.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado(), cambios, "auditoria.procedimiento.habilitadoApoderado");
+//        AuditoriaUtil.auditar(data.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario(), cambios, "auditoria.procedimiento.habilitadoFuncionario");
+//        AuditoriaUtil.auditar(data.getUaInstructor(), dataOriginal.getUaInstructor(), cambios, "auditoria.procedimiento.uaInstructor");
+//        AuditoriaUtil.auditar(data.getComun(), dataOriginal.getComun(), cambios, "auditoria.procedimiento.comun");
+//        AuditoriaUtil.auditar(data.getTerminoResolucion(), dataOriginal.getTerminoResolucion(), cambios, "auditoria.procedimiento.terminoResolucion");
+//        AuditoriaUtil.auditar(data.getObservaciones(), dataOriginal.getObservaciones(), cambios, "auditoria.procedimiento.observaciones");
+//
+//        //Seccion datos contacto
+//        AuditoriaUtil.auditar(data.getUaResponsable(), dataOriginal.getUaResponsable(), cambios, "auditoria.procedimiento.uaResponsable");
+//        AuditoriaUtil.auditar(data.getResponsable(), dataOriginal.getResponsable(), cambios, "auditoria.procedimiento.responsable");
+//        AuditoriaUtil.auditar(data.getResponsableEmail(), dataOriginal.getResponsableEmail(), cambios, "auditoria.procedimiento.responsableEmail");
+//
+//        //Seccion datos LOPD
+//        AuditoriaUtil.auditar(data.isInterno(), dataOriginal.isInterno(), cambios, "auditoria.procedimiento.interno");
+//        AuditoriaUtil.auditar(data.getLopdResponsable(), dataOriginal.getLopdResponsable(), cambios, "auditoria.procedimiento.lopdResponsable");
+//        AuditoriaUtil.auditar(data.getDatosPersonalesLegitimacion(), dataOriginal.getDatosPersonalesLegitimacion(), cambios, "auditoria.procedimiento.datosPersonalesLegitimacion");
+//        AuditoriaUtil.auditar(data.getLopdFinalidad(), dataOriginal.getLopdFinalidad(), cambios, "auditoria.procedimiento.datosPersonalesFinalidad");
+//
+//        if (data instanceof ServicioDTO) {
+//            AuditoriaUtil.auditar(((ServicioDTO) data).getTasa(), ((ServicioDTO) dataOriginal).getTasa(), cambios, "auditoria.servicio.tasa");
+//            AuditoriaUtil.auditar(((ServicioDTO) data).getTipoTramitacion(), ((ServicioDTO) dataOriginal).getTipoTramitacion(), cambios, "auditoria.servicio.tipoTramitacion");
+//            AuditoriaUtil.auditar(((ServicioDTO) data).getPlantillaSel(), ((ServicioDTO) dataOriginal).getPlantillaSel(), cambios, "auditoria.servicio.tipoTramitacionSel");
+//            AuditoriaUtil.auditar(((ServicioDTO) data).isTramitPresencial(), ((ServicioDTO) dataOriginal).isTramitPresencial(), cambios, "auditoria.servicio.isTramitPresencial");
+//            AuditoriaUtil.auditar(((ServicioDTO) data).isTramitElectronica(), ((ServicioDTO) dataOriginal).isTramitElectronica(), cambios, "auditoria.servicio.isTramitElectronica");
+//            AuditoriaUtil.auditar(((ServicioDTO) data).isTramitTelefonica(), ((ServicioDTO) dataOriginal).isTramitTelefonica(), cambios, "auditoria.servicio.isTramitTelefonica");
+//        }
+//
+//        //Relaciones
+//        AuditoriaUtil.auditarTipoPublico(data.getPublicosObjetivo(), dataOriginal.getPublicosObjetivo(), cambios, "auditoria.procedimiento.publicosObjetivo");
+//        AuditoriaUtil.auditarDocumentos(data.getDocumentos(), dataOriginal.getDocumentos(), cambios, "auditoria.procedimiento.documentos");
+//        AuditoriaUtil.auditarDocumentos(data.getDocumentosLOPD(), dataOriginal.getDocumentosLOPD(), cambios, "auditoria.procedimiento.documentosLOPD");
+//        AuditoriaUtil.auditarNormativas(data.getNormativas(), dataOriginal.getNormativas(), cambios, "auditoria.procedimiento.normativas");
+//        AuditoriaUtil.auditarTemas(data.getTemas(), dataOriginal.getTemas(), cambios, "auditoria.procedimiento.temas");
+//
+//        if (data instanceof ProcedimientoDTO) {
+//            AuditoriaUtil.auditarTramites(((ProcedimientoDTO) data).getTramites(), ((ProcedimientoDTO) dataOriginal).getTramites(), cambios, "auditoria.procedimiento.tramites");
+//        }
+//
 
 
         return cambios;

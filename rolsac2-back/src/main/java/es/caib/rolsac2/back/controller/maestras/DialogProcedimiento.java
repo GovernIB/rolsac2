@@ -160,10 +160,16 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         actualizarResponsable();
         dataOriginal = (ProcedimientoDTO) data.clone();
 
+        checkLOGUAcompetente();
         //Eso es para cargar las uas del instructor
         calcularUAhijosPadres();
     }
 
+    private void checkLOGUAcompetente() {
+    	LOG.error("DialogProcedimiento.CHECK");
+        LOG.error("data.uaCompetente:"+ data.getUaCompetente());
+        LOG.error("dataOriginal.uaCompetente:"+ dataOriginal.getUaCompetente());
+    }
     /**
      * Metodo para cargar las listas
      **/
@@ -649,6 +655,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void cerrar() {
+    	checkLOGUAcompetente();
     	if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal, true) != 0) {
             PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;
