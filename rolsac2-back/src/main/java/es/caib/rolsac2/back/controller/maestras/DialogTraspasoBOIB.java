@@ -60,9 +60,9 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
 
     public void buscar() {
         if (Objects.nonNull(this.filtro)) {
-            if (getFiltroFechaBoletin() == null && (getFiltroNumBoletin() == null || getFiltroNumRegistro().isEmpty())) {
+            if (getFiltroFechaBoletin() == null && (getFiltroNumBoletin() == null || getFiltroNumBoletin().isEmpty())) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraspasoBOIB.rellenarFechas"), true);
-        } else {
+            } else {
                 try {
                     data = boletinServiceFacade.listar(getFiltroNumBoletin(), getFiltroFechaBoletin() == null ? "" : getFecha(getFiltroFechaBoletin()), getFiltroNumRegistro(), sessionBean.getEntidad().getCodigo());
                     this.mostrarResultados = true;
