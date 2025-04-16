@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dades de una Unidad Administrativa.
@@ -16,6 +18,8 @@ import java.util.Objects;
  */
 @Schema(name = "UnidadAdministrativa")
 public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UnidadAdministrativaDTO.class);
 
     /**
      * Codigo
