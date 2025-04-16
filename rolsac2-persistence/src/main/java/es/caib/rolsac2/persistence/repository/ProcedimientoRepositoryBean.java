@@ -1835,15 +1835,18 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     final String idTramiteRolsac = serv.getCodigo() == null ? "" : serv.getCodigo().toString();
 
                     final PlatTramitElectronicaDTO plataforma = tramPlantilla.getCodPlatTramitacion();
-                    String url = plataforma.getUrlAcceso().getTraduccion(lang);
-                    url = url.replace("${idTramitePlataforma}", idTramite);
-                    url = url.replace("${versionTramitePlatorma}", numVersion);
-                    url = url.replace("${parametros}", parametros);
-                    url = url.replace("${servicio}", String.valueOf(true));
-                    url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
+                    if( plataforma != null) {
+                        String url = plataforma.getUrlAcceso().getTraduccion(lang);
+                        url = url.replace("${idTramitePlataforma}", idTramite);
+                        url = url.replace("${versionTramitePlatorma}", numVersion);
+                        url = url.replace("${parametros}", parametros);
+                        url = url.replace("${servicio}", String.valueOf(true));
+                        url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
 
-                    return url;
-
+                        return url;
+                    }else {
+                        return tramitacionPlat.getUrl().getTraduccion(lang);
+                    }
                 } else if (tramitacionPlat != null) {
                     final String idTramite = tramitacionPlat.getTramiteId();
                     final String numVersion = tramitacionPlat.getTramiteVersion() == null ? "" : tramitacionPlat.getTramiteVersion().toString();
