@@ -4,6 +4,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.*;
 
 import java.util.Date;
+import java.util.List;
 
 public class UtilComparador {
 
@@ -384,6 +385,35 @@ public class UtilComparador {
                 }
             }
         }
+        return 0;
+    }
+
+
+    public static int compareTo(List<CategoriaPDUGridDTO> dato, List<CategoriaPDUGridDTO> dato2) {
+        if ((dato == null || dato.isEmpty()) && (dato2 == null || dato2.isEmpty())) {
+            return 0;
+        }
+        if ((dato == null || dato.isEmpty()) && (dato2 != null && !dato2.isEmpty())) {
+            return -1;
+        }
+
+        if ((dato != null && !dato.isEmpty()) && (dato2 == null || dato2.isEmpty())) {
+            return 1;
+        }
+
+        if (dato.size() > dato2.size()) {
+            return 1;
+        } else if (dato2.size() > dato.size()) {
+            return -1;
+        } else {
+            for (int i = 0; i < dato.size(); i++) {
+                int resultado = dato.get(i).compareTo(dato2.get(i));
+                if (resultado != 0) {
+                    return resultado;
+                }
+            }
+        }
+
         return 0;
     }
 

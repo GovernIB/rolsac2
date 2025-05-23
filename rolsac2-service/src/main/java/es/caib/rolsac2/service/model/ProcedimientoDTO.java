@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
@@ -9,10 +10,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Dades d'un Procedimiento.
@@ -193,10 +191,15 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         procClonado.setEstadoSIA(this.getEstadoSIA());
         procClonado.setTipo(this.getTipo());
         procClonado.setPublicado(this.isPublicado());
-        procClonado.setFechaCaducidad(this.getFechaCaducidad());
-        procClonado.setFechaPublicacion(this.getFechaPublicacion());
-        procClonado.setFechaActualizacion(this.getFechaActualizacion());
-
+        if (this.getFechaCaducidad() != null) {
+            procClonado.setFechaCaducidad(new Date(this.getFechaCaducidad().getTime()));
+        }
+        if (this.getFechaPublicacion() != null) {
+            procClonado.setFechaPublicacion(new Date(this.getFechaPublicacion().getTime()));
+        }
+        if (this.getFechaActualizacion() != null) {
+            procClonado.setFechaActualizacion(new Date(this.getFechaActualizacion().getTime()));
+        }
         procClonado.setResponsable(this.getResponsable());
         procClonado.setFechaSIA(this.getFechaSIA());
         procClonado.setComun(this.getComun());
@@ -285,6 +288,14 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
                 publicos.add((TipoPublicoObjetivoEntidadGridDTO) publico.clone());
             }
             procClonado.setPublicosObjetivo(publicos);
+
+        }
+        if (getCategoriasPDU() != null) {
+            List<CategoriaPDUGridDTO> categorias = new ArrayList<>();
+            for (CategoriaPDUGridDTO categoria : getCategoriasPDU()) {
+                categorias.add((CategoriaPDUGridDTO) categoria.clone());
+            }
+            procClonado.setCategoriasPDU(categorias);
 
         }
         if (getDocumentos() != null) {
@@ -754,6 +765,9 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
         //Relaciones
         AuditoriaUtil.auditarTipoPublico(data.getPublicosObjetivo(), dataOriginal.getPublicosObjetivo(), cambios, "auditoria.procedimiento.publicosObjetivo");
+        if (data instanceof ProcedimientoDTO) {
+            AuditoriaUtil.auditarCategorias(data.getCategoriasPDU(), dataOriginal.getCategoriasPDU(), cambios, "auditoria.procedimiento.categoriaPDU");
+        }
         AuditoriaUtil.auditarDocumentos(data.getDocumentos(), dataOriginal.getDocumentos(), cambios, "auditoria.procedimiento.documentos");
         AuditoriaUtil.auditarDocumentos(data.getDocumentosLOPD(), dataOriginal.getDocumentosLOPD(), cambios, "auditoria.procedimiento.documentosLOPD");
         AuditoriaUtil.auditarNormativas(data.getNormativas(), dataOriginal.getNormativas(), cambios, "auditoria.procedimiento.normativas");
@@ -852,7 +866,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
     /**
      * Icono de visibilidad
      *
-     * @return
+     * @return El css del icono de visibilidad
      */
     public String getIcon() {
         if (this.esVisible()) {
@@ -860,6 +874,31 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         } else {
             return "pi pi-eye-slash iconoRojo";
         }
+
+    }
+
+    /**
+     * Comprueba si tiene relleno los idiomas en ingles de:
+     * - nombre
+     * - objeto
+     * - destinatario
+     * - termini
+     *
+     * @return Devuelve true si están rellenos en inglés
+     */
+    public boolean isRellenoIdiomasPDU() {
+        boolean relleno = true;
+
+        if (this.getNombreProcedimientoWorkFlow() == null || this.getNombreProcedimientoWorkFlow().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getNombreProcedimientoWorkFlow().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+            relleno = false;
+        } else if (this.getObjeto() == null || this.getObjeto().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getObjeto().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+            relleno = false;
+        } else if (this.getDestinatarios() == null || this.getDestinatarios().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getDestinatarios().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+            relleno = false;
+        } else if (this.getTerminoResolucion() == null || this.getTerminoResolucion().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getTerminoResolucion().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+            relleno = false;
+        }
+        return relleno;
 
     }
 }

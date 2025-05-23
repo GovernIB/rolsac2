@@ -23,6 +23,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     void mergePublicoObjetivoProcWF(Long codigoWF, List<TipoPublicoObjetivoEntidadGridDTO> listaNuevos);
 
+    void mergeCategoriasPDUProcWF(Long codigoWF, List<CategoriaPDUGridDTO> categorias);
+
     void mergeNormativaProcWF(Long codigoWF, List<NormativaGridDTO> listaNuevos);
 
     void mergeTramitesProcWF(Long codigoWF, List<ProcedimientoTramiteDTO> lista, String ruta);
@@ -75,6 +77,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     void deleteWF(Long codigoWF);
 
+    void clonarCategoriasPDU(Long codigoWF, Long codigoWFNuevo);
+
     boolean existeProcedimientoConFormaInicio(Long codigoForIni);
 
     boolean existeProcedimientoConLegitimacion(Long codigoLegi);
@@ -87,6 +91,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     List<NormativaGridDTO> getNormativasByWF(Long codigoWF);
 
+    List<CategoriaPDUDTO> getCategoriasPDUByWFRest(Long codigoWF);
+
     public void clonarNormativas(Long codigoWF, Long codigoWFNuevo);
 
     void mergeDocumentos(Long codigo, Long idListaDocumentos, boolean isLopd, List<ProcedimientoDocumentoDTO> docs, String ruta);
@@ -94,6 +100,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
     List<ProcedimientoDocumentoDTO> getDocumentosByListaDocumentos(JListaDocumentos listaDocumentos);
 
     List<ProcedimientoTramiteDTO> getTramitesByWF(Long codigoWF);
+
+    List<CategoriaPDUGridDTO> getCategoriasPDUByWF(Long codigoWF);
 
     List<ProcedimientoNormativaDTO> getProcedimientosByNormativa(Long idNormativa);
 
@@ -180,6 +188,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     List<NormativaDTO> getNormativasByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
 
+    List<CategoriaPDUDTO> getCategoriasPDUByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
+
     List<TipoPublicoObjetivoEntidadDTO> getTipoPubObjEntByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF);
 
     void clonarPublicoObjetivo(Long idProcWF, Long idProcWFDestino);
@@ -260,4 +270,5 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      * @return
      */
     JTipoTramitacion guardarTipoTramitacion(JTipoTramitacion tramiteElectronico);
+
 }

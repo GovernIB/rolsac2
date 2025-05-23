@@ -17,7 +17,6 @@ public interface TemaConverter extends Converter<JTema, TemaDTO> {
 
     @Override
     @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
-    @Mapping(target = "categoriaPdu", source = "categoriaPdu")
     TemaDTO createDTO(JTema entity);
 
     @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(), \"descripcion\"))")
@@ -49,7 +48,6 @@ public interface TemaConverter extends Converter<JTema, TemaDTO> {
     @Mapping(target = "entidad", ignore = true)
     @Mapping(target = "temaPadre", ignore = true)
     @Mapping(target = "tipoMateriaSIA", ignore = true)
-    @Mapping(target = "categoriaPdu", ignore = true)
     void mergeEntity(@MappingTarget JTema entity, TemaDTO dto);
 
     default List<TemaDTO> createTreeDTOs(List<JTema> entities) {

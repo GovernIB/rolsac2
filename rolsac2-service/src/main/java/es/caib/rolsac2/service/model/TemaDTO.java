@@ -45,8 +45,6 @@ public class TemaDTO extends ModelApi {
      */
     private TipoMateriaSIADTO tipoMateriaSIA;
 
-    private CategoriaPduDto categoriaPdu;
-
     /**
      * Instancia un nuevo Tema dto.
      */
@@ -71,7 +69,6 @@ public class TemaDTO extends ModelApi {
             this.descripcion = otro.descripcion == null ? null : (Literal) otro.descripcion.clone();
             this.mathPath = otro.mathPath;
             this.tipoMateriaSIA = otro.tipoMateriaSIA;
-            this.categoriaPdu = otro.categoriaPdu;
         }
     }
 
@@ -218,14 +215,6 @@ public class TemaDTO extends ModelApi {
         this.tipoMateriaSIA = tipoMateriaSIA;
     }
 
-    public CategoriaPduDto getCategoriaPdu() {
-        return categoriaPdu;
-    }
-
-    public void setCategoriaPdu(CategoriaPduDto categoriaPdu) {
-        this.categoriaPdu = categoriaPdu;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -263,8 +252,6 @@ public class TemaDTO extends ModelApi {
         temaGridDTO.setCodigo(this.codigo);
         temaGridDTO.setIdentificador(this.identificador);
         temaGridDTO.setTipoMateriaSIA(this.tipoMateriaSIA);
-        temaGridDTO.setCategoriaPdu(this.categoriaPdu);
-
         return temaGridDTO;
     }
 

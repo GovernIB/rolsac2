@@ -2,6 +2,7 @@ package es.caib.rolsac2.service.facade;
 
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.filtro.CategoriaPDUFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoMediaEdificioFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoMediaFichaFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoMediaUAFiltro;
@@ -122,6 +123,63 @@ public interface MaestrasEntServiceFacade {
      * @return true si existe un tipo UA con el identificador indicado, false en caso contrario
      */
     boolean existeIdentificadorTipoMediaUA(String identificador, Long idEntidad);
+
+    /**
+     * Crea un nuevo CategoriaPduDTO a la base de datos.
+     *
+     * @param dto datos del tipoMediaUA
+     * @return identificador
+     */
+    Long create(CategoriaPDUDTO dto) throws RecursoNoEncontradoException;
+
+    /**
+     * Actualiza los datos de un CategoriaPduDTO a la base de datos.
+     *
+     * @param dto nuevos datos del CategoriaPduDTO
+     * @throws RecursoNoEncontradoException si el CategoriaPduDTO con el id no existe.
+     */
+    void update(CategoriaPDUDTO dto) throws RecursoNoEncontradoException;
+
+    /**
+     * Borra un CategoriaPduDTO de la bbdd
+     *
+     * @param id identificador del CategoriaPduDTO a borrar
+     * @throws RecursoNoEncontradoException si el CategoriaPduDTO con el id no existe.
+     */
+    void deleteCategoriaPduDTO(Long id) throws RecursoNoEncontradoException;
+
+    /**
+     * Retorna un opcional amb el CategoriaPduDTO indicat per l'identificador.
+     *
+     * @param id identificador del CategoriaPduDTO a cercar
+     * @return un opcional amb les dades del CategoriaPduDTO indicat o buid si no existeix.
+     */
+    CategoriaPDUDTO findCategoriaPduDTOById(Long id);
+
+    /**
+     * Retorna un listado con los CategoriaPduDTO asociados a una entidad.
+     *
+     * @param idEntidad identificador de la entidad asociada
+     * @return un listado de CategoriaPduDTO
+     */
+    List<CategoriaPDUDTO> findCategoriaPduDTOByEntidad(Long idEntidad);
+
+    /**
+     * Devuelve una página con el CategoriaPduDTO relacionado con los parámetros del filtro
+     *
+     * @param filtro filtro de la búsqueda
+     * @return una pàgina amb el nombre total de CategoriaPduDTO i la llista de CategoriaPduDTO pel rang indicat.
+     */
+    Pagina<CategoriaPDUGridDTO> findByFiltro(CategoriaPDUFiltro filtro);
+
+    /**
+     * Devuelve si existe un CategoriaPduDTO con el identificador indicado
+     *
+     * @param identificador identificador del CategoriaPduDTO
+     * @return true si existe un CategoriaPduDTO con el identificador indicado, false en caso contrario
+     */
+    boolean existeIdentificadorCategoriaPdu(String identificador, Long idEntidad);
+
 
     /**
      * Crea un nuevo TipoMediaFicha a la base de datos.

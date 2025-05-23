@@ -1,11 +1,26 @@
 package es.caib.rolsac2.persistence.repository;
 
-import es.caib.rolsac2.persistence.model.JCategoriaPdu;
+import es.caib.rolsac2.persistence.model.JCategoriaPDU;
+import es.caib.rolsac2.service.model.CategoriaPDUDTO;
+import es.caib.rolsac2.service.model.CategoriaPDUGridDTO;
+import es.caib.rolsac2.service.model.filtro.CategoriaPDUFiltro;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface CategoriaPduRepository extends CrudRepository<JCategoriaPdu, Long> {
+public interface CategoriaPDURepository extends CrudRepository<JCategoriaPDU, Long> {
 
-    List<JCategoriaPdu> findAll();
+    Optional<JCategoriaPDU> findById(String id);
 
+    List<JCategoriaPDU> findByEntidad(Long idEntidad);
+
+    List<CategoriaPDUGridDTO> findPagedByFiltro(CategoriaPDUFiltro filtro);
+
+    long countByFiltro(CategoriaPDUFiltro filtro);
+
+    boolean existeIdentificador(String identificador, Long idEntidad);
+
+    List<CategoriaPDUDTO> findPagedByFiltroRest(CategoriaPDUFiltro filtro);
+
+    void deleteByEntidad(Long idEntidad);
 }

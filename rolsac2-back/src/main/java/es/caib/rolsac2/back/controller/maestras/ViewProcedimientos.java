@@ -31,12 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -93,6 +88,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     private ProcedimientoDTO wfPublicado;
     private ProcedimientoDTO wfModificado;
     private NormativaGridDTO normativaSeleccionada;
+    private CategoriaPDUGridDTO categoriaPDUSeleccionada;
     private ProcedimientoDocumentoDTO documentoSeleccionado;
     private ProcedimientoDocumentoDTO documentoLOPDSeleccionado;
     private TreeNode temaSeleccionado;
@@ -109,7 +105,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         LOG.debug("load View Procedimientos");
         permisoAccesoVentana(ViewProcedimientos.class);
 
-        if( this.isGestor()){
+        if (this.isGestor()) {
             codigosUaDescendientesGestor = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
         }
 
@@ -233,7 +229,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             List<Long> ids = new ArrayList<>();
 
             for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                if( filtro.isHijasActivas()) {
+                if (filtro.isHijasActivas()) {
                     List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
                     ids.addAll(idsUa);
                 }
@@ -241,7 +237,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 ids.add(ua.getCodigo());
             }
             filtro.setIdUAsInstructor(ids);
-        }else{
+        } else {
             filtro.setIdUAsInstructor(null);
             filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
         }
@@ -256,10 +252,10 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
         boolean verComunes = this.isGestor() || this.isInformador();
 
-        if(verComunes){
-            if( this.isGestor()) {
+        if (verComunes) {
+            if (this.isGestor()) {
                 filtro.setIdUAInstructorOComun(codigosUaDescendientesGestor);
-            }else {
+            } else {
                 filtro.setIdUAInstructorOComun(Arrays.asList(sessionBean.getUnidadActiva().getCodigo()));
             }
         } else {
@@ -267,13 +263,12 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         }
 
 
-
         filtro.setIdioma(sessionBean.getLang());
         //filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setEsProcedimiento(Boolean.TRUE);
         filtro.setOrder("DESCENDING");
         filtro.setTipo("P");
-        if ( this.isInformador()) {
+        if (this.isInformador()) {
             filtro.setComun("N");
         }
     }
@@ -320,13 +315,13 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         } else {
             Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
             if (idProcMod == null) {
-                    PrimeFaces.current().executeScript("PF('cdDeseaCrearEditar').show();");
-                    return;
-                }
-                ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
+                PrimeFaces.current().executeScript("PF('cdDeseaCrearEditar').show();");
+                return;
+            }
+            ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
 
-             TypeModoAcceso modo =    BooleanUtils.isTrue(datoSeleccionado.getComun()) && ( this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-             abrirVentana(modo, proc);
+            TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            abrirVentana(modo, proc);
 
         }
     }
@@ -346,7 +341,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             this.datoSeleccionado.setCodigoWFMod(idProcMod);
             ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
 
-            TypeModoAcceso modo =    BooleanUtils.isTrue(datoSeleccionado.getComun()) && ( this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
             abrirVentana(modo, proc);
             if (realizarBusqueda) {
                 this.buscar();
@@ -936,6 +931,16 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         }
     }
 
+    public void consultarCategoriaPDU() {
+        if (categoriaPDUSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", categoriaPDUSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("dialogCategoriaPDU", TypeModoAcceso.CONSULTA, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+        }
+    }
+
     public void consultarDocumento() {
         if (documentoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
@@ -985,8 +990,6 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             UtilJSF.openDialog("dialogProcedimientoTramite", TypeModoAcceso.CONSULTA, params, true, 950, 600);
         }
     }
-
-
 
 
     public void setFiltro(ProcedimientoFiltro filtro) {
@@ -1125,6 +1128,14 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void setNormativaSeleccionada(NormativaGridDTO normativaSeleccionada) {
         this.normativaSeleccionada = normativaSeleccionada;
+    }
+
+    public CategoriaPDUGridDTO getCategoriaPDUSeleccionada() {
+        return categoriaPDUSeleccionada;
+    }
+
+    public void setCategoriaPDUSeleccionada(CategoriaPDUGridDTO categoriaPDUSeleccionada) {
+        this.categoriaPDUSeleccionada = categoriaPDUSeleccionada;
     }
 
     public ProcedimientoDocumentoDTO getDocumentoSeleccionado() {

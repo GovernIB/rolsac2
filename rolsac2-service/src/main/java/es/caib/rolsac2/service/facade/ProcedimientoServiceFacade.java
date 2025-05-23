@@ -4,8 +4,6 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
-import es.caib.rolsac2.commons.plugins.pdu.api.model.RRespuestaImportarEnlace;
-import es.caib.rolsac2.commons.plugins.pdu.api.model.ResultadoPdu;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
@@ -18,6 +16,7 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.Optional;
 
@@ -150,7 +149,7 @@ public interface ProcedimientoServiceFacade {
 
     void deleteProcedimientoTramite(Long id) throws RecursoNoEncontradoException;
 
-    void guardarFlujo(ProcedimientoBaseDTO data, TypeProcedimientoEstado estadoDestino, String mensajes, TypePerfiles perfil, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor, Long idEntidad, String ruta);
+    void guardarFlujo(ProcedimientoBaseDTO data, ProcedimientoBaseDTO dataDefinitivo, TypeProcedimientoEstado estadoDestino, String mensajes, TypePerfiles perfil, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor, Long idEntidad, String ruta);
 
     void actualizarMensajes(Long idProc, String mensajes, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor);
 
@@ -232,6 +231,9 @@ public interface ProcedimientoServiceFacade {
 
     List<NormativaDTO> getNormativasByProc(Long codigo, String estadoWF);
 
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    List<CategoriaPDUDTO> getCategoriasPDUByProc(Long codigo, String enlaceWF);
+
     List<TemaDTO> getTemasByProc(Long codigo, String estadoWF);
 
     List<ProcedimientoDocumentoDTO> getDocumentosByTram(Long codigo);
@@ -249,6 +251,9 @@ public interface ProcedimientoServiceFacade {
     List<TemaDTO> getTemasByCodProcWF(Long codigo);
 
     List<NormativaDTO> getNormativasByCodProcWF(Long codigo);
+
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    List<CategoriaPDUDTO> getCategoriasPDUByCodProcWF(Long codigoWF);
 
     String obtenerIdiomaEntidad(Long codigo);
 

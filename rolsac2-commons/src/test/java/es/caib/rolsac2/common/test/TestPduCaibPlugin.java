@@ -1,27 +1,14 @@
 package es.caib.rolsac2.common.test;
 
-import es.caib.rolsac2.commons.plugins.dir3.api.Dir3ErrorException;
 import es.caib.rolsac2.commons.plugins.pdu.api.IPluginPdu;
-import es.caib.rolsac2.commons.plugins.pdu.api.model.RCategory;
-import es.caib.rolsac2.commons.plugins.pdu.api.model.RLinkData;
-import es.caib.rolsac2.commons.plugins.pdu.api.model.RPeticionImportarEnlace;
-import es.caib.rolsac2.commons.plugins.pdu.api.model.RRespuestaImportarEnlace;
-import es.caib.rolsac2.commons.plugins.pdu.api.model.RTypeDelete;
-import es.caib.rolsac2.commons.plugins.pdu.api.model.RTypeLanguage;
-import es.caib.rolsac2.commons.plugins.pdu.api.model.RTypeLink;
-import es.caib.rolsac2.commons.plugins.pdu.api.model.RTypeUrl;
+import es.caib.rolsac2.commons.plugins.pdu.api.model.*;
 import org.fundaciobit.pluginsib.core.IPlugin;
 import org.fundaciobit.pluginsib.core.utils.PluginsManager;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class TestPduCaibPlugin {
-
 
 
     @Test
@@ -52,7 +39,7 @@ public class TestPduCaibPlugin {
 
     }
 
-    private RPeticionImportarEnlace crearPeticionTest(){
+    private RPeticionImportarEnlace crearPeticionTest() {
         final RPeticionImportarEnlace peticion = new RPeticionImportarEnlace();
         RLinkData linkData = new RLinkData();
         List<RCategory> categories = new ArrayList<RCategory>();
@@ -68,23 +55,23 @@ public class TestPduCaibPlugin {
         linkData.setCategories(categories);
         linkData.setCrawlUrl("");
         linkData.setDelete(RTypeDelete.NO);
-        linkData.setDescription("Resolver las incidencias posteriores a la concesión de Incentivos Regionales, en especial cuando se refieran a los siguientes aspectos: a. Modificaciones al proyecto inicial que supongan cambio de actividad, variación de los incentivos, del importe de la inversión aprobada o de los puestos de trabajo a crear. b. Cambio de denominación o de las circunstancias societarias con o sin cambio de titularidad que afecten al proyecto. c. Cambio de ubicación del proyecto cuando se produzca dentro de la misma zona de promoción económica. d. Modificaciones de los plazos, y/o calendarios de cumplimiento de condiciones para la ejecución del proyecto y para el cumplimiento de las condiciones particulares de la concesión. e. Modificaciones de los puestos de trabajo a mantener por la titular como consecuencia de operaciones societarias.");
+        linkData.setDescription("El objeto de este bases es regular la constitución y la actualización de la bolsa única del cuerpo facultativo técnico, escala de ingeniería técnica, especialidad ingeniería técnica de obras públicas.");
         linkData.setLanguage(RTypeLanguage.ES.toString());
         linkData.setExcludedPaths(new ArrayList<>());
         linkData.setIgnoreParams(new ArrayList<>());
         linkData.setSitemaps(new ArrayList<>());
-        linkData.setUrl("https://pre-sede.gva.es/es/inicio/procedimientos?id_proc=20827");
+        linkData.setUrl("https://www.caib.es/seucaib/es/200/personas/tramites/tramite/6332536");
         linkData.setUrlType(RTypeUrl.Webpage);
         linkData.setType(RTypeLink.Procedure.toString());
-        linkData.setNationalCode("ES52");
-        linkData.setTitle("Incentivos Regionales. Incidencias posteriores a la concesión: modificaciones y prórrogas");
+        linkData.setNationalCode("ES53");
+        linkData.setTitle("Convocatoria para la constitución de la bolsa única de personal funcionario interino del cuerpo facultativo técnico, escala de ingeniería técnica, especialidad ingeniería técnica de obras públicas");
         linkData.setParentUrl("https://pre-sede.gva.es/");
         linkData.setSdgDashboardInfoSearchResults("");
         //linkData.setProcedureName("");
         //linkData.setProcedureType("");
         //linkData.setProcedureAvailability("");
         linkData.setProcedureData(new ArrayList<>());
-        List<RLinkData> rLinkDataList =  new ArrayList<RLinkData>();
+        List<RLinkData> rLinkDataList = new ArrayList<RLinkData>();
         rLinkDataList.add(linkData);
 
         peticion.setLinkData(rLinkDataList);

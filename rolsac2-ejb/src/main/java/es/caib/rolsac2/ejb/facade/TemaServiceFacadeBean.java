@@ -3,11 +3,9 @@ package es.caib.rolsac2.ejb.facade;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.TemaConverter;
-import es.caib.rolsac2.persistence.model.JCategoriaPdu;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JTema;
 import es.caib.rolsac2.persistence.model.JTipoMateriaSIA;
-import es.caib.rolsac2.persistence.repository.CategoriaPduRepository;
 import es.caib.rolsac2.persistence.repository.EntidadRepository;
 import es.caib.rolsac2.persistence.repository.TemaRepository;
 import es.caib.rolsac2.persistence.repository.TipoMateriaSIARepository;
@@ -55,8 +53,6 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
     @Inject
     EntidadRepository entidadRepository;
 
-    @Inject
-    private CategoriaPduRepository categoriaPduRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -118,8 +114,6 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
         this.verificarModificacionTemaPadre(dto, jTema, idioma);
         jTema.setEntidad(jEntidad);
 
-        JCategoriaPdu jCategoriaPdu = categoriaPduRepository.getReference(dto.getCategoriaPdu().getCodigo());
-        jTema.setCategoriaPdu(jCategoriaPdu);
         converter.mergeEntity(jTema, dto);
         //temaRepository.update(jTema);
         temaRepository.actualizar(jTema, jTipoMateriaSIA);

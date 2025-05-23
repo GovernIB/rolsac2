@@ -48,9 +48,9 @@ public class IndexacionPDURepositoryBean extends AbstractCrudRepository<JIndexac
                 indexacionDTO.setCodigo((Long) jdato[0]);
                 String tipo = (String) jdato[1];
                 String tipoIndexacion = null;
-                if ("P".equals(tipo)){
+                if ("P".equals(tipo)) {
                     tipoIndexacion = TypeIndexacion.PROCEDIMIENTO.toString();
-                }else if( "S".equals(tipo)){
+                } else if ("S".equals(tipo)) {
                     tipoIndexacion = TypeIndexacion.SERVICIO.toString();
                 }
                 indexacionDTO.setTipo(tipoIndexacion);
@@ -92,11 +92,11 @@ public class IndexacionPDURepositoryBean extends AbstractCrudRepository<JIndexac
             sql.append(" and j.procedimiento.codigo = :codElemento");
         }
 
-        if(filtro.isRellenoIntegrarPdu() ){
+        if (filtro.isRellenoIntegrarPdu()) {
             sql.append(" and wf.integrarPdu = :integrarPdu");
         }
 
-        if(filtro.isRellenoEstadoProcedimiento()){
+        if (filtro.isRellenoEstadoProcedimiento()) {
             sql.append(" and wf.estado = :estado");
         }
 
@@ -117,11 +117,11 @@ public class IndexacionPDURepositoryBean extends AbstractCrudRepository<JIndexac
             query.setParameter("codElemento", filtro.getCodElemento());
         }
 
-        if(filtro.isRellenoIntegrarPdu()){
+        if (filtro.isRellenoIntegrarPdu()) {
             query.setParameter("integrarPdu", filtro.getIntegrarPdu());
         }
 
-        if( filtro.isRellenoEstadoProcedimiento()){
+        if (filtro.isRellenoEstadoProcedimiento()) {
             query.setParameter("estado", filtro.getEstadoProcedimiento().toString());
         }
 
@@ -158,25 +158,32 @@ public class IndexacionPDURepositoryBean extends AbstractCrudRepository<JIndexac
 
     @Override
     public void guardarIndexar(Long codElemento, String tipo, Long idEntidad, int accion) {
-        if (!existeIndexacion(codElemento, tipo, idEntidad)) {
-            JIndexacionPdu jIndexacion = new JIndexacionPdu();
-            if(codElemento != null) {
-                JProcedimiento procedimiento = new JProcedimiento();
-                procedimiento.setCodigo(codElemento);
-                jIndexacion.setProcedimiento(procedimiento);
-            }
-            JEntidad jEntidad = entityManager.getReference(JEntidad.class, idEntidad);
-            jIndexacion.setEntidad(jEntidad);
-            jIndexacion.setFechaCreacion(new Date());
-            jIndexacion.setAccion(accion);
-            this.create(jIndexacion);
+        if (existeIndexacion(codElemento, tipo, idEntidad)) {
+            String sql = "DELETE FROM JIndexacionPdu j where j.entidad.codigo = :entidad and j.procedimiento.codigo = :codElemento";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("entidad", idEntidad);
+            query.setParameter("codElemento", codElemento);
+            query.executeUpdate();
         }
+
+        JIndexacionPdu jIndexacion = new JIndexacionPdu();
+        if (codElemento != null) {
+            JProcedimiento procedimiento = new JProcedimiento();
+            procedimiento.setCodigo(codElemento);
+            jIndexacion.setProcedimiento(procedimiento);
+        }
+        JEntidad jEntidad = entityManager.getReference(JEntidad.class, idEntidad);
+        jIndexacion.setEntidad(jEntidad);
+        jIndexacion.setFechaCreacion(new Date());
+        jIndexacion.setAccion(accion);
+        this.create(jIndexacion);
+
     }
 
     @Override
     public void actualizarDato(IndexacionPDUDto dato, ResultadoPdu resultadoAccion) {
         JIndexacionPdu jIndexacion = entityManager.find(JIndexacionPdu.class, dato.getCodigo());
-        if (resultadoAccion.isCorrecto() ) {
+        if (resultadoAccion.isCorrecto()) {
             entityManager.remove(jIndexacion);
         } else {
             jIndexacion.setMensajeError(resultadoAccion.getMensaje());
@@ -191,12 +198,12 @@ public class IndexacionPDURepositoryBean extends AbstractCrudRepository<JIndexac
         String sql = "DELETE FROM JIndexacionPdu j where j.entidad.codigo = :entidad ";
         Query query = entityManager.createQuery(sql);
         query.setParameter("entidad", idEntidad);
-         query.executeUpdate();
+        query.executeUpdate();
         entityManager.flush();
     }
 
     @Override
-    public void deleteByCodElemento(Long codElemento){
+    public void deleteByCodElemento(Long codElemento) {
         String sql = "DELETE FROM JIndexacionPdu j where j.procedimiento.codigo = :codElemento ";
         Query query = entityManager.createQuery(sql);
         query.setParameter("codElemento", codElemento);

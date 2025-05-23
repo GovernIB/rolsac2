@@ -71,6 +71,34 @@ public final class AuditoriaUtil {
                 return tipo.getIdentificador();
             }
         }
+        if (objeto instanceof CategoriaPDUGridDTO) {
+            CategoriaPDUGridDTO tipo = (CategoriaPDUGridDTO) objeto;
+            if (tipo.getDescripcion() != null) {
+                if (tipo.getDescripcion().getTraduccion("ca") != null) {
+                    return tipo.getDescripcion().getTraduccion("ca");
+                } else if (tipo.getDescripcion().getTraduccion("es") != null) {
+                    return tipo.getDescripcion().getTraduccion("es");
+                } else {
+                    return tipo.getDescripcion().getTraduccion();
+                }
+            } else {
+                return tipo.getIdentificador();
+            }
+        }
+        if (objeto instanceof CategoriaPDUDTO) {
+            CategoriaPDUDTO tipo = (CategoriaPDUDTO) objeto;
+            if (tipo.getDescripcion() != null) {
+                if (tipo.getDescripcion().getTraduccion("ca") != null) {
+                    return tipo.getDescripcion().getTraduccion("ca");
+                } else if (tipo.getDescripcion().getTraduccion("es") != null) {
+                    return tipo.getDescripcion().getTraduccion("es");
+                } else {
+                    return tipo.getDescripcion().getTraduccion();
+                }
+            } else {
+                return tipo.getIdentificador();
+            }
+        }
         if (objeto instanceof TipoMateriaSIAGridDTO) {
             TipoMateriaSIAGridDTO tipo = (TipoMateriaSIAGridDTO) objeto;
             if (tipo.getDescripcion() != null) {
@@ -251,10 +279,10 @@ public final class AuditoriaUtil {
             }
             if (!valorModificado.estaVacio()) {
                 for (Traduccion traduccion : valorModificado.getTraducciones()) {
-                    if(traduccion.getLiteral() != null){
+                    if (traduccion.getLiteral() != null) {
                         AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), "nul", traduccion.getLiteral(), idCampo);
                         cambios.add(cambio);
-                        }
+                    }
                 }
 
             }
@@ -265,7 +293,7 @@ public final class AuditoriaUtil {
             } else if (valorModificado.estaVacio()) {
                 //Si el modificado esta vacío, añadir los cambios del publicado
                 for (Traduccion traduccion : valorPublicado.getTraducciones()) {
-                    if(StringUtils.isNotBlank(traduccion.getLiteral())) {
+                    if (StringUtils.isNotBlank(traduccion.getLiteral())) {
                         AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), traduccion.getLiteral(), null, idCampo);
                         cambios.add(cambio);
                     }
@@ -273,7 +301,7 @@ public final class AuditoriaUtil {
             } else if (valorPublicado.estaVacio()) {
                 //Si el modificado esta vacío, añadir los cambios del modificado
                 for (Traduccion traduccion : valorModificado.getTraducciones()) {
-                    if(StringUtils.isNotBlank( traduccion.getLiteral())){
+                    if (StringUtils.isNotBlank(traduccion.getLiteral())) {
                         AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), "nul", traduccion.getLiteral(), idCampo);
                         cambios.add(cambio);
                     }
@@ -321,7 +349,7 @@ public final class AuditoriaUtil {
     public static final void auditar(final TipoTramitacionDTO valorPublicado, final TipoTramitacionDTO valorModificado, List<AuditoriaCambio> cambios, final String idCampo) {
 
 
-        if (valorPublicado == null && (valorModificado == null || valorModificado.isVacio() ) ) {
+        if (valorPublicado == null && (valorModificado == null || valorModificado.isVacio())) {
             return;
         } else if (valorModificado == null || valorPublicado == null || valorPublicado.isVacio() || valorModificado.isVacio()) {
 
@@ -343,59 +371,55 @@ public final class AuditoriaUtil {
 //            } else {
 
 
-                // TODO Discernir según tipo tramitación modificado y anterior
+            // TODO Discernir según tipo tramitación modificado y anterior
 //                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, valorPublicado.getTramiteId(), valorModificado.getTramiteId(), idCampo + ".getTramiteId");
 //                cambios.add(cambio);
 
 //                AuditoriaUtil.auditar(valorPublicado.getTramiteId(), valorModificado.getTramiteId(), cambios, idCampo + ".getTramiteId");
 
-                boolean mismoTipo = Objects.equals(valorPublicado.getCodigo(), valorModificado.getCodigo());
+            boolean mismoTipo = Objects.equals(valorPublicado.getCodigo(), valorModificado.getCodigo());
 
-                if(valorModificado.isTelematicoPlantilla() ){
-                    if(valorPublicado.isTelematicoPlantilla()){
-                        AuditoriaUtil.auditar(valorPublicado.getDescripcion().getTraduccion("ca"), valorModificado.getDescripcion().getTraduccion("ca"), cambios, idCampo + ".plantillaSel");
-                    }else{
-                        // Cambio de canal telématico
-                        String canalTelematicoPublicado = valorPublicado.isTelematicoDatos() ? "plataforma tramitació" : "url externa";
-                        AuditoriaUtil.auditar(canalTelematicoPublicado, "plantilla", cambios, idCampo + ".telematico.canal");
-                        AuditoriaUtil.auditar(valorPublicado.getDescripcion().getTraduccion("ca"), valorModificado.getDescripcion().getTraduccion("ca"), cambios, idCampo + ".plantillaSel.add");
-                    }
+            if (valorModificado.isTelematicoPlantilla()) {
+                if (valorPublicado.isTelematicoPlantilla()) {
+                    AuditoriaUtil.auditar(valorPublicado.getDescripcion().getTraduccion("ca"), valorModificado.getDescripcion().getTraduccion("ca"), cambios, idCampo + ".plantillaSel");
+                } else {
+                    // Cambio de canal telématico
+                    String canalTelematicoPublicado = valorPublicado.isTelematicoDatos() ? "plataforma tramitació" : "url externa";
+                    AuditoriaUtil.auditar(canalTelematicoPublicado, "plantilla", cambios, idCampo + ".telematico.canal");
+                    AuditoriaUtil.auditar(valorPublicado.getDescripcion().getTraduccion("ca"), valorModificado.getDescripcion().getTraduccion("ca"), cambios, idCampo + ".plantillaSel.add");
+                }
 
-                } else  if( valorModificado.isTelematicoUrl()){
+            } else if (valorModificado.isTelematicoUrl()) {
 
-                    // URL
-                    if(valorPublicado.isTelematicoUrl()) {
-                        AuditoriaUtil.auditar(valorPublicado.getUrl(), valorModificado.getUrl(), cambios, idCampo + ".url");
-                    }else{
-                        String canalTelematicoPublicado = valorPublicado.isTelematicoPlantilla() ? "plantilla" : "plataforma tramitació";
-                        AuditoriaUtil.auditar(canalTelematicoPublicado, "url externa", cambios, idCampo + ".telematico.canal");
-                        AuditoriaUtil.auditar(valorPublicado.getUrl(), valorModificado.getUrl(), cambios, idCampo + ".url.add");
-                    }
-
-
-                }else {
-                    // plataforma
-
-                    if( ! valorPublicado.isPlantilla() && ! valorPublicado.isTelematicoUrl()){
-                        AuditoriaUtil.auditar(valorPublicado.getTramiteId(), valorModificado.getTramiteId(), cambios, idCampo + ".tramiteId");
-                        AuditoriaUtil.auditar(valorPublicado.getTramiteVersion(), valorModificado.getTramiteVersion(), cambios, idCampo + ".tramiteVersion");
-                        AuditoriaUtil.auditar(valorPublicado.getCodPlatTramitacion(), valorModificado.getCodPlatTramitacion(), cambios, idCampo + ".tramiteCodPlataforma");
-                        AuditoriaUtil.auditar(valorPublicado.getTramiteParametros(), valorModificado.getTramiteParametros(), cambios, idCampo + ".tramiteParametros");
-
-                    }else{
-                        String canalTelematicoPublicado = valorPublicado.isTelematicoPlantilla() ? "plantilla" : "url externa";
-                        AuditoriaUtil.auditar(canalTelematicoPublicado, "plataforma tramitació", cambios, idCampo + ".telematico.canal");
-
-                        AuditoriaUtil.auditar(valorPublicado.getTramiteId(), valorModificado.getTramiteId(), cambios, idCampo + ".tramiteId.add");
-                        AuditoriaUtil.auditar(valorPublicado.getTramiteVersion(), valorModificado.getTramiteVersion(), cambios, idCampo + ".tramiteVersion.add");
-                        AuditoriaUtil.auditar(valorPublicado.getCodPlatTramitacion(), valorModificado.getCodPlatTramitacion(), cambios, idCampo + ".tramiteCodPlataforma.add");
-                        AuditoriaUtil.auditar(valorPublicado.getTramiteParametros(), valorModificado.getTramiteParametros(), cambios, idCampo + ".tramiteParametros.add");
-                    }
+                // URL
+                if (valorPublicado.isTelematicoUrl()) {
+                    AuditoriaUtil.auditar(valorPublicado.getUrl(), valorModificado.getUrl(), cambios, idCampo + ".url");
+                } else {
+                    String canalTelematicoPublicado = valorPublicado.isTelematicoPlantilla() ? "plantilla" : "plataforma tramitació";
+                    AuditoriaUtil.auditar(canalTelematicoPublicado, "url externa", cambios, idCampo + ".telematico.canal");
+                    AuditoriaUtil.auditar(valorPublicado.getUrl(), valorModificado.getUrl(), cambios, idCampo + ".url.add");
                 }
 
 
+            } else {
+                // plataforma
 
+                if (!valorPublicado.isPlantilla() && !valorPublicado.isTelematicoUrl()) {
+                    AuditoriaUtil.auditar(valorPublicado.getTramiteId(), valorModificado.getTramiteId(), cambios, idCampo + ".tramiteId");
+                    AuditoriaUtil.auditar(valorPublicado.getTramiteVersion(), valorModificado.getTramiteVersion(), cambios, idCampo + ".tramiteVersion");
+                    AuditoriaUtil.auditar(valorPublicado.getCodPlatTramitacion(), valorModificado.getCodPlatTramitacion(), cambios, idCampo + ".tramiteCodPlataforma");
+                    AuditoriaUtil.auditar(valorPublicado.getTramiteParametros(), valorModificado.getTramiteParametros(), cambios, idCampo + ".tramiteParametros");
 
+                } else {
+                    String canalTelematicoPublicado = valorPublicado.isTelematicoPlantilla() ? "plantilla" : "url externa";
+                    AuditoriaUtil.auditar(canalTelematicoPublicado, "plataforma tramitació", cambios, idCampo + ".telematico.canal");
+
+                    AuditoriaUtil.auditar(valorPublicado.getTramiteId(), valorModificado.getTramiteId(), cambios, idCampo + ".tramiteId.add");
+                    AuditoriaUtil.auditar(valorPublicado.getTramiteVersion(), valorModificado.getTramiteVersion(), cambios, idCampo + ".tramiteVersion.add");
+                    AuditoriaUtil.auditar(valorPublicado.getCodPlatTramitacion(), valorModificado.getCodPlatTramitacion(), cambios, idCampo + ".tramiteCodPlataforma.add");
+                    AuditoriaUtil.auditar(valorPublicado.getTramiteParametros(), valorModificado.getTramiteParametros(), cambios, idCampo + ".tramiteParametros.add");
+                }
+            }
 
 
 //            }
@@ -467,7 +491,7 @@ public final class AuditoriaUtil {
             AuditoriaUtil.auditar(valorPublicado.getFechaCierre(), valorModificado.getFechaCierre(), cambios, "auditoria.tramite.fechaCierre", "dd/MM/yyyy");
             AuditoriaUtil.auditar(valorPublicado.getFase(), valorModificado.getFase(), cambios, "auditoria.tramite.fase");
             if (valorPublicado.getOrden() != null && valorModificado.getOrden() != null && valorPublicado.getOrden().compareTo(valorModificado.getOrden()) != 0) {
-                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, "nul", "de <b>" + (valorPublicado.getOrden()+1) + "</b> a <b>" + (valorModificado.getOrden()+1) + "</b>", "auditoria.tramite.orden");
+                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, "nul", "de <b>" + (valorPublicado.getOrden() + 1) + "</b> a <b>" + (valorModificado.getOrden() + 1) + "</b>", "auditoria.tramite.orden");
                 cambios.add(cambio);
             }
             AuditoriaUtil.auditar(valorPublicado.getNombre(), valorModificado.getNombre(), cambios, "auditoria.tramite.nombre");
@@ -484,7 +508,7 @@ public final class AuditoriaUtil {
             AuditoriaUtil.auditar(valorPublicado.isTramitElectronica(), valorModificado.isTramitElectronica(), cambios, "auditoria.tramite.tramitElectronica");
 
             // Canal telématico de tramitación
-            if( valorModificado.isTramitElectronica()) {
+            if (valorModificado.isTramitElectronica()) {
                 TipoTramitacionDTO tipoTramitacionPublicado = valorPublicado.getPlantillaSel() != null ? valorPublicado.getPlantillaSel() : valorPublicado.getTipoTramitacion();
                 TipoTramitacionDTO tipoTramitacionModificado = valorModificado.getPlantillaSel() != null ? valorModificado.getPlantillaSel() : valorModificado.getTipoTramitacion();
 
@@ -604,6 +628,57 @@ public final class AuditoriaUtil {
             for (TipoPublicoObjetivoEntidadGridDTO tipoNuevo : valorPublicado) {
                 boolean existe = false;
                 for (TipoPublicoObjetivoEntidadGridDTO tipo : valorModificado) {
+                    if (tipo.getCodigo().compareTo(tipoNuevo.getCodigo()) == 0) {
+                        existe = true;
+                        break;
+                    }
+                }
+
+                if (!existe) {
+                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, getValor(tipoNuevo), null, idCampo + ".remove");
+                    cambios.add(cambio);
+                }
+            }
+        }
+    }
+
+    public static void auditarCategorias(final List<CategoriaPDUGridDTO> valorPublicado, final List<CategoriaPDUGridDTO> valorModificado, List<AuditoriaCambio> cambios, final String idCampo) {
+
+
+        if ((valorPublicado == null || valorPublicado.isEmpty()) && (valorModificado == null || valorModificado.isEmpty())) {
+            return;
+        } else if (((valorPublicado != null && !valorPublicado.isEmpty()) && (valorModificado == null || valorModificado.isEmpty())) || ((valorPublicado == null || valorPublicado.isEmpty()) && (valorModificado != null && !valorModificado.isEmpty()))) {
+            if (valorPublicado != null && !valorPublicado.isEmpty()) {
+                for (CategoriaPDUGridDTO tipo : valorPublicado) {
+                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, getValor(tipo), null, idCampo + ".remove");
+                    cambios.add(cambio);
+                }
+            }
+            if (valorModificado != null && !valorModificado.isEmpty()) {
+                for (CategoriaPDUGridDTO tipo : valorModificado) {
+                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, getValor(tipo), idCampo + ".add");
+                    cambios.add(cambio);
+                }
+            }
+        } else {
+            for (CategoriaPDUGridDTO tipo : valorModificado) {
+                boolean existe = false;
+                for (CategoriaPDUGridDTO tipoPublicado : valorPublicado) {
+                    if (tipo.getCodigo().compareTo(tipoPublicado.getCodigo()) == 0) {
+                        existe = true;
+                        break;
+                    }
+                }
+
+                if (!existe) {
+                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, getValor(tipo), idCampo + ".add");
+                    cambios.add(cambio);
+                }
+            }
+
+            for (CategoriaPDUGridDTO tipoNuevo : valorPublicado) {
+                boolean existe = false;
+                for (CategoriaPDUGridDTO tipo : valorModificado) {
                     if (tipo.getCodigo().compareTo(tipoNuevo.getCodigo()) == 0) {
                         existe = true;
                         break;
@@ -1034,14 +1109,13 @@ public final class AuditoriaUtil {
     public static void auditarTramites(final List<ProcedimientoTramiteDTO> valorPublicado, final List<ProcedimientoTramiteDTO> valorModificado, List<AuditoriaCambio> cambios, String idCampo) {
 
 
-
         if ((valorPublicado == null || valorPublicado.isEmpty()) && (valorModificado == null || valorModificado.isEmpty())) {
             return;
         } else if (((valorPublicado != null && !valorPublicado.isEmpty()) && (valorModificado == null || valorModificado.isEmpty())) || ((valorPublicado == null || valorPublicado.isEmpty()) && (valorModificado != null && !valorModificado.isEmpty()))) {
             // Caso eliminar trámite
             if (valorPublicado != null && !valorPublicado.isEmpty()) {
                 for (ProcedimientoTramiteDTO tramite : valorPublicado) {
-                    idCampo+= ".remove";
+                    idCampo += ".remove";
                     AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, tramite.getNombre().getTraduccion("ca"), null, idCampo);
                     cambios.add(cambio);
                 }
@@ -1144,7 +1218,7 @@ public final class AuditoriaUtil {
     private static void auditarLiteralNuevo(Literal literalNuevo, List<AuditoriaCambio> cambios, String idCampo) {
 
         for (Traduccion traduccion : literalNuevo.getTraducciones()) {
-            if(StringUtils.isNotBlank(traduccion.getLiteral())){
+            if (StringUtils.isNotBlank(traduccion.getLiteral())) {
                 AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), "nul", traduccion.getLiteral(), idCampo);
                 cambios.add(cambio);
             }
@@ -1155,13 +1229,13 @@ public final class AuditoriaUtil {
 
         List<AuditoriaCambio> cambios = new ArrayList();
 
-        SimpleDateFormat sdf =  new SimpleDateFormat("dd/MM/yyyy");
-        cambios.add( agregarAuditoriaValorCampoSinNulo(null, null, sdf.format(tramiteNuevo.getFechaPublicacion()), "auditoria.tramite.fechaPublicacion.add"));
-        cambios.add( agregarAuditoriaValorCampoSinNulo(null, null, sdf.format(tramiteNuevo.getFechaInicio()), "auditoria.tramite.fechaInicio.add"));
-        if( tramiteNuevo.getFechaCierre() != null) {
-            cambios.add( agregarAuditoriaValorCampoSinNulo(null, null, sdf.format(tramiteNuevo.getFechaCierre()), "auditoria.tramite.fechaCierre.add"));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        cambios.add(agregarAuditoriaValorCampoSinNulo(null, null, sdf.format(tramiteNuevo.getFechaPublicacion()), "auditoria.tramite.fechaPublicacion.add"));
+        cambios.add(agregarAuditoriaValorCampoSinNulo(null, null, sdf.format(tramiteNuevo.getFechaInicio()), "auditoria.tramite.fechaInicio.add"));
+        if (tramiteNuevo.getFechaCierre() != null) {
+            cambios.add(agregarAuditoriaValorCampoSinNulo(null, null, sdf.format(tramiteNuevo.getFechaCierre()), "auditoria.tramite.fechaCierre.add"));
         }
-        cambios.add( agregarAuditoriaValorCampo(null, null, tramiteNuevo.getFase() + "", "auditoria.tramite.fase.add"));
+        cambios.add(agregarAuditoriaValorCampo(null, null, tramiteNuevo.getFase() + "", "auditoria.tramite.fase.add"));
 
         auditarLiteralNuevo(tramiteNuevo.getNombre(), cambios, "auditoria.tramite.nombre.add");
         auditarLiteralNuevo(tramiteNuevo.getRequisitos(), cambios, "auditoria.tramite.requisitos.add");
@@ -1169,12 +1243,12 @@ public final class AuditoriaUtil {
         auditarLiteralNuevo(tramiteNuevo.getDocumentacion(), cambios, "auditoria.tramite.documentacion.add");
         auditarLiteralNuevo(tramiteNuevo.getTerminoMaximo(), cambios, "auditoria.tramite.terminoMaximo.add");
 
-        cambios.add( agregarAuditoriaValorCampo(null, null, getValor(tramiteNuevo.getUnidadAdministrativa()), "auditoria.tramite.unidadAdministrativa.add"));
+        cambios.add(agregarAuditoriaValorCampo(null, null, getValor(tramiteNuevo.getUnidadAdministrativa()), "auditoria.tramite.unidadAdministrativa.add"));
 
         //Canales presentacion
 
-        if(tramiteNuevo.isTramitElectronica()) {
-            cambios.add( agregarAuditoriaValorCampo(null, "false", "true", "auditoria.tramite.tramitElectronica.add"));
+        if (tramiteNuevo.isTramitElectronica()) {
+            cambios.add(agregarAuditoriaValorCampo(null, "false", "true", "auditoria.tramite.tramitElectronica.add"));
 
             auditarTipoTramitacionNuevo(tramiteNuevo.getTipoTramitacion(), cambios, "auditoria.tramite.tipoTramitacion");
         }
@@ -1215,31 +1289,31 @@ public final class AuditoriaUtil {
         List<AuditoriaCambio> cambios = new ArrayList();
 
 
-        if(tipoTramiteNuevo.isTelematicoPlantilla()){
+        if (tipoTramiteNuevo.isTelematicoPlantilla()) {
 
-            cambios.add( agregarAuditoriaValorCampo(null, null, "plantilla", idCampo + ".plantillaSel.add"));
-            cambios.add( agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getDescripcion().getTraduccion("ca"), idCampo + ".plantillaSel.add"));
+            cambios.add(agregarAuditoriaValorCampo(null, null, "plantilla", idCampo + ".plantillaSel.add"));
+            cambios.add(agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getDescripcion().getTraduccion("ca"), idCampo + ".plantillaSel.add"));
 
 
-        } else  if( tipoTramiteNuevo.isTelematicoUrl()){
+        } else if (tipoTramiteNuevo.isTelematicoUrl()) {
 
             // URL
 
-            cambios.add( agregarAuditoriaValorCampo(null, null, "url externa", idCampo + ".telematico.canal.add"));
+            cambios.add(agregarAuditoriaValorCampo(null, null, "url externa", idCampo + ".telematico.canal.add"));
             auditarLiteralNuevo(tipoTramiteNuevo.getUrl(), cambios, idCampo + ".url.add");
 
 
-
-
-        }else {
+        } else {
             // plataforma
 
 
-            cambios.add( agregarAuditoriaValorCampo(null, null, "plataforma tramitació", idCampo + ".telematico.canal.add"));
-            cambios.add( agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getTramiteId(), idCampo + ".tramiteId.add"));
-            cambios.add( agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getTramiteVersion() + "", idCampo + ".tramiteVersion.add"));
-            cambios.add( agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getCodPlatTramitacion().getIdentificador(), idCampo + ".tramiteCodPlataforma.add"));
-            cambios.add( agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getTramiteParametros(), idCampo + ".tramiteParametros.add"));
+            cambios.add(agregarAuditoriaValorCampo(null, null, "plataforma tramitació", idCampo + ".telematico.canal.add"));
+            cambios.add(agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getTramiteId(), idCampo + ".tramiteId.add"));
+            cambios.add(agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getTramiteVersion() + "", idCampo + ".tramiteVersion.add"));
+            if (tipoTramiteNuevo.getCodPlatTramitacion() != null) {
+                cambios.add(agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getCodPlatTramitacion().getIdentificador(), idCampo + ".tramiteCodPlataforma.add"));
+            }
+            cambios.add(agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getTramiteParametros(), idCampo + ".tramiteParametros.add"));
 
         }
 

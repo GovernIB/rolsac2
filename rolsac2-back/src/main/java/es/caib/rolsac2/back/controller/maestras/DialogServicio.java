@@ -5,7 +5,6 @@ import es.caib.rolsac2.back.controller.comun.UtilsArbolTemas;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.*;
@@ -172,8 +171,8 @@ public class DialogServicio extends AbstractController implements Serializable {
         uaRaiz = Boolean.valueOf(this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz()).toString();
 
 
-        if (data != null ){
-            if( data.isTramitPresencial()) {
+        if (data != null) {
+            if (data.isTramitPresencial()) {
                 canalesSeleccionados.add("PRE");
             }
             if (data.isTramitElectronica()) {
@@ -513,7 +512,14 @@ public class DialogServicio extends AbstractController implements Serializable {
             RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
             resetearOrdenListas();
             String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
-            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
+            ProcedimientoBaseDTO dataDefinitivo = null;
+            if (data.getWorkflow() != TypeProcedimientoWorkflow.DEFINITIVO) {
+                Long codigoWF = procedimientoServiceFacade.getCodigoPublicado(data.getCodigo());
+                if (codigoWF != null) {
+                    dataDefinitivo = procedimientoServiceFacade.findProcedimientoById(codigoWF);
+                }
+            }
+            procedimientoServiceFacade.guardarFlujo(data, dataDefinitivo, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
             final DialogResult result = new DialogResult();
             if (this.getModoAcceso() != null) {
                 result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
@@ -685,26 +691,6 @@ public class DialogServicio extends AbstractController implements Serializable {
 
         }
 
-        if( data.isIntegrarPdu()){
-            boolean nombreEnIngles = data.getNombreProcedimientoWorkFlow().getIdiomas().contains(Idioma.INGLES.getIdioma());
-
-            boolean objetoEnIngles = data.getObjeto().getIdiomas().contains((Idioma.INGLES.getIdioma()));
-
-            boolean destinatariosEnIngles = data.getDestinatarios().getIdiomas().contains(Idioma.INGLES.getIdioma());
-            boolean requisitosEnIngles = data.getRequisitos().getIdiomas().contains(Idioma.INGLES.getIdioma());
-
-            if( !nombreEnIngles || !objetoEnIngles || !destinatariosEnIngles || ! requisitosEnIngles){
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.pdu.check.ingles"));
-                retorno = false;
-            }
-
-
-            boolean tieneCategoriaPdu = data.getTemas().stream().anyMatch(t-> t.getCategoriaPdu() != null);
-            if(!tieneCategoriaPdu){
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.pdu.check.categoria"));
-                retorno = false;
-            }
-        }
 
         return retorno;
     }

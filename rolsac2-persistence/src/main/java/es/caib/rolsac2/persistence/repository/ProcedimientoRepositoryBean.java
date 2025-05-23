@@ -4,6 +4,7 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.persistence.converter.*;
 import es.caib.rolsac2.persistence.model.*;
+import es.caib.rolsac2.persistence.model.pk.JProcedimientoCategoriaPDUPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoNormativaPK;
 import es.caib.rolsac2.persistence.model.pk.JProcedimientoPublicoObjectivoPK;
 import es.caib.rolsac2.persistence.model.traduccion.*;
@@ -60,6 +61,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Inject
     NormativaConverter normativaConverter;
+
+    @Inject
+    CategoriaPduConverter categoriaPDUConverter;
 
     @Inject
     PlatTramitElectronicaConverter platTramitElectronicaConverter;
@@ -812,7 +816,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 Integer estadoPdu = (Integer) dato[2];
                 Boolean integrarPdu = (Boolean) dato[3];
 
-                indexacionDTO.setAccion( (estadoPdu == 1 && BooleanUtils.isFalse(integrarPdu)) ? 2 : 1); // 2 desintegra ; 1 - desindexar
+                indexacionDTO.setAccion((estadoPdu == 1 && BooleanUtils.isFalse(integrarPdu)) ? 2 : 1); // 2 desintegra ; 1 - desindexar
 
                 indexacionDTOS.add(indexacionDTO);
             }
@@ -912,6 +916,22 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
+    public List<CategoriaPDUDTO> getCategoriasPDUByWFRest(Long codigoWF) {
+        List<CategoriaPDUDTO> lista = new ArrayList<>();
+        Query query = entityManager.createQuery("SELECT j FROM JProcedimientoCategoriaPDU j where j.procedimiento.codigo = :codigoProcWF ");
+        query.setParameter("codigoProcWF", codigoWF);
+        List<JProcedimientoCategoriaPDU> jlista = query.getResultList();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoCategoriaPDU elemento : jlista) {
+                if (elemento.getCategoriaPDU() != null) {
+                    lista.add(categoriaPDUConverter.createDTO(elemento.getCategoriaPDU()));
+                }
+            }
+        }
+        return lista;
+    }
+
+    @Override
     public void clonarNormativas(Long codigoWF, Long codigoWFNuevo) {
         List<NormativaDTO> lista = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT distinct j.normativa FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
@@ -933,6 +953,26 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
     }
 
+    @Override
+    public void clonarCategoriasPDU(Long codigoWF, Long codigoWFNuevo) {
+        List<NormativaDTO> lista = new ArrayList<>();
+        Query query = entityManager.createQuery("SELECT distinct j.categoriaPDU FROM JProcedimientoCategoriaPDU j where j.procedimiento.codigo = :codigoProcWF ");
+        query.setParameter("codigoProcWF", codigoWF);
+        List<JCategoriaPDU> jcategorias = query.getResultList();
+        JProcedimientoWorkflow jProcedimiento = entityManager.find(JProcedimientoWorkflow.class, codigoWFNuevo);
+        if (jcategorias != null && !jcategorias.isEmpty()) {
+            for (JCategoriaPDU elemento : jcategorias) {
+                JProcedimientoCategoriaPDU jProcedimientoCategoriaPDU = new JProcedimientoCategoriaPDU();
+                jProcedimientoCategoriaPDU.setCategoriaPDU(elemento);
+                jProcedimientoCategoriaPDU.setProcedimiento(jProcedimiento);
+                JProcedimientoCategoriaPDUPK codigo = new JProcedimientoCategoriaPDUPK();
+                codigo.setCategoriaPDU(elemento.getCodigo());
+                codigo.setProcedimiento(codigoWFNuevo);
+                jProcedimientoCategoriaPDU.setCodigo(codigo);
+                entityManager.persist(jProcedimientoCategoriaPDU);
+            }
+        }
+    }
 
     @Override
     public boolean existeProcedimientoConFormaInicio(Long codigoForIni) {
@@ -991,6 +1031,21 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         List<JProcedimientoNormativa> jlista = query.getResultList();
         if (jlista != null && !jlista.isEmpty()) {
             for (JProcedimientoNormativa elemento : jlista) {
+                lista.add(elemento.toModelGrid());
+            }
+        }
+        return lista;
+    }
+
+    @Override
+    public List<CategoriaPDUGridDTO> getCategoriasPDUByWF(Long codigoWF) {
+        List<CategoriaPDUGridDTO> lista = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoCategoriaPDU j where j.procedimiento.codigo = :codigoProcWF ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoProcWF", codigoWF);
+        List<JProcedimientoCategoriaPDU> jlista = query.getResultList();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoCategoriaPDU elemento : jlista) {
                 lista.add(elemento.toModelGrid());
             }
         }
@@ -1480,28 +1535,38 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             return;
         }
 
+        //Borramos los temas
+        Query deleteQueryTema = entityManager.createQuery(
+                "DELETE FROM JProcedimientoTema j WHERE j.procedimiento.codigo = :codigoProcWF"
+        );
+        deleteQueryTema.setParameter("codigoProcWF", codigoProc);
+        int filasAfectadasTema = deleteQueryTema.executeUpdate();
+        LOG.debug("Temas eliminados: {}", filasAfectadasTema);
+
         //BORRAMOS todos los publico objetivo asociados
-        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
-        Query query = entityManager.createQuery(sql.toString());
-        query.setParameter("codigoProcWF", jprocWF.getCodigo());
-        List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
-        if (jlista != null) {
-            for (JProcedimientoPublicoObjectivo jelemento : jlista) {
-                entityManager.remove(jelemento);
-            }
-        }
+        Query deleteQueryPO = entityManager.createQuery(
+                "DELETE FROM JProcedimientoPublicoObjectivo j WHERE j.procedimiento.codigo = :codigoProcWF"
+        );
+        deleteQueryPO.setParameter("codigoProcWF", codigoProc);
+        int filasAfectadasPO = deleteQueryPO.executeUpdate();
+        LOG.debug("Públicos objetivo eliminados: {}", filasAfectadasPO);
 
-        //Borramos las normativas asociadas
-        StringBuilder sqlNormativas = new StringBuilder("SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
+        //BORRAMOS todos los categorias PDU asociadas
+        Query deleteQuery = entityManager.createQuery(
+                "DELETE FROM JProcedimientoCategoriaPDU j WHERE j.codigo.procedimiento = :codigoProcWF"
+        );
+        deleteQuery.setParameter("codigoProcWF", codigoProc);
+        int filasAfectadas = deleteQuery.executeUpdate();
+        LOG.debug("Filas eliminadas: {}", filasAfectadas);
 
-        Query queryNormativas = entityManager.createQuery(sqlNormativas.toString());
-        queryNormativas.setParameter("codigoProcWF", jprocWF.getCodigo());
-        List<JProcedimientoNormativa> jlistaNormativas = queryNormativas.getResultList();
-        if (jlistaNormativas != null) {
-            for (JProcedimientoNormativa jelementoNormativa : jlistaNormativas) {
-                entityManager.remove(jelementoNormativa);
-            }
-        }
+
+        //Borramos las normativas asociadas al procedimiento
+        Query deleteQueryNormativas = entityManager.createQuery(
+                "DELETE FROM JProcedimientoNormativa j WHERE j.procedimiento.codigo = :codigoProcWF"
+        );
+        deleteQueryNormativas.setParameter("codigoProcWF", codigoProc);
+        int filasAfectadasNorm = deleteQueryNormativas.executeUpdate();
+        LOG.debug("Normativas eliminadas: {}", filasAfectadasNorm);
 
         //Borramos los documentos y documentos LOPD asociados (los ficheros se marcan para borrar)
         if (jprocWF.getListaDocumentos() != null && jprocWF.getListaDocumentos().getCodigo() != null) {
@@ -1523,8 +1588,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         //Obtenemos los tramites y sus traducciones y borramos los documentos asociados (marcando lso ficheros para borrar)
-        StringBuilder sqlTramites = new StringBuilder("SELECT j FROM JProcedimientoTramite j where j.procedimiento.codigo = :codigoProcWF ");
-        Query queryTramites = entityManager.createQuery(sqlTramites.toString());
+        Query queryTramites = entityManager.createQuery("SELECT j FROM JProcedimientoTramite j where j.procedimiento.codigo = :codigoProcWF ");
         queryTramites.setParameter("codigoProcWF", jprocWF.getCodigo());
         List<JProcedimientoTramite> jlistaTramites = queryTramites.getResultList();
         if (jlistaTramites != null) {
@@ -1539,8 +1603,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public void mergePublicoObjetivoProcWF(Long codigoWF, List<TipoPublicoObjetivoEntidadGridDTO> listaNuevos) {
-        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
-        Query query = entityManager.createQuery(sql.toString());
+        Query query = entityManager.createQuery("SELECT j FROM JProcedimientoPublicoObjectivo j where j.procedimiento.codigo = :codigoProcWF ");
         query.setParameter("codigoProcWF", codigoWF);
         List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
 
@@ -1796,6 +1859,71 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
+    public void mergeCategoriasPDUProcWF(Long codigoWF, List<CategoriaPDUGridDTO> categorias) {
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoCategoriaPDU j where j.procedimiento.codigo = :codigoProcWF ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoProcWF", codigoWF);
+        List<JProcedimientoCategoriaPDU> jlista = query.getResultList();
+
+        List<JProcedimientoCategoriaPDU> borrar = new ArrayList<>();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoCategoriaPDU jelemento : jlista) {
+                boolean encontrado = false;
+                if (categorias != null) {
+                    for (CategoriaPDUGridDTO elemento : categorias) {
+                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getCodigo().getCategoriaPDU()) == 0) {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!encontrado) {
+                    borrar.add(jelemento);
+                }
+            }
+        }
+
+        if (!borrar.isEmpty()) {
+            for (JProcedimientoCategoriaPDU jelemento : borrar) {
+                entityManager.remove(jelemento);
+            }
+            jlista.removeAll(borrar);
+        }
+
+
+        if (categorias != null && !categorias.isEmpty()) {
+            JProcedimientoWorkflow jprocWF = entityManager.find(JProcedimientoWorkflow.class, codigoWF);
+            for (CategoriaPDUGridDTO elemento : categorias) {
+                boolean encontrado = false;
+                if (!jlista.isEmpty()) {
+                    for (JProcedimientoCategoriaPDU jelemento : jlista) {
+                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getCategoriaPDU().getCodigo()) == 0) {
+                            jelemento.setOrden(elemento.getOrden());
+                            entityManager.merge(jelemento);
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!encontrado) {
+                    JProcedimientoCategoriaPDU nuevo = new JProcedimientoCategoriaPDU();
+                    nuevo.setProcedimiento(jprocWF);
+                    JCategoriaPDU jNormativa = entityManager.find(JCategoriaPDU.class, elemento.getCodigo());
+                    nuevo.setCategoriaPDU(jNormativa);
+                    JProcedimientoCategoriaPDUPK id = new JProcedimientoCategoriaPDUPK();
+                    id.setCategoriaPDU(elemento.getCodigo());
+                    id.setProcedimiento(codigoWF);
+                    nuevo.setCodigo(id);
+                    nuevo.setOrden(elemento.getOrden());
+                    entityManager.persist(nuevo);
+                }
+            }
+        }
+    }
+
+    @Override
     public void mergeNormativaProcWF(Long codigoWF, List<NormativaGridDTO> listaNuevos) {
         StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoNormativa j where j.procedimiento.codigo = :codigoProcWF ");
         Query query = entityManager.createQuery(sql.toString());
@@ -1902,7 +2030,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     final String idTramiteRolsac = serv.getCodigo() == null ? "" : serv.getCodigo().toString();
 
                     final PlatTramitElectronicaDTO plataforma = tramPlantilla.getCodPlatTramitacion();
-                    if( plataforma != null) {
+                    if (plataforma != null) {
                         String url = plataforma.getUrlAcceso().getTraduccion(lang);
                         url = url.replace("${idTramitePlataforma}", idTramite);
                         url = url.replace("${versionTramitePlatorma}", numVersion);
@@ -1911,7 +2039,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                         url = url.replace("${idTramiteRolsac}", idTramiteRolsac);
 
                         return url;
-                    }else {
+                    } else {
                         return tramitacionPlat.getUrl().getTraduccion(lang);
                     }
 
@@ -2077,14 +2205,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 //            }
 //            sql.append(" ) ");
 
-        }else if(filtro.isRellenoUaInstructorOComun()){
+        } else if (filtro.isRellenoUaInstructorOComun()) {
             sql.append(" AND (WF.uaInstructor.codigo IN :idUAInstructorOComun OR WF2.uaInstructor.codigo IN :idUAInstructorOComun OR WF.comun = 1 OR WF2.comun = 1) ");
         } else if (filtro.isRellenoUaInstructor()) {
             sql.append(" AND (WF.uaInstructor.codigo = :idUAInstructor OR WF2.uaInstructor.codigo = :idUAInstructor)");
 
         }
-
-
 
 
         if (filtro.isRellenoNormativas()) {
@@ -2382,11 +2508,11 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-        if(filtro.isRellenoIntegrarPdu()){
-            if(ambosWf){
-                if(filtro.getIntegrarPdu()){
+        if (filtro.isRellenoIntegrarPdu()) {
+            if (ambosWf) {
+                if (filtro.getIntegrarPdu()) {
                     sql.append(" AND (WF.integrarPdu = 1 OR WF2.integrarPdu = 1) ");
-                }else{
+                } else {
                     sql.append(" AND ( WF.integrarPdu = 0 OR WF2.integrarPdu = 0)");
                 }
             } else {
@@ -2400,15 +2526,15 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         }
 
-        if(filtro.isRellenoIntegradoPdu()){
-            if( filtro.getIntegradoPdu()){
+        if (filtro.isRellenoIntegradoPdu()) {
+            if (filtro.getIntegradoPdu()) {
                 sql.append(" AND j.integradoPdu = 1 ");
-            }else{
+            } else {
                 sql.append(" AND j.integradoPdu = 0 ");
             }
         }
 
-        if(filtro.isRellenoTramitacionPersonaApoderada()){
+        if (filtro.isRellenoTramitacionPersonaApoderada()) {
             if (ambosWf) {
                 sql.append(" AND (wf.habilitadoApoderado = :tramitacionPersonaApoderada or wf2.habilitadoApoderado = :tramitacionPersonaApoderada) ");
             } else {
@@ -2416,7 +2542,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-        if(filtro.isRellenoDisponibleFuncionarioHabilitado()){
+        if (filtro.isRellenoDisponibleFuncionarioHabilitado()) {
             if (ambosWf) {
                 sql.append(" AND (wf.habilitadoFuncionario = :disponibleFuncionarioHabilitado or wf2.habilitadoFuncionario = :disponibleFuncionarioHabilitado) ");
             } else {
@@ -2430,7 +2556,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
             // dsanzs Order de control. Como cuando se ordena por un campo los registros con el mismo valor no tienen garantizado el orden, se añade
             // un segundo criterio de orden, en este caso código para que el ordenamiento sea por completo determinístico
-            if( ! "codigo".equals(filtro.getOrderBy())) {
+            if (!"codigo".equals(filtro.getOrderBy())) {
                 sql.append(", j.codigo").append(filtro.isAscendente() ? " asc " : " desc ");
             }
 
@@ -2530,12 +2656,11 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         if (filtro.isRellenoUasInstructor()) {
             query.setParameter("idUAsInstructor", filtro.getIdUAsInstructor());
-        }else
-            if(filtro.isRellenoUaInstructorOComun()){
+        } else if (filtro.isRellenoUaInstructorOComun()) {
             query.setParameter("idUAInstructorOComun", filtro.getIdUAInstructorOComun());
         } else if (filtro.isRellenoUaInstructor()) {
-                query.setParameter("idUAInstructor", filtro.getIdUAInstructor());
-            }
+            query.setParameter("idUAInstructor", filtro.getIdUAInstructor());
+        }
 
         if (filtro.isRellenoNormativas()) {
             query.setParameter("normativas", filtro.getNormativasId());
@@ -2570,11 +2695,11 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoVersion()) {
             query.setParameter("version", filtro.getVersion());
         }
-        if(filtro.isRellenoTramitacionPersonaApoderada()){
+        if (filtro.isRellenoTramitacionPersonaApoderada()) {
             query.setParameter("tramitacionPersonaApoderada", "S".equals(filtro.getTramitacionPersonaApoderada()) ? true : false);
         }
 
-        if(filtro.isRellenoDisponibleFuncionarioHabilitado()){
+        if (filtro.isRellenoDisponibleFuncionarioHabilitado()) {
             query.setParameter("disponibleFuncionarioHabilitado", filtro.getDisponibleFuncionarioHabilitado());
         }
 
@@ -2583,8 +2708,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     private String getOrden(String order, boolean ascendente, boolean ambosWf) {
         // Se puede hacer un switch/if pero en este caso, con j.+order sobra
-
-
 
 
         if ("nombre".equals(order)) {
@@ -2665,6 +2788,35 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             for (JProcedimientoNormativa elemento : jlista) {
                 if (elemento.getNormativa() != null) {
                     lista.add(normativaConverter.createDTO(elemento.getNormativa()));
+                }
+            }
+        }
+        return lista;
+    }
+
+    @Override
+    public List<CategoriaPDUDTO> getCategoriasPDUByWFRest(Long codigoWF, Long codigoWF2, String enlaceWF) {
+        List<CategoriaPDUDTO> lista = new ArrayList<>();
+
+        StringBuilder sql = null;
+
+        switch (enlaceWF) {
+            case "A":
+                sql = new StringBuilder("SELECT j FROM JProcedimientoCategoriaPDU j where j.procedimiento.codigo = :codigoWF and j.procedimiento.codigo = :codigoWF2 ");
+                break;
+            case "T":
+            default:
+                sql = new StringBuilder("SELECT j FROM JProcedimientoCategoriaPDU j where j.procedimiento.codigo = :codigoWF or j.procedimiento.codigo = :codigoWF2 ");
+        }
+
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoWF", codigoWF);
+        query.setParameter("codigoWF2", codigoWF2);
+        List<JProcedimientoCategoriaPDU> jlista = query.getResultList();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoCategoriaPDU elemento : jlista) {
+                if (elemento.getCategoriaPDU() != null) {
+                    lista.add(categoriaPDUConverter.createDTO(elemento.getCategoriaPDU()));
                 }
             }
         }
@@ -3199,11 +3351,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setNormativas(getNormativasByWF(proc.getCodigoWF()));
         proc.setDocumentos(getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
         proc.setDocumentosLOPD(getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
+        proc.setCategoriasPDU(getCategoriasPDUByWF(proc.getCodigoWF()));
 
         // Reordenamos por posicion
         Collections.sort(proc.getNormativas());
         Collections.sort(proc.getDocumentos());
-        // Collections.sort(proc.getDocumentosLOPD());
+        Collections.sort(proc.getCategoriasPDU());
 
         if (jprocWF.getTemas() != null) {
             List<TemaGridDTO> temasDTO = new ArrayList<>();
@@ -3226,12 +3379,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 Literal descripcion = new Literal();
                 descripcion.setTraducciones(traducciones);
                 temaGridDTO.setDescripcion(descripcion);
-                
-                temaGridDTO.setCategoriaPdu(converterCategoriaPdu.createDTO(tema.getCategoriaPdu()));
-                
-                temasDTO.add(temaGridDTO);
 
-                
+                temasDTO.add(temaGridDTO);
             }
             proc.setTemas(temasDTO);
         }
@@ -3255,11 +3404,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             ((ProcedimientoDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
         }
 
-        if (proc instanceof ProcedimientoBaseDTO) {
+        ((ProcedimientoBaseDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
+        ((ProcedimientoBaseDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
 
-            ((ProcedimientoBaseDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
-            ((ProcedimientoBaseDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
-        }
 
         if (proc instanceof ServicioDTO) {
             ((ServicioDTO) proc).setTramitElectronica(jprocWF.isTramitElectronica());
@@ -3322,6 +3469,5 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         entityManager.persist(tramiteElectronico);
         return tramiteElectronico;
     }
-
 
 }

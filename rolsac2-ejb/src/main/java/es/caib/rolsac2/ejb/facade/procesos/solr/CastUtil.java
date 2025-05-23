@@ -96,8 +96,8 @@ public class CastUtil {
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
         for (TemaGridDTO tema : procedimiento.getTemas()) {
-            if (tema.getTipoMateriaSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().toString())) {
-                materiasId.add(tema.getTipoMateriaSIA().toString());
+            if (tema.getTipoMateriaSIA() != null && tema.getTipoMateriaSIA().getCodigoSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().getCodigoSIA().toString())) {
+                materiasId.add(tema.getTipoMateriaSIA().getCodigoSIA().toString());
             }
         }
         indexData.setMateriaId(materiasId);
@@ -259,8 +259,8 @@ public class CastUtil {
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
         for (final TemaGridDTO tema : servicio.getTemas()) {
-            if (tema.getTipoMateriaSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().toString())) {
-                materiasId.add(tema.getTipoMateriaSIA().toString());
+            if (tema.getTipoMateriaSIA() != null && tema.getTipoMateriaSIA().getCodigoSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().getCodigoSIA().toString())) {
+                materiasId.add(tema.getTipoMateriaSIA().getCodigoSIA().toString());
             }
         }
         indexData.setMateriaId(materiasId);
@@ -840,8 +840,8 @@ public class CastUtil {
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
         for (final TemaGridDTO tema : proc.getTemas()) {
-            if (tema.getTipoMateriaSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().toString())) {
-                materiasId.add(tema.getTipoMateriaSIA().toString());
+            if (tema.getTipoMateriaSIA() != null && tema.getTipoMateriaSIA().getCodigoSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().getCodigoSIA().toString())) {
+                materiasId.add(tema.getTipoMateriaSIA().getCodigoSIA().toString());
             }
         }
         indexData.setMateriaId(materiasId);

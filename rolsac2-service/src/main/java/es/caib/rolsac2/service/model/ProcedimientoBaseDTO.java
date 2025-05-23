@@ -67,7 +67,6 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private Literal nombreProcedimientoWorkFlow;
 
 
-
     /**
      * Nombre
      */
@@ -99,13 +98,13 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private Literal urlPdu;
 
 
-
     /*** Lista de objetos **/
     private List<TipoPublicoObjetivoEntidadGridDTO> publicosObjetivo;
     private List<ProcedimientoDocumentoDTO> documentos;
     private List<ProcedimientoDocumentoDTO> documentosLOPD;
     private List<NormativaGridDTO> normativas;
     private List<TemaGridDTO> temas;
+    private List<CategoriaPDUGridDTO> categoriasPDU;
 
     /**
      * Auditoria y mensajes
@@ -730,6 +729,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setIntegrarPdu(boolean integrarPdu) {
         this.integrarPdu = integrarPdu;
+    }
+
+    public List<CategoriaPDUGridDTO> getCategoriasPDU() {
+        return categoriasPDU;
+    }
+
+    public void setCategoriasPDU(List<CategoriaPDUGridDTO> categoriasPDU) {
+        this.categoriasPDU = categoriasPDU;
     }
 
     @Override

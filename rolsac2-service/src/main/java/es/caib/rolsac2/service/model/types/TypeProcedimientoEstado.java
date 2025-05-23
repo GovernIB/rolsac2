@@ -127,4 +127,8 @@ public enum TypeProcedimientoEstado {
     public String getLiteralMensajePendiente(String idioma) {
         return "es.caib.rolsac2.procServ.accion." + valor + "." + idioma;
     }
+
+    public boolean isEstadoValidacionPDU() {
+        return this == TypeProcedimientoEstado.PUBLICADO || this == TypeProcedimientoEstado.BORRADO;
+    }
 }

@@ -2,21 +2,17 @@ package es.caib.rolsac2.ejb.facade;
 
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
+import es.caib.rolsac2.persistence.converter.CategoriaPduConverter;
 import es.caib.rolsac2.persistence.converter.TipoMediaEdificioConverter;
 import es.caib.rolsac2.persistence.converter.TipoMediaFichaConverter;
 import es.caib.rolsac2.persistence.converter.TipoMediaUAConverter;
-import es.caib.rolsac2.persistence.model.JEntidad;
-import es.caib.rolsac2.persistence.model.JTipoMediaEdificio;
-import es.caib.rolsac2.persistence.model.JTipoMediaFicha;
-import es.caib.rolsac2.persistence.model.JTipoMediaUA;
-import es.caib.rolsac2.persistence.repository.EntidadRepository;
-import es.caib.rolsac2.persistence.repository.TipoMediaEdificioRepository;
-import es.caib.rolsac2.persistence.repository.TipoMediaFichaRepository;
-import es.caib.rolsac2.persistence.repository.TipoMediaUARepository;
+import es.caib.rolsac2.persistence.model.*;
+import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.MaestrasEntServiceFacade;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.filtro.CategoriaPDUFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoMediaEdificioFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoMediaFichaFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoMediaUAFiltro;
@@ -53,11 +49,16 @@ public class MaestrasEntServiceFacadeBean implements MaestrasEntServiceFacade {
     TipoMediaUARepository tipoMediaUARepository;
 
     @Inject
+    CategoriaPDURepository categoriaPDURepository;
+
+    @Inject
     TipoMediaEdificioConverter tipoMediaEdificioConverter;
 
     @Inject
     TipoMediaFichaConverter tipoMediaFichaConverter;
 
+    @Inject
+    CategoriaPduConverter categoriaPDUConverter;
     @Inject
     TipoMediaUAConverter tipoMediaUAConverter;
 
@@ -198,6 +199,69 @@ public class MaestrasEntServiceFacadeBean implements MaestrasEntServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public boolean existeIdentificadorTipoMediaUA(String identificador, Long idEntidad) {
         return tipoMediaUARepository.existeIdentificador(identificador, idEntidad);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Long create(CategoriaPDUDTO dto) throws RecursoNoEncontradoException {
+        if (dto.getCodigo() != null) {
+            throw new DatoDuplicadoException(dto.getCodigo());
+        }
+
+        JCategoriaPDU jcategoriaPDU = categoriaPDUConverter.createEntity(dto);
+        categoriaPDURepository.create(jcategoriaPDU);
+        return jcategoriaPDU.getCodigo();
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void update(CategoriaPDUDTO dto) throws RecursoNoEncontradoException {
+        JCategoriaPDU jCategoriaPDU = categoriaPDURepository.findById(dto.getCodigo());
+        categoriaPDUConverter.mergeEntity(jCategoriaPDU, dto);
+        categoriaPDURepository.update(jCategoriaPDU);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public void deleteCategoriaPduDTO(Long id) throws RecursoNoEncontradoException {
+        JCategoriaPDU jCategoriaPDU = categoriaPDURepository.getReference(id);
+        categoriaPDURepository.delete(jCategoriaPDU);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public CategoriaPDUDTO findCategoriaPduDTOById(Long id) {
+        JCategoriaPDU jcategoria = categoriaPDURepository.getReference(id);
+        return categoriaPDUConverter.createDTO(jcategoria);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<CategoriaPDUDTO> findCategoriaPduDTOByEntidad(Long idEntidad) {
+        List<JCategoriaPDU> jcategorias = categoriaPDURepository.findByEntidad(idEntidad);
+        List<CategoriaPDUDTO> fichas = new ArrayList<>();
+        jcategorias.forEach(te -> fichas.add(categoriaPDUConverter.createDTO(te)));
+        return fichas;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Pagina<CategoriaPDUGridDTO> findByFiltro(CategoriaPDUFiltro filtro) {
+        try {
+            List<CategoriaPDUGridDTO> items = categoriaPDURepository.findPagedByFiltro(filtro);
+            long total = categoriaPDURepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error(ERROR_LITERAL, e);
+            List<CategoriaPDUGridDTO> items = new ArrayList<>();
+            return new Pagina<>(items, 0L);
+        }
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public boolean existeIdentificadorCategoriaPdu(String identificador, Long idEntidad) {
+        return categoriaPDURepository.existeIdentificador(identificador, idEntidad);
     }
 
     @Override

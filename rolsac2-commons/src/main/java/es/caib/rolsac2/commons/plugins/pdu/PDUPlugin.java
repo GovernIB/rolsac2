@@ -9,6 +9,8 @@ import es.caib.rolsac2.commons.plugins.pdu.api.model.RRespuestaImportarEnlace;
 import es.caib.rolsac2.commons.plugins.pdu.api.model.RTypeDelete;
 import es.caib.rolsac2.commons.rest.client.PduAuthenticator;
 import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -22,16 +24,22 @@ import java.util.Properties;
 
 public class PDUPlugin extends AbstractPluginProperties implements IPluginPdu {
 
-    /** Dirección del servicio REST de Test */
+    /**
+     * Dirección del servicio REST de Test
+     */
     private String urlService;
 
     /** Utilidad de Spring para realizar peticiones REST */
 
 
-    /** Indica si se ha habilitado el debug */
+    /**
+     * Indica si se ha habilitado el debug
+     */
     private boolean debugEnabled = false;
 
-    /** Logger */
+    /**
+     * Logger
+     */
 //    private final Logger log = LoggerFactory.getLogger(PduRestClientImpl.class);
 
     private static final String BASE_URL = "url";
@@ -39,6 +47,10 @@ public class PDUPlugin extends AbstractPluginProperties implements IPluginPdu {
     private static final String PASSWORD = "pwd";
 
     private static Client client;
+    /**
+     * log.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(PDUPlugin.class);
 
     public PDUPlugin(final String appId, final String apiKey, final String direccion, final Integer tiempoEspera, final boolean debug) {
 
@@ -51,17 +63,31 @@ public class PDUPlugin extends AbstractPluginProperties implements IPluginPdu {
     }
 
 
-
     @Override
     public RRespuestaImportarEnlace importarEnlace(RPeticionImportarEnlace peticionImportarEnlace) {
 
         Invocation.Builder request = client.target(getProperty(BASE_URL) + "/import").request(MediaType.APPLICATION_JSON);
 
         try {
-            Response response = request.post(Entity.entity(new ObjectMapper().writeValueAsString(peticionImportarEnlace), MediaType.APPLICATION_JSON));
-            return new ObjectMapper().readValue(response.readEntity(String.class), RRespuestaImportarEnlace.class);
+            Response response = request.post(Entity.entity(
+                    new ObjectMapper().writeValueAsString(peticionImportarEnlace),
+                    MediaType.APPLICATION_JSON)
+            );
 
-        }catch (JsonProcessingException e){
+            String json = response.readEntity(String.class);
+            response.close();
+
+            RRespuestaImportarEnlace respuesta = new ObjectMapper().readValue(json, RRespuestaImportarEnlace.class);
+            List<String> enlaces = new ArrayList<>();
+            for (RLinkData dato : peticionImportarEnlace.getLinkData()) {
+                if (dato.getUrl() != null) {
+                    enlaces.add(dato.getUrl());
+                }
+            }
+            respuesta.setEnlaces(enlaces);
+            return respuesta;
+        } catch (JsonProcessingException e) {
+            LOG.error("Error al procesar la respuesta de PDU", e);
             return null;
         }
     }
@@ -69,14 +95,15 @@ public class PDUPlugin extends AbstractPluginProperties implements IPluginPdu {
     // DSS No probado
     @Override
     public RRespuestaImportarEnlace eliminarEnlaces(List<String> urls) {
-
-
-
         RPeticionImportarEnlace peticionImportarEnlace = new RPeticionImportarEnlace();
 
         List<RLinkData> datos = new ArrayList<>();
         for (String url : urls) {
             RLinkData dato = new RLinkData();
+            dato.setTitle(" ");
+            dato.setDescription(" ");
+            dato.setType(" ");
+            dato.setCategories(new ArrayList<>());
             dato.setUrl(url);
             dato.setDelete(RTypeDelete.YES);
             datos.add(dato);

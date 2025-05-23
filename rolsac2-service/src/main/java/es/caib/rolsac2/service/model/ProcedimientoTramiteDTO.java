@@ -607,6 +607,15 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
                 }
                 obj.setListaModelos(lista);
             }
+            if (this.getFechaInicio() != null) {
+                obj.setFechaInicio(new Date(this.getFechaInicio().getTime()));
+            }
+            if (this.getFechaCierre() != null) {
+                obj.setFechaCierre(new Date(this.getFechaCierre().getTime()));
+            }
+            if (this.getFechaPublicacion() != null) {
+                obj.setFechaPublicacion(new Date(this.getFechaPublicacion().getTime()));
+            }
         } catch (CloneNotSupportedException ex) {
             LOG.error(" no se puede duplicar", ex);
         }
@@ -743,20 +752,43 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         } else if (dato2.size() > dato.size()) {
             return -1;
         } else {
-            for (ProcedimientoTramiteDTO tipo : dato) {
-                boolean existe = false;
-                for (ProcedimientoTramiteDTO tipo2 : dato2) {
-                    if (tipo.getOrden().compareTo(tipo2.getOrden()) == 0) {
-                        existe = true;
+            for (ProcedimientoTramiteDTO tram : dato) {
+                boolean encontrado = false;
+                for (ProcedimientoTramiteDTO tram2 : dato2) {
+                    if (tram.getCodigo() != null && tram2.getCodigo() != null && tram.getCodigo().compareTo(tram2.getCodigo()) == 0) {
+                        int comparacion = tram.compareTo(tram2);
+                        if (comparacion != 0) {
+                            if (mostrarLog) {
+                                LOG.error("El tramite ha cambiado: " + tram.getCodigo());
+                                LOG.error("Comparacion:" + comparacion);
+                                LOG.error("El tramite : " + tram);
+                            }
+                            return comparacion;
+                        }
+                        encontrado = true;
+                    } else if (tram.getCodigoString() != null && tram2.getCodigoString() != null && tram.getCodigoString().equals(tram2.getCodigoString())) {
+                        int comparacion = tram.compareTo(tram2);
+                        if (comparacion != 0) {
+                            if (mostrarLog) {
+                                LOG.error("El tramite ha cambiado: " + tram.getCodigo());
+                                LOG.error("ComparacionString:" + comparacion);
+                                LOG.error("El tramite : " + tram);
+                            }
+                            return comparacion;
+                        }
+                        encontrado = true;
                     }
                 }
-                if (!existe) {
+
+                if (!encontrado) {
                     if (mostrarLog) {
-                        LOG.error("No existe el tipo " + tipo.getOrden());
-                        LOG.error("El tipo : " + tipo);
+                        LOG.error("No existe el tramite " + tram.getCodigo());
+                        LOG.error("El tramite : " + tram);
                     }
-                    return 1;
+                    return -1;
                 }
+
+
             }
         }
         return 0;

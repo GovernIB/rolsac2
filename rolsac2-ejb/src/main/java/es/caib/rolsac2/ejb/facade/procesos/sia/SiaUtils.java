@@ -225,6 +225,7 @@ public class SiaUtils {
                 // Sin código SiaUA no se puede enviar
                 resultado.setNotificarSIA(true);
                 resultado.setOperacion(SiaUtils.ESTADO_BAJA);
+
             }
         }
 

@@ -128,6 +128,10 @@ Pàgina amb el llistat de processos automàtics
                      <f:facet name="header"/>
                      <h:outputText value="#{labels['viewProcesosPDU.tipo.' += proceso.tipo] }"/>
                  </p:column>
+                 <p:column sortBy="#{proceso.accion}" headerText="#{labels['dict.accion']}"  styleClass="w160px">
+                     <f:facet name="header"/>
+                     <h:outputText value="#{labels['viewProcesosPDU.accion.' += proceso.accion] }"/>
+                 </p:column>
                      <p:column sortBy="#{proceso.tipo}" headerText="#{labels['dict.codigoElemento']}"  styleClass="w160px">
                          <f:facet name="header"/>
                          <h:outputText value="#{proceso.codElemento}"/>
@@ -159,9 +163,7 @@ Pàgina amb el llistat de processos automàtics
                 <div class="ui-g-8 ui-md-8 ui-lg-8">
                         <p:commandButton value="#{labels['viewProcesosPDU.btn.indexar.todo']}" icon="pi pi-file-o" iconPos="top"
                                          actionListener="#{viewProcesosPDU.indexarTodo()}" styleClass="mr10"
-                                         process="@this" update="messages">
-                        </p:commandButton>
-
+                                         process="@this" update="messages" />
 
                 </div>
             </div>
@@ -171,10 +173,11 @@ Pàgina amb el llistat de processos automàtics
                         <h:outputText value="#{labels['viewProcesosPDU.pendientes']}:" />
                     </p>
                 </div>
-                <p:commandButton value="#{labels['viewProcesosPDU.btn.indexar.pendientes']}" icon="pi pi-file-o" iconPos="top"
+                <div class="ui-g-8 ui-md-8 ui-lg-8">
+                    <p:commandButton value="#{labels['viewProcesosPDU.btn.indexar.pendientes']}" icon="pi pi-file-o" iconPos="top"
                                  actionListener="#{viewProcesosPDU.indexarPendientes()}"
-                                 process="@this" update="messages">
-                </p:commandButton>
+                                 process="@this" update="messages" />
+                </div>
             </div>
 
              </p:panel>

@@ -11,13 +11,7 @@ import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.ejb.util.JSONUtil;
 import es.caib.rolsac2.ejb.util.JSONUtilException;
 import es.caib.rolsac2.persistence.converter.*;
-import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
-import es.caib.rolsac2.persistence.model.JProcedimiento;
-import es.caib.rolsac2.persistence.model.JProcedimientoAuditoria;
-import es.caib.rolsac2.persistence.model.JProcedimientoTramite;
-import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
-import es.caib.rolsac2.persistence.model.JTema;
-import es.caib.rolsac2.persistence.model.JTipoTramitacion;
+import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.AuditoriaException;
@@ -31,11 +25,8 @@ import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
-import es.caib.rolsac2.service.model.types.TypeAccionAuditoria;
-import es.caib.rolsac2.service.model.types.TypeIndexacion;
-import es.caib.rolsac2.service.model.types.TypePerfiles;
-import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
-import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
+import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.utils.UtilPDU;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,15 +36,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Implementación de los casos de uso de mantenimiento de personal. Es
@@ -188,6 +171,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         procedimientoRepository.mergePublicoObjetivoProcWF(jProcWF.getCodigo(), dto.getPublicosObjetivo());
         procedimientoRepository.mergeNormativaProcWF(jProcWF.getCodigo(), dto.getNormativas());
+        procedimientoRepository.mergeCategoriasPDUProcWF(jProcWF.getCodigo(), dto.getCategoriasPDU());
         procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentos() == null ? null : jProcWF.getListaDocumentos().getCodigo(), false, dto.getDocumentos(), ruta);
         procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentosLOPD() == null ? null : jProcWF.getListaDocumentosLOPD().getCodigo(), true, dto.getDocumentosLOPD(), ruta);
         if (dto instanceof ProcedimientoDTO) {
@@ -333,7 +317,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         indexacionRepository.guardarIndexar(dto.getCodigo(), tipo, idEntidad, 1);
         indexacionSIARepository.guardarIndexar(dto.getCodigo(), tipo.toString(), idEntidad, 1, 1);
 
-        if( ! dto.isIntegrarPdu() && dtoAntiguo.isIntegrarPdu()) {
+        if (!dto.isIntegrarPdu() && dtoAntiguo.isIntegrarPdu()) {
             indexacionPDURepository.deleteByCodElemento(dtoAntiguo.getCodigo());
         }
 
@@ -347,6 +331,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         procedimientoRepository.updateWF(jProcWF);
         procedimientoRepository.mergePublicoObjetivoProcWF(jProcWF.getCodigo(), dto.getPublicosObjetivo());
         procedimientoRepository.mergeNormativaProcWF(jProcWF.getCodigo(), dto.getNormativas());
+        procedimientoRepository.mergeCategoriasPDUProcWF(jProcWF.getCodigo(), dto.getCategoriasPDU());
         if (dto instanceof ProcedimientoDTO) {
             List<ProcedimientoTramiteDTO> tramites = ((ProcedimientoDTO) dto).getTramites();
             if (dto.esComun()) {
@@ -364,11 +349,11 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         List<String> idiomas = dto.getNombreProcedimientoWorkFlow().getIdiomas();
 
-        for(String idioma : idiomas){
-            Optional<JProcedimientoWorkflowTraduccion> traduccionIdioma = jProcWF.getTraducciones().stream().filter(t-> t.getIdioma().equals(idioma)).findFirst();
-            if(traduccionIdioma.isPresent()) {
+        for (String idioma : idiomas) {
+            Optional<JProcedimientoWorkflowTraduccion> traduccionIdioma = jProcWF.getTraducciones().stream().filter(t -> t.getIdioma().equals(idioma)).findFirst();
+            if (traduccionIdioma.isPresent()) {
                 mergeTraduccion(traduccionIdioma.get(), dto);
-            }else{
+            } else {
                 JProcedimientoWorkflowTraduccion traduccion = new JProcedimientoWorkflowTraduccion();
                 traduccion.setProcedimientoWorkflow(jProcWF);
                 traduccion.setIdioma(idioma);
@@ -453,10 +438,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long generarModificacion(Long codigoWFPub, String usuario, TypePerfiles perfil, String ruta) {
         ProcedimientoBaseDTO procPublicado = getProcedimientoDTOByCodigoWF(codigoWFPub);
+        Literal urlPDU = procPublicado.getUrlPdu(); // Se guarda la URL PDU para el procedimiento publicado
         ProcedimientoBaseDTO procModificar = limpiar(procPublicado, ruta);
         procModificar.setEstado(TypeProcedimientoEstado.MODIFICACION);
         procModificar.setWorkflow(TypeProcedimientoWorkflow.MODIFICACION);
         procModificar.setUsuarioAuditoria(usuario);
+        procModificar.setUrlPdu(urlPDU);
         Long codigoNuevo = this.create(procModificar, perfil, false, ruta);
         procModificar.setCodigoWF(codigoNuevo);
         // Se crea la auditoria manualmente, sin los cambios comparados porque no hace
@@ -668,6 +655,25 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    public List<CategoriaPDUDTO> getCategoriasPDUByProc(Long codigo, String enlaceWF) {
+        List<JProcedimientoWorkflow> listJprocWF = new ArrayList<>();
+
+        JProcedimientoWorkflow jprocWF = obtenerProcedimientosWorkflow(codigo, enlaceWF, listJprocWF);
+
+        if (jprocWF != null) {
+            return procedimientoRepository.getCategoriasPDUByWFRest(jprocWF.getCodigo());
+        } else if (listJprocWF.size() == 1) {
+            return procedimientoRepository.getCategoriasPDUByWFRest(listJprocWF.get(0).getCodigo());
+        } else if (listJprocWF.size() == 2) {
+            return procedimientoRepository.getCategoriasPDUByWFRest(listJprocWF.get(0).getCodigo(), listJprocWF.get(1).getCodigo(), enlaceWF);
+        }
+
+        return new ArrayList<>();
+
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public List<TemaDTO> getTemasByProc(Long codigo, String enlaceWF) {
         List<JProcedimientoWorkflow> listJprocWF = new ArrayList<>();
         List<TemaDTO> temasDTO = new ArrayList<>();
@@ -787,13 +793,13 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         // proc.setLopdInfoAdicional(lopdInfoAdicional);
         proc.setPublicosObjetivo(procedimientoRepository.getTipoPubObjEntByWF(proc.getCodigoWF()));
         proc.setNormativas(procedimientoRepository.getNormativasByWF(proc.getCodigoWF()));
+        proc.setCategoriasPDU(procedimientoRepository.getCategoriasPDUByWF(proc.getCodigoWF()));
         proc.setDocumentos(procedimientoRepository.getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
         proc.setDocumentosLOPD(procedimientoRepository.getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
 
         // Reordenamos por posicion
         Collections.sort(proc.getNormativas());
         Collections.sort(proc.getDocumentos());
-        // Collections.sort(proc.getDocumentosLOPD());
 
         if (jprocWF.getTemas() != null) {
             List<TemaGridDTO> temasDTO = new ArrayList<>();
@@ -909,7 +915,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 //        if(TypeAccionAuditoria.ALTA.toString().equals(accion)){
 //            cambios = ProcedimientoDTO.auditar(procedimientoNuevo);
 //        }else {
-            cambios = ProcedimientoDTO.auditar(procedimientoAntiguo, procedimientoNuevo);
+        cambios = ProcedimientoDTO.auditar(procedimientoAntiguo, procedimientoNuevo);
 //        }
 
         if (!cambios.isEmpty()) {
@@ -1105,7 +1111,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void guardarFlujo(ProcedimientoBaseDTO data, TypeProcedimientoEstado estadoDestino, String mensajes, TypePerfiles perfil, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor, Long idEntidad, String ruta) {
+    public void guardarFlujo(ProcedimientoBaseDTO data, ProcedimientoBaseDTO dataDefinitivo, TypeProcedimientoEstado estadoDestino, String mensajes, TypePerfiles perfil, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor, Long idEntidad, String ruta) {
 
         // Paso 0. Marcamos para indexar en solr/elastic y SIA.
         TypeIndexacion tipo = (data instanceof ProcedimientoDTO) ? TypeIndexacion.PROCEDIMIENTO : TypeIndexacion.SERVICIO;
@@ -1116,10 +1122,11 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         int accion = (estadoDestino != null && estadoDestino == TypeProcedimientoEstado.BORRADO) ? 0 : 1;
         indexacionSIARepository.guardarIndexar(data.getCodigo(), tipo.toString(), idEntidad, 1, accion);
 
-        // Indexamos pdu sólo para procedimientos /servicios que se publican o pasar a publicar
-        List<TypeProcedimientoEstado> estadosPublicar = Arrays.asList(TypeProcedimientoEstado.PENDIENTE_PUBLICAR, TypeProcedimientoEstado.PUBLICADO);
-        if( data.isIntegrarPdu() && estadosPublicar.contains(estadoDestino)) {
-            indexacionPDURepository.guardarIndexar(data.getCodigo(), tipo.toString(), idEntidad, accion);
+        if (data instanceof ProcedimientoDTO && estadoDestino != null && estadoDestino.isEstadoValidacionPDU()) {
+            Integer accionPDU = UtilPDU.getAccion((ProcedimientoDTO) data, (ProcedimientoDTO) dataDefinitivo, estadoDestino);
+            if (accionPDU != null) {
+                indexacionPDURepository.guardarIndexar(data.getCodigo(), tipo.toString(), idEntidad, accionPDU);
+            }
         }
 
         // Primero borramos el wf destino (si es de destinto wf)
@@ -1164,6 +1171,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         procedimientoRepository.actualizarMensajes(data.getCodigo(), mensajes, pendienteMensajeSupervisor, pendienteMensajesGestor);
 
     }
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -1362,6 +1370,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    public List<CategoriaPDUDTO> getCategoriasPDUByCodProcWF(Long codigoWF) {
+        return procedimientoRepository.getCategoriasPDUByWFRest(codigoWF);
+    }
+
+    @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public String obtenerIdiomaEntidad(Long codigoProc) {
         return procedimientoRepository.obtenerIdiomaEntidad(codigoProc);
@@ -1427,6 +1441,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         //Normativa
         procedimientoRepository.clonarNormativas(idProcedimientoWF, idProcWFClonado);
+
+        //Categorias PDU
+        procedimientoRepository.clonarCategoriasPDU(idProcedimientoWF, idProcWFClonado);
 
         //Publicos objetivo
         procedimientoRepository.clonarPublicoObjetivo(idProcedimientoWF, idProcWFClonado);

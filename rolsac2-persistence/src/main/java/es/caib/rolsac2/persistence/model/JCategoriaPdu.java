@@ -1,26 +1,48 @@
 package es.caib.rolsac2.persistence.model;
 
+import es.caib.rolsac2.persistence.model.traduccion.JCategoriaPDUTraduccion;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "RS2_CATPDU")
-public class JCategoriaPdu {
+@NamedQueries({
+        @NamedQuery(name = JCategoriaPDU.FIND_BY_ID,
+                query = "select p from JCategoriaPDU p where p.codigo = :id"),
+        @NamedQuery(name = JCategoriaPDU.COUNT_BY_IDENTIFICADOR,
+                query = "select COUNT(p) from JCategoriaPDU p where p.entidad.codigo = :entidad and lower(p.identificador) = :identificador")
+})
+public class JCategoriaPDU {
 
+    /**
+     * La consulta FIND_BY_ID.
+     */
+    public static final String FIND_BY_ID = "JCategoriaPDU.FIND_BY_ID";
+    /**
+     * La consulta COUNT_BY_IDENTIFICADOR.
+     */
+    public static final String COUNT_BY_IDENTIFICADOR = "JCategoriaPDU.COUNT_BY_IDENTIFICADOR";
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RS2_CATPDU_SEQ")
     @SequenceGenerator(name = "RS2_CATPDU_SEQ", sequenceName = "RS2_CATPDU_SEQ", allocationSize = 1)
-    @Column(name = "CATPDU_CODIGO")
+    @Column(name = "CPDU_CODIGO")
     private Long codigo;
 
-    @Column(name = "CATPDU_ORDEN", precision = 3)
-    private Integer orden;
-
-    @Column(name = "CATPDU_IDENTIF", length = 100)
+    @Column(name = "CPDU_IDENTIF", length = 100)
     private String identificador;
 
-    @Column(name = "CATPDU_DESCRI", length = 250)
-    private String descripcion;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "CPDU_CODENTI", nullable = false)
+    private JEntidad entidad;
+
+    /**
+     * Descripción
+     */
+    @OneToMany(mappedBy = "categoriaPDU", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JCategoriaPDUTraduccion> descripcion;
+
 
     // Getters and Setters
 
@@ -32,13 +54,6 @@ public class JCategoriaPdu {
         this.codigo = codigo;
     }
 
-    public Integer getOrden() {
-        return orden;
-    }
-
-    public void setOrden(Integer orden) {
-        this.orden = orden;
-    }
 
     public String getIdentificador() {
         return identificador;
@@ -48,11 +63,11 @@ public class JCategoriaPdu {
         this.identificador = identificador;
     }
 
-    public String getDescripcion() {
+    public List<JCategoriaPDUTraduccion> getDescripcion() {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
+    public void setDescripcion(List<JCategoriaPDUTraduccion> descripcion) {
         this.descripcion = descripcion;
     }
 
@@ -60,7 +75,7 @@ public class JCategoriaPdu {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JCategoriaPdu jCategoria = (JCategoriaPdu) o;
+        JCategoriaPDU jCategoria = (JCategoriaPDU) o;
         return codigo.equals(jCategoria.codigo);
     }
 
@@ -73,7 +88,6 @@ public class JCategoriaPdu {
     public String toString() {
         return "JCategoriaPdu{" +
                 "codigo=" + codigo +
-                ", orden=" + orden +
                 ", identificador='" + identificador + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 '}';

@@ -29,10 +29,8 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
 
     @Inject
     private SystemServiceFacade systemServiceFacade;
-
     @Inject
     private ProcedimientoServiceFacade procedimientoService;
-
     @Inject
     private UnidadAdministrativaServiceFacade uaService;
     @Inject
@@ -40,7 +38,9 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
     @Inject
     private NormativaServiceFacade normativaService;
 
-
+    /**
+     * Total de datos
+     **/
     private int totalProcedimientos = 0;
     private int totalProcedimientosOK = 0;
     private int totalProcedimientosERROR = 0;
@@ -311,7 +311,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
 
             if (codigoWF == null) {
                 totalProcedimientosOK++;
-                mensajeTraza.append("El procedimient " + indexacionDTO.getCodElemento() + " no está publicat. \n");
+                mensajeTraza.append("El procedimient ").append(indexacionDTO.getCodElemento()).append(" no está publicat. \n");
                 return new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El procediment " + indexacionDTO.getCodElemento() + " NO esta publicat.");
             }
         }
@@ -327,10 +327,10 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
             ResultadoSIA resultadoSIA = borradoSIA(indexacionDTO, plugin, entidadRaiz, procedimientoDTO);
             if (resultadoSIA != null && resultadoSIA.isCorrecto()) {
                 totalProcedimientosOK++;
-                mensajeTraza.append("El procedimient " + indexacionDTO.getCodElemento() + " s'ha desindexat correctament. \n");
+                mensajeTraza.append("El procedimient ").append(indexacionDTO.getCodElemento()).append(" s'ha desindexat correctament. \n");
             } else {
                 totalProcedimientosERROR++;
-                mensajeTraza.append("El procedimient " + indexacionDTO.getCodElemento() + " NO s'ha desindexat correctament, error:" + resultadoSIA.getMensaje() + " \n");
+                mensajeTraza.append("El procedimient ").append(indexacionDTO.getCodElemento()).append(" NO s'ha desindexat correctament, error:").append(resultadoSIA.getMensaje()).append(" \n");
             }
             return resultadoSIA;
         } else {
@@ -347,7 +347,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                             ResultadoSIA resultadoSIA = plugin.enviarSIA(envioSIA, borrado, indexacionForzada);
                             if (resultadoSIA != null && resultadoSIA.isCorrecto()) {
                                 totalProcedimientosOK++;
-                                mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " s'ha indexat correctament. \n");
+                                mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" s'ha indexat correctament. \n");
                                 ResultadoSIA resultado = new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El procediment s'ha indexat correctament");
                                 resultado.setCodSIA(resultadoSIA.getCodSIA());
                                 resultado.setEstadoSIA(resultadoSIA.getEstadoSIA());
@@ -355,7 +355,8 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                                 return resultado;
                             } else {
                                 totalProcedimientosERROR++;
-                                mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + resultadoSIA.getMensaje() + ". \n");
+                                assert resultadoSIA != null;
+                                mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" NO s'ha indexat correctament, error:").append(resultadoSIA.getMensaje()).append(". \n");
                                 return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, "El procediment " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + resultadoSIA.getMensaje());
                             }
                         } else {
@@ -365,22 +366,22 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                             siaPendiente.setCorrectos(1);
                             siaPendiente.setMensaje("No cumpleix les dades");
                             siaPendiente.setResultado(ResultadoSIA.RESULTADO_NO_CUMPLE_DATOS);
-                            mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " no cumpleix les dades, " + siaCumpleDatos.getRespuesta() + " \n");
+                            mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" no cumpleix les dades, ").append(siaCumpleDatos.getRespuesta()).append(" \n");
                             return siaPendiente;
                         }
                     } else {
-                        mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " es no enviable \n");
+                        mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" es no enviable \n");
                         return new ResultadoSIA(ResultadoSIA.RESULTADO_NO_ENVIABLE, esEnviable.getRespuesta());
                     }
                 } catch (Exception e) {
                     totalProcedimientosERROR++;
-                    mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " no s'ha indexat, error:" + e.getLocalizedMessage() + " \n");
+                    mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" no s'ha indexat, error:").append(e.getLocalizedMessage()).append(" \n");
                     log.error("Error en la indexacion SIA de procediments", e);
                     return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, e.getLocalizedMessage());
                 }
             } else {
                 totalProcedimientosOK++;
-                mensajeTraza.append("El procediment " + indexacionDTO.getCodElemento() + " no està publicat. \n");
+                mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" no està publicat. \n");
                 return new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El procediment no està publicat");
             }
         }

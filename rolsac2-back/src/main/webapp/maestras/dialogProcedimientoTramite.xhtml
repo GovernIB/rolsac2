@@ -102,10 +102,11 @@
                                 <p:ajax event="change" />
                             </p:datePicker>-->
                             <p:datePicker showIcon="true" id="txtFechaPublicacion" styleClass="fecha"
+                                          locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                           value="#{dialogProcedimientoTramite.data.fechaPublicacion}"
+                                          pattern="dd/MM/yyyy HH:mm"
                                           required="#{empty param['formDialog:closeButton']}"
                                           requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
-                                          pattern="dd/MM/yyyy HH:mm" locale="#{sessionBean.lang}"
                                 />
                         </p>
                     </div>
