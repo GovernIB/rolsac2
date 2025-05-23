@@ -312,7 +312,7 @@ public class SessionBean implements Serializable {
     /**
      * Función que se utiliza para realizar el cambio de un perfil a otro
      *
-     * @param perfil
+     * @param perfil Perfil al que se quiere cambiar
      */
     public void cambioPerfil(TypePerfiles perfil) {
         String idUsuario = seguridad.getIdentificadorUsuario();
@@ -1385,6 +1385,9 @@ public class SessionBean implements Serializable {
     }
 
     public Boolean tienePermisoSuperAdmin() {
-        return perfiles != null && perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR);
+        return perfiles != null &&
+                (perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR)
+                        || perfiles.contains(TypePerfiles.ADMINISTRADOR_ENTIDAD)
+                        || perfiles.contains(TypePerfiles.ADMINISTRADOR_CONTENIDOS));
     }
 }

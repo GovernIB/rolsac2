@@ -6,6 +6,8 @@ import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 import es.caib.rolsac2.service.utils.AuditoriaUtil;
 import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -19,6 +21,8 @@ import java.util.Objects;
  */
 @Schema(name = "ProcedimientoDTO")
 public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoDTO.class);
 
     private List<ProcedimientoTramiteDTO> tramites;
 
@@ -230,9 +234,10 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getTipoVia() != null) {
             procClonado.setTipoVia((TipoViaDTO) this.getTipoVia().clone());
         }
-
+        LOG.error("Clone. UACompetente" + this.getUaCompetente());
         if (this.getUaCompetente() != null) {
             procClonado.setUaCompetente((UnidadAdministrativaDTO) this.getUaCompetente().clone());
+            LOG.error("Clonado. UACompetente" + procClonado.getUaCompetente());
         }
 
         //Literal
@@ -333,198 +338,342 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
 
     public int compareTo(ProcedimientoDTO dataOriginal) {
+        return compareTo(dataOriginal, false);
+    }
+
+    public int compareTo(ProcedimientoDTO dataOriginal, boolean mostrarLog) {
 
         if (dataOriginal == null) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: dataOriginal es null");
+            }
             return 1;
         }
 
         if (UtilComparador.compareTo(this.getCodigo(), dataOriginal.getCodigo()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getCodigo() != dataOriginal.getCodigo(). this.getCodigo()=" + this.getCodigo() + " dataOriginal.getCodigo()=" + dataOriginal.getCodigo());
+            }
             return UtilComparador.compareTo(this.getCodigo(), dataOriginal.getCodigo());
         }
 
         if (UtilComparador.compareTo(this.getCodigoSIA(), dataOriginal.getCodigoSIA()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getCodigoSIA() != dataOriginal.getCodigoSIA(). this.getCodigoSIA()=" + this.getCodigoSIA() + " dataOriginal.getCodigoSIA()=" + dataOriginal.getCodigoSIA());
+            }
             return UtilComparador.compareTo(this.getCodigoSIA(), dataOriginal.getCodigoSIA());
         }
 
         if (UtilComparador.compareTo(this.getWorkflow(), dataOriginal.getWorkflow()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getWorkflow() != dataOriginal.getWorkflow(). this.getWorkflow()=" + this.getWorkflow() + " dataOriginal.getWorkflow()=" + dataOriginal.getWorkflow());
+            }
+
             return UtilComparador.compareTo(this.getWorkflow(), dataOriginal.getWorkflow());
         }
 
         if (UtilComparador.compareTo(this.getEstado(), dataOriginal.getEstado()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getEstado() != dataOriginal.getEstado(). this.getEstado()=" + this.getEstado() + " dataOriginal.getEstado()=" + dataOriginal.getEstado());
+            }
             return UtilComparador.compareTo(this.getEstado(), dataOriginal.getEstado());
         }
-        if (UtilComparador.compareTo(this.getCodigoSIA(), dataOriginal.getCodigoSIA()) != 0) {
-            return UtilComparador.compareTo(this.getCodigoSIA(), dataOriginal.getCodigoSIA());
-        }
         if (UtilComparador.compareTo(this.getEstadoSIA(), dataOriginal.getEstadoSIA()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getEstadoSIA() != dataOriginal.getEstadoSIA(). this.getEstadoSIA()=" + this.getEstadoSIA() + " dataOriginal.getEstadoSIA()=" + dataOriginal.getEstadoSIA());
+            }
             return UtilComparador.compareTo(this.getEstadoSIA(), dataOriginal.getEstadoSIA());
         }
         if (UtilComparador.compareTo(this.getFechaSIA(), dataOriginal.getFechaSIA()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getFechaSIA() != dataOriginal.getFechaSIA(). this.getFechaSIA()=" + this.getFechaSIA() + " dataOriginal.getFechaSIA()=" + dataOriginal.getFechaSIA());
+            }
             return UtilComparador.compareTo(this.getFechaSIA(), dataOriginal.getFechaSIA());
         }
         if (UtilComparador.compareTo(this.getTipo(), dataOriginal.getTipo()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getTipo() != dataOriginal.getTipo(). this.getTipo()=" + this.getTipo() + " dataOriginal.getTipo()=" + dataOriginal.getTipo());
+            }
             return UtilComparador.compareTo(this.getTipo(), dataOriginal.getTipo());
         }
         if (UtilComparador.compareTo(this.isPublicado(), dataOriginal.isPublicado()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.isPublicado() != dataOriginal.isPublicado(). this.isPublicado()=" + this.isPublicado() + " dataOriginal.isPublicado()=" + dataOriginal.isPublicado());
+            }
             return UtilComparador.compareTo(this.isPublicado(), dataOriginal.isPublicado());
         }
         if (UtilComparador.compareTo(this.getFechaCaducidad(), dataOriginal.getFechaCaducidad()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getFechaCaducidad() != dataOriginal.getFechaCaducidad(). this.getFechaCaducidad()=" + this.getFechaCaducidad() + " dataOriginal.getFechaCaducidad()=" + dataOriginal.getFechaCaducidad());
+            }
             return UtilComparador.compareTo(this.getFechaCaducidad(), dataOriginal.getFechaCaducidad());
         }
         if (UtilComparador.compareTo(this.getFechaPublicacion(), dataOriginal.getFechaPublicacion()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getFechaPublicacion() != dataOriginal.getFechaPublicacion(). this.getFechaPublicacion()=" + this.getFechaPublicacion() + " dataOriginal.getFechaPublicacion()=" + dataOriginal.getFechaPublicacion());
+            }
             return UtilComparador.compareTo(this.getFechaPublicacion(), dataOriginal.getFechaPublicacion());
         }
 
         if (UtilComparador.compareTo(this.isIntegrarPdu(), dataOriginal.isIntegrarPdu()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.isIntegrarPdu() != dataOriginal.isIntegrarPdu(). this.isIntegrarPdu()=" + this.isIntegrarPdu() + " dataOriginal.isIntegrarPdu()=" + dataOriginal.isIntegrarPdu());
+            }
             return UtilComparador.compareTo(this.isIntegrarPdu(), dataOriginal.isIntegrarPdu());
         }
 
         if (UtilComparador.compareTo(this.getResponsable(), dataOriginal.getResponsable()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getResponsable() != dataOriginal.getResponsable(). this.getResponsable()=" + this.getResponsable() + " dataOriginal.getResponsable()=" + dataOriginal.getResponsable());
+            }
             return UtilComparador.compareTo(this.getResponsable(), dataOriginal.getResponsable());
         }
         if (UtilComparador.compareTo(this.getComun(), dataOriginal.getComun()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getComun() != dataOriginal.getComun(). this.getComun()=" + this.getComun() + " dataOriginal.getComun()=" + dataOriginal.getComun());
+            }
             return UtilComparador.compareTo(this.getComun(), dataOriginal.getComun());
         }
 
         if (UtilComparador.compareTo(this.isInterno(), dataOriginal.isInterno()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.isInterno() != dataOriginal.isInterno(). this.isInterno()=" + this.isInterno() + " dataOriginal.isInterno()=" + dataOriginal.isInterno());
+            }
             return UtilComparador.compareTo(this.isInterno(), dataOriginal.isInterno());
         }
 
         if (UtilComparador.compareTo(this.getTerminoResolucion(), dataOriginal.getTerminoResolucion()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getTerminoResolucion() != dataOriginal.getTerminoResolucion(). this.getTerminoResolucion()=" + this.getTerminoResolucion() + " dataOriginal.getTerminoResolucion()=" + dataOriginal.getTerminoResolucion());
+            }
             return UtilComparador.compareTo(this.getTerminoResolucion(), dataOriginal.getTerminoResolucion());
         }
         if (UtilComparador.compareTo(this.getSilencio(), dataOriginal.getSilencio()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getSilencio() != dataOriginal.getSilencio(). this.getSilencio()=" + this.getSilencio() + " dataOriginal.getSilencio()=" + dataOriginal.getSilencio());
+            }
             return UtilComparador.compareTo(this.getSilencio(), dataOriginal.getSilencio());
         }
         if (UtilComparador.compareTo(this.getTipoVia(), dataOriginal.getTipoVia()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getTipoVia() != dataOriginal.getTipoVia(). this.getTipoVia()=" + this.getTipoVia() + " dataOriginal.getTipoVia()=" + dataOriginal.getTipoVia());
+            }
             return UtilComparador.compareTo(this.getTipoVia(), dataOriginal.getTipoVia());
         }
         if (UtilComparador.compareTo(this.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.isHabilitadoApoderado() != dataOriginal.isHabilitadoApoderado(). this.isHabilitadoApoderado()=" + this.isHabilitadoApoderado() + " dataOriginal.isHabilitadoApoderado()=" + dataOriginal.isHabilitadoApoderado());
+            }
             return UtilComparador.compareTo(this.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado());
         }
         if (UtilComparador.compareTo(this.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getHabilitadoFuncionario() != dataOriginal.getHabilitadoFuncionario(). this.getHabilitadoFuncionario()=" + this.getHabilitadoFuncionario() + " dataOriginal.getHabilitadoFuncionario()=" + dataOriginal.getHabilitadoFuncionario());
+            }
             return UtilComparador.compareTo(this.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario());
         }
-        /*if (UtilComparador.compareTo(this.getUsuarioAuditoria(), dataOriginal.getUsuarioAuditoria()) != 0) {
-            return UtilComparador.compareTo(this.getUsuarioAuditoria(), dataOriginal.getUsuarioAuditoria());
-        }*/
-
-        //Tipos
-
-
         if (UtilComparador.compareTo(this.getIniciacion(), dataOriginal.getIniciacion()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getIniciacion() != dataOriginal.getIniciacion(). this.getIniciacion()=" + this.getIniciacion() + " dataOriginal.getIniciacion()=" + dataOriginal.getIniciacion());
+            }
             return UtilComparador.compareTo(this.getIniciacion(), dataOriginal.getIniciacion());
         }
 
         // Organos
         if (UtilComparador.compareTo(this.getUaResponsable(), dataOriginal.getUaResponsable()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getUaResponsable() != dataOriginal.getUaResponsable(). this.getUaResponsable()=" + this.getUaResponsable() + " dataOriginal.getUaResponsable()=" + dataOriginal.getUaResponsable());
+            }
             return UtilComparador.compareTo(this.getUaResponsable(), dataOriginal.getUaResponsable());
         }
         if (UtilComparador.compareTo(this.getUaInstructor(), dataOriginal.getUaInstructor()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getUaInstructor() != dataOriginal.getUaInstructor(). this.getUaInstructor()=" + this.getUaInstructor() + " dataOriginal.getUaInstructor()=" + dataOriginal.getUaInstructor());
+            }
             return UtilComparador.compareTo(this.getUaInstructor(), dataOriginal.getUaInstructor());
         }
         if (UtilComparador.compareTo(this.getTipoProcedimiento(), dataOriginal.getTipoProcedimiento()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getTipoProcedimiento() != dataOriginal.getTipoProcedimiento(). this.getTipoProcedimiento()=" + this.getTipoProcedimiento() + " dataOriginal.getTipoProcedimiento()=" + dataOriginal.getTipoProcedimiento());
+            }
             return UtilComparador.compareTo(this.getTipoProcedimiento(), dataOriginal.getTipoProcedimiento());
         }
 
 
         // Datos contacto
-
         if (UtilComparador.compareTo(this.getUaCompetente(), dataOriginal.getUaCompetente()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getUaCompetente() != dataOriginal.getUaCompetente(). this.getUaCompetente()=" + this.getUaCompetente() + " dataOriginal.getUaCompetente()=" + dataOriginal.getUaCompetente());
+            }
             return UtilComparador.compareTo(this.getUaCompetente(), dataOriginal.getUaCompetente());
         }
 
         if (UtilComparador.compareTo(this.getResponsable(), dataOriginal.getResponsable()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getResponsable() != dataOriginal.getResponsable(). this.getResponsable()=" + this.getResponsable() + " dataOriginal.getResponsable()=" + dataOriginal.getResponsable());
+            }
             return UtilComparador.compareTo(this.getResponsable(), dataOriginal.getResponsable());
         }
         if (UtilComparador.compareTo(this.getResponsableEmail(), dataOriginal.getResponsableEmail()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getResponsableEmail() != dataOriginal.getResponsableEmail(). this.getResponsableEmail()=" + this.getResponsableEmail() + " dataOriginal.getResponsableEmail()=" + dataOriginal.getResponsableEmail());
+            }
             return UtilComparador.compareTo(this.getResponsableEmail(), dataOriginal.getResponsableEmail());
         }
 
         if (UtilComparador.compareTo(this.getResponsableTelefono(), dataOriginal.getResponsableTelefono()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getResponsableTelefono() != dataOriginal.getResponsableTelefono(). this.getResponsableTelefono()=" + this.getResponsableTelefono() + " dataOriginal.getResponsableTelefono()=" + dataOriginal.getResponsableTelefono());
+            }
             return UtilComparador.compareTo(this.getResponsableTelefono(), dataOriginal.getResponsableTelefono());
         }
 
         if (UtilComparador.compareTo(this.getIncidenciasEmail(), dataOriginal.getIncidenciasEmail()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getIncidenciasEmail() != dataOriginal.getIncidenciasEmail(). this.getIncidenciasEmail()=" + this.getIncidenciasEmail() + " dataOriginal.getIncidenciasEmail()=" + dataOriginal.getIncidenciasEmail());
+            }
             return UtilComparador.compareTo(this.getIncidenciasEmail(), dataOriginal.getIncidenciasEmail());
         }
 
 
         if (UtilComparador.compareTo(this.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getHabilitadoFuncionario() != dataOriginal.getHabilitadoFuncionario(). this.getHabilitadoFuncionario()=" + this.getHabilitadoFuncionario() + " dataOriginal.getHabilitadoFuncionario()=" + dataOriginal.getHabilitadoFuncionario());
+            }
             return UtilComparador.compareTo(this.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario());
         }
         if (UtilComparador.compareTo(this.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.isHabilitadoApoderado() != dataOriginal.isHabilitadoApoderado(). this.isHabilitadoApoderado()=" + this.isHabilitadoApoderado() + " dataOriginal.isHabilitadoApoderado()=" + dataOriginal.isHabilitadoApoderado());
+            }
             return UtilComparador.compareTo(this.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado());
         }
 
 
         //Literal
         if (UtilComparador.compareTo(this.getNombreProcedimientoWorkFlow(), dataOriginal.getNombreProcedimientoWorkFlow()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getNombreProcedimientoWorkFlow() != dataOriginal.getNombreProcedimientoWorkFlow(). this.getNombreProcedimientoWorkFlow()=" + this.getNombreProcedimientoWorkFlow() + " dataOriginal.getNombreProcedimientoWorkFlow()=" + dataOriginal.getNombreProcedimientoWorkFlow());
+            }
             return UtilComparador.compareTo(this.getNombreProcedimientoWorkFlow(), dataOriginal.getNombreProcedimientoWorkFlow());
         }
         if (UtilComparador.compareTo(this.getObjeto(), dataOriginal.getObjeto()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getObjeto() != dataOriginal.getObjeto(). this.getObjeto()=" + this.getObjeto() + " dataOriginal.getObjeto()=" + dataOriginal.getObjeto());
+            }
             return UtilComparador.compareTo(this.getObjeto(), dataOriginal.getObjeto());
         }
         if (UtilComparador.compareTo(this.getDestinatarios(), dataOriginal.getDestinatarios()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getDestinatarios() != dataOriginal.getDestinatarios(). this.getDestinatarios()=" + this.getDestinatarios() + " dataOriginal.getDestinatarios()=" + dataOriginal.getDestinatarios());
+            }
             return UtilComparador.compareTo(this.getDestinatarios(), dataOriginal.getDestinatarios());
         }
 
         // LOPD
         if (UtilComparador.compareTo(this.getLopdResponsable(), dataOriginal.getLopdResponsable()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getLopdResponsable() != dataOriginal.getLopdResponsable(). this.getLopdResponsable()=" + this.getLopdResponsable() + " dataOriginal.getLopdResponsable()=" + dataOriginal.getLopdResponsable());
+            }
             return UtilComparador.compareTo(this.getLopdResponsable(), dataOriginal.getLopdResponsable());
         }
         if (UtilComparador.compareTo(this.getDatosPersonalesLegitimacion(), dataOriginal.getDatosPersonalesLegitimacion()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getDatosPersonalesLegitimacion() != dataOriginal.getDatosPersonalesLegitimacion(). this.getDatosPersonalesLegitimacion()=" + this.getDatosPersonalesLegitimacion() + " dataOriginal.getDatosPersonalesLegitimacion()=" + dataOriginal.getDatosPersonalesLegitimacion());
+            }
             return UtilComparador.compareTo(this.getDatosPersonalesLegitimacion(), dataOriginal.getDatosPersonalesLegitimacion());
         }
         if (UtilComparador.compareTo(this.getLopdFinalidad(), dataOriginal.getLopdFinalidad()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getLopdFinalidad() != dataOriginal.getLopdFinalidad(). this.getLopdFinalidad()=" + this.getLopdFinalidad() + " dataOriginal.getLopdFinalidad()=" + dataOriginal.getLopdFinalidad());
+            }
             return UtilComparador.compareTo(this.getLopdFinalidad(), dataOriginal.getLopdFinalidad());
         }
 
         if (UtilComparador.compareTo(this.getLopdDestinatario(), dataOriginal.getLopdDestinatario()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getLopdDestinatario() != dataOriginal.getLopdDestinatario(). this.getLopdDestinatario()=" + this.getLopdDestinatario() + " dataOriginal.getLopdDestinatario()=" + dataOriginal.getLopdDestinatario());
+            }
             return UtilComparador.compareTo(this.getLopdDestinatario(), dataOriginal.getLopdDestinatario());
         }
 
         if (UtilComparador.compareTo(this.getLopdDerechos(), dataOriginal.getLopdDerechos()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getLopdDerechos() != dataOriginal.getLopdDerechos(). this.getLopdDerechos()=" + this.getLopdDerechos() + " dataOriginal.getLopdDerechos()=" + dataOriginal.getLopdDerechos());
+            }
             return UtilComparador.compareTo(this.getLopdDerechos(), dataOriginal.getLopdDerechos());
         }
 
 
         if (UtilComparador.compareTo(this.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getLopdInfoAdicional() != dataOriginal.getLopdInfoAdicional(). this.getLopdInfoAdicional()=" + this.getLopdInfoAdicional() + " dataOriginal.getLopdInfoAdicional()=" + dataOriginal.getLopdInfoAdicional());
+            }
             return UtilComparador.compareTo(this.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional());
         }
 
 
         if (UtilComparador.compareTo(this.isTieneTasa(), dataOriginal.isTieneTasa()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.isTieneTasa() != dataOriginal.isTieneTasa(). this.isTieneTasa()=" + this.isTieneTasa() + " dataOriginal.isTieneTasa()=" + dataOriginal.isTieneTasa());
+            }
             return UtilComparador.compareTo(this.isTieneTasa(), dataOriginal.isTieneTasa());
         }
 
         if (UtilComparador.compareTo(this.getObservaciones(), dataOriginal.getObservaciones()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getObservaciones() != dataOriginal.getObservaciones(). this.getObservaciones()=" + this.getObservaciones() + " dataOriginal.getObservaciones()=" + dataOriginal.getObservaciones());
+            }
             return UtilComparador.compareTo(this.getObservaciones(), dataOriginal.getObservaciones());
         }
 
         if (UtilComparador.compareTo(this.getKeywords(), dataOriginal.getKeywords()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getKeywords() != dataOriginal.getKeywords(). this.getKeywords()=" + this.getKeywords() + " dataOriginal.getKeywords()=" + dataOriginal.getKeywords());
+            }
             return UtilComparador.compareTo(this.getKeywords(), dataOriginal.getKeywords());
         }
 
         if (UtilComparador.compareTo(this.getRequisitos(), dataOriginal.getRequisitos()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getRequisitos() != dataOriginal.getRequisitos(). this.getRequisitos()=" + this.getRequisitos() + " dataOriginal.getRequisitos()=" + dataOriginal.getRequisitos());
+            }
             return UtilComparador.compareTo(this.getRequisitos(), dataOriginal.getRequisitos());
         }
         if (TipoPublicoObjetivoEntidadGridDTO.compareTo(this.getPublicosObjetivo(), dataOriginal.getPublicosObjetivo()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getPublicosObjetivo() != dataOriginal.getPublicosObjetivo(). this.getPublicosObjetivo()=" + this.getPublicosObjetivo() + " dataOriginal.getPublicosObjetivo()=" + dataOriginal.getPublicosObjetivo());
+            }
             return TipoPublicoObjetivoEntidadGridDTO.compareTo(this.getPublicosObjetivo(), dataOriginal.getPublicosObjetivo());
         }
         if (ProcedimientoDocumentoDTO.compareTo(this.getDocumentos(), dataOriginal.getDocumentos()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getDocumentos() != dataOriginal.getDocumentos(). this.getDocumentos()=" + this.getDocumentos() + " dataOriginal.getDocumentos()=" + dataOriginal.getDocumentos());
+            }
             return ProcedimientoDocumentoDTO.compareTo(this.getDocumentos(), dataOriginal.getDocumentos());
         }
         if (ProcedimientoDocumentoDTO.compareTo(this.getDocumentosLOPD(), dataOriginal.getDocumentosLOPD()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getDocumentosLOPD() != dataOriginal.getDocumentosLOPD(). this.getDocumentosLOPD()=" + this.getDocumentosLOPD() + " dataOriginal.getDocumentosLOPD()=" + dataOriginal.getDocumentosLOPD());
+            }
             return ProcedimientoDocumentoDTO.compareTo(this.getDocumentosLOPD(), dataOriginal.getDocumentosLOPD());
         }
         if (NormativaGridDTO.compareTo(this.getNormativas(), dataOriginal.getNormativas()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getNormativas() != dataOriginal.getNormativas(). this.getNormativas()=" + this.getNormativas() + " dataOriginal.getNormativas()=" + dataOriginal.getNormativas());
+            }
             return NormativaGridDTO.compareTo(this.getNormativas(), dataOriginal.getNormativas());
         }
         if (ProcedimientoTramiteDTO.compareTo(this.getTramites(), dataOriginal.getTramites()) != 0) {
-            return ProcedimientoTramiteDTO.compareTo(this.getTramites(), dataOriginal.getTramites());
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getTramites() != dataOriginal.getTramites(). this.getTramites()=" + this.getTramites() + " dataOriginal.getTramites()=" + dataOriginal.getTramites());
+            }
+            return ProcedimientoTramiteDTO.compareTo(this.getTramites(), dataOriginal.getTramites(), mostrarLog);
         }
         if (TemaGridDTO.compareTo(this.getTemas(), dataOriginal.getTemas()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getTemas() != dataOriginal.getTemas(). this.getTemas()=" + this.getTemas() + " dataOriginal.getTemas()=" + dataOriginal.getTemas());
+            }
             return TemaGridDTO.compareTo(this.getTemas(), dataOriginal.getTemas());
         }
 

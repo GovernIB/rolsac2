@@ -45,8 +45,8 @@ public enum TypePropiedadConfiguracion {
     PDU_PARENT_URL("pdu.parentUrl"),
 
     PDU_PROCEDIMIENTOS_URL("pdu.urlProc"),
-    PDU_SERVICIOS_URL("pdu.urlServ")
-    ;
+    PDU_SERVICIOS_URL("pdu.urlServ"),
+    BACKEND_IDIOMAS("back.idiomas");
 
     /**
      * Valor

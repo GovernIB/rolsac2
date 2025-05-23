@@ -531,5 +531,14 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     public void setCheckMail(Boolean checkMail) {
         this.checkMail = checkMail;
     }
+
+    public void abrirAyuda() {
+        if (mostrarEstados) {
+            this.ayuda("dialogProcedimientoFlujo");
+        } else {
+            this.ayuda("dialogProcedimientoMsg");
+        }
+    }
+
 }
 

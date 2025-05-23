@@ -8,7 +8,6 @@ import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.types.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.primefaces.PrimeFaces;
@@ -618,11 +617,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             todoCorrecto = false;
         }
 
-        //if (this.data.getMateriasSIA() == null || this.data.getMateriasSIA().isEmpty()) {
-        //    UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaMateriaSIA"));
-        //    todoCorrecto = false;
-        //}
-
         if (this.data.getNormativas() == null || this.data.getNormativas().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaNormativa"));
             todoCorrecto = false;
@@ -637,23 +631,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
-        /*
-        if (this.data.getTramites() != null && !this.data.getTramites().isEmpty() && "S".equals(this.data.getHabilitadoFuncionario())) {
-            for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
-                if (tramite.isTramitElectronica() && !tramite.isTramitPresencial()) {
-                    PrimeFaces.current().executeScript("PF('cdFuncionario').show();");
-                    return false;
-                }
-            }
-        }
-
-        if (this.data.getPublicosObjetivo() != null && !this.data.getPublicosObjetivo().isEmpty()) {
-            boolean empleadoPublico = this.data.getPublicosObjetivo().get(0).isEmpleadoPublico();
-            if ((empleadoPublico && this.data.isHabilitadoApoderado()) || (!empleadoPublico && !this.data.isHabilitadoApoderado())) {
-                PrimeFaces.current().executeScript("PF('cdApoderado').show();");
-                return todoCorrecto;
-            }
-        }*/
 
         if (data.isIntegrarPdu()) {
             boolean nombreEnIngles = data.getNombreProcedimientoWorkFlow().getIdiomas().contains(Idioma.INGLES.getIdioma());
@@ -688,22 +665,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
 
     public void cerrar() {
-        if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
-            List<AuditoriaCambio> cambios = ProcedimientoDTO.auditar(this.data, this.dataOriginal);
-            if (cambios != null) {
-                LOG.error("Cambios: " + cambios.size());
-                for (AuditoriaCambio cambio : cambios) {
-                    LOG.error("Cambio: " + cambio.toString());
-                }
-                try {
-                    LOG.error("Procedimiento: " + this.data.toString());
-                    LOG.error("ProcedimientoOriginal: " + this.dataOriginal.toString());
-                    LOG.error("ProcedimientoOriginal: " + this.dataOriginal.toString());
-                } catch (Exception e) {
-                    LOG.error("Error al toString procedimiento");
-                }
-                LOG.error("--------------------");
-            }
+        if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal, false) != 0) {
             PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;
         }

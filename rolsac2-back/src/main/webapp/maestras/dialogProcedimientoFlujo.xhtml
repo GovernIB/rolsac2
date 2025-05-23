@@ -17,7 +17,12 @@
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitleDialog">
-        <h:outputFormat value="#{labels['dialogProcedimientoFlujo.detalle']}" />
+        <c:if test="#{dialogProcedimientoFlujo.consultarSoloMensajes == 'S'}">
+            <h:outputFormat value="#{labels['dialogProcedimientoMsg.detalle']}" />
+        </c:if>
+        <c:if test="#{dialogProcedimientoFlujo.consultarSoloMensajes != 'S'}">
+            <h:outputFormat value="#{labels['dialogProcedimientoFlujo.detalle']}" />
+        </c:if>
     </ui:define>
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
@@ -35,7 +40,7 @@
             <f:facet name="header">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin: 0; padding: 0;">
                     <span style="margin: 0; padding: 0;">#{labels['dialogProcedimientoFlujo.datos']}</span>
-                    <p:commandButton action="#{dialogProcedimientoFlujo.ayuda('dialogProcedimientoFlujo')}"
+                    <p:commandButton action="#{dialogProcedimientoFlujo.abrirAyuda()}"
                                      icon="pi pi-info-circle" iconPos="top"
                                      value="#{labels['dict.ayuda']}"
                                      process="@this"/>

@@ -3,6 +3,8 @@ package es.caib.rolsac2.service.model;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.utils.AuditoriaUtil;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +18,8 @@ import java.util.Objects;
  */
 @Schema(name = "UnidadAdministrativa")
 public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UnidadAdministrativaDTO.class);
 
     /**
      * Codigo
@@ -772,8 +776,9 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
     /**
      * Se hace a este nivel manualmente el clonar.
      *
-     * @return
+     * @return UA clonada
      */
+    @Override
     public Object clone() {
         UnidadAdministrativaDTO tipo = new UnidadAdministrativaDTO();
         tipo.setCodigo(this.codigo);
@@ -828,6 +833,7 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
             tipo.setUsuariosUnidadAdministrativa(usuarios);
 
         }
+
         return tipo;
     }
 
