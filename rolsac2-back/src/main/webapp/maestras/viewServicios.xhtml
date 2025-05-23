@@ -435,7 +435,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              process="@form" update="panel"/>
                             <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                              actionListener="#{viewServicios.buscar()}" update="messages dataTable"
-                                             process="@form" oncomplete="PF('panel').toggle()"/>
+                                             onstart="start()" oncomplete="stop()"
+                                             process="@form" />
                             <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
                                              actionListener="#{viewServicios.exportar()}" process="@form">
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />

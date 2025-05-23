@@ -185,7 +185,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <p:commandButton value="#{labels['dict.si']}"
                                  actionListener="#{viewProcedimientos.borrarProcedimentoMod()}"
                                  action="#{viewProcedimientos.borrarProcedimentoMod()}"
-                                 onstart="alert('x')"
                                  oncomplete="PF('confirmDlgBorrarPublicado').hide()"
                                  update="confirmDlgBorrarPublicado"/>
                 <p:commandButton value="#{labels['dict.no']}" type="button" styleClass="ui-confirmdialog-no"
@@ -580,6 +579,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              process="@form" update="panel"/>
                             <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                              actionListener="#{viewProcedimientos.buscar()}" update="messages dataTable"
+                                             onstart="start()" oncomplete="stop()"
                                              process="@form" />
                             <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
                                              actionListener="#{viewProcedimientos.exportar()}" process="@form">
