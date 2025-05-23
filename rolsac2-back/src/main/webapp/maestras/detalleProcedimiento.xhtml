@@ -72,10 +72,10 @@
                         <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoFuncionario == null}">
                             <p:outputLabel value=" " />
                         </c:if>
-                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoFuncionario == true}">
+                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoFuncionario == 'S'}">
                             <p:outputLabel value=" #{labels['dict.si']}" />
                         </c:if>
-                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoFuncionario == false}">
+                        <c:if test="#{viewProcedimientos.procedimientoSeleccionado.habilitadoFuncionario == 'N'}">
                             <p:outputLabel value="#{labels['dict.no']}" />
                         </c:if>
                     </div>

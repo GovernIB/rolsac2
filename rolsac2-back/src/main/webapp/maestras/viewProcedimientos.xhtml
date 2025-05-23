@@ -272,20 +272,21 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <p class="p-m-0">
                     <div class="row">
                         <div class="ui-g-12 ui-md-2 ui-lg-1 bloque">
-                            <p>
-                                <h:outputText value="#{labels['viewProcedimientos.uaHijas']}:" for="txtUAHijas"/>
-                            </p>
-                            <p:selectBooleanCheckbox id="txtUAHijas" value="#{viewProcedimientos.filtro.hijasActivas}">
+
+                            <h:outputText value="#{labels['viewProcedimientos.uaHijas']}:" for="txtUAHijas"/>
+                            <br/>
+                            <p:selectBooleanCheckbox id="txtUAHijas" style="padding-top: 8px;"
+                                                     value="#{viewProcedimientos.filtro.hijasActivas}">
                                 <p:ajax process="@this" event="change" partialSubmit="true"
                                         listener="#{viewProcedimientos.filtroHijasActivasChange}"/>
                             </p:selectBooleanCheckbox>
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1 bloque">
-                            <p>
+
                             <h:outputText value="#{labels['viewProcedimientos.ubidadesOrganicas']}:"
                                           for="txtUbidadesOrganicas"/>
-                            </p>
-                            <p:selectBooleanCheckbox id="txtUbidadesOrganicas"
+                            <br/>
+                            <p:selectBooleanCheckbox id="txtUbidadesOrganicas" style="padding-top: 8px;"
                                                      value="#{viewProcedimientos.filtro.todasUnidadesOrganicas}">
                                 <p:ajax process="@this" event="change" partialSubmit="true"
                                         listener="#{viewProcedimientos.filtroUnidadOrganicasChange}"/>
@@ -333,7 +334,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
-                            <h:outputText value="#{labels['viewProcedimientos.estado']}:" for="txtTipoEstado"/>
+
+                                <h:outputText value="#{labels['viewProcedimientos.estado']}:" for="txtTipoEstado"/>
+                            <br/>
                             <p:selectOneMenu id="txtTipoEstado" value="#{viewProcedimientos.filtro.estado}"
                                              styleClass="w95" autoWidth="false">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
@@ -546,6 +549,31 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:selectOneMenu>
                         </div>
 
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+
+                            <h:outputText value="#{labels['viewProcedimientos.tramitacionPersonaApoderada']}:" for="comboApoderado"/>
+                            <br/>
+                            <p:selectOneMenu id="comboApoderado" value="#{viewProcedimientos.filtro.tramitacionPersonaApoderada}"
+                                             styleClass="w95" autoWidth="false">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
+                                <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+
+                            <h:outputText value="#{labels['viewProcedimientos.disponiblefuncionario.habilitado']}:" for="comboFuncionario"/>
+                            <br/>
+                            <p:selectOneMenu id="comboFuncionario" value="#{viewProcedimientos.filtro.disponibleFuncionarioHabilitado}"
+                                             styleClass="w95" autoWidth="false">
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
+                                <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
+                            </p:selectOneMenu>
+                        </div>
+
+
                         <div class="ui-g-12 text-center">
                             <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"
                                              iconPos="top" action="#{viewProcedimientos.limpiarFiltro()}"
@@ -630,6 +658,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.codigoSIA}"/>
                 </p:column>
+<!--                <p:column headerText="Unidad administrativa" styleClass="w110px">-->
+<!--                    <f:facet name="header"/>-->
+<!--                    <h:outputText value="#{procedimiento.uaInstructor}"/>-->
+<!--                </p:column>-->
                 <p:column headerText=" " styleClass="w100px">
                     <f:facet name="header"/>
                     <p:commandLink action="#{viewProcedimientos.abrirMensajes(procedimiento.getCodigo())}"

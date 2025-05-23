@@ -158,7 +158,7 @@ public class JProcedimientoWorkflow {
     private int comun = 0;
 
     @Column(name = "PRWF_HABAPO", nullable = false, precision = 1, scale = 0)
-    private boolean habilitadoApoderado;
+    private Boolean habilitadoApoderado;
 
     @Column(name = "PRWF_HABFUN", nullable = false)
     private String habilitadoFuncionario;
@@ -484,11 +484,11 @@ public class JProcedimientoWorkflow {
         this.comun = comun;
     }
 
-    public boolean isHabilitadoApoderado() {
+    public Boolean isHabilitadoApoderado() {
         return habilitadoApoderado;
     }
 
-    public void setHabilitadoApoderado(boolean habilitadoApoderado) {
+    public void setHabilitadoApoderado(Boolean habilitadoApoderado) {
         this.habilitadoApoderado = habilitadoApoderado;
     }
 

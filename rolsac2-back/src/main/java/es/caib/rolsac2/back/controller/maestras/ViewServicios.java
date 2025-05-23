@@ -14,6 +14,7 @@ import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -260,46 +261,48 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void filtroHijasActivasChange() {
         if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsInstructor(uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo()));
-        } else if (filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
-            List<Long> ids = new ArrayList<>();
+            List<Long> idsUasInstructor = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
+            idsUasInstructor.add(sessionBean.getUnidadActiva().getCodigo());
+            filtro.setIdUAsInstructor(idsUasInstructor);
+        } else if (filtro.isTodasUnidadesOrganicas()) {
 
+            List<Long> ids = new ArrayList<>();
             for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
-                ids.addAll(idsUa);
+                if( filtro.isHijasActivas()) {
+                    List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
+                    ids.addAll(idsUa);
+                }
+                ids.add(ua.getCodigo());
             }
             filtro.setIdUAsInstructor(ids);
-        } else if (!filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
-            List<Long> idsUa = new ArrayList<>();
-            for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                idsUa.add(ua.getCodigo());
-            }
-            idsUa.add(sessionBean.getUnidadActiva().getCodigo());
-            filtro.setIdUAsInstructor(idsUa);
+        }else{
+            filtro.setIdUAsInstructor(null);
+            filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
         }
     }
 
     public void filtroUnidadOrganicasChange() {
-        if (filtro.isTodasUnidadesOrganicas()) {
-            if (filtro.isHijasActivas()) {
-                List<Long> ids = new ArrayList<>();
-
-                for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                    List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
-                    ids.addAll(idsUa);
-                }
-                filtro.setIdUAsInstructor(ids);
-            } else {
-                List<Long> idsUa = new ArrayList<>();
-                for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                    idsUa.add(ua.getCodigo());
-                }
-                idsUa.add(sessionBean.getUnidadActiva().getCodigo());
-                filtro.setIdUAsInstructor(idsUa);
-            }
-        } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsInstructor(uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo()));
-        }
+        filtroHijasActivasChange();
+//        if (filtro.isTodasUnidadesOrganicas()) {
+//            if (filtro.isHijasActivas()) {
+//                List<Long> ids = new ArrayList<>();
+//
+//                for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
+//                    List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
+//                    ids.addAll(idsUa);
+//                }
+//                filtro.setIdUAsInstructor(ids);
+//            } else {
+//                List<Long> idsUa = new ArrayList<>();
+//                for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
+//                    idsUa.add(ua.getCodigo());
+//                }
+//                idsUa.add(sessionBean.getUnidadActiva().getCodigo());
+//                filtro.setIdUAsInstructor(idsUa);
+//            }
+//        } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
+//            filtro.setIdUAsInstructor(uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo()));
+//        }
     }
 
     public void limpiarFiltro() {
@@ -788,7 +791,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                         }
                         filtro.setOrderBy(sortMeta.getField());
                     }
-                    if (filtro.isHijasActivas() && (filtro.getIdUAsHijas().size() > 1000)) {
+                    if (filtro.isHijasActivas() && (CollectionUtils.size(filtro.getIdUAsHijas()) > 1000)) {
                         List<Long> unidadesHijasAux = new ArrayList<>(filtro.getIdUAsHijas());
                         filtro.setIdUAsInstructor(unidadesHijasAux.subList(0, 999));
                         filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));

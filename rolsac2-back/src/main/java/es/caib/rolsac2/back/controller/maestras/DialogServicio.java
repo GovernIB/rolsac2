@@ -103,7 +103,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(DialogServicio.class);
     private List<PlatTramitElectronicaDTO> platTramitElectronica;
-    private List<TipoTramitacionDTO> plantillasTipoTramitacion;
+
     private List<String> canalesSeleccionados;
     @EJB
     private PlatTramitElectronicaServiceFacade platTramitElectronicaServiceFacade;
@@ -134,7 +134,6 @@ public class DialogServicio extends AbstractController implements Serializable {
 
         canalesSeleccionados = new ArrayList<>();
         platTramitElectronica = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
-        plantillasTipoTramitacion = maestrasSupServiceFacade.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), 1);
 
         this.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
         this.setLopdInfoAdicional(new Literal());
@@ -161,12 +160,10 @@ public class DialogServicio extends AbstractController implements Serializable {
             }*/
 
             if (data.isTramitElectronica()) {
-                if (data.getPlantillaSel() != null && data.getPlantillaSel().getCodigo() != null) {
+                if (data.getTipoTramitacion() != null && data.getTipoTramitacion().getTramiteId() != null && !data.getTipoTramitacion().getTramiteId().isEmpty()) {
                     opcionTelematica = 1;
-                } else if (data.getTipoTramitacion() != null && data.getTipoTramitacion().getTramiteId() != null && !data.getTipoTramitacion().getTramiteId().isEmpty()) {
-                    opcionTelematica = 2;
                 } else if (data.getTipoTramitacion() != null) {// && data.getTipoTramitacion().getUrl() != null && data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList())) {
-                    opcionTelematica = 3;
+                    opcionTelematica = 2;
                 }
             }
             UtilJSF.vaciarMochila();
@@ -175,14 +172,16 @@ public class DialogServicio extends AbstractController implements Serializable {
         uaRaiz = Boolean.valueOf(this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz()).toString();
 
 
-        if (data != null && data.isTramitPresencial()) {
-            canalesSeleccionados.add("PRE");
-        }
-        if (data != null && data.isTramitElectronica()) {
-            canalesSeleccionados.add("TEL");
-        }
-        if (data != null && data.isTramitTelefonica()) {
-            canalesSeleccionados.add("TFN");
+        if (data != null ){
+            if( data.isTramitPresencial()) {
+                canalesSeleccionados.add("PRE");
+            }
+            if (data.isTramitElectronica()) {
+                canalesSeleccionados.add("TEL");
+            }
+            if (data.isTramitTelefonica()) {
+                canalesSeleccionados.add("TFN");
+            }
         }
 
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
@@ -304,16 +303,13 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
     }
 
-    public boolean isOpcionTelematicaPlantilla() {
+
+    public boolean isOpcionTelematicaDatos() {
         return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(1) == 0;
     }
 
-    public boolean isOpcionTelematicaDatos() {
-        return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(2) == 0;
-    }
-
     public boolean isOpcionTelematicaUrl() {
-        return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(3) == 0;
+        return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(2) == 0;
     }
 
     /**
@@ -553,16 +549,11 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
 
         if (data.isTramitElectronica()) {
-            if (opcionTelematica == 1) {
-                //Seleccionamos plantilla
-                data.setTipoTramitacion(null);
-            } else if (opcionTelematica == 2 && data.getTipoTramitacion() != null) {
+            if (opcionTelematica == 2 && data.getTipoTramitacion() != null) {
                 //Introducimos datos
-                data.setPlantillaSel(null);
                 data.getTipoTramitacion().setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-            } else if (opcionTelematica == 3 && data.getTipoTramitacion() != null) {
+            } else if (opcionTelematica == 1 && data.getTipoTramitacion() != null) {
                 //Introducimos url
-                data.setPlantillaSel(null);
                 data.getTipoTramitacion().setTramiteId(null);
                 data.getTipoTramitacion().setTramiteVersion(null);
                 data.getTipoTramitacion().setTramiteParametros(null);
@@ -650,11 +641,6 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }
 
-        if (data.getPlantillaSel() != null && data.getPlantillaSel().getCodigo() != null) {
-            //Si hay plantilla, se quita el resto de info
-            data.setTipoTramitacion(new TipoTramitacionDTO());
-        }
-
     }
 
     private boolean checkObligatorio() {
@@ -693,11 +679,10 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }*/
 
-        if (data.getPlantillaSel() == null || data.getPlantillaSel().getCodigo() == null) {
-            if (this.data.isTramitElectronica() && (this.data.getTipoTramitacion().getUrl() == null || this.data.getTipoTramitacion().getUrl().estaVacio()) && this.data.getTipoTramitacion().getCodPlatTramitacion() == null) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlPlataforma"));
-                return false;
-            }
+        if (this.data.isTramitElectronica() && (this.data.getTipoTramitacion().getUrl() == null || this.data.getTipoTramitacion().getUrl().estaVacio()) && this.data.getTipoTramitacion().getCodPlatTramitacion() == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlPlataforma"));
+            return false;
+
         }
 
         if( data.isIntegrarPdu()){
@@ -1311,13 +1296,6 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.platTramitElectronica = platTramitElectronica;
     }
 
-    public List<TipoTramitacionDTO> getPlantillasTipoTramitacion() {
-        return plantillasTipoTramitacion;
-    }
-
-    public void setPlantillasTipoTramitacion(List<TipoTramitacionDTO> plantillasTipoTramitacion) {
-        this.plantillasTipoTramitacion = plantillasTipoTramitacion;
-    }
 
     public List<String> getCanalesSeleccionados() {
         return canalesSeleccionados;

@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JCategoriaPdu;
-import es.caib.rolsac2.persistence.model.JTipoMateriaSIA;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;

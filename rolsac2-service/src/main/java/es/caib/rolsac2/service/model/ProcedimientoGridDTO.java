@@ -101,6 +101,8 @@ public class ProcedimientoGridDTO extends ModelApi {
     private Date tramiteInicioFechaPublicacion;
     private Date tramiteIniciofechaCierre;
 
+    private String uaInstructor;
+
     public static ProcedimientoGridDTO createGrid(ProcedimientoDTO proc) {
         ProcedimientoGridDTO procedimientoGridDTO = null;
         if (proc != null) {
@@ -121,6 +123,8 @@ public class ProcedimientoGridDTO extends ModelApi {
             //procedimientoGridDTO.setTramiteIniciofechaCierre(proc.getTramiteIniciofechaCierre());
             //procedimientoGridDTO.setMensajesPendienteGestor(proc.isMensajesPendienteGestor());
             //procedimientoGridDTO.setMensajesPendienteSupervisor(proc.isMensajesPendienteSupervisor());
+
+            procedimientoGridDTO.setUaInstructor(proc.getUaInstructor().getNombre().getTraduccion("es"));
         }
         return procedimientoGridDTO;
     }
@@ -506,5 +510,13 @@ public class ProcedimientoGridDTO extends ModelApi {
 
     public void setNumero(Integer numero) {
         this.numero = numero;
+    }
+
+    public void setUaInstructor(String uaInstructor) {
+        this.uaInstructor = uaInstructor;
+    }
+
+    public String getUaInstructor() {
+        return uaInstructor;
     }
 }

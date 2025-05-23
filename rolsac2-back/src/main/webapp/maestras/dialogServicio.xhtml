@@ -433,7 +433,7 @@
                             <f:selectItem itemLabel="#{labels['dict.telematico']}" itemValue="TEL" id="telematico"/>
                             <f:selectItem itemLabel="#{labels['dict.presencial']}" itemValue="PRE"/>
                             <f:selectItem itemLabel="#{labels['dict.telefonico']}" itemValue="TFN"/>
-                            <p:ajax update="txtTraPlantilla txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto txtOpcionTelematica panelFormCanales"
+                            <p:ajax update="txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto txtOpcionTelematica panelFormCanales"
                                     event="change" listener="#{dialogServicio.cambiaTipo}"/>
                         </p:selectManyCheckbox>
                     </div>
@@ -450,15 +450,12 @@
                                     itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccione']}"
                                     itemValue="#{null}"/>
                             <f:selectItem
-                                    itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccionePlantilla']}"
+                                    itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccionePlataforma']}"
                                     itemValue="1"/>
                             <f:selectItem
-                                    itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccionePlataforma']}"
-                                    itemValue="2"/>
-                            <f:selectItem
                                     itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccioneUrl']}"
-                                    itemValue="3"/>
-                            <p:ajax update="txtOpcion txtTraPlantilla panelFormCanales" event="change"
+                                    itemValue="2"/>
+                            <p:ajax update="txtOpcion panelFormCanales" event="change"
                                     resetValues="true"/>
 
                         </p:selectOneMenu>
@@ -468,35 +465,6 @@
                 </div>
 
                 <h:panelGroup id="panelFormCanales">
-                    <h:panelGroup id="panelPlantilla" rendered="#{dialogServicio.isOpcionTelematicaPlantilla() and
-                    dialogServicio.canalesSeleccionados.contains('TEL')}">
-                        <div id="divPlantilla" class="form-row" style="height:100px !important;">
-                            <div class="form-group col-md-5">
-                                <p:outputLabel styleClass="mr-2 mb-1 pt-0"
-                                               value="#{labels['dialogServicio.seleccionPlantilla']}:"
-                                               for="txtTraPlantilla"/>
-                                <p:selectOneMenu id="txtTraPlantilla"
-                                                 value="#{dialogServicio.data.plantillaSel}"
-                                                 styleClass="w95"
-                                                 requiredMessage="#{labels['dict.obligatorio.opcionTelematica']}"
-                                                 required="#{empty param['formDialog:closeButton'] and dialogServicio.isOpcionTelematicaPlantilla()}"
-                                                 disabled="#{dialogServicio.isModoConsulta() ||
-                                                        !dialogServicio.canalesSeleccionados.contains('TEL')}"
-                                                 converter="#{tipoTramitacionConverter}"
-                                >
-                                    <f:selectItem
-                                            itemLabel="#{labels['viewTipoTramitacion.platTramitacion.seleccione']}"
-                                            itemValue="#{null}" id="seleccione3"/>
-                                    <f:selectItems value="#{dialogServicio.plantillasTipoTramitacion}" var="plantilla"
-                                                   itemLabel="#{plantilla.descripcion.getTraduccionConValor(dialogServicio.idioma)}"
-                                                   itemValue="#{plantilla}"/>
-                                    <p:ajax update="txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam"
-                                            event="change"/>
-                                </p:selectOneMenu>
-
-                            </div>
-                        </div>
-                    </h:panelGroup>
                     <h:panelGroup id="panelDatosTelematico"
                                   rendered="#{dialogServicio.isOpcionTelematicaDatos() and dialogServicio.canalesSeleccionados.contains('TEL')}">
                         <div id="divDatosTelematico1" class="form-row">

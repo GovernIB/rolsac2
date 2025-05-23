@@ -90,6 +90,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     private Boolean integradoPdu;
 
+    private String tramitacionPersonaApoderada;
+
+    private String disponibleFuncionarioHabilitado;
+
     /**
      * Constructor vacio
      */
@@ -790,7 +794,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     @Override
     protected String getDefaultOrder() {
-        return "id";
+        return "codigo";
     }
 
     public Boolean getEsProcedimiento() {
@@ -825,6 +829,22 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.integradoPdu = integradoPdu;
     }
 
+    public void setTramitacionPersonaApoderada(String tramitacionPersonaApoderada) {
+        this.tramitacionPersonaApoderada = tramitacionPersonaApoderada;
+    }
+
+    public String getTramitacionPersonaApoderada() {
+        return tramitacionPersonaApoderada;
+    }
+
+    public void setDisponibleFuncionarioHabilitado(String disponibleFuncionarioHabilitado) {
+        this.disponibleFuncionarioHabilitado = disponibleFuncionarioHabilitado;
+    }
+
+    public String getDisponibleFuncionarioHabilitado() {
+        return disponibleFuncionarioHabilitado;
+    }
+
     public boolean isRellenoCanales() {
         return canales != null && !canales.isEmpty();
     }
@@ -853,6 +873,15 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public boolean isRellenoIntegradoPdu() {
         return integradoPdu != null;
     }
+
+    public boolean isRellenoTramitacionPersonaApoderada() {
+        return tramitacionPersonaApoderada != null;
+    }
+
+    public boolean isRellenoDisponibleFuncionarioHabilitado() {
+        return disponibleFuncionarioHabilitado != null;
+    }
+
 
     /**
      * Se hace a este nivel manualmente el clonar.
