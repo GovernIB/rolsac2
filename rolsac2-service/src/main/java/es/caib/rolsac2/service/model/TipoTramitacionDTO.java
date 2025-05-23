@@ -419,6 +419,7 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
             this.plantilla = otro.plantilla;
             this.entidad = otro.entidad == null ? null : (EntidadDTO) otro.entidad.clone();
             this.url = otro.url == null ? null : (Literal) otro.url.clone();
+            this.faseProc = otro.faseProc;
         }
     }
 
@@ -459,5 +460,23 @@ public class TipoTramitacionDTO extends ModelApi implements Cloneable {
         }
         return 0;
 
+    }
+
+    public boolean isVacio(){
+        return tramiteId == null && !isPlantilla() && !isTelematicoUrl();
+    }
+
+
+    public boolean isTelematicoPlantilla(){
+        return isPlantilla();
+    }
+
+    public boolean isTelematicoDatos() {
+        return this.getTramiteId() != null
+                && !this.getTramiteId().isEmpty();
+    }
+
+    public boolean isTelematicoUrl(){
+        return this.getUrl() != null && !this.getUrl().estaVacio();
     }
 }

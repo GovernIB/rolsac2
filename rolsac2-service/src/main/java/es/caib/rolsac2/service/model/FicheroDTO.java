@@ -129,8 +129,21 @@ public class FicheroDTO extends ModelApi implements Cloneable {
     public Object clone() {
         FicheroDTO obj = null;
         try {
+
             obj = (FicheroDTO) super.clone();
 
+            // TODO Duda de si mantener o quitar (problema espacio / pérdida datos)
+            if (this.contenido != null) {
+                obj.contenido = this.contenido.clone();
+            }
+
+            if(this.filename != null){
+                obj.filename = new String(this.filename);
+            }
+
+            if(this.tipo != null){
+                obj.tipo = this.tipo;
+            }
 
         } catch (CloneNotSupportedException ex) {
             LOG.error(" no se puede duplicar", ex);

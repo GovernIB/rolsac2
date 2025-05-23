@@ -565,14 +565,20 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         this.orden = orden;
     }
 
+
+
     public Object clone() {
         ProcedimientoTramiteDTO obj = null;
         try {
             obj = (ProcedimientoTramiteDTO) super.clone();
             obj.setOrden(this.getOrden());
             if (obj.tipoTramitacion != null) {
-                obj.tipoTramitacion = (TipoTramitacionDTO) this.tipoTramitacion.clone();
+                obj.tipoTramitacion =  this.tipoTramitacion.clone();
             }
+            if(this.getPlantillaSel() != null){
+                obj.setPlantillaSel(this.getPlantillaSel().clone());
+            }
+
             if (obj.nombre != null) {
                 obj.nombre = (Literal) this.nombre.clone();
             }
@@ -729,10 +735,9 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
             for (ProcedimientoTramiteDTO tipo : dato) {
                 boolean existe = false;
                 for (ProcedimientoTramiteDTO tipo2 : dato2) {
-                    if (tipo.getOrden().compareTo(tipo2.getOrden()) != 0) {
-                        return tipo.getOrden().compareTo(tipo2.getOrden());
+                    if (tipo.getOrden().compareTo(tipo2.getOrden()) == 0) {
+                        existe = true;
                     }
-                    existe = true;
                 }
                 if (!existe) {
                     return 1;

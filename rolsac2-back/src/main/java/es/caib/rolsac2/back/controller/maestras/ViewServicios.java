@@ -260,12 +260,12 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void filtroHijasActivasChange() {
         if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsInstructor(uaService.listarHijos(sessionBean.getUnidadActiva().getCodigo()));
+            filtro.setIdUAsInstructor(uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo()));
         } else if (filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
             List<Long> ids = new ArrayList<>();
 
             for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                List<Long> idsUa = uaService.listarHijos(ua.getCodigo());
+                List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
                 ids.addAll(idsUa);
             }
             filtro.setIdUAsInstructor(ids);
@@ -285,7 +285,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                 List<Long> ids = new ArrayList<>();
 
                 for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                    List<Long> idsUa = uaService.listarHijos(ua.getCodigo());
+                    List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
                     ids.addAll(idsUa);
                 }
                 filtro.setIdUAsInstructor(ids);
@@ -298,7 +298,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                 filtro.setIdUAsInstructor(idsUa);
             }
         } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsInstructor(uaService.listarHijos(sessionBean.getUnidadActiva().getCodigo()));
+            filtro.setIdUAsInstructor(uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo()));
         }
     }
 

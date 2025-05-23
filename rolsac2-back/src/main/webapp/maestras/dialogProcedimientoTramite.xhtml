@@ -99,7 +99,7 @@
                                           value="#{dialogProcedimientoTramite.data.fechaPublicacion}"
                                           required="#{empty param['formDialog:closeButton']}"
                                           requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
-                                          pattern="dd/MM/yyyy HH:mm"
+                                          pattern="dd/MM/yyyy HH:mm" locale="#{sessionBean.lang}"
                                 />
                         </p>
                     </div>

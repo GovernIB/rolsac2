@@ -5,12 +5,14 @@ import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaIdioma;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaValorCampo;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -238,21 +240,23 @@ public final class AuditoriaUtil {
 
         if ((valorPublicado == null || valorPublicado.estaVacio()) && (valorModificado == null || valorModificado.estaVacio())) {
             return;
-        } else if ((valorPublicado != null && !valorPublicado.estaVacio() && valorModificado == null) || (valorPublicado == null && valorModificado != null && !valorModificado.estaVacio())) {
+        } else if ((valorPublicado != null && !valorPublicado.estaVacio() && valorModificado == null) || (valorPublicado == null && !valorModificado.estaVacio())) {
 
-            if (valorPublicado != null) {
+            if (valorPublicado != null && !valorPublicado.estaVacio()) {
                 for (Traduccion traduccion : valorPublicado.getTraducciones()) {
                     AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), traduccion.getLiteral(), null, idCampo);
                     cambios.add(cambio);
                 }
                 return;
             }
-            if (valorModificado != null) {
+            if (!valorModificado.estaVacio()) {
                 for (Traduccion traduccion : valorModificado.getTraducciones()) {
-                    AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), "nul", traduccion.getLiteral(), idCampo);
-                    cambios.add(cambio);
+                    if(traduccion.getLiteral() != null){
+                        AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), "nul", traduccion.getLiteral(), idCampo);
+                        cambios.add(cambio);
+                        }
                 }
-                return;
+
             }
         } else {
             if (valorModificado.estaVacio() && valorPublicado.estaVacio()) {
@@ -261,19 +265,23 @@ public final class AuditoriaUtil {
             } else if (valorModificado.estaVacio()) {
                 //Si el modificado esta vacío, añadir los cambios del publicado
                 for (Traduccion traduccion : valorPublicado.getTraducciones()) {
-                    AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), traduccion.getLiteral(), null, idCampo);
-                    cambios.add(cambio);
+                    if(StringUtils.isNotBlank(traduccion.getLiteral())) {
+                        AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), traduccion.getLiteral(), null, idCampo);
+                        cambios.add(cambio);
+                    }
                 }
             } else if (valorPublicado.estaVacio()) {
                 //Si el modificado esta vacío, añadir los cambios del modificado
                 for (Traduccion traduccion : valorModificado.getTraducciones()) {
-                    AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), "nul", traduccion.getLiteral(), idCampo);
-                    cambios.add(cambio);
+                    if(StringUtils.isNotBlank( traduccion.getLiteral())){
+                        AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), "nul", traduccion.getLiteral(), idCampo);
+                        cambios.add(cambio);
+                    }
                 }
             } else {
                 //Sino ir comparando idiomas
                 for (String idi : valorModificado.getIdiomas()) {
-                    if (valorPublicado != null && !esIgual(valorPublicado.getTraduccion(idi), valorModificado.getTraduccion(idi))) {
+                    if (!esIgual(valorPublicado.getTraduccion(idi), valorModificado.getTraduccion(idi))) {
                         AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(idi), valorPublicado.getTraduccion(idi), valorModificado.getTraduccion(idi), idCampo);
                         cambios.add(cambio);
                     }
@@ -313,31 +321,84 @@ public final class AuditoriaUtil {
     public static final void auditar(final TipoTramitacionDTO valorPublicado, final TipoTramitacionDTO valorModificado, List<AuditoriaCambio> cambios, final String idCampo) {
 
 
-        if (valorPublicado == null && valorModificado == null) {
+        if (valorPublicado == null && (valorModificado == null || valorModificado.isVacio() ) ) {
             return;
-        } else if ((valorPublicado != null && valorModificado == null) || (valorPublicado == null && valorModificado != null)) {
+        } else if (valorModificado == null || valorPublicado == null || valorPublicado.isVacio() || valorModificado.isVacio()) {
 
             if (valorPublicado != null) {
                 AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, valorPublicado.getTramiteId(), null, idCampo + ".remove");
                 cambios.add(cambio);
             }
-            if (valorModificado != null) {
+            if (valorModificado != null && !valorModificado.isVacio()) {
                 AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, null, valorModificado.getTramiteId(), idCampo + ".add");
                 cambios.add(cambio);
             }
         } else {
 
-            if (valorPublicado.getCodigo() != null && valorModificado.getCodigo() != null && valorPublicado.getCodigo().compareTo(valorModificado.getCodigo()) != 0) {
-                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, valorPublicado.getCodigo().toString(), valorModificado.getCodigo().toString(), idCampo);
-                cambios.add(cambio);
-            } else {
+//            if ( !Objects.equals(valorModificado.getCodigo(), valorModificado.getCodigo())) {
+//                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, valorPublicado.getCodigo().toString(), valorModificado.getCodigo().toString(), idCampo);
+//                cambios.add(cambio);
+//
+//                cambios.add( agregarAuditoriaValorCampo(null, valorPublicado.getDescripcion().getTraduccion("ca"), valorModificado.getDescripcion().getTraduccion("ca"), idCampo));
+//            } else {
 
-                AuditoriaUtil.auditar(valorPublicado.getTramiteId(), valorModificado.getTramiteId(), cambios, idCampo + ".tramiteId");
-                AuditoriaUtil.auditar(valorPublicado.getTramiteVersion(), valorModificado.getTramiteVersion(), cambios, idCampo + ".tramiteVersion");
-                AuditoriaUtil.auditar(valorPublicado.getCodPlatTramitacion(), valorModificado.getCodPlatTramitacion(), cambios, idCampo + ".tramiteCodPlataforma");
-                AuditoriaUtil.auditar(valorPublicado.getUrlTramitacion(), valorModificado.getUrlTramitacion(), cambios, idCampo + ".tramiteUrl");
-                AuditoriaUtil.auditar(valorPublicado.getTramiteParametros(), valorModificado.getTramiteParametros(), cambios, idCampo + ".tramiteParametros");
-            }
+
+                // TODO Discernir según tipo tramitación modificado y anterior
+//                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, valorPublicado.getTramiteId(), valorModificado.getTramiteId(), idCampo + ".getTramiteId");
+//                cambios.add(cambio);
+
+//                AuditoriaUtil.auditar(valorPublicado.getTramiteId(), valorModificado.getTramiteId(), cambios, idCampo + ".getTramiteId");
+
+                boolean mismoTipo = Objects.equals(valorPublicado.getCodigo(), valorModificado.getCodigo());
+
+                if(valorModificado.isTelematicoPlantilla() ){
+                    if(valorPublicado.isTelematicoPlantilla()){
+                        AuditoriaUtil.auditar(valorPublicado.getDescripcion().getTraduccion("ca"), valorModificado.getDescripcion().getTraduccion("ca"), cambios, idCampo + ".plantillaSel");
+                    }else{
+                        // Cambio de canal telématico
+                        String canalTelematicoPublicado = valorPublicado.isTelematicoDatos() ? "plataforma tramitació" : "url externa";
+                        AuditoriaUtil.auditar(canalTelematicoPublicado, "plantilla", cambios, idCampo + ".telematico.canal");
+                        AuditoriaUtil.auditar(valorPublicado.getDescripcion().getTraduccion("ca"), valorModificado.getDescripcion().getTraduccion("ca"), cambios, idCampo + ".plantillaSel.add");
+                    }
+
+                } else  if( valorModificado.isTelematicoUrl()){
+
+                    // URL
+                    if(valorPublicado.isTelematicoUrl()) {
+                        AuditoriaUtil.auditar(valorPublicado.getUrl(), valorModificado.getUrl(), cambios, idCampo + ".url");
+                    }else{
+                        String canalTelematicoPublicado = valorPublicado.isTelematicoPlantilla() ? "plantilla" : "plataforma tramitació";
+                        AuditoriaUtil.auditar(canalTelematicoPublicado, "url externa", cambios, idCampo + ".telematico.canal");
+                        AuditoriaUtil.auditar(valorPublicado.getUrl(), valorModificado.getUrl(), cambios, idCampo + ".url.add");
+                    }
+
+
+                }else {
+                    // plataforma
+
+                    if( ! valorPublicado.isPlantilla() && ! valorPublicado.isTelematicoUrl()){
+                        AuditoriaUtil.auditar(valorPublicado.getTramiteId(), valorModificado.getTramiteId(), cambios, idCampo + ".tramiteId");
+                        AuditoriaUtil.auditar(valorPublicado.getTramiteVersion(), valorModificado.getTramiteVersion(), cambios, idCampo + ".tramiteVersion");
+                        AuditoriaUtil.auditar(valorPublicado.getCodPlatTramitacion(), valorModificado.getCodPlatTramitacion(), cambios, idCampo + ".tramiteCodPlataforma");
+                        AuditoriaUtil.auditar(valorPublicado.getTramiteParametros(), valorModificado.getTramiteParametros(), cambios, idCampo + ".tramiteParametros");
+
+                    }else{
+                        String canalTelematicoPublicado = valorPublicado.isTelematicoPlantilla() ? "plantilla" : "url externa";
+                        AuditoriaUtil.auditar(canalTelematicoPublicado, "plataforma tramitació", cambios, idCampo + ".telematico.canal");
+
+                        AuditoriaUtil.auditar(valorPublicado.getTramiteId(), valorModificado.getTramiteId(), cambios, idCampo + ".tramiteId.add");
+                        AuditoriaUtil.auditar(valorPublicado.getTramiteVersion(), valorModificado.getTramiteVersion(), cambios, idCampo + ".tramiteVersion.add");
+                        AuditoriaUtil.auditar(valorPublicado.getCodPlatTramitacion(), valorModificado.getCodPlatTramitacion(), cambios, idCampo + ".tramiteCodPlataforma.add");
+                        AuditoriaUtil.auditar(valorPublicado.getTramiteParametros(), valorModificado.getTramiteParametros(), cambios, idCampo + ".tramiteParametros.add");
+                    }
+                }
+
+
+
+
+
+
+//            }
         }
     }
 
@@ -400,13 +461,13 @@ public final class AuditoriaUtil {
         } else {
 
             //Seccion datos
-            ArrayList<AuditoriaCambio> cambios = new ArrayList();
-            AuditoriaUtil.auditar(valorPublicado.getFechaPublicacion(), valorModificado.getFechaPublicacion(), cambios, "auditoria.tramite.fechaPublicacion");
-            AuditoriaUtil.auditar(valorPublicado.getFechaInicio(), valorModificado.getFechaInicio(), cambios, "auditoria.tramite.fechaInicio");
-            AuditoriaUtil.auditar(valorPublicado.getFechaCierre(), valorModificado.getFechaCierre(), cambios, "auditoria.tramite.fechaCierre");
+            List<AuditoriaCambio> cambios = new ArrayList();
+            AuditoriaUtil.auditar(valorPublicado.getFechaPublicacion(), valorModificado.getFechaPublicacion(), cambios, "auditoria.tramite.fechaPublicacion", "dd/MM/yyyy");
+            AuditoriaUtil.auditar(valorPublicado.getFechaInicio(), valorModificado.getFechaInicio(), cambios, "auditoria.tramite.fechaInicio", "dd/MM/yyyy");
+            AuditoriaUtil.auditar(valorPublicado.getFechaCierre(), valorModificado.getFechaCierre(), cambios, "auditoria.tramite.fechaCierre", "dd/MM/yyyy");
             AuditoriaUtil.auditar(valorPublicado.getFase(), valorModificado.getFase(), cambios, "auditoria.tramite.fase");
             if (valorPublicado.getOrden() != null && valorModificado.getOrden() != null && valorPublicado.getOrden().compareTo(valorModificado.getOrden()) != 0) {
-                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, getValor(valorPublicado), "de " + valorPublicado.getOrden() + " a " + valorModificado.getOrden(), "auditoria.tramite.orden");
+                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, "nul", "de <b>" + (valorPublicado.getOrden()+1) + "</b> a <b>" + (valorModificado.getOrden()+1) + "</b>", "auditoria.tramite.orden");
                 cambios.add(cambio);
             }
             AuditoriaUtil.auditar(valorPublicado.getNombre(), valorModificado.getNombre(), cambios, "auditoria.tramite.nombre");
@@ -417,9 +478,21 @@ public final class AuditoriaUtil {
             AuditoriaUtil.auditar(valorPublicado.getObservacion(), valorModificado.getObservacion(), cambios, "auditoria.tramite.observacion");
 
             //Canales presentacion
-            AuditoriaUtil.auditar(valorPublicado.getPlantillaSel(), valorModificado.getPlantillaSel(), cambios, "auditoria.tramite.plantillaSel");
+
             //AuditoriaUtil.auditar(valorPublicado.getTasaAsociada(), valorModificado.getTasaAsociada(), cambios, "auditoria.tramite.tasaAsociada");
-            AuditoriaUtil.auditar(valorPublicado.getTipoTramitacion(), valorModificado.getTipoTramitacion(), cambios, "auditoria.tramite.tipoTramitacion");
+
+            AuditoriaUtil.auditar(valorPublicado.isTramitElectronica(), valorModificado.isTramitElectronica(), cambios, "auditoria.tramite.tramitElectronica");
+
+            // Canal telématico de tramitación
+            if( valorModificado.isTramitElectronica()) {
+                TipoTramitacionDTO tipoTramitacionPublicado = valorPublicado.getPlantillaSel() != null ? valorPublicado.getPlantillaSel() : valorPublicado.getTipoTramitacion();
+                TipoTramitacionDTO tipoTramitacionModificado = valorModificado.getPlantillaSel() != null ? valorModificado.getPlantillaSel() : valorModificado.getTipoTramitacion();
+
+                AuditoriaUtil.auditar(tipoTramitacionPublicado, tipoTramitacionModificado, cambios, "auditoria.tramite.tipoTramitacion");
+            }
+
+            AuditoriaUtil.auditar(valorPublicado.isTramitPresencial(), valorModificado.isTramitPresencial(), cambios, "auditoria.tramite.tramitPresencial");
+
 
             //Literal
             //AuditoriaUtil.auditar(valorPublicado.getPlantillaSel(), valorModificado.getPlantillaSel(), cambios, "auditoria.tramite.plantillaSel");
@@ -947,7 +1020,7 @@ public final class AuditoriaUtil {
     }
 
     public static String getTexto(ProcedimientoDocumentoDTO doc) {
-        if (doc.getTitulo() != null) {
+        if (doc.getTitulo() != null && !doc.getTitulo().estaVacio()) {
             return doc.getTitulo().getTraduccion("ca");
         } else if (doc.getDocumentos() != null && doc.getDocumentos().getTraduccion("ca") != null) {
             return doc.getDocumentos().getTraduccion("ca").getFilename();
@@ -958,45 +1031,56 @@ public final class AuditoriaUtil {
         }
     }
 
-    public static void auditarTramites(final List<ProcedimientoTramiteDTO> valorPublicado, final List<ProcedimientoTramiteDTO> valorModificado, List<AuditoriaCambio> cambios, final String idCampo) {
+    public static void auditarTramites(final List<ProcedimientoTramiteDTO> valorPublicado, final List<ProcedimientoTramiteDTO> valorModificado, List<AuditoriaCambio> cambios, String idCampo) {
+
 
 
         if ((valorPublicado == null || valorPublicado.isEmpty()) && (valorModificado == null || valorModificado.isEmpty())) {
             return;
         } else if (((valorPublicado != null && !valorPublicado.isEmpty()) && (valorModificado == null || valorModificado.isEmpty())) || ((valorPublicado == null || valorPublicado.isEmpty()) && (valorModificado != null && !valorModificado.isEmpty()))) {
+            // Caso eliminar trámite
             if (valorPublicado != null && !valorPublicado.isEmpty()) {
-                for (ProcedimientoTramiteDTO tipo : valorPublicado) {
-                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, tipo.getCodigo().toString(), null, idCampo);
+                for (ProcedimientoTramiteDTO tramite : valorPublicado) {
+                    idCampo+= ".remove";
+                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, tramite.getNombre().getTraduccion("ca"), null, idCampo);
                     cambios.add(cambio);
                 }
             }
+            // Caso añadir trámite
             if (valorModificado != null && !valorModificado.isEmpty()) {
-                for (ProcedimientoTramiteDTO tipo : valorModificado) {
-                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, tipo.getNombre().getTraduccion("ca"), idCampo);
+                for (ProcedimientoTramiteDTO tramiteNuevo : valorModificado) {
+                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, tramiteNuevo.getNombre().getTraduccion("ca"), idCampo);
                     cambios.add(cambio);
+
+                    auditarTramiteNuevo(tramiteNuevo, cambios, idCampo);
                 }
             }
         } else {
+            // Caso modificación trámite
             if (valorModificado.size() >= valorPublicado.size()) {
                 List<ProcedimientoTramiteDTO> tramitesAnteriores = new ArrayList<>();
-                for (ProcedimientoTramiteDTO tipo : valorModificado) {
+                for (ProcedimientoTramiteDTO tramiteModificado : valorModificado) {
                     boolean existe = false;
-                    for (ProcedimientoTramiteDTO tipoPublicado : valorPublicado) {
-                        if (tipo.getCodigo() != null && tipo.getCodigo().compareTo(tipoPublicado.getCodigo()) == 0) {
-                            tramitesAnteriores.add(tipoPublicado);
-                            if (tipo.getOrden() != null && tipoPublicado.getOrden() != null && tipo.getOrden().compareTo(tipoPublicado.getOrden()) != 0) {
-                                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, getValor(tipo), "de " + tipoPublicado.getOrden() + " a " + tipo.getOrden(), idCampo + ".orden");
-                                cambios.add(cambio);
-                            }
-                            auditar(tipoPublicado, tipo, cambios, idCampo);
+                    for (ProcedimientoTramiteDTO tramitePublicado : valorPublicado) {
+                        if (tramiteModificado.getCodigo() != null && tramiteModificado.getCodigo().compareTo(tramitePublicado.getCodigo()) == 0) {
+                            tramitesAnteriores.add(tramitePublicado);
+//                            if (tramiteModificado.getOrden() != null && tramitePublicado.getOrden() != null && tramiteModificado.getOrden().compareTo(tramitePublicado.getOrden()) != 0) {
+//                                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, getValor(tramiteModificado), "de " + (tramitePublicado.getOrden()+1) + " a " + (tramiteModificado.getOrden() + 1), idCampo + ".orden");
+//                                cambios.add(cambio);
+//                            }
+                            auditar(tramitePublicado, tramiteModificado, cambios, idCampo);
                             existe = true;
                             break;
                         }
                     }
 
                     if (!existe) {
-                        AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, tipo.getNombre().getTraduccion("ca"), idCampo + ".add");
+                        AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, tramiteModificado.getNombre().getTraduccion("ca"), idCampo + ".add");
+
+//                        auditarTramiteNuevo(tramiteModificado, cambios, idCampo);
                         cambios.add(cambio);
+
+                        auditarTramiteNuevo(tramiteModificado, cambios, idCampo);
                     }
                 }
                 if (!tramitesAnteriores.containsAll(valorPublicado)) {
@@ -1057,6 +1141,119 @@ public final class AuditoriaUtil {
         }
     }
 
+    private static void auditarLiteralNuevo(Literal literalNuevo, List<AuditoriaCambio> cambios, String idCampo) {
+
+        for (Traduccion traduccion : literalNuevo.getTraducciones()) {
+            if(StringUtils.isNotBlank(traduccion.getLiteral())){
+                AuditoriaCambio cambio = agregarAuditoriaValorCampo(AuditoriaIdioma.fromString(traduccion.getIdioma()), "nul", traduccion.getLiteral(), idCampo);
+                cambios.add(cambio);
+            }
+        }
+    }
+
+    private static void auditarTramiteNuevo(ProcedimientoTramiteDTO tramiteNuevo, List<AuditoriaCambio> cambiosPadre, String idCampo) {
+
+        List<AuditoriaCambio> cambios = new ArrayList();
+
+        SimpleDateFormat sdf =  new SimpleDateFormat("dd/MM/yyyy");
+        cambios.add( agregarAuditoriaValorCampoSinNulo(null, null, sdf.format(tramiteNuevo.getFechaPublicacion()), "auditoria.tramite.fechaPublicacion.add"));
+        cambios.add( agregarAuditoriaValorCampoSinNulo(null, null, sdf.format(tramiteNuevo.getFechaInicio()), "auditoria.tramite.fechaInicio.add"));
+        if( tramiteNuevo.getFechaCierre() != null) {
+            cambios.add( agregarAuditoriaValorCampoSinNulo(null, null, sdf.format(tramiteNuevo.getFechaCierre()), "auditoria.tramite.fechaCierre.add"));
+        }
+        cambios.add( agregarAuditoriaValorCampo(null, null, tramiteNuevo.getFase() + "", "auditoria.tramite.fase.add"));
+
+        auditarLiteralNuevo(tramiteNuevo.getNombre(), cambios, "auditoria.tramite.nombre.add");
+        auditarLiteralNuevo(tramiteNuevo.getRequisitos(), cambios, "auditoria.tramite.requisitos.add");
+        auditarLiteralNuevo(tramiteNuevo.getObservacion(), cambios, "auditoria.tramite.observacion.add");
+        auditarLiteralNuevo(tramiteNuevo.getDocumentacion(), cambios, "auditoria.tramite.documentacion.add");
+        auditarLiteralNuevo(tramiteNuevo.getTerminoMaximo(), cambios, "auditoria.tramite.terminoMaximo.add");
+
+        cambios.add( agregarAuditoriaValorCampo(null, null, getValor(tramiteNuevo.getUnidadAdministrativa()), "auditoria.tramite.unidadAdministrativa.add"));
+
+        //Canales presentacion
+
+        if(tramiteNuevo.isTramitElectronica()) {
+            cambios.add( agregarAuditoriaValorCampo(null, "false", "true", "auditoria.tramite.tramitElectronica.add"));
+
+            auditarTipoTramitacionNuevo(tramiteNuevo.getTipoTramitacion(), cambios, "auditoria.tramite.tipoTramitacion");
+        }
+
+
+//        // Canal telématico de tramitación
+//        if( tramiteNuevo.isTramitElectronica()) {
+//            TipoTramitacionDTO tipoTramitacionPublicado = valorPublicado.getPlantillaSel() != null ? valorPublicado.getPlantillaSel() : valorPublicado.getTipoTramitacion();
+//            TipoTramitacionDTO tipoTramitacionModificado = valorModificado.getPlantillaSel() != null ? valorModificado.getPlantillaSel() : valorModificado.getTipoTramitacion();
+//
+//            AuditoriaUtil.auditar(tipoTramitacionPublicado, tipoTramitacionModificado, cambios, "auditoria.tramite.tipoTramitacion");
+//        }
+//
+//        AuditoriaUtil.auditar(valorPublicado.isTramitPresencial(), valorModificado.isTramitPresencial(), cambios, "auditoria.tramite.tramitPresencial");
+//
+//
+//        //Literal
+//        //AuditoriaUtil.auditar(valorPublicado.getPlantillaSel(), valorModificado.getPlantillaSel(), cambios, "auditoria.tramite.plantillaSel");
+//
+//
+//        //Relaciones
+//        AuditoriaUtil.auditarDocumentos(valorPublicado.getListaDocumentos(), valorModificado.getListaDocumentos(), cambios, "auditoria.tramite.listaDocumentos");
+//        AuditoriaUtil.auditarDocumentos(valorPublicado.getListaModelos(), valorModificado.getListaModelos(), cambios, "auditoria.tramite.listaModelos");
+//
+        if (!cambios.isEmpty()) {
+            String elemento = getValor(tramiteNuevo);
+            for (AuditoriaCambio cambio : cambios) {
+                for (AuditoriaValorCampo valorModif : cambio.getValoresModificados()) {
+                    valorModif.setElemento(elemento);
+                }
+                cambiosPadre.add(cambio);
+            }
+        }
+    }
+
+    private static void auditarTipoTramitacionNuevo(TipoTramitacionDTO tipoTramiteNuevo, List<AuditoriaCambio> cambiosPadre, String idCampo) {
+
+        List<AuditoriaCambio> cambios = new ArrayList();
+
+
+        if(tipoTramiteNuevo.isTelematicoPlantilla()){
+
+            cambios.add( agregarAuditoriaValorCampo(null, null, "plantilla", idCampo + ".plantillaSel.add"));
+            cambios.add( agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getDescripcion().getTraduccion("ca"), idCampo + ".plantillaSel.add"));
+
+
+        } else  if( tipoTramiteNuevo.isTelematicoUrl()){
+
+            // URL
+
+            cambios.add( agregarAuditoriaValorCampo(null, null, "url externa", idCampo + ".telematico.canal.add"));
+            auditarLiteralNuevo(tipoTramiteNuevo.getUrl(), cambios, idCampo + ".url.add");
+
+
+
+
+        }else {
+            // plataforma
+
+
+            cambios.add( agregarAuditoriaValorCampo(null, null, "plataforma tramitació", idCampo + ".telematico.canal.add"));
+            cambios.add( agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getTramiteId(), idCampo + ".tramiteId.add"));
+            cambios.add( agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getTramiteVersion() + "", idCampo + ".tramiteVersion.add"));
+            cambios.add( agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getCodPlatTramitacion().getIdentificador(), idCampo + ".tramiteCodPlataforma.add"));
+            cambios.add( agregarAuditoriaValorCampo(null, null, tipoTramiteNuevo.getTramiteParametros(), idCampo + ".tramiteParametros.add"));
+
+        }
+
+        if (!cambios.isEmpty()) {
+            String elemento = getValor(tipoTramiteNuevo);
+            for (AuditoriaCambio cambio : cambios) {
+                for (AuditoriaValorCampo valorModif : cambio.getValoresModificados()) {
+                    valorModif.setElemento(elemento);
+                }
+                cambiosPadre.add(cambio);
+            }
+        }
+    }
+
     public static void auditar(Date fechaAnterior, Date fechaNueva, List<AuditoriaCambio> cambios, String idCampo) {
         AuditoriaCambio cambio = null;
         AuditoriaIdioma idioma = null;
@@ -1067,6 +1264,24 @@ public final class AuditoriaUtil {
             }
         } else if (fechaAnterior != null || fechaNueva != null) {
             cambio = agregarAuditoriaValorCampo(idioma, fechaAnterior, fechaNueva, idCampo);
+
+        }
+
+        if (cambio != null) {
+            cambios.add(cambio);
+        }
+    }
+
+    public static void auditar(Date fechaAnterior, Date fechaNueva, List<AuditoriaCambio> cambios, String idCampo, String patronFecha) {
+        AuditoriaCambio cambio = null;
+        AuditoriaIdioma idioma = null;
+
+        if (fechaAnterior != null && fechaNueva != null) {
+            if (fechaAnterior.compareTo(fechaNueva) != 0) {
+                cambio = agregarAuditoriaValorCampo(idioma, fechaAnterior, fechaNueva, idCampo, patronFecha);
+            }
+        } else if (fechaAnterior != null || fechaNueva != null) {
+            cambio = agregarAuditoriaValorCampo(idioma, fechaAnterior, fechaNueva, idCampo, patronFecha);
 
         }
 
@@ -1286,6 +1501,29 @@ public final class AuditoriaUtil {
         final AuditoriaValorCampo valorCampo = new AuditoriaValorCampo();
         valorCampo.setIdioma(idioma);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        if (valorAnterior == null) {
+            valorCampo.setValorAnterior("nul");
+        } else {
+            valorCampo.setValorAnterior(dateFormat.format(valorAnterior));
+        }
+        if (valorNuevo == null) {
+            valorCampo.setValorNuevo("nul");
+        } else {
+            valorCampo.setValorNuevo(dateFormat.format(valorNuevo));
+        }
+
+        cambio.getValoresModificados().add(valorCampo);
+
+        return cambio;
+    }
+
+    private static AuditoriaCambio agregarAuditoriaValorCampo(final AuditoriaIdioma idioma, final Date valorAnterior, final Date valorNuevo, final String idCampo, String patronFecha) {
+        AuditoriaCambio cambio = new AuditoriaCambio();
+        cambio.setIdCampo(idCampo);
+
+        final AuditoriaValorCampo valorCampo = new AuditoriaValorCampo();
+        valorCampo.setIdioma(idioma);
+        DateFormat dateFormat = new SimpleDateFormat(patronFecha);
         if (valorAnterior == null) {
             valorCampo.setValorAnterior("nul");
         } else {
