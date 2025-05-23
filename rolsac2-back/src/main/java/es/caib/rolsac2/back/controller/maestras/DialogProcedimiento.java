@@ -10,6 +10,7 @@ import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.types.*;
+import org.apache.commons.lang3.BooleanUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -141,7 +142,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
-        uaRaiz = Boolean.valueOf(this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz()).toString();
+        uaRaiz = BooleanUtils.toStringTrueFalse(this.data.getUaInstructor() != null && this.data.getUaInstructor().esRaiz());
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
         comunUA = sessionBean.getEntidad().getUaComun();
@@ -281,7 +282,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             if (uaSeleccionada != null) {
                 this.data.setUaInstructor(uaSeleccionada);
                 boolean misma = uaSeleccionada.getCodigo().compareTo(data.getUaInstructor().getCodigo()) == 0;
-                uaRaiz = Boolean.valueOf(uaSeleccionada.esRaiz()).toString();
+                uaRaiz = BooleanUtils.toStringTrueFalse(uaSeleccionada.esRaiz());
                 if (!uaSeleccionada.esRaiz()) {
                     this.data.setComun(0); //Es raro que lo estuviese como comun pero por si acaso
                 }
@@ -695,8 +696,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                     LOG.error("Cambio: " + cambio.toString());
                 }
                 try {
-                    LOG.error("Procedimiento: " + this.data.getCodigo());
-                    LOG.error("ProcedimientoOriginal: " + this.dataOriginal.getCodigo());
+                    LOG.error("Procedimiento: " + this.data.toString());
+                    LOG.error("ProcedimientoOriginal: " + this.dataOriginal.toString());
+                    LOG.error("ProcedimientoOriginal: " + this.dataOriginal.toString());
                 } catch (Exception e) {
                     LOG.error("Error al toString procedimiento");
                 }

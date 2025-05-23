@@ -170,7 +170,7 @@
                     </div>
                     <div class="form-group col-md-2">
                         <p:outputLabel id="labelSelectComun" value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1" />
-
+                        <br/>
                         <p:selectOneMenu id="selectComun" value="#{dialogProcedimiento.data.comun}"
                                          autoWidth="false" styleClass="w100px"
                                          disabled="#{dialogProcedimiento.isModoConsulta() or dialogProcedimiento.isGestor()}"
@@ -487,10 +487,10 @@
                                                      value="#{dialogProcedimiento.data.uaInstructor.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                      styleClass="w90 mr-1"
                                                      disabled="true"/>
-                                        <p:inputText id="txtOrgCompRaizInstr"
-                                                     styleClass="ocultar"
-                                                     value="#{dialogProcedimiento.uaRaiz}"
-                                        />
+<!--                                        <p:inputText id="txtOrgCompRaizInstr"-->
+<!--                                                     styleClass="ocultar"-->
+<!--                                                     value="#{dialogProcedimiento.uaRaiz}"-->
+<!--                                        />-->
                                         <p:commandButton
                                                 action="#{dialogProcedimiento.abrirVentanaUAInstr()}"
                                                 icon="pi pi-sitemap"
@@ -505,7 +505,7 @@
                                             <p:ajax event="dialogReturn"
                                                     listener="#{dialogProcedimiento.returnDialogoUAInstr}"
                                                     process="@this"
-                                                    update="formDialog:txtOrgInstr formDialog:txtOrgCompRaizInstr formDialog:selectComun"
+                                                    update="formDialog:txtOrgInstr formDialog:txtOrgCompRaiz formDialog:selectComun"
                                                     oncomplete="checkUAraiz()"/>
                                         </p:commandButton>
 
@@ -529,7 +529,7 @@
                                              rendered="#{!dialogProcedimiento.data.esComun()}"
                                              value="#{dialogProcedimiento.data.uaCompetente.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                              styleClass="w90 mr-1"
-                                             disabled="true"/>view
+                                             disabled="true"/>
                                 <p:commandButton
                                         action="#{dialogProcedimiento.abrirVentanaUACompetente()}"
                                         icon="pi pi-sitemap"

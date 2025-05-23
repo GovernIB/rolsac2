@@ -72,7 +72,92 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
     @Override
     public String toString() {
-        return "ProcedimientoDTO{" + " codigo=" + getCodigo() + ", codigoWF='" + getCodigoWF() + '\'' + '}';
+        StringBuilder texto = new StringBuilder("ProcedimientoDTO{");
+        texto.append(" codigo=").append(getCodigo());
+        texto.append(", codigoWF=").append(getCodigoWF());
+        texto.append(", workflow=").append(getWorkflow());
+        texto.append(", estado=").append(getEstado());
+        texto.append(", tieneTasa=").append(isTieneTasa());
+        texto.append(", codigoSIA=").append(getCodigoSIA());
+        texto.append(", estadoSIA=").append(getEstadoSIA());
+        texto.append(", tipo=").append(getTipo());
+        texto.append(", publicado=").append(isPublicado());
+        texto.append(", fechaCaducidad=").append(getFechaCaducidad());
+        texto.append(", fechaPublicacion=").append(getFechaPublicacion());
+        texto.append(", fechaActualizacion=").append(getFechaActualizacion());
+        texto.append(", responsable=").append(getResponsable());
+        texto.append(", fechaSIA=").append(getFechaSIA());
+        texto.append(", comun=").append(getComun());
+        texto.append(", lopdResponsable=").append(getLopdResponsable());
+        texto.append(", interno=").append(isInterno());
+        texto.append(", mensajes=").append(getMensajes());
+        texto.append(", habilitadoApoderado=").append(isHabilitadoApoderado());
+        texto.append(", habilitadoFuncionario=").append(getHabilitadoFuncionario());
+        texto.append(", usuarioAuditoria=").append(getUsuarioAuditoria());
+        texto.append(", responsable=").append(getResponsable());
+        texto.append(", responsableEmail=").append(getResponsableEmail());
+        texto.append(", incidenciasEmail=").append(getIncidenciasEmail());
+        texto.append(", habilitadoApoderado=").append(isHabilitadoApoderado());
+        texto.append(", habilitadoFuncionario=").append(getHabilitadoFuncionario());
+        texto.append(", silencio=").append(getSilencio());
+        texto.append(", datosPersonalesLegitimacion=").append(getDatosPersonalesLegitimacion());
+        texto.append(", iniciacion=").append(getIniciacion());
+        texto.append(", uaResponsable=").append(getUaResponsable());
+        texto.append(", uaInstructor=").append(getUaInstructor());
+        texto.append(", tipoProcedimiento=").append(getTipoProcedimiento());
+        texto.append(", tipoVia=").append(getTipoVia());
+        texto.append(", uaCompetente=").append(getUaCompetente());
+        texto.append(", nombreProcedimientoWorkFlow=").append(getNombreProcedimientoWorkFlow());
+        texto.append(", objeto=").append(getObjeto());
+        texto.append(", destinatarios=").append(getDestinatarios());
+        texto.append(", terminoResolucion=").append(getTerminoResolucion());
+        texto.append(", observaciones=").append(getObservaciones());
+        texto.append(", requisitos=").append(getRequisitos());
+        texto.append(", keywords=").append(getKeywords());
+        if (getPublicosObjetivo() != null) {
+            texto.append(", publicosObjetivo=[");
+            for (TipoPublicoObjetivoEntidadGridDTO publico : getPublicosObjetivo()) {
+                texto.append(publico.toString());
+            }
+            texto.append("]");
+        }
+        if (getDocumentos() != null) {
+            texto.append(", documentos=[");
+            for (ProcedimientoDocumentoDTO documento : getDocumentos()) {
+                texto.append(documento.toString());
+            }
+            texto.append("]");
+        }
+        if (getDocumentosLOPD() != null) {
+            texto.append(", documentosLOPD=[");
+            for (ProcedimientoDocumentoDTO documento : getDocumentosLOPD()) {
+                texto.append(documento.toString());
+            }
+            texto.append("]");
+        }
+        if (getNormativas() != null) {
+            texto.append(", normativas=[");
+            for (NormativaGridDTO normativa : getNormativas()) {
+                texto.append(normativa.toString());
+            }
+            texto.append("]");
+        }
+        if (getTemas() != null) {
+            texto.append(", temas=[");
+            for (TemaGridDTO tema : getTemas()) {
+                texto.append(tema.toString());
+            }
+            texto.append("]");
+        }
+        if (tramites != null) {
+            texto.append(", tramites=[");
+            for (ProcedimientoTramiteDTO tramite : tramites) {
+                texto.append(tramite.toString());
+            }
+            texto.append("]");
+        }
+        texto.append('}');
+        return texto.toString();
     }
 
     @Override
