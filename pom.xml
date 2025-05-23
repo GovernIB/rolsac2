@@ -50,7 +50,7 @@
         <!--Versión de Jena para RDF-->
         <jena.version>2.6.4</jena.version>
         <rome.version>1.18.0</rome.version>
-		<solrapi.version>1.1.5</solrapi.version>
+		<solrapi.version>1.1.4</solrapi.version>
         <jaxws.maven.plugin.version>2.6</jaxws.maven.plugin.version>
     </properties>
     <dependencyManagement>

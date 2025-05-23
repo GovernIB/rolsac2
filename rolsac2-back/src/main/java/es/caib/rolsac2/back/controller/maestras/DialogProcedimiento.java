@@ -176,8 +176,13 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         calcularUAhijosPadres();
 
         //Comprobamos si la entidad tiene un plugin de indexacion pdu para mostrar el botón
-        IPlugin plgPDU = systemService.obtenerPluginEntidad(TypePluginEntidad.PDU, sessionBean.getEntidad().getCodigo());
-        mostrarBtnPDU = plgPDU != null;
+        try {
+            IPlugin plgPDU = systemService.obtenerPluginEntidad(TypePluginEntidad.PDU, sessionBean.getEntidad().getCodigo());
+            mostrarBtnPDU = plgPDU != null;
+        } catch (Exception e) {
+            LOG.info("Error al obtener el plugin de PDU", e);
+            mostrarBtnPDU = false;
+        }
     }
 
     /**

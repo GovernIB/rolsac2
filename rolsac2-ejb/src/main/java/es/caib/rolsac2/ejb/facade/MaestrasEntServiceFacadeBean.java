@@ -328,4 +328,10 @@ public class MaestrasEntServiceFacadeBean implements MaestrasEntServiceFacade {
     public boolean existeIdentificadorTipoMediaFicha(String identificador) {
         return tipoMediaFichaRepository.existeIdentificador(identificador);
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR})
+    public boolean estaAsociadoCategoriaPDU(Long codigoPDU) {
+        return categoriaPDURepository.estaAsociadoCategoriaPDU(codigoPDU);
+    }
 }
