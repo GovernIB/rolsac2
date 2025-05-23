@@ -732,7 +732,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return idUAInstructor != null;
     }
 
-    public boolean isRellenoUaInstructorOComun(){
+    public boolean isRellenoUaInstructorOComun() {
         return idUAInstructorOComun != null;
     }
 
@@ -893,4 +893,73 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return new ProcedimientoFiltro(this);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder texto = new StringBuilder("ProcedimientoFiltro{");
+
+        texto.append("texto='").append(texto).append('\'');
+        texto.append(", tipo='").append(tipo).append('\'');
+        texto.append(", codigoSIA=").append(codigoSIA);
+        texto.append(", codigoProc=").append(codigoProc);
+        texto.append(", codigosProc=").append(codigosProc);
+        texto.append(", codigoWF=").append(codigoWF);
+        texto.append(", codigoTram=").append(codigoTram);
+        texto.append(", estadoSIA='").append(estadoSIA).append('\'');
+        texto.append(", siaFecha='").append(siaFecha).append('\'');
+        texto.append(", fechaPublicacionDesde='").append(fechaPublicacionDesde).append('\'');
+        texto.append(", fechaPublicacionHasta='").append(fechaPublicacionHasta).append('\'');
+        texto.append(", codigoDir3SIA='").append(codigoDir3SIA).append('\'');
+        texto.append(", codigoUaDir3='").append(codigoUaDir3).append('\'');
+        texto.append(", volcadoSIA='").append(volcadoSIA).append('\'');
+        texto.append(", silencioAdministrativo=").append(silencioAdministrativo);
+        texto.append(", tipoProcedimiento=").append(tipoProcedimiento);
+        texto.append(", formaInicio=").append(formaInicio);
+        texto.append(", publicoObjetivo=").append(publicoObjetivo);
+        texto.append(", publicoObjetivos=").append(publicoObjetivos);
+        texto.append(", materias=").append(materias);
+        texto.append(", normativas=").append(normativas);
+        texto.append(", estado='").append(estado).append('\'');
+        texto.append(", estados=").append(estados);
+        texto.append(", hijasActivas=").append(hijasActivas);
+        texto.append(", idUAsHijas=").append(idUAsHijas);
+        texto.append(", idUAResponsable=").append(idUAResponsable);
+        texto.append(", idUAsResponsable=").append(idUAsResponsable);
+        texto.append(", idUAInstructor=").append(idUAInstructor);
+        texto.append(", idUAsInstructor=").append(idUAsInstructor);
+        texto.append(", idsUAsHijasAux=").append(idsUAsHijasAux);
+        texto.append(", todasUnidadesOrganicas=").append(todasUnidadesOrganicas);
+        texto.append(", finVia=").append(finVia);
+        texto.append(", tramiteVigente='").append(tramiteVigente).append('\'');
+        texto.append(", tramiteTelematico='").append(tramiteTelematico).append('\'');
+        texto.append(", plantilla=").append(plantilla);
+        texto.append(", plataforma=").append(plataforma);
+        texto.append(", comun='").append(comun).append('\'');
+        texto.append(", estadoWF='").append(estadoWF).append('\'');
+        texto.append(", mensajesPendiente='").append(mensajesPendiente).append('\'');
+        texto.append(", temas=").append(temas);
+        texto.append(", esProcedimiento=").append(esProcedimiento);
+        texto.append(", canales=").append(canales);
+        texto.append(", idTramite='").append(idTramite).append('\'');
+        texto.append(", identificadorPlataforma='").append(identificadorPlataforma).append('\'');
+        texto.append(", version=").append(version);
+        texto.append(", visibleSEDE='").append(visibleSEDE).append('\'');
+        texto.append(", integrarPdu=").append(integrarPdu);
+        texto.append(", integradoPdu=").append(integradoPdu);
+        texto.append(", tramitacionPersonaApoderada='").append(tramitacionPersonaApoderada).append('\'');
+        texto.append(", disponibleFuncionarioHabilitado='").append(disponibleFuncionarioHabilitado).append('\'');
+        texto.append(", idUA=").append(getIdUA());
+        texto.append(", idEntidad=").append(getIdEntidad());
+        texto.append(", idioma=").append(getIdioma());
+        texto.append(", paginaTamanyo=").append(getPaginaTamanyo());
+        texto.append(", paginaFirst=").append(getPaginaFirst());
+        texto.append(", orderBy='").append(getOrderBy()).append('\'');
+        texto.append(", order='").append(getOrder()).append('\'');
+        texto.append(", ascendente=").append(isAscendente());
+        texto.append(", operadoresString=").append(isOperadoresString());
+        texto.append(", paginacionActiva=").append(isPaginacionActiva());
+        texto.append(", total=").append(getTotal());
+        texto.append(", visibleSEDE='").append(visibleSEDE).append('\'');
+        texto.append('}');
+        return texto.toString();
+    }
 }

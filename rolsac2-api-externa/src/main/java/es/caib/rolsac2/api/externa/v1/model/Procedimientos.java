@@ -80,9 +80,6 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "estadoSIA", type = SchemaType.BOOLEAN, required = false)
     private boolean estadoSIA;
 
-    @Schema(description = "integradoPdu", type = SchemaType.BOOLEAN, required = false)
-    private boolean integradoPdu;
-
     /**
      *
      **/
@@ -239,6 +236,9 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "activoLOPD", type = SchemaType.BOOLEAN, required = false)
     private boolean activoLOPD = false;
 
+    @Schema(description = "integradoPdu", type = SchemaType.BOOLEAN, required = false)
+    private boolean integradoPdu;
+
     public Procedimientos() {
         super();
     }
@@ -288,6 +288,7 @@ public class Procedimientos extends EntidadBase {
                 Long codigoDoc = nodo.getDocumentosLOPD().get(0).getCodigo();
                 linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
             }
+            this.integradoPdu = nodo.getEstadoPdu() != null && nodo.getEstadoPdu().compareTo(1) == 0;
         } catch (final Exception e) {
             LOG.error("Error generando procedimiento " + this.codigo, e);
         }
@@ -459,13 +460,6 @@ public class Procedimientos extends EntidadBase {
      */
     public void setEstadoSIA(final boolean estadoSIA) {
         this.estadoSIA = estadoSIA;
-    }
-
-    /**
-     * @return
-     */
-    public boolean isIntegradoPdu() {
-        return integradoPdu;
     }
 
     public String getLopdCabecera() {
@@ -847,6 +841,14 @@ public class Procedimientos extends EntidadBase {
 
     public void setTramitTelefonica(boolean tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
+    }
+
+    public boolean isIntegradoPdu() {
+        return integradoPdu;
+    }
+
+    public void setIntegradoPdu(boolean integradoPdu) {
+        this.integradoPdu = integradoPdu;
     }
 
 }

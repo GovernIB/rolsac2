@@ -5,10 +5,8 @@ import es.caib.rolsac2.commons.plugins.pdu.api.model.ResultadoPdu;
 import es.caib.rolsac2.service.model.CategoriaPDUDTO;
 import es.caib.rolsac2.service.model.IndexacionPDUDto;
 import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 /**
@@ -31,10 +29,10 @@ public interface PduServiceFacade {
 
     void deleteIndexacion(Long codElemento);
 
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     void actualizarPDU(IndexacionPDUDto pduDto, ResultadoPdu resultadoPDU);
 
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    void actualizarPDUfuturo(IndexacionPDUDto indexacionPDU, String mensaje);
+
     Pagina<IndexacionPDUDto> getProcedimientosIntegrado(Long idEntidad);
 
     CategoriaPDUDTO findCategoriaById(long id);

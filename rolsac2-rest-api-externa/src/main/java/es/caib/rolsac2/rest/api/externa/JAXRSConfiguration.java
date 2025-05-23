@@ -27,8 +27,8 @@ import javax.ws.rs.core.Application;
  * @author Indra
  */
 @ApplicationPath("/services")
-/** Si se depura en local, cambiar de rolsa2api a rolsac2-rest-api-externa **/
-@OpenAPIDefinition(info = @Info(title = "API REST EXTERNA", version = "1.0.0"), servers = {@Server(url = "/rolsac2-rest-api-externa/externa", description = "localhost")}
+/** Si se depura en local, cambiar de rolsac2api a rolsac2-rest-api-externa **/
+@OpenAPIDefinition(info = @Info(title = "API REST EXTERNA", version = "1.0.0"), servers = {@Server(url = "/rolsac2api/externa", description = "localhost")}
 
 )
 public class JAXRSConfiguration extends Application {

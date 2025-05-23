@@ -30,6 +30,7 @@ import es.caib.rolsac2.service.utils.UtilPDU;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -1457,35 +1458,17 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         return idProcWFClonado;
     }
 
+    @Override
+    @PermitAll
+    public boolean isPublicadoFuturo(IndexacionPDUDto dato) {
+        try {
+            JProcedimientoWorkflow procWf = procedimientoRepository.getWF(dato.getCodElemento(), false);
+            return procWf.getFechaPublicacion() != null && procWf.getFechaPublicacion().after(new Date());
+        } catch (Exception e) {
+            LOG.error("Error obteniendo el procedimiento", e);
+            throw e;
+        }
 
-//    @Override
-//    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-//    public void actualizarPDU(IndexacionPDUDto pduDto, ResultadoPdu resultadoPDU) {
-//        if (pduDto.getCodigo() != null) {
-//            indexacionPDURepository.actualizarDato(pduDto, resultadoPDU);
-//        }
-//
-//        if(resultadoPDU.isCorrecto()) {
-//            JProcedimientoWorkflow procWf = procedimientoRepository.getWF(pduDto.getCodElemento(), false);
-//
-//            // Siempre se mandan los idiomas a pdu en orden castellano y luego inglés, así que se reciben en ese orden
-//            for(JProcedimientoWorkflowTraduccion traduccion : procWf.getTraducciones()){
-//                if(TypeIdiomaFijo.CASTELLANO.toString().equals(traduccion.getIdioma())){
-//                    traduccion.setUrlPdu(resultadoPDU.getRespuestaPdu().getEnlaces().get(0));
-//                } else if (TypeIdiomaOpcional.INGLES.toString().equals(traduccion.getIdioma())) {
-//                    traduccion.setUrlPdu(resultadoPDU.getRespuestaPdu().getEnlaces().get(1));
-//                }
-//            }
-//
-//            procedimientoRepository.updateWF(procWf);
-//
-//            JProcedimiento procedimiento = procedimientoRepository.findById(pduDto.getCodElemento());
-//            procedimiento.setEstadoPdu(1);
-//
-//            procedimientoRepository.update(procedimiento);
-//
-//        }
-//
-//
-//    }
+    }
+
 }

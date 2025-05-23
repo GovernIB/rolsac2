@@ -121,7 +121,6 @@
 <!--                    <i class="#{dialogSeleccionarTemaMultiple.getIcono(node)}" />-->
 <!--                    <span ></span> <i class="ico-sia" />   -->
                     <p:graphicImage value="../images/SIA.svg" rendered="#{node.getTipoMateriaSIA() != null}"/>
-                    <p:graphicImage value="../images/PDU.svg" rendered="#{node.getCategoriaPdu() != null}" />
                     <p:tooltip id="toolTipFade#{node.codigo}" for="texto" value="#{dialogSeleccionarTemaMultiple.getTooltip(node)}" position="right"/>
                     <h:outputText id="texto" value="#{node.descripcion.getTraduccion(dialogSeleccionarTemaMultiple.idioma)}" />
 

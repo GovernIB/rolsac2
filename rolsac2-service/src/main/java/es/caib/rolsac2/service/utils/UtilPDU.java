@@ -66,13 +66,15 @@ public class UtilPDU {
         }
         if (UtilComparador.compareTo(data.getObjeto(), procDestino.getObjeto()) != 0) {
             return true;
-        }
+        }/* No es necesario las siguientes 2 literales de momento
         if (UtilComparador.compareTo(data.getDestinatarios(), procDestino.getDestinatarios()) != 0) {
             return true;
         }
         if (UtilComparador.compareTo(data.getTerminoResolucion(), procDestino.getTerminoResolucion()) != 0) {
             return true;
-        }
+        }*/
         return false;
     }
+
+
 }

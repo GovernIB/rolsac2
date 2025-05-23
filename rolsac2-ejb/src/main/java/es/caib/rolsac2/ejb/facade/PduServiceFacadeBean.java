@@ -5,6 +5,7 @@ import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.CategoriaPduConverter;
 import es.caib.rolsac2.persistence.model.JCategoriaPDU;
+import es.caib.rolsac2.persistence.model.JIndexacionPdu;
 import es.caib.rolsac2.persistence.model.JProcedimiento;
 import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
@@ -21,6 +22,7 @@ import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -209,6 +211,18 @@ public class PduServiceFacadeBean implements PduServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void deleteIndexacion(Long codElemento) {
         indexacionPDURepository.deleteByCodElemento(codElemento);
+    }
+
+    @Override
+    @PermitAll
+    public void actualizarPDUfuturo(IndexacionPDUDto indexacionPDU, String mensaje) {
+        // Se actualiza la indexacionPDU para que se reindexe otro día, cuando se ejecute el flujo poniendo el mensaje en el mensaje error
+        indexacionPDU.setMensajeError(mensaje);
+        if (indexacionPDU.getCodigo() != null) {
+            JIndexacionPdu jindexacionPDU = indexacionPDURepository.findById(indexacionPDU.getCodigo());
+            jindexacionPDU.setMensajeError(mensaje);
+            indexacionPDURepository.update(jindexacionPDU);
+        }
     }
 
     @Override

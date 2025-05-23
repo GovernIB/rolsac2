@@ -146,7 +146,14 @@ public abstract class ProcesoProgramadoBasePduComponentBean implements ProcesoPr
                     }
 
                     if (dato.getAccion().compareTo(UtilPDU.ACCION_PDU_ALTA) == 0 || dato.getAccion().compareTo(UtilPDU.ACCION_PDU_BAJA) == 0) {
-                        resultado = indexarPdu(dato, plugin, mensajeTraza);
+                        if (procedimientoService.isPublicadoFuturo(dato) && dato.getAccion().compareTo(UtilPDU.ACCION_PDU_ALTA) == 0) {
+                            totalProcedimientosOK++;
+                            mensajeTraza.append("El procediment ").append(dato.getCodElemento()).append(" no s'ha indexat, ja que es troba en un estat de publicació futura. \n");
+                            String mensajeErrorFuturo = "El procediment " + dato.getCodElemento() + " no s'ha indexat, ja que es troba en un estat de publicació futura.";
+                            pduServiceFacade.actualizarPDUfuturo(dato, mensajeErrorFuturo);
+                        } else {
+                            resultado = indexarPdu(dato, plugin, mensajeTraza);
+                        }
                     } else {
                         log.error("El procediment " + dato.getCodElemento() + " no té acció definida");
                         mensajeTraza.append("El procediment ").append(dato.getCodElemento()).append(" no té acció definida");

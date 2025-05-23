@@ -2,7 +2,6 @@ package es.caib.rolsac2.api.interna.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
@@ -80,10 +79,6 @@ public class Procedimientos extends EntidadBase {
      **/
     @Schema(description = "estadoSIA", type = SchemaType.BOOLEAN, required = false)
     private boolean estadoSIA;
-
-    @Schema(description = "integradoPdu", type = SchemaType.BOOLEAN, required = false)
-    private boolean integradoPdu;
-    private Literal urlPdu;
 
     /**
      *
@@ -241,6 +236,9 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "activoLOPD", type = SchemaType.BOOLEAN, required = false)
     private boolean activoLOPD = false;
 
+    @Schema(description = "integradoPdu", type = SchemaType.BOOLEAN, required = false)
+    private boolean integradoPdu;
+
     public Procedimientos() {
         super();
     }
@@ -290,6 +288,7 @@ public class Procedimientos extends EntidadBase {
                 Long codigoDoc = nodo.getDocumentosLOPD().get(0).getCodigo();
                 linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
             }
+            this.integradoPdu = nodo.getEstadoPdu() != null && nodo.getEstadoPdu().compareTo(1) == 0;
         } catch (final Exception e) {
             LOG.error("Error generando procedimiento " + this.codigo, e);
         }
@@ -350,84 +349,84 @@ public class Procedimientos extends EntidadBase {
     /**
      * @return the destinatarios
      */
-    public String getDestinatarios() {
+    public java.lang.String getDestinatarios() {
         return destinatarios;
     }
 
     /**
      * @param destinatarios the destinatarios to set
      */
-    public void setDestinatarios(final String destinatarios) {
+    public void setDestinatarios(final java.lang.String destinatarios) {
         this.destinatarios = destinatarios;
     }
 
     /**
      * @return the fechaActualizacion
      */
-    public Calendar getFechaActualizacion() {
+    public java.util.Calendar getFechaActualizacion() {
         return fechaActualizacion;
     }
 
     /**
      * @param fechaActualizacion the fechaActualizacion to set
      */
-    public void setFechaActualizacion(final Calendar fechaActualizacion) {
+    public void setFechaActualizacion(final java.util.Calendar fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 
     /**
      * @return the fechaCaducidad
      */
-    public Calendar getFechaCaducidad() {
+    public java.util.Calendar getFechaCaducidad() {
         return fechaCaducidad;
     }
 
     /**
      * @param fechaCaducidad the fechaCaducidad to set
      */
-    public void setFechaCaducidad(final Calendar fechaCaducidad) {
+    public void setFechaCaducidad(final java.util.Calendar fechaCaducidad) {
         this.fechaCaducidad = fechaCaducidad;
     }
 
     /**
      * @return the fechaPublicacion
      */
-    public Calendar getFechaPublicacion() {
+    public java.util.Calendar getFechaPublicacion() {
         return fechaPublicacion;
     }
 
     /**
      * @param fechaPublicacion the fechaPublicacion to set
      */
-    public void setFechaPublicacion(final Calendar fechaPublicacion) {
+    public void setFechaPublicacion(final java.util.Calendar fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
 
     /**
      * @return the observaciones
      */
-    public String getObservaciones() {
+    public java.lang.String getObservaciones() {
         return observaciones;
     }
 
     /**
      * @param observaciones the observaciones to set
      */
-    public void setObservaciones(final String observaciones) {
+    public void setObservaciones(final java.lang.String observaciones) {
         this.observaciones = observaciones;
     }
 
     /**
      * @return the requisitos
      */
-    public String getRequisitos() {
+    public java.lang.String getRequisitos() {
         return requisitos;
     }
 
     /**
      * @param requisitos the requisitos to set
      */
-    public void setRequisitos(final String requisitos) {
+    public void setRequisitos(final java.lang.String requisitos) {
         this.requisitos = requisitos;
     }
 
@@ -438,14 +437,14 @@ public class Procedimientos extends EntidadBase {
     /**
      * @return the codigoSIA
      */
-    public Integer getCodigoSIA() {
+    public java.lang.Integer getCodigoSIA() {
         return codigoSIA;
     }
 
     /**
      * @param codigoSIA the codigoSIA to set
      */
-    public void setCodigoSIA(final Integer codigoSIA) {
+    public void setCodigoSIA(final java.lang.Integer codigoSIA) {
         this.codigoSIA = codigoSIA;
     }
 
@@ -461,22 +460,6 @@ public class Procedimientos extends EntidadBase {
      */
     public void setEstadoSIA(final boolean estadoSIA) {
         this.estadoSIA = estadoSIA;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isIntegradoPdu() {
-        return integradoPdu;
-    }
-
-    public Literal getUrlPdu() {
-        return urlPdu;
-    }
-
-    public void setUrlPdu(Literal urlPdu) {
-        this.urlPdu = urlPdu;
     }
 
     public String getLopdCabecera() {
@@ -498,14 +481,14 @@ public class Procedimientos extends EntidadBase {
     /**
      * @return the fechaSIA
      */
-    public Calendar getFechaSIA() {
+    public java.util.Calendar getFechaSIA() {
         return fechaSIA;
     }
 
     /**
      * @param fechaSIA the fechaSIA to set
      */
-    public void setFechaSIA(final Calendar fechaSIA) {
+    public void setFechaSIA(final java.util.Calendar fechaSIA) {
         this.fechaSIA = fechaSIA;
     }
 
@@ -860,4 +843,11 @@ public class Procedimientos extends EntidadBase {
         this.tramitTelefonica = tramitTelefonica;
     }
 
+    public boolean isIntegradoPdu() {
+        return integradoPdu;
+    }
+
+    public void setIntegradoPdu(boolean integradoPdu) {
+        this.integradoPdu = integradoPdu;
+    }
 }

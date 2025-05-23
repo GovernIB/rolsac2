@@ -264,19 +264,26 @@ public interface ProcedimientoServiceFacade {
      *
      * @param id     El id del proc/serv
      * @param tipoWF true es definitivo, false es en modificacion
-     * @return
+     * @return true si tiene el wf indicado
      */
     boolean tieneWF(Long id, boolean tipoWF);
 
     /**
      * Clona un procedimiento.
      *
-     * @param idLong
-     * @param wfSeleccionado
-     * @param usuario
-     * @return
+     * @param idLong         id del procedimiento a clonar
+     * @param wfSeleccionado indica el tipo de wf siendo false publicado y true en modificacion
+     * @param usuario        usuario que lo clona
+     * @return el id del nuevo procedimiento
      */
     Long clonarProcedimiento(Long idLong, boolean wfSeleccionado, String usuario, String ruta);
 
-//    void actualizarPDU(IndexacionPDUDto indexacionDTO, ResultadoPdu resultadoPDU);
+    /**
+     * Ver si el procedimiento está publicado en PDU
+     *
+     * @param dato Dato a comprobar
+     * @return True/false si el procedimiento está visible en el futuro
+     */
+    boolean isPublicadoFuturo(IndexacionPDUDto dato);
+
 }

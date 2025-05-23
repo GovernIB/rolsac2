@@ -102,25 +102,23 @@ public class IndexacionPDURepositoryBean extends AbstractCrudRepository<JIndexac
 
 
         if (filtro.getOrderBy() != null) {
-            sql.append(" order by " + getOrden(filtro.getOrderBy()));
+            sql.append(" order by ").append(getOrden(filtro.getOrderBy()));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
         }
         Query query = entityManager.createQuery(sql.toString());
 
-        if (filtro.isRellenoTipo()) {
-            query.setParameter("tipo", "%" + filtro.getTexto().toLowerCase() + "%");
-        }
         if (filtro.isRellenoEntidad()) {
             query.setParameter("entidad", filtro.getIdEntidad());
+        }
+        if (filtro.isRellenoTipo()) {
+            query.setParameter("tipo", "%" + filtro.getTexto().toLowerCase() + "%");
         }
         if (filtro.isRellenoCodElemento()) {
             query.setParameter("codElemento", filtro.getCodElemento());
         }
-
         if (filtro.isRellenoIntegrarPdu()) {
             query.setParameter("integrarPdu", filtro.getIntegrarPdu());
         }
-
         if (filtro.isRellenoEstadoProcedimiento()) {
             query.setParameter("estado", filtro.getEstadoProcedimiento().toString());
         }

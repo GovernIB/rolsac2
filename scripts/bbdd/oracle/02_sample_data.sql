@@ -67,6 +67,8 @@ Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI
 values (RS2_PROCES_SEQ.NEXTVAL,1,'DIR3','Proceso automático para la sincronización del organigrama DIR3','0 0 23 */7 * *','1',
         '[{"codigo":"codigoDir3","valor":"A04003003","orden":null},{"codigo":"denominacionCooficial","valor":"false","orden":null}]');
 Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.nextval,'1','BORRAR_FIC','Borra el sistema de ficheros del dia anterior ejecutandose a la 1 de la madrugada','0 0 1 * *','1','[]');
+Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.NEXTVAL,1,'PDU','Proceso lanzamiento periódico PDU','30 23 * * *','0','[]');
+Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.NEXTVAL,1,'PDU_PUNT','Proceso lanzamiento puntual PDU',null,'1','[]');
 
 /** Los 3 tipos de publico objetivo basico y entidad que son 1.Ciudadano 2.Empresa 3.Administración . **/
 INSERT INTO RS2_TIPOPUB(TPPO_CODIGO, TPPO_IDENTI, TPPO_EMPPUB)
@@ -821,6 +823,9 @@ INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUE
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'email.proc.enlace', 'http://www.caib.es/rolsac2back/maestras/viewProcedimientos.xhtml?codigoProc=', 'Al enviar un email, es el enlace al procedimiento con su código', 1);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'email.serv.enlace', 'http://www.caib.es/rolsac2back/maestras/viewServicios.xhtml?codigoServ=', 'Al enviar un email, es el enlace al servicio con su código', 1);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'back.idiomas', 'ca,es','Especifica los idiomas del back (idiomas permitidos ca y es).',0);
+INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'pdu.parentUrl', 'https://www.caib.es/seucaib/', 'Indica la url padre al enviarse hacia PDU', 1);
+INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'pdu.urlProc', 'https://www.caib.es/seucaib/%s/200/persones/tramites/tramite/%d', 'Indica la url para abrir un procedimiento al enviarse a PDU', 1);
+INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'pdu.urlServ', 'https://www.caib.es/seucaib/%s/200/persones/tramites/tramite/%d', 'Indica la url para abrir un procedimiento al enviarse a PDU', 1);
 
 /** UNIDAD ORGANIZATIVA DIR3 **/
 /*insert into rs2_uniorg (ORG_CODIGO,ORG_CODDIR3,ORG_CODPADRE,ORG_CODENTI,ORG_DENOM,ORG_VERSION) values (RS2_UNIORG_SEQ.nextval, 'A04003003', null, 1, 'GOIB',0);*/

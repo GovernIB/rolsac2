@@ -2089,11 +2089,11 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             ambosWf = true;
         } else if (isRest) {
             if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("D")) {
-                sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF ON wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
+                sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF WITH wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
             } else if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("M")) {
-                sql = new StringBuilder("SELECT  wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF ON wf.workflow = true LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma  LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
+                sql = new StringBuilder("SELECT  wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF WITH wf.workflow = true LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma  LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
             } else if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("T")) {
-                sql = new StringBuilder("SELECT  wf, wf2 FROM JProcedimiento j LEFT JOIN j.procedimientoWF WF ON wf.workflow = true or wf.workflow is null LEFT JOIN j.procedimientoWF WF2 ON wf2.workflow = false or wf2.workflow is null LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma=:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");//and((wf.workflow = true and wf2.workflow is null) or (wf.workflow = true and wf2.workflow = false) or (wf.workflow is null and wf2.workflow = false))
+                sql = new StringBuilder("SELECT  wf, wf2 FROM JProcedimiento j LEFT JOIN j.procedimientoWF WF WITH wf.workflow = true LEFT JOIN j.procedimientoWF WF2 WITH wf2.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma=:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");//and((wf.workflow = true and wf2.workflow is null) or (wf.workflow = true and wf2.workflow = false) or (wf.workflow is null and wf2.workflow = false))
                 ambosWf = true;
             } else {
                 sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF ON wf.workflow = true or wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma  where 1 = 1 ");
@@ -2528,9 +2528,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         if (filtro.isRellenoIntegradoPdu()) {
             if (filtro.getIntegradoPdu()) {
-                sql.append(" AND j.integradoPdu = 1 ");
+                sql.append(" AND j.estadoPdu = 1 ");
             } else {
-                sql.append(" AND j.integradoPdu = 0 ");
+                sql.append(" AND j.estadoPdu = 0 ");
             }
         }
 
@@ -2562,7 +2562,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         }
 
-        Query query = entityManager.createQuery(sql.toString());
+        String sSql = sql.toString();
+        Query query = entityManager.createQuery(sSql);
         query.setParameter("idioma", filtro.getIdioma());
         if (filtro.isRellenoTipo()) {
             query.setParameter("tipo", filtro.getTipo());
