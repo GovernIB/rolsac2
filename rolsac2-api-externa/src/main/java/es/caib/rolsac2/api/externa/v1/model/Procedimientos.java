@@ -2,6 +2,7 @@ package es.caib.rolsac2.api.externa.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
@@ -79,6 +80,10 @@ public class Procedimientos extends EntidadBase {
      **/
     @Schema(description = "estadoSIA", type = SchemaType.BOOLEAN, required = false)
     private boolean estadoSIA;
+
+    @Schema(description = "integradoPdu", type = SchemaType.BOOLEAN, required = false)
+    private boolean integradoPdu;
+    private Literal urlPdu;
 
     /**
      *
@@ -456,6 +461,22 @@ public class Procedimientos extends EntidadBase {
      */
     public void setEstadoSIA(final boolean estadoSIA) {
         this.estadoSIA = estadoSIA;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isIntegradoPdu() {
+        return integradoPdu;
+    }
+
+    public Literal getUrlPdu() {
+        return urlPdu;
+    }
+
+    public void setUrlPdu(Literal urlPdu) {
+        this.urlPdu = urlPdu;
     }
 
     public String getLopdCabecera() {

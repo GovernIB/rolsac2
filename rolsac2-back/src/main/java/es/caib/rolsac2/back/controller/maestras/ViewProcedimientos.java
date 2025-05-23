@@ -99,9 +99,16 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     private Literal lopdResponsable;
     private Literal comunUA;
 
+    private List<Long> codigosUaDescendientesGestor;
+
     public void load() {
         LOG.debug("load View Procedimientos");
         permisoAccesoVentana(ViewProcedimientos.class);
+
+        if( this.isGestor()){
+            codigosUaDescendientesGestor = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
+        }
+
         this.limpiarFiltro();
         cargarFiltros();
         buscar();
@@ -215,12 +222,12 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void filtroHijasActivasChange() {
         if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsInstructor(uaService.listarHijos(sessionBean.getUnidadActiva().getCodigo()));
+            filtro.setIdUAsInstructor(uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo()));
         } else if (filtro.isHijasActivas() && filtro.isTodasUnidadesOrganicas()) {
             List<Long> ids = new ArrayList<>();
 
             for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                List<Long> idsUa = uaService.listarHijos(ua.getCodigo());
+                List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
                 ids.addAll(idsUa);
             }
             filtro.setIdUAsInstructor(ids);
@@ -240,7 +247,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 List<Long> ids = new ArrayList<>();
 
                 for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                    List<Long> idsUa = uaService.listarHijos(ua.getCodigo());
+                    List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
                     ids.addAll(idsUa);
                 }
                 filtro.setIdUAsInstructor(ids);
@@ -253,25 +260,34 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 filtro.setIdUAsInstructor(idsUa);
             }
         } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-            filtro.setIdUAsInstructor(uaService.listarHijos(sessionBean.getUnidadActiva().getCodigo()));
+            filtro.setIdUAsInstructor(uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo()));
         }
     }
 
     public void limpiarFiltro() {
         filtro = new ProcedimientoFiltro();
-        filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+
+        if( this.isGestor()) {
+            filtro.setIdUAInstructorOComun(codigosUaDescendientesGestor);
+        }else {
+            filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+        }
+
+
+
         filtro.setIdioma(sessionBean.getLang());
         //filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setEsProcedimiento(Boolean.TRUE);
         filtro.setOrder("DESCENDING");
         filtro.setTipo("P");
-        if (this.isGestor() || this.isInformador()) {
+        if ( this.isInformador()) {
             filtro.setComun("N");
         }
     }
 
     private void cargarFiltros() {
         filtro.setEsProcedimiento(Boolean.TRUE);
+
         listTipoFormaInicio = maestrasSupService.findAllTipoFormaInicio();
         listTipoSilencio = maestrasSupService.findAllTipoSilencio();
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
@@ -714,7 +730,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     }
 
     public void buscar() {
-        filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+
         lazyModel = new LazyDataModel<ProcedimientoGridDTO>() {
             private static final long serialVersionUID = 1L;
 
@@ -972,6 +988,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             UtilJSF.openDialog("dialogProcedimientoTramite", TypeModoAcceso.CONSULTA, params, true, 950, 600);
         }
     }
+
+
 
 
     public void setFiltro(ProcedimientoFiltro filtro) {

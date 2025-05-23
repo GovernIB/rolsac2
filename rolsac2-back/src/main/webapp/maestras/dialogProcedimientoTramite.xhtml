@@ -29,12 +29,6 @@
             <p>Prueba a ver si funciona correctamente el update</p>
         </p:panel>
     </ui:define>
-    <ui:define name="contentIdiomaDerecha">
-        <p:commandButton action="#{dialogProcedimientoTramite.ayuda('dialogProcedimientoTramite')}"
-                         icon="pi pi-info-circle" iconPos="top" style="margin-top:10px"
-                         value="#{labels['dict.ayuda']}"
-                         process="@this"/>
-    </ui:define>
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:10px"/>
@@ -603,6 +597,10 @@
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogProcedimientoTramite.ayuda('dialogProcedimientoTramite')}"
+                         icon="pi pi-info-circle" iconPos="top"
+                         value="#{labels['dict.ayuda']}"
+                         process="@this"/>
         <p:commandButton action="#{dialogProcedimientoTramite.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog panelDatos panelDatosPublicacion panelOrganos panelCanales "
                          rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"

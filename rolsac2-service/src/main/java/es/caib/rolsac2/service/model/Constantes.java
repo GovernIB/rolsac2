@@ -72,5 +72,9 @@ public class Constantes {
     public static final String INDEXAR_SIA_PENDIENTES = "pendientes";
     public static final String INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL = "puntual";
     public static final String INDEXAR_SIA_COMPLETO = "completo";
-    public static final String INDEXAR_SIA_ICONO = "pi pi-cloud-upload mr-2";
+//    public static final String INDEXAR_SIA_ICONO = "pi pi-cloud-upload mr-2";
+
+    public static final String INDEXAR_SIA_ICONO = "ico-sia mr-2";
+
+    public static final String INDEXAR_PDU_ICONO = "ico-pdu mr-2";
 }

@@ -55,6 +55,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
      * El UAs Instructor es para servicios
      **/
     private Long idUAInstructor;
+
+    private List<Long> idUAInstructorOComun;
     private List<Long> idUAsInstructor;
 
     private List<Long> idsUAsHijasAux;
@@ -83,6 +85,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private Integer version;
 
     private String visibleSEDE;
+
+    private Boolean integrarPdu;
+
+    private Boolean integradoPdu;
 
     /**
      * Constructor vacio
@@ -574,6 +580,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.idUAsInstructor = idUAsInstructor;
     }
 
+    public List<Long> getIdUAInstructorOComun() {
+        return idUAInstructorOComun;
+    }
+
+    public void setIdUAInstructorOComun(List<Long> idUAInstructorOComun) {
+        this.idUAInstructorOComun = idUAInstructorOComun;
+    }
+
     /**
      * Esta relleno el codigo WF
      *
@@ -714,6 +728,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return idUAInstructor != null;
     }
 
+    public boolean isRellenoUaInstructorOComun(){
+        return idUAInstructorOComun != null;
+    }
+
     public boolean isRellenoTodasUnidadesOrganicas() {
         return todasUnidadesOrganicas;
     }
@@ -791,6 +809,22 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.canales = canales;
     }
 
+    public Boolean getIntegrarPdu() {
+        return integrarPdu;
+    }
+
+    public void setIntegrarPdu(Boolean integrarPdu) {
+        this.integrarPdu = integrarPdu;
+    }
+
+    public Boolean getIntegradoPdu() {
+        return integradoPdu;
+    }
+
+    public void setIntegradoPdu(Boolean integradoPdu) {
+        this.integradoPdu = integradoPdu;
+    }
+
     public boolean isRellenoCanales() {
         return canales != null && !canales.isEmpty();
     }
@@ -811,6 +845,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return visibleSEDE != null;
     }
 
+
+    public boolean isRellenoIntegrarPdu() {
+        return integrarPdu != null;
+    }
+
+    public boolean isRellenoIntegradoPdu() {
+        return integradoPdu != null;
+    }
 
     /**
      * Se hace a este nivel manualmente el clonar.

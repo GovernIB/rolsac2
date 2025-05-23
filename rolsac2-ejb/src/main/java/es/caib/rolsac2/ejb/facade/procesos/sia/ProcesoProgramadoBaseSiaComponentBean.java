@@ -296,7 +296,8 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         return null;
     }
 
-    private ResultadoSIA indexarProcedimiento(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, StringBuilder mensajeTraza, boolean indexacionForzada) {
+    private ResultadoSIA indexarProcedimiento(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, StringBuilder mensajeTraza,
+                                              boolean indexacionForzada) {
         Long codigoWF = null;
 
         boolean publicado;

@@ -60,19 +60,16 @@ public class DialogTraspasoBOIB extends AbstractController implements Serializab
 
     public void buscar() {
         if (Objects.nonNull(this.filtro)) {
-            if (getFiltroFechaBoletin() == null && (getFiltroNumBoletin() == null || getFiltroNumBoletin().isEmpty())) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraspasoBOIB.rellenarFechas"), true);
+            if (getFiltroNumBoletin().equals("") && getFiltroFechaBoletin() == null && getFiltroNumRegistro().equals("")) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraspasoBOIB.rellenarUnElemento"), true);
             } else {
-            	if (getFiltroNumBoletin() != null && !getFiltroNumBoletin().isEmpty() && getFiltroFechaBoletin() != null) {
-                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraspasoBOIB.noAmbas"), true);
-                } else {
-                	try {
-	                    data = boletinServiceFacade.listar(getFiltroNumBoletin(), getFiltroFechaBoletin() == null ? "" : getFecha(getFiltroFechaBoletin()), getFiltroNumRegistro(), sessionBean.getEntidad().getCodigo());
-	                    this.mostrarResultados = true;
-	                } catch (RuntimeException e) {
-	                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraspasoBOIB.erroresBusqueda"), true);
-	                }
+                try {
+                    data = boletinServiceFacade.listar(getFiltroNumBoletin(), getFiltroFechaBoletin() == null ? "" : getFecha(getFiltroFechaBoletin()), getFiltroNumRegistro(), sessionBean.getEntidad().getCodigo());
+                    this.mostrarResultados = true;
+                } catch (RuntimeException e) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTraspasoBOIB.erroresBusqueda"), true);
                 }
+
             }
         }
     }

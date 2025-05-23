@@ -102,6 +102,9 @@ public class JProcedimiento extends BaseEntity {
     private boolean mensajesPendienteSupervisor = false;
 
 
+    @Column(name = "PROC_PDUEST")
+    private Integer estadoPdu;
+
     /**
      * Workflow del procedimiento
      */
@@ -114,6 +117,7 @@ public class JProcedimiento extends BaseEntity {
             jproc = new JProcedimiento();
             jproc.setTipo(otro.getTipo());
             jproc.setFechaActualizacion(new Date());
+
         }
         return jproc;
     }
@@ -301,6 +305,14 @@ public class JProcedimiento extends BaseEntity {
         this.fechaActualizacion = fechaActualizacion;
     }
 
+    public Integer getEstadoPdu() {
+        return estadoPdu;
+    }
+
+    public void setEstadoPdu(Integer estadoPdu) {
+        this.estadoPdu = estadoPdu;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -316,6 +328,6 @@ public class JProcedimiento extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JProcedimiento{" + "codigo=" + codigo + ", tipo='" + tipo + '\'' + ", codigoSIA=" + codigoSIA + ", estadoSIA=" + estadoSIA + ", siaFecha=" + siaFecha + '}';
+        return "JProcedimiento{" + "codigo=" + codigo + ", tipo='" + tipo + '\'' + ", codigoSIA=" + codigoSIA + ", estadoSIA=" + estadoSIA + ", siaFecha=" + siaFecha + ", pdu=" + (new Long(1).equals(estadoPdu) ? "integrado" : "no integrado") +'}';
     }
 }

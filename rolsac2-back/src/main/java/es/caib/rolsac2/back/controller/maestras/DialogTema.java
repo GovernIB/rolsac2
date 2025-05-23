@@ -6,7 +6,9 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
+import es.caib.rolsac2.service.facade.PduServiceFacade;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
+import es.caib.rolsac2.service.model.CategoriaPduDto;
 import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.TemaDTO;
@@ -46,6 +48,8 @@ public class DialogTema extends AbstractController implements Serializable {
 
     private List<TipoMateriaSIADTO> materias;
 
+    private List<CategoriaPduDto> categoriasPdu;
+
     private String identificadorOld;
 
     @Inject
@@ -53,6 +57,9 @@ public class DialogTema extends AbstractController implements Serializable {
 
     @EJB
     TemaServiceFacade temaServiceFacade;
+
+    @EJB
+    PduServiceFacade pduServiceFacade;
 
     @EJB
     private AdministracionSupServiceFacade administracionSupServiceFacade;
@@ -83,6 +90,8 @@ public class DialogTema extends AbstractController implements Serializable {
         }
 
         materias = temaServiceFacade.getTipoMateriasSIA(getIdioma());
+
+        categoriasPdu = pduServiceFacade.getCategoriasPdu();
     }
 
     public void guardar() {
@@ -218,4 +227,11 @@ public class DialogTema extends AbstractController implements Serializable {
         this.materias = materias;
     }
 
+    public List<CategoriaPduDto> getCategoriasPdu() {
+        return categoriasPdu;
+    }
+
+    public void setCategoriasPdu(List<CategoriaPduDto> categoriasPdu) {
+        this.categoriasPdu = categoriasPdu;
+    }
 }

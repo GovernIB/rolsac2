@@ -59,6 +59,9 @@ public class JProcedimientoWorkflowTraduccion {
     @Column(name = "TRPW_PRRESO")
     private String terminoResolucion;
 
+    @Column(name = "TRPW_URLPDU")
+    private String urlPdu;
+
     public static List<JProcedimientoWorkflowTraduccion> createInstance(List<String> idiomas) {
         List<JProcedimientoWorkflowTraduccion> traducciones = new ArrayList<>();
         for (String idioma : idiomas) {
@@ -69,7 +72,8 @@ public class JProcedimientoWorkflowTraduccion {
         return traducciones;
     }
 
-    public static List<JProcedimientoWorkflowTraduccion> clonar(List<JProcedimientoWorkflowTraduccion> traducciones, JProcedimientoWorkflow jProcedimientoWorkflow) {
+    public static List<JProcedimientoWorkflowTraduccion>
+    clonar(List<JProcedimientoWorkflowTraduccion> traducciones, JProcedimientoWorkflow jProcedimientoWorkflow) {
         List<JProcedimientoWorkflowTraduccion> retorno = null;
         if (traducciones != null) {
             retorno = new ArrayList<>();
@@ -86,6 +90,7 @@ public class JProcedimientoWorkflowTraduccion {
                 trad.setKeywords(traduccion.getKeywords());
                 trad.setRequisitos(traduccion.getRequisitos());
                 trad.setTerminoResolucion(traduccion.getTerminoResolucion());
+                trad.setUrlPdu(traduccion.getUrlPdu());
                 retorno.add(trad);
             }
         }
@@ -194,6 +199,14 @@ public class JProcedimientoWorkflowTraduccion {
 
     public void setKeywords(String keywords) {
         this.keywords = keywords;
+    }
+
+    public String getUrlPdu() {
+        return urlPdu;
+    }
+
+    public void setUrlPdu(String urlPdu) {
+        this.urlPdu = urlPdu;
     }
 
     @Override

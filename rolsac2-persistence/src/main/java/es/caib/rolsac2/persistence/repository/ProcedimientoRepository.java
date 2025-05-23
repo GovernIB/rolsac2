@@ -160,6 +160,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      */
     void actualizarSIA(IndexacionSIADTO siadto, ResultadoSIA resultadoAccion);
 
+    void actualizarPDU(IndexacionPDUDto pduDto, ResultadoSIA resultadoAccion);
+
     /**
      * Obtiene todos los procedimientos para una indexacion SIA
      *
@@ -167,6 +169,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      * @return
      */
     Pagina<IndexacionSIADTO> getProcedimientosParaIndexacionSIA(Long idEntidad);
+
+    Pagina<IndexacionPDUDto> getIndexacionProcedimientosIntegradosPdu(Long idEntidad);
 
     String getEnlaceTelematico(ProcedimientoFiltro filtro);
 

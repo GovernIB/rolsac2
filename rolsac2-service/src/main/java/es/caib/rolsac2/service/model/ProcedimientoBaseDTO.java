@@ -66,6 +66,8 @@ public class ProcedimientoBaseDTO extends ModelApi {
     // Nombre
     private Literal nombreProcedimientoWorkFlow;
 
+
+
     /**
      * Nombre
      */
@@ -88,6 +90,15 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private Literal terminoResolucion;
     private Literal observaciones;
     private Literal keywords;
+
+
+    private Integer estadoPdu;
+    /**
+     * Literal externo  automático tras la integración con PDU
+     */
+    private Literal urlPdu;
+
+
 
     /*** Lista de objetos **/
     private List<TipoPublicoObjetivoEntidadGridDTO> publicosObjetivo;
@@ -115,6 +126,9 @@ public class ProcedimientoBaseDTO extends ModelApi {
     //Opciones de Unidad Administrativa destino en la evolucion de division
     private Long opcionUAdestino;
 
+    private boolean integrarPdu;
+
+
     /**
      * Create instance
      *
@@ -136,6 +150,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
         proc.setTerminoResolucion(Literal.createInstance(idiomas));
         proc.setObservaciones(Literal.createInstance(idiomas));
         proc.setKeywords(Literal.createInstance(idiomas));
+        proc.setUrlPdu(Literal.createInstance(idiomas));
         proc.setPendienteIndexar(false);
         proc.setPendienteMensajesGestor(false);
         proc.setPendienteMensajesSupervisor(false);
@@ -685,12 +700,36 @@ public class ProcedimientoBaseDTO extends ModelApi {
         this.keywords = keywords;
     }
 
+    public Integer getEstadoPdu() {
+        return estadoPdu;
+    }
+
+    public void setEstadoPdu(Integer estadoPdu) {
+        this.estadoPdu = estadoPdu;
+    }
+
+    public Literal getUrlPdu() {
+        return urlPdu;
+    }
+
+    public void setUrlPdu(Literal urlPdu) {
+        this.urlPdu = urlPdu;
+    }
+
     public Long getOpcionUAdestino() {
         return opcionUAdestino;
     }
 
     public void setOpcionUAdestino(Long opcionUAdestino) {
         this.opcionUAdestino = opcionUAdestino;
+    }
+
+    public boolean isIntegrarPdu() {
+        return integrarPdu;
+    }
+
+    public void setIntegrarPdu(boolean integrarPdu) {
+        this.integrarPdu = integrarPdu;
     }
 
     @Override

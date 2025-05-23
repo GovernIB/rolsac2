@@ -33,6 +33,11 @@ public class ResultadoAccion {
         this.resultadoElastic = resultadoElastic;
     }
 
+    public ResultadoAccion(boolean correcto, String mensaje) {
+        this.correcto = correcto;
+        this.mensaje = mensaje;
+    }
+
     public boolean isCorrecto() {
         return correcto;
     }

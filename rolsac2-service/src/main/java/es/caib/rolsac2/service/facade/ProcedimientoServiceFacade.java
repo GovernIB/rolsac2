@@ -4,6 +4,8 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
+import es.caib.rolsac2.commons.plugins.pdu.api.model.RRespuestaImportarEnlace;
+import es.caib.rolsac2.commons.plugins.pdu.api.model.ResultadoPdu;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
@@ -173,6 +175,7 @@ public interface ProcedimientoServiceFacade {
 
     void actualizarSIA(IndexacionSIADTO siadto, ResultadoSIA resultadoAccion);
 
+
     /**
      * Obtiene el codigo publicado (tiene WF = publicado)
      *
@@ -199,6 +202,8 @@ public interface ProcedimientoServiceFacade {
     Pagina<IndexacionDTO> getProcedimientosParaIndexacion(boolean isTipoProcedimiento, Long idEntidad);
 
     Pagina<IndexacionSIADTO> getProcedimientosParaIndexacionSIA(Long idEntidad);
+
+//    Pagina<IndexacionPDUDto> getProcedimientosParaIndexacionPdu(Long idEntidad);
 
     IndexFile findDataIndexacionProcDoc(ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion documentoTraduccion, PathUA pathUA, String ruta);
 
@@ -267,4 +272,6 @@ public interface ProcedimientoServiceFacade {
      * @return
      */
     Long clonarProcedimiento(Long idLong, boolean wfSeleccionado, String usuario, String ruta);
+
+//    void actualizarPDU(IndexacionPDUDto indexacionDTO, ResultadoPdu resultadoPDU);
 }

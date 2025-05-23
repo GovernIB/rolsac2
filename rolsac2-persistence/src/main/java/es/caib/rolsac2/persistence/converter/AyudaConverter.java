@@ -76,9 +76,9 @@ public interface AyudaConverter extends Converter<JAyuda, AyudaDTO> {
             jAyuda.setTraducciones(tradsAux);
         }
         for (JAyudaTraduccion traduccion : jAyuda.getTraducciones()) {
-        	 if (descripcion.getTraduccion(traduccion.getIdioma()) != null && !descripcion.getTraduccion(traduccion.getIdioma()).isEmpty()) {
-                      traduccion.setHtml(descripcion.getTraduccion(traduccion.getIdioma()));
-              }
+            if (descripcion != null) {
+                traduccion.setHtml(descripcion.getTraduccion(traduccion.getIdioma()));
+            }
         }
         return jAyuda.getTraducciones();
     }

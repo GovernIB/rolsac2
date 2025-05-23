@@ -536,6 +536,16 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:selectOneMenu>
                         </div>
 
+                        <div class="ui-g-12 ui-md-4 ui-lg-4 bloque">
+                            <h:outputText value="#{labels['viewProcedimientos.integrarPdu']}:" for="selIntegrarPdu" />
+                            <p:selectOneMenu id="selIntegrarPdu" value="#{viewProcedimientos.filtro.integrarPdu}"
+                                             styleClass="w95" autoWidth="false" >
+                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="#{labels['viewProcedimientos.pdu.integrar.si']}" itemValue="true"/>
+                                <f:selectItem itemLabel="#{labels['viewProcedimientos.pdu.integrar.no']}" itemValue="false"/>
+                            </p:selectOneMenu>
+                        </div>
+
                         <div class="ui-g-12 text-center">
                             <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"
                                              iconPos="top" action="#{viewProcedimientos.limpiarFiltro()}"

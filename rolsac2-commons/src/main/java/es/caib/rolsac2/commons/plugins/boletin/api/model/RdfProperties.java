@@ -69,7 +69,10 @@ public class RdfProperties {
 
     private static String getUrlBase() {
         //return System.getProperty("es.caib.rolsac.traspasboib.url");
-        return "https://www.caib.es/eboibfront/";
-        //return "https://intranet.caib.es/eboibfront//";
+        //return "https://www.caib.es/eboibfront/";
+        return "https://intranet.caib.es/eboibfront//";
+
     }
+
+
 }

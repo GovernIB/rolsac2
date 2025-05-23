@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.controller.comun.UtilsArbolTemas;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.*;
@@ -226,7 +227,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         if (data.getUaInstructor() == null) {
             return;
         }
-        List<Long> idHijos = uaService.listarHijos(data.getUaInstructor().getCodigo());
+        List<Long> idHijos = uaService.listarDescendientes(data.getUaInstructor().getCodigo());
         List<Long> idPadres = uaService.listarPadres(data.getUaInstructor().getCodigo());
 
         uasInstructor.add(data.getUaInstructor().getCodigo());
@@ -699,10 +700,36 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }
 
+        if( data.isIntegrarPdu()){
+            boolean nombreEnIngles = data.getNombreProcedimientoWorkFlow().getIdiomas().contains(Idioma.INGLES.getIdioma());
+
+            boolean objetoEnIngles = data.getObjeto().getIdiomas().contains((Idioma.INGLES.getIdioma()));
+
+            boolean destinatariosEnIngles = data.getDestinatarios().getIdiomas().contains(Idioma.INGLES.getIdioma());
+            boolean requisitosEnIngles = data.getRequisitos().getIdiomas().contains(Idioma.INGLES.getIdioma());
+
+            if( !nombreEnIngles || !objetoEnIngles || !destinatariosEnIngles || ! requisitosEnIngles){
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.pdu.check.ingles"));
+                retorno = false;
+            }
+
+
+            boolean tieneCategoriaPdu = data.getTemas().stream().anyMatch(t-> t.getCategoriaPdu() != null);
+            if(!tieneCategoriaPdu){
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.pdu.check.categoria"));
+                retorno = false;
+            }
+        }
+
         return retorno;
     }
 
     public void cerrar() {
+
+        this.data.setTramitPresencial(canalesSeleccionados.contains("PRE"));
+        this.data.setTramitElectronica(canalesSeleccionados.contains("TEL"));
+        this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
+
         if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
             PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;

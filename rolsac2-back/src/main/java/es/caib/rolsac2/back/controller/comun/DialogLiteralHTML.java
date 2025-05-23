@@ -86,10 +86,10 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
 
     public void load() {
         LOG.debug("init");
+        // Inicializamos combos/desplegables/inputs
+        // De momento, no tenemos desplegables.
 
-        //Obtener de configuracion global
-        String idiomasBack = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.BACKEND_IDIOMAS);
-        idiomasPermitidos = idiomasBack != null ? List.of(idiomasBack.split(",")) : new ArrayList<>();
+        idiomasPermitidos = sessionBean.getIdiomasPermitidosList();
 
         literal = (Literal) UtilJSF.getValorMochilaByKey("literal"); // (Literal)
         // sessionBean.getValorMochilaByKey("literal");
@@ -103,13 +103,6 @@ public class DialogLiteralHTML extends AbstractController implements Serializabl
     }
 
     public void seleccionarImagen() {
-        final Map<String, String> params = new HashMap<>();
-        params.put(TypeParametroVentana.MODO_ACCESO.toString(), TypeModoAcceso.EDICION.toString());
-        params.put("idioma", sessionBean.getLang());
-        UtilJSF.openDialog("/comun/dialogTinyMCEIMG", TypeModoAcceso.EDICION, params, true, 1050, 750);
-    }
-
-    public void abrirImagenes() {
         final Map<String, String> params = new HashMap<>();
         params.put(TypeParametroVentana.MODO_ACCESO.toString(), TypeModoAcceso.EDICION.toString());
         params.put("idioma", sessionBean.getLang());

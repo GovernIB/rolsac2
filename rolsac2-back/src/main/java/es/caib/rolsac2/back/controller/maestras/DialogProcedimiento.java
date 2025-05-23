@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.controller.comun.UtilsArbolTemas;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.*;
@@ -102,6 +103,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private Literal lopdDerechos;
     private Literal lopdInfoAdicional;
 
+    private boolean noEditable;
+
     public void load() {
         LOG.debug("init");
         // Inicializamos combos/desplegables/inputs
@@ -130,6 +133,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 data = (ProcedimientoDTO) UtilJSF.getValorMochilaByKey("PROC");
             }
 
+            // dsanz se entra a editar pero se deshabilitan los botones de edición si es un procedimiento de una ua común que sólo puede consultar el gestor
+            if(this.isGestor()) {
+                List<Long> listaUasUsuario = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
+                noEditable = !listaUasUsuario.contains(data.getUaInstructor().getCodigo());
+            }
         }
 
         uaRaiz = Boolean.valueOf(this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz()).toString();
@@ -160,16 +168,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         actualizarResponsable();
         dataOriginal = (ProcedimientoDTO) data.clone();
 
-        checkLOGUAcompetente();
         //Eso es para cargar las uas del instructor
         calcularUAhijosPadres();
     }
 
-    private void checkLOGUAcompetente() {
-    	LOG.error("DialogProcedimiento.CHECK");
-        LOG.error("data.uaCompetente:"+ data.getUaCompetente());
-        LOG.error("dataOriginal.uaCompetente:"+ dataOriginal.getUaCompetente());
-    }
     /**
      * Metodo para cargar las listas
      **/
@@ -294,7 +296,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (data.getUaInstructor() == null) {
             return;
         }
-        List<Long> idHijos = uaService.listarHijos(data.getUaInstructor().getCodigo());
+        List<Long> idHijos = uaService.listarDescendientes(data.getUaInstructor().getCodigo());
         List<Long> idPadres = uaService.listarPadres(data.getUaInstructor().getCodigo());
 
         uasInstructor.add(data.getUaInstructor().getCodigo());
@@ -651,12 +653,40 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }*/
 
+        if( data.isIntegrarPdu()){
+            boolean nombreEnIngles = data.getNombreProcedimientoWorkFlow().getIdiomas().contains(Idioma.INGLES.getIdioma());
+
+            boolean objetoEnIngles = data.getObjeto().getIdiomas().contains((Idioma.INGLES.getIdioma()));
+
+            boolean destinatariosEnIngles = data.getDestinatarios().getIdiomas().contains(Idioma.INGLES.getIdioma());
+            boolean terminoResolucionEnIngles = data.getTerminoResolucion().getIdiomas().contains(Idioma.INGLES.getIdioma());
+
+            if( !nombreEnIngles || !objetoEnIngles || !destinatariosEnIngles || !terminoResolucionEnIngles){
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.pdu.check.ingles"));
+                todoCorrecto = false;
+            }
+
+
+            boolean tieneCategoriaPdu = data.getTemas().stream().anyMatch(t-> t.getCategoriaPdu() != null);
+
+            if(!tieneCategoriaPdu){
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.pdu.check.categoria"));
+                todoCorrecto = false;
+            }
+        }
+
         return todoCorrecto;
     }
 
+    public boolean isNoEditable(){
+
+        return noEditable;
+
+    }
+
+
     public void cerrar() {
-    	checkLOGUAcompetente();
-    	if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal, true) != 0) {
+        if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
             PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;
         }
@@ -684,9 +714,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             if (tipPubObjEntSeleccionadas == null) {
                 data.setPublicosObjetivo(new ArrayList<>());
             } else {
-                if (data.getPublicosObjetivo() == null) {
-                    data.setPublicosObjetivo(new ArrayList<>());
-                }
+//                if (data.getPublicosObjetivo() == null) {
+//                    data.setPublicosObjetivo(new ArrayList<>());
+//                }
                 data.setPublicosObjetivo(new ArrayList<>());
                 data.getPublicosObjetivo().addAll(tipPubObjEntSeleccionadas);
 
@@ -1205,7 +1235,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
 
         if (this.isGestor()) {
-            return this.data.getEstado() == TypeProcedimientoEstado.MODIFICACION;
+            return this.data.getEstado() == TypeProcedimientoEstado.MODIFICACION && !this.noEditable;
         } else {
             return true;
         }
@@ -1495,6 +1525,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public String getIconoSIA() {
         return Constantes.INDEXAR_SIA_ICONO;
+    }
+
+    public boolean posiblePdu(){
+        return sessionBean.getEntidad().getIdiomasPermitidos().contains(TypeIdiomaOpcional.INGLES.valor);
     }
 
 }

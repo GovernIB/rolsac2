@@ -173,6 +173,9 @@ public class JProcedimientoWorkflow {
     @JoinTable(name = "RS2_PRCTEM", joinColumns = {@JoinColumn(name = "PRTM_CODPRWF")}, inverseJoinColumns = {@JoinColumn(name = "PRTM_CODTEMA")})
     private Set<JTema> temas;
 
+    @Column(name = "PRWF_INTGPDU", nullable = false, precision = 1, scale = 0)
+    private boolean integrarPdu;
+
     public static JProcedimientoWorkflow clonar(JProcedimientoWorkflow wf, JProcedimiento jprocClonado, String usuario) {
         JProcedimientoWorkflow retorno = null;
         if (wf != null) {
@@ -212,6 +215,7 @@ public class JProcedimientoWorkflow {
             retorno.setHabilitadoFuncionario(wf.getHabilitadoFuncionario());
             retorno.setTraducciones(JProcedimientoWorkflowTraduccion.clonar(wf.getTraducciones(), retorno));
             retorno.setTemas(JTema.clonar(wf.getTemas()));
+            retorno.setIntegrarPdu(wf.isIntegrarPdu());
         }
         return retorno;
     }
@@ -510,6 +514,14 @@ public class JProcedimientoWorkflow {
 
     public void setTramiteElectronico(JTipoTramitacion tramiteElectronico) {
         this.tramiteElectronico = tramiteElectronico;
+    }
+
+    public void setIntegrarPdu(boolean integrarPdu) {
+        this.integrarPdu = integrarPdu;
+    }
+
+    public boolean isIntegrarPdu() {
+        return integrarPdu;
     }
 
     @Override

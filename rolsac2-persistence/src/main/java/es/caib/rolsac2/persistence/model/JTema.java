@@ -72,6 +72,11 @@ public class JTema extends BaseEntity {
     @JoinColumn(name = "TEMA_MATSIA", nullable = true)
     private JTipoMateriaSIA tipoMateriaSIA;
 
+    @ManyToOne
+    @JoinColumn(name = "TEMA_CATPDU", nullable = true)
+    private JCategoriaPdu categoriaPdu;
+
+
     public static Set<JTema> clonar(Set<JTema> otros) {
         Set<JTema> temas = null;
         if (otros != null) {
@@ -93,6 +98,8 @@ public class JTema extends BaseEntity {
             tema.setTemaPadre(otro.getTemaPadre());
             tema.setDescripcion(otro.getDescripcion());
             tema.setMathPath(otro.getMathPath());
+            tema.setTipoMateriaSIA(otro.getTipoMateriaSIA());
+            tema.setCategoriaPdu(otro.getCategoriaPdu());
         }
         return tema;
     }
@@ -194,6 +201,8 @@ public class JTema extends BaseEntity {
         this.tipoMateriaSIA = codigoSIA;
     }
 
+
+
     /**
      * Establece descripcion.
      *
@@ -205,6 +214,14 @@ public class JTema extends BaseEntity {
         } else {
             this.descripcion.addAll(descripcion);
         }
+    }
+
+    public JCategoriaPdu getCategoriaPdu() {
+        return categoriaPdu;
+    }
+
+    public void setCategoriaPdu(JCategoriaPdu categoriaPdu) {
+        this.categoriaPdu = categoriaPdu;
     }
 
     @Override
@@ -222,6 +239,6 @@ public class JTema extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JTema{" + "codigo=" + codigo + ", entidad=" + entidad + ", identificador='" + identificador + '\'' + ", descripcion=" + descripcion + '}';
+        return "JTema{" + "codigo=" + codigo + ", entidad=" + entidad + ", identificador='" + identificador + '\'' + ", descripcion=" + descripcion + ", categoriaPdu=" + categoriaPdu + '}';
     }
 }

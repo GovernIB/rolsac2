@@ -47,6 +47,8 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     List<Long> listarHijos(Long idUa);
 
+    List<Long> listarDescendientes(Long idUa);
+
     List<UnidadAdministrativaDTO> getHijosSimple(Long idUnitat, String idioma, UnidadAdministrativaDTO padre);
 
     List<JUnidadAdministrativa> getUnidadesAdministrativaByUsuario(Long usuarioId);

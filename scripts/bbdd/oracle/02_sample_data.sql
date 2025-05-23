@@ -51,6 +51,11 @@ VALUES (RS2_PLUGIN_SEQ.NEXTVAL, 1, 'Plugin de indexacion', 'es.caib.rolsac2.comm
         '[{"codigo":"urlSolr","valor":"VALOR_URLSOLR","orden":null},{"codigo":"usrSolr","valor":"VALOR_USRSOLR","orden":null},{"codigo":"indexSolr","valor":"VALOR_INDEXSOLR","orden":null},{"codigo":"pwdSolr","valor":"VALOR_PWDSOLR","orden":null},{"codigo":"activoSolr","valor":"true","orden":null},{"codigo":"urlElastic","valor":"VALOR_URLELASTIC","orden":null},{"codigo":"usrElastic","valor":"VALOR_USRELASTIC","orden":null},{"codigo":"pwdElastic","valor":"VALOR_PWDELASTIC","orden":null},{"codigo":"activoElastic","valor":"true","orden":null}]',
         'pluginsib.index.solr.', 'IDX');
 
+Insert into RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
+VALUES (RS2_PLUGIN_SEQ.NEXTVAL, 1, 'Plugin de PDU', 'es.caib.rolsac2.commons.plugins.pdu.PDUPlugin',
+        '[{"codigo":"url","valor":"https://webgate.acceptance.ec.europa.eu/youreurope/sdg/public/dtx","orden":null},{"codigo":"usr","valor":"api-pdu","orden":null},{"codigo":"pwd","valor":"XXXXXX","orden":null}]',
+        'pluginsib.pdu.', 'PDU');
+
 
 /** Inserción de procesos automáticos **/
 insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, 1, 'TEST', 'Proceso de prueba', null, 1, '[{"codigo":"valida","valor":"true"}]');
@@ -815,8 +820,135 @@ INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUE
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'deshabilitar.certificado', 'false', 'Para deshabilitar la comprobación de certificado en la conexión con el servicio de notificaciones, sólo necesario para desarrollo', 0);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'email.proc.enlace', 'http://www.caib.es/rolsac2back/maestras/viewProcedimientos.xhtml?codigoProc=', 'Al enviar un email, es el enlace al procedimiento con su código', 1);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'email.serv.enlace', 'http://www.caib.es/rolsac2back/maestras/viewServicios.xhtml?codigoServ=', 'Al enviar un email, es el enlace al servicio con su código', 1);
-INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'back.idiomas', 'ca,es','Especifica los idiomas del back (idiomas permitidos ca y es).',0);
 
 /** UNIDAD ORGANIZATIVA DIR3 **/
 /*insert into rs2_uniorg (ORG_CODIGO,ORG_CODDIR3,ORG_CODPADRE,ORG_CODENTI,ORG_DENOM,ORG_VERSION) values (RS2_UNIORG_SEQ.nextval, 'A04003003', null, 1, 'GOIB',0);*/
 
+
+/** PDU   */
+
+INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD)
+VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'pdu.parentUrl', 'https://www.caib.es/seucaib/', 'Indica la url padre al enviarse hacia PDU', 1);
+INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD)
+VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'pdu.urlProc', 'https://www.caib.es/seucaib/ca/200/persones%20/tramites/tramite/', 'Indica la url para abrir un procedimiento al enviarse a PDU', 1);
+INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD)
+VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'pdu.urlServ', 'https://www.caib.es/seucaib/ca/200/persones%20/tramites/tramite/', 'Indica la url para abrir un procedimiento al enviarse a PDU', 1);
+
+/** CATEGORÍAS PDU **/
+
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('1','2','A1','Documentos requeridos para ciudadanos de la Unión, sus familiares que no son ciudadanos de la Unión, menores que viajan solos y ciudadanos no pertenecientes a la Unión cuando viajan a través de las fronteras dentro de la Unión (DNI, visa, pasaporte)');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('2','3','A2','Derechos y obligaciones de los viajeros por avión, tren, barco y autobús dentro y desde la Unión, y de aquellos que compran paquetes de viaje o arreglos de viaje vinculados');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('3','4','A3','Asistencia en caso de movilidad reducida cuando se viaja dentro y desde la Unión');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('4','5','A4','Transporte de animales, plantas, alcohol, tabaco, cigarrillos y otros bienes cuando se viaja dentro de la Unión');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('5','6','A5','Llamadas de voz y envío y recepción de mensajes electrónicos y datos electrónicos dentro de la Unión');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('6','8','B1','Búsqueda de empleo en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('7','9','B2','Aceptar un empleo en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('8','10','B3','Reconocimiento de cualificaciones para empleo en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('9','11','B4','Tributación en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('10','12','B5','Reglas de responsabilidad y seguro obligatorio vinculadas a la residencia o empleo en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('11','13','B6','Términos y condiciones de empleo, incluyendo trabajadores desplazados, según lo estipulado por ley o instrumento estatutario');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('12','14','B7','Igualdad de trato (normas que prohíben la discriminación en el lugar de trabajo, normas sobre igualdad salarial para hombres y mujeres, y para empleados con contratos temporales o permanentes)');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('13','15','B8','Obligaciones de salud y seguridad en relación con diferentes tipos de actividad');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('14','16','B9','Derechos y obligaciones en materia de seguridad social en la Unión, incluidos los relacionados con la obtención de pensiones');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('15','18','C1','Llevar un vehículo de motor temporal o permanentemente a otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('16','19','C2','Adquirir y renovar un permiso de conducir');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('17','20','C3','Tomar seguro obligatorio para vehículos de motor');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('18','21','C4','Comprar y vender un vehículo en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('19','22','C5','Reglas de tráfico nacionales y requisitos para conductores, incluidos cargos por tiempo y distancia y pegatinas de emisión');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('20','24','D1','Mudarse temporal o permanentemente a otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('21','25','D2','Compra y venta de propiedad inmueble, incluidos impuestos, propiedad o uso, como segunda residencia');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('22','26','D3','Participación en elecciones municipales y elecciones al Parlamento Europeo');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('23','27','D4','Requisitos para tarjetas de residencia para ciudadanos de la Unión y sus familiares, incluyendo aquellos que no son ciudadanos de la Unión');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('24','28','D5','Condiciones aplicables para la nacionalización de ciudadanos de otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('25','29','D6','Normas aplicables en caso de fallecimiento, incluyendo repatriación de restos a otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('26','31','E1','Sistema educativo en otro Estado miembro, incluyendo educación infantil, primaria, secundaria, educación superior y aprendizaje para adultos');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('27','32','E2','Voluntariado en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('28','33','E3','Prácticas en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('29','34','E4','Realizar investigaciones en otro Estado miembro como parte de un programa educativo');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('30','36','F1','Recibir tratamiento médico en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('31','37','F2','Comprar productos farmacéuticos con receta en un Estado miembro distinto al que se emitió la receta');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('32','38','F3','Normas de seguro de salud aplicables para estancias cortas o largas en otro Estado miembro, incluyendo la tarjeta sanitaria europea');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('33','39','F4','Información general sobre derechos de acceso o participación en medidas de salud preventiva');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('34','40','F5','Servicios proporcionados a través de números de emergencia nacionales, incluyendo "112" y "116"');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('35','41','F6','Derechos y condiciones para mudarse a una residencia asistencial');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('36','43','G1','Nacimiento, custodia de menores, responsabilidades parentales, normas sobre maternidad subrogada y adopción');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('37','44','G2','Vivir en pareja de diferentes nacionalidades, incluidos matrimonios y parejas de hecho');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('38','45','G3','Normas para el reconocimiento de género');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('39','46','G4','Derechos y obligaciones relacionados con sucesiones en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('40','47','G5','Derechos y normas aplicables en casos de secuestro parental transfronterizo');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('41','49','H1','Comprar bienes, contenido digital o servicios, incluyendo servicios financieros, en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('42','50','H2','Tener una cuenta bancaria en otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('43','51','H3','Conexión a servicios públicos, como gas, electricidad, agua, eliminación de residuos domésticos, telecomunicaciones e internet');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('44','52','H4','Pagos, incluidos pagos electrónicos y transferencias de crédito');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('45','53','H5','Derechos y garantías del consumidor al comprar bienes y servicios');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('46','54','H6','Seguridad y protección de productos de consumo');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('47','55','H7','Alquilar un vehículo motorizado');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('48','57','I1','Ejercer los derechos de los interesados con respecto a la protección de datos personales');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('49','59','J1','Registrar, cambiar la forma jurídica o cerrar un negocio');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('50','60','J2','Trasladar un negocio a otro Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('51','61','J3','Derechos de propiedad intelectual (solicitud de patente, registro de marca, etc.)');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('52','62','J4','Equidad y transparencia en prácticas comerciales');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('53','63','J5','Ofrecer instalaciones en línea para pagos transfronterizos al vender bienes y servicios en línea');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('54','64','J6','Derechos y obligaciones derivados del derecho contractual');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('55','65','J7','Procedimientos de insolvencia y liquidación de empresas');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('56','66','J8','Seguro de crédito');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('57','67','J9','Fusiones de empresas o venta de negocios');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('58','68','J10','Responsabilidad civil de directores de empresas');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('59','69','J11','Reglas y obligaciones respecto al procesamiento de datos personales');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('60','71','K1','Términos y condiciones de empleo establecidos por ley o instrumento estatutario');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('61','72','K2','Derechos y obligaciones de seguridad social en la Unión');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('62','73','K3','Empleo de trabajadores en otros Estados miembros');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('63','74','K4','Igualdad de trato (normas contra la discriminación en el lugar de trabajo)');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('64','75','K5','Normas sobre representación de empleados');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('65','77','L1','IVA: reglas generales, tasas y exenciones, registro y pagos');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('66','78','L2','Impuestos especiales: reglas generales, tasas y exenciones');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('67','79','L3','Aranceles de aduana y otros impuestos recaudados en importaciones');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('68','80','L4','Procedimientos aduaneros para importaciones y exportaciones bajo el Código Aduanero de la Unión');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('69','81','L5','Otros impuestos: pago, tasas, declaraciones fiscales');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('70','83','M1','Obtener marcado CE');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('71','84','M2','Reglas y requisitos de productos');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('72','85','M3','Identificar estándares aplicables y obtener certificación de productos');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('73','86','M4','Reconocimiento mutuo de productos no sujetos a especificaciones de la Unión');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('74','87','M5','Requisitos de clasificación, etiquetado y embalaje para productos químicos peligrosos');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('75','88','M6','Venta a distancia/fuera del local comercial: información y derechos del consumidor');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('76','89','M7','Productos defectuosos: derechos del consumidor y garantías');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('77','90','M8','Certificaciones y etiquetas (EMAS, etiquetas energéticas, eco-diseño, etiqueta ecológica de la UE)');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('78','91','M9','Reciclaje y gestión de residuos');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('79','93','N1','Adquirir licencias, autorizaciones o permisos para iniciar un negocio');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('80','94','N2','Notificación a las autoridades de actividades transfronterizas');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('81','95','N3','Reconocimiento de cualificaciones profesionales, incluyendo formación profesional');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('82','97','O1','Acceso a financiación a nivel de la Unión, incluidos programas de financiación de la Unión');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('83','98','O2','Acceso a financiación a nivel nacional');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('84','99','O3','Iniciativas dirigidas a emprendedores');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('85','101','P1','Participar en licitaciones públicas: reglas y procedimientos');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('86','102','P2','Presentar una oferta en línea en respuesta a una licitación pública');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('87','103','P3','Reportar irregularidades en el proceso de licitación');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('88','105','Q1','Obligaciones de salud y seguridad en relación con diferentes tipos de actividades');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('89','107','R1','Solicitar un certificado de nacimiento');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('90','109','S1','Solicitar prueba de residencia');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('91','111','T1','Solicitar financiamiento para estudios de educación terciaria');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('92','112','T2','Presentar una solicitud inicial para admisión a una institución pública de educación terciaria');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('93','113','T3','Solicitar reconocimiento académico de diplomas, certificados u otras pruebas de estudios');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('94','115','U1','Solicitar determinación de la legislación aplicable según el Reglamento (CE) n.º 883/2004');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('95','116','U2','Notificar cambios en circunstancias personales o profesionales que afecten los beneficios de seguridad social');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('96','117','U3','Solicitud para obtener la Tarjeta Sanitaria Europea');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('97','118','U4','Presentar una declaración de impuestos sobre la renta');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('98','120','V1','Registrar un cambio de dirección');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('99','121','V2','Registrar un vehículo proveniente de un Estado miembro');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('100','122','V3','Obtener adhesivos para la infraestructura vial nacional');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('101','123','V4','Obtener adhesivos para las emisiones de vehículos emitidos por organismos públicos');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('102','125','W1','Reclamar pensiones y beneficios de prejubilación de esquemas obligatorios');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('103','126','W2','Solicitar información sobre datos relacionados con pensiones de esquemas obligatorios');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('104','128','X1','Notificación de actividad empresarial');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('105','129','X2','Registro de un empleador con esquemas de pensiones obligatorios');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('106','130','X3','Registro de empleados con esquemas de pensiones obligatorios');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('107','131','X4','Presentar una declaración de impuestos corporativos');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('108','132','X5','Notificar el fin del contrato con un empleado a la seguridad social');
+Insert into ROLSAC2.RS2_CATPDU (CATPDU_CODIGO,CATPDU_ORDEN,CATPDU_IDENTIF,CATPDU_DESCRI) values ('109','133','X6','Pago de contribuciones sociales para empleados');
+
+
+ALTER TABLE RS2_TRAPRWF ADD TRPW_URLPDU VARCHAR2(500) ;
+COMMENT ON COLUMN RS2_TRAPRWF.TRPW_URLPDU IS 'URL INTEGRACIÓN PDU';
+
+ALTER TABLE RS2_PROC ADD PROC_PDUEST INT ;
+COMMENT ON COLUMN RS2_PROC.PROC_PDUEST IS 'ESTADO INTEGRACIÓN PDU: 1 - Integrado';

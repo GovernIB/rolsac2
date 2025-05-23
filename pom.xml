@@ -715,6 +715,7 @@
 	    <module>rolsac2-rest-api-externa</module>
         <module>rolsac2-api-externa</module>
 	    <module>rolsac2-ear</module>
+        <module>rolsac2-rest-api-interna</module>
     </modules>
 
 </project>

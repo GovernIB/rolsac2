@@ -214,6 +214,8 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     @Schema(description = "codigoSia", type = SchemaType.INTEGER, required = false)
     private Integer codigoSia;
 
+
+
     /**
      * estadoSia.
      **/
@@ -225,6 +227,10 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
      **/
     @Schema(description = "fechaActualizacionSia", type = SchemaType.STRING, required = false)
     private String fechaActualizacionSia;
+
+    @Schema(description = "integradoPdu", type = SchemaType.BOOLEAN, required = false)
+    private Boolean integradoPdu;
+
 
     /**
      * @return the textos
@@ -500,6 +506,14 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         this.estadoWF = estadoWF;
     }
 
+    public Boolean getIntegradoPdu() {
+        return integradoPdu;
+    }
+
+    public void setIntegradoPdu(Boolean integradoPdu) {
+        this.integradoPdu = integradoPdu;
+    }
+
     public ProcedimientoFiltro toProcedimientoFiltro() {
         ProcedimientoFiltro resultado = new ProcedimientoFiltro();
 
@@ -668,6 +682,10 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             TipoTramitacionDTO plan = new TipoTramitacionDTO();
             plan.setCodigo(codigoPlantilla);
             resultado.setPlantilla(plan);
+        }
+
+        if( this.integradoPdu != null){
+            resultado.setIntegradoPdu(integradoPdu);
         }
 
         resultado.setTipo("P");

@@ -2,6 +2,7 @@ package es.caib.rolsac2.ejb.facade;
 
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
+import es.caib.rolsac2.persistence.repository.IndexacionPDURepository;
 import es.caib.rolsac2.persistence.repository.IndexacionRepository;
 import es.caib.rolsac2.persistence.repository.IndexacionSIARepository;
 import es.caib.rolsac2.persistence.repository.ProcesoRepository;
@@ -9,6 +10,7 @@ import es.caib.rolsac2.service.exception.ProcesoNoExistenteException;
 import es.caib.rolsac2.service.facade.ProcesoServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
+import es.caib.rolsac2.service.model.filtro.ProcesoPduFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSIAFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
@@ -20,6 +22,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,6 +45,9 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
 
     @Inject
     IndexacionSIARepository indexacionSIARepository;
+
+    @Inject
+    IndexacionPDURepository indexacionPDURepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -130,6 +136,19 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
             return new Pagina<>(items, total);
         } catch (Exception e) {
             List<IndexacionSIADTO> items = new ArrayList<>();
+            return new Pagina<>(items, 0L);
+        }
+    }
+
+    @Override
+    public Pagina<IndexacionPDUDto> findPDUByFiltro(ProcesoPduFiltro filtro) {
+        try {
+            List<IndexacionPDUDto> items = indexacionPDURepository.findPagedByFiltro(filtro);
+            long total = indexacionPDURepository.countByFiltro(filtro);
+
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            List<IndexacionPDUDto> items = new ArrayList<>();
             return new Pagina<>(items, 0L);
         }
     }

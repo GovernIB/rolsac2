@@ -3,6 +3,7 @@ package es.caib.rolsac2.service.facade;
 
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
+import es.caib.rolsac2.service.model.filtro.ProcesoPduFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSIAFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
 
@@ -90,4 +91,6 @@ public interface ProcesoServiceFacade {
      * @return Lista de ProcesoGrid
      */
     Pagina<IndexacionSIADTO> findSIAByFiltro(ProcesoSIAFiltro filtro);
+
+    Pagina<IndexacionPDUDto> findPDUByFiltro(ProcesoPduFiltro filtro);
 }

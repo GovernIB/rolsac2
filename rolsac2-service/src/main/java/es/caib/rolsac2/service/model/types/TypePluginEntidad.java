@@ -36,7 +36,9 @@ public enum TypePluginEntidad {
 	/**
 	 * EMAIL
 	 */
-	EMAIL("EMA");
+	EMAIL("EMA"),
+
+	PDU("PDU"),;
 
 	/**
 	 * Valor como string.

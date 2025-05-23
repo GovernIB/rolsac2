@@ -183,6 +183,27 @@
                         </p:selectOneMenu>
                     </div>
                 </div>
+                <p:panel rendered="#{dialogProcedimiento.posiblePdu()}" style="border: 0 !important; padding: .5em 0em 0em 0em !important">
+                     <div class="form-row">
+
+                        <div class="form-group col-md-3" >
+                            <p:selectBooleanCheckbox id="integrarPdu" value="#{dialogProcedimiento.data.integrarPdu}" styleClass="ml-2"
+                                                     itemLabel="#{labels['dialogProcedimiento.pdu.integrar']}" >
+    <!--                            <p:ajax process="@this"  event="change"  />-->
+                            </p:selectBooleanCheckbox>
+
+                        </div>
+
+                        <div class="form-group col-md-5">
+
+                            <p:outputLabel value="#{labels['dialogProcedimiento.pdu.integrado']}"
+                                           rendered="#{dialogProcedimiento.data.estadoPdu == 1}" styleClass="mb-1 pt-0"/>
+
+
+                        </div>
+
+                    </div>
+                </p:panel>
             </p:panel>
             <p:panel header="#{labels['dialogProcedimiento.datos']}" id="formDatos" styleClass="panel sinMarginBottom sinPaddingBottom">
                 <div class="form-row">
@@ -407,11 +428,11 @@
                                        for="txtOrgComp"/>
                         <p>
                             <h:panelGroup id="panelComun">
-                                     <span style="white-space:nowrap">
+                                     <span style="white-space:nowrap; display:flex;">
                                             <p:inputText id="labelComun"
                                                          value="#{dialogProcedimiento.comunUA.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                          rendered="#{dialogProcedimiento.data.esComun()}"
-                                                         styleClass="w95"
+                                                         styleClass="w90 mr-1"
                                                          disabled="true"/>
                                             <p:inputText id="txtOrgComp"
                                                          rendered="#{!dialogProcedimiento.data.esComun()}"
@@ -425,7 +446,7 @@
                                                     icon="pi pi-sitemap"
                                                     value=" "
                                                     styleClass="w35px h30px iconoUAselector"
-                                                    style="position:relative; top:10px;"
+                                                    style="position:relative;"
                                                     process="@this"
                                                     rendered="#{!dialogProcedimiento.data.esComun()}"
                                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
@@ -455,11 +476,11 @@
                                        for="txtOrgInstr"/>
                         <p>
                             <h:panelGroup id="panelComunInstr">
-                                 <span style="white-space:nowrap">
+                                 <span style="white-space:nowrap;  display:flex;">
                                         <p:inputText id="labelComunInstr"
                                                      value="#{dialogProcedimiento.comunUA.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                      rendered="#{dialogProcedimiento.data.esComun()}"
-                                                     styleClass="w95"
+                                                     styleClass="w90 mr-1"
                                                      disabled="true"/>
                                         <p:inputText id="txtOrgInstr"
                                                      rendered="#{!dialogProcedimiento.data.esComun()}"
@@ -475,7 +496,7 @@
                                                 icon="pi pi-sitemap"
                                                 value=" "
                                                 styleClass="w35px h30px iconoUAselector"
-                                                style="position:relative; top:10px;"
+                                                style="position:relative"
                                                 process="@this"
                                                 rendered="#{!dialogProcedimiento.data.esComun()}"
                                                 disabled="#{dialogProcedimiento.isModoConsulta()}"
@@ -502,33 +523,36 @@
                         <p:outputLabel styleClass="mr-2 pt-0" value="#{labels['dialogProcedimiento.servicio']}:"
                                        for="txtOrgResp"/>
                         <p>
-                            <p:inputText id="txtOrgResp"
-                                         rendered="#{!dialogProcedimiento.data.esComun()}"
-                                         value="#{dialogProcedimiento.data.uaCompetente.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
-                                         styleClass="w90 mr-1"
-                                         disabled="true"/>
-                            <p:commandButton
-                                    action="#{dialogProcedimiento.abrirVentanaUACompetente()}"
-                                    icon="pi pi-sitemap"
-                                    value=" "
-                                    styleClass="w35px h30px iconoUAselector"
-                                    style="position:relative; top:10px;"
-                                    process="@this"
-                                    rendered="#{!dialogProcedimiento.data.esComun()}"
-                                    disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                    id="btnAbrirUAResp"
-                            >
-                                <p:ajax event="dialogReturn"
-                                        listener="#{dialogProcedimiento.returnDialogoUACompetente}"
+                            <h:panelGroup id="panelComunContacto">
+                                <span style="white-space:nowrap;  display:flex;">
+                                <p:inputText id="txtOrgResp"
+                                             rendered="#{!dialogProcedimiento.data.esComun()}"
+                                             value="#{dialogProcedimiento.data.uaCompetente.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                             styleClass="w90 mr-1"
+                                             disabled="true"/>view
+                                <p:commandButton
+                                        action="#{dialogProcedimiento.abrirVentanaUACompetente()}"
+                                        icon="pi pi-sitemap"
+                                        value=" "
+                                        styleClass="w35px h30px iconoUAselector"
+                                        style="position:relative; "
                                         process="@this"
-                                        update="formDialog:txtOrgResp lblUAiconoCompetente lblUAiconoCompetente2 toolTipFadeCompetente"
-                                        oncomplete="checkUAraiz()"/>
-                            </p:commandButton>
-                            <h:outputLink id="lblUAiconoCompetente" value="#" styleClass="w20px labelWarningUAPadre">
-                                <h:outputText id="lblUAiconoCompetente2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUACompetente()}" />
-                            </h:outputLink>
-                            <p:tooltip id="toolTipFadeCompetente" for="lblUAiconoCompetente" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
-
+                                        rendered="#{!dialogProcedimiento.data.esComun()}"
+                                        disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                        id="btnAbrirUAResp"
+                                >
+                                    <p:ajax event="dialogReturn"
+                                            listener="#{dialogProcedimiento.returnDialogoUACompetente}"
+                                            process="@this"
+                                            update="formDialog:txtOrgResp lblUAiconoCompetente lblUAiconoCompetente2 toolTipFadeCompetente"
+                                            oncomplete="checkUAraiz()"/>
+                                </p:commandButton>
+                                <h:outputLink id="lblUAiconoCompetente" value="#" styleClass="w20px labelWarningUAPadre">
+                                    <h:outputText id="lblUAiconoCompetente2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUACompetente()}" />
+                                </h:outputLink>
+                                <p:tooltip id="toolTipFadeCompetente" for="lblUAiconoCompetente" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
+                                </span>
+                            </h:panelGroup>
                         </p>
                     </div>
                     <div class="form-group col-md-7">
@@ -738,7 +762,8 @@
                                             <p:outputLabel styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"/>
                                         </div>
                                     </div>
-                                    <i class="#{dialogProcedimiento.getIcono(td)}"></i>
+                                    <p:graphicImage value="../images/SIA.svg" rendered="#{td.getTipoMateriaSIA() != null}"/>
+                                    <p:graphicImage value="../images/PDU.svg" rendered="#{td.getCategoriaPdu() != null}" />
                                     <h:outputText id="texto"
                                                   value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                                     <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
@@ -862,7 +887,7 @@
                 <div id="divDocsRelBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this"
-                                     actionListener="#{dialogProcedimiento.nuevoDocumento()}">
+                                     action="#{dialogProcedimiento.nuevoDocumento}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumento}"
                                 process="@this"
                                 update="dataDocumentosRelacionados"/>
@@ -1100,7 +1125,8 @@
                              style="white-space: nowrap;text-align: center;"
                              process="@all"
                              disabled="#{empty dialogProcedimiento.data.codigo}"
-                             update="messagesDialog">
+                             update="messagesDialog"
+                            rendered="#{!dialogProcedimiento.isNoEditable()}">
                 <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.mensajes']}"

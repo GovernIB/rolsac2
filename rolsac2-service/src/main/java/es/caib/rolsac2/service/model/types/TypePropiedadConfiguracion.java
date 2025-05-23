@@ -41,10 +41,12 @@ public enum TypePropiedadConfiguracion {
      * Deshabilitar certificado
      */
     DESAHABILITAR_CERTIFICADO("deshabilitar.certificado"),
-    /**
-     * BACKEND IDIOMAS
-     */
-    BACKEND_IDIOMAS("back.idiomas");
+
+    PDU_PARENT_URL("pdu.parentUrl"),
+
+    PDU_PROCEDIMIENTOS_URL("pdu.urlProc"),
+    PDU_SERVICIOS_URL("pdu.urlServ")
+    ;
 
     /**
      * Valor

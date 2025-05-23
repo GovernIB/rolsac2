@@ -17,7 +17,13 @@ public enum TypeTipoProceso {
 
     DIR3("DIR3"),
 
+    PDU("PDU"),
+
+    PDU_PUNT("PDU_PUNT"),
+
     BORRAR_FIC("BORRAR_FIC");
+
+
 
 
     /**

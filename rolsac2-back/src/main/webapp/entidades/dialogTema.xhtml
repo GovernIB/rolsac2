@@ -112,6 +112,25 @@
                                        itemLabel="#{tipoMateriaSIA.descripcion.getTraduccion(dialogTema.idioma)}" itemValue="#{tipoMateriaSIA}"/>
                     </p:selectOneMenu>
                 </div>
+
+                <div class="ui-g-12 ui-md-3 ui-lg-2">
+                    <p:outputLabel value="#{labels['dialogTema.pdu.categoria']}:" for="txtCategoriaPdu"/>
+                </div>
+                <div class="ui-g-12 ui-md-9 ui-lg-4">
+                    <p:selectOneMenu id="txtCategoriaPdu" value="#{dialogTema.data.categoriaPdu}"
+                                     styleClass="w95" autoWidth="false" required="false"
+                                     disabled="#{dialogTema.isModoConsulta()}"
+                                     converter="#{categoriaPduConverter}" maxlength="80" var="cat">
+                        <f:selectItem itemLabel="#{labels['dialogTema.pdu.categoria.seleccione']}" itemValue="#{null}"/>
+                        <f:selectItems value="#{dialogTema.categoriasPdu}" var="categoriaPdu"
+                                       itemLabel="#{categoriaPdu.descripcion}" itemValue="#{categoriaPdu}" />
+                            <p:column>
+                                <h:outputText value="#{cat.descripcion}"
+                                              styleClass="width:300px" />
+                            </p:column>
+
+                    </p:selectOneMenu>
+                </div>
             </div>
 
         </p:panel>

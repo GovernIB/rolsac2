@@ -245,7 +245,6 @@ public class SessionBean implements Serializable {
                 actualizarPerfiles();
                 actualizarEntidades();
                 lang = sesion.getIdioma();
-                current = Locale.forLanguageTag(lang);
                 sesion.setFechaUltimaSesion(new Date());
                 systemServiceBean.updateSesion(sesion);
             } else {
@@ -1385,9 +1384,6 @@ public class SessionBean implements Serializable {
     }
 
     public Boolean tienePermisoSuperAdmin() {
-    	  return perfiles != null &&
-                  (perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR)
-                          || perfiles.contains(TypePerfiles.ADMINISTRADOR_ENTIDAD)
-                          || perfiles.contains(TypePerfiles.ADMINISTRADOR_CONTENIDOS));
+        return perfiles != null && perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR);
     }
 }

@@ -711,26 +711,13 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
 
 
     public static int compareTo(List<ProcedimientoTramiteDTO> dato, List<ProcedimientoTramiteDTO> dato2) {
-        return compareTo(dato, dato2, false);
-    }
-
-    public static int compareTo(List<ProcedimientoTramiteDTO> dato, List<ProcedimientoTramiteDTO> dato2, boolean mostrarLog) {
         if ((dato == null || dato.size() == 0) && (dato2 == null || dato2.size() == 0)) {
-            if (mostrarLog) {
-                LOG.error("Ambos son null o vacios");
-            }
             return 0;
         }
         if ((dato == null || dato.size() == 0) && (dato2 != null && dato2.size() > 0)) {
-            if (mostrarLog) {
-                LOG.error("El primero es null o vacio");
-            }
             return -1;
         }
         if ((dato != null && dato.size() > 0) && (dato2 == null || dato2.size() == 0)) {
-            if (mostrarLog) {
-                LOG.error("El segundo es null o vacio");
-            }
             return 1;
         }
 
@@ -742,15 +729,12 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
             for (ProcedimientoTramiteDTO tipo : dato) {
                 boolean existe = false;
                 for (ProcedimientoTramiteDTO tipo2 : dato2) {
-                    if (tipo.getOrden().compareTo(tipo2.getOrden()) == 0) {
-                        existe = true;
+                    if (tipo.getOrden().compareTo(tipo2.getOrden()) != 0) {
+                        return tipo.getOrden().compareTo(tipo2.getOrden());
                     }
+                    existe = true;
                 }
                 if (!existe) {
-                    if (mostrarLog) {
-                        LOG.error("No existe el tipo " + tipo.getOrden());
-                        LOG.error("El tipo : " + tipo);
-                    }
                     return 1;
                 }
             }

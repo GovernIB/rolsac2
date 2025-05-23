@@ -1,7 +1,6 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JFicheroExterno;
-import es.caib.rolsac2.service.model.AyudaImagenGridDTO;
 import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.migracion.FicheroRolsac1;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
@@ -145,13 +144,4 @@ public interface FicheroExternoRepository extends CrudRepository<JFicheroExterno
      * @return FicheroDTO
      */
     FicheroDTO getContentAyudaByReferencia(String id, String path);
-
-    /**
-     * Comrpueba si existe el fichero
-     *
-     * @param path El path
-     * @param img  La imagen
-     * @return true / false dependiendo de si exsite
-     */
-    public boolean existeFichero(String path, AyudaImagenGridDTO img);
 }

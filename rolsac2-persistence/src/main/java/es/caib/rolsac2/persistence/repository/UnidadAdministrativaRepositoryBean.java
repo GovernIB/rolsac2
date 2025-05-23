@@ -195,6 +195,24 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         return hijos;
     }
 
+
+    @Override
+    public List<Long> listarDescendientes(Long idUa) {
+        if (idUa == null) {
+            return new ArrayList<>();
+        }
+
+        Query query = entityManager.createNativeQuery("SELECT ua.UNAD_CODIGO FROM RS2_UNIADM ua CONNECT BY PRIOR ua.UNAD_CODIGO = ua.UNAD_UNADPADRE START WITH ua.UNAD_CODIGO = :codigoUA");
+        query.setParameter("codigoUA", idUa);
+
+        List<BigDecimal> descendienteBD = query.getResultList();
+        List<Long> descendientes = descendienteBD.stream().map(b->b.longValue()).collect(Collectors.toList());
+        descendientes.remove(idUa);
+
+        return descendientes;
+    }
+
+
     /**
      * Metodo recursivo para listar los hijos de una unidad administrativa.
      *

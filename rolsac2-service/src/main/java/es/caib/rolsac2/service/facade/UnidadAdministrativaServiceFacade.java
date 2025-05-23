@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -153,6 +154,9 @@ public interface UnidadAdministrativaServiceFacade {
      * @return
      */
     List<Long> listarHijos(Long codigoUA);
+
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    List<Long> listarDescendientes(Long codigoUA);
 
     /**
      * Devuelve una lista recursiva de los padres segun un codigo UA

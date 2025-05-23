@@ -54,6 +54,8 @@ public class TemaGridDTO extends ModelApi implements Comparable<TemaGridDTO> {
      */
     private TipoMateriaSIADTO tipoMateriaSIA;
 
+    private CategoriaPduDto categoriaPdu;
+
     /**
      * Instancia un nuevo Tema grid dto.
      */
@@ -250,6 +252,14 @@ public class TemaGridDTO extends ModelApi implements Comparable<TemaGridDTO> {
         this.tipoMateriaSIA = tipoMateriaSIA;
     }
 
+    public CategoriaPduDto getCategoriaPdu() {
+        return categoriaPdu;
+    }
+
+    public void setCategoriaPdu(CategoriaPduDto categoriaPdu) {
+        this.categoriaPdu = categoriaPdu;
+    }
+
     /**
      * Comprueba si es tipo materia sia relleno.
      *
@@ -265,7 +275,8 @@ public class TemaGridDTO extends ModelApi implements Comparable<TemaGridDTO> {
 
     @Override
     public String toString() {
-        return "TemaGridDTO{" + "codigo=" + codigo + ", entidad=" + entidad + ", identificador='" + identificador + '\'' + ", temaPadre='" + temaPadre + '\'' + '}';
+        return "TemaGridDTO{" + "codigo=" + codigo + ", entidad=" + entidad + ", identificador='" + identificador +
+                '\'' + ", temaPadre='" + temaPadre + '\'' + ", categoriaPdu=" + categoriaPdu +'}';
     }
 
     @Override
@@ -298,6 +309,7 @@ public class TemaGridDTO extends ModelApi implements Comparable<TemaGridDTO> {
         tipo.setIdString(this.getIdString());
         tipo.setRelacionado(this.isRelacionado());
         tipo.setTipoMateriaSIA(this.tipoMateriaSIA);
+        tipo.setCategoriaPdu(this.getCategoriaPdu());
         return tipo;
     }
 

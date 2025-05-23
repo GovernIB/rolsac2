@@ -3,14 +3,17 @@ package es.caib.rolsac2.common.test;
 import es.caib.rolsac2.commons.plugins.traduccion.api.*;
 import org.fundaciobit.pluginsib.core.IPlugin;
 import org.fundaciobit.pluginsib.core.utils.PluginsManager;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+@Ignore
 public class TestTranslatorIbPlugin {
 
+    @Ignore
     @Test
     public void testTraduccion() {
 

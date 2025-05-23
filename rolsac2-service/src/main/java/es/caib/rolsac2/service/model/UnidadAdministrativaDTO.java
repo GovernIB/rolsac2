@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Dades de una Unidad Administrativa.
@@ -18,8 +16,6 @@ import org.slf4j.LoggerFactory;
  */
 @Schema(name = "UnidadAdministrativa")
 public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
-
-	private static final Logger LOG = LoggerFactory.getLogger(UnidadAdministrativaDTO.class);
 
     /**
      * Codigo
@@ -776,66 +772,61 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
     /**
      * Se hace a este nivel manualmente el clonar.
      *
-     * @return UA clonada
+     * @return
      */
-    @Override
     public Object clone() {
         UnidadAdministrativaDTO tipo = new UnidadAdministrativaDTO();
-        try {
-            tipo.setCodigo(this.codigo);
-            tipo.setCodigoDIR3(this.codigoDIR3);
-            tipo.setIdentificador(this.identificador);
-            tipo.setAbreviatura(this.abreviatura);
-            tipo.setTelefono(this.telefono);
-            tipo.setFax(this.fax);
-            tipo.setEmail(this.email);
-            tipo.setDominio(this.dominio);
-            tipo.setResponsableEmail(this.responsableEmail);
-            tipo.setResponsableNombre(this.responsableNombre);
-            tipo.setOrden(this.orden);
-            tipo.setUsuarioAuditoria(this.usuarioAuditoria);
-            tipo.setHijos(this.hijos);
-            tipo.setEstado(this.estado);
-            tipo.setFechaBaja(this.fechaBaja);
+        tipo.setCodigo(this.codigo);
+        tipo.setCodigoDIR3(this.codigoDIR3);
+        tipo.setIdentificador(this.identificador);
+        tipo.setAbreviatura(this.abreviatura);
+        tipo.setTelefono(this.telefono);
+        tipo.setFax(this.fax);
+        tipo.setEmail(this.email);
+        tipo.setDominio(this.dominio);
+        tipo.setResponsableEmail(this.responsableEmail);
+        tipo.setResponsableNombre(this.responsableNombre);
+        tipo.setOrden(this.orden);
+        tipo.setUsuarioAuditoria(this.usuarioAuditoria);
+        tipo.setHijos(this.hijos);
+        tipo.setEstado(this.estado);
+        tipo.setFechaBaja(this.fechaBaja);
 
-            if (this.getPresentacion() != null) {
-                tipo.setPresentacion((Literal) this.getPresentacion().clone());
-            }
-            if (this.getUrl() != null) {
-                tipo.setUrl((Literal) this.getUrl().clone());
-            }
-            if (this.getResponsable() != null) {
-                tipo.setResponsable((Literal) this.getResponsable().clone());
-            }
-            if (this.getNombre() != null) {
-                tipo.setNombre((Literal) this.getNombre().clone());
-            }
+        if (this.getPresentacion() != null) {
+            tipo.setPresentacion((Literal) this.getPresentacion().clone());
+        }
+        if (this.getUrl() != null) {
+            tipo.setUrl((Literal) this.getUrl().clone());
+        }
+        if (this.getResponsable() != null) {
+            tipo.setResponsable((Literal) this.getResponsable().clone());
+        }
+        if (this.getNombre() != null) {
+            tipo.setNombre((Literal) this.getNombre().clone());
+        }
 
-            if (this.getTipo() != null) {
-                tipo.setTipo((TipoUnidadAdministrativaDTO) this.getTipo().clone());
-            }
-            if (this.getResponsableSexo() != null) {
-                tipo.setResponsableSexo((TipoSexoDTO) this.getResponsableSexo().clone());
-            }
+        if (this.getTipo() != null) {
+            tipo.setTipo((TipoUnidadAdministrativaDTO) this.getTipo().clone());
+        }
+        if (this.getResponsableSexo() != null) {
+            tipo.setResponsableSexo((TipoSexoDTO) this.getResponsableSexo().clone());
+        }
 
-            if (this.getTemas() != null) {
-                List<TemaGridDTO> temas = new ArrayList<>();
-                for (TemaGridDTO tema : this.getTemas()) {
-                    temas.add((TemaGridDTO) tema.clone());
-                }
-                tipo.setTemas(temas);
-
+        if (this.getTemas() != null) {
+            List<TemaGridDTO> temas = new ArrayList<>();
+            for (TemaGridDTO tema : this.getTemas()) {
+                temas.add((TemaGridDTO) tema.clone());
             }
-            if (this.getUsuariosUnidadAdministrativa() != null) {
-                List<UsuarioGridDTO> usuarios = new ArrayList<>();
-                for (UsuarioGridDTO usuario : this.getUsuariosUnidadAdministrativa()) {
-                    usuarios.add((UsuarioGridDTO) usuario.clone());
-                }
-                tipo.setUsuariosUnidadAdministrativa(usuarios);
+            tipo.setTemas(temas);
 
+        }
+        if (this.getUsuariosUnidadAdministrativa() != null) {
+            List<UsuarioGridDTO> usuarios = new ArrayList<>();
+            for (UsuarioGridDTO usuario : this.getUsuariosUnidadAdministrativa()) {
+                usuarios.add((UsuarioGridDTO) usuario.clone());
             }
-        } catch (Exception e) {
-            LOG.error("Error al clonar la unidad administrativa", e);
+            tipo.setUsuariosUnidadAdministrativa(usuarios);
+
         }
         return tipo;
     }

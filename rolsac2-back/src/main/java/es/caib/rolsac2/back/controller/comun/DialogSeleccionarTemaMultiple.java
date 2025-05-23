@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.TemaGridDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.model.CheckboxTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
@@ -20,6 +21,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Named
 @ViewScoped
@@ -81,18 +84,28 @@ public class DialogSeleccionarTemaMultiple extends AbstractController implements
 
     public String getIcono(TemaGridDTO valor) {
         if (valor.getTipoMateriaSIA() == null) {
-            return "";
+            return Constantes.INDEXAR_PDU_ICONO;
         } else {
-            return Constantes.INDEXAR_SIA_ICONO;
+            return Constantes.INDEXAR_SIA_ICONO + " " + Constantes.INDEXAR_PDU_ICONO;
         }
     }
 
     public String getTooltip(TemaGridDTO valor) {
-        if (valor.getTipoMateriaSIA() == null) {
-            return "";
-        } else {
-            return "SIA: " + valor.getTipoMateriaSIA().getDescripcion().getTraduccion(this.getIdioma()) + " - " + valor.getTipoMateriaSIA().getCodigoSIA();
+
+        String sia = null;
+        if (valor.getTipoMateriaSIA() != null) {
+
+            sia =  "SIA: " + valor.getTipoMateriaSIA().getDescripcion().getTraduccion(this.getIdioma()) + " - " + valor.getTipoMateriaSIA().getCodigoSIA();
         }
+
+        String pdu = null;
+        if( valor.getCategoriaPdu() != null){
+            pdu = "PDU: " + valor.getCategoriaPdu().getDescripcion().substring(0, 30) + "... - " + valor.getCategoriaPdu().getIdentificador();
+        }
+
+        return Stream.of(sia, pdu)
+                .filter(s -> s != null && !s.isEmpty())
+                .collect(Collectors.joining("; "));
     }
 
 

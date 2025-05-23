@@ -11,7 +11,13 @@ import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.ejb.util.JSONUtil;
 import es.caib.rolsac2.ejb.util.JSONUtilException;
 import es.caib.rolsac2.persistence.converter.*;
-import es.caib.rolsac2.persistence.model.*;
+import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
+import es.caib.rolsac2.persistence.model.JProcedimiento;
+import es.caib.rolsac2.persistence.model.JProcedimientoAuditoria;
+import es.caib.rolsac2.persistence.model.JProcedimientoTramite;
+import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
+import es.caib.rolsac2.persistence.model.JTema;
+import es.caib.rolsac2.persistence.model.JTipoTramitacion;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.AuditoriaException;
@@ -25,7 +31,11 @@ import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
-import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.model.types.TypeAccionAuditoria;
+import es.caib.rolsac2.service.model.types.TypeIndexacion;
+import es.caib.rolsac2.service.model.types.TypePerfiles;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +45,15 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Implementación de los casos de uso de mantenimiento de personal. Es
@@ -71,6 +89,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Inject
     IndexacionSIARepository indexacionSIARepository;
+
+    @Inject
+    IndexacionPDURepository indexacionPDURepository;
 
     @Inject
     PlatTramitElectronicaConverter platTramitElectronicaConverter;
@@ -116,6 +137,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Inject
     ProcedimientoAuditoriaRepository auditoriaRepository;
+
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -235,6 +257,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         jProcWF.getTemas().clear();
         jProcWF.getTemas().addAll(temas);
 
+        jProcWF.setIntegrarPdu(dto.isIntegrarPdu());
+
         if (dto instanceof ProcedimientoDTO) {
             jProcWF.setHabilitadoApoderado(dto.isHabilitadoApoderado());
             jProcWF.setHabilitadoFuncionario(dto.getHabilitadoFuncionario());
@@ -308,6 +332,11 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         TypeIndexacion tipo = (dto instanceof ProcedimientoDTO) ? TypeIndexacion.PROCEDIMIENTO : TypeIndexacion.SERVICIO;
         indexacionRepository.guardarIndexar(dto.getCodigo(), tipo, idEntidad, 1);
         indexacionSIARepository.guardarIndexar(dto.getCodigo(), tipo.toString(), idEntidad, 1, 1);
+
+        if( ! dto.isIntegrarPdu() && dtoAntiguo.isIntegrarPdu()) {
+            indexacionPDURepository.deleteByCodElemento(dtoAntiguo.getCodigo());
+        }
+
         crearAuditoria(dtoAntiguo, dto, perfil, null, TypeAccionAuditoria.MODIFICACION.toString());
     }
 
@@ -332,11 +361,28 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     private void mergearTraducciones(JProcedimientoWorkflow jProcWF, ProcedimientoBaseDTO dto) {
-        if (jProcWF.getTraducciones() != null) {
-            for (JProcedimientoWorkflowTraduccion traduccion : jProcWF.getTraducciones()) {
+
+        List<String> idiomas = dto.getNombreProcedimientoWorkFlow().getIdiomas();
+
+        for(String idioma : idiomas){
+            Optional<JProcedimientoWorkflowTraduccion> traduccionIdioma = jProcWF.getTraducciones().stream().filter(t-> t.getIdioma().equals(idioma)).findFirst();
+            if(traduccionIdioma.isPresent()) {
+                mergeTraduccion(traduccionIdioma.get(), dto);
+            }else{
+                JProcedimientoWorkflowTraduccion traduccion = new JProcedimientoWorkflowTraduccion();
+                traduccion.setProcedimientoWorkflow(jProcWF);
+                traduccion.setIdioma(idioma);
                 mergeTraduccion(traduccion, dto);
+                jProcWF.getTraducciones().add(traduccion);
             }
+
         }
+
+//        if (jProcWF.getTraducciones() != null) {
+//            for (JProcedimientoWorkflowTraduccion traduccion : jProcWF.getTraducciones()) {
+//                mergeTraduccion(traduccion, dto);
+//            }
+//        }
     }
 
     private void mergeTraduccion(JProcedimientoWorkflowTraduccion traduccion, ProcedimientoBaseDTO dto) {
@@ -860,7 +906,11 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         List<AuditoriaCambio> cambios;
 
-        cambios = ProcedimientoDTO.auditar(procedimientoAntiguo, procedimientoNuevo);
+//        if(TypeAccionAuditoria.ALTA.toString().equals(accion)){
+//            cambios = ProcedimientoDTO.auditar(procedimientoNuevo);
+//        }else {
+            cambios = ProcedimientoDTO.auditar(procedimientoAntiguo, procedimientoNuevo);
+//        }
 
         if (!cambios.isEmpty()) {
             try {
@@ -881,6 +931,34 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                 throw new AuditoriaException(e);
             }
         }
+    }
+
+    private void crearAuditoriaAlta(final ProcedimientoBaseDTO procedimientoNuevo, TypePerfiles perfil, String literalFlujo) {
+
+//        String accion = TypeAccionAuditoria.ALTA.toString();
+//        List<AuditoriaCambio> cambios;
+//
+//        cambios = ProcedimientoDTO.auditar(procedimientoAntiguo, procedimientoNuevo);
+//
+//        if (!cambios.isEmpty()) {
+//            try {
+//                String auditoriaJson = JSONUtil.toJSON(cambios);
+//                JProcedimientoAuditoria jprocAudit = new JProcedimientoAuditoria();
+//                JProcedimiento jproc = this.procedimientoRepository.findById(procedimientoNuevo.getCodigo());
+//                jprocAudit.setProcedimiento(jproc);
+//                Calendar calendar = Calendar.getInstance();
+//                jprocAudit.setFechaModificacion(calendar.getTime());
+//                jprocAudit.setListaModificaciones(auditoriaJson);
+//                jprocAudit.setUsuarioModificacion(procedimientoNuevo.getUsuarioAuditoria());
+//                jprocAudit.setUsuarioPerfil(perfil.toString());
+//                jprocAudit.setLiteralFlujo(literalFlujo);
+//                jprocAudit.setAccion(accion);
+//                this.auditoriaRepository.guardar(jprocAudit);
+//
+//            } catch (final JSONUtilException e) {
+//                throw new AuditoriaException(e);
+//            }
+//        }
     }
 
     private ProcedimientoBaseDTO createDTO(JProcedimiento jproc) {
@@ -1038,6 +1116,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         int accion = (estadoDestino != null && estadoDestino == TypeProcedimientoEstado.BORRADO) ? 0 : 1;
         indexacionSIARepository.guardarIndexar(data.getCodigo(), tipo.toString(), idEntidad, 1, accion);
 
+        // Indexamos pdu sólo para procedimientos /servicios que se publican o pasar a publicar
+        List<TypeProcedimientoEstado> estadosPublicar = Arrays.asList(TypeProcedimientoEstado.PENDIENTE_PUBLICAR, TypeProcedimientoEstado.PUBLICADO);
+        if( data.isIntegrarPdu() && estadosPublicar.contains(estadoDestino)) {
+            indexacionPDURepository.guardarIndexar(data.getCodigo(), tipo.toString(), idEntidad, accion);
+        }
+
         // Primero borramos el wf destino (si es de destinto wf)
         if (TypeProcedimientoEstado.distintoWorkflow(data.getEstado(), estadoDestino)) {
 
@@ -1151,6 +1235,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     public Pagina<IndexacionSIADTO> getProcedimientosParaIndexacionSIA(Long idEntidad) {
         return procedimientoRepository.getProcedimientosParaIndexacionSIA(idEntidad);
     }
+
+//    @Override
+//    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+//    public Pagina<IndexacionPDUDto> getProcedimientosParaIndexacionPdu(Long idEntidad) {
+//        return procedimientoRepository.getIndexacionProcedimientosIntegradosPdu(idEntidad);
+//    }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
@@ -1350,4 +1440,35 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         return idProcWFClonado;
     }
 
+
+//    @Override
+//    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+//    public void actualizarPDU(IndexacionPDUDto pduDto, ResultadoPdu resultadoPDU) {
+//        if (pduDto.getCodigo() != null) {
+//            indexacionPDURepository.actualizarDato(pduDto, resultadoPDU);
+//        }
+//
+//        if(resultadoPDU.isCorrecto()) {
+//            JProcedimientoWorkflow procWf = procedimientoRepository.getWF(pduDto.getCodElemento(), false);
+//
+//            // Siempre se mandan los idiomas a pdu en orden castellano y luego inglés, así que se reciben en ese orden
+//            for(JProcedimientoWorkflowTraduccion traduccion : procWf.getTraducciones()){
+//                if(TypeIdiomaFijo.CASTELLANO.toString().equals(traduccion.getIdioma())){
+//                    traduccion.setUrlPdu(resultadoPDU.getRespuestaPdu().getEnlaces().get(0));
+//                } else if (TypeIdiomaOpcional.INGLES.toString().equals(traduccion.getIdioma())) {
+//                    traduccion.setUrlPdu(resultadoPDU.getRespuestaPdu().getEnlaces().get(1));
+//                }
+//            }
+//
+//            procedimientoRepository.updateWF(procWf);
+//
+//            JProcedimiento procedimiento = procedimientoRepository.findById(pduDto.getCodElemento());
+//            procedimiento.setEstadoPdu(1);
+//
+//            procedimientoRepository.update(procedimiento);
+//
+//        }
+//
+//
+//    }
 }

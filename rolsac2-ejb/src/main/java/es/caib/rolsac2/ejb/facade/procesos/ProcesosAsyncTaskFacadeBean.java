@@ -53,6 +53,12 @@ public class ProcesosAsyncTaskFacadeBean implements ProcesosAsyncTaskFacade {
     @EJB(beanName = "procesoBorrarFicherosComponent")
     private ProcesoProgramadoFacade procesoBorrarFicherosComponent;
 
+    @EJB(beanName = "procesoProgramadoPduComponent")
+    private ProcesoProgramadoFacade procesoProgramadoPduComponent;
+
+    @EJB(beanName = "procesoProgramadoPduPuntualComponent")
+    private ProcesoProgramadoFacade procesoProgramadoPduPuntualComponent;
+
     @Override
     @Asynchronous
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})

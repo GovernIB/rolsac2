@@ -129,10 +129,6 @@
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
-         <p:commandButton action="#{dialogSeleccionarTema.guardar}"
-                         value="#{labels['dict.seleccionar']}" update="messagesDialog"
-                         rendered="#{!dialogSeleccionarTema.isModoConsulta()}"
-                         process="@all" id="seleccionar"/>
         <p:commandButton action="#{dialogSeleccionarTema.cerrar}"
                          value="#{labels['dict.cerrar']}"
                          process="@this" />

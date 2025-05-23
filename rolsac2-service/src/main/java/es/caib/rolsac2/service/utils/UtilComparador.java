@@ -31,7 +31,7 @@ public class UtilComparador {
         if (dato != null && dato2 == null) {
             return 1;
         }
-        return Long.compare(dato.getTime(), dato2.getTime());
+        return dato.compareTo(dato2);
     }
 
     public static int compareTo(Boolean dato, Boolean dato2) {

@@ -1,0 +1,99 @@
+package es.caib.rolsac2.commons.plugins.pdu;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import es.caib.rolsac2.commons.plugins.pdu.api.IPluginPdu;
+import es.caib.rolsac2.commons.plugins.pdu.api.model.RLinkData;
+import es.caib.rolsac2.commons.plugins.pdu.api.model.RPeticionImportarEnlace;
+import es.caib.rolsac2.commons.plugins.pdu.api.model.RRespuestaImportarEnlace;
+import es.caib.rolsac2.commons.plugins.pdu.api.model.RTypeDelete;
+import es.caib.rolsac2.commons.rest.client.PduAuthenticator;
+import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+public class PDUPlugin extends AbstractPluginProperties implements IPluginPdu {
+
+    /** Dirección del servicio REST de Test */
+    private String urlService;
+
+    /** Utilidad de Spring para realizar peticiones REST */
+
+
+    /** Indica si se ha habilitado el debug */
+    private boolean debugEnabled = false;
+
+    /** Logger */
+//    private final Logger log = LoggerFactory.getLogger(PduRestClientImpl.class);
+
+    private static final String BASE_URL = "url";
+    private static final String USER = "usr";
+    private static final String PASSWORD = "pwd";
+
+    private static Client client;
+
+    public PDUPlugin(final String appId, final String apiKey, final String direccion, final Integer tiempoEspera, final boolean debug) {
+
+    }
+
+    public PDUPlugin(final String prefijoPropiedades, final Properties properties) {
+        super(prefijoPropiedades, properties);
+        client = ClientBuilder.newClient().register(new PduAuthenticator(getProperty(USER), getProperty(PASSWORD)));
+
+    }
+
+
+
+    @Override
+    public RRespuestaImportarEnlace importarEnlace(RPeticionImportarEnlace peticionImportarEnlace) {
+
+        Invocation.Builder request = client.target(getProperty(BASE_URL) + "/import").request(MediaType.APPLICATION_JSON);
+
+        try {
+            Response response = request.post(Entity.entity(new ObjectMapper().writeValueAsString(peticionImportarEnlace), MediaType.APPLICATION_JSON));
+            return new ObjectMapper().readValue(response.readEntity(String.class), RRespuestaImportarEnlace.class);
+
+        }catch (JsonProcessingException e){
+            return null;
+        }
+    }
+
+    // DSS No probado
+    @Override
+    public RRespuestaImportarEnlace eliminarEnlaces(List<String> urls) {
+
+
+
+        RPeticionImportarEnlace peticionImportarEnlace = new RPeticionImportarEnlace();
+
+        List<RLinkData> datos = new ArrayList<>();
+        for (String url : urls) {
+            RLinkData dato = new RLinkData();
+            dato.setUrl(url);
+            dato.setDelete(RTypeDelete.YES);
+            datos.add(dato);
+        }
+
+        peticionImportarEnlace.setLinkData(datos);
+
+        Invocation.Builder request = client.target(getProperty(BASE_URL) + "/import").request(MediaType.APPLICATION_JSON);
+
+        try {
+            Response response = request.post(Entity.entity(new ObjectMapper().writeValueAsString(peticionImportarEnlace), MediaType.APPLICATION_JSON));
+
+            return new ObjectMapper().readValue(response.readEntity(String.class), RRespuestaImportarEnlace.class);
+//            return response.readEntity(RRespuestaImportarEnlace.class);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
+}

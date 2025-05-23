@@ -23,6 +23,7 @@ public enum TypeProcedimientoEstado {
      * <P>PENDIENTE RESERVAR</P>
      */
     PENDIENTE_BORRAR("U"),
+
     /**
      * <P>PUBLICADO</P>
      */

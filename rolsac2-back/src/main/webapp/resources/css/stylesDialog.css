@@ -986,13 +986,16 @@ div.cabeceraIdiomas  .pi-tag{
 	margin-right: 5px;
 	margin-left: 10px;
 }
-.marcado{
-  color: #000 !important;
-  background: #cc073c;
-  border-color: #cc073c !important;
-  background-color: #cc073c;
+
+.ico-pdu {
+	background-image: url('../../images/PDU.svg') !important;
+	height: 24px;
+	width: 24px;
+	display: inline-block;
 }
-.marcado span {
-  background: #cc073c;
-  background-color: #cc073c;
+.ico-sia {
+	background-image: url('../../images/SIA.svg') !important;
+	height: 24px;
+	width: 24px;
+	display: inline-block;
 }

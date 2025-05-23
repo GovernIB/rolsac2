@@ -34,15 +34,6 @@ public class ProcesoProgramadoSiaComponentBean extends ProcesoProgramadoBaseSiaC
      */
     private static final String CODIGO_PROCESO = "SIA";
 
-    @Inject
-    private SystemServiceFacade systemServiceFacade;
-
-    @Inject
-    private ProcedimientoServiceFacade procedimientoService;
-
-    @Inject
-    private NormativaServiceFacade normativaService;
-
 
     /**
      * log.

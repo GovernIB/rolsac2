@@ -3,7 +3,6 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.commons.utils.GeneradorId;
 import es.caib.rolsac2.persistence.model.JFicheroExterno;
 import es.caib.rolsac2.service.exception.FicheroExternoException;
-import es.caib.rolsac2.service.model.AyudaImagenGridDTO;
 import es.caib.rolsac2.service.model.FicheroDTO;
 import es.caib.rolsac2.service.model.migracion.FicheroRolsac1;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
@@ -498,19 +497,5 @@ public class FicheroExternoRepositoryBean extends AbstractCrudRepository<JFicher
         //Extrae el nombre del fichero de la ruta sabiendo que la ruta suele tener varias /XXX/XXX/filename
         String[] split = id.split("/");
         return split[split.length - 1];
-    }
-
-    /**
-     * Comprueba si existe una imagen.
-     *
-     * @param path Path
-     * @param img  La imagen
-     * @return Devuelve true/false dependiendo de si existe el fichero
-     */
-    @Override
-    public boolean existeFichero(String path, AyudaImagenGridDTO img) {
-        String ruta = path + "/ayudas/" + img.getFilename();
-        File file = new File(ruta);
-        return file.exists();
     }
 }
