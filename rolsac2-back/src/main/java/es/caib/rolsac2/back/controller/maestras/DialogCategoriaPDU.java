@@ -141,7 +141,7 @@ public class DialogCategoriaPDU extends AbstractController implements Serializab
         return UtilComparador.compareTo(data.getCodigo(), dataOriginal.getCodigo()) != 0
                 || UtilComparador.compareTo(data.getIdentificador(), dataOriginal.getIdentificador()) != 0
                 || UtilComparador.compareTo(data.getDescripcion(), dataOriginal.getDescripcion()) != 0
-                || UtilComparador.compareTo(data.getEntidad().getCodigo(), dataOriginal.getEntidad().getCodigo()) != 0;
+                ;
     }
 
     public void cerrarDefinitivo() {

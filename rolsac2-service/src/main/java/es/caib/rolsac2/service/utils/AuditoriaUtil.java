@@ -221,6 +221,12 @@ public final class AuditoriaUtil {
                 case RESERVA:
                     retorno = "Reserva";
                     break;
+                case CERRADO:
+                    retorno = "Tancat";
+                    break;
+                case PENDIENTE_CERRAR:
+                    retorno = "Pendent Tancar";
+                    break;
             }
         }
         return retorno;

@@ -189,17 +189,12 @@
                         <div class="form-group col-md-3" >
                             <p:selectBooleanCheckbox id="integrarPdu" value="#{dialogProcedimiento.data.integrarPdu}" styleClass="ml-2"
                                                      itemLabel="#{labels['dialogProcedimiento.pdu.integrar']}" >
-    <!--                            <p:ajax process="@this"  event="change"  />-->
+                                <p:ajax update="panelCategoriasPDU" process="@this"/>
                             </p:selectBooleanCheckbox>
 
                         </div>
 
                         <div class="form-group col-md-5">
-
-                            <p:outputLabel value="#{labels['dialogProcedimiento.pdu.integrado']}"
-                                           rendered="#{dialogProcedimiento.data.estadoPdu == 1}" styleClass="mb-1 pt-0"/>
-
-
                         </div>
 
                     </div>
@@ -850,8 +845,9 @@
                 </div>
             </div>
 
-            <div class="row left-container mx-0 mb-2 mt-2">
-                <div class="left-container-header ml-0 col-12 row">
+            <p:outputPanel id="panelCategoriasPDU" layout="block">
+            <div id="divCategoriasPadrePDU" class="row left-container mx-0 mb-2 mt-2" style="#{dialogProcedimiento.getStyleDivCategoriasPDU()}">
+                <div class="left-container-header ml-0 col-12 row" >
                     <div class="col-10 text-center">
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.categoriasPDU']}</p>
                     </div>
@@ -903,15 +899,16 @@
                     <p:commandButton id="btnConsultarCategoriaPDU" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogProcedimiento.consultarCategoriaPDU}"
                                      process="@this" update="dataCategoriaPDUProcedimiento messagesDialog"/>
-                    <p:commandButton id="btnSubirCategoriaPDU" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
+                   <!-- <p:commandButton id="btnSubirCategoriaPDU" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogProcedimiento.subirCategoriaPDU}"
                                      process="@this" update="dataCategoriaPDUProcedimiento messagesDialog"/>
                     <p:commandButton id="btnBajarCategoriaPDU" title="#{labels['dict.bajar']}"
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogProcedimiento.bajarCategoriaPDU}"
-                                     process="@this" update="dataCategoriaPDUProcedimiento messagesDialog"/>
+                                     process="@this" update="dataCategoriaPDUProcedimiento messagesDialog"/>-->
                 </div>
             </div>
+            </p:outputPanel>
 
             <div class="row left-container mx-0 mb-2">
                 <div class="left-container-header ml-0 col-12 row">

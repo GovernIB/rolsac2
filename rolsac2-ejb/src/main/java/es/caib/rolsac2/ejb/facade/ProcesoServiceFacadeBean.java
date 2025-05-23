@@ -22,7 +22,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -141,6 +140,7 @@ public class ProcesoServiceFacadeBean implements ProcesoServiceFacade {
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Pagina<IndexacionPDUDto> findPDUByFiltro(ProcesoPduFiltro filtro) {
         try {
             List<IndexacionPDUDto> items = indexacionPDURepository.findPagedByFiltro(filtro);

@@ -101,7 +101,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogCategoriaPDU.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
-                         process="@all"/>
+                         rendered="#{!dialogCategoriaPDU.isModoConsulta()}"
+                         process="@all" />
         <p:commandButton action="#{dialogCategoriaPDU.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
                          process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>

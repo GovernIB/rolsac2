@@ -47,7 +47,7 @@ public class UtilPDU {
                     return ACCION_PDU_BAJA;
                 }
             }
-        } else if (estado == TypeProcedimientoEstado.BORRADO) {
+        } else if (estado == TypeProcedimientoEstado.CERRADO) {
             if (procedimientoNuevo.isIntegrarPdu()) {
                 return ACCION_PDU_BAJA;
             }

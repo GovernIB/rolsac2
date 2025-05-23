@@ -125,6 +125,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                                 estados.add(TypeProcedimientoEstado.MODIFICACION);
                                 estados.add(TypeProcedimientoEstado.BORRADO);
                                 estados.add(TypeProcedimientoEstado.RESERVA);
+                                estados.add(TypeProcedimientoEstado.CERRADO);
                                 break;
                             case BORRADO:
                                 estados.add(TypeProcedimientoEstado.PUBLICADO);
@@ -142,6 +143,9 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                                 estados.add(TypeProcedimientoEstado.MODIFICACION);
                                 estados.add(TypeProcedimientoEstado.RESERVA);
                                 break;
+                            case CERRADO:
+                                estados.add(TypeProcedimientoEstado.PUBLICADO);
+                                break;
                             case PENDIENTE_BORRAR:
                                 estados.add(TypeProcedimientoEstado.MODIFICACION);
                                 estados.add(TypeProcedimientoEstado.BORRADO);
@@ -155,6 +159,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                         estados.add(TypeProcedimientoEstado.PENDIENTE_PUBLICAR);
                         estados.add(TypeProcedimientoEstado.PENDIENTE_RESERVAR);
                         estados.add(TypeProcedimientoEstado.PENDIENTE_BORRAR);
+                        estados.add(TypeProcedimientoEstado.PENDIENTE_CERRAR);
                     }
                     if (typeEstadoActual != null && (typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_RESERVAR || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_BORRAR)) {
                         //Se puede tirar para atrÃ¡s para poderlo volver a editar

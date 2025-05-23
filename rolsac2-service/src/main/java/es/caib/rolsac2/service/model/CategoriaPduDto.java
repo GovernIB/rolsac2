@@ -31,6 +31,7 @@ public class CategoriaPDUDTO extends ModelApi implements Cloneable {
             this.orden = categoriaPDUDTO.orden;
             this.identificador = categoriaPDUDTO.identificador;
             this.descripcion = categoriaPDUDTO.descripcion == null ? null : (Literal) categoriaPDUDTO.descripcion.clone();
+            this.entidad = categoriaPDUDTO.entidad == null ? null : (EntidadDTO) categoriaPDUDTO.entidad.clone();
         }
     }
 

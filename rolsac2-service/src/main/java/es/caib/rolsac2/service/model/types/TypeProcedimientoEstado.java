@@ -23,7 +23,10 @@ public enum TypeProcedimientoEstado {
      * <P>PENDIENTE RESERVAR</P>
      */
     PENDIENTE_BORRAR("U"),
-
+    /**
+     * <P>PENDIENTE RESERVAR</P>
+     */
+    PENDIENTE_CERRAR("V"),
     /**
      * <P>PUBLICADO</P>
      */
@@ -36,7 +39,12 @@ public enum TypeProcedimientoEstado {
     /**
      * <P>RESERVA</P>
      */
-    RESERVA("R");
+    RESERVA("R"),
+
+    /**
+     * <P>CERRAR</P>
+     */
+    CERRADO("C");
 
     String valor;
 
@@ -66,6 +74,8 @@ public enum TypeProcedimientoEstado {
                 return TypeProcedimientoWorkflow.MODIFICACION;
             case BORRADO:
             case PUBLICADO:
+            case PENDIENTE_CERRAR:
+            case CERRADO:
             case RESERVA:
                 return TypeProcedimientoWorkflow.DEFINITIVO;
             default:
@@ -87,6 +97,8 @@ public enum TypeProcedimientoEstado {
             case BORRADO:
             case PUBLICADO:
             case RESERVA:
+            case CERRADO:
+            case PENDIENTE_CERRAR:
                 return TypeProcedimientoWorkflow.DEFINITIVO;
             default:
                 return null;
@@ -121,7 +133,7 @@ public enum TypeProcedimientoEstado {
      * Es estado pendiente
      **/
     public boolean isEstadoPendiente() {
-        return this == TypeProcedimientoEstado.PENDIENTE_BORRAR || this == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || this == TypeProcedimientoEstado.PENDIENTE_RESERVAR;
+        return this == TypeProcedimientoEstado.PENDIENTE_BORRAR || this == TypeProcedimientoEstado.PENDIENTE_CERRAR || this == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || this == TypeProcedimientoEstado.PENDIENTE_RESERVAR;
     }
 
     public String getLiteralMensajePendiente(String idioma) {
@@ -129,6 +141,6 @@ public enum TypeProcedimientoEstado {
     }
 
     public boolean isEstadoValidacionPDU() {
-        return this == TypeProcedimientoEstado.PUBLICADO || this == TypeProcedimientoEstado.BORRADO;
+        return this == TypeProcedimientoEstado.PUBLICADO || this == TypeProcedimientoEstado.CERRADO;
     }
 }

@@ -38,8 +38,10 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         proc.setTerminoResolucion(Literal.createInstance(idiomas));
         proc.setObservaciones(Literal.createInstance(idiomas));
         proc.setKeywords(Literal.createInstance(idiomas));
+        proc.setUrlPdu(Literal.createInstance(idiomas));
         proc.setComun(0);
         proc.setEstadoPdu(0);
+        proc.setIntegrarPdu(false);
         return proc;
     }
 
