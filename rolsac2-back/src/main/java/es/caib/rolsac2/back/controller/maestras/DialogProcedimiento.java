@@ -126,6 +126,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             data.setUaCompetente(sessionBean.getUnidadActiva());
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
+            data.setCategoriasPDU(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
             data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
             data.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
@@ -965,7 +966,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
             final Map<String, String> params = new HashMap<>();
             params.put("ID", categoriaPDUGridSeleccionada.getCodigo().toString());
-            UtilJSF.openDialog("dialogCategoriaPDU", modoAcceso, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+            UtilJSF.openDialog("/entidades/dialogCategoriaPDU", TypeModoAcceso.CONSULTA, params, true, 800, 340);
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("categoriasPDUSeleccionadas", data.getCategoriasPDU());
             final Map<String, String> params = new HashMap<>();
@@ -1613,5 +1614,12 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         return mostrarBtnPDU;
     }
 
+    public String getStyleDivCategoriasPDU() {
+        if (data.isIntegrarPdu()) {
+            return "";
+        } else {
+            return "display:none";
+        }
+    }
 }
 
