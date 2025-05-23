@@ -2575,7 +2575,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 Timestamp timeStampDate = new Timestamp(date.getTime());
                 query.setParameter("siaFecha", timeStampDate);
             } catch (ParseException e) {
-                e.printStackTrace();
+                LOG.error("Error al parsear la fecha de SIA", e);
             }
         }
         if (filtro.isRellenoFechaPublicacionDesde()) {
