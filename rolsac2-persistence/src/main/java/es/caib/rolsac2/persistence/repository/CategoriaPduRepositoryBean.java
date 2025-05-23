@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-@Local(TipoMediaUARepository.class)
+@Local(CategoriaPDURepository.class)
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class CategoriaPDURepositoryBean extends AbstractCrudRepository<JCategoriaPDU, Long> implements CategoriaPDURepository {
 
@@ -179,4 +179,14 @@ public class CategoriaPDURepositoryBean extends AbstractCrudRepository<JCategori
             }
         }
     }
+
+    @Override
+    public boolean estaAsociadoCategoriaPDU(Long codigoPDU) {
+        String sql = "SELECT count(j) FROM JProcedimientoCategoriaPDU j WHERE j.codigo.categoriaPDU = :codigoPDU";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("codigoPDU", codigoPDU);
+        Long resultado = (Long) query.getSingleResult();
+        return resultado > 0;
+    }
+
 }

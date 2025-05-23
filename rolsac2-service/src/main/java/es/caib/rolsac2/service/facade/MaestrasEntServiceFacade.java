@@ -238,4 +238,11 @@ public interface MaestrasEntServiceFacade {
      */
     boolean existeIdentificadorTipoMediaFicha(String identificador);
 
+    /**
+     * Comprueba si una categoria PDU está asociada a un procedimiento
+     *
+     * @param codigoPDU Codigo Categoria PDU
+     * @return true si está asociada a un procedimiento, false en caso contrario
+     */
+    boolean estaAsociadoCategoriaPDU(Long codigoPDU);
 }

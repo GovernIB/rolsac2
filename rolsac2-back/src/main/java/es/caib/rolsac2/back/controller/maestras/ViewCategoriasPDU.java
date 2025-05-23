@@ -171,8 +171,12 @@ public class ViewCategoriasPDU extends AbstractController implements Serializabl
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            categoriasPDUService.deleteCategoriaPduDTO(datoSeleccionado.getCodigo());
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            if (categoriasPDUService.estaAsociadoCategoriaPDU(datoSeleccionado.getCodigo())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewCategoriasPDU.msg.categoriaPDUAsociada"));
+            } else {
+                categoriasPDUService.deleteCategoriaPduDTO(datoSeleccionado.getCodigo());
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            }
         }
     }
 

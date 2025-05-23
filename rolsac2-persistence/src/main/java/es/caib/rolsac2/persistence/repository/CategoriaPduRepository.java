@@ -23,4 +23,6 @@ public interface CategoriaPDURepository extends CrudRepository<JCategoriaPDU, Lo
     List<CategoriaPDUDTO> findPagedByFiltroRest(CategoriaPDUFiltro filtro);
 
     void deleteByEntidad(Long idEntidad);
+
+    boolean estaAsociadoCategoriaPDU(Long codigoPDU);
 }

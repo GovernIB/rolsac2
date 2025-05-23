@@ -71,6 +71,14 @@ public class JCategoriaPDU {
         this.descripcion = descripcion;
     }
 
+    public JEntidad getEntidad() {
+        return entidad;
+    }
+
+    public void setEntidad(JEntidad entidad) {
+        this.entidad = entidad;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

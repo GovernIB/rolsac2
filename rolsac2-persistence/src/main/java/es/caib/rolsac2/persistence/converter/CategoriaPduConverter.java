@@ -5,6 +5,7 @@ import es.caib.rolsac2.persistence.model.traduccion.JCategoriaPDUTraduccion;
 import es.caib.rolsac2.service.model.CategoriaPDUDTO;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -13,27 +14,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Mapper
+@Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {EntidadConverter.class})
 public interface CategoriaPduConverter extends Converter<JCategoriaPDU, CategoriaPDUDTO> {
 
     @Override
-    @Mapping(target = "codigo", source = "codigo")
-    //@Mapping(target = "orden", source = "orden")
-    @Mapping(target = "identificador", source = "identificador")
+    //@Mapping(target = "codigo", source = "codigo")
+    //@Mapping(target = "identificador", source = "identificador")
     @Mapping(target = "descripcion", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion()))")
     CategoriaPDUDTO createDTO(JCategoriaPDU entity);
 
     @Override
-    @Mapping(target = "codigo", source = "codigo")
+    //@Mapping(target = "codigo", source = "codigo")
     //@Mapping(target = "orden", source = "orden")
-    @Mapping(target = "identificador", source = "identificador")
+    //@Mapping(target = "identificador", source = "identificador")
     @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(jCategoriaPDU, dto.getDescripcion()))")
     JCategoriaPDU createEntity(CategoriaPDUDTO dto);
 
     @Override
-    @Mapping(target = "codigo", source = "codigo")
+    //@Mapping(target = "codigo", source = "codigo")
     //@Mapping(target = "orden", source = "orden")
-    @Mapping(target = "identificador", source = "identificador")
+    //@Mapping(target = "identificador", source = "identificador")
     @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(entity,dto.getDescripcion()))")
     void mergeEntity(@MappingTarget JCategoriaPDU entity, CategoriaPDUDTO dto);
 
