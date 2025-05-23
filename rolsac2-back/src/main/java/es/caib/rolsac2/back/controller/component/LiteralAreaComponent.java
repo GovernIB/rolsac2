@@ -9,6 +9,7 @@ import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.component.commandbutton.CommandButton;
 import org.primefaces.component.inputtext.InputText;
@@ -447,6 +448,16 @@ public class LiteralAreaComponent extends UIInput implements NamingContainer {
             return "";
         }
 
+    }
+
+    public boolean isRelleno(){
+
+        Literal literal = (Literal) getAttributes().get("literal");
+        if (literal == null || literal.getTraducciones() == null) {
+            return false;
+        }
+
+        return literal.getTraducciones().stream().anyMatch(traduccion -> StringUtils.isNotBlank(traduccion.getLiteral()));
     }
 
     public UIInput getTexto() {

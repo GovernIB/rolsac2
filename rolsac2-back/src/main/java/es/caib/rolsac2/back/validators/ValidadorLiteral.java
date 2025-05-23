@@ -40,7 +40,10 @@ public class ValidadorLiteral implements Validator {
                 mensajeError = literalComponent.getAttributes().get("mensajeError").toString();
             } else if (literalComponent.getAttributes().get("nombreLiteral") != null) {
                 String campo = literalComponent.getAttributes().get("nombreLiteral").toString();
-                mensajeError = getLiteral(context, "dict.obligatorio.generico", new Object[]{campo});
+
+                mensajeError = literalComponent.isRelleno() ? getLiteral(context, "dict.obligatorio.generico.literal", new Object[]{campo}) :
+                            getLiteral(context, "dict.obligatorio.generico.literal.vacio", new Object[]{campo});
+
 
             } else {
                 mensajeError = "El literal és obligatori.";
@@ -77,6 +80,8 @@ public class ValidadorLiteral implements Validator {
 
         String estado = literalComponent.comprobarEstado();
 
+
+
         if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
 
             literalComponent.setEstiloInput("bordeRojoRequired");
@@ -86,8 +91,9 @@ public class ValidadorLiteral implements Validator {
                 mensajeError = literalComponent.getAttributes().get("mensajeError").toString();
             } else if (literalComponent.getAttributes().get("nombreLiteral") != null) {
                 String campo = literalComponent.getAttributes().get("nombreLiteral").toString();
-                mensajeError = getLiteral(context, "dict.obligatorio.generico", new Object[]{campo});
 
+                mensajeError = literalComponent.isRelleno() ? getLiteral(context, "dict.obligatorio.generico.literal", new Object[]{campo}) :
+                        getLiteral(context, "dict.obligatorio.generico.literal.vacio", new Object[]{campo});
             } else {
                 mensajeError = "El literal és obligatori.";
             }
