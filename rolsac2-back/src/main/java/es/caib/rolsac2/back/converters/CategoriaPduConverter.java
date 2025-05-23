@@ -1,9 +1,7 @@
 package es.caib.rolsac2.back.converters;
 
-import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.PduServiceFacade;
-import es.caib.rolsac2.service.model.CategoriaPduDto;
-import es.caib.rolsac2.service.model.TipoMateriaSIADTO;
+import es.caib.rolsac2.service.model.CategoriaPDUDTO;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -39,7 +37,7 @@ public class CategoriaPduConverter implements Converter, Serializable {
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object o) {
         if (o != null) {
-            return String.valueOf(((CategoriaPduDto) o).getCodigo());
+            return String.valueOf(((CategoriaPDUDTO) o).getCodigo());
         } else {
             return null;
         }
