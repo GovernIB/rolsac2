@@ -3,6 +3,7 @@ package es.caib.rolsac2.service.facade;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.model.AyudaDTO;
 import es.caib.rolsac2.service.model.AyudaGridDTO;
+import es.caib.rolsac2.service.model.AyudaImagenGridDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.filtro.AyudaFiltro;
 
@@ -70,4 +71,7 @@ public interface AyudaServiceFacade {
 
     AyudaDTO findByIdentificador(String id, String todos);
 
+    List<AyudaImagenGridDTO> listImagenes(String path);
+
+    List<AyudaImagenGridDTO> listImagenesPerdidas(List<AyudaImagenGridDTO> data, String path);
 }

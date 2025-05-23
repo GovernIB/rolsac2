@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.model.JAyuda;
 import es.caib.rolsac2.service.model.AyudaDTO;
 import es.caib.rolsac2.service.model.AyudaGridDTO;
+import es.caib.rolsac2.service.model.AyudaImagenGridDTO;
 import es.caib.rolsac2.service.model.filtro.AyudaFiltro;
 
 import java.util.List;
@@ -63,4 +64,10 @@ public interface AyudaRepository extends CrudRepository<JAyuda, Long> {
      */
     long countAyudaByFiltro(AyudaFiltro filtro);
 
+    /**
+     * Lista de ayudas
+     *
+     * @return Ayudas
+     */
+    List<AyudaImagenGridDTO> getImagenes();
 }

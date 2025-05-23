@@ -3,10 +3,7 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.converter.AyudaConverter;
 import es.caib.rolsac2.persistence.converter.EntidadConverter;
 import es.caib.rolsac2.persistence.model.JAyuda;
-import es.caib.rolsac2.service.model.AyudaDTO;
-import es.caib.rolsac2.service.model.AyudaGridDTO;
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.Traduccion;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.AyudaFiltro;
 
 import javax.ejb.Local;
@@ -15,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -270,6 +268,35 @@ public class AyudaRepositoryBean extends AbstractCrudRepository<JAyuda, Long> im
     @Override
     public long countAyudaByFiltro(AyudaFiltro filtro) {
         return (long) getQueryAyudaUsuario(true, filtro).getSingleResult();
+    }
+
+    @Override
+    public List<AyudaImagenGridDTO> getImagenes() {
+        List<AyudaImagenGridDTO> imgsRetorno = new ArrayList<>();
+
+        //Obtener de ficheros (JFicheroExterno) aquellos que son de tipo imagen
+        String sql = "SELECT f.FIE_CODIGO, f.FIE_FILENAME, f.FIE_REFDOC, " +
+                "  ( " +
+                "    SELECT COUNT(t.TAY_CODIGO)\n" +
+                "    FROM RS2_TRAAYU t\n" +
+                "    WHERE t.TAY_HTML LIKE '%' || SUBSTR(f.FIE_REFDOC, INSTR(f.FIE_REFDOC, '/') + 1) || '%'\n" +
+                "  ) AS total\n" +
+                "FROM RS2_FICEXT f\n WHERE f.FIE_FICTIP LIKE 'AYUDASIMG'\n";
+        Query query = entityManager.createNativeQuery(sql);
+        List<Object[]> ficheroExternos = query.getResultList();
+        if (ficheroExternos != null) {
+            for (Object[] jFicheroExterno : ficheroExternos) {
+                AyudaImagenGridDTO img = new AyudaImagenGridDTO();
+                img.setCodigo(((BigDecimal) jFicheroExterno[0]).longValue());
+                img.setFilename((String) jFicheroExterno[1]);
+                img.setRuta((String) jFicheroExterno[2]);
+                img.setTotal(((BigDecimal) jFicheroExterno[3]).longValue());
+                img.setExisteJFichero(true);
+                img.setExisteFicheroFisico(false);
+                imgsRetorno.add(img);
+            }
+        }
+        return imgsRetorno;
     }
 
 

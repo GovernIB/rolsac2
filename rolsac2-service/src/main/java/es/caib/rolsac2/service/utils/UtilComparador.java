@@ -31,7 +31,7 @@ public class UtilComparador {
         if (dato != null && dato2 == null) {
             return 1;
         }
-        return dato.compareTo(dato2);
+        return Long.compare(dato.getTime(), dato2.getTime());
     }
 
     public static int compareTo(Boolean dato, Boolean dato2) {
@@ -245,7 +245,7 @@ public class UtilComparador {
     }
 
     public static int compareTo(TipoTramitacionDTO dato, TipoTramitacionDTO dato2) {
-        if ( (dato == null || dato.isVacio()) && (dato2 == null || dato2.isVacio())) {
+        if ((dato == null || dato.isVacio()) && (dato2 == null || dato2.isVacio())) {
             return 0;
         }
         if (dato == null && dato2 != null) {

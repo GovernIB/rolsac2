@@ -245,6 +245,7 @@ public class SessionBean implements Serializable {
                 actualizarPerfiles();
                 actualizarEntidades();
                 lang = sesion.getIdioma();
+                current = Locale.forLanguageTag(lang);
                 sesion.setFechaUltimaSesion(new Date());
                 systemServiceBean.updateSesion(sesion);
             } else {

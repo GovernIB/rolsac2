@@ -11,8 +11,10 @@ import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.AyudaServiceFacade;
 import es.caib.rolsac2.service.model.AyudaDTO;
 import es.caib.rolsac2.service.model.AyudaGridDTO;
+import es.caib.rolsac2.service.model.AyudaImagenGridDTO;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.filtro.AyudaFiltro;
+import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,5 +132,48 @@ public class AyudaServiceFacadeBean implements AyudaServiceFacade {
         return ayudaRepository.countAyudaByFiltro(filtro);
     }
 
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<AyudaImagenGridDTO> listImagenes(String path) {
+        List<AyudaImagenGridDTO> imgs = ayudaRepository.getImagenes();
+        if (imgs != null) {
+            for (AyudaImagenGridDTO img : imgs) {
+                boolean existe = ficheroExternoRepositoryBean.existeFichero(path, img);
+                img.setExisteFicheroFisico(existe);
+            }
+        }
+        return imgs;
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<AyudaImagenGridDTO> listImagenesPerdidas(List<AyudaImagenGridDTO> imgs, String path) {
+        List<AyudaImagenGridDTO> imgsRetorno = new ArrayList<>();
+
+        List<String> ids = ficheroExternoRepositoryBean.getListadoFicheros(path, TypeFicheroExterno.AYUDAS_IMAGEN);
+        if (ids != null) {
+            for (String id : ids) {
+                boolean encontrado = false;
+                if (imgs != null) {
+                    for (AyudaImagenGridDTO img : imgs) {
+                        if (id.equals(img.getRuta())) {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                }
+                if (!encontrado) {
+                    AyudaImagenGridDTO img = new AyudaImagenGridDTO();
+                    img.setRuta(id);
+                    img.setTotal(0L);
+                    img.setFilename(id.replace("ayudas/", ""));
+                    img.setExisteJFichero(false);
+                    img.setExisteFicheroFisico(true);
+                    imgsRetorno.add(img);
+                }
+            }
+        }
+        return imgsRetorno;
+    }
 
 }
