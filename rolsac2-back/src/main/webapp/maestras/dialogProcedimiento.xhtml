@@ -45,7 +45,7 @@
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones
-            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico dataNormativaProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat"/>
+            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico dataNormativaProcedimiento dataCategoriaPDUProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogProcedimiento.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -763,7 +763,6 @@
                                         </div>
                                     </div>
                                     <p:graphicImage value="../images/SIA.svg" rendered="#{td.getTipoMateriaSIA() != null}"/>
-                                    <p:graphicImage value="../images/PDU.svg" rendered="#{td.getCategoriaPdu() != null}" />
                                     <h:outputText id="texto"
                                                   value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                                     <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
@@ -850,6 +849,70 @@
                                      process="@this" update="dataNormativaProcedimiento messagesDialog"/>
                 </div>
             </div>
+
+            <div class="row left-container mx-0 mb-2 mt-2">
+                <div class="left-container-header ml-0 col-12 row">
+                    <div class="col-10 text-center">
+                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.categoriasPDU']}</p>
+                    </div>
+                    <div class="col-2">
+                        <p:commandButton id="btnCategoriasPDUCol"
+                                         onclick="colapsarModulo('#divCategoriasPDU','btnCategoriasPDU');"
+                                         title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2 mb-1"
+                                         style="margin-left:-10px"/>
+                        <p:commandButton id="btnCategoriasPDUExp"
+                                         onclick="expandirModulo('#divCategoriasPDU','btnCategoriasPDU');"
+                                         title="#{labels['dict.expandir']}" icon="pi pi-plus"
+                                         styleClass="mt-2 mb-1 importantOcultar" style="margin-left:-10px"/>
+                    </div>
+                </div>
+                <div id="divCategoriasPDU" class="col-10 p-1">
+                    <p:dataTable id="dataCategoriaPDUProcedimiento" var="td"
+                                 value="#{dialogProcedimiento.data.categoriasPDU}"
+                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{dialogProcedimiento.categoriaPDUGridSeleccionada}"
+                                 rowKey="#{td.codigo}" styleClass="noHeader">
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickCategoriaPDU();"
+                                global="false"/>
+
+                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
+                                  styleClass="text-center w75">
+                            <h:outputText value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div id="divCategoriasPDUBtns"
+                     class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this"
+                                     actionListener="#{dialogProcedimiento.nuevaCategoriaPDU()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogCategoriaPDU}"
+                                process="@this"
+                                update="dataCategoriaPDUProcedimiento"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                     action="#{dialogProcedimiento.borrarCategoriaPDU}"
+                                     process="@this" update="dataCategoriaPDUProcedimiento messagesDialog"/>
+                    <p:commandButton id="btnConsultarCategoriaPDU" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     action="#{dialogProcedimiento.consultarCategoriaPDU}"
+                                     process="@this" update="dataCategoriaPDUProcedimiento messagesDialog"/>
+                    <p:commandButton id="btnSubirCategoriaPDU" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
+                                     action="#{dialogProcedimiento.subirCategoriaPDU}"
+                                     process="@this" update="dataCategoriaPDUProcedimiento messagesDialog"/>
+                    <p:commandButton id="btnBajarCategoriaPDU" title="#{labels['dict.bajar']}"
+                                     icon="pi pi-arrow-circle-down"
+                                     action="#{dialogProcedimiento.bajarCategoriaPDU}"
+                                     process="@this" update="dataCategoriaPDUProcedimiento messagesDialog"/>
+                </div>
+            </div>
+
             <div class="row left-container mx-0 mb-2">
                 <div class="left-container-header ml-0 col-12 row">
                     <div class="col-10 text-center">
@@ -1045,6 +1108,9 @@
             }
             function triggerDblClickNormativa() {
                 document.getElementById("formDialog:btnConsultarNormativa").click();
+            }
+            function triggerDblClickCategoriaPDU() {
+                document.getElementById("formDialog:btnConsultarCategoriaPDU").click();
             }
             function triggerDblClickTramite() {
                 document.getElementById("formDialog:btnEditarTramite").click();

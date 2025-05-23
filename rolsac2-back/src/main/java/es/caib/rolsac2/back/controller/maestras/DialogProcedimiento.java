@@ -5,11 +5,11 @@ import es.caib.rolsac2.back.controller.comun.UtilsArbolTemas;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.*;
 import org.apache.commons.lang3.BooleanUtils;
+import org.fundaciobit.pluginsib.core.IPlugin;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -47,6 +47,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     private NormativaDTO normativaSeleccionada;
     private NormativaGridDTO normativaGridSeleccionada;
+    private CategoriaPDUDTO categoriaPDUSeleccionada;
+    private CategoriaPDUGridDTO categoriaPDUGridSeleccionada;
     private ProcedimientoDocumentoDTO documentoSeleccionado;
     private ProcedimientoDocumentoDTO documentoLOPDSeleccionado;
 
@@ -105,6 +107,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private Literal lopdInfoAdicional;
 
     private boolean noEditable;
+    private boolean mostrarBtnPDU = false;
 
     public void load() {
         LOG.debug("init");
@@ -171,6 +174,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
         //Eso es para cargar las uas del instructor
         calcularUAhijosPadres();
+
+        //Comprobamos si la entidad tiene un plugin de indexacion pdu para mostrar el botón
+        IPlugin plgPDU = systemService.obtenerPluginEntidad(TypePluginEntidad.PDU, sessionBean.getEntidad().getCodigo());
+        mostrarBtnPDU = plgPDU != null;
     }
 
     /**
@@ -440,7 +447,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         UtilJSF.anyadirMochila("tipo", "P");
+        UtilJSF.anyadirMochila("procedimiento", this.data);
         params.put("ID", this.data.getCodigo().toString());
+        params.put("IDWF", this.data.getCodigoWF().toString());
         params.put("ESTADO", data.getEstado().toString());
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }
@@ -462,7 +471,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
             resetearOrdenListas();
             String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
-            procedimientoServiceFacade.guardarFlujo(data, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
+            ProcedimientoBaseDTO dataDefinitivo = null;
+            if (data.getWorkflow() != TypeProcedimientoWorkflow.DEFINITIVO) {
+                Long codigoWF = procedimientoServiceFacade.getCodigoPublicado(data.getCodigo());
+                if (codigoWF != null) {
+                    dataDefinitivo = procedimientoServiceFacade.findProcedimientoById(codigoWF);
+                }
+            }
+            procedimientoServiceFacade.guardarFlujo(data, dataDefinitivo, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
             final DialogResult result = new DialogResult();
             if (this.getModoAcceso() != null) {
                 result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
@@ -628,29 +644,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                     UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaPublicacion"));
                     todoCorrecto = false;
                 }
-            }
-        }
-
-
-        if (data.isIntegrarPdu()) {
-            boolean nombreEnIngles = data.getNombreProcedimientoWorkFlow().getIdiomas().contains(Idioma.INGLES.getIdioma());
-
-            boolean objetoEnIngles = data.getObjeto().getIdiomas().contains((Idioma.INGLES.getIdioma()));
-
-            boolean destinatariosEnIngles = data.getDestinatarios().getIdiomas().contains(Idioma.INGLES.getIdioma());
-            boolean terminoResolucionEnIngles = data.getTerminoResolucion().getIdiomas().contains(Idioma.INGLES.getIdioma());
-
-            if (!nombreEnIngles || !objetoEnIngles || !destinatariosEnIngles || !terminoResolucionEnIngles) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.pdu.check.ingles"));
-                todoCorrecto = false;
-            }
-
-
-            boolean tieneCategoriaPdu = data.getTemas().stream().anyMatch(t -> t.getCategoriaPdu() != null);
-
-            if (!tieneCategoriaPdu) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.pdu.check.categoria"));
-                todoCorrecto = false;
             }
         }
 
@@ -939,6 +932,95 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         } else {
             data.getNormativas().remove(normativaGridSeleccionada);
             normativaGridSeleccionada = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+
+    //CATEGORIA PDU
+    public void returnDialogCategoriaPDU(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            List<CategoriaPDUGridDTO> categoriasPDUs = (List<CategoriaPDUGridDTO>) respuesta.getResult();
+
+            if (categoriasPDUs == null) {
+                data.setCategoriasPDU(new ArrayList<>());
+            } else {
+                if (data.getCategoriasPDU() == null) {
+                    data.setCategoriasPDU(new ArrayList<>());
+                }
+                data.setCategoriasPDU(new ArrayList<>());
+                data.getCategoriasPDU().addAll(categoriasPDUs);
+            }
+        }
+    }
+
+
+    public void abrirDialogCategoriaPDU(TypeModoAcceso modoAcceso) {
+        if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", categoriaPDUGridSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("dialogCategoriaPDU", modoAcceso, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+        } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
+            UtilJSF.anyadirMochila("categoriasPDUSeleccionadas", data.getCategoriasPDU());
+            final Map<String, String> params = new HashMap<>();
+            UtilJSF.openDialog("tipo/dialogSeleccionCategoriaPDU", modoAcceso, params, true, 1200, 750);
+        }
+
+    }
+
+    public void nuevaCategoriaPDU() {
+        abrirDialogCategoriaPDU(TypeModoAcceso.ALTA);
+    }
+
+    public void consultarCategoriaPDU() {
+        if (categoriaPDUGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogCategoriaPDU(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    public void bajarCategoriaPDU() {
+        if (categoriaPDUGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getCategoriasPDU().indexOf(categoriaPDUGridSeleccionada);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion < this.data.getCategoriasPDU().size() - 1) {
+                //Mientras no sea el ultimo elemento, se puede bajar
+                this.data.getCategoriasPDU().remove(posicion);
+                this.data.getCategoriasPDU().add(posicion + 1, categoriaPDUGridSeleccionada);
+            }
+        }
+    }
+
+    public void subirCategoriaPDU() {
+        if (categoriaPDUGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            int posicion = this.data.getCategoriasPDU().indexOf(categoriaPDUGridSeleccionada);
+            if (posicion == -1) {
+                return;
+            }
+
+            if (posicion != 0) {
+                //Mientras no sea el primer elemento, se puede subir
+                this.data.getCategoriasPDU().remove(posicion);
+                this.data.getCategoriasPDU().add(posicion - 1, categoriaPDUGridSeleccionada);
+            }
+        }
+    }
+
+    public void borrarCategoriaPDU() {
+        if (categoriaPDUGridSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getCategoriasPDU().remove(categoriaPDUGridSeleccionada);
+            categoriaPDUGridSeleccionada = null;
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
         }
     }
@@ -1486,6 +1568,22 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         this.lopdResponsable = lopdResponsable;
     }
 
+    public CategoriaPDUDTO getCategoriaPDUSeleccionada() {
+        return categoriaPDUSeleccionada;
+    }
+
+    public void setCategoriaPDUSeleccionada(CategoriaPDUDTO categoriaPDUSeleccionada) {
+        this.categoriaPDUSeleccionada = categoriaPDUSeleccionada;
+    }
+
+    public CategoriaPDUGridDTO getCategoriaPDUGridSeleccionada() {
+        return categoriaPDUGridSeleccionada;
+    }
+
+    public void setCategoriaPDUGridSeleccionada(CategoriaPDUGridDTO categoriaPDUGridSeleccionada) {
+        this.categoriaPDUGridSeleccionada = categoriaPDUGridSeleccionada;
+    }
+
     public String getIcono(TemaGridDTO valor) {
         if (valor.getTipoMateriaSIA() == null) {
             return "";
@@ -1507,7 +1605,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public boolean posiblePdu() {
-        return sessionBean.getEntidad().getIdiomasPermitidos().contains(TypeIdiomaOpcional.INGLES.valor);
+        return mostrarBtnPDU;
     }
 
 }

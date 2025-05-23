@@ -232,6 +232,9 @@
         function triggerDblClickNormativa() {
             document.getElementById("form:btnConsultarNormativa").click();
         }
+        function triggerDblClickCategoriaPDU() {
+            document.getElementById("form:btnConsultarCategoriaPDU").click();
+        }
         function triggerDblClickTramite() {
             document.getElementById("form:btnConsultarTramite").click();
         }
@@ -333,7 +336,7 @@
 
                      <!--   <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w99">-->
                         <p:column headerText="#{labels['dialogProcedimiento.normativaProc']}" styleClass="text-center w99">
-                            <h:outputText value="#{td.titulo.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccionConValor(viewProcedimientos.idioma)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -341,6 +344,39 @@
                     <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      disabled="#{empty viewProcedimientos.normativaSeleccionada}"
                                      action="#{viewProcedimientos.consultarNormativa}" />
+                </div>
+            </div>
+        </div>
+        <div class="ui-g-12 ui-md-12 ui-lg-4 ui-xl-3 pr-1 pt-0">
+            <div class="row left-container mx-0 mb-2 mt-2 pt-0">
+                <!--  <div class="left-container-header ml-0 col-12 row">
+                      <div class="col-12 text-center">
+                          <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.normativaProc']}</p>
+                      </div>
+                  </div>-->
+                <div class="col-10 p-0">
+                    <p:dataTable var="td"
+                                 value="#{viewProcedimientos.procedimientoSeleccionado.categoriasPDU}"
+                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{viewProcedimientos.categoriaPDUSeleccionada}"
+                                 rowKey="#{td.codigo}" styleClass="noHeader">
+                        <p:ajax event="rowSelect" global="false" update="@form:btnConsultarCategoriaPDU"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickCategoriaPDU();"
+                                global="false"/>
+
+                        <!--   <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w99">-->
+                        <p:column headerText="#{labels['dialogProcedimiento.categoriasPDU']}" styleClass="text-center w99">
+                            <h:outputText value="#{td.descripcion.getTraduccionConValor(viewProcedimientos.idioma)}" class="labelGrande" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-0 pl-2">
+                    <p:commandButton id="btnConsultarCategoriaPDU" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     disabled="#{empty viewProcedimientos.categoriaPDUSeleccionada}"
+                                     action="#{viewProcedimientos.consultarCategoriaPDU()}" />
                 </div>
             </div>
         </div>
