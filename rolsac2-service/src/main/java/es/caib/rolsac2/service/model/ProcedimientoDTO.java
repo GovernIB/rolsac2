@@ -7,7 +7,6 @@ import es.caib.rolsac2.service.utils.AuditoriaUtil;
 import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -147,7 +146,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             procClonado.setTipoVia((TipoViaDTO) this.getTipoVia().clone());
         }
 
-        if(this.getUaCompetente() != null){
+        if (this.getUaCompetente() != null) {
             procClonado.setUaCompetente((UnidadAdministrativaDTO) this.getUaCompetente().clone());
         }
 
@@ -161,11 +160,11 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getLopdInfoAdicional() != null) {
             procClonado.setLopdInfoAdicional((Literal) this.getLopdInfoAdicional().clone());
         }
-        if(this.getLopdDestinatario() != null) {
+        if (this.getLopdDestinatario() != null) {
             procClonado.setLopdDestinatario((Literal) this.getLopdDestinatario().clone());
         }
 
-        if( this.getLopdDerechos() != null){
+        if (this.getLopdDerechos() != null) {
             procClonado.setLopdDerechos((Literal) this.getLopdDerechos().clone());
         }
 
@@ -185,7 +184,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             procClonado.setRequisitos((Literal) this.getRequisitos().clone());
         }
 
-        if( this.getKeywords() != null){
+        if (this.getKeywords() != null) {
             procClonado.setKeywords((Literal) this.getKeywords().clone());
         }
 
@@ -237,7 +236,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
                 tramits.add((ProcedimientoTramiteDTO) tramite.clone());
             }
             procClonado.setTramites(tramits);
-
         }
 
         procClonado.setEstadoPdu(this.getEstadoPdu());
@@ -292,7 +290,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             return UtilComparador.compareTo(this.getFechaPublicacion(), dataOriginal.getFechaPublicacion());
         }
 
-        if(UtilComparador.compareTo(this.isIntegrarPdu(), dataOriginal.isIntegrarPdu()) != 0){
+        if (UtilComparador.compareTo(this.isIntegrarPdu(), dataOriginal.isIntegrarPdu()) != 0) {
             return UtilComparador.compareTo(this.isIntegrarPdu(), dataOriginal.isIntegrarPdu());
         }
 
@@ -347,7 +345,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
         // Datos contacto
 
-        if( UtilComparador.compareTo(this.getUaCompetente(), dataOriginal.getUaCompetente()) != 0){
+        if (UtilComparador.compareTo(this.getUaCompetente(), dataOriginal.getUaCompetente()) != 0) {
             return UtilComparador.compareTo(this.getUaCompetente(), dataOriginal.getUaCompetente());
         }
 
@@ -358,7 +356,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             return UtilComparador.compareTo(this.getResponsableEmail(), dataOriginal.getResponsableEmail());
         }
 
-        if( UtilComparador.compareTo(this.getResponsableTelefono(), dataOriginal.getResponsableTelefono()) != 0){
+        if (UtilComparador.compareTo(this.getResponsableTelefono(), dataOriginal.getResponsableTelefono()) != 0) {
             return UtilComparador.compareTo(this.getResponsableTelefono(), dataOriginal.getResponsableTelefono());
         }
 
@@ -367,18 +365,12 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         }
 
 
-
-
-
-
         if (UtilComparador.compareTo(this.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario()) != 0) {
             return UtilComparador.compareTo(this.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario());
         }
         if (UtilComparador.compareTo(this.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado()) != 0) {
             return UtilComparador.compareTo(this.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado());
         }
-
-
 
 
         //Literal
@@ -403,11 +395,11 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             return UtilComparador.compareTo(this.getLopdFinalidad(), dataOriginal.getLopdFinalidad());
         }
 
-        if(UtilComparador.compareTo(this.getLopdDestinatario(), dataOriginal.getLopdDestinatario()) != 0){
+        if (UtilComparador.compareTo(this.getLopdDestinatario(), dataOriginal.getLopdDestinatario()) != 0) {
             return UtilComparador.compareTo(this.getLopdDestinatario(), dataOriginal.getLopdDestinatario());
         }
 
-        if( UtilComparador.compareTo(this.getLopdDerechos(), dataOriginal.getLopdDerechos())  != 0){
+        if (UtilComparador.compareTo(this.getLopdDerechos(), dataOriginal.getLopdDerechos()) != 0) {
             return UtilComparador.compareTo(this.getLopdDerechos(), dataOriginal.getLopdDerechos());
         }
 
@@ -417,9 +409,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         }
 
 
-
-
-        if( UtilComparador.compareTo(this.isTieneTasa(), dataOriginal.isTieneTasa()) != 0){
+        if (UtilComparador.compareTo(this.isTieneTasa(), dataOriginal.isTieneTasa()) != 0) {
             return UtilComparador.compareTo(this.isTieneTasa(), dataOriginal.isTieneTasa());
         }
 
@@ -427,7 +417,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             return UtilComparador.compareTo(this.getObservaciones(), dataOriginal.getObservaciones());
         }
 
-        if( UtilComparador.compareTo(this.getKeywords(), dataOriginal.getKeywords()) != 0){
+        if (UtilComparador.compareTo(this.getKeywords(), dataOriginal.getKeywords()) != 0) {
             return UtilComparador.compareTo(this.getKeywords(), dataOriginal.getKeywords());
         }
 

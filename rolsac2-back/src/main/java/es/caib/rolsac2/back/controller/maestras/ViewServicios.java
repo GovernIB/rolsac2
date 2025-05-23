@@ -15,6 +15,7 @@ import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.*;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -75,6 +76,7 @@ public class ViewServicios extends AbstractController implements Serializable {
     private List<String> canalesSeleccionadosDetalle = new ArrayList<>();
     private Integer opcionTelematica = null;
 
+    private List<Long> codigosUaDescendientesGestor;
 
     public LazyDataModel<ServicioGridDTO> getLazyModel() {
         return lazyModel;
@@ -114,6 +116,10 @@ public class ViewServicios extends AbstractController implements Serializable {
         temasTabla = new ArrayList<>();
         for (TemaGridDTO tema : temasPadre) {
             temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
+        }
+
+        if( this.isGestor()){
+            codigosUaDescendientesGestor = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
         }
 
     }
@@ -307,16 +313,28 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void limpiarFiltro() {
         filtro = new ProcedimientoFiltro();
-        filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+
+        boolean verComunes = this.isGestor() || this.isInformador();
+
+        if(verComunes){
+            if( this.isGestor()) {
+                filtro.setIdUAInstructorOComun(codigosUaDescendientesGestor);
+            }else {
+                filtro.setIdUAInstructorOComun(Arrays.asList(sessionBean.getUnidadActiva().getCodigo()));
+            }
+        } else {
+            filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+        }
+
+//        filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+
+
         filtro.setIdioma(sessionBean.getLang());
         //filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setTipo("S");
         filtro.setEsProcedimiento(Boolean.FALSE);
         filtro.setOrder("DESCENDING");
         canalesSeleccionados = new String[0];
-        if (this.isGestor() || this.isInformador()) {
-            filtro.setComun("N");
-        }
     }
 
     private void cargarFiltros() {
@@ -357,13 +375,16 @@ public class ViewServicios extends AbstractController implements Serializable {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
         } else {
+
             Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
             if (idProcMod == null) {
                 PrimeFaces.current().executeScript("PF('cdDeseaCrearEditar').show();");
                 return;
             }
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
-            abrirVentana(TypeModoAcceso.EDICION, serv);
+
+            TypeModoAcceso modo =    BooleanUtils.isTrue(datoSeleccionado.getComun()) && ( this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            abrirVentana(modo, serv);
 
         }
     }
@@ -380,7 +401,9 @@ public class ViewServicios extends AbstractController implements Serializable {
                 this.datoSeleccionado.setCodigoWFMod(idProcMod);
             }
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
-            abrirVentana(TypeModoAcceso.EDICION, serv);
+
+            TypeModoAcceso modo =    BooleanUtils.isTrue(datoSeleccionado.getComun()) && ( this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            abrirVentana(modo, serv);
 
         }
     }
@@ -757,7 +780,7 @@ public class ViewServicios extends AbstractController implements Serializable {
     }
 
     public void buscar() {
-        filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+//        filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
         lazyModel = new LazyDataModel<>() {
             private static final long serialVersionUID = 1L;
 

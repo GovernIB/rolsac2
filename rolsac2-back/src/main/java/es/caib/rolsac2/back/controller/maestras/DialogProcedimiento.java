@@ -8,6 +8,7 @@ import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.types.*;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -134,7 +135,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
 
             // dsanz se entra a editar pero se deshabilitan los botones de edición si es un procedimiento de una ua común que sólo puede consultar el gestor
-            if(this.isGestor()) {
+            if (this.isGestor()) {
                 List<Long> listaUasUsuario = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
                 noEditable = !listaUasUsuario.contains(data.getUaInstructor().getCodigo());
             }
@@ -653,7 +654,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }*/
 
-        if( data.isIntegrarPdu()){
+        if (data.isIntegrarPdu()) {
             boolean nombreEnIngles = data.getNombreProcedimientoWorkFlow().getIdiomas().contains(Idioma.INGLES.getIdioma());
 
             boolean objetoEnIngles = data.getObjeto().getIdiomas().contains((Idioma.INGLES.getIdioma()));
@@ -661,15 +662,15 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             boolean destinatariosEnIngles = data.getDestinatarios().getIdiomas().contains(Idioma.INGLES.getIdioma());
             boolean terminoResolucionEnIngles = data.getTerminoResolucion().getIdiomas().contains(Idioma.INGLES.getIdioma());
 
-            if( !nombreEnIngles || !objetoEnIngles || !destinatariosEnIngles || !terminoResolucionEnIngles){
+            if (!nombreEnIngles || !objetoEnIngles || !destinatariosEnIngles || !terminoResolucionEnIngles) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.pdu.check.ingles"));
                 todoCorrecto = false;
             }
 
 
-            boolean tieneCategoriaPdu = data.getTemas().stream().anyMatch(t-> t.getCategoriaPdu() != null);
+            boolean tieneCategoriaPdu = data.getTemas().stream().anyMatch(t -> t.getCategoriaPdu() != null);
 
-            if(!tieneCategoriaPdu){
+            if (!tieneCategoriaPdu) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.pdu.check.categoria"));
                 todoCorrecto = false;
             }
@@ -678,7 +679,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         return todoCorrecto;
     }
 
-    public boolean isNoEditable(){
+    public boolean isNoEditable() {
 
         return noEditable;
 
@@ -687,6 +688,20 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void cerrar() {
         if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
+            List<AuditoriaCambio> cambios = ProcedimientoDTO.auditar(this.data, this.dataOriginal);
+            if (cambios != null) {
+                LOG.error("Cambios: " + cambios.size());
+                for (AuditoriaCambio cambio : cambios) {
+                    LOG.error("Cambio: " + cambio.toString());
+                }
+                try {
+                    LOG.error("Procedimiento: " + this.data.getCodigo());
+                    LOG.error("ProcedimientoOriginal: " + this.dataOriginal.getCodigo());
+                } catch (Exception e) {
+                    LOG.error("Error al toString procedimiento");
+                }
+                LOG.error("--------------------");
+            }
             PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;
         }
@@ -1527,7 +1542,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         return Constantes.INDEXAR_SIA_ICONO;
     }
 
-    public boolean posiblePdu(){
+    public boolean posiblePdu() {
         return sessionBean.getEntidad().getIdiomasPermitidos().contains(TypeIdiomaOpcional.INGLES.valor);
     }
 
