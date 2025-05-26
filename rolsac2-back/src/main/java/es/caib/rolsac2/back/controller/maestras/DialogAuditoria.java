@@ -60,7 +60,7 @@ public class DialogAuditoria extends AbstractController implements Serializable 
     public String getMensajeTraducido(AuditoriaCambio cambio) {
 
         Object[] valores = null;
-        if (cambio.getValoresModificados() != null && cambio.getValoresModificados().size() >= 1) {
+        if (cambio.getValoresModificados() != null && !cambio.getValoresModificados().isEmpty()) {
             AuditoriaValorCampo valorCampo = cambio.getValoresModificados().get(0);
             int total = 0;
             if (valorCampo.getIdioma() != null) {
