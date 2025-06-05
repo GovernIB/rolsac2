@@ -180,8 +180,13 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         try {
             IPlugin plgPDU = systemService.obtenerPluginEntidad(TypePluginEntidad.PDU, sessionBean.getEntidad().getCodigo());
             mostrarBtnPDU = plgPDU != null;
+            LOG.error("OK");
+            LOG.error("Plugin: {}", plgPDU);
+            LOG.error("ID ENTIDAD:{}", sessionBean.getEntidad().getCodigo());
+
         } catch (Exception e) {
-            LOG.info("Error al obtener el plugin de PDU", e);
+            LOG.error("Error al obtener el plugin de PDU", e);
+            LOG.error("ID ENTIDAD:{}", sessionBean.getEntidad().getCodigo());
             mostrarBtnPDU = false;
         }
     }

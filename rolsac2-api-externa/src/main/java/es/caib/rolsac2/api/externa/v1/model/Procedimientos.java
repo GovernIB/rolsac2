@@ -431,10 +431,6 @@ public class Procedimientos extends EntidadBase {
     }
 
     /**
-     * @return the resolucion
-     */
-
-    /**
      * @return the codigoSIA
      */
     public java.lang.Integer getCodigoSIA() {

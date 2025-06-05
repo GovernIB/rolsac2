@@ -636,12 +636,6 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         return Objects.hash(codigo);
     }
 
-
-    @Override
-    public String toString() {
-        return "ProcedimientoTramiteDTO{" + "codigo=" + codigo + ", unidadAdministrativa=" + unidadAdministrativa + ", procedimiento=" + procedimiento + ", tipoTramitacion=" + tipoTramitacion + ", orden=" + orden + ", listaDocumentos=" + listaDocumentos + ", listaModelos=" + listaModelos + ", tasaAsociada=" + tasaAsociada + ", requisitos=" + requisitos + ", nombre=" + nombre + ", documentacion=" + documentacion + ", observacion=" + observacion + ", terminoMaximo=" + terminoMaximo + '}';
-    }
-
     @Override
     public int compareTo(ProcedimientoTramiteDTO data2) {
         if (data2 == null) {
@@ -794,4 +788,66 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         return 0;
     }
 
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            sb.append("ProcedimientoTramiteDTO{");
+            sb.append("codigo=").append(codigo);
+            sb.append(", orden=").append(orden);
+            sb.append(", fase=").append(fase);
+            sb.append(", codigoString='").append(codigoString).append('\'');
+            sb.append(", unidadAdministrativa=").append(unidadAdministrativa);
+            if (procedimiento == null) {
+                sb.append(", procedimiento=null");
+            } else {
+                sb.append(", procedimiento.codigo=").append(procedimiento.getCodigo());
+                sb.append(", procedimiento.nombre=").append(procedimiento.getNombre());
+            }
+            sb.append(", tipoTramitacion=").append(tipoTramitacion);
+            sb.append(", plantillaSel=").append(plantillaSel);
+            if (listaDocumentos == null) {
+                sb.append(", listaDocumentos=null");
+            } else if (listaDocumentos.isEmpty()) {
+                sb.append(", listaDocumentos=[]");
+            } else {
+                sb.append(", listaDocumentos.size=").append(listaDocumentos.size());
+                sb.append(", listaDocumentos={");
+                for (ProcedimientoDocumentoDTO doc : listaDocumentos) {
+                    sb.append(", documento=").append(doc);
+                }
+                sb.append('}');
+            }
+            if (listaModelos == null) {
+                sb.append(", listaModelos=null");
+            } else if (listaModelos.isEmpty()) {
+                sb.append(", listaModelos=[]");
+            } else {
+                sb.append(", listaModelos.size=").append(listaModelos.size());
+                sb.append(", listaModelos={");
+                for (ProcedimientoDocumentoDTO doc : listaModelos) {
+                    sb.append(", modelo=").append(doc);
+                }
+                sb.append('}');
+            }
+            sb.append(", tasaAsociada=").append(tasaAsociada);
+            sb.append(", requisitos=").append(requisitos);
+            sb.append(", nombre=").append(nombre);
+            sb.append(", documentacion=").append(documentacion);
+            sb.append(", observacion=").append(observacion);
+            sb.append(", terminoMaximo=").append(terminoMaximo);
+            sb.append(", fechaPublicacion=").append(fechaPublicacion);
+            sb.append(", fechaInicio=").append(fechaInicio);
+            sb.append(", fechaCierre=").append(fechaCierre);
+            sb.append(", tramitPresencial=").append(tramitPresencial);
+            sb.append(", tramitElectronica=").append(tramitElectronica);
+            sb.append(", tramitTelefonica=").append(tramitTelefonica);
+            sb.append('}');
+
+        } catch (Exception e) {
+            LOG.error("Error al convertir a String el ProcedimientoTramiteDTO", e);
+        }
+        return sb.toString();
+    }
 }

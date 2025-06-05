@@ -856,7 +856,33 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
 
     @Override
     public String toString() {
-        return "UnidadAdministrativaDTO{" + "codigo=" + codigo + '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("UnidadAdministrativaDTO{");
+        try {
+            sb.append("codigo=").append(codigo);
+            if (entidad == null) {
+                sb.append(", entidad=null");
+            } else {
+                sb.append(", entidad.codigo=").append(entidad.getCodigo());
+                sb.append(", entidad.identificador=").append(entidad.getIdentificador());
+            }
+            if (padre == null) {
+                sb.append(", padre=null");
+            } else {
+                sb.append(", padre.codigo=").append(padre.getCodigo());
+                sb.append(", padre.nombre=").append(padre.getNombre());
+            }
+            sb.append(", codigoDIR3='").append(codigoDIR3).append('\'');
+            sb.append(", tipo=").append(tipo);
+            sb.append(", identificador='").append(identificador).append('\'');
+            sb.append(", abreviatura=").append(abreviatura);
+            sb.append(", telefono='").append(telefono).append('\'');
+            sb.append(", fax='").append(fax).append('\'');
+            sb.append("}");
+        } catch (Exception e) {
+            LOG.error("Error al convertir UnidadAdministrativaDTO a String", e);
+        }
+        return sb.toString();
     }
 
     /**

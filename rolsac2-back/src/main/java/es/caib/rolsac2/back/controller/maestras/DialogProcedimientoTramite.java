@@ -308,6 +308,18 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     }
 
     public void cerrar() {
+        LOG.error("Cierre DialogProcedimientoTramite");
+        if (this.data != null) {
+            LOG.error("DATA");
+            LOG.error(data.toString());
+            LOG.error("*****");
+        }
+        if (this.dataOriginal != null) {
+            LOG.error("DATA ORIGINAL");
+            LOG.error(dataOriginal.toString());
+            LOG.error("*****");
+        }
+        LOG.error("FIN");
         if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
             PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;
