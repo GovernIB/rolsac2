@@ -50,7 +50,7 @@
         <!--Versión de Jena para RDF-->
         <jena.version>2.6.4</jena.version>
         <rome.version>1.18.0</rome.version>
-		<solrapi.version>1.1.5</solrapi.version>
+        <solrapi.version>1.1.5</solrapi.version>
         <jaxws.maven.plugin.version>2.6</jaxws.maven.plugin.version>
     </properties>
     <dependencyManagement>
@@ -74,6 +74,11 @@
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-api-externa</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>es.caib.rolsac2</groupId>
+                <artifactId>rolsac2-api-interna</artifactId>
                 <version>1.0.0</version>
             </dependency>
             <dependency>
@@ -102,7 +107,7 @@
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
-                <artifactId>rolsac2-api-interna</artifactId>
+                <artifactId>rolsac2-rest-api-interna</artifactId>
                 <version>1.0.0</version>
                 <type>war</type>
             </dependency>
@@ -141,10 +146,10 @@
                 <version>${mp-openapi.version}</version>
             </dependency>
             <dependency>
-				<groupId>org.microprofile-ext.openapi-ext</groupId>
-				<artifactId>openapi-ui</artifactId>
-				<version>${mp-openapi.version}</version>
-			</dependency>
+                <groupId>org.microprofile-ext.openapi-ext</groupId>
+                <artifactId>openapi-ui</artifactId>
+                <version>${mp-openapi.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.eclipse.microprofile.config</groupId>
                 <artifactId>microprofile-config-api</artifactId>
@@ -415,67 +420,67 @@
                 </executions>
             </plugin>
             <!-- Inicializar propiedades compilación -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>properties-maven-plugin</artifactId>
-				<version>${maven.properties.version}</version>
-				<inherited>false</inherited>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>read-project-properties</goal>
-						</goals>
-						<configuration>
-							<files>
-								<file>${project.basedir}/rolsac.properties</file>
-							</files>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- Deploy proyecto en GIT. -->
-			<plugin>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.8.1</version>
-				<configuration>
-					<altDeploymentRepository>
-						internal.repo::default::file://${project.build.directory}/mvn-repo
-					</altDeploymentRepository>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>site-maven-plugin</artifactId>
-				<version>0.12</version>
-				<configuration>
-					<!-- git commit message -->
-					<message>Maven artifacts for ${project.version}</message>
-					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-					<noJekyll>true</noJekyll>
-					<!-- remote branch name -->
-					<branch>refs/heads/gh-pages</branch>
-					<includes>
-						<include>**/*</include>
-					</includes>
-					<path>maven</path>
-					<!-- github repo name -->
-					<repositoryName>maven</repositoryName>
-					<!-- github username or organization -->
-					<repositoryOwner>GovernIB</repositoryOwner>
-					<server>github_governib_maven</server>
-					<merge>true</merge>
-					<dryRun>false</dryRun>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>site</goal>
-						</goals>
-						<phase>deploy</phase>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>${maven.properties.version}</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${project.basedir}/rolsac.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Deploy proyecto en GIT. -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <altDeploymentRepository>
+                        internal.repo::default::file://${project.build.directory}/mvn-repo
+                    </altDeploymentRepository>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.12</version>
+                <configuration>
+                    <!-- git commit message -->
+                    <message>Maven artifacts for ${project.version}</message>
+                    <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+                    <noJekyll>true</noJekyll>
+                    <!-- remote branch name -->
+                    <branch>refs/heads/gh-pages</branch>
+                    <includes>
+                        <include>**/*</include>
+                    </includes>
+                    <path>maven</path>
+                    <!-- github repo name -->
+                    <repositoryName>maven</repositoryName>
+                    <!-- github username or organization -->
+                    <repositoryOwner>GovernIB</repositoryOwner>
+                    <server>github_governib_maven</server>
+                    <merge>true</merge>
+                    <dryRun>false</dryRun>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <profiles>
@@ -531,151 +536,151 @@
             </build>
         </profile>
         <!-- Profile para obtener commit GIT -->
-		<profile>
-			<id>git-commit</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<!-- Commit ID (GIT) -->
-					<plugin>
-						<groupId>pl.project13.maven</groupId>
-						<artifactId>git-commit-id-plugin</artifactId>
-						<version>2.1.10</version>
-						<inherited>false</inherited>
-						<executions>
-							<execution>
-								<phase>validate</phase>
-								<goals>
-									<goal>revision</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<verbose>true</verbose>
-							<skipPoms>false</skipPoms>
-							<generateGitPropertiesFile>true</generateGitPropertiesFile>
-							<generateGitPropertiesFilename>target/git.properties</generateGitPropertiesFilename>
-						</configuration>
-					</plugin>
-					<!-- Commit ID (generación commit.properties) -->
-					<plugin>
-						<groupId>com.google.code.maven-replacer-plugin</groupId>
-						<artifactId>maven-replacer-plugin</artifactId>
-						<version>1.3.5</version>
-						<inherited>false</inherited>
-						<executions>
-							<execution>
-								<id>replace-version</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>replace</goal>
-								</goals>
-								<configuration>
-									<filesToInclude>rolsac-commit.properties</filesToInclude>
-									<preserveDir>true</preserveDir>
-									<outputDir>target</outputDir>
-									<replacements>
-										<replacement>
-											<token>%COMMIT-GIT%</token>
-											<value>${git.commit.id.abbrev}</value>
-										</replacement>
-										<replacement>
-											<token>%COMMIT-SVN%</token>
-											<value>${svn.info}</value>
-										</replacement>
-									</replacements>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<!-- Profile para obtener commit SVN -->
-		<profile>
-			<id>svn-commit</id>
-			<build>
-				<!-- Commit ID (SVN) -->
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.8</version>
-						<inherited>false</inherited>
-						<executions>
-							<execution>
-								<id>ant-svnNumber-activo</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<!-- <skip>${svn.desactivado}</skip> -->
-									<exportAntProperties>true</exportAntProperties>
-									<target>
-										<exec executable="${svn.pathExe}"
-											outputProperty="svn.info">
-											<arg value="info" />
-											<arg value="-r" />
-											<arg value="HEAD" />
-											<arg value="--show-item=last-changed-revision" />
-											<!-- <arg value="../.."/> -->
-										</exec>
-									</target>
-								</configuration>
-							</execution>
-							<execution>
-								<id>ant-svnNumber-echo</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<!-- <skip>${svn.desactivado}</skip> -->
-									<target>
-										<echo>[svn.info] ${svn.info}</echo>
-									</target>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- Commit ID (generación commit.properties) -->
-					<plugin>
-						<groupId>com.google.code.maven-replacer-plugin</groupId>
-						<artifactId>maven-replacer-plugin</artifactId>
-						<version>1.3.5</version>
-						<inherited>false</inherited>
-						<executions>
-							<execution>
-								<id>replace-version</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>replace</goal>
-								</goals>
-								<configuration>
-									<filesToInclude>rolsac-commit.properties</filesToInclude>
-									<preserveDir>true</preserveDir>
-									<outputDir>target</outputDir>
-									<replacements>
-										<replacement>
-											<token>%COMMIT-GIT%</token>
-											<value>${git.commit.id.abbrev}</value>
-										</replacement>
-										<replacement>
-											<token>%COMMIT-SVN%</token>
-											<value>${svn.info}</value>
-										</replacement>
-									</replacements>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+        <profile>
+            <id>git-commit</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Commit ID (GIT) -->
+                    <plugin>
+                        <groupId>pl.project13.maven</groupId>
+                        <artifactId>git-commit-id-plugin</artifactId>
+                        <version>2.1.10</version>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>revision</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <skipPoms>false</skipPoms>
+                            <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                            <generateGitPropertiesFilename>target/git.properties</generateGitPropertiesFilename>
+                        </configuration>
+                    </plugin>
+                    <!-- Commit ID (generación commit.properties) -->
+                    <plugin>
+                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                        <artifactId>maven-replacer-plugin</artifactId>
+                        <version>1.3.5</version>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <id>replace-version</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>replace</goal>
+                                </goals>
+                                <configuration>
+                                    <filesToInclude>rolsac-commit.properties</filesToInclude>
+                                    <preserveDir>true</preserveDir>
+                                    <outputDir>target</outputDir>
+                                    <replacements>
+                                        <replacement>
+                                            <token>%COMMIT-GIT%</token>
+                                            <value>${git.commit.id.abbrev}</value>
+                                        </replacement>
+                                        <replacement>
+                                            <token>%COMMIT-SVN%</token>
+                                            <value>${svn.info}</value>
+                                        </replacement>
+                                    </replacements>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Profile para obtener commit SVN -->
+        <profile>
+            <id>svn-commit</id>
+            <build>
+                <!-- Commit ID (SVN) -->
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <id>ant-svnNumber-activo</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- <skip>${svn.desactivado}</skip> -->
+                                    <exportAntProperties>true</exportAntProperties>
+                                    <target>
+                                        <exec executable="${svn.pathExe}"
+                                              outputProperty="svn.info">
+                                            <arg value="info" />
+                                            <arg value="-r" />
+                                            <arg value="HEAD" />
+                                            <arg value="--show-item=last-changed-revision" />
+                                            <!-- <arg value="../.."/> -->
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ant-svnNumber-echo</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- <skip>${svn.desactivado}</skip> -->
+                                    <target>
+                                        <echo>[svn.info] ${svn.info}</echo>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Commit ID (generación commit.properties) -->
+                    <plugin>
+                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                        <artifactId>maven-replacer-plugin</artifactId>
+                        <version>1.3.5</version>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <id>replace-version</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>replace</goal>
+                                </goals>
+                                <configuration>
+                                    <filesToInclude>rolsac-commit.properties</filesToInclude>
+                                    <preserveDir>true</preserveDir>
+                                    <outputDir>target</outputDir>
+                                    <replacements>
+                                        <replacement>
+                                            <token>%COMMIT-GIT%</token>
+                                            <value>${git.commit.id.abbrev}</value>
+                                        </replacement>
+                                        <replacement>
+                                            <token>%COMMIT-SVN%</token>
+                                            <value>${svn.info}</value>
+                                        </replacement>
+                                    </replacements>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <repositories>
         <!-- Repositori oficial de JBoss -->
@@ -705,17 +710,17 @@
             <url>https://governib.github.io/maven/maven/</url>
         </repository>
     </repositories>
-	<modules>
-		<module>rolsac2-commons</module>
-	    <module>rolsac2-persistence</module>
-	    <module>rolsac2-ejb</module>
-	    <module>rolsac2-service</module>
-	    <module>rolsac2-back</module>
-	    <module>rolsac2-api-interna</module>
-	    <module>rolsac2-rest-api-externa</module>
+    <modules>
+        <module>rolsac2-commons</module>
+        <module>rolsac2-persistence</module>
+        <module>rolsac2-ejb</module>
+        <module>rolsac2-service</module>
+        <module>rolsac2-back</module>
+        <module>rolsac2-api-interna</module>
         <module>rolsac2-api-externa</module>
-	    <module>rolsac2-ear</module>
+        <module>rolsac2-rest-api-externa</module>
         <module>rolsac2-rest-api-interna</module>
+        <module>rolsac2-ear</module>
     </modules>
 
 </project>

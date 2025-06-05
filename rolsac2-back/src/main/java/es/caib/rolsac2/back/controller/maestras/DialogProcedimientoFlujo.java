@@ -180,9 +180,13 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
 
     public void guardarOEnviarMail() {
         if (checkMail) {
+            boolean correctoPDU = checkPdu();
+            if (!correctoPDU) {
+                return;
+            }
             enviarMail();
         } else {
-            guardar();
+            guardar(false);
         }
     }
 
@@ -265,7 +269,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             return;
         }
 
-        guardar();
+        guardar(true);
     }
 
     public String estructurarCopiaChat() {
@@ -283,7 +287,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         return sb.toString();
     }
 
-    public void guardar() {
+    public void guardar(boolean emailEnviado) {
 
         final DialogResult result = new DialogResult();
         if (mostrarEstados && estadoSeleccionado == null) {
@@ -303,25 +307,9 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         }
 
         //Validaciones PDU
-        if (estadoSeleccionado != null && "P".equals(tipo) && estadoSeleccionado.isEstadoValidacionPDU() && procedimientoDTO != null && procedimientoDTO.isIntegrarPdu()) {
-
-            boolean rellenoCategoriaPDU = procedimientoDTO.getCategoriasPDU() != null && !procedimientoDTO.getCategoriasPDU().isEmpty();
-            boolean rellenoIdiomasIngles = procedimientoDTO.isRellenoIdiomasPDU();
-
-            String msgError = getLiteral("dialogProcedimientoFlujo.errorMoverPDU") + " " + getLiteral("TypeProcedimientoEstado." + estadoSeleccionado.toString());
-            if (!rellenoCategoriaPDU) {
-                if (!rellenoIdiomasIngles) {
-                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDUeIngles"), true);
-                    return;
-                } else {
-                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDU"), true);
-                    return;
-                }
-            } else if (!rellenoIdiomasIngles) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanIngles"), true);
-                return;
-            }
-
+        boolean correctoPDU = checkPdu();
+        if (!correctoPDU) {
+            return;
         }
 
         //Si el estado actual o seleccionado es pendiente, entonces es un cambio de un
@@ -344,6 +332,9 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                 msg.setPendienteMensajesGestor(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
                 msg.setPendienteMensajesSupervisor(!(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS));
                 msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
+                if (emailEnviado) {
+                    msg.setFechaEmail((Date) Calendar.getInstance().getTime());
+                }
                 mensajes.add(0, msg);
             }
         }
@@ -363,6 +354,9 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
             msg.setPendienteMensajesGestor(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
             msg.setPendienteMensajesSupervisor(!(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS));
+            if (emailEnviado) {
+                msg.setFechaEmail((Date) Calendar.getInstance().getTime());
+            }
             mensajes.add(0, msg);
         }
         ValidacionTipoUtils.sanitizarMensajes(mensajes);
@@ -373,6 +367,30 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         data.setCodigoProcedimiento(this.idProcedimiento.toString());
         result.setResult(data);
         UtilJSF.closeDialog(result);
+    }
+
+    private boolean checkPdu() {
+        if (estadoSeleccionado != null && "P".equals(tipo) && estadoSeleccionado.isEstadoValidacionPDU() && procedimientoDTO != null && procedimientoDTO.isIntegrarPdu()) {
+
+            boolean rellenoCategoriaPDU = procedimientoDTO.getCategoriasPDU() != null && !procedimientoDTO.getCategoriasPDU().isEmpty();
+            boolean rellenoIdiomasIngles = procedimientoDTO.isRellenoIdiomasPDU();
+
+            String msgError = getLiteral("dialogProcedimientoFlujo.errorMoverPDU") + " " + getLiteral("TypeProcedimientoEstado." + estadoSeleccionado.toString());
+            if (!rellenoCategoriaPDU) {
+                if (!rellenoIdiomasIngles) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDUeIngles"), true);
+                    return false;
+                } else {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDU"), true);
+                    return false;
+                }
+            } else if (!rellenoIdiomasIngles) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanIngles"), true);
+                return false;
+            }
+
+        }
+        return true;
     }
 
     public void marcarComoLeido(Integer posicion) {

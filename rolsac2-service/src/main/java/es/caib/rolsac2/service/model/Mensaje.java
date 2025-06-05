@@ -34,6 +34,11 @@ public final class Mensaje extends ModelApi implements Comparable {
     private Boolean admContenido;
 
     /**
+     * Fecha real
+     */
+    private Date fechaEmail;
+
+    /**
      * Mensajes pendientes
      */
     private boolean pendienteMensajesGestor = false;
@@ -132,6 +137,14 @@ public final class Mensaje extends ModelApi implements Comparable {
 
     public void setPendienteMensajesSupervisor(boolean pendienteMensajesSupervisor) {
         this.pendienteMensajesSupervisor = pendienteMensajesSupervisor;
+    }
+
+    public Date getFechaEmail() {
+        return fechaEmail;
+    }
+
+    public void setFechaEmail(Date fechaEmail) {
+        this.fechaEmail = fechaEmail;
     }
 
     @Override

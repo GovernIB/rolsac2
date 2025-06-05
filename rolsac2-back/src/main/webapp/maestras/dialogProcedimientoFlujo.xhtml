@@ -111,7 +111,21 @@
                                                          process="@this"/>
                                     </td>
                                     <td class="backgroundAdmContenido borderIzqArribaAbajo" style="padding: 10px;">#{mensaje.usuario}</td>
-                                    <td class="backgroundAdmContenido borderArribaAbajo" style="padding: 20px;">#{mensaje.mensaje}</td>
+                                    <td class="backgroundAdmContenido borderArribaAbajo" style="padding: 20px;">
+                                        <table>
+                                            <tr>
+                                                <td>#{mensaje.mensaje}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="#{labels['dict.correoEnviadoEl']} :" rendered="#{mensaje.fechaEmail != null}" />
+                                                    <h:outputText value="#{mensaje.fechaEmail}">
+                                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                                    </h:outputText>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
                                     <td class="backgroundAdmContenido borderDerArribaAbajo" style="padding: 10px;">
                                         <h:outputText value="#{mensaje.fechaReal}">
                                             <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
@@ -136,7 +150,21 @@
 
                                     </td>
                                     <td style="border-top:none !important;"></td>
-                                    <td class="backgroundGestor borderIzqArribaAbajo" style="padding: 20px;">#{mensaje.mensaje}</td>
+                                    <td class="backgroundGestor borderIzqArribaAbajo" style="padding: 20px;">
+                                        <table>
+                                            <tr>
+                                                <td>#{mensaje.mensaje}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="#{labels['dict.correoEnviadoEl']} :" rendered="#{mensaje.fechaEmail != null}" />
+                                                    <h:outputText value="#{mensaje.fechaEmail}">
+                                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                                    </h:outputText>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
                                     <td class="backgroundGestor borderArribaAbajo" style="padding: 10px;">
                                         <h:outputText value="#{mensaje.fechaReal}">
                                             <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
