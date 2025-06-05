@@ -43,7 +43,7 @@ public class Constantes {
     /**
      * Si se ejecuta en local cambiar /rolsac2api por /rolsac2-rest-api-externa
      **/
-    public static final String URL_MODULO = "/rolsac2api/externa/services/";
+    public static final String URL_MODULO = "/rolsac2api/interna/services/";
     public static final String URL_BASE = "http://localhost:8080" + URL_MODULO + Constantes.API_VERSION + "/";
 
     public static final String ENTIDAD_IDIOMA = "idiomas";

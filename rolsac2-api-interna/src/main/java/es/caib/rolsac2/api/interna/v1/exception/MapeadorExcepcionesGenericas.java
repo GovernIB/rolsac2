@@ -1,6 +1,6 @@
 package es.caib.rolsac2.api.interna.v1.exception;
 
-import es.caib.rolsac2.api.interna.v1.model.respuesta.RespuestaError;
+import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaError;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

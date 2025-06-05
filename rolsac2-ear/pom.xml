@@ -38,7 +38,7 @@
             <type>war</type>
         </dependency>
         <!-- BACK END -->
-        
+
         <!-- API EXTERNA START -->
         <dependency>
             <groupId>es.caib.rolsac2</groupId>
@@ -53,18 +53,22 @@
         <!-- API INTERNA START -->
         <dependency>
             <groupId>es.caib.rolsac2</groupId>
-            <artifactId>rolsac2-api-interna</artifactId>
+            <artifactId>rolsac2-rest-api-interna</artifactId>
             <type>war</type>
         </dependency>
+        <dependency>
+            <groupId>es.caib.rolsac2</groupId>
+            <artifactId>rolsac2-api-interna</artifactId>
+        </dependency>
         <!-- API INTERNA END -->
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
         <!--
         Mòduls que van dins el lib/
         Tenir en compte a l'hora de incloure dependències només si és imprescindible i no està ja dins
@@ -84,7 +88,7 @@
             <artifactId>rolsac2-commons</artifactId>
         </dependency>
 
-        
+
     </dependencies>
 
     <build>
@@ -122,7 +126,7 @@
                             <bundleFileName>rolsac2-back.war</bundleFileName>
                         </webModule>
                         <!-- BACK END -->
-                        
+
                         <!-- API EXTERNA START -->
                         <webModule>
                             <groupId>es.caib.rolsac2</groupId>
@@ -135,10 +139,10 @@
                         <!-- API INTERNA START -->
                         <webModule>
                             <groupId>es.caib.rolsac2</groupId>
-                            <artifactId>rolsac2-api-interna</artifactId>
-                            <!-- cuando se depura en local , cambiar /rolsac2api por rolsac2-api-externa -->
+                            <artifactId>rolsac2-rest-api-interna</artifactId>
+                            <!-- cuando se depura en local , cambiar /rolsac2api por rolsac2-rest-api-interna -->
                             <contextRoot>/rolsac2api/interna</contextRoot>
-                            <bundleFileName>rolsac2-api-interna.war</bundleFileName>
+                            <bundleFileName>rolsac2-rest-api-interna.war</bundleFileName>
                         </webModule>
                         <!-- API INTERNA END -->
 

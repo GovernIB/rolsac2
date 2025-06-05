@@ -1,6 +1,6 @@
 package es.caib.rolsac2.api.interna.v1.exception;
 
-import es.caib.rolsac2.api.interna.v1.model.respuesta.Responses;
+import es.caib.rolsac2.api.interna.v1.model.respuestas.Responses;
 
 import javax.ws.rs.WebApplicationException;
 import java.net.URI;
@@ -18,7 +18,7 @@ public class NotFoundException extends WebApplicationException {
      * Create a HTTP 404 (Not Found) exception.
      */
     public NotFoundException() {
-        this((URI)null);
+        this((URI) null);
     }
 
     /**
@@ -43,7 +43,7 @@ public class NotFoundException extends WebApplicationException {
     /**
      * Create a HTTP 404 (Not Found) exception.
      *
-     * @param message the String that is the entity of the 404 response.
+     * @param message     the String that is the entity of the 404 response.
      * @param notFoundUri the URI that cannot be found.
      */
     public NotFoundException(String message, URI notFoundUri) {

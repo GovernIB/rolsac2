@@ -1,14 +1,8 @@
 package es.caib.rolsac2.api.interna.v1.exception;
 
-import es.caib.rolsac2.api.interna.v1.model.respuesta.Responses;
+import es.caib.rolsac2.api.interna.v1.model.respuestas.Responses;
 
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.MatrixParam;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import java.lang.annotation.Annotation;
 
 public abstract class ParamException extends WebApplicationException {
@@ -22,7 +16,7 @@ public abstract class ParamException extends WebApplicationException {
      */
     public static abstract class URIParamException extends ParamException {
         protected URIParamException(Throwable cause,
-                Class<? extends Annotation> parameterType, String name, String defaultStringValue) {
+                                    Class<? extends Annotation> parameterType, String name, String defaultStringValue) {
             super(cause, Responses.NOT_FOUND, parameterType, name, defaultStringValue);
         }
     }
@@ -88,7 +82,7 @@ public abstract class ParamException extends WebApplicationException {
     private final String defaultStringValue;
 
     protected ParamException(Throwable cause, int status,
-            Class<? extends Annotation> parameterType, String name, String defaultStringValue) {
+                             Class<? extends Annotation> parameterType, String name, String defaultStringValue) {
         super(cause, status);
         this.parameterType = parameterType;
         this.name = name;
