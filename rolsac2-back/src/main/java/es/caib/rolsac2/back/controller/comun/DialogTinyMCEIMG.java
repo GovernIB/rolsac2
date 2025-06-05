@@ -94,7 +94,7 @@ public class DialogTinyMCEIMG extends AbstractController implements Serializable
 
     public void cargarImagen(AyudaImagenGridDTO item) {
         if (item != null) {
-            
+
             String path = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
             if (item.getCodigo() == null) {
                 String ruta = path + "/" + item.getRuta();
@@ -121,6 +121,15 @@ public class DialogTinyMCEIMG extends AbstractController implements Serializable
         } else {
             this.imagenSeleccionada = null;
         }
+    }
+
+    public void cerrar() {
+        final DialogResult result = new DialogResult();
+        result.setModoAcceso(TypeModoAcceso.EDICION);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+        result.setCanceled(true);
+        UtilJSF.closeDialog(result);
     }
 
     public void guardar() {

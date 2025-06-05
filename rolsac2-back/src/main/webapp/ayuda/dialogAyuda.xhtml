@@ -19,24 +19,15 @@
     </ui:define>
     <ui:define name="contentDialog">
         <h:form id="dialogAyuda" styleClass="margin-top-10">
-  			<p:outputPanel>
+  			<p:outputPanel style="padding:15px">
 				<!-- Contenido dialogo -->
 				<!-- Growl mensajes -->
 				<p:growl id="growlDialog" widgetVar="growlDialog"/>
 				<p:focus />
 
-				<my:literalComponentAyuda id="txtDescripcion"
-									 literal="#{dialogAyuda.data.descripcion}"
-									 soloLecture="false"
-									 idioma="#{dialogAyuda.idioma}"
-									 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-									 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-									 tipo="html"
-									 height="#{sessionBean.screenHeight}"
-									 width="#{sessionBean.screenWidthInt}"
-									 toolbar="true"
-									 idCompuesto="formDialog\:dialogAyuda\:txtDescripcion"
-									 maxlength="4000" />
+				<h:outputText id="txtDescripcion" value="#{dialogAyuda.data.descripcion.getTraduccionConValor(dialogAyuda.idioma)}" escape="false" />
+
+
 			</p:outputPanel>
 	</h:form>
     </ui:define>

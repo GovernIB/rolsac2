@@ -38,6 +38,24 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
 				paste_as_text : false,
 				readonly: #{dialogLiteralHTML.isConsulta()},
 				file_picker_types: 'image',
+				default_link_target: "_blank",
+				setup: function (editor) {
+					editor.on('change', function () {
+
+						let content = editor.getContent();
+
+						debugger;
+						// Añade target="_blank" a todos los &lt;a&gt; sin target
+						content = content.replace(/&lt;a(?![^&gt;]*target)/g, '&lt;a target="_blank"');
+
+						// También puedes asegurarte de rel="noopener"
+						content = content.replace(/&lt;a([^&gt;]*)(?!rel=)/g, '&lt;a$1 rel="noopener"');
+
+						// Actualiza el contenido del editor
+						editor.setContent(content, { format: 'html' });
+
+					});
+				},
 				images_upload_url: '#{facesContext.externalContext.requestContextPath}/api/upload', // Ruta de tu controlador Spring para subir imÃ¡genes
 				images_upload_handler: function (blobInfo, success, failure) {
 					debugger;

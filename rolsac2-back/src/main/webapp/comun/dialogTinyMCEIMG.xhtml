@@ -167,13 +167,9 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
 
 
 	<ui:define name="contentFooterDialogLeft">
-
 	</ui:define>
 	<ui:define name="contentFooterDialogRight">
-
-		<p:commandButton id="btnGuardar" value="#{labels['dict.aceptar']}" process="@all" action="#{dialogTinyMCEIMG.guardar()}" styleClass="boton-azul"/>
-		<p:commandButton value="#{labels['dict.cancelar']}" actionListener="#{dialogLiteralHTML.cancelar()}" process="@this"/>
-
+		<p:commandButton id="btnGuardar" value="#{labels['dict.cerrar']}" process="@all" action="#{dialogTinyMCEIMG.cerrar()}" styleClass="boton-azul"/>
 	</ui:define>
 
 </ui:composition>

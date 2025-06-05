@@ -1,7 +1,6 @@
 package es.caib.rolsac2.back.controller.ayuda;
 
 import es.caib.rolsac2.back.controller.AbstractController;
-import es.caib.rolsac2.back.controller.maestras.DialogUsuario;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.AyudaServiceFacade;
@@ -23,7 +22,7 @@ import java.util.*;
 @Named
 @ViewScoped
 public class DialogAyuda extends AbstractController implements Serializable {
-    private static final Logger LOG = LoggerFactory.getLogger(DialogUsuario.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DialogAyuda.class);
 
     private static final String TIPO_BOLETIN_PROPIEDAD = "tipoBoletin";
 
