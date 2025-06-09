@@ -638,81 +638,143 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
 
     @Override
     public int compareTo(ProcedimientoTramiteDTO data2) {
+        return compareTo(data2, true);
+    }
+
+    public int compareTo(ProcedimientoTramiteDTO data2, boolean mostrarLog) {
+        if (mostrarLog) {
+            LOG.debug("Comparando ProcedimientoTramiteDTO: {} con {}", this.getCodigo(), data2 != null ? data2.getCodigo() : "null");
+        }
+
         if (data2 == null) {
+            if (mostrarLog) {
+                LOG.error("El segundo es null");
+            }
             return 1;
         }
 
         if (UtilComparador.compareTo(this.getOrden(), data2.getOrden()) != 0) {
+            if (mostrarLog) {
+                LOG.error("El orden es diferente: {} con {}", this.getOrden(), data2.getOrden());
+            }
             return UtilComparador.compareTo(this.getOrden(), data2.getOrden());
         }
 
         if (UtilComparador.compareTo(this.getCodigo(), data2.getCodigo()) != 0) {
+            if (mostrarLog) {
+                LOG.error("El codigo es diferente: {} con {}", this.getCodigo(), data2.getCodigo());
+            }
             return UtilComparador.compareTo(this.getCodigo(), data2.getCodigo());
         }
 
         if (UtilComparador.compareTo(this.getDocumentacion(), data2.getDocumentacion()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La documentacion es diferente: {} con {}", this.getDocumentacion(), data2.getDocumentacion());
+            }
             return UtilComparador.compareTo(this.getDocumentacion(), data2.getDocumentacion());
         }
 
         if (UtilComparador.compareTo(this.getNombre(), data2.getNombre()) != 0) {
+            if (mostrarLog) {
+                LOG.error("El nombre es diferente: {} con {}", this.getNombre(), data2.getNombre());
+            }
             return UtilComparador.compareTo(this.getNombre(), data2.getNombre());
         }
 
         if (UtilComparador.compareTo(this.getRequisitos(), data2.getRequisitos()) != 0) {
+            if (mostrarLog) {
+                LOG.error("Los requisitos son diferentes: {} con {}", this.getRequisitos(), data2.getRequisitos());
+            }
             return UtilComparador.compareTo(this.getRequisitos(), data2.getRequisitos());
         }
 
         if (UtilComparador.compareTo(this.getTerminoMaximo(), data2.getTerminoMaximo()) != 0) {
+            if (mostrarLog) {
+                LOG.error("El termino maximo es diferente: {} con {}", this.getTerminoMaximo(), data2.getTerminoMaximo());
+            }
             return UtilComparador.compareTo(this.getTerminoMaximo(), data2.getTerminoMaximo());
         }
 
         if (UtilComparador.compareTo(this.getObservacion(), data2.getObservacion()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La observacion es diferente: {} con {}", this.getObservacion(), data2.getObservacion());
+            }
             return UtilComparador.compareTo(this.getObservacion(), data2.getObservacion());
         }
         if (UtilComparador.compareTo(this.getFase(), data2.getFase()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La fase es diferente: {} con {}", this.getFase(), data2.getFase());
+            }
             return UtilComparador.compareTo(this.getFase(), data2.getFase());
         }
         if (UtilComparador.compareTo(this.getFechaCierre(), data2.getFechaCierre()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La fecha de cierre es diferente: {} con {}", this.getFechaCierre(), data2.getFechaCierre());
+            }
             return UtilComparador.compareTo(this.getFechaCierre(), data2.getFechaCierre());
         }
         if (UtilComparador.compareTo(this.getFechaInicio(), data2.getFechaInicio()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La fecha de inicio es diferente: {} con {}", this.getFechaInicio(), data2.getFechaInicio());
+            }
             return UtilComparador.compareTo(this.getFechaInicio(), data2.getFechaInicio());
         }
         if (UtilComparador.compareTo(this.getFechaPublicacion(), data2.getFechaPublicacion()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La fecha de publicacion es diferente: {} con {}", this.getFechaPublicacion(), data2.getFechaPublicacion());
+            }
             return UtilComparador.compareTo(this.getFechaPublicacion(), data2.getFechaPublicacion());
         }
         if (ProcedimientoDocumentoDTO.compareTo(this.getListaModelos(), data2.getListaModelos()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La lista de modelos es diferente: {} con {}", this.getListaModelos(), data2.getListaModelos());
+            }
             return ProcedimientoDocumentoDTO.compareTo(this.getListaModelos(), data2.getListaModelos());
         }
         if (ProcedimientoDocumentoDTO.compareTo(this.getListaDocumentos(), data2.getListaDocumentos()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La lista de documentos es diferente: {} con {}", this.getListaDocumentos(), data2.getListaDocumentos());
+            }
             return ProcedimientoDocumentoDTO.compareTo(this.getListaDocumentos(), data2.getListaDocumentos());
         }
-        if (UtilComparador.compareTo(this.getDocumentacion(), data2.getDocumentacion()) != 0) {
-            return UtilComparador.compareTo(this.getDocumentacion(), data2.getDocumentacion());
-        }
         if (UtilComparador.compareTo(this.isTramitElectronica(), data2.isTramitElectronica()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La tramitacion electronica es diferente: {} con {}", this.isTramitElectronica(), data2.isTramitElectronica());
+            }
             return UtilComparador.compareTo(this.isTramitElectronica(), data2.isTramitElectronica());
         }
         if (UtilComparador.compareTo(this.isTramitPresencial(), data2.isTramitPresencial()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La tramitacion presencial es diferente: {} con {}", this.isTramitPresencial(), data2.isTramitPresencial());
+            }
             return UtilComparador.compareTo(this.isTramitPresencial(), data2.isTramitPresencial());
         }
         if (UtilComparador.compareTo(this.isTramitTelefonica(), data2.isTramitTelefonica()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La tramitacion telefonica es diferente: {} con {}", this.isTramitTelefonica(), data2.isTramitTelefonica());
+            }
             return UtilComparador.compareTo(this.isTramitTelefonica(), data2.isTramitTelefonica());
         }
         if (UtilComparador.compareTo(this.getTipoTramitacion(), data2.getTipoTramitacion()) != 0) {
+            if (mostrarLog) {
+                LOG.error("El tipo de tramitacion es diferente: {} con {}", this.getTipoTramitacion(), data2.getTipoTramitacion());
+            }
             return UtilComparador.compareTo(this.getTipoTramitacion(), data2.getTipoTramitacion());
         }
         if (UtilComparador.compareTo(this.getPlantillaSel(), data2.getPlantillaSel()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La plantilla seleccionada es diferente: {} con {}", this.getPlantillaSel(), data2.getPlantillaSel());
+            }
             return UtilComparador.compareTo(this.getPlantillaSel(), data2.getPlantillaSel());
         }
         if (UtilComparador.compareTo(this.getUnidadAdministrativa(), data2.getUnidadAdministrativa()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La unidad administrativa es diferente: {} con {}", this.getUnidadAdministrativa(), data2.getUnidadAdministrativa());
+            }
             return UtilComparador.compareTo(this.getUnidadAdministrativa(), data2.getUnidadAdministrativa());
         }
-        if (UtilComparador.compareTo(this.isTramitPresencial(), data2.isTramitPresencial()) != 0) {
-            return UtilComparador.compareTo(this.isTramitPresencial(), data2.isTramitPresencial());
-        }
-        if (UtilComparador.compareTo(this.isTramitElectronica(), data2.isTramitElectronica()) != 0) {
-            return UtilComparador.compareTo(this.isTramitElectronica(), data2.isTramitElectronica());
+        if (mostrarLog) {
+            LOG.debug("Los ProcedimientoTramiteDTO son iguales");
         }
         return 0;
     }
@@ -720,6 +782,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
     public static int compareTo(List<ProcedimientoTramiteDTO> dato, List<ProcedimientoTramiteDTO> dato2) {
         return compareTo(dato, dato2, false);
     }
+
 
     public static int compareTo(List<ProcedimientoTramiteDTO> dato, List<ProcedimientoTramiteDTO> dato2, boolean mostrarLog) {
         if ((dato == null || dato.size() == 0) && (dato2 == null || dato2.size() == 0)) {
