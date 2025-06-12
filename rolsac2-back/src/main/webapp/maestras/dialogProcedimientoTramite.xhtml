@@ -92,20 +92,11 @@
                                        for="txtFechaPublicacion"
                                        styleClass="mb-1 pt-0"/>
                         <p>
-                           <!-- <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
-                                        locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                        value="#{dialogProcedimientoTramite.data.fechaPublicacion}"
-                                        pattern="dd/MM/yyyy HH:mm"
-                                        required="#{empty param['formDialog:closeButton']}"
-                                        requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
-                                        showOn="button">
-                                <p:ajax event="change" />
-                            </p:datePicker>-->
                             <p:datePicker showIcon="true" id="txtFechaPublicacion" styleClass="fecha"
                                           locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                           value="#{dialogProcedimientoTramite.data.fechaPublicacion}"
                                           pattern="dd/MM/yyyy HH:mm"
-                                          required="#{empty param['formDialog:closeButton']}"
+                                          required="#{empty param['formDialog:closeButton']}" showTime="true"
                                           requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
                                 />
                         </p>
@@ -148,7 +139,7 @@
                                           locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaInicio}"
                                         required="#{empty param['formDialog:closeButton']}"
-                                        requiredMessage="#{labels['dict.obligatorio.fechaInicio']}"
+                                        requiredMessage="#{labels['dict.obligatorio.fechaInicio']}" showTime="true"
                                         pattern="dd/MM/yyyy HH:mm" showOn="button"/>
                         </p>
                     </div>
@@ -159,6 +150,7 @@
                             <p:datePicker showIcon="true"  id="txtFechaCierre" styleClass="fecha"
                                           locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaCierre}"
+                                          showTime="true"
                                         pattern="dd/MM/yyyy HH:mm" showOn="button"/>
                         </p>
                     </div>

@@ -152,7 +152,7 @@
                             <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
                                           locale="#{sessionBean.lang}" disabled="#{dialogServicio.isModoConsulta()}"
                                         value="#{dialogServicio.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
-                                        showOn="button" required="#{empty param['formDialog:closeButton']}"/>
+                                          showTime="true" showOn="button" required="#{empty param['formDialog:closeButton']}"/>
                         </p>
                     </div>
                     <div class="form-group col-md-4">
@@ -162,7 +162,7 @@
                             <p:datePicker showIcon="true"  id="txtFechaCaducidad" styleClass="fecha"
                                           locale="#{sessionBean.lang}" disabled="#{dialogServicio.isModoConsulta()}"
                                         value="#{dialogServicio.data.fechaCaducidad}" pattern="dd/MM/yyyy HH:mm"
-                                        showOn="button"/>
+                                          showTime="true"  showOn="button"/>
                         </p>
                     </div>
                     <div class="form-group col-md-2">

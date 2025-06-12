@@ -153,7 +153,7 @@
                                           value="#{dialogProcedimiento.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
                                           requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
                                           required="#{empty param['formDialog:closeButton']}"
-                                          showOn="button">
+                                          showTime="true" showOn="button">
                                 <p:ajax event="change" />
                             </p:datePicker>
                         </p>
@@ -165,7 +165,7 @@
                             <p:datePicker showIcon="true"  id="txtFechaCaducidad" styleClass="fecha"
                                           locale="#{sessionBean.lang}" disabled="#{dialogProcedimiento.isModoConsulta()}"
                                         value="#{dialogProcedimiento.data.fechaCaducidad}" pattern="dd/MM/yyyy HH:mm"
-                                        showOn="button"/>
+                                          showTime="true"  showOn="button"/>
                         </p>
                     </div>
                     <div class="form-group col-md-2">
