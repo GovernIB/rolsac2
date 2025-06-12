@@ -127,6 +127,7 @@ public class JProcedimientoNormativa {
         }
         normativa.setOrden(this.getOrden());
         normativa.setTitulo(titulo);
+        normativa.setVigente(this.getNormativa().getVigente());
         return normativa;
     }
 

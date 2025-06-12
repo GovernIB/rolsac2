@@ -5,6 +5,9 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
+import es.caib.rolsac2.ejb.facade.procesos.sia.SiaCumpleDatos;
+import es.caib.rolsac2.ejb.facade.procesos.sia.SiaEnviableResultado;
+import es.caib.rolsac2.ejb.facade.procesos.sia.SiaUtils;
 import es.caib.rolsac2.ejb.facade.procesos.solr.CastUtil;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
@@ -26,6 +29,7 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.model.util.SiaCumpleEnviable;
 import es.caib.rolsac2.service.utils.UtilPDU;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +68,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Inject
     UnidadAdministrativaRepository uaRepository;
+
+    @Inject
+    EntidadRaizRepository entidadRaizRepository;
 
     @Inject
     TipoTramitacionRepository tipoTramitacionRepository;
@@ -1469,6 +1476,39 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             throw e;
         }
 
+    }
+
+    @Override
+    @PermitAll
+    public SiaCumpleEnviable isProcServEnviableCumpleDatos(ProcedimientoBaseDTO data) {
+        final boolean isVisibleUA = uaRepository.isVisibleUA(data.getUaResponsable());
+        final String codigoIdCentro = uaRepository.obtenerCodigoDIR3(data.getUaResponsable().getCodigo());
+        SiaEnviableResultado siaEnviable;
+        if (data instanceof ProcedimientoDTO) {
+            siaEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, (ProcedimientoDTO) data, true);
+        } else {
+            siaEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, (ServicioDTO) data, true);
+        }
+        SiaCumpleDatos siaCumpleDatos = null;
+        EntidadRaizDTO siaUA = entidadRaizRepository.getEntidadRaizByUA(data.getUaResponsable().getCodigo());
+        if (siaUA == null) {
+            siaCumpleDatos = new SiaCumpleDatos(false, "El procediment/servei no té associat a una entitat arrel");
+        } else {
+            //final String codigoDir3IdCentro = uaRepository.obtenerCodigoDIR3(data.getUaResponsable().getCodigo());
+            final String codigoDir3SiaUA = uaRepository.obtenerCodigoDIR3(siaUA.getUa().getCodigo());
+            siaCumpleDatos = SiaUtils.cumpleDatos(codigoIdCentro, codigoDir3SiaUA, data, siaEnviable, false, siaUA);
+        }
+
+        SiaCumpleEnviable siaCumpleEnviable = new SiaCumpleEnviable(true, "");
+        if (!siaEnviable.isNotificiarSIA()) {
+            siaCumpleEnviable.setCorrecto(false);
+            siaCumpleEnviable.addMensaje(siaEnviable.getRespuesta());
+        }
+        if (!siaCumpleDatos.isCumpleDatos()) {
+            siaCumpleEnviable.setCorrecto(false);
+            siaCumpleEnviable.addMensaje(siaCumpleDatos.getRespuesta());
+        }
+        return siaCumpleEnviable;
     }
 
 }

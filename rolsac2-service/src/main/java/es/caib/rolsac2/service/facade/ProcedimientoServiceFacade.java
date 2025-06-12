@@ -15,6 +15,7 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import es.caib.rolsac2.service.model.util.SiaCumpleEnviable;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
@@ -286,4 +287,12 @@ public interface ProcedimientoServiceFacade {
      */
     boolean isPublicadoFuturo(IndexacionPDUDto dato);
 
+    /**
+     * Comprueba si el procedimiento es enviable y cumple los requisitos.
+     * Se comprueba cuando se pulsa el botón de enviar en el dato hacia SIA.
+     *
+     * @param data Datos del procedimiento/servicio a comprobar
+     * @return SiaCumpleEnviable con el resultado de la comprobación
+     */
+    SiaCumpleEnviable isProcServEnviableCumpleDatos(ProcedimientoBaseDTO data);
 }

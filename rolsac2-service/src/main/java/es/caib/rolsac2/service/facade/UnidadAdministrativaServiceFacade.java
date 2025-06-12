@@ -405,4 +405,12 @@ public interface UnidadAdministrativaServiceFacade {
     UnidadAdministrativaDTO findUaRaizByEntidad(Long idEntidad);
 
     List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro);
+
+    /**
+     * Devuelve el literal de UA comun
+     *
+     * @param codigo
+     * @return
+     */
+    Literal getUaComunEntidad(Long codigo);
 }

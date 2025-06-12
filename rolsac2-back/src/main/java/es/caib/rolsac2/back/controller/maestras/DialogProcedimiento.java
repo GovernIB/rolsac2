@@ -8,6 +8,7 @@ import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.model.util.SiaCumpleEnviable;
 import org.apache.commons.lang3.BooleanUtils;
 import org.fundaciobit.pluginsib.core.IPlugin;
 import org.primefaces.PrimeFaces;
@@ -180,13 +181,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         try {
             IPlugin plgPDU = systemService.obtenerPluginEntidad(TypePluginEntidad.PDU, sessionBean.getEntidad().getCodigo());
             mostrarBtnPDU = plgPDU != null;
-            LOG.error("OK");
-            LOG.error("Plugin: {}", plgPDU);
-            LOG.error("ID ENTIDAD:{}", sessionBean.getEntidad().getCodigo());
-
         } catch (Exception e) {
             LOG.error("Error al obtener el plugin de PDU", e);
-            LOG.error("ID ENTIDAD:{}", sessionBean.getEntidad().getCodigo());
+            LOG.error("ENTIDAD:{}", sessionBean.getEntidad());
             mostrarBtnPDU = false;
         }
     }
@@ -244,14 +241,19 @@ public class DialogProcedimiento extends AbstractController implements Serializa
      */
     public void enviarSIA() {
         if (data.getCodigo() != null && data.getCodigoSIA() == null) {
-            ListaPropiedades listaPropiedades = new ListaPropiedades();
-            Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
-            listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
-            listaPropiedades.addPropiedad("id", data.getCodigo().toString());
-            listaPropiedades.addPropiedad("tipo", "P");
-            procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
-            mostrarRefreshSIA = true;
+            SiaCumpleEnviable dato = procedimientoServiceFacade.isProcServEnviableCumpleDatos(data);
+            if (dato.isCorrecto()) {
+                ListaPropiedades listaPropiedades = new ListaPropiedades();
+                Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
+                listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
+                listaPropiedades.addPropiedad("id", data.getCodigo().toString());
+                listaPropiedades.addPropiedad("tipo", "P");
+                procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
+                mostrarRefreshSIA = true;
+            } else {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.error.enviarSIA") + dato.getMensaje());
+            }
         }
     }
 

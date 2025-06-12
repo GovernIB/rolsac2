@@ -29,12 +29,16 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
 
     @Inject
     private SystemServiceFacade systemServiceFacade;
+
     @Inject
     private ProcedimientoServiceFacade procedimientoService;
+
     @Inject
     private UnidadAdministrativaServiceFacade uaService;
+
     @Inject
     private ProcesoServiceFacade procesoServiceFacade;
+
     @Inject
     private NormativaServiceFacade normativaService;
 
@@ -246,13 +250,19 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         } else {
             if (publicado || indexacionForzada) {
                 try {
-                    SiaEnviableResultado esEnviable = SiaUtils.isEnviable(uaService, servicioDTO, indexacionForzada);
+                    final boolean isVisibleUA = uaService.isVisibleUA(servicioDTO.getUaResponsable());
+                    final String codigoIdCentro = uaService.obtenerCodigoDIR3(servicioDTO.getUaResponsable().getCodigo());
+                    SiaEnviableResultado esEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, servicioDTO, indexacionForzada);
                     if (esEnviable.isNotificiarSIA()) {
-                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(uaService, servicioDTO, esEnviable, true, entidadRaiz);
+                        final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(servicioDTO.getUaResponsable().getCodigo());
+                        final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(entidadRaiz.getUa().getCodigo());
+                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(codigoDir3IdCentro, codigoDir3SiaUA, servicioDTO, esEnviable, true, entidadRaiz);
                         //Si es común, no se indexa
                         if (siaCumpleDatos.isCumpleDatos()) {
 
-                            EnvioSIA envioSIA = SiaUtils.cast(uaService, servicioDTO, esEnviable, siaCumpleDatos);
+                            final String idDepartamento = uaService.obtenerCodigoDIR3(siaCumpleDatos.getSiaUA().getUa().getCodigo());
+                            final String unidadGestoraComun = uaService.getUaComunEntidad(servicioDTO.getUaResponsable().getCodigo()).getTraduccionConValor("es");
+                            EnvioSIA envioSIA = SiaUtils.cast(idDepartamento, unidadGestoraComun, servicioDTO, esEnviable, siaCumpleDatos);
                             boolean borrado = estaBorrado(servicioDTO);
                             ResultadoSIA resultadoSIA = plugin.enviarSIA(envioSIA, borrado, indexacionForzada);
                             if (resultadoSIA != null && resultadoSIA.isCorrecto()) {
@@ -336,13 +346,19 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         } else {
             if (publicado || indexacionForzada) {
                 try {
-                    SiaEnviableResultado esEnviable = SiaUtils.isEnviable(uaService, procedimientoDTO, indexacionForzada);
+                    final boolean isVisibleUA = uaService.isVisibleUA(procedimientoDTO.getUaResponsable());
+                    final String codigoIdCentro = uaService.obtenerCodigoDIR3(procedimientoDTO.getUaResponsable().getCodigo());
+                    SiaEnviableResultado esEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, procedimientoDTO, indexacionForzada);
                     if (esEnviable.isNotificiarSIA()) {
-                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(uaService, procedimientoDTO, esEnviable, true, entidadRaiz);
+                        final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(procedimientoDTO.getUaResponsable().getCodigo());
+                        final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(entidadRaiz.getUa().getCodigo());
+                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(codigoDir3IdCentro, codigoDir3SiaUA, procedimientoDTO, esEnviable, true, entidadRaiz);
                         //Si es común, no se indexa
                         if (siaCumpleDatos.isCumpleDatos()) {
 
-                            EnvioSIA envioSIA = SiaUtils.cast(uaService, procedimientoDTO, esEnviable, siaCumpleDatos);
+                            String idDepartamento = uaService.obtenerCodigoDIR3(siaCumpleDatos.getSiaUA().getUa().getCodigo());
+                            String unidadGestoraComun = uaService.getUaComunEntidad(procedimientoDTO.getUaResponsable().getCodigo()).getTraduccionConValor("es");
+                            EnvioSIA envioSIA = SiaUtils.cast(idDepartamento, unidadGestoraComun, procedimientoDTO, esEnviable, siaCumpleDatos);
                             boolean borrado = estaBorrado(procedimientoDTO);
                             ResultadoSIA resultadoSIA = plugin.enviarSIA(envioSIA, borrado, indexacionForzada);
                             if (resultadoSIA != null && resultadoSIA.isCorrecto()) {

@@ -8,6 +8,7 @@ import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.commons.plugins.sia.sia.actualizar.*;
 import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
 
+import java.util.Objects;
 import java.util.Properties;
 
 public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA {
@@ -43,8 +44,8 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
             ParamSIA.ACTUACIONES actuaciones;
             try {
                 if (noactivo) {
-                    //actuaciones = cargarDatosSiaNoActivo(envioSIA);
-                    actuaciones = cargarDatosSia(envioSIA, false);
+                    actuaciones = cargarDatosSiaNoActivo(envioSIA);
+                    //actuaciones = cargarDatosSia(envioSIA, false);
                 } else if (borrado) {
                     actuaciones = cargarDatosSiaBorrado(envioSIA);
                 } else {
@@ -84,7 +85,12 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
                     if (SiaConstantes.ESTADO_BAJA.compareTo(envia.getOPERACION()) == 0) {
                         resultadoSIA.setEstadoSIA(SiaConstantes.ESTADO_BAJA);
                     } else {
-                        resultadoSIA.setEstadoSIA(SiaConstantes.ESTADO_ALTA);
+                        if (noactivo) {
+                            resultadoSIA.setEstadoSIA(SiaConstantes.ESTADO_BAJA);
+                        } else {
+                            // Si no es ni alta ni baja, se considera alta
+                            resultadoSIA.setEstadoSIA(SiaConstantes.ESTADO_ALTA);
+                        }
                     }
                 }
 
@@ -132,8 +138,8 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
         }
         paramSia.setCODIGOORIGEN(sia.getCdExpediente());
 
-        paramSia.setDENOMINACION(sia.getDsObjeto());
-        paramSia.setDESCRIPCION(sia.getDsProcedimiento());
+        paramSia.setDENOMINACION(sia.getDsProcedimiento());
+        paramSia.setDESCRIPCION(sia.getDsObjeto());
         final ORGANISMORESPONSABLE organismoResponsable = new ORGANISMORESPONSABLE();
         // Fix 17/02. Pasado el id del centro a nivel 2 e incluido como nivel1 el
         // departamento que viene por propiedades.
@@ -162,13 +168,13 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
             normativasCorrectas.getNORMATIVA().add(nor);
         }
 
-        if (!normativasCorrectas.getNORMATIVA().isEmpty()) {
+        if (normativasCorrectas.getNORMATIVA() != null && !normativasCorrectas.getNORMATIVA().isEmpty()) {
             final NORMATIVAS normativas = new NORMATIVAS();
             normativas.getNORMATIVA().addAll(normativasCorrectas.getNORMATIVA());
             paramSia.setNORMATIVAS(normativas);
         }
 
-        if (!sia.getMaterias().isEmpty()) {
+        if (sia.getMaterias() != null && !sia.getMaterias().isEmpty()) {
             final MATERIAS materias = new MATERIAS();
             for (String mat : sia.getMaterias()) {
                 MATERIAS.MATERIA materia = new MATERIAS.MATERIA();
@@ -179,44 +185,39 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
         }
         paramSia.setFINVIA(sia.getFinVia());
 
-        if (sia.getTipologia() == SiaConstantes.TIPOLOGIA_INTERNO_COMUN) {
+        if (Objects.equals(sia.getTipologia(), SiaConstantes.TIPOLOGIA_INTERNO_COMUN)) {
             paramSia.setINTERNO(SiaConstantes.SI);
             paramSia.setESCOMUN(SiaConstantes.SI);
-        } else if (sia.getTipologia() == SiaConstantes.TIPOLOGIA_INTERNO_ESPECIFICO) {
+        } else if (Objects.equals(sia.getTipologia(), SiaConstantes.TIPOLOGIA_INTERNO_ESPECIFICO)) {
             paramSia.setINTERNO(SiaConstantes.SI);
             paramSia.setESCOMUN(SiaConstantes.NO);
-        } else if (sia.getTipologia() == SiaConstantes.TIPOLOGIA_EXTERNO_COMUN) {
+        } else if (Objects.equals(sia.getTipologia(), SiaConstantes.TIPOLOGIA_EXTERNO_COMUN)) {
             paramSia.setINTERNO(SiaConstantes.NO);
             paramSia.setESCOMUN(SiaConstantes.SI);
-        } else if (sia.getTipologia() == SiaConstantes.TIPOLOGIA_EXTERNO_ESPECIFICO) {
+        } else if (Objects.equals(sia.getTipologia(), SiaConstantes.TIPOLOGIA_EXTERNO_ESPECIFICO)) {
             paramSia.setINTERNO(SiaConstantes.NO);
             paramSia.setESCOMUN(SiaConstantes.NO);
         }
 
         ObjectFactory factory = new ObjectFactory();
 
-        if (sia.getDisponibleApoderadoHabilitado() != null) {
-            if (sia.getDisponibleApoderadoHabilitado()) {
-                paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.SI));
-            } else {
-                paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.NO));
-            }
+
+        if (sia.getDisponibleApoderadoHabilitado() != null && sia.getDisponibleApoderadoHabilitado()) {
+            paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.SI));
+        } else {
+            paramSia.setDISPONIBLEAPODERADOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEAPODERADOHABILITADO(SiaConstantes.NO));
         }
 
-        if (sia.getDisponibleFuncionarioHabilitado() != null) {
-            if (sia.getDisponibleFuncionarioHabilitado()) {
-                paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.SI));
-            } else {
-                paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.NO));
-            }
+        if (sia.getDisponibleFuncionarioHabilitado() != null && sia.getDisponibleFuncionarioHabilitado()) {
+            paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.SI));
+        } else {
+            paramSia.setDISPONIBLEFUNCIONARIOHABILITADO(factory.createParamSIAACTUACIONESACTUACIONDISPONIBLEFUNCIONARIOHABILITADO(SiaConstantes.NO));
         }
 
         paramSia.setTIPOTRAMITE(sia.getTipoTramite());
-
         paramSia.setUNIDADGESTORATRAMITE(sia.getUnidadGestora());
-
         paramSia.setENLACEWEB(sia.getEnlaceWeb());
-        paramSia.setOPERACION(sia.getOperacion());
+        paramSia.setOPERACION("A"); //Cuando es una baja, se envia de alta "A" con activo = N
 
 
         final ParamSIA.ACTUACIONES actuaciones = new ParamSIA.ACTUACIONES();
@@ -458,7 +459,7 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
         }
 
         paramSia.setOPERACION(sia.getOperacion());
-        
+
         final ParamSIA.ACTUACIONES actuaciones = new ParamSIA.ACTUACIONES();
         actuaciones.getACTUACION().add(paramSia);
 

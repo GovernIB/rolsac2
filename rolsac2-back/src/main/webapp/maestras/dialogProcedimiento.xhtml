@@ -814,8 +814,8 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
-                                  styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                                  styleClass="text-center w75 ">
+                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" style="#{td.vigente == null or !td.vigente ? 'color:red' : ''}" />
                         </p:column>
                     </p:dataTable>
                 </div>

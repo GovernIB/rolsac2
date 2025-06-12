@@ -32,6 +32,7 @@ import es.caib.rolsac2.service.utils.UtilJSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -1085,5 +1086,11 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<UnidadAdministrativaGridDTO> findPagedByFiltro(UnidadAdministrativaFiltro filtro) {
         return unidadAdministrativaRepository.findPagedByFiltro(filtro);
+    }
+
+    @Override
+    @PermitAll
+    public Literal getUaComunEntidad(Long codigoUA) {
+        return entidadRepository.getUAComun(codigoUA);
     }
 }

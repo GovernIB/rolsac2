@@ -8,6 +8,7 @@ import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.model.util.SiaCumpleEnviable;
 import org.primefaces.PrimeFaces;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.SelectEvent;
@@ -316,14 +317,21 @@ public class DialogServicio extends AbstractController implements Serializable {
      */
     public void enviarSIA() {
         if (data.getCodigo() != null && data.getCodigoSIA() == null) {
-            ListaPropiedades listaPropiedades = new ListaPropiedades();
-            Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
-            listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
-            listaPropiedades.addPropiedad("id", data.getCodigo().toString());
-            listaPropiedades.addPropiedad("tipo", "S");
-            procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
-            mostrarRefreshSIA = true;
+            SiaCumpleEnviable dato = procedimientoServiceFacade.isProcServEnviableCumpleDatos(data);
+            if (dato.isCorrecto()) {
+                ListaPropiedades listaPropiedades = new ListaPropiedades();
+                Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
+                listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
+                listaPropiedades.addPropiedad("id", data.getCodigo().toString());
+                listaPropiedades.addPropiedad("tipo", "S");
+                procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
+                mostrarRefreshSIA = true;
+            } else {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.error.enviarSIA") + dato.getMensaje());
+            }
+
+
         }
     }
 

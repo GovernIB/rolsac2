@@ -2,6 +2,8 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.converter.EntidadConverter;
 import es.caib.rolsac2.persistence.model.JEntidad;
+import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
+import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.EntidadGridDTO;
 import es.caib.rolsac2.service.model.Literal;
@@ -215,5 +217,16 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
             }
         }
         return entidades;
+    }
+
+    @Override
+    public Literal getUAComun(Long codigoUA) {
+        JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigoUA);
+        Literal literalComun = new Literal();
+        for (JEntidadTraduccion jEntidadTraduccion : jua.getEntidad().getDescripcion()) {
+            Traduccion traduccion = new Traduccion(jEntidadTraduccion.getIdioma(), jEntidadTraduccion.getUaComun());
+            literalComun.add(traduccion);
+        }
+        return literalComun;
     }
 }

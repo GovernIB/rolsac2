@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.repository;
 import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.service.model.EntidadDTO;
 import es.caib.rolsac2.service.model.EntidadGridDTO;
+import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.filtro.EntidadFiltro;
 
 import java.util.List;
@@ -93,4 +94,12 @@ public interface EntidadRepository extends CrudRepository<JEntidad, Long> {
      * @return
      */
     List<EntidadGridDTO> getEntidadGridDTOByUsuario(Long codigo, String lang);
+
+    /**
+     * Devuelve el literal comun de la entidad asociada a la UA
+     *
+     * @param codigoUA
+     * @return
+     */
+    Literal getUAComun(Long codigoUA);
 }
