@@ -1389,6 +1389,9 @@ a.iconoXarxes {
     text-shadow: none;
     border: 1px solid #fff !important;
     margin-right: 0 !important;
+    white-space: nowrap;
+    width: 100%;
+    text-align: left;
 }
 
 .btn-molla:hover:not(:last-child) {
