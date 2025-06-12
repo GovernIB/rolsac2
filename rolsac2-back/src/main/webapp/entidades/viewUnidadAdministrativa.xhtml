@@ -54,7 +54,7 @@
                                     items="#{sessionBean.obtenerUasEntidad()}"
                                     var="ua">
 
-                                <p:commandButton styleClass="btn btn-danger btn-molla" process="@this @form"
+                                <p:commandButton styleClass="dropdown-item btn-drop" process="@this @form"
                                                  actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
                                                  value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
                                                  update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();" >
@@ -115,7 +115,7 @@
                                     <c:choose>
                                         <c:when test="#{sessionBean.renderPanelHijas}">
                                             <c:forEach  items="#{sessionBean.getUnidadesHijasActiva()}"  var="ua">
-                                                <p:commandButton styleClass="btn btn-danger btn-molla" process="@this"
+                                                <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                                  value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}" update="panelMolla"
                                                                  oncomplete="$('#form\\:btnBuscarEvt').click();">
