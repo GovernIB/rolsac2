@@ -86,6 +86,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
      */
     public void buscarEvt() {
         if (filtro.getIdUA() == null || filtro.getIdUA().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
+            filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
             buscar();
         }
     }
@@ -112,27 +113,6 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
             public String getRowKey(UnidadAdministrativaGridDTO pers) {
                 return pers.getCodigo().toString();
             }
-
-            /*
-            @Override
-            public List<UnidadAdministrativaGridDTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filterBy) {
-                try {
-                    filtro.setIdioma(sessionBean.getLang());
-                    if (!sortField.equals("filtro.orderBy")) {
-                        filtro.setOrderBy(sortField);
-                    }
-                    filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
-                    Pagina<UnidadAdministrativaGridDTO> pagina = unidadAdministrativaService.findByFiltro(filtro);
-                    setRowCount((int) pagina.getTotal());
-
-                    return pagina.getItems();
-                } catch (Exception e) {
-                    LOG.error("Error llamando", e);
-                    Pagina<UnidadAdministrativaGridDTO> pagina = new Pagina(new ArrayList(), 0);
-                    setRowCount((int) pagina.getTotal());
-                    return pagina.getItems();
-                }
-            }*/
 
             public int count(Map<String, FilterMeta> filterBy) {
                 return unidadAdministrativaService.countByFiltro(filtro);

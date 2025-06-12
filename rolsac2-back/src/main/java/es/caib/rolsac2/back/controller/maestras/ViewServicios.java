@@ -118,7 +118,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
         }
 
-        if( this.isGestor()){
+        if (this.isGestor()) {
             codigosUaDescendientesGestor = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
         }
 
@@ -274,14 +274,14 @@ public class ViewServicios extends AbstractController implements Serializable {
 
             List<Long> ids = new ArrayList<>();
             for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-                if( filtro.isHijasActivas()) {
+                if (filtro.isHijasActivas()) {
                     List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
                     ids.addAll(idsUa);
                 }
                 ids.add(ua.getCodigo());
             }
             filtro.setIdUAsInstructor(ids);
-        }else{
+        } else {
             filtro.setIdUAsInstructor(null);
             filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
         }
@@ -316,10 +316,10 @@ public class ViewServicios extends AbstractController implements Serializable {
 
         boolean verComunes = this.isGestor() || this.isInformador();
 
-        if(verComunes){
-            if( this.isGestor()) {
+        if (verComunes) {
+            if (this.isGestor()) {
                 filtro.setIdUAInstructorOComun(codigosUaDescendientesGestor);
-            }else {
+            } else {
                 filtro.setIdUAInstructorOComun(Arrays.asList(sessionBean.getUnidadActiva().getCodigo()));
             }
         } else {
@@ -383,7 +383,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             }
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
 
-            TypeModoAcceso modo =    BooleanUtils.isTrue(datoSeleccionado.getComun()) && ( this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
             abrirVentana(modo, serv);
 
         }
@@ -402,7 +402,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             }
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
 
-            TypeModoAcceso modo =    BooleanUtils.isTrue(datoSeleccionado.getComun()) && ( this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
             abrirVentana(modo, serv);
 
         }
@@ -774,7 +774,8 @@ public class ViewServicios extends AbstractController implements Serializable {
         } else if (filtro.isHijasActivas()) {
             filtroHijasActivasChange();
         }
-        if (filtro.getIdUA() == null || filtro.getIdUA().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
+        if (filtro.getIdUAInstructor() == null || filtro.getIdUAInstructor().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
+            filtro.setIdUAInstructor(sessionBean.getUnidadActiva() != null ? sessionBean.getUnidadActiva().getCodigo() : null);
             buscar();
         }
     }

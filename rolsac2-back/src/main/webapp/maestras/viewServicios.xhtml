@@ -35,7 +35,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
             <p:menuitem value="#{ua.nombre.getTraduccion(sessionBean.lang)}" styleClass="estiloGrande"
                         action="#{sessionBean.cambiarUnidadAdministrativa(ua)}"
-                        update="migaPan"
+                        update="panelMolla :form:dataTable"
                         oncomplete="$('#form\\:btnBuscarEvt').click();"
                         disabled="#{sessionBean.getPerfil() == TypePerfiles.GESTOR and sessionBean.checkUaGestor(ua)}"
             />
@@ -50,7 +50,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <p:commandButton styleClass="btn btn-danger btn-molla" process="@this @form"
                                          actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
                                          value="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}"
-                                         update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                         update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();">
                         </p:commandButton>
                         <button type="button"
                                 class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"

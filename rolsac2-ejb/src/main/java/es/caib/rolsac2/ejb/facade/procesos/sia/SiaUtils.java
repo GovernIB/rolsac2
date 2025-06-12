@@ -113,7 +113,7 @@ public class SiaUtils {
         // Si nunca ha estado en SIA --> es enviable a SIA como Alta (A)
         // Si esta de baja --> es enviable a SIA como Reactivación (R)
         // Si no.................. --> es enviable a SIA como modificación (M)
-        // Si no cumple alguno de los 34 checks.
+        // Si no cumple alguno de los 3 checks.
         // Si está de baja o nunca ha estado en SIA ---> NO es enviable
         // Si no ..... --> es enviable a SIA como baja.
         if (esVisible && tieneCodigoCentro && isVisibleUA) {
