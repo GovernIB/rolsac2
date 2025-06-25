@@ -12,6 +12,7 @@ import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -56,10 +57,19 @@ public class PDUPlugin extends AbstractPluginProperties implements IPluginPdu {
 
     }
 
-    public PDUPlugin(final String prefijoPropiedades, final Properties properties) {
+    public PDUPlugin(final String prefijoPropiedades, final Properties properties) throws Exception {
         super(prefijoPropiedades, properties);
-        client = ClientBuilder.newClient().register(new PduAuthenticator(getProperty(USER), getProperty(PASSWORD)));
 
+        // 1. Construir SSLContext TLSv1.2
+        SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+        sslContext.init(null, null, null); // usa TrustManagers por defecto
+
+        // 2. Crear el cliente registrando tu Authenticator y el sslContext
+        client = ClientBuilder.newBuilder()
+                .sslContext(sslContext)
+                .hostnameVerifier((hostname, session) -> true) // o uno más estricto
+                .register(new PduAuthenticator(getProperty(USER), getProperty(PASSWORD)))
+                .build();
     }
 
 

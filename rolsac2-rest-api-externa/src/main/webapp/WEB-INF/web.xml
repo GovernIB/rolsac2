@@ -37,7 +37,7 @@
             <description>Es poden posar roles concrets, o ** que vol dir qualsevol role</description>
             <role-name>RS2_API</role-name>
         </auth-constraint>
-    </security-constraint> --> 
+    </security-constraint> -->
 
     <login-config>
         <auth-method>${webXml.loginConfig.authMethod}</auth-method>
