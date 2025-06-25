@@ -714,7 +714,14 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             filtroHijasActivasChange();
         }
         if (filtro.getIdUAInstructor() == null || filtro.getIdUAInstructor().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
-            filtro.setIdUAInstructor(sessionBean.getUnidadActiva() != null ? sessionBean.getUnidadActiva().getCodigo() : null);
+            if (this.isGestor()) {
+                codigosUaDescendientesGestor = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
+                filtro.setIdUAInstructorOComun(codigosUaDescendientesGestor);
+            } else if (this.isInformador()) {
+                filtro.setIdUAInstructorOComun(Arrays.asList(sessionBean.getUnidadActiva().getCodigo()));
+            } else {
+                filtro.setIdUAInstructor(sessionBean.getUnidadActiva() != null ? sessionBean.getUnidadActiva().getCodigo() : null);
+            }
             buscar();
         }
     }
