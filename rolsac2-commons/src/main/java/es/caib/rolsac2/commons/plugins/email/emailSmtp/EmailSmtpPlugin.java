@@ -1,5 +1,6 @@
 package es.caib.rolsac2.commons.plugins.email.emailSmtp;
 
+import com.sun.mail.smtp.SMTPTransport;
 import es.caib.rolsac2.commons.plugins.email.api.AnexoEmail;
 import es.caib.rolsac2.commons.plugins.email.api.EmailPlugin;
 import es.caib.rolsac2.commons.plugins.email.api.EmailPluginException;
@@ -15,10 +16,7 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
 import javax.naming.InitialContext;
 import java.util.List;
@@ -58,18 +56,21 @@ public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPl
         try {
             final InitialContext jndiContext = new InitialContext();
             final Session mailSession;
-            if (getProperty(EMAIL_JNDI) == null) {
 
-                /** para configurarlo a travÃ©s de parÃ¡metros de entrada */
-                // ConfiguraciÃ³n de propiedades
+            if (getProperty(EMAIL_JNDI) == null) {
+//destinatarios.set(0, "fjeiwfi@gjei3ffe.es");
+                final String host = getPropiedad(HOST_EMAIL);
+                final String port = getPropiedad(PORT_EMAIL);
+                final String user = getPropiedad(USUARIO_EMAIL);
+                final String pwd = getPropiedad(PWD_EMAIL);
+
+                /** Para configurarlo a traves de parametros de entrada */
                 Properties props = new Properties();
                 props.put("mail.smtp.auth", "true");
                 props.put("mail.smtp.starttls.enable", "true");
-                props.put("mail.smtp.host", getPropiedad(HOST_EMAIL));
-                props.put("mail.smtp.port", getPropiedad(PORT_EMAIL));
-                String user = getPropiedad(USUARIO_EMAIL);
-                String pwd = getPropiedad(PWD_EMAIL);
-                // CreaciÃ³n de la sesiÃ³n
+                props.put("mail.smtp.host", host);
+                props.put("mail.smtp.port", port);
+
                 mailSession = Session.getInstance(props, new javax.mail.Authenticator() {
                     protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
                         return new javax.mail.PasswordAuthentication(user, pwd);
@@ -78,17 +79,27 @@ public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPl
             } else {
                 mailSession = (Session) jndiContext.lookup(getProperty(EMAIL_JNDI));
             }
-            //final Session mailSession = (Session) jndiContext.lookup("java:/es.caib.rolsac2.mail");
+
+            // Preparar destinatarios tras validación
+            InternetAddress[] direcciones = destinatarios.stream()
+                    .map(address -> {
+                        try {
+                            InternetAddress ia = new InternetAddress(address);
+                            ia.validate(); // validación sintáctica
+                            // chequeo SMTP opcional; devuelve false si el servidor rechaza el RCPT TO
+                            if (!checkAddressExists(mailSession, address)) {
+                                throw new AddressException("SMTP RCPT TO rechazado por " + address);
+                            }
+                            return ia;
+                        } catch (AddressException | NumberFormatException e) {
+                            // aquí decides: filtrar o lanzar excepción
+                            throw new RuntimeException("Dirección invalida: " + address, e);
+                        }
+                    })
+                    .toArray(InternetAddress[]::new);
+
             final MimeMessage msg = new MimeMessage(mailSession);
-
-            final InternetAddress[] direcciones = new InternetAddress[destinatarios.size()];
-            for (int i = 0; i < destinatarios.size(); i++) {
-                final InternetAddress direccion = new InternetAddress();
-                direccion.setAddress(destinatarios.get(i));
-                direcciones[i] = direccion;
-            }
             msg.setRecipients(javax.mail.Message.RecipientType.TO, direcciones);
-
             msg.setSubject(asunto);
 
             String contenido;
@@ -143,6 +154,49 @@ public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPl
         }
         return true;
 
+    }
+
+    private boolean checkAddressExists(Session mailSession, String address) {
+        SMTPTransport transport = null;
+        try {
+            // 1. Validación sintáctica CORRECTA
+            InternetAddress ia = new InternetAddress(address);
+            ia.validate();  // ¡no InternetAddress.validate(address)!
+
+            // 2. Obtén el transporte SMTP de la sesión
+            transport = (SMTPTransport) mailSession.getTransport("smtp");
+            transport.connect(); // usa Authenticator y props de mailSession
+
+            // 3. MAIL FROM
+            String sender = mailSession.getProperty("mail.smtp.from");
+            if (sender == null) {
+                sender = mailSession.getProperty("mail.smtp.user");
+            }
+            transport.issueCommand("MAIL FROM:<" + sender + ">", 250);
+            int mailFromCode = transport.getLastReturnCode();
+            if (mailFromCode != 250) {
+                return false;
+            }
+
+            // 4. RCPT TO de prueba
+            transport.issueCommand("RCPT TO:<" + address + ">", 250);
+            int rcptToCode = transport.getLastReturnCode();
+            return (rcptToCode == 250 || rcptToCode == 251);
+
+        } catch (AddressException e) {
+            // formato inválido
+            return false;
+        } catch (MessagingException e) {
+            // rechazo SMTP o fallo de conexión
+            return false;
+        } finally {
+            if (transport != null) {
+                try {
+                    transport.close();
+                } catch (MessagingException ignored) {
+                }
+            }
+        }
     }
 
     public String interpretarError(String idioma, MessagingException e) {
