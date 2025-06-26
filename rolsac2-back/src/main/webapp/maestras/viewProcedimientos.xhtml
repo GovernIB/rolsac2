@@ -213,7 +213,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              styleClass="mr-2" icon="pi pi-search"
                                              actionListener="#{viewProcedimientos.buscarEvt()}"
                                              update="messages dataTable"
-                                             process="@form" style="display: none"/>
+                                             process="@form" style="display: none"
+                                             onstart="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"/>
                             <p:commandButton id="btnBuscar" value="#{labels['dict.busqueda']}"
                                              styleClass="mr-2" icon="pi pi-search"
                                              actionListener="#{viewProcedimientos.buscar()}"
@@ -721,7 +723,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdDeseaCrearEditar').hide()" styleClass="font15pxi" />
             </p:confirmDialog>
 
-            <!--<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>-->
 
             <p:commandButton id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
                              actionListener="#{viewProcedimientos.dblClickProcedimiento()}" process="@this"

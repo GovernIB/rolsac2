@@ -31,7 +31,10 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Named
 @ViewScoped
@@ -99,15 +102,15 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     private Literal lopdResponsable;
     private Literal comunUA;
 
-    private List<Long> codigosUaDescendientesGestor;
+    //private List<Long> codigosUaDescendientesGestor;
 
     public void load() {
         LOG.debug("load View Procedimientos");
         permisoAccesoVentana(ViewProcedimientos.class);
 
-        if (this.isGestor()) {
+        /*if (this.isGestor()) {
             codigosUaDescendientesGestor = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
-        }
+        }*/
 
         this.limpiarFiltro();
         cargarFiltros();
@@ -249,7 +252,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void limpiarFiltro() {
         filtro = new ProcedimientoFiltro();
-
+/*
         boolean verComunes = this.isGestor() || this.isInformador();
 
         if (verComunes) {
@@ -260,8 +263,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             }
         } else {
             filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
-        }
-
+        }*/
+        filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
 
         filtro.setIdioma(sessionBean.getLang());
         //filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
@@ -714,14 +717,15 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             filtroHijasActivasChange();
         }
         if (filtro.getIdUAInstructor() == null || filtro.getIdUAInstructor().compareTo(sessionBean.getUnidadActiva().getCodigo()) != 0) {
-            if (this.isGestor()) {
+            /*if (this.isGestor()) {
                 codigosUaDescendientesGestor = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
                 filtro.setIdUAInstructorOComun(codigosUaDescendientesGestor);
             } else if (this.isInformador()) {
                 filtro.setIdUAInstructorOComun(Arrays.asList(sessionBean.getUnidadActiva().getCodigo()));
             } else {
                 filtro.setIdUAInstructor(sessionBean.getUnidadActiva() != null ? sessionBean.getUnidadActiva().getCodigo() : null);
-            }
+            }*/
+            filtro.setIdUAInstructor(sessionBean.getUnidadActiva() != null ? sessionBean.getUnidadActiva().getCodigo() : null);
             buscar();
         }
     }
