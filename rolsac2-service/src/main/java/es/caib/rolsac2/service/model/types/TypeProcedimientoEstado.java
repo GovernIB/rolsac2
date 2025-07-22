@@ -10,19 +10,10 @@ public enum TypeProcedimientoEstado {
      * <P>ESTADO MODIFICACON</P>
      **/
     MODIFICACION("M"),
-
     /**
      * <P>ESTADO MODIFICACIÓN PENDIENTE SUBIR</P>
      */
     PENDIENTE_PUBLICAR("S"),
-    /**
-     * <P>PENDIENTE RESERVAR</P>
-     */
-    PENDIENTE_RESERVAR("T"),
-    /**
-     * <P>PENDIENTE RESERVAR</P>
-     */
-    PENDIENTE_BORRAR("U"),
     /**
      * <P>PENDIENTE RESERVAR</P>
      */
@@ -32,21 +23,11 @@ public enum TypeProcedimientoEstado {
      */
     PUBLICADO("P"),
     /**
-     * <P>BORRADO</P>
-     */
-    BORRADO("B"),
-
-    /**
-     * <P>RESERVA</P>
-     */
-    RESERVA("R"),
-
-    /**
      * <P>CERRAR</P>
      */
     CERRADO("C");
 
-    String valor;
+    final String valor;
 
     TypeProcedimientoEstado(String iValor) {
         valor = iValor;
@@ -72,11 +53,9 @@ public enum TypeProcedimientoEstado {
             case MODIFICACION:
             case PENDIENTE_PUBLICAR:
                 return TypeProcedimientoWorkflow.MODIFICACION;
-            case BORRADO:
             case PUBLICADO:
             case PENDIENTE_CERRAR:
             case CERRADO:
-            case RESERVA:
                 return TypeProcedimientoWorkflow.DEFINITIVO;
             default:
                 return null;
@@ -90,13 +69,7 @@ public enum TypeProcedimientoEstado {
             case MODIFICACION:
             case PENDIENTE_PUBLICAR:
                 return TypeProcedimientoWorkflow.MODIFICACION;
-            case PENDIENTE_BORRAR:
-                return TypeProcedimientoWorkflow.MODIFICACION;
-            case PENDIENTE_RESERVAR:
-                return TypeProcedimientoWorkflow.MODIFICACION;
-            case BORRADO:
             case PUBLICADO:
-            case RESERVA:
             case CERRADO:
             case PENDIENTE_CERRAR:
                 return TypeProcedimientoWorkflow.DEFINITIVO;
@@ -133,7 +106,7 @@ public enum TypeProcedimientoEstado {
      * Es estado pendiente
      **/
     public boolean isEstadoPendiente() {
-        return this == TypeProcedimientoEstado.PENDIENTE_BORRAR || this == TypeProcedimientoEstado.PENDIENTE_CERRAR || this == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || this == TypeProcedimientoEstado.PENDIENTE_RESERVAR;
+        return this == TypeProcedimientoEstado.PENDIENTE_CERRAR || this == TypeProcedimientoEstado.PENDIENTE_PUBLICAR;
     }
 
     public String getLiteralMensajePendiente(String idioma) {

@@ -1125,9 +1125,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         TypeIndexacion tipo = (data instanceof ProcedimientoDTO) ? TypeIndexacion.PROCEDIMIENTO : TypeIndexacion.SERVICIO;
 
         // 2 == borrado ; 1 == insertar
-        int accionIdx = (estadoDestino == TypeProcedimientoEstado.BORRADO || estadoDestino == TypeProcedimientoEstado.RESERVA) ? 2 : 1;
+        int accionIdx = (estadoDestino == TypeProcedimientoEstado.CERRADO) ? 2 : 1;
         indexacionRepository.guardarIndexar(data.getCodigo(), tipo, idEntidad, accionIdx);
-        int accion = (estadoDestino != null && estadoDestino == TypeProcedimientoEstado.BORRADO) ? 0 : 1;
+        int accion = (estadoDestino != null && estadoDestino == TypeProcedimientoEstado.CERRADO) ? 0 : 1;
         indexacionSIARepository.guardarIndexar(data.getCodigo(), tipo.toString(), idEntidad, 1, accion);
 
         if (data instanceof ProcedimientoDTO && estadoDestino != null && estadoDestino.isEstadoValidacionPDU()) {
@@ -1150,14 +1150,14 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             }
 
             if (procDestino == null && data.getCodigo() != null) {
-                if (estadoDestino != null && estadoDestino.equals(TypeProcedimientoEstado.BORRADO) || estadoDestino.equals(TypeProcedimientoEstado.RESERVA)) {
+                if (estadoDestino != null && estadoDestino.equals(TypeProcedimientoEstado.CERRADO)) {
                     generarAuditoria("auditoria.flujo." + data.getEstado().toString() + estadoDestino.toString(), data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.BAJA.toString());
                 } else {
                     generarAuditoria("auditoria.flujo." + data.getEstado().toString() + estadoDestino.toString(), data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.MODIFICACION.toString());
                 }
 
             } else {
-                if (estadoDestino != null && estadoDestino.equals(TypeProcedimientoEstado.BORRADO) || estadoDestino.equals(TypeProcedimientoEstado.RESERVA)) {
+                if (estadoDestino != null && estadoDestino.equals(TypeProcedimientoEstado.CERRADO)) {
                     crearAuditoria(procDestino, data, perfil, "auditoria.flujo." + data.getEstado().toString() + estadoDestino.toString(), TypeAccionAuditoria.BAJA.toString());
                 } else {
                     crearAuditoria(procDestino, data, perfil, "auditoria.flujo." + data.getEstado().toString() + estadoDestino.toString(), TypeAccionAuditoria.MODIFICACION.toString());

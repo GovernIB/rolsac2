@@ -3005,7 +3005,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public void actualizarUA(List<Long> codigoUAOriginal, Long codigoUANueva, String literal, String nombreAntiguo, String nombreNuevo, TypePerfiles perfil, String usuario) {
 
 
-        Query queryProcsAfectados = entityManager.createQuery("select distinct j.procedimiento.codigo from JProcedimientoWorkflow j where j.estado NOT LIKE '" + TypeProcedimientoEstado.RESERVA.toString() + "' AND j.uaResponsable.codigo in (:uas) OR j.uaInstructor.codigo in (:uas)");
+        Query queryProcsAfectados = entityManager.createQuery("select distinct j.procedimiento.codigo from JProcedimientoWorkflow j where j.estado NOT LIKE '" + TypeProcedimientoEstado.CERRADO.toString() + "' AND j.uaResponsable.codigo in (:uas) OR j.uaInstructor.codigo in (:uas)");
         queryProcsAfectados.setParameter("uas", codigoUAOriginal);
         List<Long> procsAfectados = queryProcsAfectados.getResultList();
         if (procsAfectados != null && !procsAfectados.isEmpty()) {
@@ -3032,19 +3032,19 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-        Query queryUAResponsable = entityManager.createQuery("update JProcedimientoWorkflow  set uaResponsable = " + codigoUANueva + " WHERE estado NOT LIKE '" + TypeProcedimientoEstado.RESERVA.toString() + "' AND uaResponsable.codigo in (:uas)");
+        Query queryUAResponsable = entityManager.createQuery("update JProcedimientoWorkflow  set uaResponsable = " + codigoUANueva + " WHERE estado NOT LIKE '" + TypeProcedimientoEstado.CERRADO.toString() + "' AND uaResponsable.codigo in (:uas)");
         queryUAResponsable.setParameter("uas", codigoUAOriginal);
         queryUAResponsable.executeUpdate();
 
-        Query queryUAInstructor = entityManager.createQuery("update JProcedimientoWorkflow  set uaInstructor = " + codigoUANueva + " WHERE estado NOT LIKE '" + TypeProcedimientoEstado.RESERVA.toString() + "' AND uaInstructor.codigo  in (:uas)");
+        Query queryUAInstructor = entityManager.createQuery("update JProcedimientoWorkflow  set uaInstructor = " + codigoUANueva + " WHERE estado NOT LIKE '" + TypeProcedimientoEstado.CERRADO.toString() + "' AND uaInstructor.codigo  in (:uas)");
         queryUAInstructor.setParameter("uas", codigoUAOriginal);
         queryUAInstructor.executeUpdate();
 
-        Query queryUACompente = entityManager.createQuery("update JProcedimientoWorkflow  set uaCompetente = " + codigoUANueva + " WHERE estado NOT LIKE '" + TypeProcedimientoEstado.RESERVA.toString() + "' AND uaCompetente.codigo  in (:uas)");
+        Query queryUACompente = entityManager.createQuery("update JProcedimientoWorkflow  set uaCompetente = " + codigoUANueva + " WHERE estado NOT LIKE '" + TypeProcedimientoEstado.CERRADO.toString() + "' AND uaCompetente.codigo  in (:uas)");
         queryUACompente.setParameter("uas", codigoUAOriginal);
         queryUACompente.executeUpdate();
 
-        Query queryUATramites = entityManager.createQuery("update JProcedimientoTramite j set j.unidadAdministrativa = " + codigoUANueva + " WHERE j.procedimiento in (select codigo from JProcedimientoWorkflow where estado NOT LIKE '" + TypeProcedimientoEstado.RESERVA.toString() + "') AND j.unidadAdministrativa.codigo in (:uas)");
+        Query queryUATramites = entityManager.createQuery("update JProcedimientoTramite j set j.unidadAdministrativa = " + codigoUANueva + " WHERE j.procedimiento in (select codigo from JProcedimientoWorkflow where estado NOT LIKE '" + TypeProcedimientoEstado.CERRADO.toString() + "') AND j.unidadAdministrativa.codigo in (:uas)");
         queryUATramites.setParameter("uas", codigoUAOriginal);
         queryUATramites.executeUpdate();
     }
@@ -3069,7 +3069,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (jproc.getProcedimientoWF() != null) {
             for (JProcedimientoWorkflow jProcedimientoWorkflow : jproc.getProcedimientoWF()) {
 
-                if (jProcedimientoWorkflow.getEstado().equals(TypeProcedimientoEstado.RESERVA.toString())) {
+                if (jProcedimientoWorkflow.getEstado().equals(TypeProcedimientoEstado.CERRADO.toString())) {
                     //Los de reserva no se evolucionan
                     continue;
                 }

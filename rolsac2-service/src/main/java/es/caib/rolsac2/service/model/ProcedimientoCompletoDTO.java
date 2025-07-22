@@ -253,9 +253,9 @@ public class ProcedimientoCompletoDTO extends ModelApi {
         }
     }
 
-    public boolean isSoloReserva() {
+    public boolean isSoloCerrado() {
         if (isProcedimientoPub() && !isProcedimientoMod()) {
-            return getProcedimientoBaseDTOPub().getEstado() == TypeProcedimientoEstado.RESERVA;
+            return getProcedimientoBaseDTOPub().getEstado() == TypeProcedimientoEstado.CERRADO;
         }
         return false;
     }
@@ -290,7 +290,6 @@ public class ProcedimientoCompletoDTO extends ModelApi {
             return "pi pi-eye-slash iconoRojo";
         }
     }
-
 
 
 }

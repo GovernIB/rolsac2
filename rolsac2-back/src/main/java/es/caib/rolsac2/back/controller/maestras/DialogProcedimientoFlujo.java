@@ -118,37 +118,21 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                         switch (typeEstadoActual) {
                             case MODIFICACION:
                                 estados.add(TypeProcedimientoEstado.PUBLICADO);
-                                estados.add(TypeProcedimientoEstado.BORRADO);
-                                estados.add(TypeProcedimientoEstado.RESERVA);
                                 break;
                             case PUBLICADO:
                                 estados.add(TypeProcedimientoEstado.MODIFICACION);
-                                estados.add(TypeProcedimientoEstado.BORRADO);
-                                estados.add(TypeProcedimientoEstado.RESERVA);
                                 estados.add(TypeProcedimientoEstado.CERRADO);
-                                break;
-                            case BORRADO:
-                                estados.add(TypeProcedimientoEstado.PUBLICADO);
-                                estados.add(TypeProcedimientoEstado.RESERVA);
-                                break;
-                            case RESERVA:
-                                estados.add(TypeProcedimientoEstado.BORRADO);
-                                estados.add(TypeProcedimientoEstado.PUBLICADO);
                                 break;
                             case PENDIENTE_PUBLICAR:
                                 estados.add(TypeProcedimientoEstado.MODIFICACION);
                                 estados.add(TypeProcedimientoEstado.PUBLICADO);
                                 break;
-                            case PENDIENTE_RESERVAR:
+                            case PENDIENTE_CERRAR:
                                 estados.add(TypeProcedimientoEstado.MODIFICACION);
-                                estados.add(TypeProcedimientoEstado.RESERVA);
+                                estados.add(TypeProcedimientoEstado.CERRADO);
                                 break;
                             case CERRADO:
                                 estados.add(TypeProcedimientoEstado.PUBLICADO);
-                                break;
-                            case PENDIENTE_BORRAR:
-                                estados.add(TypeProcedimientoEstado.MODIFICACION);
-                                estados.add(TypeProcedimientoEstado.BORRADO);
                                 break;
                         }
                     }
@@ -157,13 +141,15 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                     estados = new ArrayList<>();
                     if (typeEstadoActual != null && typeEstadoActual == TypeProcedimientoEstado.MODIFICACION) {
                         estados.add(TypeProcedimientoEstado.PENDIENTE_PUBLICAR);
-                        estados.add(TypeProcedimientoEstado.PENDIENTE_RESERVAR);
-                        estados.add(TypeProcedimientoEstado.PENDIENTE_BORRAR);
-                        estados.add(TypeProcedimientoEstado.PENDIENTE_CERRAR);
                     }
-                    if (typeEstadoActual != null && (typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_RESERVAR || typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_BORRAR)) {
-                        //Se puede tirar para atrÃ¡s para poderlo volver a editar
-                        estados.add(TypeProcedimientoEstado.MODIFICACION);
+                    if (typeEstadoActual != null && typeEstadoActual == TypeProcedimientoEstado.PUBLICADO) {
+                        //Se puede tirar para atas para poderlo volver a editar
+                        estados.add(TypeProcedimientoEstado.PENDIENTE_CERRAR);
+                        this.estadoSeleccionado = estados.get(0);
+                    }
+                    if (typeEstadoActual != null && typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_CERRAR) {
+                        //Se puede tirar para atas para poderlo volver a editar
+                        estados.add(TypeProcedimientoEstado.PUBLICADO);
                         this.estadoSeleccionado = estados.get(0);
                     }
                 }

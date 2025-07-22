@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -203,23 +202,11 @@ public final class AuditoriaUtil {
                 case PUBLICADO:
                     retorno = "Publicat";
                     break;
-                case BORRADO:
-                    retorno = "Esborrat";
-                    break;
                 case MODIFICACION:
                     retorno = "En modificació";
                     break;
-                case PENDIENTE_BORRAR:
-                    retorno = "Pendent esborrar";
-                    break;
                 case PENDIENTE_PUBLICAR:
                     retorno = "Pendent publicar";
-                    break;
-                case PENDIENTE_RESERVAR:
-                    retorno = "Pendent reserva";
-                    break;
-                case RESERVA:
-                    retorno = "Reserva";
                     break;
                 case CERRADO:
                     retorno = "Tancat";
@@ -346,46 +333,28 @@ public final class AuditoriaUtil {
     /**
      * Compara dos valores TipoTramitacionDTO y determina si se crea una entrada en la auditoria.
      *
-     * @param valorPublicado
-     * @param valorModificado
-     * @param idCampo
-     * @return
+     * @param valorPublicado  Valor publicado
+     * @param valorModificado Valor modificado
+     * @param idCampo         Prefijo identificador del campo
+     * @param cambios         Lista de cambios a añadir
      */
 
-    public static final void auditar(final TipoTramitacionDTO valorPublicado, final TipoTramitacionDTO valorModificado, List<AuditoriaCambio> cambios, final String idCampo) {
+    public static void auditar(TipoTramitacionDTO valorPublicado, final TipoTramitacionDTO valorModificado, List<AuditoriaCambio> cambios, final String idCampo) {
 
 
-        if (valorPublicado == null && (valorModificado == null || valorModificado.isVacio())) {
+        if (valorPublicado == null && valorModificado == null) {
             return;
-        } else if (valorModificado == null || valorPublicado == null || valorPublicado.isVacio() || valorModificado.isVacio()) {
-
-            if (valorPublicado != null) {
-                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, valorPublicado.getTramiteId(), null, idCampo + ".remove");
-                cambios.add(cambio);
-            }
-            if (valorModificado != null && !valorModificado.isVacio()) {
-                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, null, valorModificado.getTramiteId(), idCampo + ".add");
-                cambios.add(cambio);
-            }
+        } else if (valorModificado == null && valorPublicado != null) {
+            AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, valorPublicado.getTramiteId(), null, idCampo + ".remove");
+            cambios.add(cambio);
         } else {
-
-//            if ( !Objects.equals(valorModificado.getCodigo(), valorModificado.getCodigo())) {
-//                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, valorPublicado.getCodigo().toString(), valorModificado.getCodigo().toString(), idCampo);
-//                cambios.add(cambio);
-//
-//                cambios.add( agregarAuditoriaValorCampo(null, valorPublicado.getDescripcion().getTraduccion("ca"), valorModificado.getDescripcion().getTraduccion("ca"), idCampo));
-//            } else {
-
-
-            // TODO Discernir según tipo tramitación modificado y anterior
-//                AuditoriaCambio cambio = agregarAuditoriaValorCampo(null, valorPublicado.getTramiteId(), valorModificado.getTramiteId(), idCampo + ".getTramiteId");
-//                cambios.add(cambio);
-
-//                AuditoriaUtil.auditar(valorPublicado.getTramiteId(), valorModificado.getTramiteId(), cambios, idCampo + ".getTramiteId");
-
-            boolean mismoTipo = Objects.equals(valorPublicado.getCodigo(), valorModificado.getCodigo());
+            if (valorPublicado == null) {
+                valorPublicado = new TipoTramitacionDTO();
+            }
 
             if (valorModificado.isTelematicoPlantilla()) {
+                //Opcion plantilla
+
                 if (valorPublicado.isTelematicoPlantilla()) {
                     AuditoriaUtil.auditar(valorPublicado.getDescripcion().getTraduccion("ca"), valorModificado.getDescripcion().getTraduccion("ca"), cambios, idCampo + ".plantillaSel");
                 } else {
@@ -396,8 +365,8 @@ public final class AuditoriaUtil {
                 }
 
             } else if (valorModificado.isTelematicoUrl()) {
-
                 // URL
+
                 if (valorPublicado.isTelematicoUrl()) {
                     AuditoriaUtil.auditar(valorPublicado.getUrl(), valorModificado.getUrl(), cambios, idCampo + ".url");
                 } else {

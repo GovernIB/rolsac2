@@ -557,8 +557,7 @@
                                                      literal="#{dialogServicio.data.tipoTramitacion.url}"
                                                      nombreLiteral="#{labels['dialogServicio.url']}">
                                     <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"
-                                                 disabled="#{dialogServicio.isModoConsulta() or
-                                                             !dialogServicio.isOpcionTelematicaUrl()}"/>
+                                                 disabled="#{dialogServicio.isModoConsulta() or  !dialogServicio.isOpcionTelematicaUrl()}"/>
                                 </my:literalComponent>
 
                             </div>
