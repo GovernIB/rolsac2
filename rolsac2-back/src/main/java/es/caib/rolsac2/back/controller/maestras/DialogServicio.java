@@ -563,10 +563,11 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
 
         if (data.isTramitElectronica()) {
-            if (opcionTelematica == 2 && data.getTipoTramitacion() != null) {
+            //Es para borrar datos antiguos que ya no se utilizan
+            if (opcionTelematica == 1 && data.getTipoTramitacion() != null) {
                 //Introducimos datos
                 data.getTipoTramitacion().setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-            } else if (opcionTelematica == 1 && data.getTipoTramitacion() != null) {
+            } else if (opcionTelematica == 2 && data.getTipoTramitacion() != null) {
                 //Introducimos url
                 data.getTipoTramitacion().setTramiteId(null);
                 data.getTipoTramitacion().setTramiteVersion(null);
@@ -693,13 +694,16 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }*/
 
-        if (this.data.isTramitElectronica() && (this.data.getTipoTramitacion().getUrl() == null || this.data.getTipoTramitacion().getUrl().estaVacio()) && this.data.getTipoTramitacion().getCodPlatTramitacion() == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlPlataforma"));
-            return false;
-
+        if (this.data.isTramitElectronica()) {
+            if (this.opcionTelematica == 1 && (this.data.getTipoTramitacion().getCodPlatTramitacion() == null || this.data.getTipoTramitacion().getTramiteId() == null || this.data.getTipoTramitacion().getTramiteVersion() == null)) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaPlataformaTramitacion"));
+                return false;
+            }
+            if (this.opcionTelematica == 2 && (this.data.getTipoTramitacion().getUrl() == null || !this.data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList()))) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlTramitacion"));
+                return false;
+            }
         }
-
-
         return retorno;
     }
 
