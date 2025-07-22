@@ -141,8 +141,11 @@ public class DialogServicio extends AbstractController implements Serializable {
         if (this.isModoAlta()) {
             data = ServicioDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUaInstructor(sessionBean.getUnidadActiva());
-            data.setUaResponsable(sessionBean.getUnidadActiva());
-            data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
+            data.setUaResponsable(sessionBean.getUnidadActiva().getNombre().getTraduccionConValor(sessionBean.getLang()));
+            this.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo()));
+            if (this.getLopdResponsable() != null) {
+                this.data.setLopdResponsable(this.getLopdResponsable().getTraduccionConValor(sessionBean.getLang()));
+            }
             data.setTemas(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
             data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
@@ -155,6 +158,10 @@ public class DialogServicio extends AbstractController implements Serializable {
                 data = (ServicioDTO) UtilJSF.getValorMochilaByKey("SERV");
             }
 
+            this.setLopdResponsable(uaService.obtenerPadreDir3(data.getUaInstructor().getCodigo()));
+            if (this.getLopdResponsable() != null) {
+                this.data.setLopdResponsable(this.getLopdResponsable().getTraduccionConValor(sessionBean.getLang()));
+            }
             /*if (data.getTipoTramitacion() == null) {
                 data.setTipoTramitacion(TipoTramitacionDTO.createInstance(sessionBean.getIdiomasPermitidosList()));
             }*/
@@ -169,7 +176,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             UtilJSF.vaciarMochila();
         }
 
-        uaRaiz = Boolean.valueOf(this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz()).toString();
+        uaRaiz = Boolean.valueOf(this.data.getUaInstructor() != null && this.data.getUaInstructor().esRaiz()).toString();
 
 
         if (data != null) {
@@ -213,9 +220,9 @@ public class DialogServicio extends AbstractController implements Serializable {
 
         //Revisamos literales y clonamos
         //revisarLiterales();
-        actualizarResponsable();
+        //actualizarResponsable();
         dataOriginal = (ServicioDTO) data.clone();
-
+        //data.getLopdResponsable()
         //Eso es para cargar las uas del instructor
         calcularUAhijosPadres();
     }
@@ -264,18 +271,19 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     /**
      * Actualiza el literal de resonsable
-     */
+     ***/
     public void actualizarResponsable() {
         if (data.getComun() == 0) {
             if (data.getUaResponsable() == null) {
                 lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
             } else {
-                lopdResponsable = data.getUaResponsable().getNombre();
+                lopdResponsable = data.getUaInstructor().getNombre();
             }
         } else {
             lopdResponsable = comunUA;
         }
     }
+
 
     private void revisarLiterales() {
         List<String> idiomas = sessionBean.getIdiomasPermitidosList();
@@ -389,9 +397,9 @@ public class DialogServicio extends AbstractController implements Serializable {
         abrirVentanaUA(this.data.getUaInstructor());
     }
 
-    public void abrirVentanaUAResp() {
+   /* public void abrirVentanaUAResp() {
         abrirVentanaUA(this.data.getUaResponsable());
-    }
+    }*/
 
     private void abrirVentanaUA(UnidadAdministrativaDTO ua) {
         final Map<String, String> params = new HashMap<>();
@@ -408,10 +416,10 @@ public class DialogServicio extends AbstractController implements Serializable {
         //params.put("esCabecera", null);
         UtilJSF.openDialog(direccion, TypeModoAcceso.valueOf(this.getModoAcceso()), params, true, 850, 575);
     }
-
+/*
     public boolean esUAResponsableRaiz() {
         return this.data.getUaResponsable() != null && this.data.getUaResponsable().esRaiz();
-    }
+    }*/
 
     public void returnDialogoUA(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
@@ -437,26 +445,25 @@ public class DialogServicio extends AbstractController implements Serializable {
      * Devuelve el css para el boton de la UA Instructor.
      * Si no está en la lista de UA del instructor, se pone en rojo y se muestra el ojo
      *
-     * @return
+     * @return public String getCssUAResponsable() {
+     * if (data.getUaResponsable() == null) {
+     * return "";
+     * }
+     * return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
+     * }
+     * <p>
+     * public void returnDialogoUAResp(final SelectEvent event) {
+     * final DialogResult respuesta = (DialogResult) event.getObject();
+     * <p>
+     * // Verificamos si se ha modificado
+     * if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+     * UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
+     * if (uaSeleccionada != null) {
+     * this.data.setUaResponsable(uaSeleccionada);
+     * }
+     * }
+     * }
      */
-    public String getCssUAResponsable() {
-        if (data.getUaResponsable() == null) {
-            return "";
-        }
-        return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
-    }
-
-    public void returnDialogoUAResp(final SelectEvent event) {
-        final DialogResult respuesta = (DialogResult) event.getObject();
-
-        // Verificamos si se ha modificado
-        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
-            UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
-            if (uaSeleccionada != null) {
-                this.data.setUaResponsable(uaSeleccionada);
-            }
-        }
-    }
 
 
     public void guardarFlujo() {
@@ -662,11 +669,6 @@ public class DialogServicio extends AbstractController implements Serializable {
         boolean retorno = true;
         if (this.data.getUaInstructor() == null || this.data.getUaInstructor().getCodigo() == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.uaInstructor"));
-            retorno = false;
-        }
-
-        if (this.data.getUaResponsable() == null || this.data.getUaResponsable().getCodigo() == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.uaResponsable"));
             retorno = false;
         }
 
@@ -1423,5 +1425,7 @@ public class DialogServicio extends AbstractController implements Serializable {
     public String getIconoSIA() {
         return Constantes.INDEXAR_SIA_ICONO;
     }
+
+
 }
 

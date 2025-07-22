@@ -59,6 +59,8 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     String obtenerPadreDir3(Long codigoUA, String idioma);
 
+    Literal obtenerPadreDir3(Long codigoUA);
+
     boolean existeTipoSexo(Long codigoSex);
 
     List<Long> getListaHijosRecursivo(Long codigoUA);

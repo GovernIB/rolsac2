@@ -43,9 +43,8 @@ public class JProcedimientoWorkflow {
     @Column(name = "PRWF_WFUSUA", length = 100)
     private String usuario;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "PRWF_CODUAR", nullable = false)
-    private JUnidadAdministrativa uaResponsable;
+    @Column(name = "PRWF_UARESP", length = 255)
+    private String uaResponsable;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PRWF_CODUAI", nullable = false)
@@ -260,11 +259,11 @@ public class JProcedimientoWorkflow {
         this.usuario = prwfWfusua;
     }
 
-    public JUnidadAdministrativa getUaResponsable() {
+    public String getUaResponsable() {
         return uaResponsable;
     }
 
-    public void setUaResponsable(JUnidadAdministrativa prwfCoduar) {
+    public void setUaResponsable(String prwfCoduar) {
         this.uaResponsable = prwfCoduar;
     }
 

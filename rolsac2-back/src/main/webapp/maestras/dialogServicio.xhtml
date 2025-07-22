@@ -355,9 +355,9 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.servicio']}:"
                                        for="txtServResp"/>
                             <p:inputText id="txtServResp"
-                                         value="#{dialogServicio.data.uaResponsable.nombre.getTraduccionConValor(dialogServicio.idioma)}"
-                                         styleClass="w89 mr-1" disabled="true"/>
-
+                                         value="#{dialogServicio.data.uaResponsable}"
+                                         styleClass="w95 mr-1" disabled="#{dialogProcedimiento.isModoConsulta()}"/>
+<!--
                             <p:commandButton
                                     action="#{dialogServicio.abrirVentanaUAResp()}"
                                     icon="pi pi-sitemap"
@@ -377,10 +377,10 @@
                             </p:commandButton>
 
                             <h:outputLink id="lblUAiconoResp" value="#" styleClass="w20px labelWarningUAPadre">
-                                <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogServicio.getCssUAResponsable()}" />
+                                <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogServicio.getCssUAResponsable}" />
                             </h:outputLink>
                             <p:tooltip id="toolTipFadeResp" for="lblUAiconoResp" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
-
+-->
                     </div>
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
@@ -589,7 +589,6 @@
                         <my:literalComponent id="txtRespTrat"
                                              literal="#{dialogServicio.lopdResponsable}"
                                              soloLecture="#{true}"
-                                             styleClass="w95"
                                              idioma="#{dialogServicio.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -1079,7 +1078,7 @@
                              icon="pi pi-inbox"
                              action="#{dialogServicio.verAuditorias}"
                              styleClass="btn-footer"
-                             process="@all"
+                             process="@this"
                              disabled="#{empty dialogServicio.data.codigo}"
             />
         </div>

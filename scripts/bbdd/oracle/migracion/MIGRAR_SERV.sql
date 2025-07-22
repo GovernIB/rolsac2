@@ -1,25 +1,25 @@
-CREATE OR replace PROCEDURE "MIGRAR_SERV" (codigo        NUMBER,
+create or replace PROCEDURE "MIGRAR_SERV" (codigo        NUMBER,
                                            codigoentidad NUMBER,
                                            resultado     OUT CLOB)
 AS
 /* SET SERVEROUTPUT ON; */
 /** GRANT: GRANT SELECT ON ROLSAC.RSC_PROCED TO ROLSAC2;
-           GRANT SELECT ON ROLSAC.RSC_TRAPRO TO ROLSAC2; 
+           GRANT SELECT ON ROLSAC.RSC_TRAPRO TO ROLSAC2;
            GRANT SELECT ON R1_SERVICIOS TO ROLSAC2;
-           GRANT SELECT ON R1_SERVICIOS_TRAD TO ROLSAC2; 
+           GRANT SELECT ON R1_SERVICIOS_TRAD TO ROLSAC2;
 
            GRANT SELECT ON ROLSAC.RSC_PRONOR TO ROLSAC2;
            GRANT SELECT ON ROLSAC.RSC_SERNOR TO ROLSAC2;
 **/
   /** RSC_PROCED (* INDICA QUE EL CAMPO NO SE MIGRA):
           PRO_CODI    ---> CODIGO PROCEDIMIENTO [PRO_CODIGO]
-         *PRO_TYPE    ---> EL TIPO (SI ES REMOTO) [PROC_TIPO] 
-         *PRO_SIGNAT  ---> SIGNATURE 
+         *PRO_TYPE    ---> EL TIPO (SI ES REMOTO) [PROC_TIPO]
+         *PRO_SIGNAT  ---> SIGNATURE
           PRO_FECCAD  ---> FECHA CADUCIDAD [PRWF_FECCAD]
           PRO_FECPUB  ---> FECHA PUBLICICACION [PRWF_FECPUB]
           PRO_FECACT  ---> FECHA ACTUALIZACION [PROC_FECACT]
           PRO_VALIDA  ---> VALIDA [PRWF_WF - PRWF_WFESTADO - PRWF_INTERNO]
-          PRO_CODUNA  ---> CODIGO UNIDAD ADMINISTRATIVA [PRWF_CODUAR]
+          PRO_CODUNA  ---> CODIGO UNIDAD ADMINISTRATIVA [PRWF_UARESP]
           PRO_CODFAM  ---> FAMILIA
           PRO_TRAMIT  ---> TRAMITE
           PRO_VERSIO  ---> VERSION
@@ -27,44 +27,44 @@ AS
          *PRR_IDEXTE  ---> CODIGO ID PARA ADMINISTRACION REMOTA
          *PRR_URLREM  ---> URL REMOTA EN ADMINISTRACION REMOTA
           PRO_URLEXT  ---> URL
-          PRO_ORDCON  ---> ORDEN 
-         *PRO_ORDDIR  ---> ORDEN2 
+          PRO_ORDCON  ---> ORDEN
+         *PRO_ORDDIR  ---> ORDEN2
          *PRO_ORDSER  ---> ORDEN3
           PRO_CODINI  ---> FORMA DE INICIO [PRWF_PRTIPINIC]
           PRO_INDICA  ---> TIPO VIA ADMINISTRATIVA [PRWF_TIPVIA]
           PRO_VENTANA ---> VENTANILLA UNICA
           PRO_INFO    ---> DIRECCION ELECTRONICA [PRWF_RSEMA]
-          PRO_TAXA    ---> TAXA 
+          PRO_TAXA    ---> TAXA
           PRO_CODUNA_RESOL --> ORGANO RESOLUTORIO [PRWF_CODUAI]
           PRO_RESPON  ---> RESPONSABLE [PRWF_RSNOM]
-          PRO_CODUNA_SERV --> ORGANO SERVICIO  
+          PRO_CODUNA_SERV --> ORGANO SERVICIO
           PRO_CODSIA  ---> CODIGO SIA [PROC_SIACOD]
           PRO_CODSIL  ---> SILENCIO ADMINISTRATIVO [PRWF_PRTIPSIAD]
           PRO_ESTSIA  ---> ESTADO SIA  [PROC_SIAEST]
           PRO_FECSIA  ---> FECHA SIA  [PROC_SIAFC]
           PRO_COMUN   ---> COMUN    [PRWF_COMUN]
           PRO_CODLEG  ---> TIPO LEGITIMACION   [PRWF_DPTIPLEGI]
-         *PRO_PDTVAL  ---> PENDIENTE VALIDACION   
+         *PRO_PDTVAL  ---> PENDIENTE VALIDACION
           PRO_FUNHAB  ---> HABILITADO PARA FUNCIONARIO [PRWF_HABFUN]
           PRO_APOHAB  ---> HABILITADO PARA APODERADO [PRWF_HABAPO]
       (TRADUCCIONES) RSC_TRAPRO:
           TPR_CODPRO  ---> CODIGO PROCEDIMIENTO [TRPW_CODIGO]
           TPR_CODIDI  ---> IDIOMA     [TRPW_IDIOMA]
-          TPR_NOMBRE  ---> NOMBRE [TRPW_NOMBRE]    
+          TPR_NOMBRE  ---> NOMBRE [TRPW_NOMBRE]
           TPR_RESUME  ---> RESUMEN [TRPW_OBJETO]
-          TPR_DESTIN  ---> DESTINATARIO  [TRPW_DESTIN] 
+          TPR_DESTIN  ---> DESTINATARIO  [TRPW_DESTIN]
           TPR_REQUIS  ---> REQUISITOS [TRPW_SVREQ]
-          TPR_PLAZOS  ---> PLAZOS 
-         *TPR_SILEN   ---> SILENCIO 
-          TPR_RECURS  ---> RECURSO  
+          TPR_PLAZOS  ---> PLAZOS
+         *TPR_SILEN   ---> SILENCIO
+          TPR_RECURS  ---> RECURSO
           TPR_OBSERV  ---> OBSERVACION [TRPW_OBSER]
-          TPR_LUGAR   ---> LUGAR 
+          TPR_LUGAR   ---> LUGAR
           TPR_RESOLUCION  ---> RESOLUCION [TRPW_PRRESO]
-          TPR_NOTIFICACION  ---> NOTIFICACION  
-          TPR_RESULT  ---> RESULTAT 
+          TPR_NOTIFICACION  ---> NOTIFICACION
+          TPR_RESULT  ---> RESULTAT
          *TPR_LOPDFI  ---> LOPD FINALIDAD   [FINALIDAD]
          *TPR_LOPDDS  ---> LOPD DESTINATARIO [DESTINATARIO]
-         *TPR_LOPDDR  ---> LOPD DERECHO 
+         *TPR_LOPDDR  ---> LOPD DERECHO
          *TPR_LOPDIA  ---> LOPD INFO ADICIONAL
       RSC_SERVIC (* INDICA QUE EL CAMPO NO SE MIGRA):
           SER_CODI   ---> CODIGO SERVICIO [PRO_CODIGO]
@@ -77,8 +77,8 @@ AS
           SER_NOMRSP ---> RESPONSABLE [PRWF_RSNOM]
           SER_CORREO ---> RESPONSABLE CORREO [PRWF_RSEMA]
           SER_TELEFO ---> RESPONSABLE TFNO [PRWF_RSTFNO]
-          SER_INSTRU ---> SERVICIO INSTRUCTOR  
-          SER_SERRSP ---> SERVICIO RESPONSABLE 
+          SER_INSTRU ---> SERVICIO INSTRUCTOR
+          SER_SERRSP ---> SERVICIO RESPONSABLE
           SER_FECPUB ---> FECHA PUBLICACION [PRWF_FECPUB]
           SER_FECDES ---> FECHA DESPUBLICACION [PRWF_FECCAD]
           SER_FECACT ---> FECHA ACTUALIZACION [PROC_FECACT]
@@ -93,94 +93,94 @@ AS
           SER_PARAMS ---> TRAMITE PARAMS [PRWF_SVTREL.TELEFONICO]
           SER_CODLEG ---> LEGITIMACION [PRWF_DPTIPLEGI]
           SER_CLOPD  ---> LOPD ACTIVO  [PROC_LOPDACT]
-         *SER_PDTVAL ---> PENDIENTE VALIDACION 
+         *SER_PDTVAL ---> PENDIENTE VALIDACION
       (TRADUCCIONES) RSC_TRASER:
           TSR_CODSER ---> CODIGO SERVICIO [TRPW_CODIGO]
           TSR_CODIDI ---> IDIOMA [TRPW_IDIOMA]
-          TSR_NOMBRE ---> NOMBRE [TRPW_NOMBRE]    
+          TSR_NOMBRE ---> NOMBRE [TRPW_NOMBRE]
           TSR_OBJETO ---> OBJETO [TRPW_OBJETO]
-          TSR_DESTIN ---> DESTINO  [TRPW_DESTIN] 
+          TSR_DESTIN ---> DESTINO  [TRPW_DESTIN]
           TSR_REQUIS ---> REQUISITOS [TRPW_SVREQ]
           TSR_OBSERV ---> OBSERVACIONES  [TRPW_OBSER]
-          TSR_ULRSER ---> URL SERVICIO  
+          TSR_ULRSER ---> URL SERVICIO
          *TSR_LOPDFI ---> LOPD FINALIDAD
-         *TSR_LOPDDS ---> LOPD DESTINO 
-         *TSR_LOPDDR ---> LOPD DERECHOS 
+         *TSR_LOPDDS ---> LOPD DESTINO
+         *TSR_LOPDDR ---> LOPD DERECHOS
          *TSR_LOPDIA ---> LOPD FINALIDAD
-  
-  
-      RS2_PROC 
+
+
+      RS2_PROC
           PROC_CODIGO  ---> CODIGO PROCEDIMIENTO
-          PROC_TIPO    ---> TIPO (PROC / SERV)  
-          PROC_SIACOD  ---> CODIGO SIA 
-          PROC_SIAEST  ---> ESTADO SIA   
-          PROC_SIAFC   ---> FECHA SIA  
-          PROC_SIADIR3 ---> DIR3 
-          PROC_MENSA   ---> MENSAJE  
-          PROC_PDTIDX  ---> PENDIENTE IDX 
-          PROC_DATIDX  ---> FECHA INDEXACION 
-          PROC_DATINX  --->  
-          PROC_ERRIDX  ---> ERROR INDEXACION SOLR 
-          PROC_ERRSIA  ---> ERROR SIA 
-          PROC_PDTGST  ---> MENSAJE GESTOR     
-          PROC_PDTSUP  ---> MENSAJE SUPERVISOR 
-          PROC_FECACT  ---> FECHA ACTUALIZACION 
+          PROC_TIPO    ---> TIPO (PROC / SERV)
+          PROC_SIACOD  ---> CODIGO SIA
+          PROC_SIAEST  ---> ESTADO SIA
+          PROC_SIAFC   ---> FECHA SIA
+          PROC_SIADIR3 ---> DIR3
+          PROC_MENSA   ---> MENSAJE
+          PROC_PDTIDX  ---> PENDIENTE IDX
+          PROC_DATIDX  ---> FECHA INDEXACION
+          PROC_DATINX  --->
+          PROC_ERRIDX  ---> ERROR INDEXACION SOLR
+          PROC_ERRSIA  ---> ERROR SIA
+          PROC_PDTGST  ---> MENSAJE GESTOR
+          PROC_PDTSUP  ---> MENSAJE SUPERVISOR
+          PROC_FECACT  ---> FECHA ACTUALIZACION
       RS2_PRCWF
-          PRWF_CODIGO  ---> CODIGO PROCEDIMIENTO WF 
-          PRWF_CODPROC ---> CODIGO PROCEDIMIENTO 
-          PRWF_WF      ---> WF : DEFINITIVO O EN MODIFICACION  
-          PRWF_WFESTADO --> ESTADO : PUB/ MOD/RES/BOR 
-          PRWF_WFUSUA  ---> USUARIO 
-          PRWF_CODUAR  ---> UA RESPONSABLE  
-          PRWF_CODUAI  ---> UA INSTRUCTOR 
-          PRWF_INTERNO ---> INTERNO  
-          PRWF_RSNOM   ---> RESPONSABLE NOMBRE 
-          PRWF_RSEMA   ---> RESPONSABLE EMAIL   
-          PRWF_RSTFNO  ---> RESPONSABLE TELFNO 
-          PRWF_DPTIPLEGI -> DATOS PERSONALES LEGITIMACION   
-          PRWF_LSTDOC  ---> LISTA DOCUMENTOS  
-          PRWF_LSLOPD  ---> LISTA DOCUMENTOS LOPD 
-          PRWF_PRCODUAC --> UA COMPETENTE 
+          PRWF_CODIGO  ---> CODIGO PROCEDIMIENTO WF
+          PRWF_CODPROC ---> CODIGO PROCEDIMIENTO
+          PRWF_WF      ---> WF : DEFINITIVO O EN MODIFICACION
+          PRWF_WFESTADO --> ESTADO : PUB/ MOD/RES/BOR
+          PRWF_WFUSUA  ---> USUARIO
+          PRWF_CODUAR  ---> UA RESPONSABLE
+          PRWF_CODUAI  ---> UA INSTRUCTOR
+          PRWF_INTERNO ---> INTERNO
+          PRWF_RSNOM   ---> RESPONSABLE NOMBRE
+          PRWF_RSEMA   ---> RESPONSABLE EMAIL
+          PRWF_RSTFNO  ---> RESPONSABLE TELFNO
+          PRWF_DPTIPLEGI -> DATOS PERSONALES LEGITIMACION
+          PRWF_LSTDOC  ---> LISTA DOCUMENTOS
+          PRWF_LSLOPD  ---> LISTA DOCUMENTOS LOPD
+          PRWF_PRCODUAC --> UA COMPETENTE
           PRWF_PRTIPINIC --> FORMA DE INICIO
-          PRWF_PRTIPSIAD --> SILENCIO ADMINISTRATIVO 
-          PRWF_SVTASA  ----> PARA SERVICIOS: TIENE TASA 
+          PRWF_PRTIPSIAD --> SILENCIO ADMINISTRATIVO
+          PRWF_SVTASA  ----> PARA SERVICIOS: TIENE TASA
           PRWF_SVTPRE  ----> PARA SERVICIOS: TIPO TRAMITACION PLANTILLA
-          PRWF_FECPUB  ----> FECHA PUBLICACION  
-          PRWF_FECCAD  ----> FECHA CADUCIDAD 
-          PRWF_TIPPRO  ----> TIPO PROCEDIMIENTO  
-          PRWF_TIPVIA  ----> TIPO VIA 
-          PROC_LOPDRESP ---> LOPD RESPONSABLE   
-          PRWF_SVPRES   ---> PARA SERVICIOS: ES PRESENCIAL 
-          PRWF_SVELEC   ---> PARA SERVICIOS: ES TELEMATICO 
-          PRWF_SVTEL    ---> PARA SERVICIOS: ES TELEFONICO   
-          PRWF_COMUN    ---> COMUN  
+          PRWF_FECPUB  ----> FECHA PUBLICACION
+          PRWF_FECCAD  ----> FECHA CADUCIDAD
+          PRWF_TIPPRO  ----> TIPO PROCEDIMIENTO
+          PRWF_TIPVIA  ----> TIPO VIA
+          PROC_LOPDRESP ---> LOPD RESPONSABLE
+          PRWF_SVPRES   ---> PARA SERVICIOS: ES PRESENCIAL
+          PRWF_SVELEC   ---> PARA SERVICIOS: ES TELEMATICO
+          PRWF_SVTEL    ---> PARA SERVICIOS: ES TELEFONICO
+          PRWF_COMUN    ---> COMUN
           PRWF_HABAPO   ---> HABILITADO PARA APODERADOS
           PRWF_HABFUN   ---> HABILITADO PARA FUNCIONARIO
-          PRWF_SVTREL   ---> PARA SERVICIOS: TIPO TRAMITACION 
+          PRWF_SVTREL   ---> PARA SERVICIOS: TIPO TRAMITACION
           PROC_LOPDACT  ---> PARA SERVICIOS: SI ESTA ACTIVO LOPD
-      (CAMPOS SIN RELACION)             
-  
+      (CAMPOS SIN RELACION)
+
       RELACIONES:
           ***** TODO ****
           RS2_DOCNORM   --> DOCUMENTOS NORM
           RS2_AFECTA    --> AFECTACIONES Y AFECTACIONES ORIGEN
-  
+
       TRADUCCIONES (RS2_TRAPRWF) ESTAN TODAS:
           TRPW_CODIGO   --> CODIGO TRADUCCION PROC  WF
-          TRPW_CODPRWF  --> CODIGO PROC WF 
+          TRPW_CODPRWF  --> CODIGO PROC WF
           TRPW_IDIOMA   --> IDIOMA
-          TRPW_NOMBRE   --> NOMBRE 
-          TRPW_OBJETO   --> OBJETO 
-          TRPW_DESTIN   --> DESTINATARIO 
-          TRPW_OBSER    --> OBSERVACION 
-          TRPW_DPFINA   --> DATOS PERSONALES: FINALIDAD 
-          TRPW_DPDEST   --> DATOS PERSONALES: DESTINATARIO    
-         *TRPW_DPDOC    --> DOCUMENTO LOPD 
-         ?TRPW_SVREQ    --> PARA SERVICIOS: REQUISITOS  
-         ?TRPW_PRRESO   --> TERMINO RESOLUCION 
-  
-  
-  
+          TRPW_NOMBRE   --> NOMBRE
+          TRPW_OBJETO   --> OBJETO
+          TRPW_DESTIN   --> DESTINATARIO
+          TRPW_OBSER    --> OBSERVACION
+          TRPW_DPFINA   --> DATOS PERSONALES: FINALIDAD
+          TRPW_DPDEST   --> DATOS PERSONALES: DESTINATARIO
+         *TRPW_DPDOC    --> DOCUMENTO LOPD
+         ?TRPW_SVREQ    --> PARA SERVICIOS: REQUISITOS
+         ?TRPW_PRRESO   --> TERMINO RESOLUCION
+
+
+
   ***/
   CURSOR cursortradservicsrolsac1 (
     codser NUMBER) IS
@@ -213,6 +213,15 @@ SELECT *
 FROM   r1_servicios_doc
 WHERE  dsr_codser = codser
 ORDER  BY dsr_orden;
+
+CURSOR cursorAuditoria(
+        codpro NUMBER) IS
+SELECT HIS_CODI, HIS_TYPE, HIS_NOMBRE, HIS_CODPRO, AUD_CODI, AUD_USUARI, AUD_FECHA, AUD_CODOPE
+FROM r1_procedimientos_audito,
+     r1_procedimientos_histor
+WHERE  his_codser = codpro
+  AND  aud_codhis = his_codi
+ORDER  BY his_codi;
 maximoid             NUMBER;
   valor                NUMBER;
   existe               NUMBER(2, 0);
@@ -246,6 +255,9 @@ maximoid             NUMBER;
   rs2_codpr_lopd       NUMBER(10, 0);
   existe_trad_es       NUMBER(1, 0);
   existe_trad_ca       NUMBER(1, 0);
+  vUsuario                   NUMBER(10,0);
+  vExisteUsuario             NUMBER(1, 0);
+  mensajeAuditoria           VARCHAR2(255 CHAR);
 BEGIN
     dbms_lob.Createtemporary(l_clob, TRUE);
 
@@ -313,7 +325,7 @@ INTO   traid, traver, ctelem, cprese,
 FROM   r1_servicios
 WHERE  ser_codi = codigo;
 
-/** CREAMOS LA INFORMACI�N DE TIPO TRAMITACION **/
+/** CREAMOS LA INFORMACI¿N DE TIPO TRAMITACION **/
 SELECT rs2_trmpre_seq.NEXTVAL
 INTO   tipotram
 FROM   dual;
@@ -356,7 +368,7 @@ SELECT rs2_tratptra_seq.NEXTVAL,
 FROM   r1_servicios_trad
 WHERE  tsr_codser = codigo;
 
-/** LA INFORMACI�N DE LOS DOCUMENTOS. **/
+/** LA INFORMACI¿N DE LOS DOCUMENTOS. **/
 SELECT Count(*)
 INTO   existe_archivos_lopd
 FROM   r1_servicios_trad
@@ -408,6 +420,54 @@ SELECT ser_codi,
 FROM   r1_servicios
 WHERE  ser_codi = codigo;
 
+/** INSERTAMOS LAS AUDITORIAS **/
+FOR rolsac1_auditoria IN cursorAuditoria(codigo)
+            LOOP
+                IF rolsac1_auditoria.AUD_CODOPE = 1
+                THEN
+                     mensajeAuditoria := 'MIGRACIÓ ROLSAC1: INSERTAT';
+                ELSIF rolsac1_auditoria.AUD_CODOPE = 2
+                THEN
+                     mensajeAuditoria := 'MIGRACIÓ ROLSAC1: MODIFICAT';
+                ELSIF rolsac1_auditoria.AUD_CODOPE = 3
+                THEN
+                     mensajeAuditoria := 'MIGRACIÓ ROLSAC1: VALIDAT';
+                ELSIF rolsac1_auditoria.AUD_CODOPE = 4
+                THEN
+                    mensajeAuditoria := 'MIGRACIÓ ROLSAC1: RESERVA';
+                ELSIF rolsac1_auditoria.AUD_CODOPE =5
+                THEN
+                    mensajeAuditoria := 'MIGRACIÓ ROLSAC1: ESBORRAT';
+                ELSIF rolsac1_auditoria.AUD_CODOPE =6
+                THEN
+                    mensajeAuditoria := 'MIGRACIÓ ROLSAC1: INVALIDAT';
+ELSE
+                    mensajeAuditoria := 'MIGRACIÓ ROLSAC1: DESC';
+END IF;
+
+INSERT INTO
+    RS2_PRAUDIT (
+    PRAU_CODIGO,
+    PRAU_CODPROC,
+    PRAU_FECMOD,
+    PRAU_LSTMOD,
+    PRAU_USUMOD,
+    PRAU_USUPRF,
+    PRAU_LTLFLJ,
+    PRAU_ACCION
+)
+VALUES (
+           RS2_PRAUDIT_SEQ.NEXTVAL,
+           codigo,
+           rolsac1_auditoria.AUD_FECHA,
+           '[]',
+           rolsac1_auditoria.AUD_USUARI,
+           '',
+           mensajeAuditoria,
+           rolsac1_auditoria.AUD_CODOPE
+       );
+END LOOP;
+
 /** SEGUN ROLSAC1, VALIDACION ES:
 PUBLICA = 1, INTERNA = 2, RESERVA = 3 BAJA = 4;
 PUBLICA SERA DEFINITIVO Y PUBLICADO
@@ -430,7 +490,7 @@ IF ser_valida = 1 THEN
           ELSIF ser_valida = 3 THEN
             wf := 0;
 
-            wfestado := 'R';
+            wfestado := 'C';
 
             interno := 1;
 ELSE /** SER_VALIDA = 4 **/
@@ -450,8 +510,8 @@ INSERT INTO rs2_prcwf
  prwf_codproc,
  prwf_wf,
  prwf_wfestado,
- prwf_coduar,
  prwf_coduai,
+ prwf_uaresp,
  prwf_interno,
  prwf_rsnom,
  prwf_rsema,
@@ -473,7 +533,7 @@ SELECT codigo_procwf,
        wf,
        wfestado,
        SER_INSTRU,
-       ser_serrsp,
+       SUBSTR((SELECT TUN_NOMBRE FROM R1_UNIADM_TRAD WHERE TUN_CODUNA = ser_serrsp AND TUN_CODIDI = 'ca'),1,255),
        interno,
        Coalesce (ser_nomrsp, 'Desconegut'),
        ser_correo,

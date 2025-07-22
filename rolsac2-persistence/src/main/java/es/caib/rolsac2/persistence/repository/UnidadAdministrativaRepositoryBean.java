@@ -206,7 +206,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         query.setParameter("codigoUA", idUa);
 
         List<BigDecimal> descendienteBD = query.getResultList();
-        List<Long> descendientes = descendienteBD.stream().map(b->b.longValue()).collect(Collectors.toList());
+        List<Long> descendientes = descendienteBD.stream().map(b -> b.longValue()).collect(Collectors.toList());
         descendientes.remove(idUa);
 
         return descendientes;
@@ -304,6 +304,11 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         return obtenerPadreDir3Recursivo(codigoUA, idioma);
     }
 
+    @Override
+    public Literal obtenerPadreDir3(Long codigoUA) {
+        return obtenerPadreDir3Recursivo(codigoUA);
+    }
+
     public String obtenerPadreDir3Recursivo(Long codigoUA, String idioma) {
         StringBuilder sql = new StringBuilder(" SELECT j.codigo, j.codigoDIR3, t.nombre, j.padre.codigo  FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma= :idioma  ");
         sql.append(" WHERE j.codigo = :codigoUA");
@@ -311,7 +316,6 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         query.setParameter("codigoUA", codigoUA);
         query.setParameter("idioma", idioma);
         List<Object[]> result = query.getResultList();
-        List<UnidadAdministrativaDTO> hijos = new ArrayList<>();
         if (result != null && !result.isEmpty()) {
             Object[] resultado = result.get(0);
             if (resultado[1] != null && !resultado[1].toString().isEmpty()) {
@@ -325,6 +329,32 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             return "";
         }
     }
+
+    public Literal obtenerPadreDir3Recursivo(Long codigoUA) {
+        Query query = entityManager.createQuery(" SELECT j FROM JUnidadAdministrativa j  " + " WHERE j.codigo = :codigoUA");
+        query.setParameter("codigoUA", codigoUA);
+        List<JUnidadAdministrativa> result = query.getResultList();
+        if (result != null && !result.isEmpty()) {
+            JUnidadAdministrativa jua = result.get(0);
+            if (jua.getCodigoDIR3() != null && !jua.getCodigoDIR3().isEmpty()) {
+                Literal literal = new Literal();
+                if (jua.getTraducciones() != null && !jua.getTraducciones().isEmpty()) {
+                    for (JUnidadAdministrativaTraduccion trad : jua.getTraducciones()) {
+                        literal.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+                    }
+                }
+                return literal;
+            } else if (jua.getPadre() != null && jua.getPadre().getCodigo() != null) {
+                return obtenerPadreDir3Recursivo(jua.getPadre().getCodigo());
+            } else {
+                return null;
+            }
+
+        } else {
+            return null;
+        }
+    }
+
 
     @Override
     public Optional<JUnidadAdministrativa> findById(String id) {

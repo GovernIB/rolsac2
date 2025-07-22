@@ -1,4 +1,4 @@
-CREATE OR replace PROCEDURE "MIGRAR_PROC" (codigo        NUMBER,
+create or replace PROCEDURE "MIGRAR_PROC" (codigo        NUMBER,
                                            codigoentidad NUMBER,
                                            resultado     OUT CLOB)
 AS
@@ -25,7 +25,7 @@ AS
             PRO_FECPUB  ---> FECHA PUBLICICACION [PRWF_FECPUB]
             PRO_FECACT  ---> FECHA ACTUALIZACION [PROC_FECACT]
             PRO_VALIDA  ---> VALIDA [PRWF_WF - PRWF_WFESTADO - PRWF_INTERNO]
-            PRO_CODUNA  ---> CODIGO UNIDAD ADMINISTRATIVA [PRWF_CODUAR]
+            PRO_CODUNA  ---> CODIGO UNIDAD ADMINISTRATIVA [PRWF_CODUAI]
             PRO_CODFAM  ---> FAMILIA
             PRO_TRAMIT  ---> TRAMITE
             PRO_VERSIO  ---> VERSION
@@ -41,9 +41,9 @@ AS
             PRO_VENTANA ---> VENTANILLA UNICA
             PRO_INFO    ---> DIRECCION ELECTRONICA [PRWF_RSEMA]
             PRO_TAXA    ---> TAXA
-            PRO_CODUNA_RESOL --> ORGANO RESOLUTORIO [PRWF_CODUAI]
+            PRO_CODUNA_RESOL --> ORGANO COMPETENTE [PRWF_PRCODUAC]
             PRO_RESPON  ---> RESPONSABLE [PRWF_RSNOM]
-            PRO_CODUNA_SERV --> ORGANO SERVICIO [PRWF_PRCODUAC]
+            PRO_CODUNA_SERV --> ORGANO SERVICIO [PRWF_UARESP]
             PRO_CODSIA  ---> CODIGO SIA [PROC_SIACOD]
             PRO_CODSIL  ---> SILENCIO ADMINISTRATIVO [PRWF_PRTIPSIAD]
             PRO_ESTSIA  ---> ESTADO SIA  [PROC_SIAEST]
@@ -137,7 +137,7 @@ AS
             PRWF_WF      ---> WF : DEFINITIVO O EN MODIFICACION
             PRWF_WFESTADO --> ESTADO : PUB/ MOD/RES/BOR
             PRWF_WFUSUA  ---> USUARIO
-            PRWF_CODUAR  ---> UA RESPONSABLE
+            PRWF_UARESP  ---> UA RESPONSABLE
             PRWF_CODUAI  ---> UA INSTRUCTOR
             PRWF_INTERNO ---> INTERNO
             PRWF_RSNOM   ---> RESPONSABLE NOMBRE
@@ -231,6 +231,15 @@ AS
         WHERE  dtr_codtra = codtra
           AND dtr_tipus = tipo
         ORDER  BY dtr_orden;
+
+    CURSOR cursorAuditoria(
+        codpro NUMBER) IS
+        SELECT HIS_CODI, HIS_TYPE, HIS_NOMBRE, HIS_CODPRO, AUD_CODI, AUD_USUARI, AUD_FECHA, AUD_CODOPE
+        FROM r1_procedimientos_audito,
+             r1_procedimientos_histor
+        WHERE  his_codpro = codpro
+          AND  aud_codhis = his_codi
+        ORDER  BY his_codi;
     maximoid                   NUMBER;
     valor                      NUMBER;
     existe                     NUMBER;
@@ -264,6 +273,9 @@ AS
     existe_trad_ca             NUMBER(1, 0);
     existe_trad_tram_es        NUMBER(1, 0);
     existe_trad_tram_ca        NUMBER(1, 0);
+    vUsuario                   NUMBER(10,0);
+    vExisteUsuario             NUMBER(1, 0);
+    mensajeAuditoria           VARCHAR2(255 CHAR);
 BEGIN
     dbms_lob.Createtemporary(l_clob, TRUE);
 
@@ -337,7 +349,55 @@ BEGIN
             FROM   r1_procedimientos
             WHERE  pro_codi = codigo;
 
-            /** LA INFORMACI�N DE LOS DOCUMENTOS. **/
+            /** INSERTAMOS LAS AUDITORIAS **/
+            FOR rolsac1_auditoria IN cursorAuditoria(codigo)
+                LOOP
+                    IF rolsac1_auditoria.AUD_CODOPE = 1
+                    THEN
+                        mensajeAuditoria := 'MIGRACIÓ ROLSAC1: INSERTAT';
+                    ELSIF rolsac1_auditoria.AUD_CODOPE = 2
+                    THEN
+                        mensajeAuditoria := 'MIGRACIÓ ROLSAC1: MODIFICAT';
+                    ELSIF rolsac1_auditoria.AUD_CODOPE = 3
+                    THEN
+                        mensajeAuditoria := 'MIGRACIÓ ROLSAC1: VALIDAT';
+                    ELSIF rolsac1_auditoria.AUD_CODOPE = 4
+                    THEN
+                        mensajeAuditoria := 'MIGRACIÓ ROLSAC1: RESERVA';
+                    ELSIF rolsac1_auditoria.AUD_CODOPE =5
+                    THEN
+                        mensajeAuditoria := 'MIGRACIÓ ROLSAC1: ESBORRAT';
+                    ELSIF rolsac1_auditoria.AUD_CODOPE =6
+                    THEN
+                        mensajeAuditoria := 'MIGRACIÓ ROLSAC1: INVALIDAT';
+                    ELSE
+                        mensajeAuditoria := 'MIGRACIÓ ROLSAC1: DESC';
+                    END IF;
+
+                    INSERT INTO
+                        RS2_PRAUDIT (
+                        PRAU_CODIGO,
+                        PRAU_CODPROC,
+                        PRAU_FECMOD,
+                        PRAU_LSTMOD,
+                        PRAU_USUMOD,
+                        PRAU_USUPRF,
+                        PRAU_LTLFLJ,
+                        PRAU_ACCION
+                    )
+                    VALUES (
+                               RS2_PRAUDIT_SEQ.NEXTVAL,
+                               codigo,
+                               rolsac1_auditoria.AUD_FECHA,
+                               '[]',
+                               rolsac1_auditoria.AUD_USUARI,
+                               '',
+                               mensajeAuditoria,
+                               rolsac1_auditoria.AUD_CODOPE
+                           );
+                END LOOP;
+
+            /** LA INFORMACI¿N DE LOS DOCUMENTOS. **/
             SELECT Count(*)
             INTO   existe_archivos_lopd
             FROM   r1_procedimientos_trad
@@ -391,7 +451,7 @@ BEGIN
             ELSIF pro_valida = 3 THEN
                 wf := 0;
 
-                wfestado := 'R';
+                wfestado := 'C';
 
                 interno := 1;
             ELSE /** PRO_VALIDA = 4 **/
@@ -412,9 +472,9 @@ BEGIN
              prwf_wf,
              prwf_wfestado,
                 /*PRWF_WFUSUA,*/
-             prwf_coduar,
-             prwf_coduai,
-             prwf_PRCODUAC,
+             PRWF_CODUAI,
+             PRWF_PRCODUAC,
+             PRWF_UARESP,
              prwf_interno,
              prwf_rsnom,
              prwf_rsema,
@@ -447,8 +507,8 @@ BEGIN
                    wfestado,
                 /*PRWF_WFUSUA,*/
                    pro_coduna,
-                   Coalesce (pro_coduna_resol, pro_coduna),
-                   Coalesce (PRO_CODUNA_SERV, pro_coduna),
+                   NVL (pro_coduna_resol, pro_coduna),
+                   SUBSTR((SELECT TUN_NOMBRE FROM R1_UNIADM_TRAD WHERE TUN_CODUNA = PRO_CODUNA_SERV AND TUN_CODIDI = 'ca'),1,255),
                    interno,
                    Coalesce (pro_respon, 'Desconegut'),
                    pro_info,
@@ -497,7 +557,7 @@ BEGIN
                     IF rolsac1_tramites.tra_codpln IS NOT NULL THEN
                         tipotram_plantilla := rolsac1_tramites.tra_codpln;
                     ELSE
-                        /** CREAMOS LA INFORMACI�N DE TIPO TRAMITACION **/
+                        /** CREAMOS LA INFORMACI¿N DE TIPO TRAMITACION **/
                         SELECT rs2_trmpre_seq.NEXTVAL
                         INTO   tipotram
                         FROM   dual;
@@ -967,16 +1027,9 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK;
-
-        dbms_output.Put_line('SQLCODE:'
-            || SQLCODE);
-
-        dbms_output.Put_line('SQLERRM:'
-            || SQLERRM);
-
-        dbms_lob.Writeappend(l_clob, Length('SE HA PRODUCIDO UN ERROR\n'),
-                             'SE HA PRODUCIDO UN ERROR\n');
-
+        dbms_output.Put_line('SQLCODE:' || SQLCODE);
+        dbms_output.Put_line('SQLERRM:' || SQLERRM);
+        dbms_lob.Writeappend(l_clob, Length('SE HA PRODUCIDO UN ERROR\n'), 'SE HA PRODUCIDO UN ERROR\n');
         dbms_lob.Writeappend(l_clob, Length('El error. CODE:'
             || SQLCODE
             || '  MSG:'
@@ -986,8 +1039,6 @@ EXCEPTION
                                  || '  MSG:'
                                  || SQLERRM
                                  || '. \n');
-
         dbms_lob.CLOSE(l_clob);
-
         resultado := l_clob;
 END MIGRAR_PROC;

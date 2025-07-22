@@ -133,11 +133,19 @@ public interface UnidadAdministrativaServiceFacade {
     /**
      * Obtiene el padre DIR3 de una UA
      *
-     * @param codigo
-     * @param idioma
-     * @return
+     * @param codigo Codigo de una UA
+     * @param idioma Idioma de la traducción
+     * @return El nombre del padre DIR3
      */
     String obtenerPadreDir3(Long codigo, String idioma);
+
+    /**
+     * Obtiene el padre DIR3 de una UA
+     *
+     * @param codigo Codigo de una UA
+     * @return El literal del padre DIR3
+     */
+    Literal obtenerPadreDir3(Long codigo);
 
     /**
      * Verifica si existe un tipo de Sexo en alguna UA.

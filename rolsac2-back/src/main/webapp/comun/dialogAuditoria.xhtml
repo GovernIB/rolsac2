@@ -4,6 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -59,11 +60,14 @@
                             </p:column>
 
                             <p:column class="ui-panelgrid-cell"  headerText="#{labels['dict.perfil']}">
-                                <h:outputText value="#{labels['TypePerfiles.' += td.usuarioPerfil]}"/>
+                                <h:outputText value="#{labels['TypePerfiles.' += td.usuarioPerfil]}"  rendered="#{not empty td.usuarioPerfil}"/>
                             </p:column>
 
                             <p:column class="ui-panelgrid-cell"  headerText="#{labels['dict.mensajeFlujo']}">
-                                <h:outputText value="#{labels['' += td.literalFlujo]}" rendered="#{!empty td.literalFlujo}"/>
+                                <!--<h:outputText value="#{labels['' += td.literalFlujo]}" rendered="#{!empty td.literalFlujo}"/>-->
+                                <h:outputText
+                                        value="#{fn:startsWith(td.literalFlujo, 'MIGRACIÓ ROLSAC1') ? td.literalFlujo : labels[td.literalFlujo]}"
+                                        rendered="#{not empty td.literalFlujo}" />
                             </p:column>
 
                             <p:ajax event="rowUnselect" global="true"  update="@form:datatableMensajes"  process="@form" listener="#{dialogAuditoria.selectDato()}" />

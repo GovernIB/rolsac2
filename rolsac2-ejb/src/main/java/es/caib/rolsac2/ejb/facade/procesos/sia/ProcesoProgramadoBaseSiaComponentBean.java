@@ -19,12 +19,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Proceso solr.
+ * Proceso base SIA.
  *
  * @author Indra
  */
-
-// En funcion del proceso, sera o no tx por si se tiene que dividir en transacciones
 public abstract class ProcesoProgramadoBaseSiaComponentBean {
 
     @Inject
@@ -53,9 +51,9 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
     private int totalServiciosERROR = 0;
 
     /**
-     * log.
+     * LOG
      */
-    private static Logger log = LoggerFactory.getLogger(ProcesoProgramadoBaseSiaComponentBean.class);
+    private static final Logger log = LoggerFactory.getLogger(ProcesoProgramadoBaseSiaComponentBean.class);
 
 
     public ResultadoProcesoProgramado ejecutarPadre(final Long instanciaProceso, final ListaPropiedades params, boolean pendiente, Long idEntidad) {
@@ -110,7 +108,15 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
             filtro.setPaginaTamanyo(10000);
             filtro.setPaginaFirst(0);
             if (accion.equals(Constantes.INDEXAR_SIA_PENDIENTES)) {
+                //Mira los procedimientos y servicios que están publicados en sia como activos pero se han caducado, para mandarlos a indexar
+                revisarProcsPublicadosCaducados(idEntidad);
+                //Obtiene los procedimientos y servicios pendientes de indexar
                 datos = procesoServiceFacade.findSIAByFiltro(filtro);
+                //Quitar los procedimientos y servicios que su fecha de publicación sea futura
+                List<IndexacionSIADTO> datosFiltrados = obtenerProcedimientosFechaPublicacionFutura(datos);
+                if (datosFiltrados != null && !datosFiltrados.isEmpty()) {
+                    datos.getItems().removeAll(datosFiltrados);
+                }
             } else if (accion.equals(Constantes.INDEXAR_SIA_COMPLETO)) {
                 datos = procedimientoService.getProcedimientosParaIndexacionSIA(idEntidad);
             } else if (accion.equals(Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL)) {
@@ -214,6 +220,41 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         return res;
     }
 
+    /**
+     * Obtiene los procedimientos y servicios publicados en SIA que tienen una fecha de publicación futura
+     *
+     * @param datos Pagina con los datos a filtrar
+     * @return Lista de IndexacionSIADTO con los procedimientos y servicios filtrados
+     */
+    private List<IndexacionSIADTO> obtenerProcedimientosFechaPublicacionFutura(Pagina<IndexacionSIADTO> datos) {
+        //Recorrer el listado de datos.items
+        //Recuperar la fecha de publicación del procedimiento o servicio
+        //Si la fecha de publicación es futura, añadirlo a una lista
+        // Devolver la lista
+        List<IndexacionSIADTO> datosFiltrados = new ArrayList<>();
+        if (datos != null && datos.getItems() != null && !datos.getItems().isEmpty()) {
+            for (IndexacionSIADTO dato : datos.getItems()) {
+                Date fechaPublicacion = procedimientoService.getFechaPublicacionByCodigo(dato.getCodElemento());
+                if (fechaPublicacion != null) {
+                    if (fechaPublicacion.after(new Date())) {
+                        datosFiltrados.add(dato);
+                    }
+                }
+            }
+        }
+        return datosFiltrados;
+    }
+
+    /**
+     * Revisa los procedimientos y servicios publicados en SIA que han caducado
+     * y los manda a indexar de nuevo.
+     *
+     * @param idEntidad Identificador de la entidad
+     */
+    private void revisarProcsPublicadosCaducados(Long idEntidad) {
+        procedimientoService.revisarProcsPublicadosSIACaducados(idEntidad);
+    }
+
 
     private ResultadoSIA indexarServicio(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, StringBuilder mensajeTraza, boolean indexacionForzada) {
         Long codigoWF = null;
@@ -250,18 +291,18 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         } else {
             if (publicado || indexacionForzada) {
                 try {
-                    final boolean isVisibleUA = uaService.isVisibleUA(servicioDTO.getUaResponsable());
-                    final String codigoIdCentro = uaService.obtenerCodigoDIR3(servicioDTO.getUaResponsable().getCodigo());
+                    final boolean isVisibleUA = uaService.isVisibleUA(servicioDTO.getUaInstructor());
+                    final String codigoIdCentro = uaService.obtenerCodigoDIR3(servicioDTO.getUaInstructor().getCodigo());
                     SiaEnviableResultado esEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, servicioDTO, indexacionForzada);
                     if (esEnviable.isNotificiarSIA()) {
-                        final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(servicioDTO.getUaResponsable().getCodigo());
+                        final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(servicioDTO.getUaInstructor().getCodigo());
                         final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(entidadRaiz.getUa().getCodigo());
                         final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(codigoDir3IdCentro, codigoDir3SiaUA, servicioDTO, esEnviable, true, entidadRaiz);
                         //Si es común, no se indexa
                         if (siaCumpleDatos.isCumpleDatos()) {
 
                             final String idDepartamento = uaService.obtenerCodigoDIR3(siaCumpleDatos.getSiaUA().getUa().getCodigo());
-                            final String unidadGestoraComun = uaService.getUaComunEntidad(servicioDTO.getUaResponsable().getCodigo()).getTraduccionConValor("es");
+                            final String unidadGestoraComun = uaService.getUaComunEntidad(servicioDTO.getUaInstructor().getCodigo()).getTraduccionConValor("es");
                             EnvioSIA envioSIA = SiaUtils.cast(idDepartamento, unidadGestoraComun, servicioDTO, esEnviable, siaCumpleDatos);
                             boolean borrado = estaBorrado(servicioDTO);
                             ResultadoSIA resultadoSIA = plugin.enviarSIA(envioSIA, borrado, indexacionForzada);
@@ -346,18 +387,18 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         } else {
             if (publicado || indexacionForzada) {
                 try {
-                    final boolean isVisibleUA = uaService.isVisibleUA(procedimientoDTO.getUaResponsable());
-                    final String codigoIdCentro = uaService.obtenerCodigoDIR3(procedimientoDTO.getUaResponsable().getCodigo());
+                    final boolean isVisibleUA = uaService.isVisibleUA(procedimientoDTO.getUaInstructor());
+                    final String codigoIdCentro = uaService.obtenerCodigoDIR3(procedimientoDTO.getUaInstructor().getCodigo());
                     SiaEnviableResultado esEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, procedimientoDTO, indexacionForzada);
                     if (esEnviable.isNotificiarSIA()) {
-                        final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(procedimientoDTO.getUaResponsable().getCodigo());
+                        final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(procedimientoDTO.getUaInstructor().getCodigo());
                         final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(entidadRaiz.getUa().getCodigo());
                         final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(codigoDir3IdCentro, codigoDir3SiaUA, procedimientoDTO, esEnviable, true, entidadRaiz);
                         //Si es común, no se indexa
                         if (siaCumpleDatos.isCumpleDatos()) {
 
                             String idDepartamento = uaService.obtenerCodigoDIR3(siaCumpleDatos.getSiaUA().getUa().getCodigo());
-                            String unidadGestoraComun = uaService.getUaComunEntidad(procedimientoDTO.getUaResponsable().getCodigo()).getTraduccionConValor("es");
+                            String unidadGestoraComun = uaService.getUaComunEntidad(procedimientoDTO.getUaInstructor().getCodigo()).getTraduccionConValor("es");
                             EnvioSIA envioSIA = SiaUtils.cast(idDepartamento, unidadGestoraComun, procedimientoDTO, esEnviable, siaCumpleDatos);
                             boolean borrado = estaBorrado(procedimientoDTO);
                             ResultadoSIA resultadoSIA = plugin.enviarSIA(envioSIA, borrado, indexacionForzada);

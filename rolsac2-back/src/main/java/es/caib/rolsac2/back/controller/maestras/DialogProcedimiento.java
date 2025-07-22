@@ -123,9 +123,12 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (this.isModoAlta()) {
             data = ProcedimientoDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUaInstructor(sessionBean.getUnidadActiva());
-            data.setUaResponsable(sessionBean.getUnidadActiva());
+            data.setUaResponsable(sessionBean.getUnidadActiva().getNombre().getTraduccionConValor(sessionBean.getLang()));
             data.setUaCompetente(sessionBean.getUnidadActiva());
-            data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
+            this.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo()));
+            if (this.getLopdResponsable() != null) {
+                this.data.setLopdResponsable(this.getLopdResponsable().getTraduccionConValor(sessionBean.getLang()));
+            }
             data.setTemas(new ArrayList<>());
             data.setCategoriasPDU(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
@@ -139,6 +142,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 data = (ProcedimientoDTO) UtilJSF.getValorMochilaByKey("PROC");
             }
 
+            this.setLopdResponsable(uaService.obtenerPadreDir3(data.getUaInstructor().getCodigo()));
+            if (this.getLopdResponsable() != null) {
+                this.data.setLopdResponsable(this.getLopdResponsable().getTraduccionConValor(sessionBean.getLang()));
+            }
             // dsanz se entra a editar pero se deshabilitan los botones de edición si es un procedimiento de una ua común que sólo puede consultar el gestor
             if (this.isGestor()) {
                 List<Long> listaUasUsuario = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
@@ -171,7 +178,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
-        actualizarResponsable();
+        // actualizarResponsable();
         dataOriginal = (ProcedimientoDTO) data.clone();
 
         //Eso es para cargar las uas del instructor
@@ -223,18 +230,18 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     /**
      * Actualiza el literal de resonsable
-     */
-    public void actualizarResponsable() {
-        if (data.getComun() == 0) {
-            if (data.getUaResponsable() == null) {
-                lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
-            } else {
-                lopdResponsable = data.getUaResponsable().getNombre();
-            }
-        } else {
-            lopdResponsable = comunUA;
-        }
-    }
+
+     public void actualizarResponsable() {
+     if (data.getComun() == 0) {
+     if (data.getUaResponsable() == null) {
+     lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
+     } else {
+     lopdResponsable = data.getUaResponsable().getNombre();
+     }
+     } else {
+     lopdResponsable = comunUA;
+     }
+     } */
 
     /**
      * Enviado a SIA para que se indexe.
@@ -329,14 +336,13 @@ public class DialogProcedimiento extends AbstractController implements Serializa
      * Devuelve el css para el boton de la UA Instructor.
      * Si no está en la lista de UA del instructor, se pone en rojo y se muestra el ojo
      *
-     * @return
+     * @return public String getCssUAResponsable() {
+     * if (data.getUaResponsable() == null) {
+     * return "";
+     * }
+     * return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
+     * }
      */
-    public String getCssUAResponsable() {
-        if (data.getUaResponsable() == null) {
-            return "";
-        }
-        return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
-    }
 
     public String getCssUACompetente() {
         if (data.getUaCompetente() == null) {
@@ -345,9 +351,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         return uasInstructor.contains(data.getUaCompetente().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
     }
 
-    public boolean mostrarAlertaUAResponsable() {
+  /*  public boolean mostrarAlertaUAResponsable() {
         return !uasInstructor.contains(data.getUaResponsable().getCodigo());
-    }
+    }*/
 
     public boolean mostrarAlertaUAInstructor() {
         return !uasInstructor.contains(data.getUaInstructor().getCodigo());
@@ -365,7 +371,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
-    public void returnDialogoUAResp(final SelectEvent event) {
+  /*  public void returnDialogoUAResp(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
@@ -379,7 +385,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void abrirVentanaUAResp() {
         abrirVentanaUA(this.data.getUaResponsable());
-    }
+    }*/
 
     public void abrirVentanaUAInstr() {
         abrirVentanaUA(this.data.getUaInstructor());
@@ -631,10 +637,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             todoCorrecto = false;
         }
 
-        if (this.data.getUaResponsable() == null || this.data.getUaResponsable().getCodigo() == null) {
+        /*if (this.data.getUaResponsable() == null || this.data.getUaResponsable().getCodigo() == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.uaResponsable"));
             todoCorrecto = false;
-        }
+        }*/
 
         if (this.data.getFechaPublicacion() != null && this.data.getFechaCaducidad() != null && data.getFechaCaducidad().before(this.data.getFechaPublicacion())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionCaducidad"));

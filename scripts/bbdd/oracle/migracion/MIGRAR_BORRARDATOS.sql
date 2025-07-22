@@ -8,7 +8,7 @@ create or replace PROCEDURE "MIGRAR_BORRARDATOS"
          WHERE PROC_CODIGO
          IN ( SELECT PRWF_CODPROC
                 FROM RS2_PRCWF
-               WHERE PRWF_CODUAR IN (SELECT UNAD_CODIGO FROM RS2_UNIADM WHERE UNAD_CODENTI = codigoEntidad)
+               WHERE PRWF_CODUAI IN (SELECT UNAD_CODIGO FROM RS2_UNIADM WHERE UNAD_CODENTI = codigoEntidad)
             )
         ;
 
@@ -77,7 +77,10 @@ BEGIN
 
                 if modoDebug then DBMS_OUTPUT.PUT_LINE('SALE DE TRAMITES'); END IF;
 
-                 /** Borramos traducciones **/
+                /** Borramos las categorias PDU **/
+                DELETE FROM RS2_PRCPDU WHERE PRWF_CODIGO = PROCEDIMIENTO_WF.PRWF_CODIGO;
+
+                /** Borramos traducciones **/
                 DELETE FROM RS2_TRAPRWF WHERE TRPW_CODPRWF = PROCEDIMIENTO_WF.PRWF_CODIGO;
 
                 /** Borramos las relaciones con normativas **/

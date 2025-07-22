@@ -431,13 +431,13 @@
                                                          disabled="true"/>
                                             <p:inputText id="txtOrgComp"
                                                          rendered="#{!dialogProcedimiento.data.esComun()}"
-                                                         value="#{dialogProcedimiento.data.uaResponsable.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                                         value="#{dialogProcedimiento.data.uaCompetente.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                          styleClass="w90 mr-1" disabled="true"/>
                                             <p:inputText id="txtOrgCompRaiz" styleClass="ocultar"
                                                          value="#{dialogProcedimiento.uaRaiz}"
                                             />
                                             <p:commandButton
-                                                    action="#{dialogProcedimiento.abrirVentanaUAResp()}"
+                                                    action="#{dialogProcedimiento.abrirVentanaUACompetente()}"
                                                     icon="pi pi-sitemap"
                                                     value=" "
                                                     styleClass="w35px h30px iconoUAselector"
@@ -448,7 +448,7 @@
                                                     id="btnAbrirUA"
                                             >
                                                 <p:ajax event="dialogReturn"
-                                                        listener="#{dialogProcedimiento.returnDialogoUAResp}"
+                                                        listener="#{dialogProcedimiento.returnDialogoUACompetente}"
                                                         process="@this"
                                                         update="formDialog:txtOrgComp formDialog:txtOrgCompRaiz formDialog:selectComun formDialog:lblUAiconoResp"
                                                         oncomplete="checkUAraiz()"/>
@@ -456,7 +456,7 @@
 
 
                                             <h:outputLink id="lblUAiconoResp" value="#" styleClass="w20px labelWarningUAPadre">
-                                                <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUAResponsable()}" />
+                                                <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUACompetente()}" />
                                             </h:outputLink>
                                             <p:tooltip id="toolTipFadeResp" for="lblUAiconoResp" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
 
@@ -522,9 +522,10 @@
                                 <span style="white-space:nowrap;  display:flex;">
                                 <p:inputText id="txtOrgResp"
                                              rendered="#{!dialogProcedimiento.data.esComun()}"
-                                             value="#{dialogProcedimiento.data.uaCompetente.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
-                                             styleClass="w90 mr-1"
-                                             disabled="true"/>
+                                             value="#{dialogProcedimiento.data.uaResponsable}"
+                                             styleClass="w95 mr-1"
+                                             disabled="#{dialogProcedimiento.isModoConsulta()}" />
+                                    <!--
                                 <p:commandButton
                                         action="#{dialogProcedimiento.abrirVentanaUACompetente()}"
                                         icon="pi pi-sitemap"
@@ -546,6 +547,7 @@
                                     <h:outputText id="lblUAiconoCompetente2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUACompetente()}" />
                                 </h:outputLink>
                                 <p:tooltip id="toolTipFadeCompetente" for="lblUAiconoCompetente" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
+                                -->
                                 </span>
                             </h:panelGroup>
                         </p>
@@ -1205,7 +1207,7 @@
                              icon="pi pi-inbox"
                              action="#{dialogProcedimiento.verAuditorias}"
                              styleClass="btn-footer"
-                             process="@all"
+                             process="@this"
                              disabled="#{empty dialogProcedimiento.data.codigo}"
             />
         </div>

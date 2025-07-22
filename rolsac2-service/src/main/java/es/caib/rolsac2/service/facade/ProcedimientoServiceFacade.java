@@ -18,6 +18,7 @@ import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.util.SiaCumpleEnviable;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -295,4 +296,19 @@ public interface ProcedimientoServiceFacade {
      * @return SiaCumpleEnviable con el resultado de la comprobación
      */
     SiaCumpleEnviable isProcServEnviableCumpleDatos(ProcedimientoBaseDTO data);
+
+    /**
+     * Comprueba todos los procedimientos y servicios publicados en SIA que se han caducado y están marcados como publicados.
+     *
+     * @param idEntidad Identificador de la entidad a la que pertenece el procedimiento/servicio.
+     */
+    void revisarProcsPublicadosSIACaducados(Long idEntidad);
+
+    /**
+     * Obtiene la fecha de publicación de un procedimiento por su código de workflow.
+     *
+     * @param codigoWF Código del workflow del procedimiento.
+     * @return Fecha de publicación del procedimiento, o null si no se encuentra.
+     */
+    Date getFechaPublicacionByCodigo(Long codigoWF);
 }

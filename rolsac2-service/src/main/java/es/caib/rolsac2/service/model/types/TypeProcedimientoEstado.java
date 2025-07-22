@@ -13,11 +13,11 @@ public enum TypeProcedimientoEstado {
     /**
      * <P>ESTADO MODIFICACIÓN PENDIENTE SUBIR</P>
      */
-    PENDIENTE_PUBLICAR("S"),
+    PENDIENTE_PUBLICAR("PV"),
     /**
      * <P>PENDIENTE RESERVAR</P>
      */
-    PENDIENTE_CERRAR("V"),
+    PENDIENTE_CERRAR("PT"),
     /**
      * <P>PUBLICADO</P>
      */
@@ -25,7 +25,7 @@ public enum TypeProcedimientoEstado {
     /**
      * <P>CERRAR</P>
      */
-    CERRADO("C");
+    CERRADO("T");
 
     final String valor;
 

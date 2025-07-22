@@ -50,6 +50,13 @@
             <div class="row">
                 <c:if test="#{!empty dialogProcedimientoFlujo.estados}">
                     <div class="ui-g-12 ui-md-1 ui-lg-1">
+                        <p:outputLabel value="#{labels['dict.estadoActual']}:"  style="margin-right: 20px" />
+                    </div>
+                    <div class="ui-g-12 ui-md-11 ui-lg-11">
+                        <h:outputText value="#{labels['TypeProcedimientoEstado.' += dialogProcedimientoFlujo.estadoActual.toString()]}" style="font-weight: bold;font-size: 1.2em !important;"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-1 ui-lg-1">
                         <p:outputLabel value="#{labels['dict.estadoDestino']}:" for="datatableEstado" rendered="#{!empty dialogProcedimientoFlujo.estados }"/>
                     </div>
                     <div class="ui-g-12 ui-md-5 ui-lg-5">

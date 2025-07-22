@@ -138,6 +138,12 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Literal obtenerPadreDir3(Long codigoUA) {
+        return unidadAdministrativaRepository.obtenerPadreDir3(codigoUA);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public boolean existeTipoSexo(Long codigoSex) {
         return unidadAdministrativaRepository.existeTipoSexo(codigoSex);
     }

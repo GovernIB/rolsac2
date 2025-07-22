@@ -112,8 +112,8 @@ public class Servicios extends EntidadBase {
     @Schema(description = "fechaCaducidad", required = false)
     private Calendar fechaCaducidad;
 
-    @Schema(description = "uaResponsable", type = SchemaType.INTEGER, required = false)
-    private Long uaResponsable;
+    @Schema(description = "uaResponsable", type = SchemaType.STRING, required = false)
+    private String uaResponsable;
     @Schema(description = "uaInstructor", type = SchemaType.INTEGER, required = false)
     private Long uaInstructor;
     @Schema(description = "habilitadoApoderado", type = SchemaType.BOOLEAN, required = false)
@@ -198,7 +198,7 @@ public class Servicios extends EntidadBase {
             this.tramitTelefonica = elem.isTramitTelefonica();
             this.tramitPresencial = elem.isTramitPresencial();
             this.uaInstructor = elem.getUaInstructor() == null ? null : elem.getUaInstructor().getCodigo();
-            this.uaResponsable = elem.getUaResponsable() == null ? null : elem.getUaResponsable().getCodigo();
+            this.uaResponsable = elem.getUaResponsable();
             this.workflow = elem.getWorkflow() == null ? null : elem.getWorkflow().name();
             if (this.tramitElectronica) {
                 this.tipoTramitacion = elem.getTipoTramitacion() == null ? null : elem.getTipoTramitacion().getCodigo();
@@ -658,11 +658,11 @@ public class Servicios extends EntidadBase {
         this.linkLopdInfoAdicional = linkLopdInfoAdicional;
     }
 
-    public Long getUaResponsable() {
+    public String getUaResponsable() {
         return uaResponsable;
     }
 
-    public void setUaResponsable(Long uaResponsable) {
+    public void setUaResponsable(String uaResponsable) {
         this.uaResponsable = uaResponsable;
     }
 

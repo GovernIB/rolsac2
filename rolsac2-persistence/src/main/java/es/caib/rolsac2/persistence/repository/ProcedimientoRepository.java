@@ -11,6 +11,7 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -271,4 +272,27 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      */
     JTipoTramitacion guardarTipoTramitacion(JTipoTramitacion tramiteElectronico);
 
+    /**
+     * Devuelve los codigos de los procedimientos publicados en SIA que están caducados
+     *
+     * @param idEntidad Codigo de la entidad
+     * @return Lista de codigos de procedimientos
+     */
+    List<Long> revisarProcsPublicadosSIACaducados(Long idEntidad);
+
+    /**
+     * Devuelve los codigos de los procedimientos publicados en SIA que están caducados
+     *
+     * @param idEntidad Codigo de la entidad
+     * @return Lista de codigos de servicios
+     */
+    List<Long> revisarServsPublicadosSIACaducados(Long idEntidad);
+
+    /**
+     * Obtiene la fecha de publicación de un procedimiento por su código.
+     *
+     * @param codigo Código del procedimiento
+     * @return Fecha de publicación del procedimiento, o null si no se encuentra
+     */
+    Date getFechaPublicacionByCodigo(Long codigo);
 }

@@ -17,41 +17,41 @@
             <div class="form-row">
                 <div class="form-group col-md-9 col-xs-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.nombre.procedimiento']}:" />
-                    <p:outputLabel styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.nombreProcedimientoWorkFlow.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.nombreProcedimientoWorkFlow.getTraduccionConValor(viewProcedimientos.idioma)}" />
 
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.objeto']}:" />
-                    <p:outputLabel styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.objeto.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.objeto.getTraduccionConValor(viewProcedimientos.idioma)}" />
 
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.destinatarios']}:" />
-                    <p:outputLabel styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.destinatarios.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.destinatarios.getTraduccionConValor(viewProcedimientos.idioma)}" />
 
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.terminios']}:" />
-                    <p:outputLabel styleClass="w99"  value="#{viewProcedimientos.procedimientoSeleccionado.terminoResolucion.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel styleClass="w99"  value="#{viewProcedimientos.procedimientoSeleccionado.terminoResolucion.getTraduccionConValor(viewProcedimientos.idioma)}" />
 
                     <p:outputLabel styleClass="mr-2 mt-1 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.observaciones']}:" />
-                    <p:outputLabel  styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.observaciones.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel  styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.observaciones.getTraduccionConValor(viewProcedimientos.idioma)}" />
 
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.keywords']}:" />
-                    <p:outputLabel  styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.keywords.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel  styleClass="w99" value="#{viewProcedimientos.procedimientoSeleccionado.keywords.getTraduccionConValor(viewProcedimientos.idioma)}" />
                 </div>
                 <div class="form-group col-md-3  col-xs-12">
                     <div class="col-md-12 mr-2 mb-1 pt-0 ">
                             <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.tipoProcedimiento']}:&#160;" />
-                            <p:outputLabel value=" #{viewProcedimientos.procedimientoSeleccionado.tipoProcedimiento.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                            <p:outputLabel value=" #{viewProcedimientos.procedimientoSeleccionado.tipoProcedimiento.descripcion.getTraduccionConValor(viewProcedimientos.idioma)}" />
                     </div>
                     <div class="col-md-12 mr-2 mb-1 pt-0 ">
                         <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.formaInicio']}:&#160;" />
-                        <p:outputLabel value=" #{viewProcedimientos.procedimientoSeleccionado.iniciacion.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                        <p:outputLabel value=" #{viewProcedimientos.procedimientoSeleccionado.iniciacion.descripcion.getTraduccionConValor(viewProcedimientos.idioma)}" />
                     </div>
 
                     <div class="col-md-12 mr-2 mb-1 pt-0 ">
                         <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.silencioAdministrativo']}:&#160;" />
-                        <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.silencio.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                        <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.silencio.descripcion.getTraduccionConValor(viewProcedimientos.idioma)}" />
                     </div>
 
                     <div class="col-md-12 mr-2 mb-1 pt-0 ">
                         <p:outputLabel styleClass="negrita" value="#{labels['dialogProcedimiento.tipoVia']}:&#160;" />
-                        <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.tipoVia.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                        <p:outputLabel value="#{viewProcedimientos.procedimientoSeleccionado.tipoVia.descripcion.getTraduccionConValor(viewProcedimientos.idioma)}" />
                     </div>
 
                     <div class="col-md-12 mr-2 mb-1 pt-0 ">
@@ -98,16 +98,16 @@
             <div class="form-row">
                 <div class="form-group col-lg-6 col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.organoCompetente']}:" />
-                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.comunUA.getTraduccion(viewProcedimientos.idioma)}"
+                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.comunUA.getTraduccionConValor(viewProcedimientos.idioma)}"
                                    rendered="#{viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
-                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.uaResponsable.nombre.getTraduccion(viewProcedimientos.idioma)}"
+                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.uaResponsable}"
                                    rendered="#{!viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
                 </div>
                 <div class="form-group  col-lg-6 col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.organoInstructor']}:" />
-                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.comunUA.getTraduccion(viewProcedimientos.idioma)}"
+                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.comunUA.getTraduccionConValor(viewProcedimientos.idioma)}"
                                    rendered="#{viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
-                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.uaInstructor.nombre.getTraduccion(viewProcedimientos.idioma)}"
+                    <p:outputLabel styleClass="mb-1"  value="#{viewProcedimientos.procedimientoSeleccionado.uaInstructor.nombre.getTraduccionConValor(viewProcedimientos.idioma)}"
                                    rendered="#{!viewProcedimientos.procedimientoSeleccionado.esComun()}"/>
                 </div>
             </div>
@@ -177,7 +177,7 @@
                 <div class="form-group col-lg-6 col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.servicio']}:" />
                     <p:outputLabel rendered="#{!dialogProcedimiento.data.esComun()}"
-                                        value="#{viewProcedimientos.procedimientoSeleccionado.uaCompetente.nombre.getTraduccion(viewProcedimientos.idioma)}" />
+                                        value="#{viewProcedimientos.procedimientoSeleccionado.uaCompetente.nombre.getTraduccionConValor(viewProcedimientos.idioma)}" />
 
                 </div>
                 <div class="form-group col-lg-6 col-md-12">
@@ -201,23 +201,23 @@
             <div class="form-row">
                 <div class="form-group col-xl-2 col-lg-3 col-md-6">
                     <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogProcedimiento.responsableTratamiento']}:" />
-                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.lopdResponsable.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.lopdResponsable.getTraduccionConValor(viewProcedimientos.idioma)}" />
                 </div>
                 <div class="form-group col-xl-2 col-lg-3 col-md-6">
                     <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.legitimacion']}:" />
-                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.datosPersonalesLegitimacion.descripcion.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.datosPersonalesLegitimacion.descripcion.getTraduccionConValor(viewProcedimientos.idioma)}" />
                 </div>
                 <div class="form-group col-xl-2 col-lg-3 col-md-6">
                     <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.finalidad']}:" />
-                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.lopdFinalidad.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.lopdFinalidad.getTraduccionConValor(viewProcedimientos.idioma)}" />
                 </div>
                 <div class="form-group col-xl-2 col-lg-3 col-md-6">
                     <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.destinatario']}:" />
-                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.lopdDestinatario.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.lopdDestinatario.getTraduccionConValor(viewProcedimientos.idioma)}" />
                 </div>
                 <div class="form-group col-xl-2 col-lg-3 col-md-6">
                     <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.derechos']}:" />
-                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.lopdDerechos.getTraduccion(viewProcedimientos.idioma)}" />
+                    <p:outputLabel styleClass="mb-1" value="#{viewProcedimientos.procedimientoSeleccionado.lopdDerechos.getTraduccionConValor(viewProcedimientos.idioma)}" />
                 </div>
             </div>
         </p:panel>
@@ -263,7 +263,7 @@
                         <p:ajax event="rowUnselect"/>
 
                         <p:column headerText="#{labels['dialogServicio.publicoObjetivo']}" styleClass="text-center">
-                            <h:outputText value="#{td.descripcion.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.descripcion.getTraduccionConValor(viewProcedimientos.idioma)}" class="labelGrande" />
                         </p:column>
 
                     </p:dataTable>
@@ -302,7 +302,7 @@
                                         </div>
                                         <i class="#{viewProcedimientos.getIcono(td)}"></i>
                                         <h:outputText id="texto"
-                                                      value="#{td.descripcion.getTraduccion(viewProcedimientos.idioma)}" class="labelGrande" />
+                                                      value="#{td.descripcion.getTraduccionConValor(viewProcedimientos.idioma)}" class="labelGrande" />
                                         <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
                                                    value="#{viewProcedimientos.getTooltip(td)}" position="right"/>
                                     </p:column>

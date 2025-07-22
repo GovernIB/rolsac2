@@ -119,16 +119,15 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                             case MODIFICACION:
                                 estados.add(TypeProcedimientoEstado.PUBLICADO);
                                 break;
-                            case PUBLICADO:
-                                estados.add(TypeProcedimientoEstado.MODIFICACION);
-                                estados.add(TypeProcedimientoEstado.CERRADO);
-                                break;
                             case PENDIENTE_PUBLICAR:
                                 estados.add(TypeProcedimientoEstado.MODIFICACION);
                                 estados.add(TypeProcedimientoEstado.PUBLICADO);
                                 break;
+                            case PUBLICADO:
+                                estados.add(TypeProcedimientoEstado.CERRADO);
+                                break;
                             case PENDIENTE_CERRAR:
-                                estados.add(TypeProcedimientoEstado.MODIFICACION);
+                                estados.add(TypeProcedimientoEstado.PUBLICADO);
                                 estados.add(TypeProcedimientoEstado.CERRADO);
                                 break;
                             case CERRADO:
@@ -145,11 +144,6 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                     if (typeEstadoActual != null && typeEstadoActual == TypeProcedimientoEstado.PUBLICADO) {
                         //Se puede tirar para atas para poderlo volver a editar
                         estados.add(TypeProcedimientoEstado.PENDIENTE_CERRAR);
-                        this.estadoSeleccionado = estados.get(0);
-                    }
-                    if (typeEstadoActual != null && typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_CERRAR) {
-                        //Se puede tirar para atas para poderlo volver a editar
-                        estados.add(TypeProcedimientoEstado.PUBLICADO);
                         this.estadoSeleccionado = estados.get(0);
                     }
                 }
@@ -281,7 +275,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             return;
         }
 
-        if (!mostrarEstados && (mensajeNuevo == null || mensaje.isEmpty())) {
+        if (!mostrarEstados && (mensajeNuevo == null || mensajeNuevo.isEmpty())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimientoFlujo.errorTextovacio"), true);
             return;
         }
