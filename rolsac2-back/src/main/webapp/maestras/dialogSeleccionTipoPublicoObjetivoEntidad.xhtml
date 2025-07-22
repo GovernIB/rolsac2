@@ -89,9 +89,9 @@
             <div class="col-12 left-container-header text-center">
                 <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.publicoObjetivo']}</p>
             </div>
-            <div class="col-10 p-1">
+            <div class="col-10 p-1" style="height: 250px;">
                 <p:dataTable id="dataTablePubObjEnt" var="td" value="#{dialogSeleccionTipoPublicoObjetivoEntidad.tipoPublicoObjEntSeleccionadas}"
-                             emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true" scrollHeight="120"
+                             emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true" scrollHeight="230"
                              paginator="false" selectionMode="single"
                              selection="#{dialogSeleccionTipoPublicoObjetivoEntidad.pubobjentGridSeleccionada}"
                              rowKey="#{td.codigo}" styleClass="noHeader">
@@ -100,7 +100,7 @@
                     <p:ajax event="rowSelect" global="false"/>
                     <p:ajax event="rowUnselect"/>
                     <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                        <p:outputLabel value="#{td.descripcion.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
+                        <p:outputLabel value="#{td.descripcion.getTraduccionConValor(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
                     </p:column>
                 </p:dataTable>
             </div>
@@ -109,7 +109,7 @@
                                  action="#{dialogSeleccionTipoPublicoObjetivoEntidad.borrarTipoPubObjEnt}"
                                  process="@this" update="dataTablePubObjEnt messagesDialog"/>
             </div>
-            <label style="color:red;margin:5px">#{labels['dialogSeleccionTipoPublicoObjetivoEntidad.mensaje.empleadoPublico']}</label>
+
         </div>
         </div>
     </ui:define>
