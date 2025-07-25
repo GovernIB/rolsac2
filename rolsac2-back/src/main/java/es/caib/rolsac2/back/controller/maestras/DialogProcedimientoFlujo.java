@@ -39,6 +39,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     private String idWF;
     private Long idWFL;
     private String estadoActual;
+    private String literalEstadoActual;
 
     private String consultarSoloMensajes;
 
@@ -106,6 +107,9 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         }
         if (mensajes == null) {
             mensajes = new ArrayList<>();
+        }
+        if (estadoActual != null && !estadoActual.isEmpty()) {
+            literalEstadoActual = getLiteral("TypeProcedimientoEstado." + estadoActual);
         }
         if (consultarSoloMensajes != null && "S".equals(consultarSoloMensajes)) {
             mostrarEstados = false;
@@ -576,6 +580,14 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
 
     public void setIdWF(String idWF) {
         this.idWF = idWF;
+    }
+
+    public String getLiteralEstadoActual() {
+        return literalEstadoActual;
+    }
+
+    public void setLiteralEstadoActual(String literalEstadoActual) {
+        this.literalEstadoActual = literalEstadoActual;
     }
 }
 
