@@ -118,7 +118,7 @@ public class Servicios extends EntidadBase {
     @Schema(description = "uaInstructor", type = SchemaType.INTEGER, required = false)
     private Long uaInstructor;
     @Schema(description = "habilitadoApoderado", type = SchemaType.BOOLEAN, required = false)
-    private boolean habilitadoApoderado;
+    private Boolean habilitadoApoderado;
     @Schema(description = "habilitadoFuncionario", type = SchemaType.STRING, required = false)
     private String habilitadoFuncionario;
     @Schema(description = "tieneTasa", type = SchemaType.BOOLEAN, required = false)
@@ -675,11 +675,11 @@ public class Servicios extends EntidadBase {
         this.uaInstructor = uaInstructor;
     }
 
-    public boolean isHabilitadoApoderado() {
+    public Boolean isHabilitadoApoderado() {
         return habilitadoApoderado;
     }
 
-    public void setHabilitadoApoderado(boolean habilitadoApoderado) {
+    public void setHabilitadoApoderado(Boolean habilitadoApoderado) {
         this.habilitadoApoderado = habilitadoApoderado;
     }
 

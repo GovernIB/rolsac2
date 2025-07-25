@@ -37,7 +37,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionBasicaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 650);
+        UtilJSF.openDialog("dialogEvolucionBasicaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 700);
     }
 
     public void irEvolucionFusion() {
@@ -46,7 +46,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionFusionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 875, 640);
+        UtilJSF.openDialog("dialogEvolucionFusionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 875, 700);
     }
 
     /**
@@ -98,7 +98,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
         if (idUA != null && (this.isModoEdicion() || this.isModoConsulta())) {
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
-        UtilJSF.openDialog("dialogEvolucionDependenciaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 570);
+        UtilJSF.openDialog("dialogEvolucionDependenciaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 620);
     }
 
 }

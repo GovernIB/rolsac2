@@ -3251,8 +3251,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setResponsable(jprocWF.getResponsableNombre());
         proc.setLopdResponsable(jprocWF.getLopdResponsable());
         proc.setComun(jprocWF.getComun());
-        // proc.setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
-        // proc.setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
         proc.setUaResponsable(jprocWF.getUaResponsable());
         if (jprocWF.getTramitElectronica() != null) {
             proc.setTramitElectronica(jprocWF.getTramitElectronica());
