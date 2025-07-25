@@ -38,6 +38,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
         UtilJSF.openDialog("dialogEvolucionBasicaUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 775, 700);
+
     }
 
     public void irEvolucionFusion() {
@@ -47,6 +48,7 @@ public class DialogEvolucionUnidadAdministrativa extends EvolucionController imp
             params.put(TypeParametroVentana.ID.toString(), idUA);
         }
         UtilJSF.openDialog("dialogEvolucionFusionUnidadAdministrativa", TypeModoAcceso.EDICION, params, true, 875, 700);
+        
     }
 
     /**
