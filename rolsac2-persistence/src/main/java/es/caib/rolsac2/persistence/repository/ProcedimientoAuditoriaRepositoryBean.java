@@ -86,9 +86,9 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
                 "AND j.fechaModificacion = (SELECT MAX(pr.fechaModificacion) FROM JProcedimientoAuditoria pr WHERE j.procedimiento.codigo = pr.procedimiento.codigo) " +
                 "AND (j.accion = 'A' OR j.accion = 'M') ";
 
-        if(filtro.isRellenoUa()) {
-            sql+= " AND wf.uaInstructor.codigo = :idUa";
-        } else if(filtro.isRellenoEntidad()) {
+        if (filtro.isRellenoUa()) {
+            sql += " AND wf.uaInstructor.codigo = :idUa";
+        } else if (filtro.isRellenoEntidad()) {
             sql += " AND wf.uaInstructor.entidad.codigo = :idEntidad";
         }
 
@@ -97,9 +97,9 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
         query.setParameter("idioma", filtro.getIdioma());
         query.setParameter("fecha", fechaSemanaAnterior);
         query.setParameter("tipo", filtro.getTipo());
-        if(filtro.isRellenoUa()) {
+        if (filtro.isRellenoUa()) {
             query.setParameter("idUa", filtro.getIdUa());
-        } else if(filtro.isRellenoEntidad()) {
+        } else if (filtro.isRellenoEntidad()) {
             query.setParameter("idEntidad", filtro.getIdEntidad());
         }
 
@@ -127,7 +127,6 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
     }
 
 
-
     public EstadisticaCMDTO countByFiltro(CuadroMandoFiltro filtro) {
         //Obtenemos los 7 dias anteriores al de hoy
         List<String> fechas = new ArrayList<>();
@@ -140,13 +139,13 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
         LocalDateTime quintoDiaLDt = fechaHoyLdt.minusDays(3);
         LocalDateTime sextoDiaLDt = fechaHoyLdt.minusDays(2);
         LocalDateTime septimoDiaLdt = fechaHoyLdt.minusDays(1);
-        Date primerDia  = Date.from(primerDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
-        Date segundoDia  = Date.from(segundoDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
-        Date tercerDia  = Date.from(tercerDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
-        Date cuartoDia  = Date.from(cuartoDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
-        Date quintoDia  = Date.from(quintoDiaLDt.atZone(ZoneId.systemDefault()).toInstant());
-        Date sextoDia  = Date.from(sextoDiaLDt.atZone(ZoneId.systemDefault()).toInstant());
-        Date septimoDia  = Date.from(septimoDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
+        Date primerDia = Date.from(primerDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
+        Date segundoDia = Date.from(segundoDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
+        Date tercerDia = Date.from(tercerDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
+        Date cuartoDia = Date.from(cuartoDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
+        Date quintoDia = Date.from(quintoDiaLDt.atZone(ZoneId.systemDefault()).toInstant());
+        Date sextoDia = Date.from(sextoDiaLDt.atZone(ZoneId.systemDefault()).toInstant());
+        Date septimoDia = Date.from(septimoDiaLdt.atZone(ZoneId.systemDefault()).toInstant());
         Date fechaHoy = Date.from(fechaHoyLdt.atZone(ZoneId.systemDefault()).toInstant());
 
         String pattern = "dd/MM/yyyy";
@@ -169,9 +168,9 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
                 "SUM(CASE WHEN (j.fechaModificacion BETWEEN :septimoDia AND :fechaHoy AND j.procedimiento.tipo = :tipo AND j.accion = :accion) THEN 1 ELSE 0 END) " +
                 "FROM JProcedimientoAuditoria j LEFT OUTER JOIN JProcedimientoWorkflow wf ON wf.procedimiento.codigo = j.procedimiento.codigo WHERE 1 = 1 ";
 
-        if(filtro.isRellenoUa()) {
-            sql+= " AND wf.uaInstructor.codigo = :idUa";
-        } else if(filtro.isRellenoEntidad()) {
+        if (filtro.isRellenoUa()) {
+            sql += " AND wf.uaInstructor.codigo = :idUa";
+        } else if (filtro.isRellenoEntidad()) {
             sql += " AND wf.uaInstructor.entidad.codigo = :idEntidad";
         }
 
@@ -186,15 +185,15 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
         query.setParameter("fechaHoy", fechaHoy);
         query.setParameter("tipo", filtro.getTipo());
         query.setParameter("accion", filtro.getAccion());
-        if(filtro.isRellenoUa()) {
+        if (filtro.isRellenoUa()) {
             query.setParameter("idUa", filtro.getIdUa());
-        } else if(filtro.isRellenoEntidad()) {
+        } else if (filtro.isRellenoEntidad()) {
             query.setParameter("idEntidad", filtro.getIdEntidad());
         }
 
         List<Long> resultadosPorDia = new ArrayList<>();
         final Object[] resultado = (Object[]) query.getSingleResult();
-        if(resultado != null) {
+        if (resultado != null) {
             resultadosPorDia.add(resultado[0] == null ? 0 : (Long) resultado[0]);
             resultadosPorDia.add(resultado[1] == null ? 0 : (Long) resultado[1]);
             resultadosPorDia.add(resultado[2] == null ? 0 : (Long) resultado[2]);
@@ -214,6 +213,7 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
     private List<AuditoriaGridDTO> findAuditoriasById(Long id, String tipo) {
         final List<AuditoriaGridDTO> auditorias = new ArrayList<>();
         AuditoriaFiltro filtro = new AuditoriaFiltro();
+        filtro.setPaginaTamanyo(10000);
         if ("PROC".equals(tipo)) {
             filtro.setProcedimiento(id);
         }
@@ -331,6 +331,8 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(filtro.getOrderBy());
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
+        } else {
+            sql.append(" order by j.codigo desc ");
         }
         return sql.toString();
     }

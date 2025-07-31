@@ -490,7 +490,7 @@ IF ser_valida = 1 THEN
           ELSIF ser_valida = 3 THEN
             wf := 0;
 
-            wfestado := 'C';
+            wfestado := 'T';
 
             interno := 1;
 ELSE /** SER_VALIDA = 4 **/

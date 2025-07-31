@@ -1151,16 +1151,16 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
             if (procDestino == null && data.getCodigo() != null) {
                 if (estadoDestino != null && estadoDestino.equals(TypeProcedimientoEstado.CERRADO)) {
-                    generarAuditoria("auditoria.flujo." + data.getEstado().toString() + estadoDestino.toString(), data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.BAJA.toString());
+                    generarAuditoria("auditoria.flujo." + data.getEstado().toString() + "." + estadoDestino.toString(), data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.BAJA.toString());
                 } else {
-                    generarAuditoria("auditoria.flujo." + data.getEstado().toString() + estadoDestino.toString(), data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.MODIFICACION.toString());
+                    generarAuditoria("auditoria.flujo." + data.getEstado().toString() + "." + (estadoDestino == null ? "" : estadoDestino.toString()), data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.MODIFICACION.toString());
                 }
 
             } else {
                 if (estadoDestino != null && estadoDestino.equals(TypeProcedimientoEstado.CERRADO)) {
-                    crearAuditoria(procDestino, data, perfil, "auditoria.flujo." + data.getEstado().toString() + estadoDestino.toString(), TypeAccionAuditoria.BAJA.toString());
+                    crearAuditoria(procDestino, data, perfil, "auditoria.flujo." + data.getEstado().toString() + "." + estadoDestino.toString(), TypeAccionAuditoria.BAJA.toString());
                 } else {
-                    crearAuditoria(procDestino, data, perfil, "auditoria.flujo." + data.getEstado().toString() + estadoDestino.toString(), TypeAccionAuditoria.MODIFICACION.toString());
+                    crearAuditoria(procDestino, data, perfil, "auditoria.flujo." + data.getEstado().toString() + "." + (estadoDestino == null ? "" : estadoDestino.toString()), TypeAccionAuditoria.MODIFICACION.toString());
                 }
             }
 

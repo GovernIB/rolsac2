@@ -239,7 +239,7 @@ AS
              r1_procedimientos_histor
         WHERE  his_codpro = codpro
           AND  aud_codhis = his_codi
-        ORDER  BY his_codi;
+        ORDER  BY AUD_FECHA;
     maximoid                   NUMBER;
     valor                      NUMBER;
     existe                     NUMBER;
@@ -451,7 +451,7 @@ BEGIN
             ELSIF pro_valida = 3 THEN
                 wf := 0;
 
-                wfestado := 'C';
+                wfestado := 'T';
 
                 interno := 1;
             ELSE /** PRO_VALIDA = 4 **/
