@@ -221,7 +221,7 @@ FROM r1_procedimientos_audito,
      r1_procedimientos_histor
 WHERE  his_codser = codpro
   AND  aud_codhis = his_codi
-ORDER  BY his_codi;
+ORDER  BY AUD_FECHA;
 maximoid             NUMBER;
   valor                NUMBER;
   existe               NUMBER(2, 0);
