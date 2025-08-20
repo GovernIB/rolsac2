@@ -618,31 +618,6 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         this.canalPresentacion = canalPresentacion;
     }
 
-    public void cambiaTipo() {
-
-        /*
-        if (canalesSeleccionados != null && !canalesSeleccionados.isEmpty()) {
-
-            if (data.getPlantillaSel() == null && canalPresentacion == null) {
-                canalPresentacion = new TipoTramitacionDTO();
-            }
-
-            if (canalesSeleccionados.stream().noneMatch(c -> "TEL".equals(c))) {
-                data.setPlantillaSel(null);
-            } else {
-                if (data.getPlantillaSel() != null) {
-                    //canalPresentacion = new TipoTramitacionDTO(plantillaSel);
-                }
-            }
-            //canalPresentacion.setTramitPresencial(canalesSeleccionados.contains("PRE"));
-            //canalPresentacion.setTramitElectronica(canalesSeleccionados.contains("TEL"));
-
-            // data.getTipoTramitacion().setTramitTelefonico(Arrays.asList(canalesSeleccionados).contains("TFN"));
-        } else {
-            canalPresentacion = null;
-            data.setPlantillaSel(null);
-        } */
-    }
 
     public ProcedimientoDocumentoDTO getDocumentoSeleccionado() {
         return documentoSeleccionado;

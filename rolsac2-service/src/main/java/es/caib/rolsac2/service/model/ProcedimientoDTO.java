@@ -757,11 +757,15 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (data instanceof ServicioDTO) {
             AuditoriaUtil.auditar(((ServicioDTO) data).getResponsableTelefono(), ((ServicioDTO) dataOriginal).getResponsableTelefono(), cambios, "auditoria.servicio.telefonoResponsable");
             AuditoriaUtil.auditar(((ServicioDTO) data).getTasa(), ((ServicioDTO) dataOriginal).getTasa(), cambios, "auditoria.servicio.tasa");
-            AuditoriaUtil.auditar(((ServicioDTO) data).getTipoTramitacion(), ((ServicioDTO) dataOriginal).getTipoTramitacion(), cambios, "auditoria.servicio.tipoTramitacion");
+            if (((ServicioDTO) dataOriginal).isTramitElectronica()) {
+                AuditoriaUtil.auditar(((ServicioDTO) data).getTipoTramitacion(), ((ServicioDTO) dataOriginal).getTipoTramitacion(), cambios, "auditoria.servicio.tipoTramitacion");
+            }
             AuditoriaUtil.auditar(((ServicioDTO) data).getPlantillaSel(), ((ServicioDTO) dataOriginal).getPlantillaSel(), cambios, "auditoria.servicio.tipoTramitacionSel");
             AuditoriaUtil.auditar(((ServicioDTO) data).isTramitPresencial(), ((ServicioDTO) dataOriginal).isTramitPresencial(), cambios, "auditoria.servicio.isTramitPresencial");
             AuditoriaUtil.auditar(((ServicioDTO) data).isTramitElectronica(), ((ServicioDTO) dataOriginal).isTramitElectronica(), cambios, "auditoria.servicio.isTramitElectronica");
             AuditoriaUtil.auditar(((ServicioDTO) data).isTramitTelefonica(), ((ServicioDTO) dataOriginal).isTramitTelefonica(), cambios, "auditoria.servicio.isTramitTelefonica");
+            AuditoriaUtil.auditar(((ServicioDTO) data).isActivoLOPD(), ((ServicioDTO) dataOriginal).isActivoLOPD(), cambios, "auditoria.servicio.isActivoLOPD");
+
         }
 
         //Relaciones

@@ -299,8 +299,9 @@
                             <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.canalPresencial']}"
                                           itemValue="PRE"/>
                             <!--<f:selectItem itemLabel="Telefónico" itemValue="TFN"  />-->
-                            <p:ajax update="txtTraPlantilla txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto txtOpcionTelematica"
-                                    event="change" listener="#{dialogProcedimientoTramite.cambiaTipo}"/>
+                            <p:ajax event="change"
+                                    process="@this"
+                                    update="panelFormCanales txtOpcionTelematica"/>
                         </p:selectManyCheckbox>
                     </div>
                     <div class="form-group col-md-5">
