@@ -146,9 +146,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             if (this.getLopdResponsable() != null) {
                 this.data.setLopdResponsable(this.getLopdResponsable().getTraduccionConValor(sessionBean.getLang()));
             }
-            // dsanz se entra a editar pero se deshabilitan los botones de edición si es un procedimiento de una ua común que sólo puede consultar el gestor
+            // Indra se entra a editar pero se deshabilitan los botones de edición si es un procedimiento de una ua común que sólo puede consultar el gestor
             if (this.isGestor()) {
                 List<Long> listaUasUsuario = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
+                listaUasUsuario.add(sessionBean.getUnidadActiva().getCodigo());
                 noEditable = !listaUasUsuario.contains(data.getUaInstructor().getCodigo());
             }
         }
@@ -178,7 +179,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
-        // actualizarResponsable();
+        actualizarResponsable();
         dataOriginal = (ProcedimientoDTO) data.clone();
 
         //Eso es para cargar las uas del instructor
@@ -230,18 +231,18 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     /**
      * Actualiza el literal de resonsable
-
-     public void actualizarResponsable() {
-     if (data.getComun() == 0) {
-     if (data.getUaResponsable() == null) {
-     lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
-     } else {
-     lopdResponsable = data.getUaResponsable().getNombre();
-     }
-     } else {
-     lopdResponsable = comunUA;
-     }
-     } */
+     **/
+    public void actualizarResponsable() {
+        if (data.getComun() == 0) {
+            if (data.getUaInstructor() == null) {
+                lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
+            } else {
+                lopdResponsable = data.getUaInstructor().getNombre();
+            }
+        } else {
+            lopdResponsable = comunUA;
+        }
+    }
 
     /**
      * Enviado a SIA para que se indexe.

@@ -520,34 +520,10 @@
                         <p>
                             <h:panelGroup id="panelComunContacto">
                                 <span style="white-space:nowrap;  display:flex;">
-                                <p:inputText id="txtOrgResp"
-                                             rendered="#{!dialogProcedimiento.data.esComun()}"
-                                             value="#{dialogProcedimiento.data.uaResponsable}"
-                                             styleClass="w95 mr-1"
-                                             disabled="#{dialogProcedimiento.isModoConsulta()}" />
-                                    <!--
-                                <p:commandButton
-                                        action="#{dialogProcedimiento.abrirVentanaUACompetente()}"
-                                        icon="pi pi-sitemap"
-                                        value=" "
-                                        styleClass="w35px h30px iconoUAselector"
-                                        style="position:relative; "
-                                        process="@this"
-                                        rendered="#{!dialogProcedimiento.data.esComun()}"
-                                        disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                        id="btnAbrirUAResp"
-                                >
-                                    <p:ajax event="dialogReturn"
-                                            listener="#{dialogProcedimiento.returnDialogoUACompetente}"
-                                            process="@this"
-                                            update="formDialog:txtOrgResp lblUAiconoCompetente lblUAiconoCompetente2 toolTipFadeCompetente"
-                                            oncomplete="checkUAraiz()"/>
-                                </p:commandButton>
-                                <h:outputLink id="lblUAiconoCompetente" value="#" styleClass="w20px labelWarningUAPadre">
-                                    <h:outputText id="lblUAiconoCompetente2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUACompetente()}" />
-                                </h:outputLink>
-                                <p:tooltip id="toolTipFadeCompetente" for="lblUAiconoCompetente" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
-                                -->
+                                    <p:inputText id="txtOrgResp"
+                                                 value="#{dialogProcedimiento.data.uaResponsable}"
+                                                 styleClass="w95 mr-1"
+                                                 disabled="#{dialogProcedimiento.isModoConsulta()}" />
                                 </span>
                             </h:panelGroup>
                         </p>

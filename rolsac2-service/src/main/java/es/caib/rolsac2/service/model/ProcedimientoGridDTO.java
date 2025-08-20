@@ -519,4 +519,14 @@ public class ProcedimientoGridDTO extends ModelApi {
     public String getUaInstructor() {
         return uaInstructor;
     }
+
+    public boolean isDisabledBotonEditar() {
+        if (this.codigoWFMod != null) {
+            return false;
+        }
+        if (this.codigoWFPub != null && this.estado != null && this.estado.contains("P")) {
+            return false;
+        }
+        return true;
+    }
 }

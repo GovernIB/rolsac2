@@ -724,22 +724,22 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         AuditoriaUtil.auditar(data.getTipoVia(), dataOriginal.getTipoVia(), cambios, "auditoria.procedimiento.tipoVia");
         AuditoriaUtil.auditar(data.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado(), cambios, "auditoria.procedimiento.habilitadoApoderado");
 
-        AuditoriaUtil.auditar(data.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario(), cambios, "auditoria.procedimiento.habilitadoFuncionario");
+        AuditoriaUtil.auditar("S".equals(data.getHabilitadoFuncionario()), "S".equals(dataOriginal.getHabilitadoFuncionario()), cambios, "auditoria.procedimiento.habilitadoFuncionario");
         AuditoriaUtil.auditar(data.isTieneTasa(), dataOriginal.isTieneTasa(), cambios, "auditoria.procedimiento.tieneTasa");
 
         AuditoriaUtil.auditar(data.getObservaciones(), dataOriginal.getObservaciones(), cambios, "auditoria.procedimiento.observaciones");
         AuditoriaUtil.auditar(data.getKeywords(), dataOriginal.getKeywords(), cambios, "auditoria.procedimiento.keywords");
 
         // Órganos
-        AuditoriaUtil.auditar(data.getUaResponsable(), dataOriginal.getUaResponsable(), cambios, "auditoria.procedimiento.uaResponsable");
+        AuditoriaUtil.auditar(data.getUaCompetente(), dataOriginal.getUaCompetente(), cambios, "auditoria.procedimiento.uaCompetente");
         AuditoriaUtil.auditar(data.getUaInstructor(), dataOriginal.getUaInstructor(), cambios, "auditoria.procedimiento.uaInstructor");
 
 
-        AuditoriaUtil.auditar(data.getComun(), dataOriginal.getComun(), cambios, "auditoria.procedimiento.comun");
+        AuditoriaUtil.auditar(data.getComun() != 0, dataOriginal.getComun() != 0, cambios, "auditoria.procedimiento.comun");
 
 
         //Seccion datos contacto
-        AuditoriaUtil.auditar(data.getUaCompetente(), dataOriginal.getUaCompetente(), cambios, "auditoria.procedimiento.uaCompetente");
+        AuditoriaUtil.auditar(data.getUaResponsable(), dataOriginal.getUaResponsable(), cambios, "auditoria.procedimiento.uaResponsable");
 
         AuditoriaUtil.auditar(data.getResponsable(), dataOriginal.getResponsable(), cambios, "auditoria.procedimiento.responsable");
         AuditoriaUtil.auditar(data.getResponsableEmail(), dataOriginal.getResponsableEmail(), cambios, "auditoria.procedimiento.responsableEmail");
@@ -755,6 +755,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
 
         if (data instanceof ServicioDTO) {
+            AuditoriaUtil.auditar(((ServicioDTO) data).getResponsableTelefono(), ((ServicioDTO) dataOriginal).getResponsableTelefono(), cambios, "auditoria.servicio.telefonoResponsable");
             AuditoriaUtil.auditar(((ServicioDTO) data).getTasa(), ((ServicioDTO) dataOriginal).getTasa(), cambios, "auditoria.servicio.tasa");
             AuditoriaUtil.auditar(((ServicioDTO) data).getTipoTramitacion(), ((ServicioDTO) dataOriginal).getTipoTramitacion(), cambios, "auditoria.servicio.tipoTramitacion");
             AuditoriaUtil.auditar(((ServicioDTO) data).getPlantillaSel(), ((ServicioDTO) dataOriginal).getPlantillaSel(), cambios, "auditoria.servicio.tipoTramitacionSel");

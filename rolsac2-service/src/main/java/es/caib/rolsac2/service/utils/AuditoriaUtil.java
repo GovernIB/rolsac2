@@ -29,6 +29,7 @@ public final class AuditoriaUtil {
         if (objeto == null) {
             return "nul";
         }
+
         if (objeto instanceof Date) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
             String fecha = dateFormat.format((Date) objeto);
@@ -168,7 +169,18 @@ public final class AuditoriaUtil {
                 return tipo.getCodigoString();
             }
         }
-
+        if (objeto instanceof String) {
+            String cadena = (String) objeto;
+            if (cadena.isEmpty()) {
+                return "nul";
+            } else if ("true".equalsIgnoreCase(cadena)) {
+                return "Sí";
+            } else if ("false".equalsIgnoreCase(cadena)) {
+                return "No";
+            } else {
+                return cadena;
+            }
+        }
 
         return objeto.toString();
     }
@@ -1381,10 +1393,10 @@ public final class AuditoriaUtil {
 
         if (valorAnterior != null && valorNuevo != null) {
             if (valorAnterior.compareTo(valorNuevo) != 0) {
-                cambio = agregarAuditoriaValorCampo(idioma, valorAnterior.toString(), valorNuevo.toString(), idCampo);
+                cambio = agregarAuditoriaValorCampo(idioma, valorAnterior, valorNuevo, idCampo);
             }
         } else if (valorAnterior != null || valorNuevo != null) {
-            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior == null ? "nul" : valorAnterior.toString(), valorNuevo == null ? "nul" : valorNuevo.toString(), idCampo);
+            cambio = agregarAuditoriaValorCampo(idioma, valorAnterior, valorNuevo, idCampo);
 
         }
 
@@ -1605,6 +1617,20 @@ public final class AuditoriaUtil {
         } else {
             valorCampo.setValorNuevo(getValor(valorNuevo));
         }
+
+        cambio.getValoresModificados().add(valorCampo);
+
+        return cambio;
+    }
+
+    private static AuditoriaCambio agregarAuditoriaValorCampo(final AuditoriaIdioma idioma, final Boolean valorAnterior, final Boolean valorNuevo, final String idCampo) {
+        AuditoriaCambio cambio = new AuditoriaCambio();
+        cambio.setIdCampo(idCampo);
+
+        final AuditoriaValorCampo valorCampo = new AuditoriaValorCampo();
+        valorCampo.setIdioma(idioma);
+        valorCampo.setValorAnterior(getValor(valorAnterior));
+        valorCampo.setValorNuevo(getValor(valorNuevo));
 
         cambio.getValoresModificados().add(valorCampo);
 

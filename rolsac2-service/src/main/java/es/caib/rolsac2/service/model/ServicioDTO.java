@@ -156,7 +156,10 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         srvClonado.setHabilitadoApoderado(this.isHabilitadoApoderado());
         srvClonado.setHabilitadoFuncionario(this.getHabilitadoFuncionario());
         srvClonado.setUsuarioAuditoria(this.getUsuarioAuditoria());
-
+        srvClonado.setIncidenciasEmail(this.getIncidenciasEmail());
+        srvClonado.setResponsableEmail(this.getResponsableEmail());
+        srvClonado.setResponsableTelefono(this.getResponsableTelefono());
+        srvClonado.setTieneTasa(this.isTieneTasa());
         //Tipos
         if (this.getSilencio() != null) {
             srvClonado.setSilencio((TipoSilencioAdministrativoDTO) this.getSilencio().clone());
@@ -207,7 +210,9 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         if (this.getRequisitos() != null) {
             srvClonado.setRequisitos((Literal) this.getRequisitos().clone());
         }
-
+        if (this.getKeywords() != null) {
+            srvClonado.setKeywords((Literal) this.getKeywords().clone());
+        }
         //Relaciones
         if (getPublicosObjetivo() != null) {
             List<TipoPublicoObjetivoEntidadGridDTO> publicos = new ArrayList<>();

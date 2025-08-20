@@ -288,4 +288,14 @@ public class ServicioGridDTO extends ModelApi {
     public void setNumero(Integer numero) {
         this.numero = numero;
     }
+
+    public boolean isDisabledBotonEditar() {
+        if (this.codigoWFMod != null) {
+            return false;
+        }
+        if (this.codigoWFPub != null && this.estado != null && this.estado.contains("P")) {
+            return false;
+        }
+        return true;
+    }
 }

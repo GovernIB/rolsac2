@@ -249,7 +249,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              icon="pi pi-pencil" iconPos="top"
                                              actionListener="#{viewProcedimientos.editarProcedimiento}" process="@form"
                                              update="messages dataTable" onstart="startCargando()"
-                                             disabled="#{viewProcedimientos.datoSeleccionado == null}"
+                                             disabled="#{viewProcedimientos.datoSeleccionado == null or viewProcedimientos.datoSeleccionado.isDisabledBotonEditar()}"
                                              oncomplete="stopCargando()"
                                              rendered="#{!viewProcedimientos.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
