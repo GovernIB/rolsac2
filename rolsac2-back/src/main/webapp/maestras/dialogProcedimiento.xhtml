@@ -188,7 +188,8 @@
 
                         <div class="form-group col-md-3" >
                             <p:selectBooleanCheckbox id="integrarPdu" value="#{dialogProcedimiento.data.integrarPdu}" styleClass="ml-2"
-                                                     itemLabel="#{labels['dialogProcedimiento.pdu.integrar']}" >
+                                                     itemLabel="#{labels['dialogProcedimiento.pdu.integrar']}"
+                                                     disabled="#{dialogProcedimiento.isModoConsulta()}">
                                 <p:ajax update="panelCategoriasPDU" process="@this"/>
                             </p:selectBooleanCheckbox>
 
