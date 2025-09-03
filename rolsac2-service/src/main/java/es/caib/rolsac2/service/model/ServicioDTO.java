@@ -28,7 +28,6 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
     private boolean tramitTelefonica;
     private boolean activoLOPD;
 
-
     public static ServicioDTO createInstance(List<String> idiomas) {
         ServicioDTO serv = new ServicioDTO();
         serv.setActivoLOPD(true);
@@ -105,7 +104,6 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         this.activoLOPD = activoLOPD;
     }
 
-
     @Override
     public String toString() {
         return "ServicioDTO{" + "codigo=" + getCodigo() + ", codigoWF='" + getCodigoWF() + '\'' + '}';
@@ -170,7 +168,9 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         if (this.getIniciacion() != null) {
             srvClonado.setIniciacion((TipoFormaInicioDTO) this.getIniciacion().clone());
         }
-        srvClonado.setUaResponsable(this.getUaResponsable());
+        if (this.getUaResponsable() != null) {
+            srvClonado.setUaResponsable((UnidadAdministrativaDTO) this.getUaResponsable().clone());
+        }
         if (this.getUaInstructor() != null) {
             srvClonado.setUaInstructor((UnidadAdministrativaDTO) this.getUaInstructor().clone());
         }
@@ -191,7 +191,7 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         if (this.getLopdInfoAdicional() != null) {
             srvClonado.setLopdInfoAdicional((Literal) this.getLopdInfoAdicional().clone());
         }
-        if (this.getLopdDestinatario() != null) {
+        if(this.getLopdDestinatario() != null){
             srvClonado.setLopdDestinatario((Literal) this.getLopdDestinatario().clone());
         }
 
@@ -256,11 +256,11 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
 
         srvClonado.setIntegrarPdu(isIntegrarPdu());
 
-        if (this.getTipoTramitacion() != null && this.getTipoTramitacion().getCodigo() != null) {
+        if(this.getTipoTramitacion() != null && this.getTipoTramitacion().getCodigo() != null) {
             srvClonado.setTipoTramitacion(this.getTipoTramitacion().clone());
         }
 
-        if (this.getPlantillaSel() != null && this.getPlantillaSel().getCodigo() != null) {
+        if(this.getPlantillaSel() != null && this.getPlantillaSel().getCodigo() != null) {
             srvClonado.setPlantillaSel(this.getPlantillaSel().clone());
         }
 
@@ -291,6 +291,9 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
 
         if (UtilComparador.compareTo(this.getEstado(), dataOriginal.getEstado()) != 0) {
             return UtilComparador.compareTo(this.getEstado(), dataOriginal.getEstado());
+        }
+        if (UtilComparador.compareTo(this.getCodigoSIA(), dataOriginal.getCodigoSIA()) != 0) {
+            return UtilComparador.compareTo(this.getCodigoSIA(), dataOriginal.getCodigoSIA());
         }
         if (UtilComparador.compareTo(this.getEstadoSIA(), dataOriginal.getEstadoSIA()) != 0) {
             return UtilComparador.compareTo(this.getEstadoSIA(), dataOriginal.getEstadoSIA());
@@ -331,32 +334,34 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         if (UtilComparador.compareTo(this.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario()) != 0) {
             return UtilComparador.compareTo(this.getHabilitadoFuncionario(), dataOriginal.getHabilitadoFuncionario());
         }
-
         /*if (UtilComparador.compareTo(this.getUsuarioAuditoria(), dataOriginal.getUsuarioAuditoria()) != 0) {
             return UtilComparador.compareTo(this.getUsuarioAuditoria(), dataOriginal.getUsuarioAuditoria());
         }*/
 
 
         // CANALES PRESENTACIÓN ( SERVICIOS )
-        if (UtilComparador.compareTo(this.isTramitPresencial(), dataOriginal.isTramitPresencial()) != 0) {
+        if( UtilComparador.compareTo(this.isTramitPresencial(), dataOriginal.isTramitPresencial()) != 0){
             return UtilComparador.compareTo(this.isTramitPresencial(), dataOriginal.isTramitPresencial());
         }
 
-        if (UtilComparador.compareTo(this.isTramitElectronica(), dataOriginal.isTramitElectronica()) != 0) {
+        if( UtilComparador.compareTo(this.isTramitElectronica(), dataOriginal.isTramitElectronica()) != 0){
             return UtilComparador.compareTo(this.isTramitElectronica(), dataOriginal.isTramitElectronica());
         }
 
-        if (UtilComparador.compareTo(this.isTramitTelefonica(), dataOriginal.isTramitTelefonica()) != 0) {
+        if( UtilComparador.compareTo(this.isTramitTelefonica(), dataOriginal.isTramitTelefonica()) != 0){
             return UtilComparador.compareTo(this.isTramitTelefonica(), dataOriginal.isTramitTelefonica());
         }
 
-        if (UtilComparador.compareTo(this.getPlantillaSel(), dataOriginal.getPlantillaSel()) != 0) {
+
+        // TODO Opción telemática
+
+        if( UtilComparador.compareTo(this.getPlantillaSel(), dataOriginal.getPlantillaSel()) != 0){
             return UtilComparador.compareTo(this.getPlantillaSel(), dataOriginal.getPlantillaSel());
         }
 
         // Tipo telemático 2
 
-        if (UtilComparador.compareTo(this.getTipoTramitacion(), dataOriginal.getTipoTramitacion()) != 0) {
+        if( UtilComparador.compareTo(this.getTipoTramitacion(), dataOriginal.getTipoTramitacion()) != 0){
             return UtilComparador.compareTo(this.getTipoTramitacion(), dataOriginal.getTipoTramitacion());
         }
 
@@ -392,7 +397,7 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
             return UtilComparador.compareTo(this.getLopdFinalidad(), dataOriginal.getLopdFinalidad());
         }
 
-        if (UtilComparador.compareTo(this.getLopdDestinatario(), dataOriginal.getLopdDestinatario()) != 0) {
+        if( UtilComparador.compareTo(this.getLopdDestinatario(), dataOriginal.getLopdDestinatario()) != 0){
             return UtilComparador.compareTo(this.getLopdDestinatario(), dataOriginal.getLopdDestinatario());
         }
 
@@ -430,11 +435,11 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
             return ProcedimientoTramiteDTO.compareTo(this.getTramites(), dataOriginal.getTramites());
         }*/
 
-        if (UtilComparador.compareTo(this.isActivoLOPD(), dataOriginal.isActivoLOPD()) != 0) {
+        if( UtilComparador.compareTo(this.isActivoLOPD(), dataOriginal.isActivoLOPD()) != 0){
             return UtilComparador.compareTo(this.isActivoLOPD(), dataOriginal.isActivoLOPD());
         }
 
-        if (UtilComparador.compareTo(this.isIntegrarPdu(), dataOriginal.isIntegrarPdu()) != 0) {
+        if( UtilComparador.compareTo(this.isIntegrarPdu(), dataOriginal.isIntegrarPdu()) != 0){
             return UtilComparador.compareTo(this.isIntegrarPdu(), dataOriginal.isIntegrarPdu());
         }
 

@@ -123,7 +123,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (this.isModoAlta()) {
             data = ProcedimientoDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUaInstructor(sessionBean.getUnidadActiva());
-            data.setUaResponsable(sessionBean.getUnidadActiva().getNombre().getTraduccionConValor(sessionBean.getLang()));
+            data.setUaResponsable(sessionBean.getUnidadActiva());
+            data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setUaCompetente(sessionBean.getUnidadActiva());
             this.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo()));
             if (this.getLopdResponsable() != null) {
@@ -337,13 +338,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
      * Devuelve el css para el boton de la UA Instructor.
      * Si no está en la lista de UA del instructor, se pone en rojo y se muestra el ojo
      *
-     * @return public String getCssUAResponsable() {
-     * if (data.getUaResponsable() == null) {
-     * return "";
-     * }
-     * return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
-     * }
+     * @return css
      */
+    public String getCssUAResponsable() {
+        if (data.getUaResponsable() == null) {
+            return "";
+        }
+        return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
+    }
 
     public String getCssUACompetente() {
         if (data.getUaCompetente() == null) {
@@ -372,7 +374,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
-  /*  public void returnDialogoUAResp(final SelectEvent event) {
+    public void returnDialogoUAResp(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
@@ -386,7 +388,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void abrirVentanaUAResp() {
         abrirVentanaUA(this.data.getUaResponsable());
-    }*/
+    }
 
     public void abrirVentanaUAInstr() {
         abrirVentanaUA(this.data.getUaInstructor());

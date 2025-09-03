@@ -205,7 +205,7 @@ public class CastUtil {
                 // Servicio Responsable
                 if (servicio.getUaResponsable() != null) {
                     textoOptional.append(" ");
-                    textoOptional.append(servicio.getUaInstructor().getNombre().getTraduccion(keyIdioma));
+                    textoOptional.append(servicio.getUaResponsable().getNombre().getTraduccion(keyIdioma));
 
                 }
 
@@ -484,9 +484,9 @@ public class CastUtil {
             }
 
             // Servicio Responsable
-            if (proc.getUaResponsable() != null && proc.getUaInstructor().getNombre() != null && proc.getUaInstructor().getNombre().getTraduccion(idioma) != null) {
+            if (proc.getUaResponsable() != null && proc.getUaResponsable().getNombre() != null && proc.getUaResponsable().getNombre().getTraduccion(idioma) != null) {
                 textoOptional.append(" ");
-                textoOptional.append(proc.getUaInstructor().getNombre().getTraduccion(idioma));
+                textoOptional.append(proc.getUaResponsable().getNombre().getTraduccion(idioma));
             }
 
             titulo.addIdioma(enumIdioma, doc.getTitulo().getTraduccion(idioma));
@@ -591,9 +591,9 @@ public class CastUtil {
             }
 
             // Servicio Responsable
-            if (proc.getUaResponsable() != null && proc.getUaInstructor().getNombre() != null && proc.getUaInstructor().getNombre().getTraduccion(idioma) != null) {
+            if (proc.getUaResponsable() != null && proc.getUaResponsable().getNombre() != null && proc.getUaResponsable().getNombre().getTraduccion(idioma) != null) {
                 textoOptional.append(" ");
-                textoOptional.append(proc.getUaInstructor().getNombre().getTraduccion(idioma));
+                textoOptional.append(proc.getUaResponsable().getNombre().getTraduccion(idioma));
             }
 
             titulo.addIdioma(enumIdioma, doc.getTitulo().getTraduccion(idioma));
@@ -741,7 +741,7 @@ public class CastUtil {
         if (proc.getUaResponsable() == null) {
             nomUnidadAministrativa = "";
         } else {
-            nomUnidadAministrativa = proc.getUaInstructor().getNombre().getTraduccion("ca");
+            nomUnidadAministrativa = proc.getUaResponsable().getNombre().getTraduccion("ca");
         }
 
         final boolean esProcSerInterno = contienePOInterno(proc.getPublicosObjetivo());
@@ -780,9 +780,9 @@ public class CastUtil {
                 }
 
                 // Servicio Responsable
-                if (proc.getUaResponsable() != null && proc.getUaInstructor().getNombre() != null && proc.getUaInstructor().getNombre().getTraduccion(keyIdioma) != null) {
+                if (proc.getUaResponsable() != null && proc.getUaResponsable().getNombre() != null && proc.getUaResponsable().getNombre().getTraduccion(keyIdioma) != null) {
                     textoOptional.append(" ");
-                    textoOptional.append(proc.getUaInstructor().getNombre().getTraduccion(keyIdioma));
+                    textoOptional.append(proc.getUaResponsable().getNombre().getTraduccion(keyIdioma));
                 }
 
                 // Publico objetivo, para extraer el nombre del publico objetivo

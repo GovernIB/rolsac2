@@ -25,7 +25,7 @@ AS
             PRO_FECPUB  ---> FECHA PUBLICICACION [PRWF_FECPUB]
             PRO_FECACT  ---> FECHA ACTUALIZACION [PROC_FECACT]
             PRO_VALIDA  ---> VALIDA [PRWF_WF - PRWF_WFESTADO - PRWF_INTERNO]
-            PRO_CODUNA  ---> CODIGO UNIDAD ADMINISTRATIVA [PRWF_CODUAI]
+            PRO_CODUNA  ---> CODIGO UNIDAD ADMINISTRATIVA [PRWF_CODUAR]
             PRO_CODFAM  ---> FAMILIA
             PRO_TRAMIT  ---> TRAMITE
             PRO_VERSIO  ---> VERSION
@@ -41,9 +41,9 @@ AS
             PRO_VENTANA ---> VENTANILLA UNICA
             PRO_INFO    ---> DIRECCION ELECTRONICA [PRWF_RSEMA]
             PRO_TAXA    ---> TAXA
-            PRO_CODUNA_RESOL --> ORGANO COMPETENTE [PRWF_PRCODUAC]
+            PRO_CODUNA_RESOL --> ORGANO RESOLUTORIO [PRWF_CODUAI]
             PRO_RESPON  ---> RESPONSABLE [PRWF_RSNOM]
-            PRO_CODUNA_SERV --> ORGANO SERVICIO [PRWF_UARESP]
+            PRO_CODUNA_SERV --> ORGANO SERVICIO [PRWF_PRCODUAC]
             PRO_CODSIA  ---> CODIGO SIA [PROC_SIACOD]
             PRO_CODSIL  ---> SILENCIO ADMINISTRATIVO [PRWF_PRTIPSIAD]
             PRO_ESTSIA  ---> ESTADO SIA  [PROC_SIAEST]
@@ -137,7 +137,7 @@ AS
             PRWF_WF      ---> WF : DEFINITIVO O EN MODIFICACION
             PRWF_WFESTADO --> ESTADO : PUB/ MOD/RES/BOR
             PRWF_WFUSUA  ---> USUARIO
-            PRWF_UARESP  ---> UA RESPONSABLE
+            PRWF_CODUAR  ---> UA RESPONSABLE
             PRWF_CODUAI  ---> UA INSTRUCTOR
             PRWF_INTERNO ---> INTERNO
             PRWF_RSNOM   ---> RESPONSABLE NOMBRE
@@ -474,7 +474,7 @@ BEGIN
                 /*PRWF_WFUSUA,*/
              PRWF_CODUAI,
              PRWF_PRCODUAC,
-             PRWF_UARESP,
+             PRWF_CODUAR,
              prwf_interno,
              prwf_rsnom,
              prwf_rsema,
@@ -508,7 +508,7 @@ BEGIN
                 /*PRWF_WFUSUA,*/
                    pro_coduna,
                    NVL (pro_coduna_resol, pro_coduna),
-                   SUBSTR((SELECT TUN_NOMBRE FROM R1_UNIADM_TRAD WHERE TUN_CODUNA = PRO_CODUNA_SERV AND TUN_CODIDI = 'ca'),1,255),
+                   NVL (PRO_CODUNA_SERV, pro_coduna),
                    interno,
                    Coalesce (pro_respon, 'Desconegut'),
                    pro_info,

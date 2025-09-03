@@ -5,7 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +25,7 @@ public class Pagina<T> {
     @JsonbCreator
     public Pagina(@JsonbProperty("items") List<T> items, @JsonbProperty("total") long total) {
         Objects.requireNonNull(items, "items no pot ser null");
-        this.items = Collections.unmodifiableList(items);
+        this.items = new ArrayList<>(items);
         this.total = total;
     }
 
@@ -41,4 +41,5 @@ public class Pagina<T> {
     public String toString() {
         return "Pagina{" + "items=" + items + ", total=" + total + '}';
     }
+
 }

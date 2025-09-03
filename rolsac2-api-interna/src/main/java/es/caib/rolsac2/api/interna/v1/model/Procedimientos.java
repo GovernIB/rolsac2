@@ -98,8 +98,12 @@ public class Procedimientos extends EntidadBase {
     /**
      * servicioResponsable
      **/
-    @Schema(description = "uaResponsable", type = SchemaType.STRING, required = false)
-    private String uaResponsable;
+    @Schema(description = "linkUnidadAdministrativaResponsable", required = false)
+    private Link linkUnidadAdministrativaResponsable;
+    @Schema(hidden = true)
+    @JsonIgnore
+    @XmlTransient
+    private Long uaResponsable;
 
     /**
      * unidadAdministrativa
@@ -285,7 +289,6 @@ public class Procedimientos extends EntidadBase {
                 linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
             }
             this.integradoPdu = nodo.getEstadoPdu() != null && nodo.getEstadoPdu().compareTo(1) == 0;
-            this.uaResponsable = nodo.getUaResponsable();
         } catch (final Exception e) {
             LOG.error("Error generando procedimiento " + this.codigo, e);
         }
@@ -305,7 +308,7 @@ public class Procedimientos extends EntidadBase {
 
     @Override
     public void generaLinks(final String urlBase) {
-        //linkUnidadAdministrativaResponsable = this.generaLink(this.uaResponsable, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
+        linkUnidadAdministrativaResponsable = this.generaLink(this.uaResponsable, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
         linkUnidadAdministrativaInstructora = this.generaLink(this.uaInstructor, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
         linkUnidadAdministrativaCompetente = this.generaLink(this.uaCompetente, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
 
@@ -607,11 +610,13 @@ public class Procedimientos extends EntidadBase {
         this.publicado = publicado;
     }
 
-    public String getUaResponsable() {
+
+    @XmlTransient
+    public Long getUaResponsable() {
         return uaResponsable;
     }
 
-    public void setUaResponsable(String uaResponsable) {
+    public void setUaResponsable(Long uaResponsable) {
         this.uaResponsable = uaResponsable;
     }
 
@@ -713,6 +718,61 @@ public class Procedimientos extends EntidadBase {
         this.terminoResolucion = terminoResolucion;
     }
 
+    //	public String getMensajes() {
+    //		return mensajes;
+    //	}
+    //
+    //	public void setMensajes(String mensajes) {
+    //		this.mensajes = mensajes;
+    //	}
+    //
+    //	public String getUsuarioAuditoria() {
+    //		return usuarioAuditoria;
+    //	}
+    //
+    //	public void setUsuarioAuditoria(String usuarioAuditoria) {
+    //		this.usuarioAuditoria = usuarioAuditoria;
+    //	}
+    //
+    //	public boolean isPendienteIndexar() {
+    //		return pendienteIndexar;
+    //	}
+    //
+    //	public void setPendienteIndexar(boolean pendienteIndexar) {
+    //		this.pendienteIndexar = pendienteIndexar;
+    //	}
+    //
+    //	public boolean isPendienteMensajesGestor() {
+    //		return pendienteMensajesGestor;
+    //	}
+    //
+    //	public void setPendienteMensajesGestor(boolean pendienteMensajesGestor) {
+    //		this.pendienteMensajesGestor = pendienteMensajesGestor;
+    //	}
+    //
+    //	public boolean isPendienteMensajesSupervisor() {
+    //		return pendienteMensajesSupervisor;
+    //	}
+    //
+    //	public void setPendienteMensajesSupervisor(boolean pendienteMensajesSupervisor) {
+    //		this.pendienteMensajesSupervisor = pendienteMensajesSupervisor;
+    //	}
+
+    public Link getlinkUnidadAdministrativaResponsable() {
+        return linkUnidadAdministrativaResponsable;
+    }
+
+    public void setlinkUnidadAdministrativaResponsable(Link linkUnidadAdministrativaResponsable) {
+        this.linkUnidadAdministrativaResponsable = linkUnidadAdministrativaResponsable;
+    }
+
+    public void setlinkUnidadAdministrativaCompetente(Link linkUnidadAdministrativaResponsable) {
+        this.linkUnidadAdministrativaResponsable = linkUnidadAdministrativaResponsable;
+    }
+
+    public Link getlinkUnidadAdministrativaCompetente() {
+        return linkUnidadAdministrativaResponsable;
+    }
 
     public Link getlinkUnidadAdministrativaInstructora() {
         return linkUnidadAdministrativaInstructora;

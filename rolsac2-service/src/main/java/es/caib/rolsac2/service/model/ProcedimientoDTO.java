@@ -227,7 +227,9 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getIniciacion() != null) {
             procClonado.setIniciacion((TipoFormaInicioDTO) this.getIniciacion().clone());
         }
-        procClonado.setUaResponsable(this.getUaResponsable());
+        if (this.getUaResponsable() != null) {
+            procClonado.setUaResponsable((UnidadAdministrativaDTO) this.getUaResponsable().clone());
+        }
         if (this.getUaInstructor() != null) {
             procClonado.setUaInstructor((UnidadAdministrativaDTO) this.getUaInstructor().clone());
         }

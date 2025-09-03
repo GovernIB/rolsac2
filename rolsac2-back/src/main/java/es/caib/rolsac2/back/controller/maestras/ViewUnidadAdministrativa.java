@@ -133,7 +133,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
                     return unidadAdministrativaService.findPagedByFiltro(filtro);
                 } catch (Exception e) {
                     LOG.error("Error llamando", e);
-                    Pagina<UnidadAdministrativaGridDTO> pagina = new Pagina(new ArrayList(), 0);
+                    Pagina<UnidadAdministrativaGridDTO> pagina = new Pagina<UnidadAdministrativaGridDTO>(new ArrayList<>(), 0);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 }
@@ -183,7 +183,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * El return dialog.
      *
-     * @return
+     * @param event Evento de selección del dialogo
      */
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
@@ -197,7 +197,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Abre la ventana de unidad administrativa
      *
-     * @param modoAcceso
+     * @param modoAcceso Modo de acceso a la ventana
      */
     private void abrirVentana(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
@@ -211,7 +211,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Abre la ventana de evolución de la unidad administrativa
      *
-     * @param modoAcceso
+     * @param modoAcceso Modo de acceso a la ventana
      */
     private void abrirVentanaEvolucion(TypeModoAcceso modoAcceso) {
         // Muestra dialogo
@@ -219,7 +219,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
         if (this.datoSeleccionado != null && (modoAcceso == TypeModoAcceso.EDICION || modoAcceso == TypeModoAcceso.CONSULTA)) {
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
-        UtilJSF.openDialog("dialogEvolucionUnidadAdministrativa", modoAcceso, params, true, 775, 440);
+        UtilJSF.openDialog("dialogEvolucionUnidadAdministrativa", modoAcceso, params, true, 775, 485);
     }
 
     /**
@@ -247,7 +247,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Devuelve el resultado del dialogo de traspaso.
      *
-     * @param event
+     * @param event Evento de selección del dialogo
      */
     public void returnDialogoExportar(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
@@ -282,7 +282,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Devuelve el dato seleccionado
      *
-     * @return
+     * @return datoSeleccionado
      */
     public UnidadAdministrativaGridDTO getDatoSeleccionado() {
         return datoSeleccionado;
@@ -291,7 +291,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Setea el dato seleccionado
      *
-     * @return
+     * @param datoSeleccionado Dato seleccionado de la tabla
      */
     public void setDatoSeleccionado(UnidadAdministrativaGridDTO datoSeleccionado) {
         this.datoSeleccionado = datoSeleccionado;
@@ -300,7 +300,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Devuelve el filtro
      *
-     * @return
+     * @return filtro
      */
     public UnidadAdministrativaFiltro getFiltro() {
         return filtro;
@@ -309,7 +309,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Setea el filtro
      *
-     * @return
+     * @param filtro Filtro de unidad administrativa
      */
     public void setFiltro(UnidadAdministrativaFiltro filtro) {
         this.filtro = filtro;
@@ -318,7 +318,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Setea el filtro texto
      *
-     * @return
+     * @param texto Texto
      */
     public void setFiltroTexto(String texto) {
         if (Objects.nonNull(this.filtro)) {
@@ -329,7 +329,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Devuelve el filtro texto
      *
-     * @return
+     * @return filtro texto
      */
     public String getFiltroTexto() {
         if (Objects.nonNull(this.filtro)) {
@@ -341,7 +341,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Devuelve si es adm contenido
      *
-     * @return
+     * @return true si es administrador de contenidos, false en caso contrario
      */
     public boolean isAdmContenidos() {
         return sessionBean.isPerfil(TypePerfiles.ADMINISTRADOR_CONTENIDOS);
@@ -350,7 +350,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Devuelve el valor de mostrarOcultas
      *
-     * @return
+     * @return mostrarOcultas
      */
     public boolean isMostrarOcultas() {
         return mostrarOcultas;
@@ -359,7 +359,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     /**
      * Setear el valor de mostrarOcultas
      *
-     * @return
+     * @param mostrarOcultas booleano que indica si se deben mostrar las unidades administrativas ocultas
      */
     public void setMostrarOcultas(boolean mostrarOcultas) {
         this.mostrarOcultas = mostrarOcultas;

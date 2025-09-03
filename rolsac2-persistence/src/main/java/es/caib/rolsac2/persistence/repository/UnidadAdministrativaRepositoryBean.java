@@ -355,7 +355,6 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         }
     }
 
-
     @Override
     public Optional<JUnidadAdministrativa> findById(String id) {
         TypedQuery<JUnidadAdministrativa> query = entityManager.createNamedQuery(JUnidadAdministrativa.FIND_BY_ID, JUnidadAdministrativa.class);

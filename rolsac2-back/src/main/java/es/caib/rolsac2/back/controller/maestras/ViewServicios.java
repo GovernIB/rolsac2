@@ -171,7 +171,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         } else {
             if (datoSeleccionado.getCodigoWFPub() != null) {
                 servicioSeleccionado = procedimientoService.findServicioById(datoSeleccionado.getCodigoWFPub());
-                uaRaiz = Boolean.valueOf(this.servicioSeleccionado.getUaResponsable() != null && this.servicioSeleccionado.getUaInstructor().esRaiz()).toString();
+                uaRaiz = Boolean.valueOf(this.servicioSeleccionado.getUaResponsable() != null && this.servicioSeleccionado.getUaResponsable().esRaiz()).toString();
                 wfProcedimiento = "P";
                 wfProcedimientoPrevio = "P";
                 wfPublicado = servicioSeleccionado;
@@ -180,7 +180,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                 }
             } else if (datoSeleccionado.getCodigoWFMod() != null) {
                 servicioSeleccionado = procedimientoService.findServicioById(datoSeleccionado.getCodigoWFMod());
-                uaRaiz = Boolean.valueOf(this.servicioSeleccionado.getUaResponsable() != null && this.servicioSeleccionado.getUaInstructor().esRaiz()).toString();
+                uaRaiz = Boolean.valueOf(this.servicioSeleccionado.getUaResponsable() != null && this.servicioSeleccionado.getUaResponsable().esRaiz()).toString();
                 wfProcedimiento = "M";
                 wfProcedimientoPrevio = "M";
                 wfModificado = servicioSeleccionado;
@@ -247,7 +247,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             if (servicioSeleccionado.getUaResponsable() == null) {
                 lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
             } else {
-                lopdResponsable = servicioSeleccionado.getUaInstructor().getNombre();
+                lopdResponsable = servicioSeleccionado.getUaResponsable().getNombre();
             }
         } else {
             lopdResponsable = comunUA;

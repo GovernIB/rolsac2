@@ -172,7 +172,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         } else {
             if (datoSeleccionado.getCodigoWFPub() != null) {
                 procedimientoSeleccionado = procedimientoService.findProcedimientoById(datoSeleccionado.getCodigoWFPub());
-                uaRaiz = Boolean.valueOf(this.procedimientoSeleccionado.getUaResponsable() != null && this.procedimientoSeleccionado.getUaInstructor().esRaiz()).toString();
+                uaRaiz = Boolean.valueOf(this.procedimientoSeleccionado.getUaResponsable() != null && this.procedimientoSeleccionado.getUaResponsable().esRaiz()).toString();
                 wfProcedimiento = "P";
                 wfProcedimientoPrevio = "P";
                 wfPublicado = procedimientoSeleccionado;
@@ -181,7 +181,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 }
             } else if (datoSeleccionado.getCodigoWFMod() != null) {
                 procedimientoSeleccionado = procedimientoService.findProcedimientoById(datoSeleccionado.getCodigoWFMod());
-                uaRaiz = Boolean.valueOf(this.procedimientoSeleccionado.getUaResponsable() != null && this.procedimientoSeleccionado.getUaInstructor().esRaiz()).toString();
+                uaRaiz = Boolean.valueOf(this.procedimientoSeleccionado.getUaResponsable() != null && this.procedimientoSeleccionado.getUaResponsable().esRaiz()).toString();
                 wfProcedimiento = "M";
                 wfProcedimientoPrevio = "M";
                 wfModificado = procedimientoSeleccionado;
@@ -198,25 +198,24 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 construirArbol();
             }
 
-            // actualizarResponsable();
+            actualizarResponsable();
         }
     }
 
     /**
      * Actualiza el literal de resonsable
-     * <p>
-     * public void actualizarResponsable() {
-     * if (procedimientoSeleccionado.getComun() == 0) {
-     * if (procedimientoSeleccionado.getUaResponsable() == null) {
-     * lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
-     * } else {
-     * lopdResponsable = procedimientoSeleccionado.getUaResponsable().getNombre();
-     * }
-     * } else {
-     * lopdResponsable = comunUA;
-     * }
-     * }
      */
+    public void actualizarResponsable() {
+        if (procedimientoSeleccionado.getComun() == 0) {
+            if (procedimientoSeleccionado.getUaResponsable() == null) {
+                lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
+            } else {
+                lopdResponsable = procedimientoSeleccionado.getUaResponsable().getNombre();
+            }
+        } else {
+            lopdResponsable = comunUA;
+        }
+    }
 
     private void construirArbol() {
         roots = new ArrayList<>();

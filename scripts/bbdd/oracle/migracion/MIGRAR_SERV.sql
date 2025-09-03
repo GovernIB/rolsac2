@@ -19,7 +19,7 @@ AS
           PRO_FECPUB  ---> FECHA PUBLICICACION [PRWF_FECPUB]
           PRO_FECACT  ---> FECHA ACTUALIZACION [PROC_FECACT]
           PRO_VALIDA  ---> VALIDA [PRWF_WF - PRWF_WFESTADO - PRWF_INTERNO]
-          PRO_CODUNA  ---> CODIGO UNIDAD ADMINISTRATIVA [PRWF_UARESP]
+          PRO_CODUNA  ---> CODIGO UNIDAD ADMINISTRATIVA [PRWF_CODUAR]
           PRO_CODFAM  ---> FAMILIA
           PRO_TRAMIT  ---> TRAMITE
           PRO_VERSIO  ---> VERSION
@@ -221,7 +221,7 @@ FROM r1_procedimientos_audito,
      r1_procedimientos_histor
 WHERE  his_codser = codpro
   AND  aud_codhis = his_codi
-ORDER  BY AUD_FECHA;
+ORDER  BY his_codi;
 maximoid             NUMBER;
   valor                NUMBER;
   existe               NUMBER(2, 0);
@@ -511,7 +511,7 @@ INSERT INTO rs2_prcwf
  prwf_wf,
  prwf_wfestado,
  prwf_coduai,
- prwf_uaresp,
+ PRWF_CODUAR,
  prwf_interno,
  prwf_rsnom,
  prwf_rsema,
@@ -533,7 +533,7 @@ SELECT codigo_procwf,
        wf,
        wfestado,
        SER_INSTRU,
-       SUBSTR((SELECT TUN_NOMBRE FROM R1_UNIADM_TRAD WHERE TUN_CODUNA = ser_serrsp AND TUN_CODIDI = 'ca'),1,255),
+       ser_serrsp,
        interno,
        Coalesce (ser_nomrsp, 'Desconegut'),
        ser_correo,

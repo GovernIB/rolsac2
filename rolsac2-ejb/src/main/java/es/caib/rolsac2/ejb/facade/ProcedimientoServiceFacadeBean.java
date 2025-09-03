@@ -223,7 +223,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         jProcWF.setResponsableNombre(dto.getResponsable());
         jProcWF.setResponsableTelefono(dto.getResponsableTelefono());
         jProcWF.setTieneTasa(dto.isTieneTasa());
-        jProcWF.setUaResponsable(dto.getUaResponsable());
+        jProcWF.setUaResponsable(uaRepository.findJUAById(dto.getUaResponsable()));
         jProcWF.setUaInstructor(uaRepository.findJUAById(dto.getUaInstructor()));
         jProcWF.setUaCompetente(uaRepository.findJUAById(dto.getUaCompetente()));
         jProcWF.setFormaInicio(tipoFormaInicioConverter.createEntity(dto.getIniciacion()));
@@ -745,7 +745,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         // proc.setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
         // proc.setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
         if (jprocWF.getUaResponsable() != null) {
-            proc.setUaResponsable(jprocWF.getUaResponsable());
+            proc.setUaResponsable(jprocWF.getUaResponsable().toDTO());
         }
         if (jprocWF.getUaResponsable() != null) {
             proc.setUaInstructor(jprocWF.getUaInstructor().toDTO());
@@ -1124,11 +1124,15 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         // Paso 0. Marcamos para indexar en solr/elastic y SIA.
         TypeIndexacion tipo = (data instanceof ProcedimientoDTO) ? TypeIndexacion.PROCEDIMIENTO : TypeIndexacion.SERVICIO;
 
-        // 2 == borrado ; 1 == insertar
-        int accionIdx = (estadoDestino == TypeProcedimientoEstado.CERRADO) ? 2 : 1;
-        indexacionRepository.guardarIndexar(data.getCodigo(), tipo, idEntidad, accionIdx);
-        int accion = (estadoDestino != null && estadoDestino == TypeProcedimientoEstado.CERRADO) ? 0 : 1;
-        indexacionSIARepository.guardarIndexar(data.getCodigo(), tipo.toString(), idEntidad, 1, accion);
+        //Solo indexar en SOLR/SIA en estado publicado o cerrado
+        if (estadoDestino != null && (estadoDestino == TypeProcedimientoEstado.PUBLICADO || estadoDestino == TypeProcedimientoEstado.CERRADO)) {
+            // 2 == borrado ; 1 == insertar
+            int accionIdx = (estadoDestino == TypeProcedimientoEstado.CERRADO) ? 2 : 1;
+            indexacionRepository.guardarIndexar(data.getCodigo(), tipo, idEntidad, accionIdx);
+            int accion = (estadoDestino == TypeProcedimientoEstado.CERRADO) ? 0 : 1;
+            indexacionSIARepository.guardarIndexar(data.getCodigo(), tipo.toString(), idEntidad, 1, accion);
+        }
+
 
         if (data instanceof ProcedimientoDTO && estadoDestino != null && estadoDestino.isEstadoValidacionPDU()) {
             Integer accionPDU = UtilPDU.getAccion((ProcedimientoDTO) data, (ProcedimientoDTO) dataDefinitivo, estadoDestino);
@@ -1481,8 +1485,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @PermitAll
     public SiaCumpleEnviable isProcServEnviableCumpleDatos(ProcedimientoBaseDTO data) {
-        final boolean isVisibleUA = uaRepository.isVisibleUA(data.getUaInstructor());
-        final String codigoIdCentro = uaRepository.obtenerCodigoDIR3(data.getUaInstructor().getCodigo());
+        final boolean isVisibleUA = uaRepository.isVisibleUA(data.getUaResponsable());
+        final String codigoIdCentro = uaRepository.obtenerCodigoDIR3(data.getUaResponsable().getCodigo());
         SiaEnviableResultado siaEnviable;
         if (data instanceof ProcedimientoDTO) {
             siaEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, (ProcedimientoDTO) data, true);
@@ -1490,7 +1494,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             siaEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, (ServicioDTO) data, true);
         }
         SiaCumpleDatos siaCumpleDatos = null;
-        EntidadRaizDTO siaUA = entidadRaizRepository.getEntidadRaizByUA(data.getUaInstructor().getCodigo());
+        EntidadRaizDTO siaUA = entidadRaizRepository.getEntidadRaizByUA(data.getUaResponsable().getCodigo());
         if (siaUA == null) {
             siaCumpleDatos = new SiaCumpleDatos(false, "El procediment/servei no té associat a una entitat arrel");
         } else {

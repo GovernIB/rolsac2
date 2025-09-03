@@ -43,7 +43,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Unidad administrativa responsable
      */
-    private String uaResponsable;
+    private UnidadAdministrativaDTO uaResponsable;
 
     /**
      * Unidad administrativa instructora
@@ -302,7 +302,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
      *
      * @return ua responsable
      */
-    public String getUaResponsable() {
+    public UnidadAdministrativaDTO getUaResponsable() {
         return uaResponsable;
     }
 
@@ -311,7 +311,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
      *
      * @param uaResponsable ua responsable
      */
-    public void setUaResponsable(String uaResponsable) {
+    public void setUaResponsable(UnidadAdministrativaDTO uaResponsable) {
         this.uaResponsable = uaResponsable;
     }
 
@@ -399,7 +399,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece responsable email.
      *
-     * @param incidenciasEmail responsable email
+     * @param responsableEmail responsable email
      */
     public void setIncidenciasEmail(String incidenciasEmail) {
         this.incidenciasEmail = incidenciasEmail;
