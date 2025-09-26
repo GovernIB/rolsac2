@@ -21,11 +21,13 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URLConnection;
@@ -1389,5 +1391,18 @@ public class SessionBean implements Serializable {
                 (perfiles.contains(TypePerfiles.SUPER_ADMINISTRADOR)
                         || perfiles.contains(TypePerfiles.ADMINISTRADOR_ENTIDAD)
                         || perfiles.contains(TypePerfiles.ADMINISTRADOR_CONTENIDOS));
+    }
+
+    public void redirigirRuta(String ruta) {
+        if (ruta == null || ruta.trim().isEmpty()) return;
+        String path = ruta.startsWith("/") ? ruta : "/" + ruta;
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        try {
+            ec.redirect(ec.getRequestContextPath() + path);
+        } catch (IOException e) {
+            LOG.error("Error redirigiendo a la ruta: " + ruta, e);
+        } finally {
+            FacesContext.getCurrentInstance().responseComplete();
+        }
     }
 }

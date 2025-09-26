@@ -83,14 +83,14 @@
             <p:panel id="panelDatosPublicacion" header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}">
                 <div class="form-row">
                     <div class="form-group col-md-2" style="margin-top:-5px">
-                        <p:outputLabel styleClass="mb-1" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                        <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                         <p:inputText id="txtCodigo" value="#{dialogProcedimientoTramite.data.codigo}"
                                      styleClass="w95" disabled="true"/>
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaPublicacion']}:"
                                        for="txtFechaPublicacion"
-                                       styleClass="mb-1 pt-0"/>
+                                       styleClass="mb-1 pt-0 negrita"/>
                         <p>
                             <p:datePicker showIcon="true" id="txtFechaPublicacion" styleClass="fecha"
                                           locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -103,7 +103,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['viewTipoTramitacion.fasePro.titulo']}:" for="faseProc"
-                                       styleClass="mb-1 pt-0"/>
+                                       styleClass="mb-1 pt-0 negrita"/>
                         <p:selectOneMenu id="faseProc"
                                              required="#{empty param['formDialog:closeButton']}"
                                              requiredMessage="#{labels['dict.obligatorio.fase']}"
@@ -133,7 +133,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaInicio']}:" for="txtFechaInicio"
-                                       styleClass="mb-1 pt-0"/>
+                                       styleClass="mb-1 pt-0 negrita"/>
                         <p>
                             <p:datePicker showIcon="true"  id="txtFechaInicio" styleClass="fecha"
                                           locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -145,7 +145,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaCierre']}:" for="txtFechaCierre"
-                                       styleClass="mb-1 pt-0"/>
+                                       styleClass="mb-1 pt-0 negrita"/>
                         <p>
                             <p:datePicker showIcon="true"  id="txtFechaCierre" styleClass="fecha"
                                           locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -160,10 +160,10 @@
 
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.nombreTramite']}:"
                                        for="txtNombre"/>
-                        <my:literalAreaComponent id="txtNombre" styleClass="w95"
+                        <my:literalAreaComponent id="txtNombre"
                                              value="#{dialogProcedimientoTramite.data.nombre}"
                                              soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
                                              required="#{empty param['formDialog:closeButton']}"
@@ -177,10 +177,10 @@
                         </my:literalAreaComponent>
                     </div>
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.requisitos']}:"
                                        for="txtRequisitos"/>
-                            <my:literalAreaComponent id="txtRequisitos" styleClass="w95"
+                            <my:literalAreaComponent id="txtRequisitos"
                                                  value="#{dialogProcedimientoTramite.data.requisitos}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
@@ -193,7 +193,7 @@
                             </my:literalAreaComponent>
                     </div>
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.documentacion']}:"
                                        for="txtDocum"/>
                             <my:literalAreaComponent id="txtDocum" styleClass="w95"
@@ -209,10 +209,10 @@
                             </my:literalAreaComponent>
                     </div>
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.terminoMaximo']}:"
                                        for="txtTermMax"/>
-                            <my:literalAreaComponent id="txtTermMax" styleClass="w95"
+                            <my:literalAreaComponent id="txtTermMax"
                                                  value="#{dialogProcedimientoTramite.data.terminoMaximo}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
@@ -228,10 +228,10 @@
 
                     </div>
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.observaciones']}:"
                                        for="txtObservaciones"/>
-                            <my:literalAreaComponent id="txtObservaciones" styleClass="w95"
+                            <my:literalAreaComponent id="txtObservaciones"
                                                  value="#{dialogProcedimientoTramite.data.observacion}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
@@ -247,7 +247,7 @@
             <p:panel id="panelOrganos" header="#{labels['dialogProcedimientoTramite.organos']}">
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.organoCompetente']}:"
                                        for="txtOrgInstr"/>
                         <p>
@@ -337,7 +337,7 @@
                                   rendered="#{dialogProcedimientoTramite.isOpcionTelematicaPlantilla()}">
                         <div id="divPlantilla" class="form-row" style="height:100px !important;">
                             <div class="form-group col-md-5">
-                                <p:outputLabel id="lbltxtTraPlantilla" styleClass="mr-2 mb-1 pt-0"
+                                <p:outputLabel id="lbltxtTraPlantilla" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.seleccionPlantilla']}:"
                                                for="txtTraPlantilla"/>
 
@@ -367,7 +367,7 @@
                                   rendered="#{dialogProcedimientoTramite.isOpcionTelematicaDatos()}">
                         <div id="divDatosTelematico1" class="form-row">
                             <div class="form-grup col-md-4">
-                                <p:outputLabel id="lbltxtTraId" styleClass="mr-2 mb-1 pt-0"
+                                <p:outputLabel id="lbltxtTraId" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dict.identificador']}:"
                                                for="txtTraId"/>
                                 <p:inputText id="txtTraId"
@@ -384,7 +384,7 @@
                                 </p:inputText>
                             </div>
                             <div class="form-grup col-md-2">
-                                <p:outputLabel id="lbltxtTraVer" styleClass="mr-2 mb-1 pt-0"
+                                <p:outputLabel id="lbltxtTraVer" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.version']}:"
                                                for="txtTraVer"/>
                                 <p:inputText id="txtTraVer" decimalPlaces="0"
@@ -399,7 +399,7 @@
                                              style="width: 100px !important;" />
                             </div>
                             <div class="form-group col-md-6">
-                                <p:outputLabel id="lbltxtTraPlat" styleClass="mr-2 mb-1 pt-0"
+                                <p:outputLabel id="lbltxtTraPlat" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.plataforma']}:"
                                                for="txtTraPlat"/>
                                 <p:selectOneMenu id="txtTraPlat"
@@ -422,7 +422,7 @@
                         </div>
                         <div id="divDatosTelematico2" class="form-row">
                             <div class="form-grup col-md-6">
-                                <p:outputLabel id="lbltxtTraParam" styleClass="mr-2 mb-1 pt-0"
+                                <p:outputLabel id="lbltxtTraParam" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.parametros']}:"
                                                for="txtTraParam"/>
                                 <p:inputText id="txtTraParam"
@@ -438,7 +438,7 @@
                     <h:panelGroup id="panelUrlTelematico" rendered="#{dialogProcedimientoTramite.isOpcionTelematicaUrl()}">
                         <div id="divUrlTelematico" class="form-row" style="height:100px !important;">
                             <div class="form-group col-md-6">
-                                <p:outputLabel id="lbltxtTraUrl" styleClass="mr-2 mb-1 pt-0"
+                                <p:outputLabel id="lbltxtTraUrl" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.url']}:"
                                                for="txtTraUrl"/>
                                 <my:literalComponent id="txtTraUrl" styleClass="w95"

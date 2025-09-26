@@ -78,7 +78,7 @@
             <div class="form-row height50">
                 <div class="form-group col-md-2">
                     <p:outputLabel value="#{labels['dialogServicio.estado.sia']}:" for="txtEstadoSIA"
-                                   styleClass="mb-1 pt-0"/>
+                                   styleClass="mb-1 pt-0 negrita"/>
 
                     <br/>
 
@@ -88,7 +88,7 @@
                 </div>
                 <div class="form-group col-md-2">
                     <p:outputLabel value="#{labels['dialogServicio.codigo.sia']}:"
-                                  styleClass="mb-1 pt-0" for="txtCodigoSIA"/>
+                                  styleClass="mb-1 pt-0 negrita" for="txtCodigoSIA"/>
 
                     <p:inputText id="txtCodigoSIA" value="#{dialogServicio.data.codigoSIA}"
                                  styleClass="w95"
@@ -98,7 +98,7 @@
                 <div class="form-group col-md-2">
                     <p>
                         <p:outputLabel value="#{labels['dialogServicio.fecha.sia']}:" for="txtFechaSIA"
-                                       styleClass="mb-1 pt-0"/>
+                                       styleClass="mb-1 pt-0 negrita"/>
                         <p:inputText id="txtFechaSIA" value="#{dialogServicio.data.fechaSIA}"
                                      styleClass="w95"
                                      disabled="true">
@@ -109,7 +109,7 @@
                 <div class="form-group col-md-4">
                     <p>
                         <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" for="txtErrorSIA"
-                                       styleClass="mb-1 pt-0"/>
+                                       styleClass="mb-1 pt-0 negrita" />
                         <p:inputText id="txtErrorSIA" value="#{dialogServicio.data.errorSIA}"
                                      styleClass="w95" disabled="true"
                         />
@@ -139,7 +139,7 @@
                      styleClass="panel">
                 <div class="form-row height50">
                     <div class="form-group col-md-2">
-                        <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.codigo']}:"
+                        <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogServicio.codigo']}:"
                                           for="txtCodigo"/>
 
                         <p:inputText id="txtCodigo" value="#{dialogServicio.data.codigo}"
@@ -147,7 +147,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogServicio.fecha.publicacion']}:" for="txtFechaPublicacion"
-                                       styleClass="mb-1 pt-0"/>
+                                       styleClass="mb-1 pt-0 negrita"/>
                         <p>
                             <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
                                           locale="#{sessionBean.lang}" disabled="#{dialogServicio.isModoConsulta()}"
@@ -157,7 +157,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogServicio.fecha.despublicacion']}:" for="txtFechaCaducidad"
-                                       styleClass="mb-1 pt-0"/>
+                                       styleClass="mb-1 pt-0 negrita"/>
                         <p>
                             <p:datePicker showIcon="true"  id="txtFechaCaducidad" styleClass="fecha"
                                           locale="#{sessionBean.lang}" disabled="#{dialogServicio.isModoConsulta()}"
@@ -166,7 +166,7 @@
                         </p>
                     </div>
                     <div class="form-group col-md-2">
-                        <p:outputLabel id="labelSelectComun" value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1" />
+                        <p:outputLabel id="labelSelectComun" value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita" />
 
                         <p:selectOneMenu id="selectComun" value="#{dialogServicio.data.comun}"
                                          autoWidth="false" styleClass="w100px"
@@ -204,7 +204,7 @@
             <p:panel header="#{labels['dialogServicio.datos']}" id="formDatos" styleClass="panel">
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogServicio.nombre.procedimiento']}:"
                                        for="txtNombre"/>
                             <my:literalAreaComponent id="txtNombre" styleClass="w95"
@@ -222,7 +222,7 @@
 
                     </div>
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.objeto']}:"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.objeto']}:"
                                        for="txtObjeto"/>
                             <my:literalAreaComponent id="txtObjeto" styleClass="w95"
                                                  value="#{dialogServicio.data.objeto}"
@@ -237,7 +237,7 @@
                             </my:literalAreaComponent>
                     </div>
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.destinatarios']}:"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.destinatarios']}:"
                                        for="txtDestinatarios"/>
                             <my:literalAreaComponent id="txtDestinatarios" styleClass="w95"
                                                  value="#{dialogServicio.data.destinatarios}"
@@ -252,7 +252,7 @@
                             </my:literalAreaComponent>
                     </div>
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.requisitos']}:"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.requisitos']}:"
                                        for="txtrequisitos"/>
                             <my:literalAreaComponent id="txtrequisitos" styleClass="w95"
                                                  value="#{dialogServicio.data.requisitos}"
@@ -268,13 +268,13 @@
                     </div>
 
                     <div class="form-group col-md-1 d-flex flex-column ">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.tasa']}:"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.tasa']}:"
                                        for="txtTasa"/>
                         <p:selectBooleanCheckbox id="txtTasa"
                                                  value="#{dialogServicio.data.tieneTasa}"/>
                     </div>
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogProcedimiento.keywords']}:"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.keywords']}:"
                                        for="txtKeywords"/>
                             <my:literalComponent id="txtKeywords" styleClass="w95"
                                                  value="#{dialogServicio.data.keywords}"
@@ -287,7 +287,7 @@
                                                  maxlength="500"/>
                     </div>
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.observaciones']}:"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.observaciones']}:"
                                        for="txtObservaciones"/>
                             <my:literalAreaComponent id="txtObservaciones" styleClass="w95"
                                                  value="#{dialogServicio.data.observaciones}"
@@ -303,7 +303,7 @@
             <p:panel id="panelOrganos" header="#{labels['dialogProcedimientoTramite.organos']}" styleClass="panel" >
                 <div class="form-row height50">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimiento.organoInstructor']}:"
                                        for="txtOrgComp"/>
                         <p>
@@ -352,7 +352,7 @@
             <p:panel header="#{labels['dialogServicio.datos.contacto']}" styleClass="panel" id="formDatosContacto">
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.servicio']}:"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.servicio']}:"
                                        for="txtServResp"/>
                         <p:inputText id="txtServResp"
                                      value="#{dialogServicio.data.uaResponsable.nombre.getTraduccionConValor(dialogServicio.idioma)}"
@@ -383,7 +383,7 @@
 
                     </div>
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogServicio.nombreResponsable']}:"
                                        for="txtNombreResp"/>
                             <p:inputText id="txtNombreResp" value="#{dialogServicio.data.responsable}"
@@ -394,7 +394,7 @@
                                          styleClass="w95"/>
                     </div>
                     <div class="form-group col-md-6">
-                          <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.correoElectronico']}:"
+                          <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogServicio.correoElectronico']}:"
                                           for="txtEmailResp"/>
 
                         <p:inputText id="txtEmailResp" value="#{dialogServicio.data.responsableEmail}"
@@ -408,14 +408,14 @@
                         </p:inputText>
                     </div>
                     <div class="form-group col-md-6">
-                         <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.responsableTelefono']}:"
+                         <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogServicio.responsableTelefono']}:"
                                           for="textResponsableTelf"/>
                         <p:inputText id="textResponsableTelf" value="#{dialogServicio.data.responsableTelefono}"
                                      disabled="#{dialogServicio.isModoConsulta()}" styleClass="w90" maxlength="25"/>
                     </div>
 
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mb-1 pt-0" value="#{labels['dialogProcedimiento.correoIncidencias']}:"
+                        <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.correoIncidencias']}:"
                                        for="txtEmailIncidencias"/>
                         <p:inputText id="txtEmailIncidencias" value="#{dialogServicio.data.incidenciasEmail}"
                                      validatorMessage="#{labels['dict.emailNoValido']}"
@@ -475,7 +475,7 @@
                                   rendered="#{dialogServicio.isOpcionTelematicaDatos() and dialogServicio.canalesSeleccionados.contains('TEL')}">
                         <div id="divDatosTelematico1" class="form-row">
                             <div class="form-grup col-md-4">
-                                <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.identificador']}:"
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.identificador']}:"
                                                for="txtTraId"/>
                                 <p:inputText id="txtTraId"
                                              disabled="#{dialogServicio.isModoConsulta() ||
@@ -492,7 +492,7 @@
 
                             </div>
                             <div class="form-grup col-md-2">
-                                <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.version']}:"
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.version']}:"
                                                for="txtTraVer"/>
                                 <p:inputText id="txtTraVer" decimalPlaces="0"
                                              value="#{dialogServicio.data.tipoTramitacion.tramiteVersion}"
@@ -507,7 +507,7 @@
 
                             </div>
                             <div class="form-group col-md-6">
-                                <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogServicio.plataforma']}:"
                                                for="txtTraPlat"/>
                                 <p:selectOneMenu id="txtTraPlat"
@@ -528,7 +528,7 @@
                         </div>
                         <div id="divDatosTelematico2" class="form-row">
                             <div class="form-grup col-md-6">
-                                <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogServicio.parametros']}:"
                                                for="txtTraParam"/>
                                 <p:inputText id="txtTraParam"
@@ -544,7 +544,7 @@
                                   rendered="#{dialogServicio.isOpcionTelematicaUrl() and dialogServicio.canalesSeleccionados.contains('TEL')}">
                         <div id="divUrlTelematico" class="form-row" style="height:100px !important;">
                             <div class="form-group col-md-6">
-                                <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.url']}:"
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.url']}:"
                                                for="txtTraUrl"/>
                                 <my:literalComponent id="txtTraUrl" styleClass="w95"
                                                      value="#{dialogServicio.data.tipoTramitacion.url}"
@@ -571,7 +571,7 @@
             <p:panel header="#{labels['dialogServicio.informacionProteccion']}" styleClass="panel" id="formDatosLOPD">
                 <div class="mt-2">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.lopd.activo']}:"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.lopd.activo']}:"
                                        for="txtActivoLOPD"/>
                         <p:selectBooleanCheckbox id="txtActivoLOPD"
                                                  value="#{dialogServicio.data.activoLOPD}">
@@ -583,7 +583,7 @@
 
                 <div id="filaLOPDTratamiento" class="form-row">
                     <div class="form-group col-md-12">
-                         <p:outputLabel styleClass="mb-1" value="#{labels['dialogServicio.responsableTratamiento']}:"
+                         <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogServicio.responsableTratamiento']}:"
                                           for="txtRespTrat"/>
 
                         <my:literalComponent id="txtRespTrat"
@@ -597,7 +597,7 @@
                 </div>
                 <div id="filaLOPDLegitimacion" class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogServicio.legitimacion']}:"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.legitimacion']}:"
                                        for="txtLegitimacion"/>
                         <p:selectOneMenu id="txtLegitimacion" value="#{dialogServicio.data.datosPersonalesLegitimacion}"
                                          styleClass="w95" autoWidth="false"
@@ -612,7 +612,7 @@
                 </div>
                 <div id="filaLOPDFinalidad" class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2  pt-0"
+                        <p:outputLabel styleClass="mr-2  pt-0 negrita"
                                        value="#{labels['dialogServicio.finalidad']}:"
                                        for="txtLopdFinalidad"/>
                             <my:literalAreaComponent id="txtLopdFinalidad"
@@ -628,7 +628,7 @@
                 </div>
                 <div id="filaLOPDDestinatario" class="form-row">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2  pt-0"
+                        <p:outputLabel styleClass="mr-2  pt-0 negrita"
                                        value="#{labels['dialogServicio.destinatario']}:"
                                        for="txtLopdDestinatario"/>
                             <my:literalAreaComponent id="txtLopdDestinatario" styleClass="w95"
@@ -644,7 +644,7 @@
                 </div>
                 <div id="filaLOPDDerechos" class="form-row" >
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0"
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogServicio.derechos']}:"
                                        for="txtLopdDerechos"/>
                             <my:literalAreaComponent id="txtLopdDerechos" styleClass="w95"

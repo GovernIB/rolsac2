@@ -32,7 +32,7 @@ public class ValidadorListaNoVacia implements Validator {
 
             if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
 
-                literalComponent.setEstiloInput("bordeRojoRequired");
+                literalComponent.setEstiloInput("bordeAzulRequired");
 
                 String mensajeError = "";
                 if (literalComponent.getAttributes().get("mensajeError") != null) {
@@ -55,7 +55,7 @@ public class ValidadorListaNoVacia implements Validator {
                     Literal literal = (Literal) literalComponent.getAttributes().get("literal");
                     for (Traduccion trad : literal.getTraducciones()) {
                         if (trad.getLiteral() != null && trad.getLiteral().length() > length) {
-                            literalComponent.setEstiloInput("bordeRojoRequired");
+                            literalComponent.setEstiloInput("bordeAzulRequired");
                             Object[] param = new Object[3];
                             param[0] = literalComponent.getAttributes().get("nombreLiteral").toString();
                             param[1] = trad.getIdioma();

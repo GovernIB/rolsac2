@@ -45,7 +45,7 @@ body {
 
 /*Sección título de los views*/
 .view-title {
-    background-color: #979797;
+    background-color: #004B99;
     padding: 10px;
     color: #FFFFFF;
     text-align: center;
@@ -88,7 +88,7 @@ body {
 }
 
 body {
-    padding-top: 4.5rem;
+    /*padding-top: 4.5rem;*/
     font: normal 100% 'Bariol Regular', Arial, Helvetica, sans-serif;
     color: #333;
     background-color: #eaeaea;
@@ -106,7 +106,7 @@ body {
 }
 
 .bg-header {
-    background-color: #CC073C !important; /*#d25b5b !important;*/
+    background-color: #FFFFFF !important; /*#62c7fa !important;*/
     padding-left: 0px;
     padding-right: 0px;
 }
@@ -134,14 +134,14 @@ body {
 }*/
 
 .contenido .card-title {
-    background-color: #cc073c;
+    background-color: #004B99;
     padding: 10px;
     color: #FFFFFF;
     display: none;
 }
 
 .opcionMenu {
-    color: #CC073C !important;
+    color: #004B99 !important;
     /*font-size: 1.5em;*/
     font-weight: bolder;
     padding-top: 0.2em;
@@ -181,7 +181,7 @@ body {
 }
 
 a {
-    color: #d25b5b;
+    color: #62c7fa;
 }
 
 a:hover {
@@ -194,11 +194,11 @@ a:hover {
 }
 
 .verde {
-    color: #d25b5b;
+    color: #62c7fa;
 }
 
 .rosa {
-    color: #d25b5b;
+    color: #62c7fa;
 }
 
 .box-shadow {
@@ -209,14 +209,6 @@ a:hover {
     background-color: #fff !important;
 }
 
-.colorRojo {
-    background-color: #d25b5b;
-    margin-left: 5px;
-}
-
-.colorRojo:hover:enabled {
-    background-color: #0000;
-}
 
 .colorVerd {
     background-color: #265d3c;
@@ -230,7 +222,7 @@ a:hover {
 .colorGris {
     background-color: transparent;
     margin-left: 5px;
-    color: #d25b5b;
+    color: #62c7fa;
 }
 
 .colorGris:hover:enabled {
@@ -242,8 +234,8 @@ a:hover {
 }
 
 .btn-primary.aplicacio-btn {
-    background-color: #d25b5b;
-    border-color: #d25b5b;
+    background-color: #62c7fa;
+    border-color: #62c7fa;
     border: none !important;
 }
 
@@ -340,18 +332,18 @@ a:hover {
 }
 
 .breadcrumb ul li span {
-    color: #CC073C !important;
+    color: #004B99 !important;
     padding-top: 0.1em;
 }
 
 /* FI Motlla de pa */
 .ui-dialog-titlebar {
-    background-color: #cc073c !important;
+    background-color: #004B99 !important;
     color: #FFFFFF;
 }
 
 .ui-dialog-titlebar {
-    background-color: #cc073c !important;
+    background-color: #004B99 !important;
     color: #FFFFFF;
 }
 
@@ -677,29 +669,29 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 /* APLICA QUAN WIDTH MENOR DE 768px */
 @media only screen and (max-width: 767px) {
     .colorVerd {
-        background-color: #d25b5b !important;
+        background-color: #62c7fa !important;
         margin-left: 0px !important;
     }
 
     .colorVerd:hover {
-        background-color: #d25b5b !important;
+        background-color: #62c7fa !important;
     }
 
     .colorRojo {
-        background-color: #d25b5b !important;
+        background-color: #62c7fa !important;
         margin-left: 0px !important;
     }
 
     .coloRojo:hover {
-        background-color: #d25b5b !important;
+        background-color: #62c7fa !important;
     }
 
     .mobil li a:hover {
-        background-color: #d25b5b !important;
+        background-color: #62c7fa !important;
     }
 
     .mobilClaro li a:hover {
-        background-color: #d25b5b !important;
+        background-color: #62c7fa !important;
     }
 
     .peuResponsive {
@@ -743,7 +735,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
     }
 
     a.dropdown-item.mobilClaro:hover {
-        color: #d25b5b !important;
+        color: #62c7fa !important;
         background-color: #FFF !important;
     }
 
@@ -768,9 +760,9 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 
 /* APLICA QUAN WIDTH MENOR DE 480px */
 @media only screen and (min-width: 401px) and (max-width: 480px) {
-    body {
+    /*body {
         padding-top: 4rem !important;
-    }
+    }*/
 
     .logoGovern {
         margin-right: 10px !important;
@@ -900,7 +892,34 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
     text-transform: uppercase;
     /*font-size: 1.2em !important;*/
     margin-bottom: 0px;
+    color: #333;
 }
+
+/* < 1400px */
+@media (max-width: 1599px){
+    .titol{ font-size: 2.25rem; }
+    .menuGovern {
+        min-width: 350px;
+    }
+}
+
+/* < 1100px */
+@media (max-width: 1299px){
+    .titol{ font-size: 2rem; }
+    .menuGovern {
+        min-width: 330px;
+    }
+}
+
+/* < 800px */
+@media (max-width: 999px){
+    .titol{ font-size: 1.75rem; }
+    /*.menuGovern {
+        min-width: 200px
+    }*/
+    .navbar { flex-flow: column wrap; }
+}
+
 
 .subtitol {
     /*font-size: 0.85em !important;*/
@@ -922,7 +941,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 }
 
 .imatgeGovern {
-    width: 70px;
+    width: 170px;
 }
 
 .iconoCapsalera {
@@ -959,7 +978,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
     margin-left: auto !important;
     padding-right: 20px;
     padding-top: 10px !important;
-    color: #d25b5b !important;
+    color: #62c7fa !important;
 }
 
 .navbar-nav.mobil {
@@ -973,12 +992,12 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 }
 
 .mobil li a:hover {
-    color: #fff !important;
-    background-color: #bf0114;
+    color: #62c7fa !important;
+    background-color: #b5b9cb;
 }
 
 .mobilClaro li a:hover {
-/ / SLR color: #d25b5b !important;
+/ / SLR color: #62c7fa !important;
     background-color: #F8F8F8;
 }
 
@@ -987,7 +1006,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 }
 
 .nav-link.mobilClaro {
-    color: #d25b5b !important;
+    color: #62c7fa !important;
 }
 
 .marg0 {
@@ -1005,12 +1024,17 @@ a.dropdown-item {
 }
 
 a.dropdown-item.mobil:hover {
-    color: #d25b5b !important;
+    /*color: #62c7fa !important;*/
     background-color: #fff;
 }
 
+a.dropdown-item.mobil span:hover {
+    color: #62c7fa !important;
+    /*background-color: #fff;*/
+}
+
 a.dropdown-item.mobilClaro:hover {
-    color: #d25b5b !important;
+    color: #62c7fa !important;
     background-color: #fff;
 }
 
@@ -1025,7 +1049,7 @@ a.dropdown-item.mobilClaro:hover {
 
 .btn-suport {
     background-color: transparent;
-    color: #d25b5b;
+    color: #62c7fa;
     padding: 0px;
     cursor: pointer;
     margin-bottom: 2px;
@@ -1050,7 +1074,7 @@ a.dropdown-item.mobilClaro:hover {
 }
 
 .dades a {
-    color: #d25b5b;
+    color: #62c7fa;
 }
 
 .dades a:hover,
@@ -1074,7 +1098,7 @@ a.dropdown-item.mobilClaro:hover {
 a.linkPeu:hover,
 a.linkPeu:focus,
 a.linkPeu:active {
-    color: #d25b5b !important;
+    color: #62c7fa !important;
 }
 
 /* FI Peu */
@@ -1116,8 +1140,8 @@ a.iconoXarxes svg {
 a.iconoXarxes:hover,
 a.iconoXarxes:focus,
 a.iconoXarxes:active {
-    background-color: #d25b5b;
-    border-color: #d25b5b;
+    background-color: #62c7fa;
+    border-color: #62c7fa;
 }
 
 a.iconoXarxes:hover path,
@@ -1180,7 +1204,7 @@ a.iconoXarxes {
 
 .titolMenu {
     font: normal 100% 'Bariol Regular', Arial, Helvetica, sans-serif;
-    color: #d25b5b;
+    color: #62c7fa;
     /*font-size: 1.5em;*/
     display: flow-root;
 }
@@ -1189,12 +1213,12 @@ a.iconoXarxes {
 
 /* Per paginació */
 .page-link {
-    color: #d25b5b;
+    color: #62c7fa;
 }
 
 .page-item.active .page-link {
-    background-color: #d25b5b;
-    border-color: #d25b5b;
+    background-color: #62c7fa;
+    border-color: #62c7fa;
 }
 
 .page-link:focus, .page-link:hover {
@@ -1216,7 +1240,7 @@ a.iconoXarxes {
 }
 
 .ui-breadcrumb a {
-    color: #000; /*#d25b5b;*/
+    color: #000; /*#62c7fa;*/
 }
 
 .ui-breadcrumb a:hover {
@@ -1254,7 +1278,11 @@ a.iconoXarxes {
     position: absolute;
     right: 0;
     left: auto;
-    z-index: 1;
+    top: 20px;
+
+    /* opcional: que se vea por encima y anclado al contenedor */
+    height: auto !important;
+    z-index: 1000;
 }
 
 .opcion-menu {
@@ -1301,7 +1329,7 @@ a.iconoXarxes {
 
 
 .bread-select {
-    color: #CC073C !important;
+    color: #004B99 !important;
     padding-right: 0;
     border: 1px solid #a1a1a1;
     top: -5px;
@@ -1327,7 +1355,7 @@ a.iconoXarxes {
 }
 
 .bread-panel-select .ui-selectonemenu-items-wrapper .ui-selectonemenu-items {
-    color: #CC073C;
+    color: #004B99;
 }
 
 .bread-panel-select .ui-selectonemenu-items-wrapper .ui-selectonemenu-items .ui-state-highlight {
@@ -1381,7 +1409,7 @@ a.iconoXarxes {
 
 .btn-molla {
     background-color: #fff !important;
-    color: #cc073c !important;
+    color: #004B99 !important;
     background-position-x: 0;
     background-position-y: 100px;
     padding-block: 0;
@@ -1414,7 +1442,7 @@ a.iconoXarxes {
 
 .drop-molla {
     background-color: #fff!important;
-    color: #cc073c !important;
+    color: #004B99 !important;
     padding-block: 0;
     border: 1px solid #fff !important;
 }
@@ -1451,7 +1479,7 @@ a.iconoXarxes {
 }
 
 .btn-drop:hover {
-    color: #cc073c !important;
+    color: #004B99 !important;
 }
 
 .font10px { font-size: 10px; }
@@ -1773,7 +1801,7 @@ a.iconoXarxes {
 
 .negrita {
     font-weight: bold;
-    color: #444;
+    /*color: #444;*/
 }
 .bloque {
     display: block;
@@ -1791,4 +1819,113 @@ a.iconoXarxes {
 }
 .text-red {
     color: red;
+}
+.colorBlanco {
+    color: #FFF;
+}
+.colorNegro {
+    color: #000;
+}
+.colorGrisClaro {
+    color: #CCC;
+}
+
+
+#collapsingNavbar2 a{
+    color: #FFF;
+}
+#collapsingNavbar2 li{
+    padding: 15px 5px 0 5px;
+    height: 50px;
+    background-color: #004B99;
+    margin-left: 5px;
+}
+#collapsingNavbar2 div{
+    /*padding: 10px;*/
+    height: 50px;
+    background-color: #004B99;
+    margin-left: 5px;
+}
+.menuTipos span {
+    color: black;
+}
+#navbarCollapse span { color: #000;}
+
+#burguer1 .navbar-toggler-icon {
+    background-image: url("/rolsac2back/images/settings.svg");
+}
+
+@media (max-width: 767px) {
+    .navbar {
+        flex-flow: inherit;
+    }
+}
+
+/* Permite que los <li> del menú derecho salten a la siguiente línea */
+#lateralDerecho .navbar-nav {
+    flex-wrap: wrap;
+}
+
+/* Evita que cada collapse intente ocupar todo el ancho y permite varias filas */
+#lateralDerecho .navbar-collapse {
+    flex-basis: auto;
+    flex-grow: 0;
+}
+
+/* (Opcional) Si notas recortes, ayuda a que el contenedor pueda encoger sin desbordar */
+#lateralDerecho { min-width: 0; }
+
+/* Los <li> ya envuelven (flex-wrap), ahora añadimos separación vertical entre filas */
+#lateralDerecho .navbar-nav {
+    display: flex;      /* por si acaso */
+    flex-wrap: wrap;
+    row-gap: .35rem;    /* espacio entre filas */
+    column-gap: .5rem;  /* opcional: espacio horizontal entre items */
+}
+
+
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+    #btnCollapseNavbar2 {
+        display: none;
+    }
+}
+
+
+@media only screen and (max-width: 768px) {
+    #navbarCollapse a {
+            /*display: none;*/
+    }
+}
+
+#collapsingNavbar2 li div  a {
+    display: flex;
+    justify-content: flex-end; /* empuja el contenido hacia la derecha */
+    align-items: center;       /* centra verticalmente */
+}
+
+#linkAvisos:hover {
+    background:none;
+}
+
+tr.ui-state-hover td{
+    color: #62c7fa !important;
+}
+/* Mantener color de selección (#0081c2) incluso en hover */
+tr.ui-state-highlight,
+tr.ui-state-highlight.ui-state-hover {
+    background-color: #0081c2 !important;
+}
+
+/* Hover SOLO cuando NO está destacada */
+tr.ui-datatable-odd.ui-state-hover:not(.ui-state-highlight) {
+    background-color: #F9F9F9 !important;
+}
+tr.ui-datatable-even.ui-state-hover:not(.ui-state-highlight) {
+    background-color: #FFF !important;
+}
+button.ui-state-hover:hover{
+    background: #DEEFF7 !important;
+}
+#burguer1[aria-expanded="true"] {
+    display: none;
 }

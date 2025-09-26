@@ -2554,7 +2554,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" order by ").append(getOrden(filtro.getOrderBy(), filtro.isAscendente(), ambosWf));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
 
-            // dsanzs Order de control. Como cuando se ordena por un campo los registros con el mismo valor no tienen garantizado el orden, se añade
+            // Order de control. Como cuando se ordena por un campo los registros con el mismo valor no tienen garantizado el orden, se añade
             // un segundo criterio de orden, en este caso código para que el ordenamiento sea por completo determinístico
             if (!"codigo".equals(filtro.getOrderBy())) {
                 sql.append(", j.codigo").append(filtro.isAscendente() ? " asc " : " desc ");

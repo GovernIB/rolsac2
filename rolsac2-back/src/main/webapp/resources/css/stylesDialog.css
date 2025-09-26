@@ -33,23 +33,32 @@ body {
 	border: 1px solid #eed3d7 !important;
 }
 .botonRojoRequired {
-	color: #ee2327 !important;
+	color: #62c7fa !important;
+}
+.bordeAzulRequired {
+	border: 1px solid #62c7fa !important;
+}
+.botonAzulRequired {
+	color: #0080C0 !important;
+}
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
+	color: #0080C0 !important;
 }
 .botonNaranjaRequired {
 	color: #FF8C00 !important;
 }
 .botoneraRed.ui-selectonebutton .ui-button {
-	background-color: #cc073c !important;
+	background-color: #0080C0 !important;
 	color: black;
 }
 
 .botoneraRed.ui-selectonebutton .ui-button.ui-state-hover,
 .botoneraRed.ui-selectonebutton .ui-state-hover {
-	background-color: #cc073c !important;
+	background-color: #0080C0 !important;
 }
 
 .botoneraRed.ui-selectonebutton .ui-state-active {
-	background-color: #cc073c !important;
+	background-color: #0080C0 !important;
 	color: white !important;
 	text-shadow: none;
 }
@@ -59,12 +68,12 @@ body {
 }
 
 .botoneraRed > .ui-button.ui-state-active {
-	background-color: #cc073c !important;
+	background-color: #0080C0 !important;
 	color: white !important;
 }
 
 .botoneraRed >.ui-button:hover {
-	background-color: #cc073c !important;
+	background-color: #004B99 !important;
 	color: white !important;
 	background-position-x: 0;
 	background-position-y: 100px;
@@ -231,7 +240,7 @@ a:hover{
 }
 
 .ui-dialog-titlebar{
-	background-color: #cc073c !important;
+	background-color: #004B99 !important;
 	color: #FFFFFF;
 }
 div.ui-dialog-content span.ui-confirm-dialog-severity{
@@ -573,6 +582,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity{
 	text-transform: uppercase;
 	/*font-size: 1.2em !important;*/
 	margin-bottom: 0px;
+	color: #333;
 }
 .subtitol{
 	/*font-size: 0.85em !important;*/
@@ -812,11 +822,11 @@ a.iconoXarxes{
 }
 
 .panel-container .ui-panel	.ui-panel-titlebar {
-	color: #d25b5b !important;
+	color: #004B99 !important;
 }
 
 .titulo-tab {
-	color: #d25b5b !important;
+	color: #62c7fa !important;
 	text-shadow: none;
 	font-weight: bold;
 	border: 2px solid #d9cad6 !important;
@@ -833,12 +843,12 @@ a.iconoXarxes{
 }
 
 .left-container {
-	background-color: #f2d8d8;
+	background-color: #DEEFF7;
 	border-radius: 5px;
 }
 
 .left-container-header {
-	background-color: #cc073c;
+	background-color: #004B99;
 	border-radius: 5px 5px 0px 0px;
 
 }
@@ -1001,11 +1011,17 @@ div.cabeceraIdiomas  .pi-tag{
 }
 .marcado{
 	color: #000 !important;
-	background: #cc073c;
-	border-color: #cc073c !important;
-	background-color: #cc073c;
+	background: #004B99;
+	border-color: #004B99 !important;
+	background-color: #004B99;
 }
 .marcado span {
-	background: #cc073c;
-	background-color: #cc073c;
+	background: #004B99;
+	background-color: #004B99;
+}
+.negrita {
+	font-weight: bold;
+}
+button.ui-state-hover:hover{
+	background: #DEEFF7 !important;
 }

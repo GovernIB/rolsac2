@@ -14,7 +14,7 @@
                             <p:graphicImage styleClass="imatgeGovern" value="#{sessionBean.getLogoEntidad()}"></p:graphicImage>
                         </c:when>
                         <c:otherwise>
-                            <h:graphicImage name="img/STT_logo2.png" styleClass="imatgeGovern"
+                            <h:graphicImage name="img/logo.png" styleClass="imatgeGovern"
                                             alt="Govern de les Illes Balears"/>
                         </c:otherwise>
                     </c:choose>
@@ -25,7 +25,7 @@
                                      cache="false" rendered="#{sessionBean.checkLogo()}"></p:graphicImage>
                 </p:link>
                 <p:link id="imgDefecto" styleClass="mr-auto" outcome="/index" style="" >
-                    <h:graphicImage name="img/STT_logo2.png" styleClass="imatgeGovern"
+                    <h:graphicImage name="img/logo.png" styleClass="imatgeGovern"
                                     alt="Govern de les Illes Balears" rendered="#{!sessionBean.checkLogo()}"/>
                 </p:link>
         </div>

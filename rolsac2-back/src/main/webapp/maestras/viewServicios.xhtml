@@ -571,55 +571,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}" update="messages dataTable"/>
             </p:commandButton>
 
-            <p:panel id="includeDetalle" styleClass="pb-0">
-                <div class="ui-g-12 ui-md-12 p-0 mt-4">
-                    <!-- Para centrar el selectOneButton style="justify-content: center; display:flex;"  -->
-                    <p:selectOneButton id="selectorDetalle" value="#{viewServicios.wfProcedimiento}" styleClass="w95 botoneraRed pb-0" maxlength="50">
-                        <f:selectItem itemLabel="#{labels['dict.wf.0']}" itemValue="P" disabled="#{viewServicios.wfPublicado == null}" itemDisabled="#{viewServicios.wfPublicado == null}" />
-                        <f:selectItem itemLabel="#{labels['dict.wf.1']}" itemValue="M" disabled="#{viewServicios.wfModificado == null}" itemDisabled="#{viewServicios.wfModificado == null}" />
-                        <p:ajax listener="#{viewServicios.cambiarProcedimientoSeleccionadoWF()}" update="@form:includeDetalle"></p:ajax>
-                    </p:selectOneButton >
-                </div>
-
-                <h:outputStylesheet>
-                    /* CSS para estilizar los botones como tabs */
-                    .ui-selectonebutton.ui-buttonset.ui-widget {
-                    border: none;
-                    }
-                    .ui-selectonebutton.ui-buttonset.ui-widget .ui-button {
-                    border-radius: 0;
-                    border: 1px solid #ccc;
-                    margin-right: -1px;
-                    background-color: #f9f9f9;
-                    color: #555;
-                    }
-                    .ui-selectonebutton.ui-buttonset.ui-widget .ui-button:hover {
-                    background-color: #e6e6e6;
-                    }
-                    .ui-selectonebutton.ui-buttonset.ui-widget .ui-button.ui-state-active {
-                    background-color: #ffffff;
-                    border-bottom: 2px solid #007ad9;
-                    color: #007ad9;
-                    }
-                    .ui-selectonebutton.ui-buttonset.ui-widget .ui-button.ui-state-active:hover {
-                    background-color: #ffffff;
-                    }
-                </h:outputStylesheet>
-
-                <div id="divDetallePadre" class="ui-g-12 ui-md-9 ui-lg-9 p-1" style="border: 1px solid #ccc;width:100% !important;">
-                    <div id="divCargando" style="display:none;font-size: 2rem;" class="p-5">
-                        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-                        <p:outputLabel value="#{labels['dict.cargando']}...." />
-                    </div>
-                    <div id="divDetalle"  class="row">
-                        <ui:include src="/maestras/detalleServicio.xhtml">
-                            <ui:param name="paramName" value="X" />
-                            <!-- <ui:param name="procedimiento" value="#{viewProcedimientos.wfModificado}" />-->
-                            <!--  <ui:param name="paramName" value="#{randomBean.randomNumber}" /> -->
-                        </ui:include>
-                    </div>
-                </div>
-            </p:panel>
         </h:form>
     </ui:define>
 </ui:composition>
