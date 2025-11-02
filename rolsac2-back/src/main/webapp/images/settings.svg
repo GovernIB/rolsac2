@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Icono configuración" style="color:#000">
+  <!-- Aro exterior -->
+  <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle>
+  <!-- Dientes (6) -->
+  <g fill="currentColor">
+    <rect x="10.8" y="1" width="2.4" height="4" rx="1.2"></rect>
+    <rect x="10.8" y="1" width="2.4" height="4" rx="1.2" transform="rotate(60 12 12)"></rect>
+    <rect x="10.8" y="1" width="2.4" height="4" rx="1.2" transform="rotate(120 12 12)"></rect>
+    <rect x="10.8" y="1" width="2.4" height="4" rx="1.2" transform="rotate(180 12 12)"></rect>
+    <rect x="10.8" y="1" width="2.4" height="4" rx="1.2" transform="rotate(240 12 12)"></rect>
+    <rect x="10.8" y="1" width="2.4" height="4" rx="1.2" transform="rotate(300 12 12)"></rect>
+  </g>
+  <!-- Centro sólido -->
+  <circle cx="12" cy="12" r="4.5" fill="currentColor"></circle>
+</svg>

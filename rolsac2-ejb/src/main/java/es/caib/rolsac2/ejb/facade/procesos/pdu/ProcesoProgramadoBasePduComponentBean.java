@@ -84,7 +84,7 @@ public abstract class ProcesoProgramadoBasePduComponentBean implements ProcesoPr
             } catch (Exception e) {
                 res.setFinalizadoOk(false);
                 detalles.addPropiedad("Informació del procés", "Error obteniendo plugin de indexacion.");
-                detalles.addPropiedad("Error", e.getLocalizedMessage());
+                detalles.addPropiedad("Error", e.getMessage());
                 res.setDetalles(detalles);
                 return res;
             }
@@ -113,7 +113,7 @@ public abstract class ProcesoProgramadoBasePduComponentBean implements ProcesoPr
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
             detalles.addPropiedad("Fin del procés", fechaFin);
             res.setDetalles(detalles);
-            res.setMensajeErrorTraza("Se ha producido un error no controlado en el proceso SIA. " + e.getLocalizedMessage());
+            res.setMensajeErrorTraza("Se ha producido un error no controlado en el proceso SIA. " + e.getMessage());
             res.setFinalizadoOk(false);
         }
         return res;
@@ -194,7 +194,7 @@ public abstract class ProcesoProgramadoBasePduComponentBean implements ProcesoPr
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
             detalles.addPropiedad("Fin del procés", fechaFin);
             res.setDetalles(detalles);
-            res.setMensajeErrorTraza("Se ha producido un error no controlado en el proceso SIA. " + e.getLocalizedMessage());
+            res.setMensajeErrorTraza("Se ha producido un error no controlado en el proceso SIA. " + e.getMessage());
             res.setFinalizadoOk(false);
         }
         return res;
@@ -231,9 +231,9 @@ public abstract class ProcesoProgramadoBasePduComponentBean implements ProcesoPr
                 return new ResultadoPdu(false, "El procediment " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + mensajePdu);
             }
         } catch (Exception e) {
-            mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" no s'ha indexat, error:").append(e.getLocalizedMessage()).append(" \n");
+            mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" no s'ha indexat, error:").append(e.getMessage()).append(" \n");
             log.error("Error en la indexacion PDU de procediments / serveis", e);
-            return new ResultadoPdu(false, e.getLocalizedMessage());
+            return new ResultadoPdu(false, e.getMessage());
         }
 
     }

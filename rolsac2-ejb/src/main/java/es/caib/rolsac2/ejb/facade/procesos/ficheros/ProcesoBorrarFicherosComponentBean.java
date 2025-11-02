@@ -132,7 +132,7 @@ public class ProcesoBorrarFicherosComponentBean implements ProcesoProgramadoFaca
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
             detalles.addPropiedad("Fin del procés", fechaFin);
             res.setDetalles(detalles);
-            res.setMensajeErrorTraza(mensajeTraza.toString() + "Se ha producido un error no controlado en el proceso de borrar ficheros. " + e.getLocalizedMessage());
+            res.setMensajeErrorTraza(mensajeTraza.toString() + "Se ha producido un error no controlado en el proceso de borrar ficheros. " + e.getMessage());
             res.setFinalizadoOk(false);
         }
         return res;

@@ -255,7 +255,7 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
             detalles.addPropiedad("Fin del procés", fechaFin);
             res.setDetalles(detalles);
-            res.setMensajeErrorTraza(mensajeTraza.toString() + "Se ha producido un error no controlado en el proceso migracion. " + e.getLocalizedMessage());
+            res.setMensajeErrorTraza(mensajeTraza.toString() + "Se ha producido un error no controlado en el proceso migracion. " + e.getMessage());
             res.setFinalizadoOk(false);
         } finally {
             try {

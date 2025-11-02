@@ -97,7 +97,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             //query.executeUpdate();
         } catch (Exception e) {
             LOG.error("Error importando normativa ", e);
-            return e.getLocalizedMessage();
+            return e.getMessage();
         }
         String retorno = "     " + query.getOutputParameterValue("resultado") + "\n";
         query.unwrap(ProcedureOutputs.class).release();
@@ -118,7 +118,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             //query.executeUpdate();
         } catch (Exception e) {
             LOG.error("Error importando normativas afectaciones ", e);
-            return e.getLocalizedMessage();
+            return e.getMessage();
         }
         String retorno = "     " + query.getOutputParameterValue("resultado") + "\n";
         query.unwrap(ProcedureOutputs.class).release();
@@ -136,7 +136,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             //query.executeUpdate();
         } catch (Exception e) {
             LOG.error("Error importando usuario ", e);
-            return e.getLocalizedMessage();
+            return e.getMessage();
         }
         String retorno = "ok";
         query.unwrap(ProcedureOutputs.class).release();
@@ -154,7 +154,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             //query.executeUpdate();
         } catch (Exception e) {
             LOG.error("Error importando usuario ", e);
-            return e.getLocalizedMessage();
+            return e.getMessage();
         }
         String retorno = "ok";
         query.unwrap(ProcedureOutputs.class).release();
@@ -250,7 +250,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             //query.executeUpdate();
         } catch (Exception e) {
             LOG.error("Error importando normativa ", e);
-            return e.getLocalizedMessage();
+            return e.getMessage();
         }
         String retorno = "     " + query.getOutputParameterValue("resultado") + "\n";
         query.unwrap(ProcedureOutputs.class).release();
@@ -288,7 +288,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             //query.executeUpdate();
         } catch (Exception e) {
             LOG.error("Error importando ua ", e);
-            return e.getLocalizedMessage();
+            return e.getMessage();
         }
         String retorno = "     " + query.getOutputParameterValue("resultado") + "\n";
         query.unwrap(ProcedureOutputs.class).release();
@@ -343,7 +343,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             //query.executeUpdate();
         } catch (Exception e) {
             LOG.error("Error importando usuario ", e);
-            return e.getLocalizedMessage();
+            return e.getMessage();
         }
         String retorno = "     " + query.getOutputParameterValue("resultado") + "\n";
         query.unwrap(ProcedureOutputs.class).release();

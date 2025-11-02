@@ -1,0 +1,4 @@
+<!-- Hamburguesa (stroke, bordes redondeados) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-label="Menú">
+  <path d="M3 6 H21 M3 12 H21 M3 18 H21" stroke="#000" stroke-width="2" stroke-linecap="round" fill="none"></path>
+</svg>

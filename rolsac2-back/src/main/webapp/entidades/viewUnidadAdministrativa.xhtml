@@ -41,12 +41,12 @@
             <ul class="mollaPa">
                 <li>
                     <div class="btn-group">
-                        <p:commandButton styleClass="btn btn-danger btn-molla" process="@this @form"
+                        <p:commandButton styleClass="btn btn-molla-icono btn-molla" process="@this @form"
                                          actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
                                          value="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}"
                                          update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();" />
                         <button type="button"
-                                class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
+                                class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         </button>
                         <div class="dropdown-menu">
@@ -69,13 +69,13 @@
                     <c:forEach var="ua" items="#{sessionBean.getUnidadesActivasGestor()}">
                         <li>
                             <div class="btn-group">
-                                <p:commandButton styleClass="btn btn-danger btn-molla" process="@this"
+                                <p:commandButton styleClass="btn btn-molla-icono btn-molla" process="@this"
                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                  value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}" update="panelMolla"
                                                  oncomplete="$('#form\\:btnBuscarEvt').click();">
                                 </p:commandButton>
                                 <button type="button"
-                                        class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
+                                        class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 </button>
 
@@ -97,13 +97,13 @@
                 <c:if test="#{sessionBean.tieneHijosUaActiva()}">
                     <li>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-danger btn-molla"
+                            <button type="button" class="btn btn-molla-icono btn-molla"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                     onclick="hijosUa()">
                                 #{labels['msg.seleccion.uas']}
                             </button>
                             <button type="button"
-                                    class="btn btn-danger drop-molla dropdown-toggle dropdown-toggle-split"
+                                    class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                     onclick="hijosUa()">
                             </button>

@@ -125,7 +125,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             } catch (Exception e) {
                 res.setFinalizadoOk(false);
                 detalles.addPropiedad("Informació del procés", "Error obteniendo plugin de indexacion.");
-                detalles.addPropiedad("Error", e.getLocalizedMessage());
+                detalles.addPropiedad("Error", e.getMessage());
                 res.setDetalles(detalles);
                 return res;
             }
@@ -325,7 +325,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
             detalles.addPropiedad("Fin del procés", fechaFin);
             res.setDetalles(detalles);
-            res.setMensajeErrorTraza("Se ha producido un error no controlado en el proceso Solr. " + e.getLocalizedMessage());
+            res.setMensajeErrorTraza("Se ha producido un error no controlado en el proceso Solr. " + e.getMessage());
             res.setFinalizadoOk(false);
         }
         return res;
@@ -395,7 +395,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             mensaje.append("La UA ");
             mensaje.append(dato.getCodElemento());
             mensaje.append(" NO s'ha desindexat correctament, error:");
-            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(e.getMessage());
             mensaje.append(" \n");
             return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
@@ -444,7 +444,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             mensaje.append("La UA ");
             mensaje.append(dato.getCodElemento());
             mensaje.append(" NO s'ha indexat correctament, error:");
-            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(e.getMessage());
             mensaje.append(" \n");
             return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
@@ -488,7 +488,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             mensaje.append("La normativa ");
             mensaje.append(dato.getCodElemento());
             mensaje.append(" NO s'ha desindexat correctament, error:");
-            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(e.getMessage());
             mensaje.append(" \n");
             return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
@@ -562,7 +562,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             mensaje.append("La normativa ");
             mensaje.append(dato.getCodElemento());
             mensaje.append(" NO s'ha indexat correctament, error:");
-            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(e.getMessage());
             mensaje.append(" \n");
             return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
@@ -606,7 +606,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             mensaje.append("El procedimiento ");
             mensaje.append(dato.getCodElemento());
             mensaje.append(" NO s'ha desindexat correctament, error:");
-            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(e.getMessage());
             mensaje.append(" \n");
             return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
@@ -798,7 +798,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 mensaje.append("El procediment ");
                 mensaje.append(indexacionDTO.getCodElemento());
                 mensaje.append(" no s'ha indexat. Error:");
-                mensaje.append(e.getLocalizedMessage());
+                mensaje.append(e.getMessage());
                 mensaje.append(" \n");
                 return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
             }
@@ -849,7 +849,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             mensaje.append("El servei ");
             mensaje.append(dato.getCodElemento());
             mensaje.append(" no s'ha desindexat. Error: ");
-            mensaje.append(e.getLocalizedMessage());
+            mensaje.append(e.getMessage());
             mensaje.append(" \n");
             return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
         }
@@ -892,7 +892,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 mensaje.append("El servei ");
                 mensaje.append(indexacionDTO.getCodElemento());
                 mensaje.append(" no s'ha indexat. Error: ");
-                mensaje.append(e.getLocalizedMessage());
+                mensaje.append(e.getMessage());
                 mensaje.append(" \n");
                 return new ResultadoAccion(false, e.getMessage(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
             }

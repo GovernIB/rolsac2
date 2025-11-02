@@ -148,14 +148,14 @@ a:hover{
 	outline: none !important;
 	box-shadow: none !important;
 }
-.btn-danger.aplicacio-btn {
+.btn-molla-icono.aplicacio-btn {
 	background-color: #dc3545;
 	border-color: #dc3545;
 	border: none !important;
 }
-.btn-danger.aplicacio-btn:hover,
-.btn-danger.aplicacio-btn:focus,
-.btn-danger.aplicacio-btn:active{
+.btn-molla-icono.aplicacio-btn:hover,
+.btn-molla-icono.aplicacio-btn:focus,
+.btn-molla-icono.aplicacio-btn:active{
 	background-color: #000 !important;
 	border: none #000 !important;
 	outline: none !important;

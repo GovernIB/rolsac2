@@ -46,7 +46,9 @@ public enum TypePropiedadConfiguracion {
 
     PDU_PROCEDIMIENTOS_URL("pdu.urlProc"),
     PDU_SERVICIOS_URL("pdu.urlServ"),
-    BACKEND_IDIOMAS("back.idiomas");
+    BACKEND_IDIOMAS("back.idiomas"),
+    DEBUG_ACTIVO("debug.activar"),
+    ;
 
     /**
      * Valor

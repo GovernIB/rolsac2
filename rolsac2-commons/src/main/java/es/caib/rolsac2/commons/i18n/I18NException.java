@@ -1,15 +1,18 @@
 package es.caib.rolsac2.commons.i18n;
 
 import java.util.Locale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Excepció que permet emprar missatges traduïbles.
+ * Excepció que permet emprar missatges traduibles.
  * Emprarà una instància de {@link I18NTranslator} per traduir els missatges.
  * Les subclasses han d'implementar el mètode {@link #getTranslator()} per indicar
  * la instància a emprar per traduir els missatges.
  */
 public abstract class I18NException extends Exception {
 
+    private static final Logger LOG = LoggerFactory.getLogger(I18NException.class);
     private static final long serialVersionUID = -3124602547590507219L;
 
     private Object[] parameters;
@@ -19,7 +22,8 @@ public abstract class I18NException extends Exception {
     }
 
     /**
-     * Crea una excepció amb un missatge traduïble.
+     * Crea una excepció amb un missatge traduible.
+     *
      * @param message etiqueta del missatge a traduir.
      */
     public I18NException(String message) {
@@ -27,8 +31,9 @@ public abstract class I18NException extends Exception {
     }
 
     /**
-     * Crea una excepció amb un missatge traduïble i els paràmetres indicats.
-     * @param message etiqueta del missatge a traduir.
+     * Crea una excepció amb un missatge traduible i els paràmetres indicats.
+     *
+     * @param message    etiqueta del missatge a traduir.
      * @param parameters paràmetres del missatge.
      */
     public I18NException(String message, Object... parameters) {
@@ -37,8 +42,9 @@ public abstract class I18NException extends Exception {
     }
 
     /**
-     * Crea una excepció amb un missatge traduïble.
-     * @param cause excepció original
+     * Crea una excepció amb un missatge traduible.
+     *
+     * @param cause   excepció original
      * @param message etiqueta del missatge a traduir.
      */
     public I18NException(Throwable cause, String message) {
@@ -46,9 +52,10 @@ public abstract class I18NException extends Exception {
     }
 
     /**
-     * Crea una excepció amb un missatge traduïble i els paràmetres indicats.
-     * @param cause excepció original
-     * @param message etiqueta del missatge a traduir.
+     * Crea una excepció amb un missatge traduible i els paràmetres indicats.
+     *
+     * @param cause      excepció original
+     * @param message    etiqueta del missatge a traduir.
      * @param parameters paràmetres del missatge.
      */
     public I18NException(Throwable cause, String message, Object... parameters) {
@@ -59,21 +66,29 @@ public abstract class I18NException extends Exception {
     /**
      * Proporciona la instància de {@link I18NTranslator} que s'emprarà per
      * traduir els missatges.
+     *
      * @return instància per traduir els missatges.
      */
     protected abstract I18NTranslator getTranslator();
 
     /**
      * Retorna el missatge de l'excepció traduit en l'idioma per defecte, {@link Locale#getDefault()}.
+     *
      * @return missatge traduit.
      */
     @Override
     public String getLocalizedMessage() {
-        return getLocalizedMessage(Locale.getDefault());
+    	try {
+    		return getLocalizedMessage(Locale.getDefault());
+    	} catch (Exception e) {
+    		LOG.error("Error en getLocalizedMessage",e);
+    		return getMessage();
+    	}
     }
 
     /**
      * Retorna el missatge de l'excepció traduit en l'idioma indicat.
+     *
      * @param locale idioma per traduir.
      * @return missatge traduit.
      */

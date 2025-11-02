@@ -89,7 +89,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
             } catch (Exception e) {
                 res.setFinalizadoOk(false);
                 detalles.addPropiedad("Informació del procés", "Error obteniendo plugin de indexacion.");
-                detalles.addPropiedad("Error", e.getLocalizedMessage());
+                detalles.addPropiedad("Error", e.getMessage());
                 res.setDetalles(detalles);
                 return res;
             }
@@ -214,7 +214,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
             String fechaFin = "La dada de fi es " + sdf.format(new Date());
             detalles.addPropiedad("Fin del procés", fechaFin);
             res.setDetalles(detalles);
-            res.setMensajeErrorTraza("Se ha producido un error no controlado en el proceso SIA. " + e.getLocalizedMessage());
+            res.setMensajeErrorTraza("Se ha producido un error no controlado en el proceso SIA. " + e.getMessage());
             res.setFinalizadoOk(false);
         }
         return res;
@@ -432,9 +432,9 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                     }
                 } catch (Exception e) {
                     totalProcedimientosERROR++;
-                    mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" no s'ha indexat, error:").append(e.getLocalizedMessage()).append(" \n");
+                    mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" no s'ha indexat, error:").append(e.getMessage()).append(" \n");
                     log.error("Error en la indexacion SIA de procediments", e);
-                    return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, e.getLocalizedMessage());
+                    return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, e.getMessage());
                 }
             } else {
                 totalProcedimientosOK++;
@@ -483,7 +483,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
             resultado = plugin.enviarSIA(sia, true, false);
         } catch (final Exception exception) {
             log.error("Se ha producido un error enviando el dato a SIA de un borrado de proc/serv " + indexacionDTO.getCodElemento(), exception);
-            return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, exception.getLocalizedMessage());
+            return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, exception.getMessage());
         }
         return resultado;
     }

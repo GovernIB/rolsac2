@@ -37,6 +37,7 @@ create or replace PROCEDURE "MIGRAR_BORRARDATOS"
          WHERE UNAD_CODIGO != codigoUA AND UNAD_CODENTI= codigoEntidad;
     l_clob      CLOB := EMPTY_CLOB;
     TOTAL       number(2,0);
+    COD_RS2_TRMPRE NUMBER(10,0);
     modoDebug   boolean := FALSE;
 BEGIN
   dbms_lob.createtemporary(l_clob, TRUE);
@@ -61,17 +62,31 @@ BEGIN
                     /** Borramos el tramite **/
                     DELETE FROM RS2_PRCTRM WHERE PRTA_CODIGO = TRAMITE.PRTA_CODIGO;
 
-                     /** Borramos la lista documentos
+                    /** Borramos documentos de lista documentos */
+                    IF TRAMITE.PRTA_LSTDOC IS NOT NULL
+                    THEN
+                            DELETE FROM RS2_TRADOPR WHERE TRDP_CODDOPR IN (SELECT DOPR_CODIGO FROM RS2_DOCPR WHERE DOCPR_CODLSD = TRAMITE.PRTA_LSTDOC);
+                            DELETE FROM RS2_DOCPR WHERE DOCPR_CODLSD = TRAMITE.PRTA_LSTDOC;
+                    END IF;
+
+                    /** Borramos documentos de lista documentos **/
+                    IF TRAMITE.LSDO_CODIGO IS NOT NULL
+                    THEN
+                        DELETE FROM RS2_TRADOPR WHERE TRDP_CODDOPR IN (SELECT DOPR_CODIGO FROM RS2_DOCPR WHERE DOCPR_CODLSD = TRAMITE.LSDO_CODIGO);
+                        DELETE FROM RS2_DOCPR WHERE DOCPR_CODLSD = TRAMITE.LSDO_CODIGO;
+                    END IF;
+
+                     /** Borramos la lista documentos **/
                     IF TRAMITE.PRTA_LSTDOC IS NOT NULL
                     THEN
                         DELETE FROM RS2_LSTDOC WHERE LSDO_CODIGO = TRAMITE.PRTA_LSTDOC;
-                    END IF; **/
+                    END IF;
 
-                    /** Borramos la lista documentos
+                    /** Borramos la lista documentos **/
                     IF TRAMITE.LSDO_CODIGO IS NOT NULL
                     THEN
                         DELETE FROM RS2_LSTDOC WHERE LSDO_CODIGO = TRAMITE.LSDO_CODIGO;
-                    END IF;     **/
+                    END IF;
                     if modoDebug then DBMS_OUTPUT.PUT_LINE('TRAMITE LOOP'); END IF;
                 END LOOP;
 
@@ -86,26 +101,28 @@ BEGIN
                 /** Borramos las relaciones con normativas **/
                 DELETE FROM RS2_PRCNOR WHERE PRWF_CODIGO = PROCEDIMIENTO_WF.PRWF_CODIGO;
 
-                /** Borramos tipo tramitacion
+                /** Borramos tipo tramitacion **/
                 IF PROCEDIMIENTO_WF.PRWF_SVTREL IS NOT NULL
                 THEN
+                    COD_RS2_TRMPRE := PROCEDIMIENTO_WF.PRWF_SVTREL;
+                    UPDATE RS2_PRCWF SET PRWF_SVTREL = NULL WHERE PRWF_CODIGO = PROCEDIMIENTO_WF.PRWF_CODIGO;
                     DELETE FROM RS2_TRATPTRA WHERE TRTT_CODTPTRA = PROCEDIMIENTO_WF.PRWF_SVTREL;
                     DELETE FROM RS2_TRMPRE WHERE PRES_CODIGO = PROCEDIMIENTO_WF.PRWF_SVTREL;
                 END IF;
 
-                /** Borramos documentos de lista documentos
+                /** Borramos documentos de lista documentos */
                 IF PROCEDIMIENTO_WF.PRWF_LSTDOC IS NOT NULL
                 THEN
-                    DELETE FROM RS2_TRADOPR WHERE TRDP_CODDOPR IN (SELECT DOCPR_CODLSD FROM RS2_DOCPR WHERE DOCPR_CODLSD = PROCEDIMIENTO_WF.PRWF_LSTDOC);
+                    DELETE FROM RS2_TRADOPR WHERE TRDP_CODDOPR IN (SELECT DOPR_CODIGO FROM RS2_DOCPR WHERE DOCPR_CODLSD = PROCEDIMIENTO_WF.PRWF_LSTDOC);
                     DELETE FROM RS2_DOCPR WHERE DOCPR_CODLSD = PROCEDIMIENTO_WF.PRWF_LSTDOC;
-                END IF; */
+                END IF;
 
-                /** Borramos documentos de lista documentos
+                /** Borramos documentos de lista documentos **/
                 IF PROCEDIMIENTO_WF.PRWF_LSLOPD IS NOT NULL
                 THEN
-                    DELETE FROM RS2_TRADOPR WHERE TRDP_CODDOPR IN (SELECT DOCPR_CODLSD FROM RS2_DOCPR WHERE DOCPR_CODLSD = PROCEDIMIENTO_WF.PRWF_LSLOPD);
+                    DELETE FROM RS2_TRADOPR WHERE TRDP_CODDOPR IN (SELECT DOPR_CODIGO FROM RS2_DOCPR WHERE DOCPR_CODLSD = PROCEDIMIENTO_WF.PRWF_LSLOPD);
                     DELETE FROM RS2_DOCPR WHERE DOCPR_CODLSD = PROCEDIMIENTO_WF.PRWF_LSLOPD;
-                END IF;**/
+                END IF;
 
                  /** Borramos las relaciones (materias, pubobj y normativas) **/
                  DELETE FROM RS2_PRCPUB WHERE PRPO_CODPRWF = PROCEDIMIENTO_WF.PRWF_CODIGO;
@@ -115,17 +132,6 @@ BEGIN
                  /** Borramos el procedimiento wf **/
                  DELETE FROM RS2_PRCWF WHERE PRWF_CODIGO = PROCEDIMIENTO_WF.PRWF_CODIGO;
 
-                 /** Borramos la lista documentos
-                IF PROCEDIMIENTO_WF.PRWF_LSTDOC IS NOT NULL
-                THEN
-                    DELETE FROM RS2_LSTDOC WHERE LSDO_CODIGO = PROCEDIMIENTO_WF.PRWF_LSTDOC;
-                END IF;
-
-                /** Borramos la lista documentos
-                IF PROCEDIMIENTO_WF.PRWF_LSLOPD IS NOT NULL
-                THEN
-                    DELETE FROM RS2_LSTDOC WHERE LSDO_CODIGO = PROCEDIMIENTO_WF.PRWF_LSLOPD;
-                END IF;  **/
           END LOOP;
 
           /** Borramos auditorias **/
@@ -134,19 +140,6 @@ BEGIN
           /** Borramos el procedimiento **/
           DELETE FROM RS2_PROC WHERE PROC_CODIGO = PROCEDIMIENTO.PROC_CODIGO;
   END LOOP;
-
-  /** BORRAMOS LOS TIPOS DE TRAMITACION QUE NO SEAN PLANTILLA **/
-  DELETE FROM RS2_TRATPTRA WHERE TRTT_CODTPTRA IN (select PRES_CODIGO FROM RS2_TRMPRE  WHERE PRES_PLANTI = 0);
-  if modoDebug then dbms_output.put_line('TRADUCCIONES TIPO TRAMITACION.COUNT:' || sql%rowcount); end if;
-  DELETE FROM RS2_TRMPRE  WHERE PRES_PLANTI = 0;
-  if modoDebug then dbms_output.put_line('TIPO TRAMITACION.COUNT:' || sql%rowcount); end if;
-
-  /** BORRAMOS LOS DOCUMENTOS DE PROCEDIMIENTOS **/
-  DELETE FROM RS2_TRADOPR;
-  if modoDebug then dbms_output.put_line('TRADUCCIONES DE DOCUMENTOS PROC.COUNT:' || SQL%ROWCOUNT); end if;
-  DELETE FROM RS2_DOCPR;
-  if modoDebug then dbms_output.put_line('DOCUMENTOS PROC.COUNT:' || SQL%ROWCOUNT); end if;
-
 
   if modoDebug then dbms_output.put_line('fin procedimientos'); END IF;
 
@@ -209,5 +202,5 @@ EXCEPTION
             dbms_lob.writeappend(l_clob, length('El error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '. \n'), 'El error. CODE:' || SQLCODE || '  MSG:' || SQLERRM || '. \n');
             dbms_lob.close(l_clob);
             resultado := l_clob;
-
+            RAISE;
 END MIGRAR_BORRARDATOS;

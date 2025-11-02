@@ -263,7 +263,7 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
             resultado.append("\tFichero de rolsac1 ");
             resultado.append(infoDoc.getCodigoFicheroRolsac1());
             resultado.append(" ha dado un error. Error:");
-            resultado.append(e.getLocalizedMessage());
+            resultado.append(e.getMessage());
             resultado.append(" \n");
         }
         return resultado.toString();
