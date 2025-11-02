@@ -70,7 +70,7 @@ public class EstadisticaResource {
             Instant finish = Instant.now();
             long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
-            return new RespuestaEstadistica(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode() + "", e.getLocalizedMessage(), 0, tiempoMiliSegundos);
+            return new RespuestaEstadistica(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode() + "", e.getMessage(), 0, tiempoMiliSegundos);
         }
     }
 }

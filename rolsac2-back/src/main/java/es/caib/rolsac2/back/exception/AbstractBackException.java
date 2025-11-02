@@ -21,7 +21,11 @@ public abstract class AbstractBackException extends RuntimeException {
 
     @Override
     public String getLocalizedMessage() {
+    	try {
         return getLocalizedMessage(Locale.getDefault());
+    	} catch (Exception e) {
+    		return getMessage();
+    	}
     }
 
     public abstract String getLocalizedMessage(Locale locale);

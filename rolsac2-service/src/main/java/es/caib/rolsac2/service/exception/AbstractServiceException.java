@@ -3,12 +3,15 @@ package es.caib.rolsac2.service.exception;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Definició dels mètodes d'utilitat per la jerarquia d'exepcions de servei.
  */
 public abstract class AbstractServiceException extends RuntimeException {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractServiceException.class);
     private static final long serialVersionUID = 1L;
 
     public AbstractServiceException() {
@@ -21,7 +24,12 @@ public abstract class AbstractServiceException extends RuntimeException {
 
     @Override
     public String getLocalizedMessage() {
-        return getLocalizedMessage(Locale.getDefault());
+    	try {
+    		return getLocalizedMessage(Locale.getDefault());
+    	} catch (Exception e) {
+    		LOG.error("Error en getLocalizedMessage",e);
+    		return getMessage();
+    	}
     }
 
     public abstract String getLocalizedMessage(Locale locale);
