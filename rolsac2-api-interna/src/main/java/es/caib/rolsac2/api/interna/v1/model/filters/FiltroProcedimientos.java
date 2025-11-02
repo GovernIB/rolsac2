@@ -230,6 +230,18 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     @Schema(description = "integradoPdu", type = SchemaType.BOOLEAN, required = false)
     private Boolean integradoPdu;
 
+    /**
+     * buscarEnDescendientesUA.
+     **/
+    @Schema(description = "buscarEnDescendientesUA", type = SchemaType.INTEGER, required = false)
+    private Boolean buscarEnDescendientesUA;
+
+    /**
+     * activo.
+     **/
+    @Schema(description = "activo", type = SchemaType.INTEGER, required = false)
+    private Integer activo;
+
 
     /**
      * @return the textos
@@ -529,7 +541,16 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         }
 
         if (this.codigos != null && !this.codigos.isEmpty()) {
-            resultado.setCodigosProc(codigos);
+            List<Long> cods = new ArrayList<>();
+            String[] arrCodigos = this.codigos.split(",");
+            for (String c : arrCodigos) {
+                try {
+                    cods.add(Long.parseLong(c.trim()));
+                } catch (NumberFormatException nfe) {
+                    LOG.warn("El codigo de procedimiento '" + c + "' no es un numero valido.");
+                }
+            }
+            resultado.setCodigosProc(cods);
         }
 
         if (this.codigoTram != null) {
@@ -686,6 +707,14 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         if (this.integradoPdu != null) {
             resultado.setIntegradoPdu(integradoPdu);
         }
+        if (this.buscarEnDescendientesUA != null) {
+            resultado.setBuscarEnDescendientesUA(buscarEnDescendientesUA);
+        }
+        LOG.error("Activo:"+this.activo);
+        if (this.activo != null) {
+            resultado.setVisibleSEDE(activo == 1 ? "S" : "N");
+            LOG.error("VisibleSede:" + resultado.getVisibleSEDE());
+        }
 
         resultado.setTipo("P");
         resultado.setEsProcedimiento(true);
@@ -716,5 +745,21 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 
     public void setOrden(CampoOrden orden) {
         this.orden = orden;
+    }
+
+    public Boolean getBuscarEnDescendientesUA() {
+        return buscarEnDescendientesUA;
+    }
+
+    public void setBuscarEnDescendientesUA(Boolean buscarEnDescendientesUA) {
+        this.buscarEnDescendientesUA = buscarEnDescendientesUA;
+    }
+
+    public Integer getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Integer activo) {
+        this.activo = activo;
     }
 }

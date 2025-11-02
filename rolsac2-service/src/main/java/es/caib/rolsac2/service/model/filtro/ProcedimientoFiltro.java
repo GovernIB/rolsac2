@@ -93,7 +93,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String tramitacionPersonaApoderada;
 
     private String disponibleFuncionarioHabilitado;
-
+    /**
+     * Este parametro es solo del REST
+     **/
+    private Boolean buscarEnDescendientesUA;
     /**
      * Constructor vacio
      */
@@ -592,6 +595,17 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.idUAInstructorOComun = idUAInstructorOComun;
     }
 
+    public Boolean getBuscarEnDescendientesUA() {
+        return buscarEnDescendientesUA;
+    }
+
+    public void setBuscarEnDescendientesUA(Boolean buscarEnDescendientesUA) {
+        this.buscarEnDescendientesUA = buscarEnDescendientesUA;
+    }
+
+    public boolean isRellenoBuscarEnDescendientesUA() {
+        return buscarEnDescendientesUA != null && buscarEnDescendientesUA;
+    }
     /**
      * Esta relleno el codigo WF
      *

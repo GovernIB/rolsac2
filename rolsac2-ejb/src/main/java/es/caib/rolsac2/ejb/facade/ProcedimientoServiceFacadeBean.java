@@ -1045,8 +1045,18 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<ProcedimientoBaseDTO> findProcedimientosByFiltroRest(ProcedimientoFiltro filtro) {
+    	LOG.error("Entra findProcedimientosByFiltroRest");
+        if (filtro.isRellenoBuscarEnDescendientesUA() && filtro.getCodigoUaDir3() != null) {
+            List<Long> idUAs = uaRepository.listarDescendientes(Long.valueOf(filtro.getCodigoUaDir3()));
+            idUAs.add(Long.valueOf(filtro.getCodigoUaDir3()));
+            filtro.setIdUAsInstructor(idUAs);
+        }
         List<ProcedimientoBaseDTO> items = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtro, false);
+        if (items != null) {
+        	LOG.error("items.count:" + items.size());
+        }
         long total = procedimientoRepository.countByFiltro(filtro);
+        LOG.error("total:"+ total);
         return new Pagina<>(items, total);
     }
 

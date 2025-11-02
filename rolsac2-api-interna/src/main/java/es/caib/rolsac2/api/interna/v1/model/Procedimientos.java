@@ -277,9 +277,6 @@ public class Procedimientos extends EntidadBase {
             if (nodo.getLopdDestinatario() != null) {
                 this.lopdDestinatario = nodo.getLopdDestinatario().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
-            //if (nodo.getLopdInfoAdicional() != null) {
-            //    this.lopdDestinatario = nodo.getLopdInfoAdicional().getTraduccionConValor(idioma, idiomaPorDefecto);
-            //}
             if (nodo.getLopdCabecera() != null) {
                 this.lopdCabecera = nodo.getLopdCabecera().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
@@ -323,6 +320,9 @@ public class Procedimientos extends EntidadBase {
 
         if (!SETTERS_INVALIDS.contains("setSilencio")) {
             SETTERS_INVALIDS.add("setSilencio");
+        }
+        if (!SETTERS_INVALIDS.contains("setTipoProcedimiento")) {
+            SETTERS_INVALIDS.add("setTipoProcedimiento");
         }
 
     }

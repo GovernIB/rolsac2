@@ -18,6 +18,8 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
@@ -33,6 +35,8 @@ import java.util.List;
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PROCEDIMIENTO, name = Constantes.ENTIDAD_PROCEDIMIENTO)
 public class ProcedimientosResource {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ProcedimientosResource.class);
+
     @EJB
     ProcedimientoServiceFacade procedimientoService;
 
@@ -41,6 +45,8 @@ public class ProcedimientosResource {
 
     @EJB
     EntidadServiceFacade entidadService;
+
+    private boolean debugActivo = false;
 
     /**
      * Listado de Procedimientos.
@@ -57,6 +63,11 @@ public class ProcedimientosResource {
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarProcedimientos(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de procedimientos: " + FiltroProcedimientos.SAMPLE, name = "filtro", content = @Content(example = FiltroProcedimientos.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroProcedimientos.class))) FiltroProcedimientos filtro) throws ValidationException {
 
+        checkDebug();
+        if (debugActivo) {
+            LOG.error("---- DEBUG ACTIVO ----");
+            LOG.error("listarProcedimientos: filtro recibido: {}", filtro);
+        }
         if (filtro == null) {
             filtro = new FiltroProcedimientos();
         }
@@ -64,6 +75,7 @@ public class ProcedimientosResource {
         Instant start = Instant.now();
 
         final ProcedimientoFiltro fg = filtro.toProcedimientoFiltro();
+        if (debugActivo) LOG.error(" listarProcedimientos: filtro mapeado: {}", fg);
 
 
         String idiomaPorDefecto;
@@ -86,9 +98,21 @@ public class ProcedimientosResource {
             fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
         }
+        if (debugActivo) LOG.error(" listarProcedimientos: filtro final: {}", fg);
 
 
         return Response.ok(getRespuesta(fg, idiomaPorDefecto, start), MediaType.APPLICATION_JSON).build();
+    }
+
+    private void checkDebug() {
+        try {
+            String debug_activo = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.DEBUG_ACTIVO);
+            if (debug_activo != null && debug_activo.equalsIgnoreCase("S")) {
+                debugActivo = true;
+            }
+        } catch (Exception e) {
+            debugActivo = false;
+        }
     }
 
     /**
@@ -294,19 +318,21 @@ public class ProcedimientosResource {
     }
 
     private RespuestaProcedimientos getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto, final Instant start) {
+        if (debugActivo) LOG.error(" getRespuesta: filtro: {}", filtro);
         Pagina<ProcedimientoBaseDTO> resultadoBusqueda = procedimientoService.findProcedimientosByFiltroRest(filtro);
-
+        if (debugActivo) LOG.error(" getRespuesta: resultadoBusqueda: {}", resultadoBusqueda);
         List<Procedimientos> lista = new ArrayList<>();
         Procedimientos elemento;
 
         for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
             elemento = new Procedimientos((ProcedimientoDTO) nodo, null, filtro.getIdioma(), true, idiomaPorDefecto);
             lista.add(elemento);
+            if (debugActivo) LOG.error(" getRespuesta: añadido procedimiento a la lista: {}", elemento);
         }
 
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
-
+        if (debugActivo) LOG.error(" getRespuesta: tiempoMiliSegundos: {}", tiempoMiliSegundos);
         return new RespuestaProcedimientos(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), (long) resultadoBusqueda.getItems().size(), lista, tiempoMiliSegundos);
     }
 }

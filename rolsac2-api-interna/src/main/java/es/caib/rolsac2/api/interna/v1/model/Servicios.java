@@ -6,6 +6,8 @@ import es.caib.rolsac2.api.interna.v1.utils.Utiles;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.ServicioDTO;
 import es.caib.rolsac2.service.model.ServicioGridDTO;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
@@ -35,8 +37,8 @@ public class Servicios extends EntidadBase {
     //	@Schema(description = "codigoServicio", type = SchemaType.STRING, required = false)
     //	private String codigoServicio; // en el modelo se llama codigo
 
-    @Schema(description = "codigoSIA", type = SchemaType.STRING, required = false)
-    private String codigoSIA;
+    @Schema(description = "codigoSIA", type = SchemaType.INTEGER, required = false)
+    private Integer codigoSIA;
 
     //	@Schema(description = "correo", type = SchemaType.STRING, required = false)
     //	private String correo;
@@ -102,9 +104,9 @@ public class Servicios extends EntidadBase {
     @Schema(description = "tipo", type = SchemaType.STRING, required = false)
     private String tipo;
     @Schema(description = "workflow", type = SchemaType.STRING, required = false)
-    private String workflow;
+    private TypeProcedimientoWorkflow workflow;
     @Schema(description = "estado", type = SchemaType.STRING, required = false)
-    private String estado;
+    private TypeProcedimientoEstado estado;
     @Schema(description = "interno", type = SchemaType.BOOLEAN, required = false)
     private boolean interno;
     @Schema(description = "publicado", type = SchemaType.BOOLEAN, required = false)
@@ -169,11 +171,11 @@ public class Servicios extends EntidadBase {
             this.codigo = elem.getCodigo();
             this.comun = elem.getComun();
             this.activoLOPD = elem.isActivoLOPD();
-            this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA().toString();
+            this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA();
             this.codigoWF = elem.getCodigoWF();
             this.nombre = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccionConValor(idioma, idiomaPorDefecto);
             this.destinatarios = elem.getDestinatarios() == null ? null : elem.getDestinatarios().getTraduccionConValor(idioma, idiomaPorDefecto);
-            this.estado = elem.getEstado() == null ? null : elem.getEstado().name();
+            this.estado = elem.getEstado() == null ? null : elem.getEstado();
             this.estadoSIA = elem.getEstadoSIA() == null ? null : elem.getEstadoSIA().toString();
             this.fechaPublicacion = elem.getFechaPublicacion() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaPublicacion());
             this.fechaActualizacion = elem.getFechaActualizacion() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaActualizacion());
@@ -199,7 +201,7 @@ public class Servicios extends EntidadBase {
             this.tramitPresencial = elem.isTramitPresencial();
             this.uaInstructor = elem.getUaInstructor() == null ? null : elem.getUaInstructor().getCodigo();
             this.uaResponsable = elem.getUaResponsable() == null ? null : elem.getUaResponsable().getCodigo();
-            this.workflow = elem.getWorkflow() == null ? null : elem.getWorkflow().name();
+            this.workflow = elem.getWorkflow() == null ? null : elem.getWorkflow();
             if (this.tramitElectronica) {
                 this.tipoTramitacion = elem.getTipoTramitacion() == null ? null : elem.getTipoTramitacion().getCodigo();
                 this.plantillaSel = elem.getPlantillaSel() == null ? null : elem.getPlantillaSel().getCodigo();
@@ -251,8 +253,8 @@ public class Servicios extends EntidadBase {
     public Servicios(ServicioGridDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled) {
         if (elem != null) {
             this.codigo = elem.getCodigo();
-            this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA().toString();
-            this.estado = elem.getEstado();
+            this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA();
+            this.estado = TypeProcedimientoEstado.valueOf(elem.getEstado());
             this.estadoSIA = elem.getEstadoSIA() == null ? null : elem.getEstadoSIA().toString();
             this.tipo = elem.getTipo();
             this.nombre = elem.getNombre();
@@ -300,14 +302,14 @@ public class Servicios extends EntidadBase {
     /**
      * @return the codigoSIA
      */
-    public String getCodigoSIA() {
+    public Integer getCodigoSIA() {
         return codigoSIA;
     }
 
     /**
      * @param codigoSIA the codigoSIA to set
      */
-    public void setCodigoSIA(final String codigoSIA) {
+    public void setCodigoSIA(final Integer codigoSIA) {
         this.codigoSIA = codigoSIA;
     }
 
@@ -566,28 +568,28 @@ public class Servicios extends EntidadBase {
     /**
      * @return get the workflow
      */
-    public String getWorkflow() {
+    public TypeProcedimientoWorkflow getWorkflow() {
         return workflow;
     }
 
     /**
      * @param workflow the workflow to set
      */
-    public void setWorkflow(String workflow) {
+    public void setWorkflow(TypeProcedimientoWorkflow workflow) {
         this.workflow = workflow;
     }
 
     /**
      * @return get the estado
      */
-    public String getEstado() {
+    public TypeProcedimientoEstado getEstado() {
         return estado;
     }
 
     /**
      * @param estado the estado to set
      */
-    public void setEstado(String estado) {
+    public void setEstado(TypeProcedimientoEstado estado) {
         this.estado = estado;
     }
 

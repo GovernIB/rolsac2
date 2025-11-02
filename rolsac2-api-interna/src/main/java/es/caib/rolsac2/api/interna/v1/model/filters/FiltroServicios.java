@@ -191,6 +191,18 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
     private String vigente;
 
     /**
+     * buscarEnDescendientesUA.
+     **/
+    @Schema(description = "buscarEnDescendientesUA", type = SchemaType.INTEGER, required = false)
+    private Boolean buscarEnDescendientesUA;
+
+    /**
+     * activo corresponde a visible en SEDE.
+     **/
+    @Schema(description = "activo corresponde a visible en SEDE", type = SchemaType.INTEGER, required = false)
+    private Integer activo;
+
+    /**
      * @return the textos
      */
     public String getTextos() {
@@ -440,7 +452,16 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
         }
 
         if (this.codigos != null && !this.codigos.isEmpty()) {
-            resultado.setCodigosProc(codigos);
+            List<Long> cods = new ArrayList<>();
+            String[] arrCodigos = this.codigos.split(",");
+            for (String c : arrCodigos) {
+                try {
+                    cods.add(Long.parseLong(c.trim()));
+                } catch (NumberFormatException nfe) {
+                    LOG.warn("El codigo de procedimiento '" + c + "' no es un numero valido.");
+                }
+            }
+            resultado.setCodigosProc(cods);
         }
 
         if (this.estado != null) {
@@ -572,8 +593,12 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
             resultado.setOrderBy(orden.getCampo());
             resultado.setOrder(orden.getTipoOrden());
         }
-
-
+        if (this.buscarEnDescendientesUA != null) {
+            resultado.setBuscarEnDescendientesUA(buscarEnDescendientesUA);
+        }
+        if (this.activo != null) {
+            resultado.setVisibleSEDE(activo == 1 ? "S" : "N");
+        }
         resultado.setTipo("S");
         resultado.setEsProcedimiento(false);
 
@@ -611,5 +636,21 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 
     public void setVigente(String vigente) {
         this.vigente = vigente;
+    }
+
+    public Boolean getBuscarEnDescendientesUA() {
+        return buscarEnDescendientesUA;
+    }
+
+    public void setBuscarEnDescendientesUA(Boolean buscarEnDescendientesUA) {
+        this.buscarEnDescendientesUA = buscarEnDescendientesUA;
+    }
+
+    public Integer getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Integer activo) {
+        this.activo = activo;
     }
 }

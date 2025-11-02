@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.time.LocalDate;
-
+import java.util.Calendar;
 /**
  * Normatives.
  *
@@ -32,9 +32,8 @@ public class Normativa extends EntidadBase<Normativa> {
     /**
      * fecha
      **/
-    @Schema(description = "fechaAprobacion", name = "fechaAprobacion", type = SchemaType.STRING, required = false)
-    //	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate fechaAprobacion;
+    @Schema(description = "fechaAprobacion", required = false)
+    private Calendar fechaAprobacion;
 
     /**
      * numero
@@ -45,9 +44,8 @@ public class Normativa extends EntidadBase<Normativa> {
     /**
      * fechaBoletin
      **/
-    @Schema(description = "fechaBoletin", name = "fechaBoletin", type = SchemaType.STRING, required = false)
-    //	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate fechaBoletin;//
+    @Schema(description = "fechaBoletin", name = "fechaBoletin", required = false)
+    private Calendar fechaBoletin;//
 
     /**
      * numeroBoletin
@@ -162,11 +160,11 @@ public class Normativa extends EntidadBase<Normativa> {
         this.entidad = entidad;
     }
 
-    public LocalDate getFechaAprobacion() {
+    public Calendar getFechaAprobacion() {
         return fechaAprobacion;
     }
 
-    public void setFechaAprobacion(LocalDate fechaAprobacion) {
+    public void setFechaAprobacion(Calendar fechaAprobacion) {
         this.fechaAprobacion = fechaAprobacion;
     }
 
@@ -178,11 +176,11 @@ public class Normativa extends EntidadBase<Normativa> {
         this.numero = numero;
     }
 
-    public LocalDate getFechaBoletin() {
+    public Calendar getFechaBoletin() {
         return fechaBoletin;
     }
 
-    public void setFechaBoletin(LocalDate fechaBoletin) {
+    public void setFechaBoletin(Calendar fechaBoletin) {
         this.fechaBoletin = fechaBoletin;
     }
 
