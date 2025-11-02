@@ -190,24 +190,38 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             buscoAdministradorContenidos = true;
         }
 
-        if (!mostrarEstados && (mensajeNuevo == null || mensaje.isEmpty())) {
+        if (!mostrarEstados && mensajeNuevo == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimientoFlujo.errorTextomail"), true);
             return;
         }
-        for (Mensaje mensaje : mensajes) {
-            if (mensaje.isAdmContenido() == buscoAdministradorContenidos) {
-                if (!listaUsuariosDestinatarios.contains(mensaje.getUsuario()) && !mensaje.getUsuario().equals(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser())) {
-                    listaUsuariosDestinatarios.add(mensaje.getUsuario());
+        if (mensajes != null) {
+            for (Mensaje mensaje : mensajes) {
+                if (mensaje.isAdmContenido() == buscoAdministradorContenidos) {
+                    if (!listaUsuariosDestinatarios.contains(mensaje.getUsuario()) && !mensaje.getUsuario().equals(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser())) {
+                        listaUsuariosDestinatarios.add(mensaje.getUsuario());
+                    }
                 }
             }
         }
-        //listaUsuariosDestinatarios.add("usuario1");
+
         if (listaUsuariosDestinatarios.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimientoFlujo.errormail"), true);
             return;
         }
-        //listaDestinatarios.add("slromero@minsait.com");
+
         listaDestinatarios = administracionEntService.getEmailUsuarios(listaUsuariosDestinatarios);
+        if (listaDestinatarios == null || listaDestinatarios.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimientoFlujo.errormail"), true);
+            return;
+        }
+
+        // Quitar nulos (y, si quieres, vacíos/espacios)
+        for (Iterator<String> it = listaDestinatarios.iterator(); it.hasNext(); ) {
+            String s = it.next();
+            if (s == null || s.trim().isEmpty()) {  // quita .trim/.isEmpty si solo quieres eliminar nulos
+                it.remove();
+            }
+        }
         if (listaDestinatarios == null || listaDestinatarios.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimientoFlujo.errormail"), true);
             return;
