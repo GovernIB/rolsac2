@@ -236,8 +236,8 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "activoLOPD", type = SchemaType.BOOLEAN, required = false)
     private boolean activoLOPD = false;
 
-    @Schema(description = "integradoPdu", type = SchemaType.BOOLEAN, required = false)
-    private boolean integradoPdu;
+    @Schema(description = "esPdu", type = SchemaType.BOOLEAN, required = false)
+    private boolean esPdu;
 
     public Procedimientos() {
         super();
@@ -285,7 +285,7 @@ public class Procedimientos extends EntidadBase {
                 Long codigoDoc = nodo.getDocumentosLOPD().get(0).getCodigo();
                 linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
             }
-            this.integradoPdu = nodo.getEstadoPdu() != null && nodo.getEstadoPdu().compareTo(1) == 0;
+            this.esPdu = nodo.getEstadoPdu() != null && nodo.getEstadoPdu().compareTo(1) == 0;
         } catch (final Exception e) {
             LOG.error("Error generando procedimiento " + this.codigo, e);
         }
@@ -843,11 +843,11 @@ public class Procedimientos extends EntidadBase {
         this.tramitTelefonica = tramitTelefonica;
     }
 
-    public boolean isIntegradoPdu() {
-        return integradoPdu;
+    public boolean isEsPdu() {
+        return esPdu;
     }
 
-    public void setIntegradoPdu(boolean integradoPdu) {
-        this.integradoPdu = integradoPdu;
+    public void setEsPdu(boolean esPdu) {
+        this.esPdu = esPdu;
     }
 }

@@ -599,6 +599,7 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
         if (this.activo != null) {
             resultado.setVisibleSEDE(activo == 1 ? "S" : "N");
         }
+
         resultado.setTipo("S");
         resultado.setEsProcedimiento(false);
 

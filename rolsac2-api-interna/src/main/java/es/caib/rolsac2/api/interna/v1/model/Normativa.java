@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.time.LocalDate;
 import java.util.Calendar;
+
 /**
  * Normatives.
  *
