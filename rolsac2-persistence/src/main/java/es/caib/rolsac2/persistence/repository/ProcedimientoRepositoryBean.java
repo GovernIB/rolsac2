@@ -346,11 +346,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             JProcedimientoWorkflow modificado = (JProcedimientoWorkflow) proc[1];
 
                             if (publicado != null) {
-                            	LOG.error("Publicado");
-                                seleccionado = publicado;
+                            	seleccionado = publicado;
                             } else {
-                            	LOG.error("Modificado");
-                                seleccionado = modificado;
+                            	seleccionado = modificado;
                             }
 
                             List<Long> idProcsT = new ArrayList<>();
@@ -361,9 +359,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             }
 
                             if (seleccionado != null) {
-                            	LOG.error("Haciendo un covertDTO");
-                                ProcedimientoBaseDTO procDTO = convertDTO(seleccionado);
-                                LOG.error("ProcDTO:" + procDTO.toString());
+                            	ProcedimientoBaseDTO procDTO = convertDTO(seleccionado);
                                 procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionado.getProcedimiento()), filtro.getIdioma()));
                                 if (!ignorarDocumentos) {
                                     procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentosT, filtro.getIdioma()));
@@ -372,7 +368,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             }
                         }
                     }
-                    LOG.error("Devuelto un total:" + procs.size());
                     break;
             }
         } else {
@@ -2244,6 +2239,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         }
 
+        if (filtro.isRellenoIdUA()) {
+        	sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo= :idUA OR WF.uaResponsable.codigo = :idUA OR WF2.uaResponsable.codigo = :idUA OR WF.uaCompetente.codigo = :idUA OR WF2.uaCompetente.codigo = :idUA) ");
+        }
+        if (filtro.isRellenoIdUAs()) {
+        	sql.append(" AND (WF.uaInstructor.codigo IN (:idUAs) OR WF2.uaInstructor.codigo IN (:idUAs) OR WF.uaResponsable.codigo IN (:idUAs) OR WF2.uaResponsable.codigo IN (:idUAs) OR WF.uaCompetente.codigo IN (:idUAs) OR WF2.uaCompetente.codigo IN (:idUAs)) ");
+        }
 
         if (filtro.isRellenoNormativas()) {
             if (ambosWf) {
@@ -2671,6 +2672,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoEstados()) {
             query.setParameter("estados", filtro.getEstados());
+        }
+        if (filtro.isRellenoIdUA()) {
+            query.setParameter("idUA", filtro.getIdUA());
+        }
+        if (filtro.isRellenoIdUAs()) {
+            query.setParameter("idUAs", filtro.getIdUAs());
         }
         if (filtro.isRellenoCodigoUaDir3()) {
             query.setParameter("codigoUaDir3", "%" + filtro.getCodigoUaDir3().toUpperCase() + "%");
@@ -3276,10 +3283,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public ProcedimientoBaseDTO convertDTO(JProcedimientoWorkflow jprocWF) {
     	ProcedimientoBaseDTO proc = null;
     	try {
-    		LOG.error("ConvertDTO P1");
-        JProcedimiento jproc = jprocWF.getProcedimiento();
+    	JProcedimiento jproc = jprocWF.getProcedimiento();
         proc = createDTO(jproc);
-        LOG.error("ConvertDTO P2");
         // JProcedimientoWorkflow jprocWF = procedimientoRepository.getWF(id,
         // Constantes.PROCEDIMIENTO_ENMODIFICACION);
         proc.setCodigoWF(jprocWF.getCodigo());
@@ -3296,7 +3301,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setResponsable(jprocWF.getResponsableNombre());
         proc.setLopdResponsable(jprocWF.getLopdResponsable());
         proc.setComun(jprocWF.getComun());
-        LOG.error("jprocWF.getUaResponsable():" + jprocWF.getUaResponsable());
         if (jprocWF.getUaResponsable() != null) {
             proc.setUaResponsable(jprocWF.getUaResponsable().toDTO());
         }
@@ -3309,7 +3313,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (jprocWF.getTramitTelefonica() != null) {
             proc.setTramitTelefonica(jprocWF.getTramitTelefonica());
         }
-        LOG.error("ConvertDTO P3");
         if (jprocWF.getUaInstructor() != null) {
             proc.setUaInstructor(jprocWF.getUaInstructor().toDTO());
 
@@ -3330,7 +3333,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 proc.setLopdCabecera(lopdCabecera);
             }
         }
-        LOG.error("ConvertDTO P4");
         if (jprocWF.getUaCompetente() != null) {
             proc.setUaCompetente(jprocWF.getUaCompetente().toDTO());
         }
@@ -3349,7 +3351,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (jprocWF.getDatosPersonalesLegitimacion() != null) {
             proc.setDatosPersonalesLegitimacion(tipoLegitimacionConverter.createDTO(jprocWF.getDatosPersonalesLegitimacion()));
         }
-        LOG.error("ConvertDTO P5");
         Literal nombreProcedimientoWorkFlow = new Literal();
         Literal requisitos = new Literal();
         Literal objeto = new Literal();
@@ -3375,7 +3376,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 urlPdu.add(new Traduccion(trad.getIdioma(), trad.getUrlPdu()));
             }
         }
-        LOG.error("ConvertDTO P6");
         proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
         proc.setRequisitos(requisitos);
         proc.setObjeto(objeto);
@@ -3386,14 +3386,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setLopdFinalidad(lopdFinalidad);
         proc.setLopdDestinatario(lopdDestinatario);
         proc.setUrlPdu(urlPdu);
-        LOG.error("ConvertDTO P7");
         // proc.setLopdInfoAdicional(lopdInfoAdicional);
         proc.setPublicosObjetivo(getTipoPubObjEntByWF(proc.getCodigoWF()));
         proc.setNormativas(getNormativasByWF(proc.getCodigoWF()));
         proc.setDocumentos(getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
         proc.setDocumentosLOPD(getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
         proc.setCategoriasPDU(getCategoriasPDUByWF(proc.getCodigoWF()));
-        LOG.error("ConvertDTO P8");
         // Reordenamos por posicion
         Collections.sort(proc.getNormativas());
         Collections.sort(proc.getDocumentos());
@@ -3425,8 +3423,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
             proc.setTemas(temasDTO);
         }
-        LOG.error("ConvertDTO P9");
-        if (proc instanceof ProcedimientoDTO) {
+       if (proc instanceof ProcedimientoDTO) {
             ((ProcedimientoDTO) proc).setTramites(this.getTramitesByWF(proc.getCodigoWF()));
 
             Collections.sort(((ProcedimientoDTO) proc).getTramites());
@@ -3444,10 +3441,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             ((ProcedimientoDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
             ((ProcedimientoDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
         }
-        LOG.error("ConvertDTO P10");
         ((ProcedimientoBaseDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
         ((ProcedimientoBaseDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
-        LOG.error("ConvertDTO P11");
 
 
         if (proc instanceof ServicioDTO) {
@@ -3465,7 +3460,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 ((ServicioDTO) proc).setPlantillaSel(tipo);
             }
         }
-        LOG.error("ConvertDTO P12");
         proc.setIntegrarPdu(jprocWF.isIntegrarPdu());
         return proc;
     	} catch (Exception e) {

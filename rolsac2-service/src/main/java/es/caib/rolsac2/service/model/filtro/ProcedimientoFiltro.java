@@ -976,4 +976,17 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         texto.append('}');
         return texto.toString();
     }
+
+    private List<Long> idUAs;
+    public List<Long> getIdUAs() {
+        return idUAs;
+    }
+
+    public void setIdUAs(List<Long> idUAs) {
+        this.idUAs = idUAs;
+    }
+
+    public boolean isRellenoIdUAs() {
+        return idUAs != null && !idUAs.isEmpty();
+    }
 }

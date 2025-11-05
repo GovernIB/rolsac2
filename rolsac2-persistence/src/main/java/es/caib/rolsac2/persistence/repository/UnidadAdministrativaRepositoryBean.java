@@ -1158,4 +1158,15 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         jAuditoria.setAccion(TypeAccionAuditoria.BAJA.toString());
         entityManager.persist(jAuditoria);
     }
+
+    @Override
+    public Long obtenerCodigo(String codigoUA) {
+        StringBuilder sql = new StringBuilder("select j.codigo from JUnidadAdministrativa where j.codigoDIR3 = :codigoDIR3 ");
+        Long ua = null;
+        List<Long> codigos = entityManager.createQuery(sql.toString()).getResultList();
+        if (codigos != null && !codigos.isEmpty()) {
+            ua = codigos.get(0);
+        }
+        return ua;
+    }
 }

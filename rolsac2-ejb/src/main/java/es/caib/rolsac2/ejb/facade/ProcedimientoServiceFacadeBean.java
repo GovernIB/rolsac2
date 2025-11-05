@@ -1045,18 +1045,29 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<ProcedimientoBaseDTO> findProcedimientosByFiltroRest(ProcedimientoFiltro filtro) {
-    	LOG.error("Entra findProcedimientosByFiltroRest");
-        if (filtro.isRellenoBuscarEnDescendientesUA() && filtro.getCodigoUaDir3() != null) {
-            List<Long> idUAs = uaRepository.listarDescendientes(Long.valueOf(filtro.getCodigoUaDir3()));
-            idUAs.add(Long.valueOf(filtro.getCodigoUaDir3()));
-            filtro.setIdUAsInstructor(idUAs);
+    	if (filtro.isRellenoBuscarEnDescendientesUA() && (filtro.isRellenoCodigoDir3SIA() || filtro.isRellenoIdUA())) {
+            Long idUA = null;
+            if (filtro.isRellenoIdUA()) {
+                idUA = filtro.getIdUA();
+            } else if (filtro.isRellenoCodigoUaDir3()) {
+                idUA = uaRepository.obtenerCodigo(filtro.getCodigoUaDir3());
+            }
+
+            if (idUA != null) {
+            	List<Long> idUAs = uaRepository.listarDescendientes(idUA);
+                idUAs.add(idUA);
+                filtro.setIdUAs(idUAs);
+
+                LOG.error("IDUAs");
+                if (filtro.getIdUAs() != null) {
+                	for(Long id : filtro.getIdUAs()) {
+                		LOG.error("ID:" + id);
+                	}
+                }
+            }
         }
         List<ProcedimientoBaseDTO> items = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtro, false);
-        if (items != null) {
-        	LOG.error("items.count:" + items.size());
-        }
         long total = procedimientoRepository.countByFiltro(filtro);
-        LOG.error("total:"+ total);
         return new Pagina<>(items, total);
     }
 

@@ -100,4 +100,6 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     UnidadAdministrativaGridDTO getUaRaizEntidad(Long codEntidad);
 
     JUnidadAdministrativa obtenerUnidadAdministrativaRaiz(Long idEntidad);
+
+    Long obtenerCodigo(String codigoUA);
 }
