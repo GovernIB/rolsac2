@@ -7,15 +7,6 @@
   select 'drop synonym' || synonym_name || ' ;' from user_synonyms order by synonym_name
  **/
 
-/**
- ** sobre ROLSAC2
-  select drops from (select 'drop table "'|| table_name || '" cascade constraints;' AS drops from user_tables order by table_name)
-  UNION
-  select drops from (select 'drop sequence "' || sequence_name || '" ;' as drops from user_sequences order by sequence_name)
- ** Sobre WWW_ROLSAC2
-  select 'drop synonym' || synonym_name || ' ;' from user_synonyms order by synonym_name
- **/
-
 DROP TABLE "RS2_ENTIRAIZ" CASCADE CONSTRAINTS PURGE;
 DROP TABLE "RS2_TRATPPR" CASCADE CONSTRAINTS PURGE;
 DROP TABLE "RS2_TIPOPRO" CASCADE CONSTRAINTS PURGE;
