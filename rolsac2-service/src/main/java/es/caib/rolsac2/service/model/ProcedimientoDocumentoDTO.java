@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Dades de un documento ficha.
+ * Dades de un documento proc/serv/tram.
  *
  * @author Indra
  */
@@ -52,6 +52,16 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable, Co
      * Procedimiento
      **/
     private ProcedimientoDTO procedimientoDTO;
+
+    /**
+     * Tramite
+     **/
+    private ProcedimientoTramiteDTO tramiteDTO;
+
+    /**
+     * Servicio
+     **/
+    private ServicioDTO servicioDTO;
 
     /**
      * Obtiene codigo.
@@ -167,6 +177,22 @@ public class ProcedimientoDocumentoDTO extends ModelApi implements Cloneable, Co
 
     public void setOrden(Integer orden) {
         this.orden = orden;
+    }
+
+    public ProcedimientoTramiteDTO getTramiteDTO() {
+        return tramiteDTO;
+    }
+
+    public void setTramiteDTO(ProcedimientoTramiteDTO tramiteDTO) {
+        this.tramiteDTO = tramiteDTO;
+    }
+
+    public ServicioDTO getServicioDTO() {
+        return servicioDTO;
+    }
+
+    public void setServicioDTO(ServicioDTO servicioDTO) {
+        this.servicioDTO = servicioDTO;
     }
 
     /**

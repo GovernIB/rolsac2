@@ -30,7 +30,7 @@ public class PluginErrorException extends ServiceException {
         if (this.causa == null) {
             return mensaje;
         } else {
-            return mensaje + " \n " + causa.getMessage();
+            return mensaje + " \n " + causa.getLocalizedMessage();
         }
     }
 

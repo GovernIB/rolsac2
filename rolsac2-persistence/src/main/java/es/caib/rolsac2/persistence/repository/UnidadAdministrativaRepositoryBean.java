@@ -822,7 +822,17 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     @Override
     public PathUA getPath(UnidadAdministrativaGridDTO ua) {
         PathUA pathUA = new PathUA();
-        List<String> ruta = getRuta(ua, 0);
+
+        JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, ua.getCodigo());
+        UnidadAdministrativaGridDTO uaDTO = new UnidadAdministrativaGridDTO();
+        uaDTO.setCodigo(ua.getCodigo());
+        if (jua.getPadre() != null) {
+            UnidadAdministrativaGridDTO padre = new UnidadAdministrativaGridDTO();
+            padre.setCodigo(jua.getPadre().getCodigo());
+            uaDTO.setPadre(padre);
+        }
+
+        List<String> ruta = getRuta(uaDTO, 0);
         pathUA.setPath(ruta);
         return pathUA;
     }

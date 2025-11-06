@@ -49,6 +49,8 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
     private boolean tramitElectronica;
     private boolean tramitTelefonica;
 
+    private String codigoSIA;
+
     /**
      * Crea instancia de procedimiento tramite dto.
      *
@@ -565,6 +567,13 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         this.orden = orden;
     }
 
+    public String getCodigoSIA() {
+        return codigoSIA;
+    }
+
+    public void setCodigoSIA(String codigoSIA) {
+        this.codigoSIA = codigoSIA;
+    }
 
     public Object clone() {
         ProcedimientoTramiteDTO obj = null;

@@ -81,6 +81,8 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     String obtenerCodigoDIR3(Long codigoUA);
 
+    Long obtenerCodigo(String codigoUA);
+
     List<UnidadAdministrativaDTO> findPagedByFiltroRest(UnidadAdministrativaFiltro fg);
 
     void deleteUA(Long id);
@@ -100,6 +102,4 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
     UnidadAdministrativaGridDTO getUaRaizEntidad(Long codEntidad);
 
     JUnidadAdministrativa obtenerUnidadAdministrativaRaiz(Long idEntidad);
-
-    Long obtenerCodigo(String codigoUA);
 }

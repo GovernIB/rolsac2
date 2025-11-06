@@ -529,7 +529,16 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         }
 
         if (this.codigos != null && !this.codigos.isEmpty()) {
-            resultado.setCodigosProc(codigos);
+            List<Long> iCodigos = new ArrayList<>();
+            String[] arrCodigos = this.codigos.split(",");
+            for (String c : arrCodigos) {
+                try {
+                    iCodigos.add(Long.parseLong(c.trim()));
+                } catch (NumberFormatException nfe) {
+                    LOG.warn("El codigo " + c + " no es un numero valido y se omite en el filtro de procedimientos.");
+                }
+            }
+            resultado.setCodigosProc(iCodigos);
         }
 
         if (this.codigoTram != null) {

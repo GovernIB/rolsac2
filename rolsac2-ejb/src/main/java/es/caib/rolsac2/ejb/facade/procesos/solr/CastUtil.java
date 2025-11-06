@@ -126,9 +126,9 @@ public class CastUtil {
         indexData.setInterno(false);
 
         // FamiliaID
-        //if (procedimiento.getFamilia() != null) {
-        //    indexData.setFamiliaId(procedimiento.getFamilia().getId().toString());
-        // }
+        if (tramite.getProcedimiento() != null && tramite.getProcedimiento().getProcedimiento() != null && tramite.getProcedimiento().getProcedimiento().getTipoProcedimiento() != null) {
+            indexData.setFamiliaId(tramite.getProcedimiento().getProcedimiento().getTipoProcedimiento().getCodigo().toString());
+        }
 
         // Telematico
 
@@ -259,8 +259,8 @@ public class CastUtil {
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
         for (final TemaGridDTO tema : servicio.getTemas()) {
-            if (tema.getTipoMateriaSIA() != null && tema.getTipoMateriaSIA().getCodigoSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().getCodigoSIA().toString())) {
-                materiasId.add(tema.getTipoMateriaSIA().getCodigoSIA().toString());
+            if (tema.getCodigo() != null && !materiasId.contains(tema.getCodigo().toString())) {
+                materiasId.add(tema.getCodigo().toString());
             }
         }
         indexData.setMateriaId(materiasId);
@@ -840,8 +840,8 @@ public class CastUtil {
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
         for (final TemaGridDTO tema : proc.getTemas()) {
-            if (tema.getTipoMateriaSIA() != null && tema.getTipoMateriaSIA().getCodigoSIA() != null && !materiasId.contains(tema.getTipoMateriaSIA().getCodigoSIA().toString())) {
-                materiasId.add(tema.getTipoMateriaSIA().getCodigoSIA().toString());
+            if (tema.getCodigo() != null && !materiasId.contains(tema.getCodigo().toString())) {
+                materiasId.add(tema.getCodigo().toString());
             }
         }
         indexData.setMateriaId(materiasId);
@@ -856,9 +856,9 @@ public class CastUtil {
         indexData.setPublicoId(publicoObjetivoId);
 
         // Datos IDs de familia.
-        //if (proc.getFamilia() != null) {
-        //    indexData.setFamiliaId(proc.getFamilia().getId().toString());
-        //}
+        if (proc.getTipoProcedimiento() != null) {
+            indexData.setFamiliaId(proc.getTipoProcedimiento().getCodigo().toString());
+        }
 
         // Fechas
         indexData.setFechaActualizacion(proc.getFechaActualizacion());

@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -77,7 +78,8 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    /*@RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})*/
+    @PermitAll
     public String obtenerPropiedadConfiguracion(TypePropiedadConfiguracion propiedad) {
         ConfiguracionGlobalGridDTO conf = configGlobal.findByPropiedad(propiedad.toString());
         if (conf != null && conf.getValor() != null && !conf.getValor().isEmpty()) {
@@ -88,7 +90,8 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    /*@RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})*/
+    @PermitAll
     public String obtenerPropiedadConfiguracion(String propiedad) {
         ConfiguracionGlobalGridDTO conf = configGlobal.findByPropiedad(propiedad);
         if (conf != null && conf.getValor() != null && !conf.getValor().isEmpty()) {
@@ -99,7 +102,8 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    /*@RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})*/
+    @PermitAll
     public String obtenerPropiedadConfiguracion(TypePropiedadConfiguracion propiedad, String idioma) {
         ConfiguracionGlobalGridDTO conf = configGlobal.findByPropiedad(propiedad.toString() + "." + idioma);
         if (conf != null && conf.getValor() != null && !conf.getValor().isEmpty()) {

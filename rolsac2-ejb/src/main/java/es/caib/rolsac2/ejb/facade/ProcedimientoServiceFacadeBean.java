@@ -1045,7 +1045,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<ProcedimientoBaseDTO> findProcedimientosByFiltroRest(ProcedimientoFiltro filtro) {
-    	if (filtro.isRellenoBuscarEnDescendientesUA() && (filtro.isRellenoCodigoDir3SIA() || filtro.isRellenoIdUA())) {
+        if (filtro.isRellenoBuscarEnDescendientesUA() && (filtro.isRellenoCodigoDir3SIA() || filtro.isRellenoIdUA())) {
             Long idUA = null;
             if (filtro.isRellenoIdUA()) {
                 idUA = filtro.getIdUA();
@@ -1054,16 +1054,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             }
 
             if (idUA != null) {
-            	List<Long> idUAs = uaRepository.listarDescendientes(idUA);
+                List<Long> idUAs = uaRepository.listarDescendientes(idUA);
                 idUAs.add(idUA);
                 filtro.setIdUAs(idUAs);
-
-                LOG.error("IDUAs");
-                if (filtro.getIdUAs() != null) {
-                	for(Long id : filtro.getIdUAs()) {
-                		LOG.error("ID:" + id);
-                	}
-                }
             }
         }
         List<ProcedimientoBaseDTO> items = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtro, false);
@@ -1277,11 +1270,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         return procedimientoRepository.getProcedimientosParaIndexacionSIA(idEntidad);
     }
 
-//    @Override
-//    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-//    public Pagina<IndexacionPDUDto> getProcedimientosParaIndexacionPdu(Long idEntidad) {
-//        return procedimientoRepository.getIndexacionProcedimientosIntegradosPdu(idEntidad);
-//    }
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})

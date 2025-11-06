@@ -399,7 +399,7 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     /**
      * Establece responsable email.
      *
-     * @param responsableEmail responsable email
+     * @param incidenciasEmail incidenciasEmail
      */
     public void setIncidenciasEmail(String incidenciasEmail) {
         this.incidenciasEmail = incidenciasEmail;

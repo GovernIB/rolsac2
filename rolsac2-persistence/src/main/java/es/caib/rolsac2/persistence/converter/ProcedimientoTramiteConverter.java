@@ -5,6 +5,7 @@ import es.caib.rolsac2.persistence.model.JProcedimientoWorkflow;
 import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoTramiteTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
+import es.caib.rolsac2.persistence.model.traduccion.JTipoProcedimientoTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
 import es.caib.rolsac2.service.model.*;
 import org.mapstruct.InjectionStrategy;
@@ -138,6 +139,18 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
         resultado.setCodigo(procedimiento.getCodigo());
         ProcedimientoDTO proc = new ProcedimientoDTO();
         proc.setCodigo(procedimiento.getProcedimiento().getCodigo());
+        if (procedimiento.getTipoProcedimiento() != null) {
+            TipoProcedimientoDTO tipoProc = new TipoProcedimientoDTO();
+            tipoProc.setCodigo(procedimiento.getTipoProcedimiento().getCodigo());
+            Literal tipoProcDesc = new Literal();
+            if (procedimiento.getTipoProcedimiento().getDescripcion() != null) {
+                for (JTipoProcedimientoTraduccion trad : procedimiento.getTipoProcedimiento().getDescripcion()) {
+                    tipoProcDesc.add(new Traduccion(trad.getIdioma(), trad.getDescripcion()));
+                }
+            }
+            tipoProc.setDescripcion(tipoProcDesc);
+            proc.setTipoProcedimiento(tipoProc);
+        }
         resultado.setProcedimiento(proc);
         Literal nombre = new Literal();
         for (JProcedimientoWorkflowTraduccion trad : procedimiento.getTraducciones()) {

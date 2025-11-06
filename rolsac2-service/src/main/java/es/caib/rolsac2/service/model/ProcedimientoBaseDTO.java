@@ -74,6 +74,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     // LOPD
     String lopdResponsable;
+    private UnidadAdministrativaDTO LopdResponsableUA;
     Literal lopdInfoAdicional = new Literal();
     Literal lopdFinalidad = new Literal();
     Literal lopdDerechos = new Literal();
@@ -297,6 +298,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setLopdResponsable(String lopdResponsable) {
         this.lopdResponsable = lopdResponsable;
+    }
+
+    public UnidadAdministrativaDTO getLopdResponsableUA() {
+        return LopdResponsableUA;
+    }
+
+    public void setLopdResponsableUA(UnidadAdministrativaDTO lopdResponsableUA) {
+        LopdResponsableUA = lopdResponsableUA;
     }
 
     public Literal getLopdDerechos() {

@@ -1,8 +1,6 @@
 package es.caib.rolsac2.commons.i18n;
 
 import java.util.Locale;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Excepció que permet emprar missatges traduibles.
@@ -12,7 +10,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class I18NException extends Exception {
 
-    private static final Logger LOG = LoggerFactory.getLogger(I18NException.class);
     private static final long serialVersionUID = -3124602547590507219L;
 
     private Object[] parameters;
@@ -78,12 +75,7 @@ public abstract class I18NException extends Exception {
      */
     @Override
     public String getLocalizedMessage() {
-    	try {
-    		return getLocalizedMessage(Locale.getDefault());
-    	} catch (Exception e) {
-    		LOG.error("Error en getLocalizedMessage",e);
-    		return getMessage();
-    	}
+        return getLocalizedMessage(Locale.getDefault());
     }
 
     /**

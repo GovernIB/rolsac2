@@ -19,7 +19,7 @@ public class AuditoriaException extends ServiceException {
 
   @Override
   public String getLocalizedMessage(Locale locale) {
-    return causa.getMessage();
+    return causa.getLocalizedMessage();
   }
 
 }
