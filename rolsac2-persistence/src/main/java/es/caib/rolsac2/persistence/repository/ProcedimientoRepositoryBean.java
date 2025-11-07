@@ -349,8 +349,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             }
 
                             if (seleccionado == null) {
-                            	LOG.error("Dato seleccionado null");
+                            	LOG.error("Dato seleccionado null. I:" + i);
                             	i++;
+                            	continue;
                             }
                             i++;
 
