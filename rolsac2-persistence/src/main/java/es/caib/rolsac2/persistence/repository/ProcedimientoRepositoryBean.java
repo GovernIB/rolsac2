@@ -336,6 +336,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 case "T":
                 default:
                     List<JProcedimientoWorkflow[]> jprocs = query.getResultList();
+                    int i = 0;
                     for (Object[] proc : jprocs) {
                         if (proc != null) {
                             JProcedimientoWorkflow modificado = (JProcedimientoWorkflow) proc[0];
@@ -346,6 +347,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             } else {
                                 seleccionado = modificado;
                             }
+
+                            if (seleccionado == null) {
+                            	LOG.error("Dato seleccionado null");
+                            	i++;
+                            }
+                            i++;
 
                             List<Long> idProcsT = new ArrayList<>();
                             idProcsT.add(seleccionado.getCodigo());
