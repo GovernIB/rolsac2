@@ -302,10 +302,7 @@ public class CastUtil {
         indexData.setCategoria(EnumCategoria.ROLSAC_UNIDAD_ADMINISTRATIVA);
         indexData.setAplicacionId(EnumAplicacionId.ROLSAC);
         indexData.setElementoId(uaDTO.getCodigo().toString());
-        indexData.setCategoriaRaiz(EnumCategoria.ROLSAC_UNIDAD_ADMINISTRATIVA);
-        indexData.setElementoIdRaiz(uaDTO.getCodigo().toString());
         indexData.getUos().add(pathUA);
-        //indexData.setFechaPublicacion(java.util.Date.from(uaDTO.getFechaActualizacion().atStartOfDay(ZoneId.systemDefault()).toInstant()));
 
         // Iteramos las traducciones
         final LiteralMultilang titulo = new LiteralMultilang();
@@ -361,8 +358,6 @@ public class CastUtil {
         indexData.setCategoria(EnumCategoria.ROLSAC_NORMATIVA);
         indexData.setAplicacionId(EnumAplicacionId.ROLSAC);
         indexData.setElementoId(norm.getCodigo().toString());
-        indexData.setCategoriaRaiz(EnumCategoria.ROLSAC_NORMATIVA);
-        indexData.setElementoIdRaiz(norm.getCodigo().toString());
         indexData.getUos().addAll(pathUAs);
         if (norm.getFechaBoletin() != null) {
             indexData.setFechaPublicacion(java.util.Date.from(norm.getFechaBoletin().atStartOfDay(ZoneId.systemDefault()).toInstant()));

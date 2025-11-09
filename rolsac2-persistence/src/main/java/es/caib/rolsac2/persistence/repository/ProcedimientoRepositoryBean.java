@@ -336,7 +336,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 case "T":
                 default:
                     List<JProcedimientoWorkflow[]> jprocs = query.getResultList();
-                    int i = 0;
                     for (Object[] proc : jprocs) {
                         if (proc != null) {
                             JProcedimientoWorkflow modificado = (JProcedimientoWorkflow) proc[0];
@@ -347,13 +346,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             } else {
                                 seleccionado = modificado;
                             }
-
-                            if (seleccionado == null) {
-                            	LOG.error("Dato seleccionado null. I:" + i);
-                            	i++;
-                            	continue;
-                            }
-                            i++;
 
                             List<Long> idProcsT = new ArrayList<>();
                             idProcsT.add(seleccionado.getCodigo());
@@ -2124,7 +2116,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             } else if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("M")) {
                 sql = new StringBuilder("SELECT  wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF WITH wf.workflow = true LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma  LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
             } else if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("T")) {
-                sql = new StringBuilder("SELECT  wf, wf2 FROM JProcedimiento j LEFT JOIN j.procedimientoWF WF WITH wf.workflow = true LEFT JOIN j.procedimientoWF WF2 WITH wf2.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma=:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");//and((wf.workflow = true and wf2.workflow is null) or (wf.workflow = true and wf2.workflow = false) or (wf.workflow is null and wf2.workflow = false))
+                sql = new StringBuilder("SELECT  wf, wf2 FROM JProcedimiento j LEFT JOIN j.procedimientoWF WF WITH wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT JOIN j.procedimientoWF WF2 WITH wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma=:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");//and((wf.workflow = true and wf2.workflow is null) or (wf.workflow = true and wf2.workflow = false) or (wf.workflow is null and wf2.workflow = false))
                 ambosWf = true;
             } else {
                 sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF ON wf.workflow = true or wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma  where 1 = 1 ");
