@@ -692,7 +692,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dialogServicio.descripcion']}" styleClass="text-center">
-                            <h:outputText value="#{td.identificador}" class="labelGrande" />
+                            <h:outputText value="#{td.descripcion.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
                         </p:column>
 
                         <!--
@@ -720,7 +720,7 @@
                         <div class="left-container-header ml-0 col-12 row">
                             <div class="col-10 text-center">
                                 <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                    #{tema.data.descripcion.getTraduccionConValor(dialogServicio.idioma)}</p>
+                                    #{tema.data.descripcion.getTraduccionConValor(sessionBean.lang)}</p>
                             </div>
                             <div class="col-2">
                                 <p:commandButton id="btnTema#{tema.data.codigo}Col"
@@ -757,7 +757,7 @@
                                         </div>
                                     </div>
                                     <i class="#{dialogServicio.getIcono(td)}"></i>
-                                    <h:outputText id="texto" value="#{td.descripcion.getTraduccionConValor(dialogServicio.idioma)}" class="labelGrande" />
+                                    <h:outputText id="texto" value="#{td.descripcion.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
                                     <p:tooltip id="toolTipFade#{td.codigo}" for="texto" value="#{dialogServicio.getTooltip(td)}" position="right"/>
                                 </p:column>
 
@@ -813,7 +813,7 @@
 
                         <p:column headerText="#{labels['dialogServicio.descripcion']}"
                                   styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogServicio.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -872,7 +872,7 @@
                                 global="false"/>
 
                         <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogServicio.idioma)}" class="labelGrande" />
+                            <h:outputText value="#{td.titulo.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
                 </div>

@@ -52,7 +52,7 @@
                         <p:outputLabel value="#{labels['dict.estadoActual']}:"  style="margin-right: 20px" />
                     </div>
                     <div class="ui-g-12 ui-md-11 ui-lg-11">
-                        <h:outputText value="#{dialogProcedimientoFlujo.literalEstadoActual}" style="font-weight: bold;font-size: 1.2em !important;"/>
+                        <h:outputText value="#{labels['TypeProcedimientoEstado.' + dialogProcedimientoFlujo.estadoActual]}" style="font-weight: bold;font-size: 1.2em !important;" rendered="#{!empty dialogProcedimientoFlujo.estadoActual}"/>
                     </div>
 
                 <c:if test="#{!empty dialogProcedimientoFlujo.estados}">
