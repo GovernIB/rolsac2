@@ -1045,18 +1045,27 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<ProcedimientoBaseDTO> findProcedimientosByFiltroRest(ProcedimientoFiltro filtro) {
-        if (filtro.isRellenoBuscarEnDescendientesUA() && (filtro.isRellenoCodigoDir3SIA() || filtro.isRellenoIdUA())) {
+        if (filtro.isRellenoBuscarEnDescendientesUA() && (filtro.isRellenoCodigoUaDir3() || filtro.isRellenoIdUA())) {
             Long idUA = null;
             if (filtro.isRellenoIdUA()) {
                 idUA = filtro.getIdUA();
+                if (idUA != null) {
+                    filtro.setIdUA(null);
+                }
             } else if (filtro.isRellenoCodigoUaDir3()) {
                 idUA = uaRepository.obtenerCodigo(filtro.getCodigoUaDir3());
+                if (idUA != null) {
+                    filtro.setCodigoUaDir3(null);
+                }
             }
 
             if (idUA != null) {
                 List<Long> idUAs = uaRepository.listarDescendientes(idUA);
+                if (idUAs == null) {
+                    idUAs = new ArrayList<>();
+                }
                 idUAs.add(idUA);
-                filtro.setIdUAs(idUAs);
+                filtro.setIdUAsInstructor(idUAs);
             }
         }
         List<ProcedimientoBaseDTO> items = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtro, false);

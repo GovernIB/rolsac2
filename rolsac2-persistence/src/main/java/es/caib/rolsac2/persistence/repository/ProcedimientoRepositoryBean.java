@@ -347,6 +347,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                                 seleccionado = modificado;
                             }
 
+                            if (seleccionado == null) {
+                                continue;
+                            }
                             List<Long> idProcsT = new ArrayList<>();
                             idProcsT.add(seleccionado.getCodigo());
                             List<JProcedimientoDocumento> documentosT = null;
@@ -2189,26 +2192,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND (WF.silencioAdministrativo.codigo = :tipoSilencio) ");
         }
 
-//        if ((filtro.isRellenoHijasActivas() && !filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {
-//            if (ambosWf) {
-//                sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) OR WF2.uaInstructor.codigo in (:idUAs)) ");
-//            } else {
-//                sql.append(" AND (WF.uaInstructor.codigo in (:idUAs)) ");
-//            }
-//        } else if ((filtro.isRellenoHijasActivas() && filtro.isRellenoUasAux()) || filtro.isRellenoTodasUnidadesOrganicas()) {
-//            if (ambosWf) {
-//                sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) OR WF.uaInstructor.codigo in (:idUAsAux) OR WF2.uaInstructor.codigo in (:idUAs) OR WF2.uaInstructor.codigo in (:idUAsAux)) ");
-//            } else {
-//                sql.append(" AND (WF.uaInstructor.codigo in (:idUAs) OR WF.uaInstructor.codigo in (:idUAsAux)) ");
-//            }
-//        } else if (filtro.isRellenoIdUA()) {
-//            if (ambosWf) {
-//                sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA OR WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA OR WF.uaCompetente.codigo = :idUA OR WF2.uaCompetente.codigo = :idUA) ");
-//            } else {
-//                sql.append(" AND (WF.uaInstructor.codigo = :idUA) ");
-//            }
-//        }
-
         // Servicios
         if (filtro.isRellenoUaResponsable()) {
             sql.append(" AND (WF.uaResponsable.codigo = :idUAResponsable OR WF2.uaResponsable.codigo = :idUAResponsable) ");
@@ -2221,12 +2204,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         // Procedimientos
         if (filtro.isRellenoUasInstructor()) {
             sql.append(" AND (WF.uaInstructor.codigo IN (:idUAsInstructor) OR WF2.uaInstructor.codigo IN (:idUAsInstructor)) ");
-
-//            if(filtro.isRellenoUaInstructor()){
-//                sql.append( " OR (WF.uaInstructor.codigo = :idUAInstructor OR WF2.uaInstructor.codigo = :idUAInstructor)");
-//            }
-//            sql.append(" ) ");
-
         } else if (filtro.isRellenoUaInstructorOComun()) {
             sql.append(" AND (WF.uaInstructor.codigo IN :idUAInstructorOComun OR WF2.uaInstructor.codigo IN :idUAInstructorOComun OR WF.comun = 1 OR WF2.comun = 1) ");
         } else if (filtro.isRellenoUaInstructor()) {
@@ -2235,10 +2212,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         if (filtro.isRellenoIdUA()) {
-            sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA OR WF.uaResponsable.codigo = :idUA OR WF2.uaResponsable.codigo = :idUA OR WF.uaCompetente.codigo = :idUA OR WF2.uaCompetente.codigo = :idUA) ");
+            sql.append(" AND (WF.uaInstructor.codigo = :idUA OR WF2.uaInstructor.codigo = :idUA ) ");
         }
         if (filtro.isRellenoIdUAs()) {
-            sql.append(" AND (WF.uaInstructor.codigo IN (:idUAs) OR WF2.uaInstructor.codigo IN (:idUAs) OR WF.uaResponsable.codigo IN (:idUAs) OR WF2.uaResponsable.codigo IN (:idUAs) OR WF.uaCompetente.codigo IN (:idUAs) OR WF2.uaCompetente.codigo IN (:idUAs)) ");
+            sql.append(" AND (WF.uaInstructor.codigo IN (:idUAs) OR WF2.uaInstructor.codigo IN (:idUAs) ) ");
         }
 
         if (filtro.isRellenoNormativas()) {
@@ -2318,9 +2295,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoCodigoUaDir3()) {
             if (ambosWf) {
-                sql.append(" AND ((WF.uaInstructor.codigoDIR3 LIKE :codigoUaDir3) or (WF2.uaInstructor.codigoDIR3 LIKE :codigoUaDir3)) ");
+                sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.codigoDIR3 LIKE :codigoUaDir3) or WF2.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.codigoDIR3 LIKE :codigoUaDir3)) ");
             } else {
-                sql.append(" AND (WF.uaInstructor.codigoDIR3 LIKE :codigoUaDir3) ");
+                sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.codigoDIR3 LIKE :codigoUaDir3)) ");
             }
         }
         if (filtro.isRellenoEstado()) {

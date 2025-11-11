@@ -1170,10 +1170,12 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public Long obtenerCodigo(String codigoUA) {
-        StringBuilder sql = new StringBuilder("select j.codigo from JUnidadAdministrativa where j.codigoDIR3 = :codigoDIR3 ");
+    public Long obtenerCodigo(String codigoDIR3) {
+        StringBuilder sql = new StringBuilder("select j.codigo from JUnidadAdministrativa j where j.codigoDIR3 like :codigoDIR3 ");
         Long ua = null;
-        List<Long> codigos = entityManager.createQuery(sql.toString()).getResultList();
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoDIR3", codigoDIR3);
+        List<Long> codigos = query.getResultList();
         if (codigos != null && !codigos.isEmpty()) {
             ua = codigos.get(0);
         }
