@@ -12,6 +12,7 @@
         <f:metadata>
             <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogProcedimiento.modoAcceso}"/>
             <f:viewParam id="ID" name="ID" value="#{dialogProcedimiento.id}"/>
+            <f:viewParam id="ESTADO_PROCEDIMIENTO" name="ESTADO_PROCEDIMIENTO" value="#{dialogProcedimiento.estadoProcedimiento}"/>
             <f:viewAction action="#{dialogProcedimiento.load}"/>
         </f:metadata>
     </ui:define>
@@ -1168,9 +1169,9 @@
         <div class="d-flex flex-column flex-sm-row align-items-center mb-2 mb-sm-0" style="gap: 5px;">
             <p:outputLabel value="#{labels['dialogProcedimiento.estado']}:" for="txtWorkFlow"/>
             <p:inputText id="txtWorkFlow"
-                         value="#{labels['dialogProcedimiento.tipoEstado.' += dialogProcedimiento.data.estado.toString()]}"
+                         value="#{empty dialogProcedimiento.estadoProcedimiento ? '' : labels['TypeProcedimientoEstado.' += dialogProcedimiento.estadoProcedimiento.toString()]}"
                          styleClass="w95 "
-                         disabled="true"/>
+                         disabled="true" />
             <p:commandButton value="#{labels['dialogProcedimiento.seguirFlujo']}"
                              icon="pi pi-arrow-right"
                              action="#{dialogProcedimiento.guardarFlujo}"

@@ -40,7 +40,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     private Long idWFL;
     private String estadoActual;
     private String literalEstadoActual;
-
+    private String estadoProcedimiento;
     private String consultarSoloMensajes;
 
 
@@ -107,10 +107,10 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         }
         if (mensajes == null) {
             mensajes = new ArrayList<>();
-        }
+        }/*
         if (estadoActual != null && !estadoActual.isEmpty()) {
             literalEstadoActual = getLiteral("TypeProcedimientoEstado." + estadoActual);
-        }
+        }*/
         if (consultarSoloMensajes != null && "S".equals(consultarSoloMensajes)) {
             mostrarEstados = false;
         } else {
@@ -602,6 +602,48 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
 
     public void setLiteralEstadoActual(String literalEstadoActual) {
         this.literalEstadoActual = literalEstadoActual;
+    }
+
+    public String getEstadoProcedimiento() {
+        return estadoProcedimiento;
+    }
+
+    public void setEstadoProcedimiento(String estadoProcedimiento) {
+        this.estadoProcedimiento = estadoProcedimiento;
+    }
+
+    public String getValorEstado(String campo) {
+        if (campo == null) {
+            return "";
+        }
+        if (TypeProcedimientoEstado.MODIFICACION.toString().equals(campo) || TypeProcedimientoEstado.PENDIENTE_PUBLICAR.toString().equals(campo)) {
+            return getEstadoPublicado(estadoProcedimiento) + campo;
+        } else {
+            return campo;
+        }
+    }
+
+    private String getEstadoPublicado(String estadoProcedimiento) {
+        switch (estadoProcedimiento) {
+            case "T":
+                return "T";
+            case "PT":
+                return "PT";
+            case "M":
+                return "";
+            case "PV":
+                return "";
+            case "P":
+                return "P";
+            case "PPV":
+                return "P";
+            case "PM":
+                return "P";
+            default:
+                return "";
+
+
+        }
     }
 }
 

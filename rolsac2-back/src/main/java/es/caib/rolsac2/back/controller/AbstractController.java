@@ -15,7 +15,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public abstract class AbstractController {
 
@@ -155,17 +158,9 @@ public abstract class AbstractController {
     }
 
     public String getLiteral(String literal) {
-        //ResourceBundle labelsBundle = getBundle("labels");
-        //return labelsBundle.getString(literal);
+        ResourceBundle labelsBundle = getBundle("labels");
+        return labelsBundle.getString(literal);
 
-        FacesContext fc = FacesContext.getCurrentInstance();
-        if (fc != null) {
-            ResourceBundle bundle = fc.getApplication().getResourceBundle(fc, "labels");
-            return bundle.getString(literal);
-        }
-        // Fallback fuera de JSF:
-        return ResourceBundle.getBundle("labels", Locale.getDefault())
-                .getString(literal);
     }
 
     public String getLiteralFaltanIdiomas(String campo, String msg, List<String> idiomasPendientes) {

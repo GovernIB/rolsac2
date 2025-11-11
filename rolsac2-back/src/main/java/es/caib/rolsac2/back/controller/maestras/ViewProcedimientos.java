@@ -296,7 +296,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     }
 
     public void nuevoProcedimiento() {
-        abrirVentana(TypeModoAcceso.ALTA, null);
+        abrirVentana(TypeModoAcceso.ALTA, null, null);
     }
 
     public void dblClickProcedimiento() {
@@ -321,7 +321,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
 
             TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-            abrirVentana(modo, proc);
+            abrirVentana(modo, proc, this.datoSeleccionado.getEstado());
 
         }
     }
@@ -342,7 +342,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
 
             TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-            abrirVentana(modo, proc);
+            abrirVentana(modo, proc, this.datoSeleccionado.getEstado());
             if (realizarBusqueda) {
                 this.buscar();
             }
@@ -357,7 +357,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewProcedimientos.error.procNoPublicado"), getLiteral("msg.seleccioneElemento"));
             } else {
                 ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcPub);
-                abrirVentana(TypeModoAcceso.CONSULTA, proc);
+                abrirVentana(TypeModoAcceso.CONSULTA, proc, this.datoSeleccionado.getEstado());
             }
         }
     }
@@ -685,9 +685,12 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     }
 
 
-    private void abrirVentana(TypeModoAcceso modoAcceso, ProcedimientoDTO proc) {
+    private void abrirVentana(TypeModoAcceso modoAcceso, ProcedimientoDTO proc, String estado) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
+        if (estado != null && !estado.isEmpty()) {
+            params.put(TypeParametroVentana.ESTADO_PROCEDIMIENTO.toString(), estado);
+        }
         if (proc != null) {
             UtilJSF.anyadirMochila("PROC", proc);
         }

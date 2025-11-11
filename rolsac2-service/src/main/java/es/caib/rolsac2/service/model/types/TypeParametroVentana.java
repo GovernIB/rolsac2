@@ -49,5 +49,9 @@ public enum TypeParametroVentana {
     /**
      * MODO EVOLUCION PARA UA
      */
-    MODO_EVOLUCION_UAS;
+    MODO_EVOLUCION_UAS,
+    /**
+     * ESTADO DE UN PROC
+     */
+    ESTADO_PROCEDIMIENTO;
 }

@@ -14,6 +14,7 @@
             <f:viewParam id="IDWF" name="IDWF" value="#{dialogProcedimientoFlujo.idWF}"/>
             <f:viewParam id="SOLO_MENSAJES" name="SOLO_MENSAJES" value="#{dialogProcedimientoFlujo.consultarSoloMensajes}"/>
             <f:viewParam id="ESTADO" name="ESTADO" value="#{dialogProcedimientoFlujo.estadoActual}"/>
+            <f:viewParam id="ESTADO_PROCEDIMIENTO" name="ESTADO_PROCEDIMIENTO"  value="#{dialogProcedimientoFlujo.estadoProcedimiento}" />
             <f:viewAction action="#{dialogProcedimientoFlujo.load}"/>
         </f:metadata>
     </ui:define>
@@ -52,7 +53,7 @@
                         <p:outputLabel value="#{labels['dict.estadoActual']}:"  style="margin-right: 20px" />
                     </div>
                     <div class="ui-g-12 ui-md-11 ui-lg-11">
-                        <h:outputText value="#{labels['TypeProcedimientoEstado.' + dialogProcedimientoFlujo.estadoActual]}" style="font-weight: bold;font-size: 1.2em !important;" rendered="#{!empty dialogProcedimientoFlujo.estadoActual}"/>
+                        <h:outputText value="#{empty dialogProcedimientoFlujo.estadoProcedimiento ? '': labels['TypeProcedimientoEstado.'.concat(dialogProcedimientoFlujo.estadoProcedimiento)]}" style="font-weight: bold;font-size: 1.2em !important;" />
                     </div>
 
                 <c:if test="#{!empty dialogProcedimientoFlujo.estados}">
@@ -75,7 +76,7 @@
 
                             <!-- Columnas -->
                             <p:column class="ui-panelgrid-cell">
-                                <h:outputText value="#{labels['TypeProcedimientoEstado.' += td.toString()]}"/>
+                                <h:outputText value="#{labels['TypeProcedimientoEstado.'  += dialogProcedimientoFlujo.getValorEstado(td.toString())]}"/>
                             </p:column>
 
 

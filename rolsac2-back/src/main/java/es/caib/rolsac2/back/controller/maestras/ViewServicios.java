@@ -353,7 +353,7 @@ public class ViewServicios extends AbstractController implements Serializable {
     }
 
     public void nuevoProcedimiento() {
-        abrirVentana(TypeModoAcceso.ALTA, null);
+        abrirVentana(TypeModoAcceso.ALTA, null, null);
     }
 
     public void dblClickProcedimiento() {
@@ -379,7 +379,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
 
             TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-            abrirVentana(modo, serv);
+            abrirVentana(modo, serv, this.datoSeleccionado.getEstado());
 
         }
     }
@@ -398,7 +398,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
 
             TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-            abrirVentana(modo, serv);
+            abrirVentana(modo, serv, this.datoSeleccionado.getEstado());
 
         }
     }
@@ -431,7 +431,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewServicios.error.procNoPublicado"), getLiteral("msg.seleccioneElemento"));
             } else {
                 ServicioDTO serv = procedimientoService.findServicioById(idProcPub);
-                abrirVentana(TypeModoAcceso.CONSULTA, serv);
+                abrirVentana(TypeModoAcceso.CONSULTA, serv, this.datoSeleccionado.getEstado());
             }
         }
     }
@@ -530,9 +530,12 @@ public class ViewServicios extends AbstractController implements Serializable {
         }
     }
 
-    private void abrirVentana(TypeModoAcceso modoAcceso, ServicioDTO serv) {
+    private void abrirVentana(TypeModoAcceso modoAcceso, ServicioDTO serv, String estado) {
         // Muestra dialogo
         final Map<String, String> params = new HashMap<>();
+        if (estado != null && !estado.isEmpty()) {
+            params.put(TypeParametroVentana.ESTADO_PROCEDIMIENTO.toString(), estado);
+        }
         if (serv != null) {
             UtilJSF.anyadirMochila("SERV", serv);
         }
