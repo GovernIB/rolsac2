@@ -532,7 +532,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             if (data.getWorkflow() != TypeProcedimientoWorkflow.DEFINITIVO) {
                 Long codigoWF = procedimientoServiceFacade.getCodigoPublicado(data.getCodigo());
                 if (codigoWF != null) {
-                    dataDefinitivo = procedimientoServiceFacade.findProcedimientoById(codigoWF);
+                    dataDefinitivo = procedimientoServiceFacade.findServicioById(codigoWF);
                 }
             }
             procedimientoServiceFacade.guardarFlujo(data, dataDefinitivo, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
