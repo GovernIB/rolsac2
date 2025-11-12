@@ -379,7 +379,8 @@ public class ViewServicios extends AbstractController implements Serializable {
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
 
             TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-            abrirVentana(modo, serv, this.datoSeleccionado.getEstado());
+            String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
+            abrirVentana(modo, serv, estados);
 
         }
     }
@@ -398,7 +399,8 @@ public class ViewServicios extends AbstractController implements Serializable {
             ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
 
             TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-            abrirVentana(modo, serv, this.datoSeleccionado.getEstado());
+            String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
+            abrirVentana(modo, serv, estados);
 
         }
     }
@@ -431,7 +433,8 @@ public class ViewServicios extends AbstractController implements Serializable {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewServicios.error.procNoPublicado"), getLiteral("msg.seleccioneElemento"));
             } else {
                 ServicioDTO serv = procedimientoService.findServicioById(idProcPub);
-                abrirVentana(TypeModoAcceso.CONSULTA, serv, this.datoSeleccionado.getEstado());
+                String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
+                abrirVentana(TypeModoAcceso.CONSULTA, serv, estados);
             }
         }
     }

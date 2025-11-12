@@ -295,4 +295,12 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
      * @return Fecha de publicación del procedimiento, o null si no se encuentra
      */
     Date getFechaPublicacionByCodigo(Long codigo);
+
+    /**
+     * Obtiene los estados del workflow de un procedimiento o servicio.
+     *
+     * @param codigo Código del procedimiento o servicio
+     * @return Estados del workflow en formato String
+     */
+    String getWorkflowEstados(Long codigo);
 }

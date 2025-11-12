@@ -311,4 +311,12 @@ public interface ProcedimientoServiceFacade {
      * @return Fecha de publicación del procedimiento, o null si no se encuentra.
      */
     Date getFechaPublicacionByCodigo(Long codigoWF);
+
+    /**
+     * Obtiene los estados del workflow de un procedimiento por su código de workflow.
+     *
+     * @param codigo Codigo Proc/SERV
+     * @return Estados (concatenado)
+     */
+    String getWorkflowEstados(Long codigo);
 }

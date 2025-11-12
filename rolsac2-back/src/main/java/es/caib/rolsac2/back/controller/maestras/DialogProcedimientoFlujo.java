@@ -624,6 +624,9 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     }
 
     private String getEstadoPublicado(String estadoProcedimiento) {
+        if (estadoProcedimiento == null) {
+            return "";
+        }
         switch (estadoProcedimiento) {
             case "T":
                 return "T";

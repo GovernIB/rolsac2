@@ -36,6 +36,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private String objeto;
     private String destinatarios;
     private String estadoProcedimiento;
+    private String estadosProcedimiento;
 
     private String termino;
 
@@ -116,7 +117,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         // Inicializamos combos/desplegables/inputs
         // De momento, no tenemos desplegables.
         this.setearIdioma();
-
+        estadosProcedimiento = estadoProcedimiento;
 
         this.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
         this.setLopdInfoAdicional(new Literal());
@@ -474,10 +475,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         params.put("ID", this.data.getCodigo().toString());
         params.put("IDWF", this.data.getCodigoWF().toString());
         params.put("ESTADO", data.getEstado().toString());
-        if (estadoProcedimiento == null) {
-
-        } else {
-            params.put("ESTADO_PROCEDIMIENTO", estadoProcedimiento);
+        if (estadosProcedimiento != null) {
+            params.put("ESTADO_PROCEDIMIENTO", estadosProcedimiento);
         }
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }
@@ -489,8 +488,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         params.put("SOLO_MENSAJES", "S");
         params.put("ESTADO", data.getEstado().toString());
         params.put("ID", this.data.getCodigo().toString());
-        if (estadoProcedimiento != null) {
-            params.put("ESTADO_PROCEDIMIENTO", estadoProcedimiento);
+        if (estadosProcedimiento != null) {
+            params.put("ESTADO_PROCEDIMIENTO", estadosProcedimiento);
         }
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }

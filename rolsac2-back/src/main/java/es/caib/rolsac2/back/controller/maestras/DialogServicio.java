@@ -33,6 +33,7 @@ public class DialogServicio extends AbstractController implements Serializable {
     private ServicioDTO data;
     private ServicioDTO dataOriginal;
     private String estadoProcedimiento;
+    private String estadosProcedimiento;
     private String objeto;
 
 
@@ -132,6 +133,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         // De momento, no tenemos desplegables.
         this.setearIdioma();
 
+        estadosProcedimiento = estadoProcedimiento;
         canalesSeleccionados = new ArrayList<>();
         platTramitElectronica = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
 
@@ -501,8 +503,8 @@ public class DialogServicio extends AbstractController implements Serializable {
         UtilJSF.anyadirMochila("tipo", "S");
         params.put("ID", this.data.getCodigo().toString());
         params.put("ESTADO", data.getEstado().toString());
-        if (estadoProcedimiento != null) {
-            params.put("ESTADO_PROCEDIMIENTO", estadoProcedimiento);
+        if (estadosProcedimiento != null) {
+            params.put("ESTADO_PROCEDIMIENTO", estadosProcedimiento);
         }
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }
@@ -514,8 +516,8 @@ public class DialogServicio extends AbstractController implements Serializable {
         params.put("SOLO_MENSAJES", "S");
         params.put("ESTADO", data.getEstado().toString());
         params.put("ID", this.data.getCodigo().toString());
-        if (estadoProcedimiento != null) {
-            params.put("ESTADO_PROCEDIMIENTO", estadoProcedimiento);
+        if (estadosProcedimiento != null) {
+            params.put("ESTADO_PROCEDIMIENTO", estadosProcedimiento);
         }
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
     }

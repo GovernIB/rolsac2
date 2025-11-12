@@ -3511,4 +3511,23 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return null;
     }
 
+    @Override
+    public String getWorkflowEstados(Long codigo) {
+        /** Obtiene el estado de WORKFLOW definitivo y modificado del procedimiento y los concatena (teniendo en cuenta que puede no existir alguno de los dos) */
+        String sql = "SELECT jw.estado FROM JProcedimientoWorkflow jw WHERE jw.procedimiento.codigo = :codigo ORDER BY jw.workflow ASC";
+        Query query = entityManager.createQuery(sql.toString(), String.class);
+        query.setParameter("codigo", codigo);
+        List<String> estados = query.getResultList();
+        if (estados != null && !estados.isEmpty()) {
+            if (estados.size() == 2) {
+                return estados.get(0) + estados.get(1);
+            } else if (estados.get(0) != null) {
+                return estados.get(0);
+            } else if (estados.get(1) != null) {
+                return estados.get(1);
+            }
+        }
+        return null;
+    }
+
 }

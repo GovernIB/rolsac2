@@ -1559,4 +1559,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         return procedimientoRepository.getFechaPublicacionByCodigo(codigo);
     }
 
+    @Override
+    @PermitAll
+    public String getWorkflowEstados(Long codigo) {
+        return procedimientoRepository.getWorkflowEstados(codigo);
+    }
+
 }
