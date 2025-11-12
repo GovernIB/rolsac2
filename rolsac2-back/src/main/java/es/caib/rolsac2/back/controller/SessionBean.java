@@ -1179,7 +1179,7 @@ public class SessionBean implements Serializable {
 
     public void setCurrent(Locale current) {
         this.current = current;
-        this.lang = current.getDisplayLanguage().contains("ca") ? "ca" : "es";
+        this.lang = current.getDisplayLanguage().toLowerCase().contains("ca") ? "ca" : "es";
     }
 
     public String getLang() {
