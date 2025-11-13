@@ -103,6 +103,9 @@ public class Normativa extends EntidadBase<Normativa> {
 
     public Normativa(NormativaDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
         super(elem, urlBase, idioma, hateoasEnabled);
+        if (elem.getTitulo() != null) {
+            this.nombre = elem.getTitulo().getTraduccionConValor(idioma, idiomaPorDefecto);
+        }
     }
 
     public Normativa() {

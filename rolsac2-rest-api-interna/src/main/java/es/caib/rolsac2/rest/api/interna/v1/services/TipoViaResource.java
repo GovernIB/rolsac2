@@ -87,7 +87,7 @@ public class TipoViaResource {
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
-    @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
     @Operation(operationId = "getTipoVia", summary = "Obtiene un tipo de via", description = "Obtiene el tipo de via con el id(código) indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoVia.class)))

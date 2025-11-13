@@ -100,7 +100,7 @@ public class PlatTramitElectronicaResource {
      */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
-    @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
     @Operation(operationId = "getPlatTramitElectronica", summary = "Obtiene un plataforma de tramitación electrónica", description = "Obtiene la plataforma de tramitación electrónica con el id(código) indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaPlatTramitElectronica.class)))
