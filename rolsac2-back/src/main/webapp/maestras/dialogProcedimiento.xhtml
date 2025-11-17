@@ -1170,13 +1170,13 @@
             <p:outputLabel value="#{labels['dialogProcedimiento.estado']}:" for="txtWorkFlow"/>
             <p:inputText id="txtWorkFlow"
                          value="#{empty dialogProcedimiento.estadoProcedimiento ? '' : labels['TypeProcedimientoEstado.' += dialogProcedimiento.estadoProcedimiento.toString()]}"
-                         styleClass="w95 "
-                         disabled="true" />
+                         styleClass="wf-field"
+                          disabled="true" />
             <p:commandButton value="#{labels['dialogProcedimiento.seguirFlujo']}"
                              icon="pi pi-arrow-right"
                              action="#{dialogProcedimiento.guardarFlujo}"
                              styleClass="btn-footer"
-                             style="white-space: nowrap;text-align: center;"
+                             style="white-space: nowrap;text-align: center;flex:0 0 auto; "
                              process="@all"
                              disabled="#{empty dialogProcedimiento.data.codigo}"
                              update="messagesDialog"
@@ -1188,6 +1188,7 @@
                              action="#{dialogProcedimiento.verMensajes}"
                              styleClass="btn-footer"
                              process="@all"
+                             style="flex:0 0 auto; white-space:nowrap;"
                              disabled="#{empty dialogProcedimiento.data.codigo}"
                              update="messagesDialog">
                 <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogMensajes}" process="@this"/>
@@ -1196,6 +1197,7 @@
                              icon="pi pi-inbox"
                              action="#{dialogProcedimiento.verAuditorias}"
                              styleClass="btn-footer"
+                             style="flex:0 0 auto; white-space:nowrap;"
                              process="@all"
                              disabled="#{empty dialogProcedimiento.data.codigo}"
             />

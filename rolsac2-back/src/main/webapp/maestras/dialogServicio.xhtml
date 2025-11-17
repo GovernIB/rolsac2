@@ -1054,7 +1054,7 @@
             <p:outputLabel value="#{labels['dialogServicio.estado']}:" for="txtWorkFlow"/>
             <p:inputText id="txtWorkFlow"
                          value="#{empty dialogServicio.estadoProcedimiento ? '' : labels['TypeProcedimientoEstado.' += dialogServicio.estadoProcedimiento.toString()]}"
-                         styleClass="w95 "
+                         styleClass="wf-field"
                          disabled="true"/>
             <p:commandButton value="#{labels['dialogServicio.seguirFlujo']}"
                              icon="pi pi-arrow-right"

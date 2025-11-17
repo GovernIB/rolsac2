@@ -1025,3 +1025,32 @@ div.cabeceraIdiomas  .pi-tag{
 button.ui-state-hover:hover{
 	background: #DEEFF7 !important;
 }
+
+
+
+/* Barra del footer: fila con wrap */
+#footer .footer-bar {
+	gap: 6px;
+}
+
+/* Bloque derecho pegado a la derecha */
+#footer .footer-right {
+	margin-left: auto;
+}
+
+#footer .footer-right > * {
+	margin-left: 4px;
+	margin-bottom: 4px;
+}
+
+/* Bloque izquierdo: un poco de separación interna */
+#footer .footer-left {
+	gap: 5px;
+}
+
+/* Input de estado: ancho exacto del contenido */
+#footer .wf-field {
+	width: auto !important;   /* machaca lo que venga de PrimeFaces/Bootstrap */
+	flex: 0 0 auto;           /* que no se estire en flex */
+	display: inline-block;    /* se adapta al texto */
+}
