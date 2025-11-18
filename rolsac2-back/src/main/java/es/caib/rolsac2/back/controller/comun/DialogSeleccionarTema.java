@@ -179,6 +179,15 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
         }
     }
 
+    public String getIcono(TemaDTO valor) {
+        if (valor.getTipoMateriaSIA() == null) {
+            return "";
+        } else {
+            return Constantes.INDEXAR_SIA_ICONO;
+        }
+    }
+
+
     public String getIconoSIA() {
         return Constantes.INDEXAR_SIA_ICONO;
     }
