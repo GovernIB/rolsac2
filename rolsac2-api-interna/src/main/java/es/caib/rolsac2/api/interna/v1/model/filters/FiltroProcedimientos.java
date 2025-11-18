@@ -29,9 +29,9 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     public static final String CAMPO_ORD_PROCEDIMIENTO_FECHA_ACTUALIZACION = "fechaActualizacion";
     public static final String CAMPO_ORD_PROCEDIMIENTO_CODIGO = "codigo";
 
-    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"codigoUA\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoUADir3\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPublicoObjetivo\":\"0\"," + Constantes.SALTO_LINEA + "\"codigos\":\"ids separados por comas\"" + Constantes.SALTO_LINEA + "\"textos\":\"string\", (Compara con codigo, nombre, estado, tipo, codigoSia, estadoSia y codigoDir3Sia)" + Constantes.SALTO_LINEA + "\"codigoFormaInicio\":\"codigo\"," + Constantes.SALTO_LINEA + "\"titulo\":\"string\"," + Constantes.SALTO_LINEA + "\"codigoTipoProcedimiento\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoSilencioAdministrativo\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoFinVia\":\"0\"," + Constantes.SALTO_LINEA + "\"codigo\":\"0\"," + Constantes.SALTO_LINEA + "\"volcadoSia\":\"S/N\", (S=Si, N=No)" + Constantes.SALTO_LINEA + "\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA + "\"comun\":\"0/1\", (1= procedimientos comunes)" + Constantes.SALTO_LINEA + "\"codigoSia\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoTram\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPlantilla\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPlataforma\":\"0\"," + Constantes.SALTO_LINEA + "\"tramiteVigente\":\"S/N\", (S=Si, N=No)" + Constantes.SALTO_LINEA + "\"tramiteTelematico\":\"string\"," + Constantes.SALTO_LINEA + "\"estado\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"esPDU\":\"true,false\"" + Constantes.SALTO_LINEA + "\"estados\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"estadoSia\":\"A/B\", (A=Alta, B=Baja)" + Constantes.SALTO_LINEA + "\"activo\":\"0/1(corresponde a visible en SEDE)\"," + Constantes.SALTO_LINEA + "\"buscarEnDescendientesUA\":\"0/1\"," + Constantes.SALTO_LINEA + "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"listaCodigosNormativas\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosPublicosObjetivos\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosMaterias\":[0]," + Constantes.SALTO_LINEA + "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA + "\"orden\":{\"campo\":\"" + CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}" + "}";
+    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"codigoUA\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoUADir3\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPublicoObjetivo\":\"0\"," + Constantes.SALTO_LINEA + "\"codigos\":\"ids separados por comas\"" + Constantes.SALTO_LINEA + "\"textos\":\"string\", (Compara con codigo, nombre, estado, tipo, codigoSia, estadoSia y codigoDir3Sia)" + Constantes.SALTO_LINEA + "\"codigoFormaInicio\":\"codigo\"," + Constantes.SALTO_LINEA + "\"titulo\":\"string\"," + Constantes.SALTO_LINEA + "\"codigoTipoProcedimiento\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoSilencioAdministrativo\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoFinVia\":\"0\"," + Constantes.SALTO_LINEA + "\"codigo\":\"0\"," + Constantes.SALTO_LINEA + "\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA + "\"comun\":\"0/1\", (1= procedimientos comunes)" + Constantes.SALTO_LINEA + "\"codigoSia\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoTram\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPlantilla\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPlataforma\":\"0\"," + Constantes.SALTO_LINEA + "\"tramiteVigente\":\"S/N\", (S=Si, N=No)" + Constantes.SALTO_LINEA + "\"tramiteTelematico\":\"string\"," + Constantes.SALTO_LINEA + "\"estado\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"esPDU\":\"true,false\"" + Constantes.SALTO_LINEA + "\"estados\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"estadoSia\":\"A/B/N\", (A=Alta, B=Baja, N=No integrado)" + Constantes.SALTO_LINEA + "\"activo\":\"0/1(corresponde a visible en SEDE)\"," + Constantes.SALTO_LINEA + "\"buscarEnDescendientesUA\":\"0/1\"," + Constantes.SALTO_LINEA + "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"listaCodigosNormativas\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosPublicosObjetivos\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosMaterias\":[0]," + Constantes.SALTO_LINEA + "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"telematico\":\"0/1\", (1=telematico)" + Constantes.SALTO_LINEA + "\"disponibleFuncionarioHabilitado\":\"0/1\", (0=No habilitado, 1=Sí habilitado, null no filtra por campo)" + Constantes.SALTO_LINEA + "\"disponibleApoderadoHabilitado\":\"0/1\", (0=No habilitado, 1=Sí habilitado, null no filtra por campo)" + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA + "\"orden\":{\"campo\":\"" + CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}" + "}";
 
-    public static final String SAMPLE_JSON = "{" + "\"codigoUA\":null," + "\"codigoUADir3\":null," + "\"buscarEnDescendientesUA\":null," + "\"codigoPublicoObjetivo\":null," + "\"codigos\":null," + "\"textos\":null," + "\"codigoFormaInicio\":null," + "\"activo\":null," + "\"titulo\":null," + "\"codigoTipoProcedimiento\":null," + "\"codigoSilencioAdministrativo\":null," + "\"codigoFinVia\":null," + "\"codigo\":null," + "\"volcadoSia\":null," + "\"estadoWF\":null," + "\"comun\":null," + "\"codigoSia\":null," + "\"codigoTram\":null," + "\"codigoPlantilla\":null," + "\"codigoPlataforma\":null," + "\"tramiteVigente\":null," + "\"tramiteTelematico\":null," + "\"estado\":null," + "\"estados\":null," + "\"estadoSia\":null," + "\"fechaActualizacionSia\":null," + "\"listaCodigosNormativas\":null," + "\"listaCodigosPublicosObjetivos\":null," + "\"listaCodigosMaterias\":null," + "\"fechaPublicacionDesde\":null," + "\"fechaPublicacionHasta\":null," + "\"idEntidad\":null," + "\"esPdu\":null," + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + "\"orden\":null" + "}";
+    public static final String SAMPLE_JSON = "{" + "\"codigoUA\":null," + "\"codigoUADir3\":null," + "\"buscarEnDescendientesUA\":null," + "\"codigoPublicoObjetivo\":null," + "\"codigos\":null," + "\"textos\":null," + "\"codigoFormaInicio\":null," + "\"activo\":null," + "\"titulo\":null," + "\"codigoTipoProcedimiento\":null," + "\"codigoSilencioAdministrativo\":null," + "\"codigoFinVia\":null," + "\"codigo\":null," + "\"estadoWF\":null," + "\"comun\":null," + "\"codigoSia\":null," + "\"codigoTram\":null," + "\"codigoPlantilla\":null," + "\"codigoPlataforma\":null," + "\"tramiteVigente\":null," + "\"tramiteTelematico\":null," + "\"estado\":null," + "\"estados\":null," + "\"estadoSia\":null," + "\"fechaActualizacionSia\":null," + "\"listaCodigosNormativas\":null," + "\"listaCodigosPublicosObjetivos\":null," + "\"listaCodigosMaterias\":null," + "\"fechaPublicacionDesde\":null," + "\"fechaPublicacionHasta\":null," + "\"telematico\":null," + "\"disponibleFuncionarioHabilitado\":null," + "\"disponibleApoderadoHabilitado\":null," + "\"idEntidad\":null," + "\"esPdu\":null," + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + "\"orden\":null" + "}";
 
     /**
      * FiltroPaginacion.
@@ -121,14 +121,11 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     /**
      * tramiteTelematico.
      **/
-    @Schema(description = "tramiteTelematico", type = SchemaType.STRING, required = false)
-    private String tramiteTelematico;
+    @Schema(description = "canalPresentacion", type = SchemaType.STRING, required = false)
+    private String canalPresentacion;
 
-    /**
-     * volcadoSia.
-     **/
-    @Schema(description = "volcadoSia", type = SchemaType.STRING, required = false)
-    private String volcadoSia;
+    @Schema(description = "telematico", type = SchemaType.INTEGER, required = false)
+    private Boolean telematico;
 
     /**
      * tramiteVigente.
@@ -242,6 +239,11 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     @Schema(description = "activo corresponde a visible en SEDE", type = SchemaType.INTEGER, required = false)
     private Integer activo;
 
+    @Schema(description = "disponibleFuncionarioHabilitado", type = SchemaType.BOOLEAN, required = false)
+    private Boolean disponibleFuncionarioHabilitado;
+
+    @Schema(description = "disponibleApoderadoHabilitado", type = SchemaType.BOOLEAN, required = false)
+    private Boolean disponibleApoderadoHabilitado;
 
     /**
      * @return the textos
@@ -306,20 +308,12 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         this.codigoTram = codigoTram;
     }
 
-    public String getTramiteTelematico() {
-        return tramiteTelematico;
+    public String getCanalPresentacion() {
+        return canalPresentacion;
     }
 
-    public void setTramiteTelematico(String tramiteTelematico) {
-        this.tramiteTelematico = tramiteTelematico;
-    }
-
-    public String getVolcadoSia() {
-        return volcadoSia;
-    }
-
-    public void setVolcadoSia(String volcadoSia) {
-        this.volcadoSia = volcadoSia;
+    public void setCanalPresentacion(String canalPresentacion) {
+        this.canalPresentacion = canalPresentacion;
     }
 
     public String getTramiteVigente() {
@@ -672,10 +666,6 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setCodigoSIA(codigoSia);
         }
 
-        if (this.volcadoSia != null) {
-            resultado.setVolcadoSIA(volcadoSia);
-        }
-
         if (this.estadoWF != null) {
             resultado.setEstadoWF(estadoWF);
         } else {
@@ -694,8 +684,12 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setTramiteVigente(tramiteVigente);
         }
 
-        if (this.tramiteTelematico != null) {
-            resultado.setTramiteTelematico(tramiteTelematico);
+        if (this.canalPresentacion != null) {
+            resultado.setTramiteTelematico(canalPresentacion);
+        }
+
+        if(this.telematico != null){
+            resultado.setTelematico(this.telematico);
         }
 
         if (this.codigoPlantilla != null) {
@@ -712,6 +706,14 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         }
         if (this.activo != null) {
         	resultado.setVisibleSEDE(activo == 1 ? "S" : "N");
+        }
+
+        if(this.disponibleFuncionarioHabilitado != null) {
+            resultado.setDisponibleFuncionarioHabilitado(this.disponibleFuncionarioHabilitado ? "S" : "N");
+        }
+
+        if(this.disponibleApoderadoHabilitado != null) {
+            resultado.setTramitacionPersonaApoderada(this.disponibleApoderadoHabilitado ? " S" : "N");
         }
 
         resultado.setTipo("P");
@@ -759,5 +761,21 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 
     public void setActivo(Integer activo) {
         this.activo = activo;
+    }
+
+    public void setDisponibleFuncionarioHabilitado(Boolean disponibleFuncionarioHabilitado) {
+        this.disponibleFuncionarioHabilitado = disponibleFuncionarioHabilitado;
+    }
+
+    public Boolean getDisponibleFuncionarioHabilitado() {
+        return disponibleFuncionarioHabilitado;
+    }
+
+    public void setDisponibleApoderadoHabilitado(Boolean disponibleApoderadoHabilitado) {
+        this.disponibleApoderadoHabilitado = disponibleApoderadoHabilitado;
+    }
+
+    public Boolean getDisponibleApoderadoHabilitado() {
+        return disponibleApoderadoHabilitado;
     }
 }

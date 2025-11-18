@@ -119,10 +119,14 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     private String estadoWF;
 
     /**
-     * tramiteTelematico.
+     * canalPresentacion.
      **/
-    @Schema(description = "tramiteTelematico", type = SchemaType.STRING, required = false)
-    private String tramiteTelematico;
+    @Schema(description = "canalPresentacion", type = SchemaType.STRING, required = false)
+    private String canalPresentacion;
+
+    @Schema(description = "telematico", type = SchemaType.BOOLEAN, required = false)
+    private Boolean telematico;
+
 
     /**
      * volcadoSia.
@@ -294,12 +298,20 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         this.codigoTram = codigoTram;
     }
 
-    public String getTramiteTelematico() {
-        return tramiteTelematico;
+    public String getCanalPresentacion() {
+        return canalPresentacion;
     }
 
-    public void setTramiteTelematico(String tramiteTelematico) {
-        this.tramiteTelematico = tramiteTelematico;
+    public void setCanalPresentacion(String canalPresentacion) {
+        this.canalPresentacion = canalPresentacion;
+    }
+
+    public void setTelematico(Boolean telematico) {
+        this.telematico = telematico;
+    }
+
+    public Boolean getTelematico() {
+        return telematico;
     }
 
     public String getVolcadoSia() {
@@ -682,8 +694,12 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setTramiteVigente(tramiteVigente);
         }
 
-        if (this.tramiteTelematico != null) {
-            resultado.setTramiteTelematico(tramiteTelematico);
+        if (this.canalPresentacion != null) {
+            resultado.setTramiteTelematico(canalPresentacion);
+        }
+
+        if(this.telematico != null) {
+            resultado.setTelematico(telematico);
         }
 
         if (this.codigoPlantilla != null) {

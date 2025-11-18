@@ -305,8 +305,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <h:outputText value="#{labels['dict.estadoCodigoSIA']}:" for="txtVolcadoSIA"/>
-                            <p:selectOneMenu id="txtVolcadoSIA" value="#{viewServicios.filtro.volcadoSIA}"
+                            <h:outputText value="#{labels['dict.estadoCodigoSIA']}:" for="txtEstadoCodigoSIA"/>
+                            <p:selectOneMenu id="txtEstadoCodigoSIA" value="#{viewServicios.filtro.estadoSIA}"
                                              styleClass="w95">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
                                 <f:selectItem itemLabel="#{labels['dict.ninguno']}" itemValue="N"/>
@@ -319,7 +319,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <p:inputText id="txtCodigoProc" value="#{viewServicios.filtro.codigoProc}" styleClass="w95" onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"  />
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <h:outputText value="#{labels['viewServicios.estado']}:" for="txtTipoEstado"/>
+                            <div>
+                                <h:outputText value="#{labels['viewServicios.estado']}:" for="txtTipoEstado"/>
+                            </div>
                             <p:selectOneMenu id="txtTipoEstado" value="#{viewServicios.filtro.estado}"
                                              styleClass="w95">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
@@ -433,6 +435,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                               itemValue="PG"/>
                             </p:selectOneMenu>
                         </div>
+
+
                         <div class="ui-g-12 text-center">
                             <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="mr-2"
                                              icon="pi pi-trash" iconPos="top" action="#{viewServicios.limpiarFiltro()}"
