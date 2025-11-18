@@ -2382,6 +2382,23 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     break;
             }
         }
+
+        if(filtro.isRellenoTelematico()){
+           if(filtro.getTelematico()){
+               if (ambosWf) {
+                   sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+               } else {
+                   sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+               }
+           } else {
+                if (ambosWf) {
+                     sql.append(" AND NOT EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+                } else {
+                     sql.append(" AND NOT EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+                }
+           }
+        }
+
         if (filtro.isRellenoCanales()) {
             for (String canal : filtro.getCanales()) {
                 switch (canal) {

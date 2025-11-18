@@ -65,6 +65,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private TipoViaDTO finVia;
     private String tramiteVigente;
     private String tramiteTelematico;
+    private Boolean telematico;
     private TipoTramitacionDTO plantilla;
     private PlatTramitElectronicaDTO plataforma;
     private String comun;
@@ -93,6 +94,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String tramitacionPersonaApoderada;
 
     private String disponibleFuncionarioHabilitado;
+
 
     //PROCEDIMIENTOS RESTAPI
     private Long codigo;
@@ -241,6 +243,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.finVia = otro.finVia;
         this.tramiteVigente = otro.tramiteVigente;
         this.tramiteTelematico = otro.tramiteTelematico;
+        this.telematico = otro.getTelematico();
         this.plantilla = otro.plantilla;
         this.plataforma = otro.plataforma;
         this.comun = otro.comun;
@@ -1097,6 +1100,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.tramiteTelematico = tramiteTelematico;
     }
 
+    public void setTelematico(Boolean telematico) {
+        this.telematico = telematico;
+    }
+
+    public Boolean getTelematico() {
+        return telematico;
+    }
+
     public TipoTramitacionDTO getPlantilla() {
         return plantilla;
     }
@@ -1666,6 +1677,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return tramiteTelematico != null && !tramiteTelematico.isEmpty();
     }
 
+    public boolean isRellenoTelematico() {
+        return telematico != null;
+    }
+
     public boolean isRellenoPlantilla() {
         return plantilla != null && plantilla.getCodigo() != null;
     }
@@ -1758,6 +1773,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public String getDisponibleFuncionarioHabilitado() {
         return disponibleFuncionarioHabilitado;
     }
+
+
 
     public boolean isRellenoCanales() {
         return canales != null && !canales.isEmpty();
@@ -2172,6 +2189,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         texto.append(", finVia=").append(finVia);
         texto.append(", tramiteVigente='").append(tramiteVigente).append('\'');
         texto.append(", tramiteTelematico='").append(tramiteTelematico).append('\'');
+        texto.append(", telematico=").append(telematico);
         texto.append(", plantilla=").append(plantilla);
         texto.append(", plataforma=").append(plataforma);
         texto.append(", comun='").append(comun).append('\'');

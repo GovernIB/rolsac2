@@ -26,8 +26,6 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 	private String codigoDir3SIA;
 	private String estadoWF;
 
-	private String volcadoSIA;
-
 	private TipoSilencioAdministrativoDTO silencioAdministrativo;
 
 	private TipoProcedimientoDTO tipoProcedimiento;
@@ -192,14 +190,6 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 
 	public void setPublicoObjetivo(TipoPublicoObjetivoDTO publicoObjetivo) {
 		this.publicoObjetivo = publicoObjetivo;
-	}
-
-	public String getVolcadoSIA() {
-		return volcadoSIA;
-	}
-
-	public void setVolcadoSIA(String volcadoSIA) {
-		this.volcadoSIA = volcadoSIA;
 	}
 
 	public String getEstado() {
@@ -465,10 +455,6 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 
 	public boolean isRellenoPublicoObjetivo() {
 		return publicoObjetivo != null && publicoObjetivo.getCodigo() != null;
-	}
-
-	public boolean isRellenoVolcadoSIA() {
-		return volcadoSIA != null && !volcadoSIA.isEmpty();
 	}
 
 	public boolean isRellenoEstado() {
