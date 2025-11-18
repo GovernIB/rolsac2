@@ -5,6 +5,8 @@ import es.caib.rolsac2.commons.plugins.sia.api.model.NormativaSIA;
 import es.caib.rolsac2.ejb.facade.procesos.solr.CastUtil;
 import es.caib.rolsac2.service.model.*;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,9 +214,9 @@ public class SiaUtils {
                 }
             }
 
-            /*if (indexacionForzada) {
+            if (indexacionForzada) {
                 resultado.setOperacion(SiaUtils.ESTADO_BAJA);
-            }*/
+            }
         } else {
             if (servicio.getEstadoSIA() == null || SiaUtils.ESTADO_BAJA.equals(servicio.getEstadoSIA())) {
                 resultado.setNotificarSIA(false);
@@ -437,6 +439,8 @@ public class SiaUtils {
         //TODO pendiente ver que hacen aqui
         return true;
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(SiaUtils.class);
 
     /**
      * Comprueba si le falta algún dato. Condiciones: - Tiene materias (se comprueba
