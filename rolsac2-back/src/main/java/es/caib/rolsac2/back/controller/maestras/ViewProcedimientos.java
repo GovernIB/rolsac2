@@ -466,12 +466,14 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
         Map<String, String> literalesEstado = new HashMap<>();
         literalesEstado.put("M", getLiteral("TypeProcedimientoEstado.M"));
-        literalesEstado.put("S", getLiteral("TypeProcedimientoEstado.S"));
         literalesEstado.put("T", getLiteral("TypeProcedimientoEstado.T"));
-        literalesEstado.put("U", getLiteral("TypeProcedimientoEstado.U"));
-        literalesEstado.put("B", getLiteral("TypeProcedimientoEstado.B"));
+        literalesEstado.put("PT", getLiteral("TypeProcedimientoEstado.PT"));
+        literalesEstado.put("PV", getLiteral("TypeProcedimientoEstado.PV"));
         literalesEstado.put("P", getLiteral("TypeProcedimientoEstado.P"));
-        literalesEstado.put("R", getLiteral("TypeProcedimientoEstado.R"));
+        literalesEstado.put("PPV", getLiteral("TypeProcedimientoEstado.PPV"));
+        literalesEstado.put("PM", getLiteral("TypeProcedimientoEstado.PM"));
+        literalesEstado.put("TPV", getLiteral("TypeProcedimientoEstado.TPV"));
+        literalesEstado.put("TM", getLiteral("TypeProcedimientoEstado.TM"));
 
         Map<String, String> literalesEstadoSIA = new HashMap<>();
         literalesEstadoSIA.put("A", getLiteral("dialogProcedimiento.estadoSIA.A"));
