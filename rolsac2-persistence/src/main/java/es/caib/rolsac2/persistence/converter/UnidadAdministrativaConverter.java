@@ -30,6 +30,18 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "padre", expression = "java(convertSencillo(entity.getPadre(), true))")
     UnidadAdministrativaDTO createDTO(JUnidadAdministrativa entity);
 
+
+    @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
+    @Mapping(target = "abreviatura", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"abreviatura\"))")
+    @Mapping(target = "presentacion", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"presentacion\"))")
+    @Mapping(target = "url", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"url\"))")
+    @Mapping(target = "responsable", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"responsableCV\"))")
+    @Mapping(target = "usuariosUnidadAdministrativa", ignore = true)
+    @Mapping(target = "temas", ignore = true)
+    @Mapping(target = "normativas", ignore = true)
+    @Mapping(target = "padre", expression = "java(convertSencillo(entity.getPadre(), true))")
+    UnidadAdministrativaDTO createDTOsinRelaciones(JUnidadAdministrativa entity, String parametroNulo);
+
     @Mapping(target = "nombre", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"nombre\"))")
     @Mapping(target = "presentacion", ignore = true)
     @Mapping(target = "url", ignore = true)
@@ -280,4 +292,6 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
 
         return normativasDTO;
     }
+
+
 }

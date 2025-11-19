@@ -422,14 +422,13 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         if (isTotal) {
             sql = new StringBuilder("SELECT count(j) FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma LEFT OUTER JOIN j.entidad je ");
 
-            sql.append(new StringBuilder(" where 1 = 1  "));
+            sql.append(" where 1 = 1  ");
         } else if (isRest) {
             sql = new StringBuilder("SELECT j FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma LEFT OUTER JOIN j.entidad je ");
 
-            sql.append(new StringBuilder(" where 1 = 1  "));
+            sql.append(" where 1 = 1  ");
 
         } else {
-            //sql = new StringBuilder("SELECT j.codigo, jtipo, tpd.nombre, j.orden, t.nombre, j.codigoDIR3 " + " FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma " + " LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma " + " LEFT OUTER JOIN j.entidad je " + " LEFT OUTER JOIN j.tipo jtipo where 1 = 1 AND je.codigo=:codEnti");
             sql = new StringBuilder("SELECT j.codigo, jtipo, padre, j.orden, t.nombre, j.codigoDIR3, j.estado FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre padre where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
@@ -437,7 +436,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         }
 
         if (filtro.isRellenoIdUA()) {
-            if (filtro.getIdUA().longValue() == -1) {
+            if (filtro.getIdUA() == -1) {
                 sql.append(" and j.padre is null ");
             } else {
                 sql.append(" and ( j.codigo = :idUA OR j.padre.codigo = :idUA) ");
@@ -1053,7 +1052,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         List<UnidadAdministrativaDTO> entidades = new ArrayList<>();
         if (jentidades != null) {
             for (JUnidadAdministrativa jentidad : jentidades) {
-                UnidadAdministrativaDTO entidad = converter.createDTO(jentidad);
+                UnidadAdministrativaDTO entidad = converter.createDTOsinRelaciones(jentidad, null);
 
                 entidades.add(entidad);
             }
