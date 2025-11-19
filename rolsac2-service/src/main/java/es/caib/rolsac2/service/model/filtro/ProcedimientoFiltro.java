@@ -40,6 +40,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     private List<TipoPublicoObjetivoEntidadGridDTO> publicoObjetivos;
     private List<TipoMateriaSIAGridDTO> materias;
+
+    private Long codigoMateria;
     private List<NormativaGridDTO> normativas;
     private String estado;
     private List<String> estados;
@@ -84,6 +86,12 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String identificadorPlataforma;
 
     private Integer version;
+
+    private String idTramiteTelematico;
+
+    private Integer versionTramiteTelematico;
+
+    private String parametrosTramiteElectronico;
 
     private String visibleSEDE;
 
@@ -1016,6 +1024,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         }
     }
 
+    public Long getCodigoMateria() {
+        return codigoMateria;
+    }
+
+    public void setCodigoMateria(Long codigoMateria) {
+        this.codigoMateria = codigoMateria;
+    }
+
     public List<TemaGridDTO> getTemas() {
         return temas;
     }
@@ -1203,6 +1219,30 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public void setIdTramiteTelematico(String idTramiteTelematico) {
+        this.idTramiteTelematico = idTramiteTelematico;
+    }
+
+    public String getIdTramiteTelematico() {
+        return idTramiteTelematico;
+    }
+
+    public Integer getVersionTramiteTelematico() {
+        return versionTramiteTelematico;
+    }
+
+    public void setVersionTramiteTelematico(Integer versionTramiteTelematico) {
+        this.versionTramiteTelematico = versionTramiteTelematico;
+    }
+
+    public String getParametrosTramiteElectronico() {
+        return parametrosTramiteElectronico;
+    }
+
+    public void setParametrosTramiteElectronico(String parametrosTramiteElectronico) {
+        this.parametrosTramiteElectronico = parametrosTramiteElectronico;
     }
 
     public Long getIdUAResponsable() {
@@ -1629,6 +1669,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return materias != null && !materias.isEmpty();
     }
 
+    public boolean isRellenoCodigoMateria() {
+        return codigoMateria != null;
+    }
+
     public boolean isRellenoTemas() {
         return temas != null && !temas.isEmpty();
     }
@@ -1790,6 +1834,18 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public boolean isRellenoVersion() {
         return version != null;
+    }
+
+    public boolean isRellenoIdTramiteTelematico() {
+        return idTramiteTelematico != null && !idTramiteTelematico.isEmpty();
+    }
+
+    public boolean isRellenoVersionTramiteTelematico() {
+        return versionTramiteTelematico != null;
+    }
+
+    public boolean isRellenoParametrosTramiteElectronico() {
+        return parametrosTramiteElectronico != null && !parametrosTramiteElectronico.isEmpty();
     }
 
     public boolean isRellenoVisibleSEDE() {
@@ -2201,6 +2257,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         texto.append(", idTramite='").append(idTramite).append('\'');
         texto.append(", identificadorPlataforma='").append(identificadorPlataforma).append('\'');
         texto.append(", version=").append(version);
+        texto.append(", versionTramiteTelematico=").append(versionTramiteTelematico);
         texto.append(", visibleSEDE='").append(visibleSEDE).append('\'');
         texto.append(", integrarPdu=").append(integrarPdu);
         texto.append(", esPdu=").append(integradoPdu);

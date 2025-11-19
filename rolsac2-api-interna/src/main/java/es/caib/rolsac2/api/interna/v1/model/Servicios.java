@@ -6,6 +6,7 @@ import es.caib.rolsac2.api.interna.v1.utils.Utiles;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.ServicioDTO;
 import es.caib.rolsac2.service.model.ServicioGridDTO;
+import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -114,8 +115,13 @@ public class Servicios extends EntidadBase {
     @Schema(description = "fechaCaducidad", required = false)
     private Calendar fechaCaducidad;
 
+    @Schema(description = "linkUnidadAdministrativaResponsable", required = false)
+    private Link linkUnidadAdministrativaResponsable;
     @Schema(description = "uaResponsable", type = SchemaType.INTEGER, required = false)
     private Long uaResponsable;
+
+    @Schema(description = "linkUnidadAdministrativaInstructora", required = false)
+    private Link linkUnidadAdministrativaInstructora;
     @Schema(description = "uaInstructor", type = SchemaType.INTEGER, required = false)
     private Long uaInstructor;
     @Schema(description = "habilitadoApoderado", type = SchemaType.BOOLEAN, required = false)
@@ -227,12 +233,36 @@ public class Servicios extends EntidadBase {
                 Long codigoDoc = elem.getDocumentosLOPD().get(0).getCodigo();
                 linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
             }
+            if (elem.getUaInstructor() != null) {
+                linkUnidadAdministrativaInstructora = this.generaLink(elem.getUaInstructor().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(elem.getUaInstructor(), idioma, idiomaPorDefecto));
+            }
+            if (elem.getUaResponsable() != null) {
+                linkUnidadAdministrativaResponsable = this.generaLink(elem.getUaResponsable().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(elem.getUaResponsable(), idioma, idiomaPorDefecto));
+            }
             this.hateoasEnabled = hateoasEnabled;
 
             generaLinks(urlBase);
         }
     }
 
+    /**
+     * Obtiene el nombre de la UA, primero el idioma y luego el idiomapordefecto
+     *
+     * @param ua               unidad administrativa
+     * @param idioma           idioma
+     * @param idiomaPorDefecto idioma por defecto
+     * @return nombre
+     */
+    private String getDescripcionUA(UnidadAdministrativaDTO ua, String idioma, String idiomaPorDefecto) {
+        String descripcion = null;
+        if (ua.getNombre() != null) {
+            descripcion = ua.getNombre().getTraduccionConValor(idioma, idiomaPorDefecto);
+        }
+        if (ua.getNombre() != null && descripcion == null) {
+            descripcion = ua.getNombre().getTraduccion();
+        }
+        return descripcion;
+    }
 
     private String getDescripcion(ProcedimientoDocumentoDTO documentoLOPD, String idioma, String idiomaPorDefecto) {
         String descripcion = null;
@@ -802,5 +832,25 @@ public class Servicios extends EntidadBase {
 
     public void setPlantillaSel(Long plantillaSel) {
         this.plantillaSel = plantillaSel;
+    }
+
+    public Link getLinkUnidadAdministrativaResponsable() {
+        return linkUnidadAdministrativaResponsable;
+    }
+
+    public void setLinkUnidadAdministrativaResponsable(Link linkUnidadAdministrativaResponsable) {
+        this.linkUnidadAdministrativaResponsable = linkUnidadAdministrativaResponsable;
+    }
+
+    public Link getLinkUnidadAdministrativaInstructora() {
+        return linkUnidadAdministrativaInstructora;
+    }
+
+    public void setLinkUnidadAdministrativaInstructora(Link linkUnidadAdministrativaInstructora) {
+        this.linkUnidadAdministrativaInstructora = linkUnidadAdministrativaInstructora;
+    }
+
+    public Boolean getHabilitadoApoderado() {
+        return habilitadoApoderado;
     }
 }

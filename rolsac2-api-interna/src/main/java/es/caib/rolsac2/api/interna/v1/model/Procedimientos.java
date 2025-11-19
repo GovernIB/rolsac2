@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
+import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -100,6 +101,7 @@ public class Procedimientos extends EntidadBase {
      **/
     @Schema(description = "linkUnidadAdministrativaResponsable", required = false)
     private Link linkUnidadAdministrativaResponsable;
+
     @Schema(hidden = true)
     @JsonIgnore
     @XmlTransient
@@ -239,6 +241,7 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "esPdu", type = SchemaType.BOOLEAN, required = false)
     private boolean esPdu;
 
+
     public Procedimientos() {
         super();
     }
@@ -285,6 +288,16 @@ public class Procedimientos extends EntidadBase {
                 Long codigoDoc = nodo.getDocumentosLOPD().get(0).getCodigo();
                 linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
             }
+            if (nodo.getUaInstructor() != null) {
+                linkUnidadAdministrativaInstructora = this.generaLink(nodo.getUaInstructor().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(nodo.getUaInstructor(), idioma, idiomaPorDefecto));
+            }
+            if (nodo.getUaCompetente() != null) {
+                linkUnidadAdministrativaCompetente = this.generaLink(nodo.getUaCompetente().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(nodo.getUaCompetente(), idioma, idiomaPorDefecto));
+            }
+            if (nodo.getUaResponsable() != null) {
+                linkUnidadAdministrativaResponsable = this.generaLink(nodo.getUaResponsable().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(nodo.getUaResponsable(), idioma, idiomaPorDefecto));
+            }
+
             this.esPdu = nodo.getEstadoPdu() != null && nodo.getEstadoPdu().compareTo(1) == 0;
         } catch (final Exception e) {
             LOG.error("Error generando procedimiento " + this.codigo, e);
@@ -305,11 +318,26 @@ public class Procedimientos extends EntidadBase {
 
     @Override
     public void generaLinks(final String urlBase) {
-        linkUnidadAdministrativaResponsable = this.generaLink(this.uaResponsable, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
-        linkUnidadAdministrativaInstructora = this.generaLink(this.uaInstructor, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
-        linkUnidadAdministrativaCompetente = this.generaLink(this.uaCompetente, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
 
+    }
 
+    /**
+     * Obtiene el nombre de la UA, primero el idioma y luego el idiomapordefecto
+     *
+     * @param ua               unidad administrativa
+     * @param idioma           idioma
+     * @param idiomaPorDefecto idioma por defecto
+     * @return nombre
+     */
+    private String getDescripcionUA(UnidadAdministrativaDTO ua, String idioma, String idiomaPorDefecto) {
+        String descripcion = null;
+        if (ua.getNombre() != null) {
+            descripcion = ua.getNombre().getTraduccionConValor(idioma, idiomaPorDefecto);
+        }
+        if (ua.getNombre() != null && descripcion == null) {
+            descripcion = ua.getNombre().getTraduccion();
+        }
+        return descripcion;
     }
 
     @Override
@@ -851,5 +879,8 @@ public class Procedimientos extends EntidadBase {
         this.esPdu = esPdu;
     }
 
-    
+    public boolean isEstadoSIA() {
+        return estadoSIA;
+    }
+
 }

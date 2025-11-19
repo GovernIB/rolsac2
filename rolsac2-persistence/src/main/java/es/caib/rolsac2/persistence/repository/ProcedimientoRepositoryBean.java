@@ -2234,9 +2234,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoMaterias()) {
             if (ambosWf) {
-                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoMateriaSIA procMat WHERE (procMat.codigo.procedimiento = WF.codigo OR procMat.codigo.procedimiento = WF2.codigo) AND procMat.codigo.tipoMateriaSIA IN (:materias) ) ");
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoTema procTema2 WHERE (procTema2.codigo.procedimiento = WF.codigo OR procTema2.codigo.procedimiento = WF2.codigo) AND procTema2.tema.tipoMateriaSIA.codigo IN (:materias) ) ");
             } else {
-                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoMateriaSIA procMat WHERE (procMat.codigo.procedimiento = WF.codigo) AND procMat.codigo.tipoMateriaSIA IN (:materias) ) ");
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoTema procTema2 WHERE (procTema2.codigo.procedimiento = WF.codigo) AND procTema2.codigo.tipoMateriaSIA.codigo IN (:materias) ) ");
             }
         }
         if (filtro.isRellenoTemas()) {
@@ -2246,6 +2246,16 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoTema procTema WHERE (procTema.codigo.procedimiento = WF.codigo) AND procTema.codigo.tema IN (:temas)) ");
             }
         }
+
+        if(filtro.isRellenoCodigoMateria()){
+            if(ambosWf){
+                sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoTema procTema2 WHERE (procTema2.codigo.procedimiento = WF.codigo OR procTema2.codigo.procedimiento = WF2.codigo) AND procTema2.tema.tipoMateriaSIA.codigo = :codigoMateria ) ");
+            }else{
+                sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoTema procTema2 WHERE (procTema2.codigo.procedimiento = WF.codigo) AND procTema2.tema.tipoMateriaSIA.codigo = :codigoMateria ) ");
+            }
+        }
+
+
         if (filtro.isRellenoMensajesPendientes()) {
             if (filtro.getMensajesPendiente().equals("PE")) {
                 sql.append(" AND (j.mensajesPendienteGestor = true or j.mensajesPendienteSupervisor = true ) ");
@@ -2522,6 +2532,39 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 }
             }
         }
+
+        if(filtro.isRellenoIdTramiteTelematico()){
+            if( ! filtro.getEsProcedimiento()){
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF2.tramiteElectronico.codigo OR t.codigo =  WF.tramiteElectronicoPlantilla.codigo OR t.codigo = WF2.tramiteElectronicoPlantilla.codigo  ) AND ( t.tramiteId = :idTramiteTelematico) )");
+                } else {
+                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF.tramiteElectronicoPlantilla.codigo) AND ( t.tramiteId = :idTramiteTelematico) ) ");
+                }
+            }
+        }
+
+        if(filtro.isRellenoVersionTramiteTelematico()){
+            if( ! filtro.getEsProcedimiento()){
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF2.tramiteElectronico.codigo OR t.codigo =  WF.tramiteElectronicoPlantilla.codigo OR t.codigo = WF2.tramiteElectronicoPlantilla.codigo  ) AND ( t.tramiteVersion = :versionTramiteTelematico) )");
+                } else {
+                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF.tramiteElectronicoPlantilla.codigo) AND ( t.tramiteVersion = :versionTramiteTelematico) ) ");
+                }
+
+            }
+        }
+
+        if(filtro.isRellenoParametrosTramiteElectronico()){
+            if( ! filtro.getEsProcedimiento()){
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF2.tramiteElectronico.codigo OR t.codigo =  WF.tramiteElectronicoPlantilla.codigo OR t.codigo = WF2.tramiteElectronicoPlantilla.codigo  ) AND ( t.tramiteParametros like :parametrosTramiteElectronico) )");
+                } else {
+                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF.tramiteElectronicoPlantilla.codigo) AND ( t.tramiteParametros like :parametrosTramiteElectronico) ) ");
+                }
+
+            }
+        }
+
         if (filtro.isRellenoComun()) {
             if (ambosWf) {
                 sql.append(" AND (wf.comun = :comun or wf2.comun = :comun) ");
@@ -2706,6 +2749,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoTemas()) {
             query.setParameter("temas", filtro.getTemasId());
         }
+        if(filtro.isRellenoCodigoMateria()){
+            query.setParameter("codigoMateria", filtro.getCodigoMateria());
+        }
+
         if (filtro.isRellenoFinVia()) {
             query.setParameter("finVia", filtro.getFinVia().getCodigo());
         }
@@ -2726,6 +2773,15 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoVersion()) {
             query.setParameter("version", filtro.getVersion());
+        }
+        if(filtro.isRellenoIdTramiteTelematico()){
+            query.setParameter("idTramiteTelematico", filtro.getIdTramiteTelematico());
+        }
+        if( filtro.isRellenoVersionTramiteTelematico()){
+            query.setParameter("versionTramiteTelematico", filtro.getVersionTramiteTelematico());
+        }
+        if(filtro.isRellenoParametrosTramiteElectronico()){
+            query.setParameter("parametrosTramiteElectronico", "%" + filtro.getParametrosTramiteElectronico() + "%");
         }
         if (filtro.isRellenoTramitacionPersonaApoderada()) {
             query.setParameter("tramitacionPersonaApoderada", "S".equals(filtro.getTramitacionPersonaApoderada()) ? true : false);

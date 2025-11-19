@@ -75,6 +75,9 @@ public class JUnidadAdministrativa extends BaseEntity {
     @Column(name = "UNAD_VERSION", nullable = false, length = 3)
     private Integer version;
 
+    @Column(name = "UNAD_INTERNA", nullable = false, precision = 1, scale = 0)
+    private boolean interna;
+
     @OneToMany(mappedBy = "unidadAdministrativa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JUnidadAdministrativaTraduccion> traducciones;
 
@@ -214,6 +217,14 @@ public class JUnidadAdministrativa extends BaseEntity {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public boolean isInterna() {
+        return interna;
+    }
+
+    public void setInterna(boolean interna) {
+        this.interna = interna;
     }
 
     public JTipoSexo getResponsableSexo() {
