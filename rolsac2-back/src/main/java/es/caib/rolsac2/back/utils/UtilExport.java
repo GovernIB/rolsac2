@@ -25,9 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -1589,25 +1588,49 @@ public class UtilExport {
     }
 
     public static StreamedContent generarStreamedContentCSV(String tipo, String[] cabecera, String[][] datos, ExportarDatos exportarDatos) {
-        String filename = "Llistat" + tipo + "_" + getDia() + ".csv";
-        String separator = ";";
-        StringBuilder sb = new StringBuilder();
-        for (String cab : cabecera) {
-            sb.append(cab + separator);
-        }
-        sb.append("\n");
-        for (String[] fila : datos) {
-            for (String valor : fila) {
-                sb.append(quitarCaracteresEspeciales(valor) + separator);
+        try {
+            String filename = "Llistat" + tipo + "_" + getDia() + ".csv";
+            String separator = ";";
+
+            // Usamos un buffer en bytes directamente
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            // Añadir BOM para que Excel detecte UTF-8
+            out.write(0xEF);
+            out.write(0xBB);
+            out.write(0xBF);
+
+            // Escribir contenido forzando UTF-8
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+            PrintWriter pw = new PrintWriter(writer);
+
+            for (String cab : cabecera) {
+                pw.print(cab);
+                pw.print(separator);
             }
-            sb.append("\n");
+            pw.print("\n");
+
+            for (String[] fila : datos) {
+                for (String valor : fila) {
+                    pw.print(quitarCaracteresEspeciales(valor));
+                    pw.print(separator);
+                }
+                pw.print("\n");
+            }
+
+            pw.flush();
+
+            InputStream fis = new ByteArrayInputStream(out.toByteArray());
+
+            return DefaultStreamedContent.builder()
+                    .name(filename)
+                    .contentType("text/csv")
+                    .stream(() -> fis)
+                    .build();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error generant CSV", e);
         }
-
-        String mimeType = "text/csv";
-        InputStream fis = new ByteArrayInputStream(sb.toString().getBytes());
-        StreamedContent file = DefaultStreamedContent.builder().name(filename).contentType(mimeType).stream(() -> fis).build();
-        return file;
-
     }
 
     public static String getDia() {
