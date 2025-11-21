@@ -124,7 +124,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     @Schema(description = "canalPresentacion", type = SchemaType.STRING, required = false)
     private String canalPresentacion;
 
-    @Schema(description = "telematico", type = SchemaType.BOOLEAN, required = false)
+    @Schema(description = "telematico", type = SchemaType.INTEGER, required = false)
     private Boolean telematico;
 
     /**

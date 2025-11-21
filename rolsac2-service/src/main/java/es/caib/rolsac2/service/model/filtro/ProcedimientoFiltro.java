@@ -204,6 +204,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
      **/
     private Boolean buscarEnDescendientesUA;
 
+    private Boolean uAInterna;
+
     /**
      * Constructor vacio
      */
@@ -1885,6 +1887,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.buscarEnDescendientesUA = buscarEnDescendientesUA;
     }
 
+    public Boolean getuAInterna() {
+        return uAInterna;
+    }
+
+    public void setuAInterna(Boolean uAInterna) {
+        this.uAInterna = uAInterna;
+    }
+
     public boolean isRellenoInicioFechaActualizacion() {
         return inicioFechaActualizacion != null && !inicioFechaActualizacion.isEmpty();
     }
@@ -2275,6 +2285,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         texto.append(", paginacionActiva=").append(isPaginacionActiva());
         texto.append(", total=").append(getTotal());
         texto.append(", visibleSEDE='").append(visibleSEDE).append('\'');
+
         texto.append('}');
         return texto.toString();
     }
@@ -2291,5 +2302,9 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public boolean isRellenoIdUAs() {
         return idUAs != null && !idUAs.isEmpty();
+    }
+
+    public boolean isRellenoUAInterna(){
+        return uAInterna != null;
     }
 }

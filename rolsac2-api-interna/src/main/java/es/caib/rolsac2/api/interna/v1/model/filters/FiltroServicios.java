@@ -3,7 +3,11 @@ package es.caib.rolsac2.api.interna.v1.model.filters;
 import es.caib.rolsac2.api.interna.v1.model.EntidadJson;
 import es.caib.rolsac2.api.interna.v1.model.order.CampoOrden;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
-import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.NormativaGridDTO;
+import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
+import es.caib.rolsac2.service.model.TipoMateriaSIAGridDTO;
+import es.caib.rolsac2.service.model.TipoPublicoObjetivoEntidadGridDTO;
+import es.caib.rolsac2.service.model.TipoTramitacionDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -31,9 +35,9 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
     public static final String CAMPO_ORD_PROCEDIMIENTO_FECHA_ACTUALIZACION = "fechaActualizacion";
     public static final String CAMPO_ORD_PROCEDIMIENTO_CODIGO = "codigo";
 
-    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"codigoUA\":0," + Constantes.SALTO_LINEA + "\"codigoUADir3\":\"0\"," + Constantes.SALTO_LINEA + "\"codigos\":\"ids separados por comas\"" + Constantes.SALTO_LINEA + "\"textos\":\"string\", (Compara con codigo, nombre, estado, tipo, codigoSia, estadoSia y codigoDir3Sia)" + Constantes.SALTO_LINEA + "\"titulo\":\"string\"," + Constantes.SALTO_LINEA + "\"codigo\":0," + Constantes.SALTO_LINEA + "\"estadoSia\":\"A/B/N\", (A=Alta, B=Baja, N=No integrado)" + Constantes.SALTO_LINEA + "\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA + "\"comun\":0/1, (1= procedimientos comunes)" + Constantes.SALTO_LINEA + "\"codigoSia\":0," + Constantes.SALTO_LINEA + "\"codigoPlantilla\":0," + Constantes.SALTO_LINEA + "\"codigoPlataforma\":0," + Constantes.SALTO_LINEA + "\"idTramite\":0," + Constantes.SALTO_LINEA + "\"codigoMateria\":0," + Constantes.SALTO_LINEA + "\"plataforma\":0," + Constantes.SALTO_LINEA + "\"codigoTramiteTelematico\":\"string\",," + Constantes.SALTO_LINEA + "\"versionTramiteTelematico\":0," + Constantes.SALTO_LINEA + "\"parametros\":\"string\"," + Constantes.SALTO_LINEA + "\"version\":0," + Constantes.SALTO_LINEA + "\"estado\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"estados\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"listaCodigosNormativas\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosPublicosObjetivos\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosMaterias\":[0]," + Constantes.SALTO_LINEA + "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"activo\":\"0/1(corresponde a visible en SEDE)\"," + Constantes.SALTO_LINEA + "\"buscarEnDescendientesUA\":\"0/1\"," + Constantes.SALTO_LINEA + "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"vigente\": (S/N)," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA + "\"orden\":{\"campo\":\"" + CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}" + "}";
+    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"codigoUA\":0," + Constantes.SALTO_LINEA + "\"codigoUADir3\":\"0\"," + Constantes.SALTO_LINEA + "\"codigos\":\"ids separados por comas\"" + Constantes.SALTO_LINEA + "\"textos\":\"string\", (Compara con codigo, nombre, estado, tipo, codigoSia, estadoSia y codigoDir3Sia)" + Constantes.SALTO_LINEA + "\"titulo\":\"string\"," + Constantes.SALTO_LINEA + "\"codigo\":0," + Constantes.SALTO_LINEA + "\"estadoSia\":\"A/B/N\", (A=Alta, B=Baja, N=No integrado)" + Constantes.SALTO_LINEA + "\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA + "\"comun\":0/1, (1= procedimientos comunes)" + Constantes.SALTO_LINEA + "\"codigoSia\":0," + Constantes.SALTO_LINEA + "\"codigoPlantilla\":0," + Constantes.SALTO_LINEA + "\"codigoPlataforma\":0," + Constantes.SALTO_LINEA + "\"idTramite\":0," + Constantes.SALTO_LINEA + "\"codigoMateria\":0," + Constantes.SALTO_LINEA + "\"plataforma\":0," + Constantes.SALTO_LINEA + "\"codigoTramiteTelematico\":\"string\",," + Constantes.SALTO_LINEA + "\"versionTramiteTelematico\":0," + Constantes.SALTO_LINEA + "\"parametros\":\"string\"," + Constantes.SALTO_LINEA + "\"version\":0," + Constantes.SALTO_LINEA + "\"estado\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"estados\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"listaCodigosNormativas\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosPublicosObjetivos\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosMaterias\":[0]," + Constantes.SALTO_LINEA + "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"activo\":\"0/1(corresponde a visible en SEDE)\"," + Constantes.SALTO_LINEA + "\"buscarEnDescendientesUA\":\"0/1\"," + Constantes.SALTO_LINEA + "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"vigente\": (S/N)," + Constantes.SALTO_LINEA + "\"estadoUA\":\"1/2\", (1=Pública,2=Interna)"+ Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA + "\"orden\":{\"campo\":\"" + CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}" + "}";
 
-    public static final String SAMPLE_JSON = "{" + "\n	\"codigoUA\":null," + "\n	\"codigoUADir3\":null," + "\"codigos\":null," + "\"buscarEnDescendientesUA\":null," + "\"activo\":null," + "\n	\"textos\":null," + "\n	\"titulo\":null," + "\n	\"codigo\":null," + "\n	\"estadoSia\":null," + "\n	\"estadoWF\":null," + "\n	\"comun\":null," + "\n	\"codigoSia\":null," + "\n	\"codigoPlantilla\":null," + "\n	\"codigoPlataforma\":null," + "\n	\"idTramite\":null," + "\n	\"plataforma\":null," + "\n	\"version\":null," + "\n	\"estado\":null," + "\n	\"estados\":null," + "\n	\"fechaActualizacionSia\":null," + "\n	\"listaCodigosNormativas\":null," + "\n	\"listaCodigosPublicosObjetivos\":null," + "\n	\"listaCodigosMaterias\":null," + "\n	\"fechaPublicacionDesde\":null," + "\n	\"fechaPublicacionHasta\":null," + "\n	\"idEntidad\":null," + "\n	\"vigente\":null," + "\n \"codigoMateria\":null," + "\n \"codigoTramiteTelematico\":null," +  "\n \"parametros\":null," + "\n \"versionTramiteTelematico\":null," + "\n	\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + "\n	\"orden\":null" + "}";
+    public static final String SAMPLE_JSON = "{" + "\n	\"codigoUA\":null," + "\n	\"codigoUADir3\":null," + "\"codigos\":null," + "\"buscarEnDescendientesUA\":null," + "\"activo\":null," + "\n	\"textos\":null," + "\n	\"titulo\":null," + "\n	\"codigo\":null," + "\n	\"estadoSia\":null," + "\n	\"estadoWF\":null," + "\n	\"comun\":null," + "\n	\"codigoSia\":null," + "\n	\"codigoPlantilla\":null," + "\n	\"codigoPlataforma\":null," + "\n	\"idTramite\":null," + "\n	\"plataforma\":null," + "\n	\"version\":null," + "\n	\"estado\":null," + "\n	\"estados\":null," + "\n	\"fechaActualizacionSia\":null," + "\n	\"listaCodigosNormativas\":null," + "\n	\"listaCodigosPublicosObjetivos\":null," + "\n	\"listaCodigosMaterias\":null," + "\n	\"fechaPublicacionDesde\":null," + "\n	\"fechaPublicacionHasta\":null," + "\n	\"idEntidad\":null," + "\n	\"vigente\":null," + "\n \"codigoMateria\":null," + "\n \"codigoTramiteTelematico\":null," +  "\n \"parametros\":null," + "\n \"versionTramiteTelematico\":null," +  "\n \"estadoUA\":null," + "\n	\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + "\n	\"orden\":null" + "}";
 
     /**
      * FiltroPaginacion.
@@ -210,6 +214,9 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 
     @Schema(description = "parametros", type = SchemaType.STRING, required = false)
     private String parametros;
+
+    @Schema(description = "estadoUA", type = SchemaType.INTEGER, required = false)
+    private Integer estadoUA;
 
     /**
      * @return the textos
@@ -621,6 +628,10 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
             resultado.setParametrosTramiteElectronico(this.parametros);
         }
 
+        if(this.estadoUA != null){
+            resultado.setuAInterna(this.estadoUA == 2 ? true : false);
+        }
+
         resultado.setTipo("S");
         resultado.setEsProcedimiento(false);
 
@@ -698,5 +709,13 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 
     public void setParametros(String parametros) {
         this.parametros = parametros;
+    }
+
+    public Integer getEstadoUA() {
+        return estadoUA;
+    }
+
+    public void setEstadoUA(Integer estadoUA) {
+        this.estadoUA = estadoUA;
     }
 }

@@ -2615,6 +2615,22 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
+        if( filtro.isRellenoUAInterna()){
+            if (ambosWf) {
+                if(filtro.getuAInterna()) {
+                    sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is not null) or WF2.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is not null)) ");
+                }else{
+                    sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is null) or WF2.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is null)) ");
+                }
+            } else {
+                if(filtro.getuAInterna()) {
+                    sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is not null)) ");
+                }else{
+                    sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is null)) ");
+                }
+            }
+        }
+
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy(), filtro.isAscendente(), ambosWf));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -2790,6 +2806,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoDisponibleFuncionarioHabilitado()) {
             query.setParameter("disponibleFuncionarioHabilitado", filtro.getDisponibleFuncionarioHabilitado());
         }
+
 
         return query;
     }
