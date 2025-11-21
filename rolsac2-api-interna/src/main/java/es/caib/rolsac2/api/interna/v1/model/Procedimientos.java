@@ -685,6 +685,10 @@ public class Procedimientos extends EntidadBase {
         this.tipoProcedimiento = tipoProcedimiento;
     }
 
+    public boolean isHabilitadoApoderado() {
+        return habilitadoApoderado;
+    }
+
     public void setHabilitadoApoderado(boolean habilitadoApoderado) {
         this.habilitadoApoderado = habilitadoApoderado;
     }
@@ -737,6 +741,17 @@ public class Procedimientos extends EntidadBase {
         this.nombreProcedimientoWorkFlow = nombreProcedimientoWorkFlow;
     }
 
+    public void setTipoVia(Long tipoVia) {
+        this.tipoVia = tipoVia;
+    }
+
+    public boolean isActivoLOPD() {
+        return activoLOPD;
+    }
+
+    public void setActivoLOPD(boolean activoLOPD) {
+        this.activoLOPD = activoLOPD;
+    }
 
     public String getTerminoResolucion() {
         return terminoResolucion;
