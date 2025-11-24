@@ -1054,3 +1054,31 @@ button.ui-state-hover:hover{
 	flex: 0 0 auto;           /* que no se estire en flex */
 	display: inline-block;    /* se adapta al texto */
 }
+
+.mb0 {
+	margin-bottom: 0px !important;
+}
+.mt0 {
+	margin-top: 0px !important;
+}
+.ml0 {
+	margin-left: 0px !important;
+}
+.mr0 {
+	margin-right: 0px !important;
+}
+.p0 {
+	padding: 0px !important;
+}
+.pt0 {
+	padding-top: 0px !important;
+}
+.pr0 {
+	padding-right: 0px !important;
+}
+.pb0 {
+	padding-bottom: 0px !important;
+}
+.pl0 {
+	padding-left: 0px !important;
+}

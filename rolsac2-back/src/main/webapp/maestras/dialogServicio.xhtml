@@ -76,8 +76,8 @@
         <div class="row" style="margin-right: 0px;">
         <div class="ui-g-12 ui-md-9 pl-4 panel-container">
             <p:panel header="#{labels['dialogServicio.datosSIA']}" id="formDatosSIA">
-            <div class="form-row height50">
-                <div class="form-group col-md-2">
+            <div class="form-row mb0">
+                <div class="form-group col-12 col-md-2 mb0">
                     <p:outputLabel value="#{labels['dialogServicio.estado.sia']}:" for="txtEstadoSIA"
                                    styleClass="mb-1 pt-0 negrita"/>
 
@@ -87,7 +87,7 @@
                                  styleClass="w95"
                                  disabled="true"/>
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-12 col-md-2 mb0">
                     <p:outputLabel value="#{labels['dialogServicio.codigo.sia']}:"
                                   styleClass="mb-1 pt-0 negrita" for="txtCodigoSIA"/>
 
@@ -96,7 +96,7 @@
                                  disabled="true"/>
 
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-12 col-md-2 mb0">
                     <p>
                         <p:outputLabel value="#{labels['dialogServicio.fecha.sia']}:" for="txtFechaSIA"
                                        styleClass="mb-1 pt-0 negrita"/>
@@ -107,7 +107,7 @@
                         </p:inputText>
                     </p>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-12 col-md-4 mb0">
                     <p>
                         <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" for="txtErrorSIA"
                                        styleClass="mb-1 pt-0 negrita" />
@@ -118,7 +118,7 @@
                                    position="top"/>
                     </p>
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-2 col-12 mb0">
                     <p>
                         <p:commandButton id="btnIndexacionSIA" action="#{dialogServicio.enviarSIA}"
                                          value="#{labels['dict.enviarSIA']}"
@@ -138,15 +138,15 @@
 
             <p:panel id="panelDatosPublicacion" header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}"
                      styleClass="panel">
-                <div class="form-row height50">
-                    <div class="form-group col-md-2">
+                <div class="form-row mb0">
+                    <div class="form-group col-md-2 col-12 mb0">
                         <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogServicio.codigo']}:"
                                           for="txtCodigo"/>
 
                         <p:inputText id="txtCodigo" value="#{dialogServicio.data.codigo}"
                                      styleClass="w85" disabled="true"/>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-4 col-12 mb0">
                         <p:outputLabel value="#{labels['dialogServicio.fecha.publicacion']}:" for="txtFechaPublicacion"
                                        styleClass="mb-1 pt-0 negrita"/>
                         <p>
@@ -156,7 +156,7 @@
                                           showTime="true" showOn="button" required="#{empty param['formDialog:closeButton']}"/>
                         </p>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-4 col-12 mb0">
                         <p:outputLabel value="#{labels['dialogServicio.fecha.despublicacion']}:" for="txtFechaCaducidad"
                                        styleClass="mb-1 pt-0 negrita"/>
                         <p>
@@ -166,7 +166,7 @@
                                           showTime="true"  showOn="button"/>
                         </p>
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-2 col-12 mb0">
                         <p:outputLabel id="labelSelectComun" value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita" />
 
                         <p:selectOneMenu id="selectComun" value="#{dialogServicio.data.comun}"
@@ -182,25 +182,6 @@
                         </p:selectOneMenu>
                     </div>
                 </div>
-
-                <!--<div class="form-row">
-                    <div class="form-group col-md-3">
-                        <p:selectBooleanCheckbox id="integrarPdu" value="#{dialogServicio.data.integrarPdu}" styleClass="ml-2"
-                                                 itemLabel="#{labels['dialogServicio.pdu.integrar']}" >
-
-                        </p:selectBooleanCheckbox>
-
-                    </div>
-
-                    <div class="form-group col-md-5">
-
-                        <p:outputLabel value="#{labels['dialogProcedimiento.pdu.integrado']}"
-                                       rendered="#{dialogServicio.data.estadoPdu == 1}" styleClass="mb-1 pt-0"/>
-
-                    </div>
-
-                </div> -->
-
             </p:panel>
             <p:panel header="#{labels['dialogServicio.datos']}" id="formDatos" styleClass="panel">
                 <div class="form-row">
@@ -208,7 +189,7 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogServicio.nombre.procedimiento']}:"
                                        for="txtNombre"/>
-                            <my:literalAreaComponent id="txtNombre" styleClass="w95"
+                            <my:literalAreaComponent id="txtNombre"
                                                  value="#{dialogServicio.data.nombreProcedimientoWorkFlow}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
@@ -1055,6 +1036,7 @@
             <p:inputText id="txtWorkFlow"
                          value="#{empty dialogServicio.estadoProcedimiento ? '' : labels['TypeProcedimientoEstado.' += dialogServicio.estadoProcedimiento.toString()]}"
                          styleClass="wf-field"
+                         style="min-width: 250px;"
                          disabled="true"/>
             <p:commandButton value="#{labels['dialogServicio.seguirFlujo']}"
                              icon="pi pi-arrow-right"
