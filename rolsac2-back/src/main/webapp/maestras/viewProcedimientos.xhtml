@@ -244,7 +244,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              actionListener="#{viewProcedimientos.consultarProcedimiento}"
                                              process="@form" update="messages"
                                              disabled="#{!viewProcedimientos.datoSeleccionado.tieneDatosPublicados()}"
-                                             onstart="startCargando()" oncomplete="stopCargando()"/>
+                                             onstart="startCargando()" oncomplete="stopCargando()">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
+                                        update="messages dataTable includeDetalle" />
+                            </p:commandButton>
                             <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" styleClass="mr-2"
                                              icon="pi pi-pencil" iconPos="top"
                                              actionListener="#{viewProcedimientos.editarProcedimiento}" process="@form"
@@ -583,9 +586,12 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              actionListener="#{viewProcedimientos.buscar()}" update="messages dataTable"
                                              onstart="start()" oncomplete="stop()"
                                              process="@form" />
+                            <h:inputHidden id="descargarFlag" value="#{viewProcedimientos.downloadReady}" />
+
                             <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
                                              actionListener="#{viewProcedimientos.exportar()}" process="@form">
-                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogoExportar}" update="messages descargarFlag"
+                                        oncomplete="if($('#form\\:descargarFlag').val()==='true'){ $('#form\\:descargarDoc').click(); }" />
                             </p:commandButton>
 
                             <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none">
