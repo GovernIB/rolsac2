@@ -102,7 +102,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     private Literal lopdResponsable;
     private Literal comunUA;
 
-    //private List<Long> codigosUaDescendientesGestor;
+    // Flag para indicar si se puede descargar el fichero exportado
+    private boolean downloadReady;
 
     public void load() {
         LOG.debug("load View Procedimientos");
@@ -440,6 +441,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
             exportarDatos = (ExportarDatos) respuesta.getResult();
+            this.downloadReady = true;
+        } else {
+            this.downloadReady = false;
         }
     }
 
@@ -1094,5 +1098,13 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void setComunUA(Literal comunUA) {
         this.comunUA = comunUA;
+    }
+
+    public boolean isDownloadReady() {
+        return downloadReady;
+    }
+
+    public void setDownloadReady(boolean downloadReady) {
+        this.downloadReady = downloadReady;
     }
 }

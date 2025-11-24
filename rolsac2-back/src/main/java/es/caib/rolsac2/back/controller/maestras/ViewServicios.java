@@ -99,6 +99,9 @@ public class ViewServicios extends AbstractController implements Serializable {
     private Literal lopdResponsable;
     private Literal comunUA;
 
+    // Flag para indicar si se puede descargar el fichero exportado.
+    private boolean downloadReady;
+
     /**
      * Cuando se exporta los datos
      **/
@@ -572,7 +575,10 @@ public class ViewServicios extends AbstractController implements Serializable {
     public void returnDialogoExportar(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
         if (!respuesta.isCanceled()) {
+            this.downloadReady = true;
             exportarDatos = (ExportarDatos) respuesta.getResult();
+        } else {
+            this.downloadReady = false;
         }
     }
 
@@ -1245,5 +1251,13 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void setOpcionTelematica(Integer opcionTelematica) {
         this.opcionTelematica = opcionTelematica;
+    }
+
+    public boolean isDownloadReady() {
+        return downloadReady;
+    }
+
+    public void setDownloadReady(boolean downloadReady) {
+        this.downloadReady = downloadReady;
     }
 }
