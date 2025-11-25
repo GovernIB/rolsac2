@@ -287,19 +287,26 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
     }
 
     /**
-     * Se tiene que comprobar si es hijo o nieto (o otro nivel inferior)
+     * Se tiene que comprobar si es hijo o nieto (o otro nivel inferior).
+     * Tiene que buscar en recursivo si alguno de los descendientes (hijos, nietos, etc....) de codigo tiene como codigo el código1.
+     * Recursivamente sólo buscará hasta nivel 5 para evitar bucles infinitos.
      *
-     * @param codigo
-     * @param codigo1
-     * @return
+     * @param codigo  Código padre
+     * @param codigo1 Código hijo
+     * @return true si es hijo, nieto, etc... false en caso contrario
      */
     @Override
     public boolean esHijo(Long codigo, Long codigo1) {
-        TypedQuery<Long> query = entityManager.createQuery("SELECT count(j) FROM JTema j WHERE j.mathPath LIKE :mathPath AND j.codigo = :codigo1", Long.class);
-        query.setParameter("mathPath", "%;" + codigo + ";%");
-        query.setParameter("codigo1", codigo1);
-        Long resultado = query.getSingleResult();
-        return resultado > 0;
+        JTema jTema = entityManager.find(JTema.class, codigo1);
+        int nivel = 0;
+        while (jTema != null && jTema.getTemaPadre() != null && nivel < 5) {
+            if (jTema.getTemaPadre().getCodigo().compareTo(codigo) == 0) {
+                return true;
+            }
+            jTema = jTema.getTemaPadre();
+            nivel++;
+        }
+        return false;
     }
 
     @Override
