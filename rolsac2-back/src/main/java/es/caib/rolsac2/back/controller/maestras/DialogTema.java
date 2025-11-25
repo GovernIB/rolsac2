@@ -48,6 +48,8 @@ public class DialogTema extends AbstractController implements Serializable {
 
     private String identificadorOld;
 
+    private boolean quitarSeleccionarTema = false;
+
     @Inject
     private SessionBean sessionBean;
 
@@ -80,6 +82,17 @@ public class DialogTema extends AbstractController implements Serializable {
             data = temaServiceFacade.findById((Long.valueOf(id)));
             this.identificadorOld = data.getIdentificador();
             dataOriginal = data.clone();
+            if (data.getTemaPadre() == null) {
+                //Si es root, porque no tiene padre, no se le puede dejar seleccionar un padre.
+                quitarSeleccionarTema = true;
+            } else if (data.getTemaPadre().getTemaPadre() == null) {
+                boolean tieneHijos = temaServiceFacade.tieneHijos(data.getCodigo());
+                if (tieneHijos) {
+                    //Si el padre es root y no tiene hijos, no se le puede dejar seleccionar un padre.
+                    quitarSeleccionarTema = true;
+                }
+            }
+
         }
 
         materias = temaServiceFacade.getTipoMateriasSIA(getIdioma());
@@ -176,6 +189,21 @@ public class DialogTema extends AbstractController implements Serializable {
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogPlatTramitElectronica.descripcion", "dialogLiteral.validacion.idiomas", idiomasPendientesDescripcion), true);
             return false;
         }
+
+        /** Comprobamos si el padre es distinto de null, y entonces, hay que comprobar que no se ha
+         *  asignado a si mismo o a uno de sus hijos como padre.
+         */
+        if (this.data.getTemaPadre() != null && this.data.getTemaPadre().getCodigo() != null && this.data.getCodigo() != null) {
+            if (this.data.getTemaPadre().getCodigo().equals(this.data.getCodigo())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTema.error.asignarMismoTema"), true);
+                return false;
+            }
+            boolean esHijo = temaServiceFacade.esHijo(this.data.getCodigo(), this.data.getTemaPadre().getCodigo());
+            if (esHijo) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogTema.error.asignarTemaHijo"), true);
+                return false;
+            }
+        }
         return true;
     }
 
@@ -219,4 +247,11 @@ public class DialogTema extends AbstractController implements Serializable {
         this.materias = materias;
     }
 
+    public boolean isQuitarSeleccionarTema() {
+        return quitarSeleccionarTema;
+    }
+
+    public void setQuitarSeleccionarTema(boolean quitarSeleccionarTema) {
+        this.quitarSeleccionarTema = quitarSeleccionarTema;
+    }
 }

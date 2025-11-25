@@ -39,4 +39,16 @@ public interface TemaRepository extends CrudRepository<JTema, Long> {
      * @param jTipoMateriaSIA
      */
     void actualizar(JTema jTema, JTipoMateriaSIA jTipoMateriaSIA);
+
+    boolean tieneHijos(Long temaCodigo);
+
+    boolean esHijo(Long codigo, Long codigo1);
+
+    /**
+     * Actualiza el mathpath del tema con el mathpath , obteniendo luego los hijos en recursivos y se actualiza con el mathpath + el codigo tuyo
+     *
+     * @param codigo   Codigo tema
+     * @param mathPath Mathpath nuevo
+     */
+    void actualizarMathPath(Long codigo, String mathPath);
 }

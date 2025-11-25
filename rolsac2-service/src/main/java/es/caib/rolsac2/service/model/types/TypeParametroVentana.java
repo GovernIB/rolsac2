@@ -53,5 +53,9 @@ public enum TypeParametroVentana {
     /**
      * ESTADO DE UN PROC
      */
-    ESTADO_PROCEDIMIENTO;
+    ESTADO_PROCEDIMIENTO,
+    /**
+     * CODIGO TEMA
+     */
+    CODIGO_TEMA;
 }

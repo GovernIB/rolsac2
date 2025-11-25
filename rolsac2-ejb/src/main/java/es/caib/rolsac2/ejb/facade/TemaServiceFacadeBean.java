@@ -22,6 +22,7 @@ import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -114,9 +115,21 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
         this.verificarModificacionTemaPadre(dto, jTema, idioma);
         jTema.setEntidad(jEntidad);
 
+        String mathPath = "";
+        if (dto.getTemaPadre() != null && dto.getTemaPadre().getCodigo() != null) {
+            JTema jTemaPadre = temaRepository.getReference(dto.getTemaPadre().getCodigo());
+            if (jTemaPadre.getMathPath() != null && !jTemaPadre.getMathPath().isEmpty()) {
+                mathPath += jTemaPadre.getMathPath();
+                mathPath += ";" + jTemaPadre.getCodigo();
+                ;
+            }
+        } else {
+            dto.setMathPath(null);
+        }
         converter.mergeEntity(jTema, dto);
         //temaRepository.update(jTema);
         temaRepository.actualizar(jTema, jTipoMateriaSIA);
+        temaRepository.actualizarMathPath(jTema.getCodigo(), dto.getMathPath());
     }
 
     @Override
@@ -239,5 +252,17 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
         filtro.setIdioma(idioma);
         filtro.setPaginaTamanyo(1000);
         return tipoMateriaSIARepository.getListTipoMateriaSIADTO(filtro);
+    }
+
+    @Override
+    @PermitAll
+    public boolean tieneHijos(Long temaCodigo) {
+        return temaRepository.tieneHijos(temaCodigo);
+    }
+
+    @Override
+    @PermitAll
+    public boolean esHijo(Long codigo, Long codigo1) {
+        return temaRepository.esHijo(codigo, codigo1);
     }
 }

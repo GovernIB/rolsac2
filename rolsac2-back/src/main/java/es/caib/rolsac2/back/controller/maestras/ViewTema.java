@@ -124,12 +124,16 @@ public class ViewTema extends AbstractController implements Serializable {
             if (datoSeleccionado == null) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
             } else {
+                if (temaServiceFacade.tieneHijos(((TemaGridDTO) this.datoSeleccionado.getData()).getCodigo())) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.hijos.relacionados"));
+                    return;
+                }
                 TemaGridDTO temaSeleccionado = (TemaGridDTO) this.datoSeleccionado.getData();
                 temaServiceFacade.delete(temaSeleccionado.getCodigo());
                 construirArbol();
             }
         } catch (ServiceException e) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.hijos.relacionados"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogTema.error.elementoConSeleccion"));
         }
 
     }

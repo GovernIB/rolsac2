@@ -277,4 +277,52 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
             entityManager.merge(jTema);
         }
     }
+
+    @Override
+    public boolean tieneHijos(Long temaCodigo) {
+        TypedQuery<Long> query = entityManager.createQuery("SELECT count(j) FROM JTema j WHERE j.temaPadre.codigo = :temaCodigo", Long.class);
+        query.setParameter("temaCodigo", temaCodigo);
+        Long resultado = query.getSingleResult();
+        return resultado > 0;
+    }
+
+    /**
+     * Se tiene que comprobar si es hijo o nieto (o otro nivel inferior)
+     *
+     * @param codigo
+     * @param codigo1
+     * @return
+     */
+    @Override
+    public boolean esHijo(Long codigo, Long codigo1) {
+        TypedQuery<Long> query = entityManager.createQuery("SELECT count(j) FROM JTema j WHERE j.mathPath LIKE :mathPath AND j.codigo = :codigo1", Long.class);
+        query.setParameter("mathPath", "%;" + codigo + ";%");
+        query.setParameter("codigo1", codigo1);
+        Long resultado = query.getSingleResult();
+        return resultado > 0;
+    }
+
+    @Override
+    public void actualizarMathPath(Long codigo, String mathPath) {
+        Query query = entityManager.createQuery("UPDATE JTema j SET j.mathPath = :mathPath WHERE j.codigo = :codigo");
+        query.setParameter("mathPath", mathPath);
+        query.setParameter("codigo", codigo);
+        query.executeUpdate();
+
+        //Ahora obtenemos los hijos y se lo actualizamos
+        TypedQuery<JTema> queryHijos = entityManager.createQuery("SELECT j FROM JTema j WHERE j.temaPadre.codigo = :codigo", JTema.class);
+        queryHijos.setParameter("codigo", codigo);
+        List<JTema> hijos = queryHijos.getResultList();
+        if (hijos != null) {
+            for (JTema hijo : hijos) {
+                String mathPathHijo;
+                if (mathPath == null || mathPath.isEmpty()) {
+                    mathPathHijo = codigo.toString();
+                } else {
+                    mathPathHijo = mathPath + ";" + codigo;
+                }
+                actualizarMathPath(hijo.getCodigo(), mathPathHijo);
+            }
+        }
+    }
 }

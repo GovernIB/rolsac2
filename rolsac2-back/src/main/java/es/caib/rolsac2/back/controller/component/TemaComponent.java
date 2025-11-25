@@ -3,7 +3,6 @@ package es.caib.rolsac2.back.controller.component;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.model.TemaDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.primefaces.component.inputtext.InputText;
@@ -40,7 +39,6 @@ public class TemaComponent extends UIInput implements NamingContainer {
     private String ocultarTexto;
 
     private String updateElementos;
-
     // Actions ------------------------------------------------------------------------------------
 
     /**
@@ -140,6 +138,9 @@ public class TemaComponent extends UIInput implements NamingContainer {
         final Map<String, String> params = new HashMap<>();
         this.modoAcceso = TypeModoAcceso.ALTA;
         params.put(TypeParametroVentana.MODO_ACCESO.toString(), this.modoAcceso.toString());
+        if (getAttributes().get("codigoTema") != null) {
+            params.put(TypeParametroVentana.CODIGO_TEMA.toString(), ((Long) getAttributes().get("codigoTema")).toString());
+        }
         String direccion = "/comun/dialogSeleccionarTema";
 
         UtilJSF.anyadirMochila("tema", this.getValue());

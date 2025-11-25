@@ -4,6 +4,8 @@ import es.caib.rolsac2.service.facade.TemaServiceFacade;
 import es.caib.rolsac2.service.model.TemaGridDTO;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +13,7 @@ import java.util.List;
 
 public class UtilsArbolTemas {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UtilsArbolTemas.class);
 
     public static void construirArbol(List<TreeNode> roots, List<TemaGridDTO> temasPadre,
                                       List<TemaGridDTO> temasPadreAnyadidos, List<TemaGridDTO> temasRelacionados,

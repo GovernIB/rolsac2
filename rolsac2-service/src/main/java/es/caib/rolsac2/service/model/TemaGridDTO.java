@@ -267,6 +267,7 @@ public class TemaGridDTO extends ModelApi implements Comparable<TemaGridDTO> {
     @Override
     public String toString() {
         return "TemaGridDTO{" + "codigo=" + codigo + ", entidad=" + entidad + ", identificador='" + identificador +
+                '\'' + ", descripcion=" + descripcion + ", mathPath='" + mathPath +
                 '\'' + ", temaPadre='" + temaPadre + '\'' + '}';
     }
 

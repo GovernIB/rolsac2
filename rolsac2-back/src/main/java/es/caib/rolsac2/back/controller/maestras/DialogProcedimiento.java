@@ -13,7 +13,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.fundaciobit.pluginsib.core.IPlugin;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,10 +164,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         cargarListas();
         temasPadreAnyadidos = new ArrayList<>();
 
-        temasTabla = new ArrayList<>();
-        for (TemaGridDTO tema : temasPadre) {
-            temasTabla.add(new DefaultTreeNode(new TemaGridDTO(), null));
-        }
+
         this.construirArbol();
         UtilJSF.vaciarMochila();
 
@@ -1307,7 +1303,25 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     private void construirArbol() {
-        roots = new ArrayList<>();
+        /*LOG.error("Construyendo árbol de temas...");
+        if (data.getTemas() == null || data.getTemas().isEmpty()) {
+            LOG.error("No hay temas asignados al procedimiento.");
+        } else {
+            LOG.error("Temas asignados al procedimiento: " + data.getTemas().size());
+            for (TemaGridDTO tem : data.getTemas()) {
+                LOG.error("Tema asignado: " + tem.toString());
+            }
+        }
+        LOG.error("Roots antes de construir: " + (roots != null ? roots.size() : 0));
+        LOG.error("Temas padre añadidos antes de construir: " + temasPadreAnyadidos.size());
+        LOG.error("Temas padre antes de construir: " + (temasPadre != null ? temasPadre.size() : 0));
+		*/
+        // Asegúrate de que roots no sea null
+        if (this.roots == null) {
+            this.roots = new ArrayList<>();
+        } else {
+            this.roots.clear(); // Limpia los datos anteriores
+        }
         UtilsArbolTemas.construirArbol(roots, temasPadre, temasPadreAnyadidos, data.getTemas(), temaServiceFacade);
     }
 

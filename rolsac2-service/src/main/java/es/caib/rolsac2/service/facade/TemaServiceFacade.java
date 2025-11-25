@@ -47,4 +47,21 @@ public interface TemaServiceFacade {
      */
 
     List<TipoMateriaSIADTO> getTipoMateriasSIA(String idioma);
+
+    /**
+     * Comprueba si tiene hijos un tema
+     *
+     * @param temaCodigo Codigo del tema
+     * @return true si tiene hijos, false en caso contrario
+     */
+    boolean tieneHijos(Long temaCodigo);
+
+    /**
+     * Comprueba si un tema es hijo de otro
+     *
+     * @param codigo  Codigo tema
+     * @param codigo1 Codigo posible padre
+     * @return true si es hijo, false en caso contrario
+     */
+    boolean esHijo(Long codigo, Long codigo1);
 }

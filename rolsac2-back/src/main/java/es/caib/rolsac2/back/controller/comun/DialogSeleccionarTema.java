@@ -30,7 +30,7 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
     private static final Logger LOG = LoggerFactory.getLogger(DialogSeleccionarTema.class);
 
     private String id;
-
+    private String codigoTema;
     @Inject
     private TemaServiceFacade temaServiceFacade;
 
@@ -54,41 +54,60 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
         esCabecera = Boolean.parseBoolean((String) UtilJSF.getDialogParam("esCabecera"));
         root = new LazyLoadingTreeNode();
 
+        List<TemaDTO> temasRoot = temaServiceFacade.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+
         if (tema != null && tema.getCodigo() != null) {
             tema = temaServiceFacade.findById(tema.getCodigo());
             temaAux = tema.clone();
-            List<TemaDTO> temasRoot = temaServiceFacade.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
 
-            TemaDTO temaP = new TemaDTO();
-            if (tema.getTemaPadre() != null) {
-                temaP = tema.getTemaPadre();
-                while (temaP.getTemaPadre() != null) {
-                    temaP = temaP.getTemaPadre();
-                }
+            // Obtener la raíz del tema actual
+            TemaDTO temaRaiz = tema;
+            while (temaRaiz.getTemaPadre() != null) {
+                temaRaiz = temaRaiz.getTemaPadre();
             }
 
+            // Construir solo el árbol de la raíz del tema seleccionado
             for (TemaDTO temaRoot : temasRoot) {
-                if (temaRoot.getCodigo().equals(tema.getCodigo())) {
+                if (temaRoot.getCodigo().equals(temaRaiz.getCodigo())) {
                     LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
-                    rootChildNode.setSelected(true);
-                    addTreeNodeCargando(rootChildNode);
+                    rootChildNode.setExpanded(true);
 
-                } else if (temaRoot.getCodigo().equals(temaP.getCodigo())) {
-                    construirArbolDesdeHoja(tema, (LazyLoadingTreeNode) root);
-                } else {
-                    LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
-                    addTreeNodeCargando(rootChildNode);
+                    List<TemaDTO> hijos = temaServiceFacade.getHijos(temaRoot.getCodigo(), sessionBean.getLang());
+                    Long codTema = null;
+                    if (codigoTema != null && !codigoTema.isEmpty()) {
+                        codTema = Long.parseLong(codigoTema);
+                    }
+                    for (TemaDTO hijo : hijos) {
+                        if (codTema != null && hijo.getCodigo().compareTo(codTema) == 0) {
+                            continue;
+                        }
+                        LazyLoadingTreeNode hijoNode = new LazyLoadingTreeNode(hijo, rootChildNode);
+                        hijoNode.setExpanded(false);
+                        hijoNode.setSelectable(true);
+
+                        if (hijo.getCodigo().equals(tema.getCodigo())) {
+                            hijoNode.setSelected(true);
+                            selectedNode = hijoNode;
+                        }
+                    }
+                    break;
                 }
-
             }
-
         } else {
-            List<TemaDTO> temasRoot = temaServiceFacade.getRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+            // Cargar todas las raíces con sus hijos de primer nivel
             for (TemaDTO temaRoot : temasRoot) {
                 LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(temaRoot, root);
-                addTreeNodeCargando(rootChildNode);
+                rootChildNode.setExpanded(true);
+
+                List<TemaDTO> hijos = temaServiceFacade.getHijos(temaRoot.getCodigo(), sessionBean.getLang());
+                for (TemaDTO hijo : hijos) {
+                    LazyLoadingTreeNode hijoNode = new LazyLoadingTreeNode(hijo, rootChildNode);
+                    hijoNode.setExpanded(false);
+                    hijoNode.setSelectable(true);
+                }
             }
         }
+
         ordenarArbol();
     }
 
@@ -154,11 +173,21 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
     public void onNodeExpand(NodeExpandEvent event) {
         final TreeNode expandedTreeNode = event.getTreeNode();
 
+        if (((TemaDTO) expandedTreeNode.getData()).getTemaPadre() != null) {
+            //Sólo se puede expandir si no es el tema padre
+            event.getTreeNode().setExpanded(true);
+            return;
+        }
+
         List<TemaDTO> childs = temaServiceFacade.getHijos(((TemaDTO) expandedTreeNode.getData()).getCodigo(), sessionBean.getLang());
 
         if (!childs.isEmpty()) {
             expandedTreeNode.getChildren().clear();
             childs.forEach(c -> {
+                if (c != null && c.getCodigo() != null && tema != null && tema.getTemaPadre() != null &&
+                        c.getCodigo().equals(tema.getTemaPadre().getCodigo())) {
+                    return;
+                }
                 LazyLoadingTreeNode grandChild = new LazyLoadingTreeNode(c, expandedTreeNode);
                 addTreeNodeCargando(grandChild);
                 expandedTreeNode.getChildren().add(grandChild);
@@ -167,7 +196,7 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
             expandedTreeNode.setExpanded(true);
         } else {
             expandedTreeNode.getChildren().clear();
-            expandedTreeNode.setExpanded(false);
+            expandedTreeNode.setExpanded(true);
         }
     }
 
@@ -265,5 +294,13 @@ public class DialogSeleccionarTema extends AbstractController implements Seriali
 
     public void setTemaAux(TemaDTO temaAux) {
         this.temaAux = temaAux;
+    }
+
+    public String getCodigoTema() {
+        return codigoTema;
+    }
+
+    public void setCodigoTema(String codigoTema) {
+        this.codigoTema = codigoTema;
     }
 }

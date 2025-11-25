@@ -77,13 +77,14 @@
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <my:temaComponent id="txtTemaPadre" value="#{dialogTema.data.temaPadre}"
+                                      codigoTema="#{dialogTema.data.codigo}"
                                       idioma="#{dialogTema.idioma}" ocultarTexto="false"
-                                      soloLecture="false"
+                                      disable="#{dialogTema.quitarSeleccionarTema}"
                     />
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel  value="#{labels['dict.descripcion']}:" for="inputDescripcion" />
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <my:literalComponent id="inputDescripcion" styleClass="w95"
@@ -95,7 +96,7 @@
                                          idioma="#{dialogTema.idioma}"
                                          literal="#{dialogTema.data.descripcion}"
                                          nombreLiteral="#{labels['dict.descripcion']}">
-                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>
 
@@ -109,15 +110,19 @@
                                      converter="#{tipoMateriaSIAConverter}">
                         <f:selectItem itemLabel="#{labels['dict.seleccione.tema']}" itemValue="#{null}"/>
                         <f:selectItems value="#{dialogTema.materias}" var="tipoMateriaSIA"
-                                       itemLabel="#{tipoMateriaSIA.descripcion.getTraduccion(dialogTema.idioma)}" itemValue="#{tipoMateriaSIA}"/>
+                                       itemLabel="#{tipoMateriaSIA.descripcion.getTraduccion(dialogTema.idioma)}"
+                                       itemValue="#{tipoMateriaSIA}"/>
                     </p:selectOneMenu>
+                </div>
+                <div style="display: none">
+                    <p:outputLabel value="Mathpath:#{dialogTema.data.mathPath}" />
                 </div>
             </div>
 
         </p:panel>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-       <p:commandButton action="#{dialogTema.guardar}"
+        <p:commandButton action="#{dialogTema.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          process="@all"/>
         <p:commandButton action="#{dialogTema.cerrar}" id="closeButton"
