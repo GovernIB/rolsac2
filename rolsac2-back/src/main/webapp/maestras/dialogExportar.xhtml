@@ -95,7 +95,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <p:dataTable id="datatable" var="td" value="#{dialogExportar.datos.campos}"
                          emptyMessage="#{labels['dict.tablaVacia']}"
                          paginator="false"
-                         draggableRows="true"
+                         draggableRows="false"
                          rowKey="#{td.campo}">
 
                 <p:ajax event="rowReorder" listener="#{dialogExportar.onRowReorder}"
