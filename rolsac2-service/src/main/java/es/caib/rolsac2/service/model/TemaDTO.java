@@ -240,9 +240,17 @@ public class TemaDTO extends ModelApi {
      * @return int
      */
     public int compareTo(final TemaDTO tema) {
-        if (tema == null) throw new NullPointerException("tema");
-
-        return Long.compare(this.getCodigo(), tema.getCodigo());
+        if (tema == null) {
+            return -1;
+        }
+        if (this.descripcion == null) {
+            return 1;
+        } else if (tema.getDescripcion() == null) {
+            return -1;
+        } else {
+            //Comparar las descripciones
+            return this.descripcion.getTraduccionConValor("ca").compareTo(tema.getDescripcion().getTraduccionConValor("ca"));
+        }
     }
 
     public TemaGridDTO toGridDTO() {

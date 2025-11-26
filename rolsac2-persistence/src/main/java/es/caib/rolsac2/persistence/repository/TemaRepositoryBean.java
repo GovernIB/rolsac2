@@ -132,7 +132,7 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
     public List<JTema> getRoot(String idioma, Long entidadId) {
         TypedQuery<JTema> query = null;
 
-        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + " where j.temaPadre.codigo IS NULL AND j.entidad.codigo = :entidadId ";
+        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where j.temaPadre.codigo IS NULL AND j.entidad.codigo = :entidadId ORDER BY t.descripcion ASC";
         query = entityManager.createQuery(sql, JTema.class);
         query.setParameter("idioma", idioma);
         query.setParameter("entidadId", entidadId);
@@ -143,7 +143,7 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
     public List<JTema> getHijos(Long idTema, String idioma) {
         TypedQuery<JTema> query = null;
 
-        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + "WHERE j.temaPadre.codigo = :idTema";
+        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma WHERE j.temaPadre.codigo = :idTema ORDER BY t.descripcion ASC";
 
         query = entityManager.createQuery(sql, JTema.class);
         query.setParameter("idTema", idTema);
@@ -154,7 +154,7 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
     @Override
     public List<JTema> getHijosTodosNiveles(String mathPath, String idioma) {
         TypedQuery<JTema> query = null;
-        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma " + "WHERE j.mathPath LIKE :mathPath";
+        String sql = "SELECT j FROM JTema j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  WHERE j.mathPath LIKE :mathPath ORDER BY t.descripcion ASC";
         query = entityManager.createQuery(sql, JTema.class);
         query.setParameter("idioma", idioma);
         query.setParameter("mathPath", mathPath + "%");
