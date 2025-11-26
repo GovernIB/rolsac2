@@ -577,6 +577,30 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:selectOneMenu>
                         </div>
 
+                        <div class="ui-g-12 ui-md-8 ui-lg-8 bloque">
+
+                            <h:outputText value="#{labels['viewProcedimientos.tramite.fecha_cierre']}:" />
+                            <br/>
+<!--                            <h:outputText value="#{labels['dict.desde']}" styleClass="mr-2 ml-2"/>-->
+                            <h:outputText value="#{labels['dict.desde']}" styleClass="mr-2 " />
+                            <p:datePicker showIcon="true"  id="txtFechaCierreTramiteDesde" styleClass="fecha"
+                                          locale="#{sessionBean.lang}"
+                                          disabled="#{viewProcedimientos.isModoConsulta()}"
+                                          value="#{viewProcedimientos.filtro.fechaCierreTramiteDesde}" pattern="dd/MM/yyyy HH:mm"
+                                          showTime="false" showOn="button">
+                                <p:ajax event="change" />
+                            </p:datePicker>
+                            <h:outputText value="#{labels['dict.hasta']}" styleClass="mr-2 ml-2" />
+                            <p:datePicker showIcon="true"  id="txtFechaCierreTramiteHasta" styleClass="fecha"
+                                          locale="#{sessionBean.lang}"
+                                          disabled="#{viewProcedimientos.isModoConsulta()}"
+                                          value="#{viewProcedimientos.filtro.fechaCierreTramiteHasta}" pattern="dd/MM/yyyy HH:mm"
+                                          showTime="false" showOn="button">
+                                <p:ajax event="change" />
+                            </p:datePicker>
+
+                        </div>
+
 
                         <div class="ui-g-12 text-center">
                             <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"

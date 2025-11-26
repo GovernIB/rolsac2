@@ -2171,6 +2171,20 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND (WF.fechaPublicacion <= :fechaPublicacionHasta) ");
         }
 
+        if(filtro.isRellenoFechaCierreTramiteDesde() && ambosWf) {
+            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo AND tram.fechaCierre >= :fechaCierreTramiteDesde) " +
+                    "OR EXISTS (SELECT 1 FROM JProcedimientoTramite tram2 WHERE tram2.procedimiento.codigo = WF2.codigo AND tram2.fechaCierre >= :fechaCierreTramiteDesde)) ");
+        } else if(filtro.isRellenoFechaCierreTramiteDesde()) {
+            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre >= :fechaCierreTramiteDesde)) ");
+        }
+
+        if(filtro.isRellenoFechaCierreTramiteHasta() && ambosWf) {
+            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre <= :fechaCierreTramiteHasta) " +
+                    "OR EXISTS (SELECT 1 FROM JProcedimientoTramite tram2 WHERE tram2.procedimiento.codigo = WF2.codigo  AND tram2.fechaCierre <= :fechaCierreTramiteHasta)) ");
+        } else if(filtro.isRellenoFechaCierreTramiteHasta()) {
+            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre <= :fechaCierreTramiteHasta)) ");
+        }
+
         if (filtro.isRellenoVisibleSEDE()) {
             if ("S".equalsIgnoreCase(filtro.getVisibleSEDE())) {
                 String texto = " AND ( WF.estado LIKE '" + TypeProcedimientoEstado.PUBLICADO.toString() + "'  AND  (WF.fechaPublicacion < current_date OR WF.fechaPublicacion IS NULL) AND (WF.fechaCaducidad > current_date OR WF.fechaCaducidad IS NULL)   ) ";
@@ -2679,6 +2693,17 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 e.printStackTrace();
             }
         }
+        if(filtro.isRellenoFechaCierreTramiteDesde()) {
+
+            Timestamp timeStampDate = new Timestamp(filtro.getFechaCierreTramiteDesde().getTime());
+            query.setParameter("fechaCierreTramiteDesde", timeStampDate);
+        }
+
+        if(filtro.isRellenoFechaCierreTramiteHasta()) {
+            Timestamp timeStampDate = new Timestamp(filtro.getFechaCierreTramiteHasta().getTime());
+            query.setParameter("fechaCierreTramiteHasta", timeStampDate);
+        }
+
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");
         }

@@ -245,6 +245,9 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     @Schema(description = "disponibleApoderadoHabilitado", type = SchemaType.BOOLEAN, required = false)
     private Boolean disponibleApoderadoHabilitado;
 
+    @Schema(description = "codigoMateria", type = SchemaType.STRING, required = false)
+    private Long codigoMateria;
+
     /**
      * @return the textos
      */
@@ -716,6 +719,11 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setTramitacionPersonaApoderada(this.disponibleApoderadoHabilitado ? " S" : "N");
         }
 
+        if(this.codigoMateria != null) {
+
+            resultado.setCodigoMateria(codigoMateria);
+        }
+
         resultado.setTipo("P");
         resultado.setEsProcedimiento(true);
 
@@ -785,5 +793,13 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 
     public void setTelematico(Boolean telematico) {
         this.telematico = telematico;
+    }
+
+    public Long getCodigoMateria() {
+        return codigoMateria;
+    }
+
+    public void setCodigoMateria(Long codigoMateria) {
+        this.codigoMateria = codigoMateria;
     }
 }

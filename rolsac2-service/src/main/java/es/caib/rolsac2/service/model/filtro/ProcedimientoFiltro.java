@@ -3,6 +3,7 @@ package es.caib.rolsac2.service.model.filtro;
 import es.caib.rolsac2.service.model.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +26,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String siaFecha;
     private String fechaPublicacionDesde;
     private String fechaPublicacionHasta;
+    private Date fechaCierreTramiteDesde;
+    private Date fechaCierreTramiteHasta;
     private String codigoDir3SIA;
     private String codigoUaDir3;
 
@@ -1623,6 +1626,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return fechaPublicacionHasta != null && !fechaPublicacionHasta.isEmpty();
     }
 
+    public boolean isRellenoFechaCierreTramiteDesde() {
+        return fechaCierreTramiteDesde != null;
+    }
+
+    public boolean isRellenoFechaCierreTramiteHasta() {
+        return fechaCierreTramiteHasta != null;
+    }
+
     public boolean isRellenoEstadoWF() {
         return estadoWF != null && !estadoWF.isEmpty();
     }
@@ -1757,6 +1768,22 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public void setFechaPublicacionHasta(String fechaPublicacionHasta) {
         this.fechaPublicacionHasta = fechaPublicacionHasta;
+    }
+
+    public Date getFechaCierreTramiteDesde() {
+        return fechaCierreTramiteDesde;
+    }
+
+    public void setFechaCierreTramiteDesde(Date fechaCierreTramiteDesde) {
+        this.fechaCierreTramiteDesde = fechaCierreTramiteDesde;
+    }
+
+    public Date getFechaCierreTramiteHasta() {
+        return fechaCierreTramiteHasta;
+    }
+
+    public void setFechaCierreTramiteHasta(Date fechaCierreTramiteHasta) {
+        this.fechaCierreTramiteHasta = fechaCierreTramiteHasta;
     }
 
     public String getCodigoUaDir3() {
