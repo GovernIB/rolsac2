@@ -1541,7 +1541,7 @@ public class UtilExport {
 
             InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
             //StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/xls", "Llistat" + tipo + "_" + getDia() + ".xls");
-            return DefaultStreamedContent.builder().contentType("application/xls").name("Llistat" + tipo + "_" + getDia() + ".xls").stream(() -> inputStream).build();
+            return DefaultStreamedContent.builder().contentType("application/xls").name("Llistat" + tipo + "_" + getDia() + ".xlsx").stream(() -> inputStream).build();
 
 
         } catch (Exception e) {
