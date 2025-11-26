@@ -95,22 +95,29 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <p:dataTable id="datatable" var="td" value="#{dialogExportar.datos.campos}"
                          emptyMessage="#{labels['dict.tablaVacia']}"
                          paginator="false"
-                         draggableRows="true">
-                <!--<p:ajax event="rowReorder"  />-->
-                <p:ajax event="rowReorder" listener="#{dialogExportar.onRowReorder}" update="datatable" />
+                         draggableRows="true"
+                         rowKey="#{td.campo}">
+
+                <p:ajax event="rowReorder" listener="#{dialogExportar.onRowReorder}"
+                        update="datatable" process="@this" />
 
                 <p:column headerText="#{labels['dict.mostrar']}" styleClass="text-center w90px">
-                    <p:selectBooleanCheckbox value="#{td.seleccionado}" />
+                    <p:selectBooleanCheckbox value="#{td.seleccionado}">
+                        <p:ajax event="change" />
+                    </p:selectBooleanCheckbox>
                 </p:column>
 
                 <p:column headerText="#{labels['dict.campo']}" styleClass="text-center">
-                    <h:outputText value="#{labels['' += td.literal]}" />
+                    <h:outputText value="#{td.literal}" />
                 </p:column>
 
                 <p:column headerText="#{labels['dict.nombreCabecera']}" styleClass="text-center">
-                    <p:inputText value="#{td.nombreCampo}" styleClass="w96" />
+                    <p:inputText value="#{td.nombreCampo}" styleClass="w96">
+                        <p:ajax event="blur" />
+                    </p:inputText>
                 </p:column>
             </p:dataTable>
+
         </p:panel>
     </ui:define>
 
