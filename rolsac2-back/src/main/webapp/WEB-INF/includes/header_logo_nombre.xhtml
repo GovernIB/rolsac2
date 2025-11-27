@@ -8,17 +8,6 @@
     <!-- Logo i nom aplicació -->
     <div class="navbar-brand menuGovern">
         <div class="logoGovern">
-                <!--<p:link styleClass="mr-auto" outcome="/index">
-                    <c:choose>
-                        <c:when test="#{sessionBean.checkLogo()}">
-                            <p:graphicImage styleClass="imatgeGovern" value="#{sessionBean.getLogoEntidad()}"></p:graphicImage>
-                        </c:when>
-                        <c:otherwise>
-                            <h:graphicImage name="img/logo.png" styleClass="imatgeGovern"
-                                            alt="Govern de les Illes Balears"/>
-                        </c:otherwise>
-                    </c:choose>
-                </p:link>-->
                 <p:link id="imgLogo" styleClass="mr-auto" outcome="/index" style="" >
                     <p:graphicImage styleClass="imatgeGovern"
                                     value="#{sessionBean.getLogoEntidad()}"
@@ -29,18 +18,19 @@
                                     alt="Govern de les Illes Balears" rendered="#{!sessionBean.checkLogo()}"/>
                 </p:link>
         </div>
-        <div class="ml-4">
-            <h1 class="titol">#{version.projectName}</h1>
-        </div>
-        <div class="ml-4">
-            <div>
-                <strong class="subtitol llevarMobil">#{labels['dict.usuario']}: </strong>
+        <div class="logoRolsacContainer">
+            <p:graphicImage name="img/logo_rolsac.png" alt="Logo Rolsac" styleClass="logoStyle" />
+            <div  style="color:black; font-size: 0.8em !important;" >
+
+                <strong class="subtitol">#{labels['dict.usuario']}: </strong>
                 <span class="subtitolMay">
-                    #{request.remoteUser}
+                        #{sessionBean.getUsuario().getIdentificador()}
                 </span>
-                <!--<c:if test="#{security.admin}">(#{labels.admin_label})</c:if>-->
             </div>
+
         </div>
+
+
     </div>
     <!-- FI Logo i nom aplicació -->
 </ui:composition>

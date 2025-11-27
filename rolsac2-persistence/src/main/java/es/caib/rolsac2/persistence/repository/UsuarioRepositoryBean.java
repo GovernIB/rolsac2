@@ -63,6 +63,7 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
             usuarioDTO = new UsuarioDTO();
             usuarioDTO.setCodigo((Long) jUsuarios.get(0)[0]);
             usuarioDTO.setNombre((String) jUsuarios.get(0)[1]);
+            usuarioDTO.setIdentificador(identificador);
         }
         return usuarioDTO;
     }

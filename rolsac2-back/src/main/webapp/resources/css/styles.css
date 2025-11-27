@@ -941,9 +941,16 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 }
 
 .imatgeGovern {
-    width: 50px;
+    width: 160px;
+    height: auto;
 }
 
+.logoRolsacContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers content horizontally */
+    text-align: center; /* Centers text below the image */
+}
 .iconoCapsalera {
     /*font-size: 0;*/
     list-style: none;
