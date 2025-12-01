@@ -128,14 +128,20 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                                 estados.add(TypeProcedimientoEstado.PUBLICADO);
                                 break;
                             case PUBLICADO:
-                                estados.add(TypeProcedimientoEstado.CERRADO);
+                                if (this.estadoProcedimiento != null && !this.estadoProcedimiento.contains("PV") && !this.estadoProcedimiento.contains("M")) {
+                                    /* Si el procedimiento tiene un WF modificado que esta en pendiente publicacion o en modificacion, no se puede mover en el flujo segun grafica #226 */
+                                    estados.add(TypeProcedimientoEstado.CERRADO);
+                                }
                                 break;
                             case PENDIENTE_CERRAR:
                                 estados.add(TypeProcedimientoEstado.PUBLICADO);
                                 estados.add(TypeProcedimientoEstado.CERRADO);
                                 break;
                             case CERRADO:
-                                estados.add(TypeProcedimientoEstado.PUBLICADO);
+                                if (this.estadoProcedimiento != null && !this.estadoProcedimiento.contains("PV") && !this.estadoProcedimiento.contains("M")) {
+                                    /* Si el procedimiento tiene un WF modificado que esta en pendiente publicacion o en modificacion, no se puede mover en el flujo segun grafica #226 */
+                                    estados.add(TypeProcedimientoEstado.PUBLICADO);
+                                }
                                 break;
                         }
                     }
@@ -146,9 +152,11 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                         estados.add(TypeProcedimientoEstado.PENDIENTE_PUBLICAR);
                     }
                     if (typeEstadoActual != null && typeEstadoActual == TypeProcedimientoEstado.PUBLICADO) {
-                        //Se puede tirar para atas para poderlo volver a editar
-                        estados.add(TypeProcedimientoEstado.PENDIENTE_CERRAR);
-                        this.estadoSeleccionado = estados.get(0);
+                        if (this.estadoProcedimiento != null && !this.estadoProcedimiento.contains("PV") && !this.estadoProcedimiento.contains("M")) {
+                            /* Si el procedimiento tiene un WF modificado que esta en pendiente publicacion o en modificacion, no se puede mover en el flujo segun grafica #226 */
+                            estados.add(TypeProcedimientoEstado.PENDIENTE_CERRAR);
+                            this.estadoSeleccionado = estados.get(0);
+                        }
                     }
                 }
             }

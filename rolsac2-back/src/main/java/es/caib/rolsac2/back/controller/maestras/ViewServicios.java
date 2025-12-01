@@ -1292,4 +1292,14 @@ public class ViewServicios extends AbstractController implements Serializable {
     public void setDownloadReady(boolean downloadReady) {
         this.downloadReady = downloadReady;
     }
+
+    public boolean isEstadoEditable() {
+        boolean editable;
+        if (this.datoSeleccionado != null && this.datoSeleccionado.getEstado() != null && !this.datoSeleccionado.getEstado().startsWith("PT") && !this.datoSeleccionado.getEstado().startsWith("T")) {
+            editable = false;
+        } else {
+            editable = true;
+        }
+        return editable;
+    }
 }
