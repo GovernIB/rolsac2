@@ -181,6 +181,9 @@ public class IndexacionPDURepositoryBean extends AbstractCrudRepository<JIndexac
     @Override
     public void actualizarDato(IndexacionPDUDto dato, ResultadoPdu resultadoAccion) {
         JIndexacionPdu jIndexacion = entityManager.find(JIndexacionPdu.class, dato.getCodigo());
+        if(jIndexacion == null){
+            return;
+        }
         if (resultadoAccion.isCorrecto()) {
             entityManager.remove(jIndexacion);
         } else {
