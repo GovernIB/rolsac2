@@ -3,7 +3,7 @@
     font-family: 'Bariol Regular';
     src: url("#{resource['fonts/Bariol_Regular.ttf']}");
 }
-/**** PARA AJUSTAR EL TAMANYO A UNO MAS GRANDE **/
+/**** PARA AJUSTAR EL TAMAÑO A UNO MÁS GRANDE **/
 body {
     font-size: 1em !important;
 }
@@ -29,9 +29,21 @@ body {
 .estiloGrande{
     font-size: 1.2em !important;
 }
-/******** FIN PARA AJUSTAR EL TAMANYO A UNO MAS GRANDE **/
+/** Para forzar el estilo más grande **
 
-/*Seccion titulo de los views*/
+/** Para ciertos iconos que es mejor dejarlos como está, ya que las imágenes en botones se descuadran **
+.ui-icon-seek-first, .ui-icon-seek-prev, .ui-icon-seek-next, .ui-icon-seek-end, .pi-sitemap {
+    font-size: 1.2em !important;
+}
+.dropdown-menu-right{
+    font-size: 1.1em;
+}
+.pi {
+    display: inline-table !important;
+}
+/******** FIN PARA AJUSTAR EL TAMAÑO A UNO MÁS GRANDE **/
+
+/*Sección título de los views*/
 .view-title {
     background-color: #004B99;
     padding: 10px;
@@ -924,12 +936,12 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 
 .logoGovern {
     float: left;
-    margin-right: 40px;
+    margin-right: 20px;
     margin-left: 40px;
 }
 
 .imatgeGovern {
-    width: 110px;
+    width: 100px;
     height: auto;
 }
 
@@ -1905,13 +1917,13 @@ a.iconoXarxes {
 tr.ui-state-hover td{
     color: #62c7fa !important;
 }
-/* Mantener color de seleccion (#0081c2) incluso en hover */
+/* Mantener color de selección (#0081c2) incluso en hover */
 tr.ui-state-highlight,
 tr.ui-state-highlight.ui-state-hover {
     background-color: #0081c2 !important;
 }
 
-/* Hover SOLO cuando NO esta destacada */
+/* Hover SOLO cuando NO está destacada */
 tr.ui-datatable-odd.ui-state-hover:not(.ui-state-highlight) {
     background-color: #F9F9F9 !important;
 }

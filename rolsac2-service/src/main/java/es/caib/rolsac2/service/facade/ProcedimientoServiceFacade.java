@@ -319,4 +319,6 @@ public interface ProcedimientoServiceFacade {
      * @return Estados (concatenado)
      */
     String getWorkflowEstados(Long codigo);
+
+
 }

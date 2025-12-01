@@ -529,7 +529,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         }
         if (proc instanceof ServicioDTO) {
             if (((ServicioDTO) proc).getTipoTramitacion() != null) {
-                ((ServicioDTO) proc).setTipoTramitacion(null);
+                ((ServicioDTO) proc).getTipoTramitacion().setCodigo(null);
             }
         }
         return proc;

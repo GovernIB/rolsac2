@@ -511,7 +511,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
             procedimientoServiceFacade.guardarFlujo(data, dataDefinitivo, respuestaFlujo.getEstadoDestino(), respuestaFlujo.getMensajes(), sessionBean.getPerfil(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
             final DialogResult result = new DialogResult();
-            if (this.getModoAcceso() != null) {
+            if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString())) {
                 result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
             } else {
                 result.setModoAcceso(TypeModoAcceso.EDICION);

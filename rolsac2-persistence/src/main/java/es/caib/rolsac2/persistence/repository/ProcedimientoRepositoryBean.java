@@ -2171,17 +2171,17 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND (WF.fechaPublicacion <= :fechaPublicacionHasta) ");
         }
 
-        if(filtro.isRellenoFechaCierreTramiteDesde() && ambosWf) {
+        if (filtro.isRellenoFechaCierreTramiteDesde() && ambosWf) {
             sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo AND tram.fechaCierre >= :fechaCierreTramiteDesde) " +
                     "OR EXISTS (SELECT 1 FROM JProcedimientoTramite tram2 WHERE tram2.procedimiento.codigo = WF2.codigo AND tram2.fechaCierre >= :fechaCierreTramiteDesde)) ");
-        } else if(filtro.isRellenoFechaCierreTramiteDesde()) {
+        } else if (filtro.isRellenoFechaCierreTramiteDesde()) {
             sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre >= :fechaCierreTramiteDesde)) ");
         }
 
-        if(filtro.isRellenoFechaCierreTramiteHasta() && ambosWf) {
+        if (filtro.isRellenoFechaCierreTramiteHasta() && ambosWf) {
             sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre <= :fechaCierreTramiteHasta) " +
                     "OR EXISTS (SELECT 1 FROM JProcedimientoTramite tram2 WHERE tram2.procedimiento.codigo = WF2.codigo  AND tram2.fechaCierre <= :fechaCierreTramiteHasta)) ");
-        } else if(filtro.isRellenoFechaCierreTramiteHasta()) {
+        } else if (filtro.isRellenoFechaCierreTramiteHasta()) {
             sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre <= :fechaCierreTramiteHasta)) ");
         }
 
@@ -2261,10 +2261,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-        if(filtro.isRellenoCodigoMateria()){
-            if(ambosWf){
+        if (filtro.isRellenoCodigoMateria()) {
+            if (ambosWf) {
                 sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoTema procTema2 WHERE (procTema2.codigo.procedimiento = WF.codigo OR procTema2.codigo.procedimiento = WF2.codigo) AND procTema2.tema.tipoMateriaSIA.codigo = :codigoMateria ) ");
-            }else{
+            } else {
                 sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoTema procTema2 WHERE (procTema2.codigo.procedimiento = WF.codigo) AND procTema2.tema.tipoMateriaSIA.codigo = :codigoMateria ) ");
             }
         }
@@ -2295,6 +2295,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 default:
                     break;
             }
+        }
+        if (filtro.isRellenoCodigo()) {
+            sql.append(" AND j.codigo = :codigo ");
         }
         if (filtro.isRellenoCodigoProc()) {
             sql.append(" AND j.codigo LIKE :codigoProc ");
@@ -2407,20 +2410,20 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-        if(filtro.isRellenoTelematico()){
-           if(filtro.getTelematico()){
-               if (ambosWf) {
-                   sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
-               } else {
-                   sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
-               }
-           } else {
+        if (filtro.isRellenoTelematico()) {
+            if (filtro.getTelematico()) {
                 if (ambosWf) {
-                     sql.append(" AND NOT EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+                    sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
                 } else {
-                     sql.append(" AND NOT EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+                    sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
                 }
-           }
+            } else {
+                if (ambosWf) {
+                    sql.append(" AND NOT EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo  ) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+                } else {
+                    sql.append(" AND NOT EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo) AND (j.tramitElectronica is true OR j.tipoTramitacion.tramitElectronica is true)) ");
+                }
+            }
         }
 
         if (filtro.isRellenoCanales()) {
@@ -2547,8 +2550,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-        if(filtro.isRellenoIdTramiteTelematico()){
-            if( ! filtro.getEsProcedimiento()){
+        if (filtro.isRellenoIdTramiteTelematico()) {
+            if (!filtro.getEsProcedimiento()) {
                 if (ambosWf) {
                     sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF2.tramiteElectronico.codigo OR t.codigo =  WF.tramiteElectronicoPlantilla.codigo OR t.codigo = WF2.tramiteElectronicoPlantilla.codigo  ) AND ( t.tramiteId = :idTramiteTelematico) )");
                 } else {
@@ -2557,8 +2560,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-        if(filtro.isRellenoVersionTramiteTelematico()){
-            if( ! filtro.getEsProcedimiento()){
+        if (filtro.isRellenoVersionTramiteTelematico()) {
+            if (!filtro.getEsProcedimiento()) {
                 if (ambosWf) {
                     sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF2.tramiteElectronico.codigo OR t.codigo =  WF.tramiteElectronicoPlantilla.codigo OR t.codigo = WF2.tramiteElectronicoPlantilla.codigo  ) AND ( t.tramiteVersion = :versionTramiteTelematico) )");
                 } else {
@@ -2568,8 +2571,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-        if(filtro.isRellenoParametrosTramiteElectronico()){
-            if( ! filtro.getEsProcedimiento()){
+        if (filtro.isRellenoParametrosTramiteElectronico()) {
+            if (!filtro.getEsProcedimiento()) {
                 if (ambosWf) {
                     sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF2.tramiteElectronico.codigo OR t.codigo =  WF.tramiteElectronicoPlantilla.codigo OR t.codigo = WF2.tramiteElectronicoPlantilla.codigo  ) AND ( t.tramiteParametros like :parametrosTramiteElectronico) )");
                 } else {
@@ -2629,17 +2632,17 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-        if( filtro.isRellenoUAInterna()){
+        if (filtro.isRellenoUAInterna()) {
             if (ambosWf) {
-                if(filtro.getuAInterna()) {
+                if (filtro.getuAInterna()) {
                     sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is not null) or WF2.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is not null)) ");
-                }else{
+                } else {
                     sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is null) or WF2.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is null)) ");
                 }
             } else {
-                if(filtro.getuAInterna()) {
+                if (filtro.getuAInterna()) {
                     sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is not null)) ");
-                }else{
+                } else {
                     sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.fechaBaja is null)) ");
                 }
             }
@@ -2693,13 +2696,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 e.printStackTrace();
             }
         }
-        if(filtro.isRellenoFechaCierreTramiteDesde()) {
+        if (filtro.isRellenoFechaCierreTramiteDesde()) {
 
             Timestamp timeStampDate = new Timestamp(filtro.getFechaCierreTramiteDesde().getTime());
             query.setParameter("fechaCierreTramiteDesde", timeStampDate);
         }
 
-        if(filtro.isRellenoFechaCierreTramiteHasta()) {
+        if (filtro.isRellenoFechaCierreTramiteHasta()) {
             Timestamp timeStampDate = new Timestamp(filtro.getFechaCierreTramiteHasta().getTime());
             query.setParameter("fechaCierreTramiteHasta", timeStampDate);
         }
@@ -2721,6 +2724,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoSilencioAdministrativo()) {
             query.setParameter("tipoSilencio", filtro.getSilencioAdministrativo().getCodigo());
+        }
+        if (filtro.isRellenoCodigo()) {
+            query.setParameter("codigo", filtro.getCodigo());
         }
         if (filtro.isRellenoCodigoProc()) {
             query.setParameter("codigoProc", filtro.getCodigoProc());
@@ -2790,7 +2796,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoTemas()) {
             query.setParameter("temas", filtro.getTemasId());
         }
-        if(filtro.isRellenoCodigoMateria()){
+        if (filtro.isRellenoCodigoMateria()) {
             query.setParameter("codigoMateria", filtro.getCodigoMateria());
         }
 
@@ -2815,13 +2821,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoVersion()) {
             query.setParameter("version", filtro.getVersion());
         }
-        if(filtro.isRellenoIdTramiteTelematico()){
+        if (filtro.isRellenoIdTramiteTelematico()) {
             query.setParameter("idTramiteTelematico", filtro.getIdTramiteTelematico());
         }
-        if( filtro.isRellenoVersionTramiteTelematico()){
+        if (filtro.isRellenoVersionTramiteTelematico()) {
             query.setParameter("versionTramiteTelematico", filtro.getVersionTramiteTelematico());
         }
-        if(filtro.isRellenoParametrosTramiteElectronico()){
+        if (filtro.isRellenoParametrosTramiteElectronico()) {
             query.setParameter("parametrosTramiteElectronico", "%" + filtro.getParametrosTramiteElectronico() + "%");
         }
         if (filtro.isRellenoTramitacionPersonaApoderada()) {

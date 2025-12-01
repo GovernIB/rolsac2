@@ -860,15 +860,47 @@ public class ViewServicios extends AbstractController implements Serializable {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
         // Verificamos si se ha modificado
-        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
-            ServicioGridDTO proc = this.datoSeleccionado;
-            String recordamos = wfProcedimiento;
-            calcularServ();
-            this.buscar();
-            this.seleccionarPorId(proc);
-            if (recordamos != null) {
-                wfProcedimiento = recordamos;
-                cambiarProcedimientoSeleccionadoWF();
+        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            ServicioGridDTO proc = null;
+            String recordamos = null;
+            try {
+                if (respuesta.getResult() != null && respuesta.getResult() instanceof ServicioDTO) {
+                    ServicioDTO servActualizado = (ServicioDTO) respuesta.getResult();
+                    wfProcedimiento = procedimientoService.getWorkflowEstados(servActualizado.getCodigo());
+
+                    ProcedimientoFiltro filtroX = new ProcedimientoFiltro();
+                    filtroX.setCodigo(servActualizado.getCodigo());
+                    Pagina<ServicioGridDTO> datos = procedimientoService.findServiciosByFiltro(filtroX);
+                    if (datos != null && datos.getItems() != null && !datos.getItems().isEmpty()) {
+                        for (ServicioGridDTO servicioGridDTO : datos.getItems()) {
+                            if (servicioGridDTO.getCodigo().equals(servActualizado.getCodigo())) {
+                                this.datoSeleccionado = servicioGridDTO;
+                                break;
+                            }
+                        }
+                    }
+                }
+                proc = this.datoSeleccionado;
+                recordamos = wfProcedimiento;
+
+                calcularServ();
+                this.buscar();
+                this.seleccionarPorId(proc);
+                if (recordamos != null) {
+                    wfProcedimiento = recordamos;
+                    cambiarProcedimientoSeleccionadoWF();
+                }
+            } catch (Exception e) {
+                LOG.error("Error al refrescar la lista de servicios", e);
+                if (recordamos != null) {
+                    LOG.error("Recordamos : " + recordamos);
+                }
+                if (proc != null) {
+                    LOG.error("SERV : " + proc);
+                }
+                if (proc != null) {
+                    LOG.error("SERV : " + proc);
+                }
             }
         }
     }
