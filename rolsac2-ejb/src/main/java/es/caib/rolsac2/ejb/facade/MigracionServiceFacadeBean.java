@@ -174,12 +174,6 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void ejecutarActivarRestriccionesSecuencias() {
-        migracionRepository.ejecutarMetodo("ACTIVAR_RESTRIC_SEQ");
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void ejecutarRevisarSecuencias() {
         migracionRepository.ejecutarMetodo("REVISAR_SEQ");
     }

@@ -101,11 +101,6 @@ public interface MigracionServiceFacade {
      */
     void ejecutarDesactivarRestricciones();
 
-    /**
-     * Activa las secuencias y restricciones.
-     */
-    void ejecutarActivarRestriccionesSecuencias();
-
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     void ejecutarRevisarSecuencias();
 
