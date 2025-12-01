@@ -64,9 +64,13 @@ public class ViewMisAlertas extends AbstractController implements Serializable {
         permisoAccesoVentana(ViewMisAlertas.class);
 
         filtro = new AlertaFiltro();
-        filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        if (sessionBean.getUnidadActiva() != null) {
+            filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        }
         filtro.setIdioma(sessionBean.getLang());
-        filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        if (sessionBean.getEntidad() != null) {
+            filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        }
         filtro.setAscendente(false);
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         filtro.setUsuario(usuario);
@@ -104,7 +108,7 @@ public class ViewMisAlertas extends AbstractController implements Serializable {
             public String getRowKey(AlertaGridDTO pers) {
                 return pers.getCodigo().toString();
             }
-             
+
             public int count(Map<String, FilterMeta> filterBy) {
                 return getRowCount();
             }
