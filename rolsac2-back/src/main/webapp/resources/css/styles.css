@@ -3,7 +3,7 @@
     font-family: 'Bariol Regular';
     src: url("#{resource['fonts/Bariol_Regular.ttf']}");
 }
-/**** PARA AJUSTAR EL TAMAÑO A UNO MÁS GRANDE **/
+/**** PARA AJUSTAR EL TAMANYO A UNO MAS GRANDE **/
 body {
     font-size: 1em !important;
 }
@@ -19,7 +19,7 @@ body {
 .ui-selectonemenu-label, .ui-selectonemenu-item {
     font-size: 1.1em;
 }
-/** Aumentamos el h5 más grande porque sino no parece una cabecera **/
+/** Aumentamos el h5 mas grande porque sino no parece una cabecera **/
 .h5{
     font-size: 1.9em !important;
 }
@@ -29,9 +29,9 @@ body {
 .estiloGrande{
     font-size: 1.2em !important;
 }
-/** Para forzar el estilo más grande **
+/** Para forzar el estilo mas grande **
 
-/** Para ciertos iconos que es mejor dejarlos como está, ya que las imágenes en botones se descuadran **
+/** Para ciertos iconos que es mejor dejarlos como esta, ya que las imagenes en botones se descuadran **
 .ui-icon-seek-first, .ui-icon-seek-prev, .ui-icon-seek-next, .ui-icon-seek-end, .pi-sitemap {
     font-size: 1.2em !important;
 }
@@ -41,9 +41,9 @@ body {
 .pi {
     display: inline-table !important;
 }
-/******** FIN PARA AJUSTAR EL TAMAÑO A UNO MÁS GRANDE **/
+/******** FIN PARA AJUSTAR EL TAMAnyO A UNO MaS GRANDE **/
 
-/*Sección título de los views*/
+/*Seccion titulo de los views*/
 .view-title {
     background-color: #004B99;
     padding: 10px;
@@ -57,7 +57,7 @@ body {
 }
 
 .ui-icon {
-    /** Para aumentar el tamaño. **/
+    /** Para aumentar el tamanyo. **/
     font-size: 1.1em;
 }
 
@@ -858,7 +858,7 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 
 /* FI Boto Dropdown */
 
-/* Capçalera */
+/* Capcalera */
 .flechaSubmenu {
     /*font-size: 8px;*/
     padding-top: 5px !important;
@@ -941,8 +941,12 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 }
 
 .imatgeGovern {
-    width: 100px;
+    max-width: 100px;
+    max-height: 60px;
+    width: auto;
     height: auto;
+    padding-top: 10px;
+    object-fit: contain;
 }
 
 .logoRolsacContainer {
@@ -966,9 +970,9 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
     min-width: 0;
 }
 
-/* FI Capçalera */
+/* FI Capcalera */
 
-/* Menú mòbil */
+/* Menu mobil */
 .botoMobil {
     position: absolute;
     right: 10px;
@@ -1046,7 +1050,7 @@ a.dropdown-item.mobilClaro:hover {
 }
 
 
-/* FI Menú mòbil */
+/* FI Menu mobil */
 
 /* Suport */
 .infoContacte {
@@ -1218,7 +1222,7 @@ a.iconoXarxes {
 
 /* FI Capsa Box */
 
-/* Per paginació */
+/* Per paginacio */
 .page-link {
     color: #62c7fa;
 }
@@ -1232,7 +1236,7 @@ a.iconoXarxes {
     color: #000;
 }
 
-/* Específics per primefaces */
+/* Especifics per primefaces */
 .ui-growl {
     top: 85%;
     right: 10px;
@@ -1257,7 +1261,7 @@ a.iconoXarxes {
 
 /* Data grid style */
 
-/* Estilo para truncar el texto sin salto de línea */
+/* Estilo para truncar el texto sin salto de linea */
 .overflow-datagrid-cell {
     overflow: hidden;
     white-space: nowrap;
@@ -1307,7 +1311,7 @@ a.iconoXarxes {
     background-color: #dadada !important;
 }
 
-/*Título view*/
+/*Titulo view*/
 .titulo-view {
     margin: 1.4rem;
 }
@@ -1868,7 +1872,7 @@ a.iconoXarxes {
     }
 }
 
-/* Permite que los <li> del menú derecho salten a la siguiente línea */
+/* Permite que los <li> del menu derecho salten a la siguiente linea */
 #lateralDerecho .navbar-nav {
     flex-wrap: wrap;
 }
@@ -1882,7 +1886,7 @@ a.iconoXarxes {
 /* (Opcional) Si notas recortes, ayuda a que el contenedor pueda encoger sin desbordar */
 #lateralDerecho { min-width: 0; }
 
-/* Los <li> ya envuelven (flex-wrap), ahora añadimos separación vertical entre filas */
+/* Los <li> ya envuelven (flex-wrap), ahora anyadimos separacion vertical entre filas */
 #lateralDerecho .navbar-nav {
     display: flex;      /* por si acaso */
     flex-wrap: wrap;
@@ -1917,13 +1921,13 @@ a.iconoXarxes {
 tr.ui-state-hover td{
     color: #62c7fa !important;
 }
-/* Mantener color de selección (#0081c2) incluso en hover */
+/* Mantener color de seleccion (#0081c2) incluso en hover */
 tr.ui-state-highlight,
 tr.ui-state-highlight.ui-state-hover {
     background-color: #0081c2 !important;
 }
 
-/* Hover SOLO cuando NO está destacada */
+/* Hover SOLO cuando NO esta destacada */
 tr.ui-datatable-odd.ui-state-hover:not(.ui-state-highlight) {
     background-color: #F9F9F9 !important;
 }
