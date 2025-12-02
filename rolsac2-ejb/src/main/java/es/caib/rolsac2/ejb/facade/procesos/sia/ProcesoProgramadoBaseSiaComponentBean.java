@@ -263,6 +263,11 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         if (indexacionForzada) {
             codigoWF = procedimientoService.getCodigoByWF(indexacionDTO.getCodElemento(), Constantes.PROCEDIMIENTO_ENMODIFICACION);
             publicado = false;
+            if(codigoWF == null){
+                codigoWF = procedimientoService.getCodigoByWF(indexacionDTO.getCodElemento(), Constantes.PROCEDIMIENTO_DEFINITIVO);
+                publicado = true;
+            }
+
         } else {
             codigoWF = procedimientoService.getCodigoByWF(indexacionDTO.getCodElemento(), Constantes.PROCEDIMIENTO_DEFINITIVO);
             publicado = true;
