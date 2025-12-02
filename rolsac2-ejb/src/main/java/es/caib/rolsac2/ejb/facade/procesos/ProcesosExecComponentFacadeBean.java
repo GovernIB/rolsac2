@@ -1,5 +1,6 @@
 package es.caib.rolsac2.ejb.facade.procesos;
 
+import es.caib.rolsac2.ejb.facade.SeccionServiceFacadeBean;
 import es.caib.rolsac2.ejb.util.procesos.InterpreteQuartz;
 import es.caib.rolsac2.persistence.repository.ProcesoLogRepository;
 import es.caib.rolsac2.persistence.repository.ProcesoRepository;
@@ -12,6 +13,8 @@ import es.caib.rolsac2.service.model.ResultadoProcesoProgramado;
 import es.caib.rolsac2.service.model.filtro.ProcesoFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -32,6 +35,8 @@ import java.util.List;
 @Local(ProcesosExecComponentFacade.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class ProcesosExecComponentFacadeBean implements ProcesosExecComponentFacade {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProcesosExecComponentFacadeBean.class);
 
     /**
      * Configuracion.
@@ -84,8 +89,13 @@ public class ProcesosExecComponentFacadeBean implements ProcesosExecComponentFac
                 final InterpreteQuartz iq = new InterpreteQuartz();
                 iq.setExpresion(p.getCron());
                 iq.setFechaUltimaEjecucion(fechaUltimaEjecucion);
-                if (iq.isActivar()) {
-                    result.add(p.getIdentificadorProceso());
+
+                try {
+                    if (iq.isActivar()) {
+                        result.add(p.getIdentificadorProceso());
+                    }
+                }catch (Exception e) {
+                    LOG.error("Error al interpretar cron del proceso " + p.getIdentificadorProceso() + ": " + e.getMessage(), e);
                 }
             }
         }

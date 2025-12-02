@@ -634,164 +634,157 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
                 plugin.desindexar(indexacionDTO.getCodElemento().toString(), EnumCategoria.ROLSAC_NORMATIVA);
 
                 ProcedimientoSolrDTO procedimiento = procedimientoService.findDataIndexacionProcById(codigoWF);
-                //Si es común, no se indexa
-                if (procedimiento.getProcedimientoDTO().esComun()) {
-                    totalProcedimientosOK++;
-                    mensaje.append("El procediment ");
-                    mensaje.append(indexacionDTO.getCodElemento());
-                    mensaje.append(" es comú i no s'indexa \n");
-                    return new ResultadoAccion(true, "El procediment es comú i no s'indexa", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
-                } else {
-                    ResultadoAccion resultado = plugin.indexarContenido(procedimiento.getDataIndexacion());
-                    if (resultado != null && resultado.isCorrecto()) {
 
-                        boolean todoCorrecto = true;
-                        StringBuilder mensajesIncorrectos = new StringBuilder();
+                ResultadoAccion resultado = plugin.indexarContenido(procedimiento.getDataIndexacion());
+                if (resultado != null && resultado.isCorrecto()) {
 
-                        if (procedimiento.getProcedimientoDTO().getDocumentos() != null) {
-                            for (ProcedimientoDocumentoDTO doc : procedimiento.getProcedimientoDTO().getDocumentos()) {
-                                if (doc.getDocumentos() != null) {
-                                    for (DocumentoTraduccion fichero : doc.getDocumentos().getTraducciones()) {
-                                        // FicheroDTO ficheroDTO = procedimientoService.getFicheroDTOByDocumentoTraduccion(fichero.getCodigo());
-                                        if (fichero.getFicheroDTO() != null && fichero.getFicheroDTO().getCodigo() != null) {
-                                            totalProcedimientosDOC++;
-                                            IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionProcDoc(procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA(), ruta);
-                                            ResultadoAccion resultadoDoc = plugin.indexarFichero(datoIndexadoDoc);
-                                            if (resultadoDoc != null && resultadoDoc.isCorrecto()) {
-                                                totalProcedimientosDOCOK++;
+                    boolean todoCorrecto = true;
+                    StringBuilder mensajesIncorrectos = new StringBuilder();
+
+                    if (procedimiento.getProcedimientoDTO().getDocumentos() != null) {
+                        for (ProcedimientoDocumentoDTO doc : procedimiento.getProcedimientoDTO().getDocumentos()) {
+                            if (doc.getDocumentos() != null) {
+                                for (DocumentoTraduccion fichero : doc.getDocumentos().getTraducciones()) {
+                                    // FicheroDTO ficheroDTO = procedimientoService.getFicheroDTOByDocumentoTraduccion(fichero.getCodigo());
+                                    if (fichero.getFicheroDTO() != null && fichero.getFicheroDTO().getCodigo() != null) {
+                                        totalProcedimientosDOC++;
+                                        IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionProcDoc(procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA(), ruta);
+                                        ResultadoAccion resultadoDoc = plugin.indexarFichero(datoIndexadoDoc);
+                                        if (resultadoDoc != null && resultadoDoc.isCorrecto()) {
+                                            totalProcedimientosDOCOK++;
+                                        } else {
+                                            totalProcedimientosDOCERROR++;
+                                            todoCorrecto = false;
+                                            mensajesIncorrectos.append(" ProcedimientoDoc: ");
+                                            mensajesIncorrectos.append(doc.getCodigo());
+                                            mensajesIncorrectos.append(" . ERROR:");
+                                            if (resultadoDoc != null) {
+                                                mensajesIncorrectos.append(resultadoDoc.getMensaje());
                                             } else {
-                                                totalProcedimientosDOCERROR++;
-                                                todoCorrecto = false;
-                                                mensajesIncorrectos.append(" ProcedimientoDoc: ");
-                                                mensajesIncorrectos.append(doc.getCodigo());
-                                                mensajesIncorrectos.append(" . ERROR:");
-                                                if (resultadoDoc != null) {
-                                                    mensajesIncorrectos.append(resultadoDoc.getMensaje());
-                                                } else {
-                                                    mensajesIncorrectos.append("null");
-                                                }
-                                                mensajesIncorrectos.append(" \n");
+                                                mensajesIncorrectos.append("null");
                                             }
+                                            mensajesIncorrectos.append(" \n");
                                         }
                                     }
                                 }
                             }
                         }
+                    }
 
-                        if (procedimiento.getProcedimientoDTO().getTramites() != null) {
-                            for (ProcedimientoTramiteDTO tramite : procedimiento.getProcedimientoDTO().getTramites()) {
-                                totalTramites++;
-                                DataIndexacion datoIndexadoTram = procedimientoService.findDataIndexacionTram(tramite, procedimiento.getProcedimientoDTO(), procedimiento.getPathUA());
-                                ResultadoAccion resultadoTramite = plugin.indexarContenido(datoIndexadoTram);
-                                if (resultadoTramite != null && resultadoTramite.isCorrecto()) {
-                                    totalTramitesOK++;
+                    if (procedimiento.getProcedimientoDTO().getTramites() != null) {
+                        for (ProcedimientoTramiteDTO tramite : procedimiento.getProcedimientoDTO().getTramites()) {
+                            totalTramites++;
+                            DataIndexacion datoIndexadoTram = procedimientoService.findDataIndexacionTram(tramite, procedimiento.getProcedimientoDTO(), procedimiento.getPathUA());
+                            ResultadoAccion resultadoTramite = plugin.indexarContenido(datoIndexadoTram);
+                            if (resultadoTramite != null && resultadoTramite.isCorrecto()) {
+                                totalTramitesOK++;
 
-                                    if (tramite.getListaDocumentos() != null) {
+                                if (tramite.getListaDocumentos() != null) {
 
-                                        for (ProcedimientoDocumentoDTO doc : tramite.getListaDocumentos()) {
-                                            if (doc.getDocumentos() != null) {
-                                                for (DocumentoTraduccion fichero : doc.getDocumentos().getTraducciones()) {
-                                                    if (fichero.getFicheroDTO() != null && fichero.getFicheroDTO().getCodigo() != null) {
-                                                        totalTramitesDOC++;
-                                                        IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionTramDoc(tramite, procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA(), ruta);
-                                                        ResultadoAccion resultadoDoc = plugin.indexarFichero(datoIndexadoDoc);
-                                                        if (resultadoDoc != null && resultadoDoc.isCorrecto()) {
-                                                            totalTramitesDOCOK++;
+                                    for (ProcedimientoDocumentoDTO doc : tramite.getListaDocumentos()) {
+                                        if (doc.getDocumentos() != null) {
+                                            for (DocumentoTraduccion fichero : doc.getDocumentos().getTraducciones()) {
+                                                if (fichero.getFicheroDTO() != null && fichero.getFicheroDTO().getCodigo() != null) {
+                                                    totalTramitesDOC++;
+                                                    IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionTramDoc(tramite, procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA(), ruta);
+                                                    ResultadoAccion resultadoDoc = plugin.indexarFichero(datoIndexadoDoc);
+                                                    if (resultadoDoc != null && resultadoDoc.isCorrecto()) {
+                                                        totalTramitesDOCOK++;
+                                                    } else {
+                                                        totalTramitesDOCERROR++;
+                                                        todoCorrecto = false;
+                                                        mensajesIncorrectos.append(" TramiteDoc: ");
+                                                        mensajesIncorrectos.append(doc.getCodigo());
+                                                        mensajesIncorrectos.append(" . ERROR:");
+                                                        if (resultadoDoc != null) {
+                                                            mensajesIncorrectos.append(resultadoDoc.getMensaje());
                                                         } else {
-                                                            totalTramitesDOCERROR++;
-                                                            todoCorrecto = false;
-                                                            mensajesIncorrectos.append(" TramiteDoc: ");
-                                                            mensajesIncorrectos.append(doc.getCodigo());
-                                                            mensajesIncorrectos.append(" . ERROR:");
-                                                            if (resultadoDoc != null) {
-                                                                mensajesIncorrectos.append(resultadoDoc.getMensaje());
-                                                            } else {
-                                                                mensajesIncorrectos.append("null");
-                                                            }
-                                                            mensajesIncorrectos.append("\n");
+                                                            mensajesIncorrectos.append("null");
                                                         }
+                                                        mensajesIncorrectos.append("\n");
                                                     }
                                                 }
                                             }
                                         }
                                     }
+                                }
 
-                                    if (tramite.getListaModelos() != null) {
+                                if (tramite.getListaModelos() != null) {
 
-                                        for (ProcedimientoDocumentoDTO doc : tramite.getListaModelos()) {
-                                            if (doc.getDocumentos() != null) {
-                                                for (DocumentoTraduccion fichero : doc.getDocumentos().getTraducciones()) {
-                                                    if (fichero.getFicheroDTO() != null && fichero.getFicheroDTO().getCodigo() != null) {
+                                    for (ProcedimientoDocumentoDTO doc : tramite.getListaModelos()) {
+                                        if (doc.getDocumentos() != null) {
+                                            for (DocumentoTraduccion fichero : doc.getDocumentos().getTraducciones()) {
+                                                if (fichero.getFicheroDTO() != null && fichero.getFicheroDTO().getCodigo() != null) {
 
-                                                        totalTramitesDOC++;
-                                                        IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionTramDoc(tramite, procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA(), ruta);
-                                                        ResultadoAccion resultadoDoc = plugin.indexarFichero(datoIndexadoDoc);
-                                                        if (resultadoDoc != null && resultadoDoc.isCorrecto()) {
-                                                            totalTramitesDOCOK++;
+                                                    totalTramitesDOC++;
+                                                    IndexFile datoIndexadoDoc = procedimientoService.findDataIndexacionTramDoc(tramite, procedimiento.getProcedimientoDTO(), doc, fichero, procedimiento.getPathUA(), ruta);
+                                                    ResultadoAccion resultadoDoc = plugin.indexarFichero(datoIndexadoDoc);
+                                                    if (resultadoDoc != null && resultadoDoc.isCorrecto()) {
+                                                        totalTramitesDOCOK++;
+                                                    } else {
+                                                        totalTramitesDOCERROR++;
+                                                        todoCorrecto = false;
+                                                        mensajesIncorrectos.append(" TramiteModelo: ");
+                                                        mensajesIncorrectos.append(doc.getCodigo());
+                                                        mensajesIncorrectos.append(" . ERROR:");
+                                                        if (resultadoDoc != null) {
+                                                            mensajesIncorrectos.append(resultadoDoc.getMensaje());
                                                         } else {
-                                                            totalTramitesDOCERROR++;
-                                                            todoCorrecto = false;
-                                                            mensajesIncorrectos.append(" TramiteModelo: ");
-                                                            mensajesIncorrectos.append(doc.getCodigo());
-                                                            mensajesIncorrectos.append(" . ERROR:");
-                                                            if (resultadoDoc != null) {
-                                                                mensajesIncorrectos.append(resultadoDoc.getMensaje());
-                                                            } else {
-                                                                mensajesIncorrectos.append("null");
-                                                            }
-                                                            mensajesIncorrectos.append("\n");
+                                                            mensajesIncorrectos.append("null");
                                                         }
+                                                        mensajesIncorrectos.append("\n");
                                                     }
                                                 }
                                             }
                                         }
                                     }
+                                }
 
 
+                            } else {
+                                totalTramitesERROR++;
+                                todoCorrecto = false;
+                                mensajesIncorrectos.append(" Tramite: ");
+                                mensajesIncorrectos.append(tramite.getCodigo());
+                                mensajesIncorrectos.append(" . ERROR:");
+                                if (resultadoTramite != null) {
+                                    mensajesIncorrectos.append(resultadoTramite.getMensaje());
                                 } else {
-                                    totalTramitesERROR++;
-                                    todoCorrecto = false;
-                                    mensajesIncorrectos.append(" Tramite: ");
-                                    mensajesIncorrectos.append(tramite.getCodigo());
-                                    mensajesIncorrectos.append(" . ERROR:");
-                                    if (resultadoTramite != null) {
-                                        mensajesIncorrectos.append(resultadoTramite.getMensaje());
-                                    } else {
-                                        mensajesIncorrectos.append("null");
-                                    }
+                                    mensajesIncorrectos.append("null");
                                 }
                             }
                         }
+                    }
 
-                        if (todoCorrecto) {
-                            totalProcedimientosOK++;
-                            mensaje.append("El procediment ");
-                            mensaje.append(indexacionDTO.getCodElemento());
-                            mensaje.append(" s'ha indexat correctament \n");
-                            return new ResultadoAccion(true, "El procediment s'ha indexat correctament", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
-                        } else {
-                            totalProcedimientosERROR++;
-                            mensaje.append("El procediment ");
-                            mensaje.append(indexacionDTO.getCodElemento());
-                            mensaje.append(" no s'ha indexat correctament. Error:");
-                            mensaje.append(mensajesIncorrectos.toString());
-                            mensaje.append(" \n");
-                            return new ResultadoAccion(false, "Un tràmit o document de doc/tram s'ha indexat incorrectament" + mensajesIncorrectos.toString(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
-                        }
+                    if (todoCorrecto) {
+                        totalProcedimientosOK++;
+                        mensaje.append("El procediment ");
+                        mensaje.append(indexacionDTO.getCodElemento());
+                        mensaje.append(" s'ha indexat correctament \n");
+                        return new ResultadoAccion(true, "El procediment s'ha indexat correctament", Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), true, true);
                     } else {
                         totalProcedimientosERROR++;
                         mensaje.append("El procediment ");
                         mensaje.append(indexacionDTO.getCodElemento());
-                        mensaje.append(" no s'ha indexat. Error:");
-                        if (resultado != null) {
-                            mensaje.append(resultado.getMensaje());
-                        } else {
-                            mensaje.append("null");
-                        }
+                        mensaje.append(" no s'ha indexat correctament. Error:");
+                        mensaje.append(mensajesIncorrectos.toString());
                         mensaje.append(" \n");
-                        return resultado;
+                        return new ResultadoAccion(false, "Un tràmit o document de doc/tram s'ha indexat incorrectament" + mensajesIncorrectos.toString(), Boolean.parseBoolean(plugin.isSolrActivo()), Boolean.parseBoolean(plugin.isElasticActivo()), false, false);
                     }
+                } else {
+                    totalProcedimientosERROR++;
+                    mensaje.append("El procediment ");
+                    mensaje.append(indexacionDTO.getCodElemento());
+                    mensaje.append(" no s'ha indexat. Error:");
+                    if (resultado != null) {
+                        mensaje.append(resultado.getMensaje());
+                    } else {
+                        mensaje.append("null");
+                    }
+                    mensaje.append(" \n");
+                    return resultado;
                 }
+
             } catch (Exception e) {
                 log.error("Error en indexarProcedimiento", e);
                 totalProcedimientosERROR++;
