@@ -56,10 +56,52 @@ PrimeFaces.locales['ca'] = {
         'javax.validation.constraints.AssertTrue.message': 'ha de ser cert',
         'javax.validation.constraints.DecimalMax.message': 'ha de ser menor o igual a {0}',
         'javax.validation.constraints.DecimalMin.message': 'ha de ser major o igual a {0}',
-        'javax.validation.constraints.Size.message': 'la mida ha d\'estar entre {0} i {1}'
+        'javax.validation.constraints.Size.message': 'la mida ha d\'estar entre {0} i {1}',
+        'javax.faces.converter.DateTimeConverter.DATE': '{2}: \'{0}\' no s\'ha pogut reconèixer com a data.',
+        'javax.faces.converter.DateTimeConverter.DATE_detail': '{2}: \'{0}\' no s\'ha pogut reconèixer com a data. Exemple: {1}',
+        'javax.faces.converter.DateTimeConverter.TIME': '{2}: \'{0}\' no s\'ha pogut reconèixer com a hora.',
+        'javax.faces.converter.DateTimeConverter.TIME_detail': '{2}: \'{0}\' no s\'ha pogut reconèixer com a hora. Exemple: {1}',
+        'javax.faces.converter.DateTimeConverter.DATETIME': '{2}: \'{0}\' no s\'ha pogut reconèixer com a data i hora.',
+        'javax.faces.converter.DateTimeConverter.DATETIME_detail': '{2}: \'{0}\' no s\'ha pogut reconèixer com a data i hora. Exemple: {1}'
     }
 };
 
+PrimeFaces.locales['ca'].messages = PrimeFaces.locales['ca'].messages || {};
+Object.assign(PrimeFaces.locales['ca'].messages, {
+    'javax.faces.component.UIInput.REQUIRED': '{0}: Error de validació: cal un valor.',
+    'javax.faces.converter.IntegerConverter.INTEGER': '{2}: \'{0}\' ha de ser un número format per un o més dígits.',
+    'javax.faces.converter.IntegerConverter.INTEGER_detail': '{2}: \'{0}\' ha de ser un número entre -2147483648 i 2147483647. Exemple: {1}',
+    'javax.faces.converter.DoubleConverter.DOUBLE': '{2}: \'{0}\' ha de ser un número format per un o més dígits.',
+    'javax.faces.converter.DoubleConverter.DOUBLE_detail': '{2}: \'{0}\' ha de ser un número entre 4.9E-324 i 1.7976931348623157E308. Exemple: {1}',
+    'javax.faces.converter.BigDecimalConverter.DECIMAL': '{2}: \'{0}\' ha de ser un número decimal positiu o negatiu.',
+    'javax.faces.converter.BigDecimalConverter.DECIMAL_detail': '{2}: \'{0}\' ha de ser un número decimal positiu o negatiu format per zero o més dígits, que poden incloure a continuació una coma decimal i una fracció. Exemple: {1}',
+    'javax.faces.converter.BigIntegerConverter.BIGINTEGER': '{2}: \'{0}\' ha de ser un número format per un o més dígits.',
+    'javax.faces.converter.BigIntegerConverter.BIGINTEGER_detail': '{2}: \'{0}\' ha de ser un número format per un o més dígits. Exemple: {1}',
+    'javax.faces.converter.ByteConverter.BYTE': '{2}: \'{0}\' ha de ser un número entre 0 i 255.',
+    'javax.faces.converter.ByteConverter.BYTE_detail': '{2}: \'{0}\' ha de ser un número entre 0 i 255. Exemple: {1}',
+    'javax.faces.converter.CharacterConverter.CHARACTER': '{1}: \'{0}\' ha de ser un caràcter vàlid.',
+    'javax.faces.converter.CharacterConverter.CHARACTER_detail': '{1}: \'{0}\' ha de ser un caràcter ASCII vàlid.',
+    'javax.faces.converter.ShortConverter.SHORT': '{2}: \'{0}\' ha de ser un número format per un o més dígits.',
+    'javax.faces.converter.ShortConverter.SHORT_detail': '{2}: \'{0}\' ha de ser un número entre -32768 i 32767. Exemple: {1}',
+    'javax.faces.converter.BooleanConverter.BOOLEAN': '{1}: \'{0}\' ha de ser \'true\' o \'false\'',
+    'javax.faces.converter.BooleanConverter.BOOLEAN_detail': '{1}: \'{0}\' ha de ser \'true\' o \'false\'. Qualsevol valor diferent de \'true\' serà interpretat com \'false\'.',
+    'javax.faces.validator.LongRangeValidator.MAXIMUM': '{1}: Error de validació: el valor és més gran que el màxim permès de \'{0}\'',
+    'javax.faces.validator.LongRangeValidator.MINIMUM': '{1}: Error de validació: el valor és més petit que el mínim permès de \'{0}\'',
+    'javax.faces.validator.LongRangeValidator.NOT_IN_RANGE': '{2}: Error de validació: l\'atribut especificat no està entre els valors esperats {0} i {1}.',
+    'javax.faces.validator.LengthValidator.MINIMUM': '{1}: Error de validació: la longitud és inferior al mínim permès de \'{0}\'',
+    'javax.faces.validator.LengthValidator.MAXIMUM': '{1}: Error de validació: la longitud és superior al màxim permès de \'{0}\'',
+    'javax.validation.constraints.AssertFalse.message': 'ha de ser fals',
+    'javax.validation.constraints.AssertTrue.message': 'ha de ser cert',
+    'javax.validation.constraints.DecimalMax.message': 'ha de ser menor o igual a {0}',
+    'javax.validation.constraints.DecimalMin.message': 'ha de ser major o igual a {0}',
+    'javax.validation.constraints.Size.message': 'la mida ha d\'estar entre {0} i {1}',
+    'javax.faces.converter.DateTimeConverter.DATE': '{2}: \'{0}\' no s\'ha pogut reconèixer com a data.',
+    'javax.faces.converter.DateTimeConverter.DATE_detail': '{2}: \'{0}\' no s\'ha pogut reconèixer com a data. Exemple: {1}',
+    'javax.faces.converter.DateTimeConverter.TIME': '{2}: \'{0}\' no s\'ha pogut reconèixer com a hora.',
+    'javax.faces.converter.DateTimeConverter.TIME_detail': '{2}: \'{0}\' no s\'ha pogut reconèixer com a hora. Exemple: {1}',
+    'javax.faces.converter.DateTimeConverter.DATETIME': '{2}: \'{0}\' no s\'ha pogut reconèixer com a data i hora.',
+    'javax.faces.converter.DateTimeConverter.DATETIME_detail': '{2}: \'{0}\' no s\'ha pogut reconèixer com a data i hora. Exemple: {1}'
+});
 
 PrimeFaces.locales['es'] = {
     closeText: 'Cerrar',
@@ -126,7 +168,7 @@ PrimeFaces.locales['es'] = {
         'javax.faces.converter.NumberConverter.CURRENCY_detail': '{2}: \'{0}\' no se ha podido reconocer como un valor de divisa. Ejemplo: {1}',
         'javax.faces.converter.NumberConverter.PERCENT': '{2}: \'{0}\' no se ha podido reconocer como porcentaje.',
         'javax.faces.converter.NumberConverter.PERCENT_detail': '{2}: \'{0}\' no se ha podido reconocer como porcentaje. Ejemplo: {1}',
-        'javax.faces.converter.NumberConverter.NUMBER': '{2}: \'{0}\' no se ha podido reconocer como fecha.',
+        'javax.faces.converter.NumberConverter.NUMBER': '{2}: \'{0}\' no se ha podido reconocer como número.',
         'javax.faces.converter.NumberConverter.NUMBER_detail': '{2}: \'{0}\' no es un número. Ejemplo: {1}',
         'javax.faces.converter.NumberConverter.PATTERN': '{2}: \'{0}\' no es un patrón numérico.',
         'javax.faces.converter.NumberConverter.PATTERN_detail': '{2}: \'{0}\' no es un patrón numérico. Ejemplo: {1}',

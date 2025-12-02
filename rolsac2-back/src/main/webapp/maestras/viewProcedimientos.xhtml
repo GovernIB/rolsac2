@@ -585,18 +585,18 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <h:outputText value="#{labels['dict.desde']}" styleClass="mr-2 " />
                             <p:datePicker showIcon="true"  id="txtFechaCierreTramiteDesde" styleClass="fecha"
                                           locale="#{sessionBean.lang}"
-                                          disabled="#{viewProcedimientos.isModoConsulta()}"
-                                          value="#{viewProcedimientos.filtro.fechaCierreTramiteDesde}" pattern="dd/MM/yyyy HH:mm"
-                                          showTime="false" showOn="button">
-                                <p:ajax event="change" />
+                                          value="#{viewProcedimientos.filtro.fechaCierreTramiteDesde}" pattern="dd/MM/yyyy"
+                                          showTime="false" showOn="button" maxlength="10">
+                                <p:ajax event="dateSelect" listener="#{viewProcedimientos.validateDate}" update="messages" process="@this"/>
+                                <p:ajax event="change" update="messages" process="@this"/>
                             </p:datePicker>
                             <h:outputText value="#{labels['dict.hasta']}" styleClass="mr-2 ml-2" />
                             <p:datePicker showIcon="true"  id="txtFechaCierreTramiteHasta" styleClass="fecha"
                                           locale="#{sessionBean.lang}"
-                                          disabled="#{viewProcedimientos.isModoConsulta()}"
-                                          value="#{viewProcedimientos.filtro.fechaCierreTramiteHasta}" pattern="dd/MM/yyyy HH:mm"
-                                          showTime="false" showOn="button">
-                                <p:ajax event="change" />
+                                          value="#{viewProcedimientos.filtro.fechaCierreTramiteHasta}" pattern="dd/MM/yyyy"
+                                          showTime="false" showOn="button" maxlength="10">
+                                <p:ajax event="dateSelect" listener="#{viewProcedimientos.validateDate}" update="messages" process="@this"/>
+                                <p:ajax event="change" update="messages" process="@this"/>
                             </p:datePicker>
 
                         </div>
