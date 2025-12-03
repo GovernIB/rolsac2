@@ -8,12 +8,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilExport;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
-import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
-import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceFacade;
-import es.caib.rolsac2.service.facade.TemaServiceFacade;
-import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
@@ -27,13 +22,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
-import org.primefaces.model.DefaultTreeNode;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortMeta;
-import org.primefaces.model.SortOrder;
-import org.primefaces.model.StreamedContent;
-import org.primefaces.model.TreeNode;
+import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,6 +254,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void limpiarFiltro() {
         filtro = new ProcedimientoFiltro();
+        filtro.setFechaCierreTramiteDesde(null);
+        filtro.setFechaCierreTramiteHasta(null);
 /*
         boolean verComunes = this.isGestor() || this.isInformador();
 
@@ -605,7 +596,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public boolean validateDate() {
         if (filtro.getFechaCierreTramiteDesde() != null && filtro.getFechaCierreTramiteHasta() != null
-            && filtro.getFechaCierreTramiteHasta().before(filtro.getFechaCierreTramiteDesde())) {
+                && filtro.getFechaCierreTramiteHasta().before(filtro.getFechaCierreTramiteDesde())) {
             String mensajeError = getLiteral("msg.error.fecha.rango.invalido");
             FacesContext.getCurrentInstance().addMessage("datePicker",
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, mensajeError, mensajeError));
@@ -618,7 +609,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void buscar() {
 
-        if( !validateDate()){
+        if (!validateDate()) {
             return;
         }
 
