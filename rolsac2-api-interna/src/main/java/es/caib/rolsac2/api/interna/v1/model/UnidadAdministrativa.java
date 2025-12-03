@@ -77,6 +77,12 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
     private String nombre;
 
     /**
+     * estado
+     **/
+    @Schema(description = "estado", type = SchemaType.STRING, required = false)
+    private String estado;
+
+    /**
      * orden
      **/
     @Schema(description = "orden", type = SchemaType.INTEGER, required = false)
@@ -461,5 +467,13 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
 
     public void setAbreviatura(String abreviatura) {
         this.abreviatura = abreviatura;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }
