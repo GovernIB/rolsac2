@@ -30,6 +30,7 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
             "\"nombre\":\"string\"," + Constantes.SALTO_LINEA +
             "\"identificador\":\"string\"," + Constantes.SALTO_LINEA +
             "\"codEnti\":0," + Constantes.SALTO_LINEA +
+            "\"estado\":\"string (V:Vigente, X:Baja)\"," + Constantes.SALTO_LINEA +
             "\"texto\":\"string\"," + Constantes.SALTO_LINEA +
             "\"idUA\":0 . Recupera la UA asociada al código indicado y sus hijas directas (Usar -1 para recuperar las UA que no tienen padre)," + Constantes.SALTO_LINEA +
             "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA +
@@ -43,6 +44,7 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
                     "\"identificador\":null," +
                     "\"codEnti\":null," +
                     "\"texto\":null," +
+                    "\"estado\":null," +
                     "\"idUA\":null," +
                     "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," +
                     "\"orden\":{\"campo\":\"orden\",\"tipoOrden\":\"ASC\"}" +
@@ -71,6 +73,12 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
      **/
     @Schema(description = "identificador", type = SchemaType.STRING, required = false)
     private String identificador;
+
+    /**
+     * estado.
+     **/
+    @Schema(description = "estado", type = SchemaType.STRING, required = false)
+    private String estado;
 
     /**
      * codEnti.
@@ -147,6 +155,10 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
             resultado.setIdUA(idUA);
         }
 
+        if (this.estado != null) {
+            resultado.setEstado(estado);
+        }
+
         return resultado;
     }
 
@@ -195,7 +207,7 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
     }
 
     /**
-     * @param listaOrden the listaOrden to set
+     * @param orden the listaOrden to set
      */
     public void setOrden(CampoOrden orden) {
         this.orden = orden;
@@ -209,4 +221,11 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
         this.idUA = idUA;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 }
