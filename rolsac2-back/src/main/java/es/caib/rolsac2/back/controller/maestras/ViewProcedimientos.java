@@ -679,8 +679,25 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             ProcedimientoGridDTO proc = null;
             String recordamos = null;
             try {
+                if (respuesta.getResult() != null && respuesta.getResult() instanceof ProcedimientoDTO) {
+                    ProcedimientoDTO procActualizado = (ProcedimientoDTO) respuesta.getResult();
+                    wfProcedimiento = procedimientoService.getWorkflowEstados(procActualizado.getCodigo());
+
+                    ProcedimientoFiltro filtroX = new ProcedimientoFiltro();
+                    filtroX.setCodigo(procActualizado.getCodigo());
+                    Pagina<ProcedimientoGridDTO> datos = procedimientoService.findProcedimientosByFiltro(filtroX);
+                    if (datos != null && datos.getItems() != null && !datos.getItems().isEmpty()) {
+                        for (ProcedimientoGridDTO procGridDTO : datos.getItems()) {
+                            if (procGridDTO.getCodigo().equals(procActualizado.getCodigo())) {
+                                this.datoSeleccionado = procGridDTO;
+                                break;
+                            }
+                        }
+                    }
+                }
                 proc = this.datoSeleccionado;
                 recordamos = wfProcedimiento;
+
                 calcularProc();
                 this.buscar();
                 this.seleccionarPorId(proc);
@@ -689,15 +706,15 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                     cambiarProcedimientoSeleccionadoWF();
                 }
             } catch (Exception e) {
-                LOG.error("Error al refrescar la lista de procedimientos", e);
+                LOG.error("Error al refrescar la lista de servicios", e);
                 if (recordamos != null) {
                     LOG.error("Recordamos : " + recordamos);
                 }
                 if (proc != null) {
-                    LOG.error("PROC : " + proc);
+                    LOG.error("SERV : " + proc);
                 }
                 if (proc != null) {
-                    LOG.error("PROC : " + proc);
+                    LOG.error("SERV : " + proc);
                 }
             }
         }

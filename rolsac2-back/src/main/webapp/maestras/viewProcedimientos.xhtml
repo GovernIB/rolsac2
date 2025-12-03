@@ -230,14 +230,14 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              disabled="#{viewProcedimientos.datoSeleccionado == null}"
                                              process="@this" rendered="#{!viewProcedimientos.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogoClonar}"
-                                        update="messages dataTable"/>
+                                        update="messages dataTable btnEditar btnConsultar btnBorrar btnClonar"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2" icon="pi pi-file-o"
                                              iconPos="top" actionListener="#{viewProcedimientos.nuevoProcedimiento}"
                                              process="@this" rendered="#{!viewProcedimientos.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" onstart="startCargando()"
                                         oncomplete="stopCargando()"
-                                        update="messages dataTable"/>
+                                        update="messages dataTable btnEditar btnConsultar btnBorrar btnClonar"/>
                             </p:commandButton>
                             <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" styleClass="mr-2"
                                              icon="pi pi-eye" iconPos="top"
@@ -246,7 +246,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              disabled="#{!viewProcedimientos.datoSeleccionado.tieneDatosPublicados()}"
                                              onstart="startCargando()" oncomplete="stopCargando()">
                                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
-                                        update="messages dataTable includeDetalle" />
+                                        update="messages dataTable btnEditar btnConsultar btnBorrar btnClonar " />
                             </p:commandButton>
                             <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" styleClass="mr-2"
                                              icon="pi pi-pencil" iconPos="top"
@@ -256,12 +256,12 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              oncomplete="stopCargando()"
                                              rendered="#{!viewProcedimientos.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
-                                        update="messages dataTable includeDetalle" />
+                                        update="messages dataTable btnEditar btnConsultar btnBorrar btnClonar" />
                             </p:commandButton>
                             <p:commandButton id="btnBorrar" value="#{labels['dict.borrar']}" styleClass="mr-2"
                                              icon="pi pi-trash"
                                              iconPos="top" action="#{viewProcedimientos.borrarProcedimiento}"
-                                             process="@form" update="messages dataTable" onstart="startEliminando()"
+                                             process="@form" update="messages dataTable btnEditar btnConsultar btnBorrar btnClonar" onstart="startEliminando()"
                                              disabled="#{viewProcedimientos.datoSeleccionado == null}"
                                              oncomplete="stopEliminando()">
                                 <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
@@ -646,7 +646,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                          sortOrder="#{viewProcedimientos.filtro.order}"
 
                           -->
-                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar @form:btnClonar @form:includeDetalle @form:selectorDetalle "
+                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar @form:btnClonar @form:selectorDetalle "
                         process="@form" listener="#{viewProcedimientos.calcularProc()}" onstart="onClickDatableStart();" oncomplete="onClickDatableFin();"  />
                 <p:ajax event="rowDblselect" global="false" oncomplete="triggerDblClick();" process="@form"/>
 
