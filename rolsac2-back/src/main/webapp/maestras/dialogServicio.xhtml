@@ -1052,7 +1052,7 @@
                              icon="pi pi-inbox"
                              action="#{dialogServicio.verMensajes}"
                              styleClass="btn-footer"
-                             process="@all"
+                             process="@this"
                              disabled="#{empty dialogServicio.data.codigo}"
                              update="messagesDialog">
                 <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogMensajes}" process="@this"/>

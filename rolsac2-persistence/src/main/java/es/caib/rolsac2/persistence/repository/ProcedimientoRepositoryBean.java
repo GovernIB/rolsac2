@@ -1305,15 +1305,21 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public void actualizarMensajes(Long codigo, String mensajes, boolean pendienteMensajeSupervisor, boolean pendienteMensajesGestor) {
         entityManager.flush();
-        Query query = entityManager.createQuery("update JProcedimiento set mensajes = '" + mensajes + "', mensajesPendienteGestor=" + pendienteMensajesGestor + " ,mensajesPendienteSupervisor=" + pendienteMensajeSupervisor + " where codigo = " + codigo);
+
+        Query query = entityManager.createQuery(
+                "UPDATE JProcedimiento p " +
+                        "SET p.mensajes = :mensajes, " +
+                        "    p.mensajesPendienteGestor = :pendienteGestor, " +
+                        "    p.mensajesPendienteSupervisor = :pendienteSupervisor " +
+                        "WHERE p.codigo = :codigo"
+        );
+
+        query.setParameter("mensajes", mensajes); // <-- aquí pasa el CLOB correctamente
+        query.setParameter("pendienteGestor", pendienteMensajesGestor);
+        query.setParameter("pendienteSupervisor", pendienteMensajeSupervisor);
+        query.setParameter("codigo", codigo);
+
         query.executeUpdate();
-        /*
-        JProcedimiento jproc = entityManager.find(JProcedimiento.class, codigo);
-        if (jproc != null) {
-            entityManager.flush();
-            jproc.setMensajes(mensajes);
-            entityManager.merge(jproc);
-        }*/
     }
 
     @Override

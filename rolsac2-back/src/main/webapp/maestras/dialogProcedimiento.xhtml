@@ -1188,7 +1188,7 @@
                              icon="pi pi-inbox"
                              action="#{dialogProcedimiento.verMensajes}"
                              styleClass="btn-footer"
-                             process="@all"
+                             process="@this"
                              style="flex:0 0 auto; white-space:nowrap;"
                              disabled="#{empty dialogProcedimiento.data.codigo}"
                              update="messagesDialog">
@@ -1199,7 +1199,7 @@
                              action="#{dialogProcedimiento.verAuditorias}"
                              styleClass="btn-footer"
                              style="flex:0 0 auto; white-space:nowrap;"
-                             process="@all"
+                             process="@this"
                              disabled="#{empty dialogProcedimiento.data.codigo}"
             />
         </div>

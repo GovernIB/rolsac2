@@ -59,6 +59,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Mensajes
      */
+    @Lob
     @Column(name = "PROC_MENSA")
     private String mensajes;
 
@@ -328,6 +329,6 @@ public class JProcedimiento extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JProcedimiento{" + "codigo=" + codigo + ", tipo='" + tipo + '\'' + ", codigoSIA=" + codigoSIA + ", estadoSIA=" + estadoSIA + ", siaFecha=" + siaFecha + ", pdu=" + (new Long(1).equals(estadoPdu) ? "integrado" : "no integrado") +'}';
+        return "JProcedimiento{" + "codigo=" + codigo + ", tipo='" + tipo + '\'' + ", codigoSIA=" + codigoSIA + ", estadoSIA=" + estadoSIA + ", siaFecha=" + siaFecha + ", pdu=" + (new Long(1).equals(estadoPdu) ? "integrado" : "no integrado") + '}';
     }
 }
