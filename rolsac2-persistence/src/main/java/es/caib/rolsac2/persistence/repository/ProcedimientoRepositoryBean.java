@@ -805,6 +805,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     indexacionDTO.setTipo(TypeIndexacion.SERVICIO.toString());
                 }
                 indexacionDTO.setFechaCreacion(new Date());
+                indexacionDTO.setExiste(1);
                 indexacionDTOS.add(indexacionDTO);
             }
             resultado = new Pagina<>(indexacionDTOS, indexacionDTOS.size());
