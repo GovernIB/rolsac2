@@ -62,13 +62,13 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
 
     @Override
     public List<BigDecimal> getNormativas(Long idEntidad) {
-        Query query = this.entityManager.createNativeQuery("   SELECT NOR_CODI  FROM R1_NORMAT");
+        Query query = this.entityManager.createNativeQuery("   SELECT NOR_CODI  FROM R1_NORMAT WHERE NOR_CODUNA IN (SELECT UNAD_CODIGO FROM RS2_UNIADM)");
         return query.getResultList();
     }
 
     @Override
     public List<BigDecimal> getProcedimientos(Long idEntidad, Long codigoUARaiz) {
-        Query query = this.entityManager.createNativeQuery("   SELECT PRO_CODI  FROM R1_PROCEDIMIENTOS WHERE CHECK_CUELGA_UA_PROC(PRO_CODUNA, " + codigoUARaiz + ") = 1");
+        Query query = this.entityManager.createNativeQuery("   SELECT PRO_CODI  FROM R1_PROCEDIMIENTOS WHERE CHECK_CUELGA_UA_PROC(PRO_CODUNA, " + codigoUARaiz + ") = 1 ");
         return query.getResultList();
     }
 
@@ -246,7 +246,8 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             query.setParameter("resultado", resultado);
 
             // call the stored procedure and get the result
-            query.execute();
+            boolean resultadox = query.execute();
+            String parar = null;
             //query.executeUpdate();
         } catch (Exception e) {
             LOG.error("Error importando normativa ", e);
@@ -264,7 +265,9 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
 
     @Override
     public List<BigDecimal> getUAs(Long idEntidad, Long idUARaiz) {
-        Query query = this.entityManager.createNativeQuery(" SELECT UNA_CODI  FROM R1_UNIADM " + " WHERE CHECK_CUELGA_UA_PROC(UNA_CODI, " + idUARaiz + ") = 1 " + " ORDER BY OBTENER_PROF_UA(UNA_CODI) ");
+        /** Sólo devuelve las unidades administrativas públicas : UNAD_VALIDA = 1 */
+        String sql = " SELECT UNA_CODI  FROM R1_UNIADM  WHERE  UNA_VALIDA = 1  AND CHECK_CUELGA_UA_PROC(UNA_CODI, " + idUARaiz + ") = 1 ORDER BY OBTENER_PROF_UA(UNA_CODI) ";
+        Query query = this.entityManager.createNativeQuery(sql);
         return query.getResultList();
     }
 

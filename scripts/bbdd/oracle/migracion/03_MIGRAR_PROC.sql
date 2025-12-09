@@ -254,7 +254,6 @@ AS
     codigosia                  NUMBER(10, 0);
     codigosiar2                NUMBER(10, 0);
     codigosiaexist             NUMBER(2, 0);
-    codigo_ua                  NUMBER(10, 0);
     codigo_procwf              NUMBER(10, 0);
     existe_mat_prc             NUMBER(2, 0);
     tipotram_plantilla         NUMBER(10, 0);
@@ -276,6 +275,15 @@ AS
     vUsuario                   NUMBER(10,0);
     vExisteUsuario             NUMBER(1, 0);
     mensajeAuditoria           VARCHAR2(255 CHAR);
+    V_PRWF_CODUAI              NUMBER(10, 0);
+    V_PRWF_PRCODUAC            NUMBER(10, 0);
+    V_PRWF_CODUAR              NUMBER(10, 0);
+    V_pro_coduna               NUMBER(10, 0);
+    V_pro_coduna_resol         NUMBER(10, 0);
+    V_PRO_CODUNA_SERV          NUMBER(10, 0);
+    -- Excepción específica para el -20001
+    ex_ua_no_migrada EXCEPTION;
+    PRAGMA EXCEPTION_INIT(ex_ua_no_migrada, -20001);
 BEGIN
     dbms_lob.Createtemporary(l_clob, TRUE);
 
@@ -466,6 +474,16 @@ BEGIN
             INTO   codigo_procwf
             FROM   dual;
 
+            SELECT pro_coduna, pro_coduna_resol, PRO_CODUNA_SERV
+            INTO   v_pro_coduna, v_pro_coduna_resol, v_PRO_CODUNA_SERV
+            FROM   r1_procedimientos
+            WHERE  pro_codi = codigo;
+
+            V_PRWF_CODUAI := obtenerUAconDIR3( v_pro_coduna);
+            V_PRWF_PRCODUAC := obtenerUAconDIR3(NVL (v_pro_coduna_resol, v_pro_coduna));
+            V_PRWF_CODUAR := obtenerUAconDIR3( NVL (v_PRO_CODUNA_SERV, v_pro_coduna) );
+
+
             INSERT INTO rs2_prcwf
             (prwf_codigo,
              prwf_codproc,
@@ -506,9 +524,9 @@ BEGIN
                    wf,
                    wfestado,
                 /*PRWF_WFUSUA,*/
-                   pro_coduna,
-                   NVL (pro_coduna_resol, pro_coduna),
-                   NVL (PRO_CODUNA_SERV, pro_coduna),
+                   V_PRWF_CODUAI,
+                   V_PRWF_PRCODUAC ,
+                   V_PRWF_CODUAR,
                    interno,
                    Coalesce (pro_respon, 'Desconegut'),
                    pro_info,
@@ -545,10 +563,6 @@ BEGIN
             FOR rolsac1_tramites IN cursortramitesrolsac1(codigo)
                 LOOP
 
-                    SELECT pro_coduna
-                    INTO   codigo_ua
-                    FROM   r1_procedimientos
-                    WHERE  pro_codi = codigo;
 
                     tipotram_plantilla := NULL;
 
@@ -660,7 +674,7 @@ BEGIN
                      prta_orden,
                      prta_trmtrm)
                     VALUES      ( rolsac1_tramites.tra_codi,
-                                  codigo_ua,
+                                  V_PRWF_CODUAI,
                                   codigo_procwf,
                                   tipotram_plantilla,
                                   lstdoctram,
@@ -982,6 +996,11 @@ BEGIN
             WHEN OTHERS THEN
                 ROLLBACK;
 
+                -- Si el error viene de obtenerUAconDIR3 (-20001)
+                IF SQLCODE = -20001 THEN
+                    RAISE ex_ua_no_migrada;
+                END IF;
+
                 dbms_output.Put_line('SQLCODE:'
                     || SQLCODE);
 
@@ -1025,20 +1044,29 @@ BEGIN
 
     resultado := l_clob;
 EXCEPTION
+    WHEN ex_ua_no_migrada THEN
+        ROLLBACK;
+        resultado := 'El procediment ' || codigo || ' pertany a una UA que no se ha migrat, ' ||
+                     'segurament perque no es vigent.';
     WHEN OTHERS THEN
         ROLLBACK;
-        dbms_output.Put_line('SQLCODE:' || SQLCODE);
-        dbms_output.Put_line('SQLERRM:' || SQLERRM);
-        dbms_lob.Writeappend(l_clob, Length('SE HA PRODUCIDO UN ERROR\n'), 'SE HA PRODUCIDO UN ERROR\n');
-        dbms_lob.Writeappend(l_clob, Length('El error. CODE:'
-            || SQLCODE
-            || '  MSG:'
-            || SQLERRM
-            || '. \n'), 'El error. CODE:'
-                                 || SQLCODE
-                                 || '  MSG:'
-                                 || SQLERRM
-                                 || '. \n');
-        dbms_lob.CLOSE(l_clob);
+        -- Aseguramos que el CLOB existe antes de escribir
+        IF dbms_lob.istemporary(l_clob) = 0 THEN
+            dbms_lob.createtemporary(l_clob, TRUE);
+            dbms_lob.open(l_clob, dbms_lob.lob_readwrite);
+        END IF;
+
+        dbms_lob.writeappend(
+                l_clob,
+                length(
+                        'ERROR en MIGRAR_PROC. PRO=' || codigo ||
+                        ' CODE=' || SQLCODE ||
+                        ' MSG='  || SQLERRM || chr(10)
+                ),
+                'ERROR en MIGRAR_PROC. PRO=' || codigo ||
+                ' CODE=' || SQLCODE ||
+                ' MSG='  || SQLERRM || chr(10)
+        );
+
         resultado := l_clob;
 END MIGRAR_PROC;

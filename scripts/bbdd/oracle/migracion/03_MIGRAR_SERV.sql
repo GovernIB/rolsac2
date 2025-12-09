@@ -258,6 +258,13 @@ maximoid             NUMBER;
   vUsuario                   NUMBER(10,0);
   vExisteUsuario             NUMBER(1, 0);
   mensajeAuditoria           VARCHAR2(255 CHAR);
+  v_SER_INSTRU NUMBER(10, 0);
+  v_ser_serrsp NUMBER(10, 0);
+  V_PRWF_CODUAI  NUMBER(10, 0);
+  V_PRWF_CODUAR  NUMBER(10, 0);
+    -- Excepción específica para el -20001
+    ex_ua_no_migrada EXCEPTION;
+    PRAGMA EXCEPTION_INIT(ex_ua_no_migrada, -20001);
 BEGIN
     dbms_lob.Createtemporary(l_clob, TRUE);
 
@@ -505,6 +512,14 @@ SELECT rs2_prcwf_seq.NEXTVAL
 INTO   codigo_procwf
 FROM   dual;
 
+SELECT SER_INSTRU, ser_serrsp
+INTO   v_SER_INSTRU, v_ser_serrsp
+FROM   r1_servicios
+WHERE  ser_codi = codigo;
+
+V_PRWF_CODUAI := obtenerUAconDIR3( v_SER_INSTRU);
+            V_PRWF_CODUAR := obtenerUAconDIR3( V_ser_serrsp );
+
 INSERT INTO rs2_prcwf
 (prwf_codigo,
  prwf_codproc,
@@ -532,8 +547,8 @@ SELECT codigo_procwf,
        codigo,
        wf,
        wfestado,
-       SER_INSTRU,
-       ser_serrsp,
+       V_PRWF_CODUAI,
+       V_PRWF_CODUAR,
        interno,
        Coalesce (ser_nomrsp, 'Desconegut'),
        ser_correo,
@@ -721,6 +736,12 @@ dbms_lob.Writeappend(l_clob, Length('El serv '
           '" se ha migrado.');
 EXCEPTION
           WHEN OTHERS THEN
+
+            -- Si el error viene de obtenerUAconDIR3 (-20001)
+             IF SQLCODE = -20001 THEN
+                    RAISE ex_ua_no_migrada;
+END IF;
+
             dbms_lob.Writeappend(l_clob, Length('El serv '
                                                 || codigo
                                                 || ' "'
@@ -761,29 +782,29 @@ END IF;
 
     resultado := l_clob;
 EXCEPTION
-  WHEN OTHERS THEN
-             ROLLBACK;
+    WHEN ex_ua_no_migrada THEN
+        ROLLBACK;
+        resultado := 'El servei ' || codigo || ' pertany  a una UA que no s.ha migrat, ' ||
+                     'segurament perque no es vigent.';
+WHEN OTHERS THEN
+        ROLLBACK;
+        -- Aseguramos que el CLOB existe antes de escribir
+        IF dbms_lob.istemporary(l_clob) = 0 THEN
+            dbms_lob.createtemporary(l_clob, TRUE);
+            dbms_lob.open(l_clob, dbms_lob.lob_readwrite);
+END IF;
 
-             dbms_output.Put_line('SQLCODE:'
-                                  || SQLCODE);
+        dbms_lob.writeappend(
+                l_clob,
+                length(
+                        'ERROR en MIGRAR_PROC. PRO=' || codigo ||
+                        ' CODE=' || SQLCODE ||
+                        ' MSG='  || SQLERRM || chr(10)
+                ),
+                'ERROR en MIGRAR_PROC. PRO=' || codigo ||
+                ' CODE=' || SQLCODE ||
+                ' MSG='  || SQLERRM || chr(10)
+        );
 
-             dbms_output.Put_line('SQLERRM:'
-                                  || SQLERRM);
-
-             dbms_lob.Writeappend(l_clob, Length('SE HA PRODUCIDO UN ERROR\n'),
-             'SE HA PRODUCIDO UN ERROR\n');
-
-             dbms_lob.Writeappend(l_clob, Length('El error. CODE:'
-                                                 || SQLCODE
-                                                 || '  MSG:'
-                                                 || SQLERRM
-                                                 || '. \n'), 'El error. CODE:'
-                                                             || SQLCODE
-                                                             || '  MSG:'
-                                                             || SQLERRM
-                                                             || '. \n');
-
-             dbms_lob.CLOSE(l_clob);
-
-             resultado := l_clob;
-END MIGRAR_SERV; 
+        resultado := l_clob;
+END MIGRAR_SERV;

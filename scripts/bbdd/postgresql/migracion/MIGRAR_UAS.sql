@@ -136,7 +136,8 @@ INSERT INTO RS2_UNIADM
   UNAD_RSPEMA,
   UNAD_DOMINI,
   UNAD_CODENTI,
-  UNAD_VERSION)
+  UNAD_VERSION,
+  UNAD_ESTADO)
 VALUES (
            ROLSAC1_UA.UNA_CODI,
            ROLSAC1_UA.UNA_CODUNA,
@@ -151,7 +152,11 @@ VALUES (
            ROLSAC1_UA.UNA_EMAILR,
            ROLSAC1_UA.UNA_DOMINI,
            codigoEntidad,
-           1
+           1,
+           CASE
+               WHEN ROLSAC1_UA.UNA_VALIDA = 1 THEN 'V'
+               ELSE 'X'
+               END  -- UNAD_ESTADO
        );
 
 /** INTRODUCIMOS LAS TRADUCCIONES **/
