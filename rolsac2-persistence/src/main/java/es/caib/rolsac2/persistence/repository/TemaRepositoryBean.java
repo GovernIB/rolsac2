@@ -98,7 +98,7 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
             sql.append(" and LOWER (j.identificador) LIKE :identificador ");
         }
         if (filtro.isRellenoIdPadre()) {
-            sql.append(" and tp.codigo =:idPadre ");
+            sql.append(" and j.temaPadre in (SELECT tp FROM JTema tp WHERE tp.codigo = :idPadre) ");
         }
 
         if (filtro.getOrderBy() != null) {
