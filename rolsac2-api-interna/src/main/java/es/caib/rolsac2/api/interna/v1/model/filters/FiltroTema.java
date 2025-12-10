@@ -124,4 +124,12 @@ public class FiltroTema extends EntidadJson<FiltroTema> {
     public void setIdEntidad(Long idEntidad) {
         this.idEntidad = idEntidad;
     }
+
+    public Long getIdPadre() {
+        return idPadre;
+    }
+
+    public void setIdPadre(Long idPadre) {
+        this.idPadre = idPadre;
+    }
 }
