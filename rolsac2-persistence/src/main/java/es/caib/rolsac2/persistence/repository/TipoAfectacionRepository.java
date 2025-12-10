@@ -25,5 +25,7 @@ public interface TipoAfectacionRepository extends CrudRepository<JTipoAfectacion
 
   List<JTipoAfectacion> listTipoAfectaciones();
 
-List<TipoAfectacionDTO> findPagedByFiltroRest(TipoAfectacionFiltro filtro);
+  List<TipoAfectacionDTO> findPagedByFiltroRest(TipoAfectacionFiltro filtro);
+
+  boolean isReferencedByAfectacion(Long idTipoAfectacion);
 }

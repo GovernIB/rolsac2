@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoAfectacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoAfectacionFiltro;
@@ -168,7 +169,14 @@ public class ViewTipoAfectacion extends AbstractController implements Serializab
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
         } else {
-            maestrasSupService.deleteTipoAfectacion(datoSeleccionado.getCodigo());
+
+
+            int resultado = maestrasSupService.deleteTipoAfectacion(datoSeleccionado.getCodigo());
+            if(resultado == Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS){
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dato.error.delete.tipoafectacion_asociado"));
+                return;
+            }
+
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
         }
     }

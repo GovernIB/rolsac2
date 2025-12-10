@@ -38,4 +38,6 @@ public interface TipoTramitacionRepository extends CrudRepository<JTipoTramitaci
     String getEnlaceTelematico(TipoTramitacionFiltro fg);
 
     void deleteByEntidad(Long id);
+
+    boolean isReferencedByProcedimiento(Long tipoTramitacionId);
 }

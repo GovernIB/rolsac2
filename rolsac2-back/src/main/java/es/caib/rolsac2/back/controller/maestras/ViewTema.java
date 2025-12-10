@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.exception.ServiceException;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.TemaGridDTO;
 import es.caib.rolsac2.service.model.filtro.TemaFiltro;
@@ -129,8 +130,14 @@ public class ViewTema extends AbstractController implements Serializable {
                     return;
                 }
                 TemaGridDTO temaSeleccionado = (TemaGridDTO) this.datoSeleccionado.getData();
-                temaServiceFacade.delete(temaSeleccionado.getCodigo());
-                construirArbol();
+                int resultado =  temaServiceFacade.delete(temaSeleccionado.getCodigo());
+                if(resultado == Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS){
+                    UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dato.error.delete.proc_asociado"));
+                } else {
+                    construirArbol();
+                    UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+                }
+
             }
         } catch (ServiceException e) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogTema.error.elementoConSeleccion"));

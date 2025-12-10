@@ -337,4 +337,15 @@ public class TemaRepositoryBean extends AbstractCrudRepository<JTema, Long> impl
             }
         }
     }
+
+    @Override
+    public boolean isReferencedByProcedimiento(Long temaCodigo){
+
+        String jpql = "SELECT COUNT(p) FROM JProcedimientoTema p WHERE p.tema.codigo = :temaCodigo";
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+        query.setParameter("temaCodigo", temaCodigo);
+        Long resultado = query.getSingleResult();
+        return resultado > 0;
+    }
+
 }

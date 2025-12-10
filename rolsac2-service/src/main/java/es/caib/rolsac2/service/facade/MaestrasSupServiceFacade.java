@@ -34,7 +34,7 @@ public interface MaestrasSupServiceFacade {
      * @param id identificador del tipo de afectación a borrar
      * @throws RecursoNoEncontradoException si el tipo de afectación con el id no existe.
      */
-    void deleteTipoAfectacion(Long id) throws RecursoNoEncontradoException;
+    int deleteTipoAfectacion(Long id) throws RecursoNoEncontradoException;
 
     /**
      * Retorna el tipo de afectación indicado por el identificador
@@ -459,7 +459,7 @@ public interface MaestrasSupServiceFacade {
      * @param id identificador del tipoProcedimiento a borrar
      * @throws RecursoNoEncontradoException si el tipoProcedimiento con el id no existe.
      */
-    void deleteTipoProcedimiento(Long id) throws RecursoNoEncontradoException;
+    int deleteTipoProcedimiento(Long id) throws RecursoNoEncontradoException;
 
     /**
      * Retorna un opcional amb el tipoProcedimiento indicat per l'identificador.
@@ -636,7 +636,7 @@ public interface MaestrasSupServiceFacade {
      * @param id identificador del tipo de tramitación a borrar
      * @throws RecursoNoEncontradoException si el tipo de tramitación con el id no existe.
      */
-    void deleteTipoTramitacion(Long id) throws RecursoNoEncontradoException;
+    int deleteTipoTramitacion(Long id) throws RecursoNoEncontradoException;
 
     /**
      * Retorna un opcional con el tipo de tramitación indicado por el identificador
@@ -705,8 +705,7 @@ public interface MaestrasSupServiceFacade {
      *
      * @param id identificador del TipoVia a borrar
      * @throws RecursoNoEncontradoException si el TipoVia con el id no existe.
-     */
-    void deleteTipoVia(Long id) throws RecursoNoEncontradoException;
+     */int deleteTipoVia(Long id) throws RecursoNoEncontradoException;
 
     /**
      * Retorna un opcional amb el TipoVia indicat per l'identificador.

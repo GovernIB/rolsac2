@@ -151,4 +151,14 @@ public class TipoAfectacionRepositoryBean extends AbstractCrudRepository<JTipoAf
 		}
 		return tipoAfectaciones;
 	}
+
+    @Override
+    public boolean isReferencedByAfectacion(Long idTipoAfectacion) {
+
+        String jpql = "SELECT COUNT(a) FROM JAfectacion a WHERE a.tipoAfectacion.codigo = :idTipoAfectacion";
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+        query.setParameter("idTipoAfectacion", idTipoAfectacion);
+        Long resultado = query.getSingleResult();
+        return resultado > 0;
+    }
 }

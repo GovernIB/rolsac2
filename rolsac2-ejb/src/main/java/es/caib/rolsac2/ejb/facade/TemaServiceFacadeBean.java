@@ -12,6 +12,7 @@ import es.caib.rolsac2.persistence.repository.TipoMateriaSIARepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TemaDTO;
 import es.caib.rolsac2.service.model.TemaGridDTO;
@@ -134,9 +135,17 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void delete(Long id) throws RecursoNoEncontradoException {
-        JTema jTema = temaRepository.getReference(id);
-        temaRepository.delete(jTema);
+    public int delete(Long id) throws RecursoNoEncontradoException {
+
+        boolean usadoEnProcedimiento = temaRepository.isReferencedByProcedimiento(id);
+
+        if(usadoEnProcedimiento) {
+            return Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS;
+        }else {
+            JTema jTema = temaRepository.getReference(id);
+            temaRepository.delete(jTema);
+            return 0;
+        }
     }
 
     @Override

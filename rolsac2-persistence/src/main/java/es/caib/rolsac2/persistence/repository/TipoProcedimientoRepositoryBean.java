@@ -195,4 +195,13 @@ public class TipoProcedimientoRepositoryBean extends AbstractCrudRepository<JTip
             }
         }
     }
+
+    @Override
+    public boolean isReferencedByProcedimientoWF(Long id) {
+        String jpql = "SELECT COUNT(wf) FROM JProcedimientoWorkflow wf WHERE wf.tipoProcedimiento.id = :id";
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+        query.setParameter("id", id);
+        Long resultado = query.getSingleResult();
+        return resultado > 0;
+    }
 }

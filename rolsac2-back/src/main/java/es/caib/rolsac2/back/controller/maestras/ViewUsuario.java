@@ -194,6 +194,7 @@ public class ViewUsuario extends AbstractController implements Serializable {
             } else {
                 administracionEntService.deleteUsuario(datoSeleccionado.getCodigo());
             }
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
         }
     }
 

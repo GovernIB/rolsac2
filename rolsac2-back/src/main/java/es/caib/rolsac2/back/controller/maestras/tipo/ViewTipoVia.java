@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoViaGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoViaFiltro;
@@ -174,8 +175,13 @@ public class ViewTipoVia extends AbstractController implements Serializable {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
-            tipoViaService.deleteTipoVia(datoSeleccionado.getCodigo());
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            int resultado = tipoViaService.deleteTipoVia(datoSeleccionado.getCodigo());
+            if (resultado == Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dato.error.delete.proc_asociado"));
+            }else{
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            }
+
         }
     }
 

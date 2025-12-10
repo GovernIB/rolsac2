@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoTramitacionGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
@@ -170,8 +171,12 @@ public class ViewTipoTramitacion extends AbstractController implements Serializa
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            maestrasSupService.deleteTipoTramitacion(datoSeleccionado.getCodigo());
-            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+            int resultado = maestrasSupService.deleteTipoTramitacion(datoSeleccionado.getCodigo());
+            if( resultado == Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS){
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dato.error.delete.proc_asociado"));
+            } else {
+                addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+            }
         }
     }
 

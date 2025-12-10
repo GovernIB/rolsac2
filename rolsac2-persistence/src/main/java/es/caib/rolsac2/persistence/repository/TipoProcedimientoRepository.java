@@ -26,4 +26,5 @@ public interface TipoProcedimientoRepository extends CrudRepository<JTipoProcedi
 
     void deleteByEntidad(Long idEntidad);
 
+    boolean isReferencedByProcedimientoWF(Long id);
 }

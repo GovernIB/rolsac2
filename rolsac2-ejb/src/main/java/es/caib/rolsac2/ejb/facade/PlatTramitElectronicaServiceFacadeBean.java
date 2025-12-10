@@ -7,13 +7,16 @@ import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JPlatTramitElectronica;
 import es.caib.rolsac2.persistence.repository.EntidadRepository;
 import es.caib.rolsac2.persistence.repository.PlatTramitElectronicaRepository;
+import es.caib.rolsac2.persistence.repository.TipoTramitacionRepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaDTO;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
 import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
+import es.caib.rolsac2.service.model.filtro.TipoTramitacionFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +50,16 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
     private static final String ERROR_LITERAL = "Error";
 
     @Inject
-    PlatTramitElectronicaRepository platTramitElectronicaRepository;
+    private PlatTramitElectronicaRepository platTramitElectronicaRepository;
 
     @Inject
-    PlatTramitElectronicaConverter converter;
+    private PlatTramitElectronicaConverter converter;
 
     @Inject
-    EntidadRepository entidadRepository;
+    private EntidadRepository entidadRepository;
+
+    @Inject
+    private TipoTramitacionRepository tipoTramitacionRepository;
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -78,11 +84,25 @@ public class PlatTramitElectronicaServiceFacadeBean implements PlatTramitElectro
         platTramitElectronicaRepository.update(jPlatTramitElectronica);
     }
 
+
+
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void delete(Long id) throws RecursoNoEncontradoException {
-        JPlatTramitElectronica jPlatTramitElectronica = platTramitElectronicaRepository.getReference(id);
-        platTramitElectronicaRepository.delete(jPlatTramitElectronica);
+    public int delete(Long id) throws RecursoNoEncontradoException {
+        // Solo se puede borrar si no hay tramitaciones electrónicas asociadas
+        // Comprobamos si existe JTipoTramitacion asociado a la plataforma
+
+        TipoTramitacionFiltro filtro = new TipoTramitacionFiltro();
+        filtro.setCodPlatTramitacion(id);
+        if( tipoTramitacionRepository.countByFiltro(filtro) == 0) {
+
+            JPlatTramitElectronica jPlatTramitElectronica = platTramitElectronicaRepository.getReference(id);
+            platTramitElectronicaRepository.delete(jPlatTramitElectronica);
+        }else{
+           return Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS;
+        }
+
+        return 0;
     }
 
     @Override

@@ -40,7 +40,7 @@ public interface PlatTramitElectronicaServiceFacade {
      * @param id identificador de la plataforma de tramitación electrónica a borrar
      * @throws RecursoNoEncontradoException si la plataforma de tramitación electrónica con el id no existe.
      */
-    void delete(Long id) throws RecursoNoEncontradoException;
+    int delete(Long id) throws RecursoNoEncontradoException;
 
     /**
      * Retorna un opcional con la plataforma de tramitación electrónica indicado por el identificador

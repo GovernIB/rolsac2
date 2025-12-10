@@ -155,9 +155,17 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void deleteTipoAfectacion(Long id) throws RecursoNoEncontradoException {
-        JTipoAfectacion jTipoAfectacion = tipoAfectacionRepository.getReference(id);
-        tipoAfectacionRepository.delete(jTipoAfectacion);
+    public int deleteTipoAfectacion(Long idTipoAfectacion) throws RecursoNoEncontradoException {
+
+        boolean referenciado = tipoAfectacionRepository.isReferencedByAfectacion(idTipoAfectacion);
+
+        if (referenciado) {
+            return Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS;
+        }else {
+            JTipoAfectacion jTipoAfectacion = tipoAfectacionRepository.getReference(idTipoAfectacion);
+            tipoAfectacionRepository.delete(jTipoAfectacion);
+            return 0;
+        }
     }
 
     @Override
@@ -809,9 +817,17 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void deleteTipoProcedimiento(Long id) throws RecursoNoEncontradoException {
-        JTipoProcedimiento jTipoProcedimiento = tipoProcedimientoRepository.getReference(id);
-        tipoProcedimientoRepository.delete(jTipoProcedimiento);
+    public int deleteTipoProcedimiento(Long id) throws RecursoNoEncontradoException {
+
+        boolean usadoEnProcedimiento = tipoProcedimientoRepository.isReferencedByProcedimientoWF(id);
+
+        if(usadoEnProcedimiento) {
+            return Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS;
+        }else {
+            JTipoProcedimiento jTipoProcedimiento = tipoProcedimientoRepository.getReference(id);
+            tipoProcedimientoRepository.delete(jTipoProcedimiento);
+            return 0;
+        }
     }
 
     @Override
@@ -962,9 +978,18 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void deleteTipoTramitacion(Long id) throws RecursoNoEncontradoException {
-        JTipoTramitacion jTipoTramitacion = tipoTramitacionRepository.getReference(id);
-        tipoTramitacionRepository.delete(jTipoTramitacion);
+    public int deleteTipoTramitacion(Long id) throws RecursoNoEncontradoException {
+
+        // Buscamos si el tipo de tramitacion esta siendo usado en algun procedimiento o tramite
+        boolean usadoEnProcedimiento = tipoTramitacionRepository.isReferencedByProcedimiento(id);
+
+        if(usadoEnProcedimiento){
+            return Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS;
+        }else {
+            JTipoTramitacion jTipoTramitacion = tipoTramitacionRepository.getReference(id);
+            tipoTramitacionRepository.delete(jTipoTramitacion);
+            return 0;
+        }
     }
 
     @Override
@@ -1042,9 +1067,17 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void deleteTipoVia(Long id) throws RecursoNoEncontradoException {
-        JTipoVia jTipoVia = tipoViaRepository.getReference(id);
-        tipoViaRepository.delete(jTipoVia);
+    public int deleteTipoVia(Long id) throws RecursoNoEncontradoException {
+
+        boolean referenciado = tipoViaRepository.isReferencedByProcedimiento(id);
+
+        if(referenciado) {
+            return Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS;
+        } else {
+            JTipoVia jTipoVia = tipoViaRepository.getReference(id);
+            tipoViaRepository.delete(jTipoVia);
+            return 0;
+        }
     }
 
     @Override

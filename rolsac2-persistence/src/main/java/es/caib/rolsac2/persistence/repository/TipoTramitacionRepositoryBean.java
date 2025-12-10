@@ -325,4 +325,16 @@ public class TipoTramitacionRepositoryBean extends AbstractCrudRepository<JTipoT
             return traducciones.get(0).getUrl();
         }
     }
+
+    public boolean isReferencedByProcedimiento(Long tipoTramitacionId) {
+        String sql = "SELECT COUNT(pw) FROM JProcedimientoWorkflow pw WHERE pw.tramiteElectronicoPlantilla.codigo = :tipoTramitacionId OR " +
+                " pw.tramiteElectronico.codigo = :tipoTramitacionId OR " +
+                "           EXISTS (SELECT pt FROM JProcedimientoTramite pt WHERE pt.tipoTramitacion.codigo = :tipoTramitacionId) OR " +
+                "          EXISTS (SELECT ps FROM JProcedimientoTramite ps WHERE ps.tipoTramitacionPlantilla.codigo = :tipoTramitacionId)"; ;
+
+        TypedQuery<Long> query = entityManager.createQuery(sql, Long.class);
+        query.setParameter("tipoTramitacionId", tipoTramitacionId);
+        Long count = query.getSingleResult();
+        return count != null && count > 0;
+    }
 }

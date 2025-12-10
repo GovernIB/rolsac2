@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoProcedimientoGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoProcedimientoFiltro;
@@ -172,8 +173,12 @@ public class ViewTipoProcedimiento extends AbstractController implements Seriali
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            tipoProcedimientoService.deleteTipoProcedimiento(datoSeleccionado.getCodigo());
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            int resultado = tipoProcedimientoService.deleteTipoProcedimiento(datoSeleccionado.getCodigo());
+            if (resultado == Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dato.error.delete.proc_asociado"));
+            } else {
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            }
         }
     }
 

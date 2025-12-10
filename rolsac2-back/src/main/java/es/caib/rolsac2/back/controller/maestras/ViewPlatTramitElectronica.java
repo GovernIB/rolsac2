@@ -3,7 +3,9 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.commons.utils.Constants;
 import es.caib.rolsac2.service.facade.PlatTramitElectronicaServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.PlatTramitElectronicaGridDTO;
 import es.caib.rolsac2.service.model.filtro.PlatTramitElectronicaFiltro;
@@ -133,7 +135,12 @@ public class ViewPlatTramitElectronica extends AbstractController implements Ser
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "Seleccione un elemento");
         } else {
-            serviceFacade.delete(datoSeleccionado.getCodigo());
+            int resultado = serviceFacade.delete(datoSeleccionado.getCodigo());
+            if( resultado == Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS){
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dato.error.delete.proc_asociado"));
+            }else{
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            }
         }
     }
 

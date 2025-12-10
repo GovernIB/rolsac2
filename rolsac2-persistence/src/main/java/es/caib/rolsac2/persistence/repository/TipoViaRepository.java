@@ -21,4 +21,6 @@ public interface TipoViaRepository extends CrudRepository<JTipoVia, Long> {
     List<TipoViaDTO> findAll();
 
 	List<TipoViaDTO> findPagedByFiltroRest(TipoViaFiltro filtro);
+
+    boolean isReferencedByProcedimiento(Long id);
 }

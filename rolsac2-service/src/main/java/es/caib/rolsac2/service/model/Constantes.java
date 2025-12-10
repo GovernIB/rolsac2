@@ -77,4 +77,6 @@ public class Constantes {
     public static final String INDEXAR_SIA_ICONO = "ico-sia mr-2";
 
     public static final String INDEXAR_PDU_ICONO = "ico-pdu mr-2";
+
+    public static final int NO_ELIMINABLE_POR_TENER_REFERENCIAS = -1;
 }

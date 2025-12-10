@@ -23,7 +23,7 @@ public interface TemaServiceFacade {
 
     void update(TemaDTO dto, String idioma) throws RecursoNoEncontradoException;
 
-    void delete(Long id) throws RecursoNoEncontradoException;
+    int delete(Long id) throws RecursoNoEncontradoException;
 
     TemaDTO findById(Long id);
 

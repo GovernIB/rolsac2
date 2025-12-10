@@ -51,4 +51,6 @@ public interface TemaRepository extends CrudRepository<JTema, Long> {
      * @param mathPath Mathpath nuevo
      */
     void actualizarMathPath(Long codigo, String mathPath);
+
+    boolean isReferencedByProcedimiento(Long temaCodigo);
 }

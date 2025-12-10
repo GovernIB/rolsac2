@@ -150,4 +150,15 @@ public class TipoViaRepositoryBean extends AbstractCrudRepository<JTipoVia, Long
 		}
 		return tipoViaes;
 	}
+
+    @Override
+    public boolean isReferencedByProcedimiento(Long id) {
+        String jpql = "SELECT COUNT(p) FROM JProcedimiento p WHERE p.tipoVia.codigo = :id";
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+        query.setParameter("id", id);
+        Long resultado = query.getSingleResult();
+        return resultado > 0;
+
+
+    }
 }
