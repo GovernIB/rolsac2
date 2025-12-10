@@ -736,11 +736,12 @@ dbms_lob.Writeappend(l_clob, Length('El serv '
           '" se ha migrado.');
 EXCEPTION
           WHEN OTHERS THEN
+            ROLLBACK;
 
             -- Si el error viene de obtenerUAconDIR3 (-20001)
              IF SQLCODE = -20001 THEN
                     RAISE ex_ua_no_migrada;
-END IF;
+            END IF;
 
             dbms_lob.Writeappend(l_clob, Length('El serv '
                                                 || codigo
