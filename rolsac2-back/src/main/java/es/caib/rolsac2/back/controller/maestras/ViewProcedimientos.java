@@ -671,6 +671,53 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         };
     }
 
+
+    public void returnDialogoMochilaX() {
+
+        ProcedimientoGridDTO proc = null;
+        String recordamos = null;
+        try {
+            if (UtilJSF.getValorMochilaByKey("proc") != null && UtilJSF.getValorMochilaByKey("proc") instanceof ProcedimientoDTO) {
+                ProcedimientoDTO procActualizado = (ProcedimientoDTO) UtilJSF.getValorMochilaByKey("proc");
+                wfProcedimiento = procedimientoService.getWorkflowEstados(procActualizado.getCodigo());
+
+                ProcedimientoFiltro filtroX = new ProcedimientoFiltro();
+                filtroX.setCodigo(procActualizado.getCodigo());
+                Pagina<ProcedimientoGridDTO> datos = procedimientoService.findProcedimientosByFiltro(filtroX);
+                if (datos != null && datos.getItems() != null && !datos.getItems().isEmpty()) {
+                    for (ProcedimientoGridDTO procGridDTO : datos.getItems()) {
+                        if (procGridDTO.getCodigo().equals(procActualizado.getCodigo())) {
+                            this.datoSeleccionado = procGridDTO;
+                            break;
+                        }
+                    }
+                }
+            }
+            proc = this.datoSeleccionado;
+            recordamos = wfProcedimiento;
+
+            calcularProc();
+            this.buscar();
+            this.seleccionarPorId(proc);
+            if (recordamos != null) {
+                wfProcedimiento = recordamos;
+                cambiarProcedimientoSeleccionadoWF();
+            }
+        } catch (Exception e) {
+            LOG.error("Error al refrescar la lista de servicios", e);
+            if (recordamos != null) {
+                LOG.error("Recordamos : " + recordamos);
+            }
+            if (proc != null) {
+                LOG.error("SERV : " + proc);
+            }
+            if (proc != null) {
+                LOG.error("SERV : " + proc);
+            }
+        }
+
+    }
+
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 

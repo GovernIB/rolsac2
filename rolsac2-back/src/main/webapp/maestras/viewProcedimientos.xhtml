@@ -269,6 +269,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
                                              action="#{viewProcedimientos.ayuda('viewProcedimientos')}" process="@this"
                                              update="messages dataTable"/>
+
+                            <p:remoteCommand name="rcDialogCerrado"
+                                             process="@this"
+                                             action="#{viewProcedimientos.returnDialogoMochila()}"
+                                             update="btnEditar btnConsultar btnBorrar btnClonar dataTable includeDetalle"/>
                         </div>
                     </div>
                 </f:facet>

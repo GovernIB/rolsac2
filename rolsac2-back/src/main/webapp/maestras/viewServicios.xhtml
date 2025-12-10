@@ -228,26 +228,26 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                             <p:commandButton id="btnClonar" value="#{labels['dict.clonar']}" styleClass="mr-2" icon="pi pi-file-o"
-                                             iconPos="top" actionListener="#{viewServicios.clonarServicio}" update="messages"
+                                             iconPos="top" actionListener="#{viewServicios.clonarServicio}" update="messages "
                                              disabled="#{viewServicios.datoSeleccionado == null}"
                                              process="@this" rendered="#{!viewServicios.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogoClonar}"
-                                        update="messages dataTable"/>
+                                        update="messages dataTable  btnEditar btnConsultar btnBorrar btnClonar"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2" icon="pi pi-file-o"
                                              iconPos="top" actionListener="#{viewServicios.nuevoProcedimiento}"
                                              process="@this" rendered="#{!viewServicios.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
-                                        update="messages dataTable"/>
+                                        update="messages dataTable  btnEditar btnConsultar btnBorrar btnClonar"/>
                             </p:commandButton>
                             <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" styleClass="mr-2"
                                              icon="pi pi-eye" iconPos="top"
                                              actionListener="#{viewServicios.consultarProcedimiento}" process="@form"
-                                             update="messages"
+                                             update="messages dataTable"
                                              disabled="#{!viewServicios.datoSeleccionado.tieneDatosPublicados()}"
                                              onstart="startCargando()" oncomplete="stopCargando()" >
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
-                                        update="messages dataTable includeDetalle" />
+                                        update="messages dataTable  btnEditar btnConsultar btnBorrar btnClonar" />
                             </p:commandButton>
                             <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" styleClass="mr-2"
                                              icon="pi pi-pencil" iconPos="top"
@@ -257,17 +257,18 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              oncomplete="stopCargando()" rendered="#{!viewServicios.isModoConsulta()}"
                                              >
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
-                                        update="messages dataTable includeDetalle" />
+                                        update="messages dataTable  btnEditar btnConsultar btnBorrar btnClonar" />
                             </p:commandButton>
                             <p:commandButton id="btnBorrar" value="#{labels['dict.borrar']}" styleClass="mr-2" icon="pi pi-trash"
                                              iconPos="top" action="#{viewServicios.borrarProcedimiento}" process="@form"
-                                             update="messages dataTable" onstart="startEliminando()"
+                                             update="messages dataTable  btnEditar btnConsultar btnBorrar btnClonar" onstart="startEliminando()"
                                              oncomplete="stopEliminando()" disabled="#{viewServicios.datoSeleccionado == null}">
                                 <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
                                              action="#{viewServicios.ayuda('viewServicios')}" process="@this"
                                              update="messages dataTable"/>
+
                         </div>
                     </div>
                 </f:facet>
@@ -476,7 +477,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                          reflow="true"
                          style="min-height: 300px;"
             >
-                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar @form:btnClonar @form:includeDetalle  @form:selectorDetalle" process="@form"
+                <p:ajax event="rowSelect" global="false" update="@form:btnEditar @form:btnConsultar @form:btnBorrar @form:btnClonar  @form:selectorDetalle" process="@form"
                         listener="#{viewServicios.calcularServ()}" onstart="onClickDatableStart();" oncomplete="onClickDatableFin();"  />
                 <p:ajax event="rowDblselect" global="false" oncomplete="triggerDblClick();" process="@form"/>
 

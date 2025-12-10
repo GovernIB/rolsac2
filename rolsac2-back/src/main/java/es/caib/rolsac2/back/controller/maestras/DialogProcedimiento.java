@@ -521,7 +521,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             data.setPendienteMensajesSupervisor(respuestaFlujo.isPendienteMensajesSupervisor());
             data.setPendienteMensajesGestor(respuestaFlujo.isPendienteMensajesGestor());
             result.setResult(data);
+
             UtilJSF.closeDialog(result);
+            /*
+                UtilJSF.vaciarMochila();
+                UtilJSF.anyadirMochila("proc", data);
+                PrimeFaces.current().executeScript(
+                    "if (window.parent && window.parent.rcDialogCerrado) window.parent.rcDialogCerrado();"
+            );*/
         }
     }
 
