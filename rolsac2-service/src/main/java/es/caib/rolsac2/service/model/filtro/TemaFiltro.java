@@ -5,6 +5,7 @@ public class TemaFiltro extends AbstractFiltro {
     private String texto;
     private String identificador;
     private Long codigo;
+    private Long idPadre;
 
     public String getTexto() {
         return texto;
@@ -26,17 +27,25 @@ public class TemaFiltro extends AbstractFiltro {
         return texto != null && !texto.isEmpty();
     }
 
-	public Long getCodigo() {
-		return codigo;
-	}
+    public Long getCodigo() {
+        return codigo;
+    }
 
-	public void setCodigo(Long codigo) {
-		this.codigo = codigo;
-	}
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-	public boolean isRellenoCodigo() {
-		 return codigo != null ;
-	}
+    public Long getIdPadre() {
+        return idPadre;
+    }
+
+    public void setIdPadre(Long idPadre) {
+        this.idPadre = idPadre;
+    }
+
+    public boolean isRellenoCodigo() {
+        return codigo != null;
+    }
 
     /**
      * Esta relleno el identificador
@@ -45,6 +54,12 @@ public class TemaFiltro extends AbstractFiltro {
         return identificador != null && !identificador.isEmpty();
     }
 
+    /**
+     * Esta relleno el padre
+     **/
+    public boolean isRellenoIdPadre() {
+        return idPadre != null;
+    }
 
     @Override
     protected String getDefaultOrder() {

@@ -21,6 +21,7 @@ public class FiltroTema extends EntidadJson<FiltroTema> {
             "\"texto\":\"string\"," + Constantes.SALTO_LINEA +
             "\"identificador\":\"string\"," + Constantes.SALTO_LINEA +
             "\"idEntidad\":0," + Constantes.SALTO_LINEA +
+            "\"idPadre\":0," + Constantes.SALTO_LINEA +
             "\"filtroPaginacion\":{\"page\":0,\"size\":10}" +
             "}";
 
@@ -29,6 +30,7 @@ public class FiltroTema extends EntidadJson<FiltroTema> {
                     "\"texto\":null," +
                     "\"identificador\":null," +
                     "\"idEntidad\":null," +
+                    "\"idPadre\":null," +
                     "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" +
                     "}";
 
@@ -50,6 +52,11 @@ public class FiltroTema extends EntidadJson<FiltroTema> {
     @Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
     private Long idEntidad;
 
+    /**
+     * idEntidad.
+     **/
+    @Schema(name = "idPadre", description = "idPadre", type = SchemaType.INTEGER, required = false)
+    private Long idPadre;
 
     /**
      * FiltroPaginacion.
@@ -84,6 +91,10 @@ public class FiltroTema extends EntidadJson<FiltroTema> {
 
         if (this.idEntidad != null) {
             resultado.setIdEntidad(idEntidad);
+        }
+
+        if (this.idPadre != null) {
+            resultado.setIdPadre(idPadre);
         }
 
         return resultado;
