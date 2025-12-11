@@ -70,7 +70,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
     public List<BigDecimal> getNormativas(Long idEntidad) {
         Query query = this.entityManager.createNativeQuery("   SELECT NOR_CODI  FROM R1_NORMAT WHERE NOR_CODUNA IN (SELECT UNAD_CODIGO FROM RS2_UNIADM) " +
                 " UNION " +
-                " SELECT DISTINCT UNN_CODNOR FROM RSC_UNANOR WHERE UNN_CODUNA IN (SELECT UNAD_CODIGO FROM RS2_UNIADM) ");
+                " SELECT DISTINCT UNN_CODNOR FROM R1_UNIADM_NORM WHERE UNN_CODUNA IN (SELECT UNAD_CODIGO FROM RS2_UNIADM) ");
 
         List<BigDecimal> retornoSQL = query.getResultList();
         //Quitar duplicados
