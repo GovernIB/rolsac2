@@ -12,12 +12,13 @@ BEGIN
                         RETURN NULL;
         END IF;
 
-        SELECT UNAD_DIR3, UNAD_UNADPADRE
-        INTO v_dir3, v_padre
-        FROM RS2_UNIADM
-        WHERE UNAD_CODIGO = p_unad_codigo;
+            SELECT UNA_CODDR3, UNA_CODUNA
+            INTO v_dir3, v_padre
+            FROM r1_uniadm
+            WHERE UNA_CODI = p_unad_codigo;
 
-        -- Si la unidad tiene DIR3, devolver su código
+
+-- Si la unidad tiene DIR3, devolver su código
         IF v_dir3 IS NOT NULL THEN
                 RETURN p_unad_codigo;
         END IF;
