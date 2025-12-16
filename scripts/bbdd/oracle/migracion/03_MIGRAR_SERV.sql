@@ -192,7 +192,9 @@ CURSOR cursornormativasrolsac1 (
     codser NUMBER) IS
 SELECT *
 FROM   r1_servicios_norm
-WHERE  srn_codser = codser;
+WHERE  srn_codser = codser
+  AND srn_codnor IN (SELECT norm_codigo
+                     FROM   RS2_NORMA);
 CURSOR cursorpublicorolsac1 (
     codser NUMBER) IS
 SELECT *
