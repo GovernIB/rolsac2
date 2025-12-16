@@ -161,19 +161,19 @@ Pàgina amb el llistat de processos automàtics
                     </div>
 
                     <div class="ui-md-12 text-align-left ml10">
+                        <p:selectBooleanCheckbox id="chkCargarUAs" value="#{viewProcesosMigracion.cargarUas}" styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.cargarUas']}">
+                            <p:ajax process="@this"  event="change" update="chkCargarProc chkCargarUAs chkCargarUsuarios" />
+                        </p:selectBooleanCheckbox>
+                    </div>
+
+                    <div class="ui-md-12 text-align-left ml10">
                         <p:selectBooleanCheckbox id="chkCargarUsuarios" value="#{viewProcesosMigracion.cargarUsuarios}" styleClass="ml-2"
                                                  itemLabel="#{labels['viewProcesosMigracion.cargarUsuarios']}">
                             <p:ajax process="@this"  event="change" update="chkCargarProc chkCargarUAs" />
                         </p:selectBooleanCheckbox>
                     </div>
 
-
-                    <div class="ui-md-12 text-align-left ml10">
-                        <p:selectBooleanCheckbox id="chkCargarUAs" value="#{viewProcesosMigracion.cargarUas}" styleClass="ml-2"
-                                                 itemLabel="#{labels['viewProcesosMigracion.cargarUas']}">
-                            <p:ajax process="@this"  event="change" update="chkCargarProc chkCargarUAs chkCargarUsuarios" />
-                        </p:selectBooleanCheckbox>
-                    </div>
                 <div class="ui-md-12 text-align-left ml10">
                         <p:selectBooleanCheckbox value="#{viewProcesosMigracion.cargarNormativas}" styleClass="ml-2"
                                                  itemLabel="#{labels['viewProcesosMigracion.cargarNormativas']}">
