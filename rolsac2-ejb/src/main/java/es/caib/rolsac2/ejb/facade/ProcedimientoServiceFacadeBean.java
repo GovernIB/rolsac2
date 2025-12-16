@@ -187,7 +187,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
             // Si procedimiento es común el organo competente para la tramitación tiene que ser el organo intructor
             if (dto.esComun()) {
-                tramites.forEach(t -> t.setUnidadAdministrativa(dto.getUaInstructor()));
+                if (tramites != null && !tramites.isEmpty()) {
+                    tramites.forEach(t -> t.setUnidadAdministrativa(dto.getUaInstructor()));
+                }
+
             }
             procedimientoRepository.mergeTramitesProcWF(jProcWF.getCodigo(), tramites, ruta);
         }
