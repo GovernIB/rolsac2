@@ -1,7 +1,10 @@
 package es.caib.rolsac2.back.converters;
 
+import es.caib.rolsac2.back.controller.maestras.DialogTipoPublicoObjetivoEntidad;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.model.TipoPublicoObjetivoDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -15,6 +18,8 @@ import java.io.Serializable;
 @ViewScoped
 public class TipoPublicoObjetivoConverter implements Converter, Serializable {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TipoPublicoObjetivoConverter.class);
+
     private static final long serialVersionUID = -8972013394803135445L;
 
     @Inject
@@ -27,8 +32,15 @@ public class TipoPublicoObjetivoConverter implements Converter, Serializable {
             s = null;
         }
 
+//        LOG.info("Converting string to TipoPublicoObjetivoDTO: {}", s);
+
         if (s != null && s.trim().length() > 0) {
-            return maestrasSupServiceFacade.findTipoPublicoObjetivoById(Long.parseLong(s));
+            try {
+                // Convert the string value to a TipoPublicoObjetivoDTO object
+                return maestrasSupServiceFacade.findTipoPublicoObjetivoById(Long.parseLong(s));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid value: " + s, e);
+            }
         } else {
             return null;
         }
@@ -36,10 +48,16 @@ public class TipoPublicoObjetivoConverter implements Converter, Serializable {
 
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object o) {
-        if (o != null) {
+//        LOG.info("Converting TipoPublicoObjetivoDTO to string: {}", o);
+
+        if (o == null) {
+            return "";
+        }
+
+        if (o instanceof TipoPublicoObjetivoDTO) {
             return String.valueOf(((TipoPublicoObjetivoDTO) o).getCodigo());
         } else {
-            return null;
+            throw new IllegalArgumentException("Object is not of type TipoPublicoObjetivoDTO: " + o);
         }
     }
 }

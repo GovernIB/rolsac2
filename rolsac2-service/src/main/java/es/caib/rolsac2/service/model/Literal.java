@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -347,6 +349,16 @@ public class Literal implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Literal literal = (Literal) o;
+        if( trads != null && literal.trads != null) {
+
+            List<Traduccion> tradsSorted = new ArrayList<>(trads);
+            Collections.sort(tradsSorted, Comparator.comparing(Traduccion::getIdioma));
+
+            List<Traduccion> literalTradsSorted = new ArrayList<>(literal.trads);
+            Collections.sort(literalTradsSorted, Comparator.comparing(Traduccion::getIdioma));
+
+            return Objects.equals(tradsSorted, literalTradsSorted) && Objects.equals(codigo, literal.codigo);
+        }
         return Objects.equals(trads, literal.trads) && Objects.equals(codigo, literal.codigo);
     }
 
