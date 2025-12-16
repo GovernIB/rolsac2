@@ -250,23 +250,23 @@
                             </p>
 
                         </div>
-                        <div class="form-group col-md-4">
-                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                           value="#{labels['dialogProcedimiento.tipoProcedimiento']}:"
-                                           for="txtTipoProcedimiento"/>
-                            <p:selectOneMenu id="txtTipoProcedimiento" value="#{dialogProcedimiento.data.tipoProcedimiento}"
-                                             styleClass="w95" required="#{empty param['formDialog:closeButton']}"
-                                             autoWidth="false"
-                                             requiredMessage="#{labels['dict.obligatorio.tipoProcedimiento']}"
-                                             disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                             converter="#{tipoProcedimientoConverter}">
-                                <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{dialogProcedimiento.listTipoProcedimiento}" var="tipoProcedimiento"
-                                               itemLabel="#{tipoProcedimiento.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
-                                               itemValue="#{tipoProcedimiento}"/>
-                                <p:ajax event="change" update="@this"></p:ajax>
-                            </p:selectOneMenu>
-                        </div>
+<!--                        <div class="form-group col-md-4">-->
+<!--                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"-->
+<!--                                           value="#{labels['dialogProcedimiento.tipoProcedimiento']}:"-->
+<!--                                           for="txtTipoProcedimiento"/>-->
+<!--                            <p:selectOneMenu id="txtTipoProcedimiento" value="#{dialogProcedimiento.data.tipoProcedimiento}"-->
+<!--                                             styleClass="w95" required="#{empty param['formDialog:closeButton']}"-->
+<!--                                             autoWidth="false"-->
+<!--                                             requiredMessage="#{labels['dict.obligatorio.tipoProcedimiento']}"-->
+<!--                                             disabled="#{dialogProcedimiento.isModoConsulta()}"-->
+<!--                                             converter="#{tipoProcedimientoConverter}">-->
+<!--                                <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>-->
+<!--                                <f:selectItems value="#{dialogProcedimiento.listTipoProcedimiento}" var="tipoProcedimiento"-->
+<!--                                               itemLabel="#{tipoProcedimiento.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"-->
+<!--                                               itemValue="#{tipoProcedimiento}"/>-->
+<!--                                <p:ajax event="change" update="@this"></p:ajax>-->
+<!--                            </p:selectOneMenu>-->
+<!--                        </div>-->
                         <div class="form-group col-md-4">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.formaInicio']}:"
                                            for="txtFormaIni"/>
@@ -711,6 +711,39 @@
                                          action="#{dialogProcedimiento.borrarPubObjEnt}"
                                          process="@this" update="dataTablePublico messagesDialog"/>
                     </div>
+
+                </div>
+                <div class="row left-container mx-0 mb-2">
+                    <div class="left-container-header ml-0 col-12 row">
+                        <div class="col-10 text-center">
+                            <p class="left-container-tit mt-2 mb-1 negrita">#{labels['dialogProcedimiento.tipoProcedimiento.header']}*</p>
+                        </div>
+                        <div class="col-2 mb-1">
+                            <p:commandButton id="btnTipoProcCol" onclick="colapsarModulo('#divTipoProcedimiento','btnTipoProc');"
+                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
+                                             style="margin-left:-10px"/>
+                            <p:commandButton id="btnTipoProcExp" onclick="expandirModulo('#divTipoProcedimiento','btnTipoProc');"
+                                             title="#{labels['dict.expandir']}" icon="pi pi-plus"
+                                             styleClass="mt-2 importantOcultar" style="margin-left:-10px"/>
+                        </div>
+                    </div>
+                    <div id="divTipoProcedimiento" class="col-12 p-1">
+
+                        <p:selectOneMenu id="txtTipoProcedimiento" value="#{dialogProcedimiento.data.tipoProcedimiento}"
+                                  styleClass="w100" required="#{empty param['formDialog:closeButton']}"
+                                         autoWidth="false"
+                                         requiredMessage="#{labels['dict.obligatorio.tipoProcedimiento']}"
+                                         disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                         converter="#{tipoProcedimientoConverter}">
+                            <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
+                            <f:selectItems value="#{dialogProcedimiento.listTipoProcedimiento}" var="tipoProcedimiento"
+                                           itemLabel="#{tipoProcedimiento.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                           itemValue="#{tipoProcedimiento}"/>
+                            <p:ajax event="change" update="@this"></p:ajax>
+                        </p:selectOneMenu>
+
+                    </div>
+
                 </div>
                 <h:panelGroup id="panelTemas">
                     <c:forEach items="#{dialogProcedimiento.roots}" var="tema" varStatus="status">
