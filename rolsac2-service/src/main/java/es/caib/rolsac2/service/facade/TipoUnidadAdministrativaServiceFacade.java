@@ -39,7 +39,7 @@ public interface TipoUnidadAdministrativaServiceFacade {
      * @param id identificador del TipoUnidadAdministrativa a borrar
      * @throws RecursoNoEncontradoException si el TipoUnidadAdministrativa con el id no existe.
      */
-    void delete(Long id) throws RecursoNoEncontradoException;
+    int delete(Long id) throws RecursoNoEncontradoException;
 
     /**
      * Retorna un opcional amb el TipoUnidadAdministrativa indicat per l'identificador.

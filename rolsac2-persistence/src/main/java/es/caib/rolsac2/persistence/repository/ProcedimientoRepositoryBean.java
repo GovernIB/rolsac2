@@ -877,7 +877,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     @Override
     public boolean existeProcedimientoConMateria(Long materiaSIA) {
         List<TipoMateriaSIAGridDTO> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT count(j) FROM JProcedimientoMateriaSIA j where j.tipoMateriaSIA.codigo = :materiaSIA ");
+        StringBuilder sql = new StringBuilder("SELECT count(t) FROM JTema t where t.tipoMateriaSIA.codigo = :materiaSIA ");
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("materiaSIA", materiaSIA);
         Long resultado = (Long) query.getSingleResult();

@@ -111,14 +111,6 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                 estadoMigracion += "Borrado los datos 100%\n";
             }
 
-            if (cargarUsuarios != null && "true".equals(cargarUsuarios)) {
-                String result = migracionService.migrarUsuarios();
-                mensajeTraza.append(result);
-                detalles.addPropiedad("Migrar usuarios", "Ejecutado correctamente");
-                estadoMigracion += "Migrado los usuarios 100%\n";
-            }
-
-
             if (cargarDatosTipos != null && "true".equals(cargarDatosTipos)) {
                 detalles.addPropiedad("Cargar datos tipo", "Ejecutado correctamente");
             }
@@ -143,6 +135,13 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                 mensajeTraza.append("FI MIGRACIO UAs \n");
                 detalles.addPropiedad("Cargar datos UA", "Ejecutado correctamente");
                 estadoMigracion += "Migrado las uas 100%\n";
+            }
+
+            if (cargarUsuarios != null && "true".equals(cargarUsuarios)) {
+                String result = migracionService.migrarUsuarios();
+                mensajeTraza.append(result);
+                detalles.addPropiedad("Migrar usuarios", "Ejecutado correctamente");
+                estadoMigracion += "Migrado los usuarios 100%\n";
             }
 
             if (cargarDatosNormativas != null && "true".equals(cargarDatosNormativas)) {

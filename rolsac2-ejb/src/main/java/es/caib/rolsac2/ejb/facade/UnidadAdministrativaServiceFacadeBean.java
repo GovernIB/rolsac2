@@ -15,6 +15,7 @@ import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraducc
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.persistence.util.ConstantesNegocio;
 import es.caib.rolsac2.service.exception.AuditoriaException;
+import es.caib.rolsac2.service.exception.BorradoConReferenciasException;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
@@ -39,6 +40,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
 
 /**
@@ -267,7 +270,12 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         JUnidadAdministrativa jUnidadAdministrativa = unidadAdministrativaRepository.getReference(id);
         //Marcar para borrar
         indexacionRepository.guardarIndexar(jUnidadAdministrativa.getCodigo(), TypeIndexacion.UNIDAD_ADMINISTRATIVA, jUnidadAdministrativa.getEntidad().getCodigo(), 2);
-        unidadAdministrativaRepository.deleteUA(id);
+        try {
+            unidadAdministrativaRepository.deleteUA(id);
+        }catch (PersistenceException persistenceException){
+            throw new BorradoConReferenciasException();
+        }
+
     }
 
     @Override

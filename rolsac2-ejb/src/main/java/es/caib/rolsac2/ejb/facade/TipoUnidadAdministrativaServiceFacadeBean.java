@@ -7,13 +7,16 @@ import es.caib.rolsac2.persistence.model.JEntidad;
 import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
 import es.caib.rolsac2.persistence.repository.EntidadRepository;
 import es.caib.rolsac2.persistence.repository.TipoUnidadAdministrativaRepository;
+import es.caib.rolsac2.persistence.repository.UnidadAdministrativaRepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.TipoUnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoUnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.TipoUnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoUnidadAdministrativaFiltro;
+import es.caib.rolsac2.service.model.filtro.UnidadAdministrativaFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,12 +82,21 @@ public class TipoUnidadAdministrativaServiceFacadeBean implements TipoUnidadAdmi
         tipoUnidadAdministrativaRepository.update(tipoUnidadAdministrativa);
     }
 
+
     @Override
     //@RolesAllowed({Constants.RSC_USER, Constants.RSC_ADMIN})
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void delete(Long id) throws RecursoNoEncontradoException {
-        JTipoUnidadAdministrativa jTipoPublicoObjetivo = tipoUnidadAdministrativaRepository.getReference(id);
-        tipoUnidadAdministrativaRepository.delete(jTipoPublicoObjetivo);
+    public int delete(Long id) throws RecursoNoEncontradoException {
+
+        boolean resultado = tipoUnidadAdministrativaRepository.isReferencedByUnidadAdministrativa(id);
+
+        if (resultado) {
+            return Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS;
+        }else {
+            JTipoUnidadAdministrativa jTipoPublicoObjetivo = tipoUnidadAdministrativaRepository.getReference(id);
+            tipoUnidadAdministrativaRepository.delete(jTipoPublicoObjetivo);
+            return 0;
+        }
     }
 
     @Override

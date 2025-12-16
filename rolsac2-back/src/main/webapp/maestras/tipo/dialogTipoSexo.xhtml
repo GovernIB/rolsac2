@@ -73,7 +73,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
           <p:inputText id="txtIdentificador" value="#{dialogTipoSexo.data.identificador}"
                        styleClass="w96" onblur="this.value = this.value.toUpperCase();"
                        requiredMessage="#{labels['dict.obligatorio.identificador']}"
-                       required="#{empty param['formDialog:closeButton']}" disabled="#{dialogTipoSexo.isModoConsulta()}" maxlength="50">
+                       required="#{empty param['formDialog:closeButton']}" disabled="#{dialogTipoSexo.isModoConsulta()}" maxlength="50"
+                       onpaste="validatePaste(event, /[a-z0-9_-]{1,50}$/);">
             <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
             <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,50}$" />
             <f:validateBean disabled="true" />
@@ -99,6 +100,18 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </div>
       </div>
     </p:panel>
+
+    <p:commandButton id="growlMessage" action="#{messageUtils.showInvalidCharacterMessage}" style="display:none;"
+                     update="messagesDialog form"/>
+    <script>
+      function validatePaste(event, regex) {
+        const clipboardData = (event.clipboardData || window.clipboardData).getData('text');
+        if (!regex.test(clipboardData)) {
+          event.preventDefault();
+          document.getElementById('formDialog:growlMessage').click();
+        }
+      }
+    </script>
   </ui:define>
 
   <ui:define name="contentFooterDialogRight">

@@ -4,6 +4,7 @@ import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.TipoUnidadAdministrativaServiceFacade;
+import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.TipoUnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.filtro.TipoUnidadAdministrativaFiltro;
@@ -173,7 +174,14 @@ public class ViewTipoUnidadAdministrativa extends AbstractController implements 
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
         } else {
-            tipoUnidadAdministrativaService.delete(datoSeleccionado.getCodigo());
+            int resultado = tipoUnidadAdministrativaService.delete(datoSeleccionado.getCodigo());
+
+            if (resultado == Constantes.NO_ELIMINABLE_POR_TENER_REFERENCIAS) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dato.error.delete.ua_asociada"));
+            } else {
+                buscar();
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
+            }
         }
     }
 

@@ -30,4 +30,6 @@ public interface TipoUnidadAdministrativaRepository extends CrudRepository<JTipo
     List<TipoUnidadAdministrativaDTO> findPagedByFiltroRest(TipoUnidadAdministrativaFiltro filtro);
 
     void deleteByEntidad(Long id);
+
+    boolean isReferencedByUnidadAdministrativa(Long id);
 }

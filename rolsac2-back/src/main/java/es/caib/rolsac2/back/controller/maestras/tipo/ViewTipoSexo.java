@@ -177,7 +177,7 @@ public class ViewTipoSexo extends AbstractController implements Serializable {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));
         } else {
             if (unidadAdministrativaServiceFacade.existeTipoSexo(datoSeleccionado.getCodigo())) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoSexo.existeRelacion"));
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("viewTipoSexo.existeRelacion"));
             } else {
                 tipoSexoService.deleteTipoSexo(datoSeleccionado.getCodigo());
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));

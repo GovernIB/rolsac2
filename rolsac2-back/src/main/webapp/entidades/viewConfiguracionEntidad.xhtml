@@ -99,6 +99,18 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
              <p:importConstants type="es.caib.rolsac2.service.model.types.TypeFicheroExterno"
                                 var="tipoFichero" ></p:importConstants>
 
+         <p:commandButton id="growlMessage" action="#{messageUtils.showInvalidCharacterMessage}" style="display:none;"
+                          update="messagesDialog form"/>
+         <script>
+             function validatePaste(event, regex) {
+                 const clipboardData = (event.clipboardData || window.clipboardData).getData('text');
+                 if (!regex.test(clipboardData)) {
+                     event.preventDefault();
+                     document.getElementById('formDialog:growlMessage').click();
+                 }
+             }
+         </script>
+
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewConfiguracionesGlobales.buscar}" update="dataTable"/>
 
@@ -119,7 +131,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:inputText id="txtIdentificador" value="#{viewConfiguracionEntidad.data.identificador}"
-                                         styleClass="w95" disabled="true" maxlength="50">
+                                         styleClass="w95" disabled="true" maxlength="50"
+                                        onpaste="validatePaste(event, /[a-z0-9_-]{1,50}$/);">
                                 <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                                 <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,50}$"/>
                             </p:inputText>

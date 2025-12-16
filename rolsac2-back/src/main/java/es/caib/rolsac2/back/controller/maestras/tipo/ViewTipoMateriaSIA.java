@@ -171,7 +171,7 @@ public class ViewTipoMateriaSIA extends AbstractController implements Serializab
         } else {
             boolean existen = maestrasSupService.existeProcedimientoConTipoMateriaSIA(datoSeleccionado.getCodigo());
             if (existen) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.error.relacionProcedimientos"));
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("msg.error.relacionProcedimientos"));
             } else {
                 maestrasSupService.deleteTipoMateriaSIA(datoSeleccionado.getCodigo());
                 addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));

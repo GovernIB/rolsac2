@@ -217,4 +217,14 @@ public class TipoUnidadAdministrativaRepositoryBean extends AbstractCrudReposito
         entityManager.flush();
     }
 
+    @Override
+    public boolean isReferencedByUnidadAdministrativa(Long idTipoUA) {
+
+        String sql = "SELECT COUNT(ua) FROM JUnidadAdministrativa ua WHERE ua.tipo.codigo = :idTipoUA";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("idTipoUA", idTipoUA);
+        Long count = (Long) query.getSingleResult();
+
+        return count > 0;
+    }
 }

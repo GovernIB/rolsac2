@@ -176,7 +176,7 @@ public class ViewTipoLegitimacion extends AbstractController implements Serializ
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.noBorrado.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
         } else {
             if (tipoLegitimacionService.existeProcedimientoConLegitimacion(datoSeleccionado.getCodigo())) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoLegitimacion.existeRelacion"));
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("viewTipoLegitimacion.existeRelacion"));
             } else {
                 tipoLegitimacionService.deleteTipoLegitimacion(datoSeleccionado.getCodigo());
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
