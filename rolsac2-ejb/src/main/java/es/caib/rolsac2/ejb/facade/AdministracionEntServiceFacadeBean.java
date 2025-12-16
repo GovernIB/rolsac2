@@ -208,12 +208,13 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
             jUnidadAdministrativa.getUsuarios().remove(jUsuario);
             unidadAdministrativaRepository.update(jUnidadAdministrativa);
         }
-
+        jUsuario.getUnidadesAdministrativas().clear();
         List<Long> entidadesAsociadas = usuarioRepository.findEntidadesAsociadas(id);
         for (Long entidad : entidadesAsociadas) {
             usuarioRepository.eliminarUsuarioEntidad(jUsuario, entidad);
         }
 
+        usuarioRepository.update(jUsuario);
         usuarioRepository.delete(jUsuario);
     }
 
