@@ -68,7 +68,7 @@
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  styleClass="w96" required="#{empty param['formDialog:closeButton']}"
                                  disabled="#{dialogPlatTramitElectronica.isModoConsulta()}" maxlength="50"
-                                onpaste="validatePaste(event, /^[a-zA-Z0-9_-]{1,50}$/)">
+                                onpaste="validatePaste(event, /^[a-zA-Z0-9_-]{1,50}$/i)">
                         <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[a-zA-Z0-9_-]{1,50}$"/>
                         <f:validateBean disabled="true"/>

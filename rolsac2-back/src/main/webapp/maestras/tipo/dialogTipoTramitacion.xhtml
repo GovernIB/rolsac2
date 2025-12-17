@@ -99,7 +99,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  required="#{empty param['formDialog:closeButton']}"
                                   disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="50"
-                                onpaste="validatePaste(event, /[0-9_-a-zA-Z\.]{1,50}$/);">
+                                onpaste="validatePaste(event, /^[0-9_-a-zA-Z\.]{1,50}$/);">
                         <p:keyFilter regEx="/[0-9_-a-zA-Z\.]/i" preventPaste="false"/>
                         <f:validateRegex pattern="^[0-9_-a-zA-Z\.]{1,50}$" />
                     </p:inputText>

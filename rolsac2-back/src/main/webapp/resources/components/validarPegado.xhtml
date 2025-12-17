@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite">
+<cc:interface>
+    <cc:attribute name="action" required="false" default="#{messageUtils.showInvalidCharacterMessage}"/>
+    <cc:attribute name="update" required="true" />
+<!--    <cc:attribute name="regex" required="true" />-->
+</cc:interface>
+
+<cc:implementation>
+    <p:commandButton id="growlMessage" action="#{cc.attrs.action}" style="display:none;"
+                     update="#{cc.attrs.update}" />
+
+    <script>
+        function validatePaste(event) {
+            const regex = new RegExp("^[a-zA-Z0-9_-]{1,50}$");
+            const clipboardData = (event.clipboardData || window.clipboardData).getData('text');
+            if (!regex.test(clipboardData)) {
+                event.preventDefault();
+                document.getElementById('growlMessage').click();
+            }
+        }
+    </script>
+</cc:implementation>
+</html>
