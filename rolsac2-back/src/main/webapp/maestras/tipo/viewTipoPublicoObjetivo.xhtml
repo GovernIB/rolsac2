@@ -59,8 +59,8 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                                 <p:ajax event="dialogReturn" listener="#{viewTipoPublicoObjetivo.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"  styleClass="mr-2"
-                                             action="#{viewTipoPublicoObjetivo.borrarTipoPublicoObjetivo}" process="@form"
+                            <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" styleClass="mr-2"
+                            				 iconPos="top" action="#{viewTipoPublicoObjetivo.borrarTipoPublicoObjetivo}" process="@form"
                                              update="messages dataTable">
                                 <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>

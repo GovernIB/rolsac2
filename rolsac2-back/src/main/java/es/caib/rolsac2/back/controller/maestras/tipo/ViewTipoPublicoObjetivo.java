@@ -179,6 +179,7 @@ public class ViewTipoPublicoObjetivo extends AbstractController implements Seria
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewTipoPublicoObjetivo.relacionEntidad"));
             } else {
                 maestrasSupService.deleteTipoPublicoObjetivo(datoSeleccionado.getCodigo());
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.eliminaciocorrecta"));
             }
         }
     }
