@@ -190,7 +190,21 @@
                                 <p:ajax event="change" update="@this"></p:ajax>
                             </p:selectOneMenu>
                         </div>
-                        <div class="form-group col-md-12 sinMarginBottom">
+                    <div class="form-group col-md-12 sinMarginBottom">
+                        <p class="mb-1">
+                            <p:outputLabel styleClass="mr-2 mb-1"
+                                           value="#{labels['dialogUnidadAdministrativa.codigoEstandard']}:"
+                                           for="txtCodigoEstandard"/>
+                        </p>
+                        <p>
+                            <p:inputText id="txtCodigoEstandard" value="#{dialogUnidadAdministrativa.data.codigoEstandard}"
+                                         required="false"
+                                         styleClass="w95"
+                                         maxlength="255"
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                        </p>
+                    </div>
+                      <div class="form-group col-md-12 sinMarginBottom">
                             <p class="mb-1">
                                 <p:outputLabel styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.url']}:"
                                               for="txtUrl"/>

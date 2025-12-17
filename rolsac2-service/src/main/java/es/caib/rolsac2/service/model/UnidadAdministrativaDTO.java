@@ -133,6 +133,12 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
      */
     private Date fechaBaja;
 
+
+    /**
+     * Codigo estandard.
+     */
+    private String codigoEstandard;
+
     /**
      * Normativas
      */
@@ -975,5 +981,23 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
      */
     public boolean isBorrado() {
         return (this.getEstado() != null && this.getEstado().equals("X"));
+    }
+
+    /**
+     * Código estandar.
+     *
+     * @return
+     */
+    public String getCodigoEstandard() {
+        return codigoEstandard;
+    }
+
+    /**
+     * Set codigo estandard.
+     *
+     * @param codigoEstandard Código estandard
+     */
+    public void setCodigoEstandard(String codigoEstandard) {
+        this.codigoEstandard = codigoEstandard;
     }
 }

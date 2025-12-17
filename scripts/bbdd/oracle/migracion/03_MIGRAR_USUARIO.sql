@@ -32,6 +32,7 @@ AS
 	codigoUA       NUMBER;
 	EXISTE_UA_USER NUMBER;
 	EXISTE_UA_ROLSAC2 NUMBER;
+	EXISTE_ALGUNA_UA NUMBER := 0;
 	CURSOR cursorUserUAsROLSAC1 (usuario NUMBER) IS
 		SELECT *
 		FROM R1_UNIADM_USU
@@ -93,6 +94,7 @@ BEGIN
 	/** Introducimos las uas **/
 	FOR ROLSAC1_USERUA IN cursorUserUAsROLSAC1(usu_codigo_r1)
 		LOOP
+			EXISTE_ALGUNA_UA := 1;
 			codigoUA := obtenerUAconDIR3(ROLSAC1_USERUA.UNU_CODUNA);
 			select count(*)
 			into EXISTE_UA_USER
@@ -112,6 +114,21 @@ BEGIN
 			END IF;
 
 		END LOOP;
+
+	IF EXISTE_ALGUNA_UA = 1
+	THEN
+			SELECT COUNT(*)
+			INTO CUANTOS
+			FROM RS2_USENTI
+			    WHERE USEN_CODUSER = usu_codigo_r2  AND USEN_CODENTI = 1 ;
+
+			IF CUANTOS = 0
+			THEN
+				INSERT INTO RS2_USENTI (USEN_CODUSER,USEN_CODENTI )
+				VALUES (usu_codigo_r2,1 );
+			END IF;
+	end if;
+
 
 	/*DBMS_OUTPUT.PUT_LINE('FIN MIGRACION UAS *');*/
 	dbms_lob.close(l_clob);

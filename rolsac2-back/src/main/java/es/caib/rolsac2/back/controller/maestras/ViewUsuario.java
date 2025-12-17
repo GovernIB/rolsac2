@@ -60,7 +60,7 @@ public class ViewUsuario extends AbstractController implements Serializable {
         filtro.setIdioma(sessionBean.getLang());
         if (sessionBean.getPerfil() != TypePerfiles.SUPER_ADMINISTRADOR) {
             filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
-            filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+            //filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         }
 
         buscar();

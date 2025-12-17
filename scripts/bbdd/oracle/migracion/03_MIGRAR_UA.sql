@@ -217,7 +217,8 @@ BEGIN
 			 UNAD_CODENTI,
 			 UNAD_VERSION,
 			 UNAD_TIPOUA,
-			 UNAD_ESTADO)
+			 UNAD_ESTADO,
+			 UNAD_CODEST)
 			SELECT codigoUA,
 			       UNA_CODUNA,
 			       UNA_CODDR3,
@@ -236,7 +237,8 @@ BEGIN
 			       CASE
 				       WHEN UNA_VALIDA = 1 THEN 'V'
 				       ELSE 'X'
-				       END
+				       END,
+			       UNA_CODEST
 			FROM R1_UNIADM
 			WHERE UNA_CODI = codigoUA;
 

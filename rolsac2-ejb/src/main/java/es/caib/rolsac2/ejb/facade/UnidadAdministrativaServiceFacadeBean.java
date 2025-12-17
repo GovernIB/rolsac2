@@ -41,7 +41,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
 
 /**
@@ -228,7 +227,6 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         jUnidadAdministrativa.setEntidad(jEntidad);
         jUnidadAdministrativa.setTipo(jTipoUnidadAdministrativa);
         jUnidadAdministrativa.setResponsableSexo(jTipoSexo);
-
         JUnidadAdministrativa jUnidadAdministrativaPadre = (dto.getPadre() != null && dto.getPadre().getCodigo() != null) ? unidadAdministrativaRepository.getReference(dto.getPadre().getCodigo()) : null;
 
         jUnidadAdministrativa.setPadre(jUnidadAdministrativaPadre);
@@ -272,7 +270,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         indexacionRepository.guardarIndexar(jUnidadAdministrativa.getCodigo(), TypeIndexacion.UNIDAD_ADMINISTRATIVA, jUnidadAdministrativa.getEntidad().getCodigo(), 2);
         try {
             unidadAdministrativaRepository.deleteUA(id);
-        }catch (PersistenceException persistenceException){
+        } catch (PersistenceException persistenceException) {
             throw new BorradoConReferenciasException();
         }
 
