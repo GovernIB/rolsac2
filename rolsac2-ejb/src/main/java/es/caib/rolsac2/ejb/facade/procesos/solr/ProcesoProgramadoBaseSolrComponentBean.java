@@ -631,7 +631,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
             try {
 
                 //Primero desindexamos por raiz
-                plugin.desindexar(indexacionDTO.getCodElemento().toString(), EnumCategoria.ROLSAC_NORMATIVA);
+                plugin.desindexar(indexacionDTO.getCodElemento().toString(), EnumCategoria.ROLSAC_PROCEDIMIENTO);
 
                 ProcedimientoSolrDTO procedimiento = procedimientoService.findDataIndexacionProcById(codigoWF);
 
@@ -863,7 +863,7 @@ public abstract class ProcesoProgramadoBaseSolrComponentBean {
         if (publicado) {
             try {
                 //Primero desindexamos por raiz
-                plugin.desindexar(indexacionDTO.getCodElemento().toString(), EnumCategoria.ROLSAC_NORMATIVA);
+                plugin.desindexar(indexacionDTO.getCodElemento().toString(), EnumCategoria.ROLSAC_SERVICIO);
 
                 ProcedimientoSolrDTO servicio = procedimientoService.findDataIndexacionServById(codigoWF);
                 ResultadoAccion resultado = plugin.indexarContenido(servicio.getDataIndexacion());
