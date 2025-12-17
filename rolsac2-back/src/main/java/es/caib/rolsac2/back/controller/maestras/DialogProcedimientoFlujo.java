@@ -27,6 +27,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -237,7 +238,8 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
 
         String mensajeEnviar = "";
         if (mensajeNuevo != null && !mensajeNuevo.isEmpty()) {
-            Object[] parametros = {UtilJSF.getSessionBean().getUsuario().getNombre()};
+            Object[] parametros = new Object[3];
+            parametros[0] = new String[]{UtilJSF.getSessionBean().getUsuario().getNombre()};
 
             String enlaceProp;
 
@@ -246,7 +248,14 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             } else {
                 enlaceProp = systemServiceFacade.obtenerPropiedadConfiguracion("email.serv.enlace") + idProcedimiento;
             }
-            mensajeEnviar = getLiteral("dialogProcedimientoFlujo.mensajeUsuario", parametros) + "\n<br /><br />\n" + mensajeNuevo + "\n<br /><br />\n" + enlaceProp;
+            parametros[1] = mensajeNuevo;
+            parametros[2] = enlaceProp;
+
+            String mensajeInicial = systemServiceFacade.obtenerPropiedadConfiguracion("email.email.inicio." + getIdioma());
+            if (mensajeInicial == null || mensajeInicial.isEmpty()) {
+                mensajeInicial = getLiteral("dialogProcedimientoFlujo.mensajeUsuario");
+            }
+            mensajeEnviar = MessageFormat.format(mensajeInicial, parametros);
         } else {
             cerrar();
             return;
