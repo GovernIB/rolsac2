@@ -282,8 +282,8 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
 
     @Override
     public List<BigDecimal> getUAs(Long idEntidad, Long idUARaiz) {
-        /** Solo devuelve las unidades administrativas publicas : UNAD_VALIDA = 1 Y que tienen dir3 */
-        String sql = " SELECT UNA_CODI  FROM R1_UNIADM  WHERE  UNA_VALIDA = 1 AND UNA_CODDR3 IS NOT NULL AND CHECK_CUELGA_UA_PROC(UNA_CODI, " + idUARaiz + ") = 1 ORDER BY OBTENER_PROF_UA(UNA_CODI) ";
+
+        String sql = " SELECT UNA_CODI  FROM R1_UNIADM  WHERE  CHECK_CUELGA_UA_PROC(UNA_CODI, " + idUARaiz + ") = 1 ORDER BY OBTENER_PROF_UA(UNA_CODI) ";
         Query query = this.entityManager.createNativeQuery(sql);
         return query.getResultList();
     }

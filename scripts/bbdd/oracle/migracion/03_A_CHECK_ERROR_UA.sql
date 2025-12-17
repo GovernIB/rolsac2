@@ -17,7 +17,7 @@ BEGIN
 	IF p_unad_codigo IS null
 	THEN
 		/** SI EL PARAMETRO QUE SE PASA ES NULO **/
-		RETURN 'La UA ' || p_unad_inicial || ' "' || nombre || '" no existe su padre.';
+		RETURN 'La UA ' || p_unad_inicial || ' "' || nombre || '" no existeix el seu pare.';
 	END IF;
 
 	SELECT UNA_CODDR3, UNA_CODUNA, UNA_VALIDA
@@ -28,14 +28,14 @@ BEGIN
 	-- Si la unidad NO tiene DIR3, devolver el mensaje de error
 	IF v_dir3 IS NULL
 	THEN
-		RETURN 'La UA ' || p_unad_inicial || ' "' || nombre || '" no sha migrat perque no te dir3 un ascendent.';
+		RETURN 'La UA ' || p_unad_inicial || ' "' || nombre || '" no s''ha migrat perquè té un ascendent que no té codi DIR3.';
 	ELSIF v_valida != 1
 	THEN
-		RETURN 'La UA ' || p_unad_inicial || ' "' || nombre || '" no sha migrat perque no es troba públic un ascendent.';
+		RETURN 'La UA ' || p_unad_inicial || ' "' || nombre || '" no s''ha migrat perquè té un ascendent que no és públic.';
 	ELSE
 		-- Si no tiene padre, no hay más que buscar
 		IF v_padre IS NULL THEN
-			RETURN 'La UA ' || p_unad_inicial || ' "' || nombre || '" no existe su padre..';
+			RETURN 'La UA ' || p_unad_inicial || ' "' || nombre || '" no s''ha migrat perquè té un ascendent no migrat.';
 		END IF;
 
 		-- buscar en el padre

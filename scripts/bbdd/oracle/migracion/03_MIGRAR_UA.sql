@@ -122,9 +122,12 @@ AS
 	EXISTE_MAT_PRC number(2,0);
 	CODIGO_PADRE NUMBER(10,0);
 	EXISTE_PADRE NUMBER(2,0);
+	V_UNA_VALIDA  NUMBER;
+	V_UNA_CODDR3  varchar2(500);
 BEGIN
 	/** RS2_UNIADM **/
 	INDEXAR := FALSE;
+
 	SELECT COUNT(*)
 	INTO EXISTE
 	FROM RS2_UNIADM
@@ -137,8 +140,36 @@ BEGIN
 	  AND ROWNUM = 1;
 
 
+
+
 	IF EXISTE = 0 /*AND INDEXAR*/
 	THEN
+
+		/** SOLO SE INDEXA SI UNA_VALIDA = 1 Y UNA_CODDR3 IS NOT NULL      ***/
+		SELECT  UNA_VALIDA,
+		        UNA_CODDR3
+		INTO  v_una_valida,
+			v_una_coddr3
+		FROM R1_UNIADM
+		WHERE UNA_CODI = codigoUA;
+
+		IF v_una_valida != 1 AND v_una_coddr3 IS NULL
+		THEN
+			resultado :=  'La UA ' || codigoUA || ' "' || NOMBRE || '" no es migra perquè no és públic i no té codi dir3';
+			rollback;
+			RETURN;
+		ELSIF v_una_valida != 1
+		THEN
+			resultado :=  'La UA ' || codigoUA || ' "' || NOMBRE || '" no es migra perquè no és públic';
+			rollback;
+			RETURN;
+		ELSIF v_una_coddr3 IS NULL
+		THEN
+			resultado :=  'La UA ' || codigoUA || ' "' || NOMBRE || '"  no es migra perquè no té codi dir3';
+			rollback;
+			RETURN;
+		END IF;
+
 
 		/** COMPROBAMOS SI EL PADRE EXISTE. **/
 		SELECT UNA_CODUNA
