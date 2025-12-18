@@ -239,7 +239,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         String mensajeEnviar = "";
         if (mensajeNuevo != null && !mensajeNuevo.isEmpty()) {
             Object[] parametros = new Object[3];
-            parametros[0] = new String[]{UtilJSF.getSessionBean().getUsuario().getNombre()};
+            parametros[0] = UtilJSF.getSessionBean().getUsuario().getNombre();
 
             String enlaceProp;
 
